@@ -97,5 +97,8 @@ public final class VoiceShortcutRow: Row<VoiceShortcutCell>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
         displayValueFor = { _ in nil }
+        // there's no availability method we can use, but the docs say:
+        // > This framework ignores calls from Mac apps built with Mac Catalyst.
+        hidden = .isCatalyst
     }
 }

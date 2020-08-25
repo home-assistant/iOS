@@ -11,7 +11,9 @@ import UIKit
 import Eureka
 import Shared
 import RealmSwift
+#if !targetEnvironment(macCatalyst)
 import Lokalise
+#endif
 import ZIPFoundation
 import UserNotifications
 import Firebase
@@ -42,11 +44,15 @@ class SettingsViewController: FormViewController {
             cell.accessibilityLabel = row.title
         }
 
-        let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
-                                          style: .plain, target: self,
-                                          action: #selector(SettingsViewController.openAbout(_:)))
+        if !Current.isCatalyst {
+            // About is in the Application menu on Catalyst
 
-        self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+            let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
+                                              style: .plain, target: self,
+                                              action: #selector(SettingsViewController.openAbout(_:)))
+
+            self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+        }
 
         let closeSelector = #selector(SettingsViewController.closeSettings(_:))
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
@@ -127,6 +133,7 @@ class SettingsViewController: FormViewController {
 
         <<< ButtonRow {
             $0.tag = "watch"
+            $0.hidden = .isCatalyst
             $0.title = L10n.Settings.DetailsSection.WatchRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
@@ -141,7 +148,7 @@ class SettingsViewController: FormViewController {
             $0.title = L10n.Nfc.List.title
 
             if #available(iOS 13, *) {
-                $0.hidden = false
+                $0.hidden = .isCatalyst
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return NFCListViewController()
                 }, onDismiss: nil)
@@ -176,9 +183,21 @@ class SettingsViewController: FormViewController {
         }
 
         <<< ButtonRow {
-            $0.title = L10n.Settings.Developer.ExportLogFiles.title
+            if Current.isCatalyst {
+                $0.title = L10n.Settings.Developer.ShowLogFiles.title
+            } else {
+                $0.title = L10n.Settings.Developer.ExportLogFiles.title
+            }
         }.onCellSelection { cell, _ in
             Current.Log.verbose("Logs directory is: \(Constants.LogsDirectory)")
+
+            guard !Current.isCatalyst else {
+                // on Catalyst we can just open the directory to get to Finder
+                UIApplication.shared.open(Constants.LogsDirectory, options: [:]) { success in
+                    Current.Log.info("opened log directory: \(success)")
+                }
+                return
+            }
 
             let fileManager = FileManager.default
 
@@ -341,7 +360,9 @@ class SettingsViewController: FormViewController {
         }.onCellSelection { cell, _ in
             prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
 
+            #if !targetEnvironment(macCatalyst)
             Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+            #endif
 
             let alert = UIAlertController(title: L10n.okLabel, message: nil, preferredStyle: .alert)
 

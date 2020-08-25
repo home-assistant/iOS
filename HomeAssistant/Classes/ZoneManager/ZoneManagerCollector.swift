@@ -34,7 +34,12 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         didStartMonitoringFor region: CLRegion
     ) {
         delegate?.collector(self, didLog: .didStartMonitoring(region))
-        manager.requestState(for: region)
+
+        if Current.isCatalyst {
+            Current.Log.info("not querying region state due to catalyst lacking persistent region monitoring")
+        } else {
+            manager.requestState(for: region)
+        }
     }
 
     func locationManager(

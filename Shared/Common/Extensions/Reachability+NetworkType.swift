@@ -87,6 +87,7 @@ public enum NetworkType: Int, CaseIterable {
         }
     }
 
+    #if !targetEnvironment(macCatalyst)
     init(_ radioTech: String) {
         switch radioTech {
         case CTRadioAccessTechnologyGPRS,
@@ -108,6 +109,7 @@ public enum NetworkType: Int, CaseIterable {
             self = .unknownTechnology
         }
     }
+    #endif
 }
 
 public extension Reachability {
@@ -143,7 +145,11 @@ public extension Reachability {
             case .wifi:
                 return .wifi
             case .cellular:
-                return Reachability.getWWANNetworkType()
+                #if !targetEnvironment(macCatalyst)
+                    return Reachability.getWWANNetworkType()
+                #else
+                    return .cellular
+                #endif
             case .unavailable:
                 return .noConnection
             }
@@ -152,11 +158,12 @@ public extension Reachability {
         }
     }
 
+    #if !targetEnvironment(macCatalyst)
     static func getWWANNetworkType() -> NetworkType {
         guard let currentRadioAccessTechnology = CTTelephonyNetworkInfo().currentRadioAccessTechnology else {
             return .unknown
         }
         return NetworkType(currentRadioAccessTechnology)
     }
-
+    #endif
 }

@@ -186,8 +186,12 @@ extension IconDrawable {
         let fontName = CTFontCopyPostScriptName(font) as String
 
         // Registers font dynamically
-        if CTFontManagerRegisterFontsForURL(url as CFURL, .none, &error) == false || error != nil {
-            assertionFailure("Failed registering font with the postscript name '\(fontName)' at path '\(url)' with error: \(String(describing: error)).")
+        if CTFontManagerRegisterFontsForURL(url as CFURL, .process, &error) == false || error != nil {
+            if let error = error?.takeUnretainedValue(), CFErrorGetDomain(error) == kCTFontManagerErrorDomain, CFErrorGetCode(error) == CTFontManagerError.alreadyRegistered.rawValue {
+                // this is fine
+            } else {
+                assertionFailure("Failed registering font with the postscript name '\(fontName)' at path '\(url)' with error: \(String(describing: error)).")
+            }
         }
 
         print("Font '\(familyName)' registered successfully!")

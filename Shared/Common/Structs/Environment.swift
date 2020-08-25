@@ -11,7 +11,6 @@ import PromiseKit
 import RealmSwift
 import XCGLogger
 import CoreMotion
-import DeviceKit
 import CoreLocation
 import Version
 #if os(iOS)
@@ -78,6 +77,8 @@ public class Environment {
 
     public var tags: TagManager = EmptyTagManager()
 
+    public var updater: Updater = Updater()
+
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)
@@ -113,7 +114,14 @@ public class Environment {
     }
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
-    public let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public var isCatalyst: Bool = {
+        #if targetEnvironment(macCatalyst)
+        return true
+        #else
+        return false
+        #endif
+    }()
 
     private let isFastlaneSnapshot = UserDefaults(suiteName: Constants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 
@@ -233,20 +241,6 @@ public class Environment {
     }
     public var pedometer = Pedometer()
 
-    /// Wrapper around DeviceKit
-    public struct DeviceWrapper {
-        public lazy var batteryLevel: () -> Int = { Device.current.batteryLevel ?? 0 }
-        public lazy var batteryState: () -> Device.BatteryState = { Device.current.batteryState ?? .full }
-        public lazy var isLowPowerMode: () -> Bool = { Device.current.batteryState?.lowPowerMode ?? false }
-        public lazy var volumes: () -> [URLResourceKey: Int64]? = {
-            #if os(iOS)
-                return Device.volumes
-            #else
-                return nil
-            #endif
-        }
-        public lazy var model: () -> String = { Device.current.model ?? L10n.Device.genericName }
-    }
     public var device = DeviceWrapper()
 
     /// Wrapper around CLGeocoder
@@ -267,7 +261,7 @@ public class Environment {
     public struct Connectivity {
         public var currentWiFiSSID: () -> String? = { ConnectionInfo.CurrentWiFiSSID }
         public var currentWiFiBSSID: () -> String? = { ConnectionInfo.CurrentWiFiBSSID }
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         public var simpleNetworkType: () -> NetworkType = Reachability.getSimpleNetworkType
         public var cellularNetworkType: () -> NetworkType = Reachability.getNetworkType
 

@@ -28,7 +28,14 @@ class ZoneManagerEquatableRegionTests: XCTestCase {
     }
 
     func testBeaconAndCircularNeverEqual() {
-        let beacon = CLBeaconRegion(proximityUUID: UUID(), identifier: "region")
+        let beacon: CLBeaconRegion
+
+        if #available(iOS 13, *) {
+            beacon = CLBeaconRegion(uuid: UUID(), identifier: "region")
+        } else {
+            beacon = CLBeaconRegion(proximityUUID: UUID(), identifier: "region")
+        }
+
         let circular = CLCircularRegion(center: .init(latitude: 3, longitude: 3), radius: 100, identifier: "region")
         XCTAssertNotEqual(
             ZoneManagerEquatableRegion(region: beacon),
@@ -42,15 +49,25 @@ class ZoneManagerEquatableRegionTests: XCTestCase {
         let minor: CLBeaconMinorValue = 456
         let identifier = "region"
 
-        let beaconEx = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+        let beaconEx: CLBeaconRegion
+        let beacon1: CLBeaconRegion
+        let beacon2: CLBeaconRegion
+        let beacon3: CLBeaconRegion
 
-        let beacon1 = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
+        if #available(iOS 13, *) {
+            beaconEx = CLBeaconRegion(uuid: proximityUUID, major: major, minor: minor, identifier: identifier)
+            beacon1 = CLBeaconRegion(uuid: proximityUUID, identifier: identifier)
+            beacon2 = CLBeaconRegion(uuid: proximityUUID, major: major, identifier: identifier)
+            beacon3 = CLBeaconRegion(uuid: proximityUUID, major: major, minor: minor, identifier: identifier)
+        } else {
+            beaconEx = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+            beacon1 = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
+            beacon2 = CLBeaconRegion(proximityUUID: proximityUUID, major: major, identifier: identifier)
+            beacon3 = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+        }
+
         XCTAssertNotEqual(ZoneManagerEquatableRegion(region: beaconEx), ZoneManagerEquatableRegion(region: beacon1))
-
-        let beacon2 = CLBeaconRegion(proximityUUID: proximityUUID, major: major, identifier: identifier)
         XCTAssertNotEqual(ZoneManagerEquatableRegion(region: beaconEx), ZoneManagerEquatableRegion(region: beacon2))
-
-        let beacon3 = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
         XCTAssertEqual(ZoneManagerEquatableRegion(region: beaconEx), ZoneManagerEquatableRegion(region: beacon3))
         XCTAssertEqual(ZoneManagerEquatableRegion(region: beaconEx).hashValue, ZoneManagerEquatableRegion(region: beacon3).hashValue)
     }

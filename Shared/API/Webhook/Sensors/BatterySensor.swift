@@ -8,22 +8,19 @@ public class BatterySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        var level = Current.device.batteryLevel()
-        if level == -100 { // simulator fix
-            level = 100
-        }
-
+        let level = Current.device.batteryLevel()
         var state = "Unknown"
         var icon = "mdi:battery"
 
+        let batteryAttributes = Current.device.verboseBatteryInfo()
         let batState = Current.device.batteryState()
         let isLowPowerMode = Current.device.isLowPowerMode()
 
         switch batState {
-        case .charging(let level):
+        case .charging:
             state = "Charging"
             icon = Self.chargingIcon(level: level)
-        case .unplugged(let level):
+        case .unplugged:
             state = "Not Charging"
             icon = Self.unpluggedIcon(level: level)
         case .full:
@@ -41,7 +38,7 @@ public class BatterySensor: SensorProvider {
             $0.Attributes = [
                 "Battery State": state,
                 "Low Power Mode": isLowPowerMode
-            ]
+            ].merging(batteryAttributes, uniquingKeysWith: { a, _ in a })
             $0.UnitOfMeasurement = "%"
         }
 
@@ -56,7 +53,7 @@ public class BatterySensor: SensorProvider {
             $0.Attributes = [
                 "Battery Level": level,
                 "Low Power Mode": isLowPowerMode
-            ]
+            ].merging(batteryAttributes, uniquingKeysWith: { a, _ in a })
         }
 
         return .value([levelSensor, stateSensor])

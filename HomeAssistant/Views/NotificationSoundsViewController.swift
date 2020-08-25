@@ -14,6 +14,8 @@ import MBProgressHUD
 import PromiseKit
 import Shared
 
+private var buttonAssociatedString: String = ""
+
 // swiftlint:disable:next type_body_length
 class NotificationSoundsViewController: FormViewController, UIDocumentPickerDelegate {
 
@@ -29,7 +31,11 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
         var importedFileSharingSounds: [URL] = []
 
         do {
-            importedFileSharingSounds = try self.importedFilesWithSuffix(".wav")
+            if Current.isCatalyst {
+                importedFileSharingSounds = []
+            } else {
+                importedFileSharingSounds = try self.importedFilesWithSuffix(".wav")
+            }
         } catch let error {
             Current.Log.error("Error while getting imported file sharing sounds \(error)")
         }
@@ -43,11 +49,16 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
         }
 
         form +++ SegmentedRow<String>("soundListChooser") {
-            $0.options = [
-                L10n.SettingsDetails.Notifications.Sounds.imported,
-                L10n.SettingsDetails.Notifications.Sounds.bundled,
-                L10n.SettingsDetails.Notifications.Sounds.system
-            ]
+            var options = [String]()
+
+            options.append(L10n.SettingsDetails.Notifications.Sounds.imported)
+            options.append(L10n.SettingsDetails.Notifications.Sounds.bundled)
+
+            if !Current.isCatalyst {
+                options.append(L10n.SettingsDetails.Notifications.Sounds.system)
+            }
+
+            $0.options = options
             $0.value = L10n.SettingsDetails.Notifications.Sounds.imported
         }
 
@@ -76,7 +87,21 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
             section.append(getSoundRow(sound, isImportedSection))
         }
 
-        if isImportedSection {
+        if isImportedSection && Current.isCatalyst {
+            section <<< InfoLabelRow {
+                $0.title = L10n.SettingsDetails.Notifications.Sounds.importMacInstructions
+            }
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Notifications.Sounds.importMacOpenFolder
+                $0.onCellSelection { _, _ in
+                    do {
+                        UIApplication.shared.open(try self.librarySoundsURL(), options: [:], completionHandler: nil)
+                    } catch {
+                        Current.Log.error("couldn't open folder: \(error)")
+                    }
+                }
+            }
+        } else if isImportedSection {
             section
                 <<< ButtonRow {
                     $0.tag = "import_custom_sound"
@@ -132,7 +157,23 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
         return section
     }
 
+    @objc private func copyButtonTapped(_ button: UIButton) {
+        guard let string = objc_getAssociatedObject(button, &buttonAssociatedString) as? String else {
+            Current.Log.info("failed to copy from button \(button)")
+            return
+        }
+
+        UIPasteboard.general.string = string
+    }
+
     func getSoundRow(_ fileURL: URL, _ enableDelete: Bool = false) -> ButtonRowOf<URL> {
+        let copyButton = with(UIButton(type: .system)) {
+            $0.setTitle(L10n.copyLabel, for: .normal)
+            $0.sizeToFit()
+            $0.addTarget(self, action: #selector(copyButtonTapped(_:)), for: .touchUpInside)
+            objc_setAssociatedObject($0, &buttonAssociatedString, fileURL.lastPathComponent, .OBJC_ASSOCIATION_COPY)
+        }
+
         return ButtonRowOf<URL> {
             $0.value = fileURL
             $0.tag = fileURL.lastPathComponent
@@ -142,8 +183,11 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
                                                         handler: self.handleSwipeDelete)]
                 $0.trailingSwipe.performsFirstActionWithFullSwipe = true
             }
+        }.cellSetup { cell, _ in
+            cell.accessoryView = copyButton
         }.cellUpdate { cell, _ in
-            cell.textLabel?.textAlignment = .left
+            cell.textLabel?.numberOfLines = 0
+            cell.textLabel?.textAlignment = .natural
             cell.textLabel?.textColor = nil
         }.onCellSelection { cell, _ in
             do {
@@ -229,9 +273,14 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
             let librarySoundsPath = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask,
                                                                 appropriateFor: nil,
                                                                 create: false).appendingPathComponent("Sounds")
-            Current.Log.verbose("Creating sounds directory at \(librarySoundsPath)")
-            try FileManager.default.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true,
-                                                    attributes: nil)
+
+            if !Current.isCatalyst {
+                // on Catalyst the sounds folder is a symlink to the global one, we don't want to mess with it
+                Current.Log.verbose("Creating sounds directory at \(librarySoundsPath)")
+                try FileManager.default.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true,
+                                                        attributes: nil)
+            }
+
             return librarySoundsPath
         } catch let error {
             throw SoundError(soundURL: nil, kind: .cantBuildLibrarySoundsPath, underlying: error)

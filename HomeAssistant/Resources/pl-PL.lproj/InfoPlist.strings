@@ -7,4 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "Dostęp do Biblioteki Zdjęć jest wymagany, aby umożliwić zapisywanie zdjęć ze strony.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Wyślij lokalizację";
 "NSLocalNetworkUsageDescription" = "Zlokalizuj i komunikuj się z Twoją instancją Home Assistant'a.";
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
+"NFCReaderUsageDescription" = "Odczytywanie i zapisywanie tagów NFC umożliwia wyzwalanie zdarzeń.";

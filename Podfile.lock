@@ -9,7 +9,6 @@ PODS:
   - Communicator (3.3.0):
     - TABObserverSet (~> 2)
   - CPDAcknowledgements (1.0.0)
-  - DeviceKit (3.2.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.2.1)
   - Firebase/CoreOnly (6.30.0):
@@ -101,16 +100,10 @@ PODS:
   - PromisesObjC (1.2.10)
   - Protobuf (3.12.0)
   - ReachabilitySwift (5.0.0)
-  - Realm (5.3.3):
-    - Realm/Headers (= 5.3.3)
-  - Realm/Headers (5.3.3)
-  - RealmSwift (5.3.3):
-    - Realm (= 5.3.3)
   - Sentry (5.2.0):
     - Sentry/Core (= 5.2.0)
   - Sentry/Core (5.2.0)
   - SimulatorStatusMagic (2.4.1)
-  - Sodium (0.8.0)
   - SwiftGen (6.3.0)
   - SwiftLint (0.40.0)
   - SwiftMessages (8.0.1):
@@ -134,7 +127,6 @@ DEPENDENCIES:
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator (~> 3.3.0)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
-  - DeviceKit
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `xcode12`)
   - Firebase/Messaging
@@ -146,10 +138,8 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift (~> 5.0)
   - Sentry
   - SimulatorStatusMagic
-  - Sodium
   - SwiftGen (~> 6.3.0)
   - SwiftLint
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
@@ -165,7 +155,6 @@ SPEC REPOS:
     - Alamofire
     - CallbackURLKit
     - Communicator
-    - DeviceKit
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
@@ -185,11 +174,8 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - ReachabilitySwift
-    - Realm
-    - RealmSwift
     - Sentry
     - SimulatorStatusMagic
-    - Sodium
     - SwiftGen
     - SwiftLint
     - TABObserverSet
@@ -251,7 +237,6 @@ SPEC CHECKSUMS:
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: d870b95ca54965412790334620e2f188c68f2462
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  DeviceKit: d081659419cce07c0b5239dbc9fb39ed7413c7fe
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: c883105488e05bc65539f583246ecf9657cabbfe
   Firebase: 210f41ca352067d83b1ba4fd2e7fb49a0c017397
@@ -274,11 +259,8 @@ SPEC CHECKSUMS:
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: 2d57ea355bf8ca2a0964d6bfb38d28d7ff2addf6
-  RealmSwift: 0a709536ecea30eea1d3c514f6ade2ed078dee3c
   Sentry: 6e04bc3e11bf771ca79140a112de64dcfbc7d8cb
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
-  Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SwiftGen: 3d5024a47ea79e408cded20763d7a17d18a4548c
   SwiftLint: 4154893c73a4c52d6240195507eb7a3e3c64087e
   SwiftMessages: 23da0c444ba4e3f4f2dc81edbc7cb70be18f69e3
@@ -290,6 +272,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 45a9296c1cbbb534f6f05454553711593269d0f0
+PODFILE CHECKSUM: 9b8a817a320499f97e8a3adcee67159c468abf09
 
 COCOAPODS: 1.10.0.beta.2

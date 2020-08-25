@@ -8,15 +8,10 @@
 
 import Foundation
 import KeychainAccess
-import DeviceKit
 import CoreLocation
 import CoreMotion
 import Version
-#if os(iOS)
 import UIKit
-#elseif os(watchOS)
-import WatchKit
-#endif
 
 // swiftlint:disable:next type_body_length
 public class SettingsStore {
@@ -132,17 +127,7 @@ public class SettingsStore {
     }
 
     public var integrationDeviceID: String {
-        let baseString: String
-
-        #if os(iOS)
-            baseString = UIDevice.current.identifierForVendor?.uuidString ?? deviceID
-        #elseif os(watchOS)
-            if #available(watchOS 6.2, *) {
-                baseString = WKInterfaceDevice.current().identifierForVendor?.uuidString ?? deviceID
-            } else {
-                baseString = deviceID
-            }
-        #endif
+        let baseString = Current.device.identifierForVendor() ?? deviceID
 
         switch Current.appConfiguration {
         case .Beta:
@@ -239,8 +224,12 @@ public class SettingsStore {
             }
         }
 
-        public var viewScale: String {
+        public var viewScaleValue: String {
             return String(format: "%.02f", CGFloat(zoom) / 100.0)
+        }
+
+        public var viewScaleMultiple: CGFloat {
+            return CGFloat(zoom) / 100.0
         }
 
         public static let `default`: PageZoom = .init(100)
@@ -353,7 +342,7 @@ public class SettingsStore {
     }
 
     private var defaultDeviceID: String {
-        let baseID = self.removeSpecialCharsFromString(text: Device.current.name ?? "Unknown")
+        let baseID = self.removeSpecialCharsFromString(text: Current.device.deviceName())
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
 

@@ -15,7 +15,6 @@ import PromiseKit
 import RealmSwift
 import Firebase
 import CoreMotion
-import DeviceKit
 import FirebaseMessaging
 import Version
 
@@ -70,7 +69,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 +++ Section()
                 <<< TextRow {
                     $0.title = L10n.SettingsDetails.General.DeviceName.title
-                    $0.placeholder = Device.current.name
+                    $0.placeholder = Current.device.deviceName()
                     $0.value = Current.settingsStore.overrideDeviceName
                     $0.onChange { row in
                         Current.settingsStore.overrideDeviceName = row.value
@@ -78,6 +77,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 <<< PushRow<AppIcon>("appIcon") {
+                        $0.hidden = .isCatalyst
                         $0.title = L10n.SettingsDetails.General.AppIcon.title
                         $0.selectorTitle = $0.title
                         $0.options = AppIcon.allCases
@@ -105,6 +105,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
 
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
+                    $0.hidden = .isCatalyst
                     $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
 
                     if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
@@ -164,6 +165,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         $0.title = L10n.SettingsDetails.Location.Updates.Background.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
                         $0.disabled = .locationNotAlwaysOrBackgroundRefreshNotAvailable
+                        $0.hidden = .isCatalyst
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
@@ -302,10 +304,13 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             tableView.refreshControl = refreshControl
             refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
 
+            let actionsFooter = Current.isCatalyst ?
+                L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
+
             form +++ MultivaluedSection(
                 multivaluedOptions: [.Insert, .Delete, .Reorder],
                 header: "",
-                footer: L10n.SettingsDetails.Actions.footer
+                footer: actionsFooter
             ) { section in
                 section.tag = "actions"
                 section.multivaluedRowToInsertAt = { [unowned self] _ -> ButtonRowWithPresent<ActionConfigurator> in
@@ -648,14 +653,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         return section
     }
 
-    private class func openSettings() {
-        UIApplication.shared.open(
-            URL(string: UIApplication.openSettingsURLString)!,
-            options: [:],
-            completionHandler: nil
-        )
-    }
-
     private func locationPermissionRow() -> BaseRow {
         // swiftlint:disable:next nesting
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
@@ -688,7 +685,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 if CLLocationManager.authorizationStatus() == .notDetermined {
                     locationManager.requestAlwaysAuthorization()
                 } else {
-                    Self.openSettings()
+                    UIApplication.shared.openSettings(destination: .location)
                 }
 
                 row.deselect(animated: true)
@@ -705,6 +702,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     row.updateCell()
                 }
             }
+
+            row.hidden = .init(booleanLiteral: !Current.motion.isActivityAvailable())
 
             row.title = L10n.SettingsDetails.Location.MotionPermission.title
             update(isInitial: true)
@@ -723,7 +722,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     })
                 } else {
                     // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
-                    Self.openSettings()
+                    UIApplication.shared.openSettings(destination: .motion)
                 }
 
                 row.deselect(animated: true)
@@ -751,13 +750,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
             updateRow(isInitial: true)
 
+            row.hidden = .isCatalyst
             row.title = L10n.SettingsDetails.Location.BackgroundRefresh.title
             row.cellUpdate { cell, _ in
                 cell.accessoryType = .disclosureIndicator
                 cell.selectionStyle = .default
             }
             row.onCellSelection { _, row in
-                Self.openSettings()
+                UIApplication.shared.openSettings(destination: .backgroundRefresh)
                 row.deselect(animated: true)
             }
         }

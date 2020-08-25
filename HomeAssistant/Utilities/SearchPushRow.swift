@@ -28,7 +28,7 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
         super.viewDidLoad()
 
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
 
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
@@ -45,7 +45,12 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
 
             let overlap = tableView.convert(screenFrameValue.cgRectValue, from: nil).intersection(tableView.bounds)
             tableView.contentInset.bottom = overlap.height
-            tableView.scrollIndicatorInsets.bottom = overlap.height
+
+            if #available(iOS 13, *) {
+                tableView.verticalScrollIndicatorInsets.bottom = overlap.height
+            } else {
+                tableView.scrollIndicatorInsets.bottom = overlap.height
+            }
         })
     }
 
