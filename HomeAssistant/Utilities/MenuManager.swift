@@ -3,16 +3,19 @@ import UIKit
 import RealmSwift
 import Shared
 
+@available(iOS 13, *)
 private extension UIMenu.Identifier {
     static var haActions: Self { .init(rawValue: "ha.actions") }
     static var haHelp: Self { .init(rawValue: "ha.help") }
 }
 
+@available(iOS 13, *)
 class MenuManager {
     let builder: UIMenuBuilder
 
     private var realmTokens = [NotificationToken]()
 
+    @available(iOS 13, *)
     init(builder: UIMenuBuilder) {
         self.builder = builder
         update()
@@ -38,7 +41,7 @@ class MenuManager {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Home Assistant"
     }
 
-    private func update() {
+    public func update() {
         builder.remove(menu: .format)
 
         builder.replace(menu: .about, with: aboutMenu())

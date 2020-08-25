@@ -43,7 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var webViewControllerSeal: (WebViewController) -> Void
 
     private var zoneManager: ZoneManager?
-    private var menuManager: MenuManager?
 
     private var periodicUpdateTimer: Timer? {
         willSet {
@@ -240,9 +239,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13, *)
     override func buildMenu(with builder: UIMenuBuilder) {
         if builder.system == .main {
-            menuManager = MenuManager(builder: builder)
+            MenuManager(builder: builder).update()
         }
     }
 
@@ -254,7 +254,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc internal func openMenuUrl(_ command: AnyObject) {
-        guard let command = command as? UICommand else {
+        guard #available(iOS 13, *), let command = command as? UICommand else {
             return
         }
 
