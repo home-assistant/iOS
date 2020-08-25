@@ -615,7 +615,7 @@
 "settings_details.notifications.sounds.imported" = "已匯入";
 "delete" = "刪除";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "例如、http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
@@ -805,7 +805,7 @@
 \
 所有的動作與本地設定都會於重新登入後復原。";
 "onboarding.logged_out_from_move.learn_more" = "詳細了解轉移訊息。";
-"onboarding.logged_out_from_move.duplicate_warning" = "為了避免產生重複的物件，於重新登入前、必須於此裝置的瀏覽器內移除現有的 mobile_app 整合。";
+"onboarding.logged_out_from_move.duplicate_warning" = "為了避免產生重複的物件，於重新登入前、必須於此裝置的瀏覽器內移除現有的 mobile_app 整合。登入後重新啟動  HA 以更新服務。";
 "onboarding.logged_out_from_move.continue" = "繼續";
 "settings_details.privacy.analytics.generic_title" = "分析資料";
 "settings_details.privacy.analytics.generic_description" = "允許收集關於設備與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
@@ -859,3 +859,19 @@
 "settings_details.actions.actions_synced.footer_no_actions" = "也可以於 .yaml 中定義觸發動作。";
 "settings.connection_section.cloud_overrides_external" = "當透過 Cloud 連線時，將不使用外部 URL。不需要進行設定，除非您想關閉 Cloud 服務。";
 "nfc.generic_tag_read" = "標籤讀取";
+"database.problem.title" = "資料數據錯誤";
+"database.problem.delete" = "刪除資料數據並退出 App";
+"database.problem.quit" = "退出 App";
+"settings.developer.show_log_files.title" = "Show log files in Finder";
+"settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
+"ha_api.api_error.update_not_possible" = "Operation could not be performed.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Add custom sounds to your Sounds folder to use them in notifications. Use their filename without extension as the sound value in the service call.";
+"settings_details.notifications.sounds.import_mac_open_folder" = "Open Folder in Finder";
+"url_handler.error.action_not_found" = "Action Not Found";
+"widgets.actions.title" = "Actions";
+"widgets.actions.not_configured" = "No Actions Configured";
+"updater.update_available.title" = "Update Available";
+"updater.update_available.open" = "View '%@'";
+"menu.application.about" = "About %@";
+"menu.application.preferences" = "Preferences…";
+"menu.help.help" = "%@ Help";

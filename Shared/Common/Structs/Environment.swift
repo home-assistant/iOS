@@ -114,8 +114,8 @@ public class Environment {
     }
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
-    public let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
-    public let isCatalyst: Bool = {
+    public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public var isCatalyst: Bool = {
         #if targetEnvironment(macCatalyst)
         return true
         #else

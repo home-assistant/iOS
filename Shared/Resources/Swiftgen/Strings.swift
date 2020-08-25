@@ -487,6 +487,23 @@ internal enum L10n {
     internal static let title = L10n.tr("Localizable", "manual_location_update_notification.title")
   }
 
+  internal enum Menu {
+    internal enum Application {
+      /// About %@
+      internal static func about(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "menu.application.about", String(describing: p1))
+      }
+      /// Preferences…
+      internal static let preferences = L10n.tr("Localizable", "menu.application.preferences")
+    }
+    internal enum Help {
+      /// %@ Help
+      internal static func help(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "menu.help.help", String(describing: p1))
+      }
+    }
+  }
+
   internal enum Nfc {
     /// Tag Read
     internal static let genericTagRead = L10n.tr("Localizable", "nfc.generic_tag_read")
@@ -755,7 +772,7 @@ internal enum L10n {
       internal static let body = L10n.tr("Localizable", "onboarding.logged_out_from_move.body")
       /// Continue
       internal static let `continue` = L10n.tr("Localizable", "onboarding.logged_out_from_move.continue")
-      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.
+      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in. Restart HA once logged so services update.
       internal static let duplicateWarning = L10n.tr("Localizable", "onboarding.logged_out_from_move.duplicate_warning")
       /// Learn more about the move.
       internal static let learnMore = L10n.tr("Localizable", "onboarding.logged_out_from_move.learn_more")
@@ -1172,7 +1189,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title")
       }
       internal enum InternalBaseUrl {
-        /// http://homeassistant.local:8123/
+        /// e.g. http://homeassistant.local:8123/
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder")
         /// Internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.internal_base_url.title")
@@ -1345,6 +1362,10 @@ internal enum L10n {
           internal static let body = L10n.tr("Localizable", "settings.developer.map_notification.notification.body")
         }
       }
+      internal enum ShowLogFiles {
+        /// Show log files in Finder
+        internal static let title = L10n.tr("Localizable", "settings.developer.show_log_files.title")
+      }
       internal enum SyncWatchContext {
         /// Sync Watch Context
         internal static let title = L10n.tr("Localizable", "settings.developer.sync_watch_context.title")
@@ -1440,6 +1461,8 @@ internal enum L10n {
     internal enum Actions {
       /// Actions are used in the Apple Watch app, App Icon Actions and the Today widget
       internal static let footer = L10n.tr("Localizable", "settings_details.actions.footer")
+      /// Actions are used in the application menu and widgets.
+      internal static let footerMac = L10n.tr("Localizable", "settings_details.actions.footer_mac")
       /// Actions
       internal static let title = L10n.tr("Localizable", "settings_details.actions.title")
       internal enum ActionsSynced {
@@ -1799,6 +1822,10 @@ internal enum L10n {
         internal static let importCustom = L10n.tr("Localizable", "settings_details.notifications.sounds.import_custom")
         /// Import sounds from iTunes File Sharing
         internal static let importFileSharing = L10n.tr("Localizable", "settings_details.notifications.sounds.import_file_sharing")
+        /// Add custom sounds to your Sounds folder to use them in notifications. Use their filename without extension as the sound value in the service call.
+        internal static let importMacInstructions = L10n.tr("Localizable", "settings_details.notifications.sounds.import_mac_instructions")
+        /// Open Folder in Finder
+        internal static let importMacOpenFolder = L10n.tr("Localizable", "settings_details.notifications.sounds.import_mac_open_folder")
         /// Import system sounds
         internal static let importSystem = L10n.tr("Localizable", "settings_details.notifications.sounds.import_system")
         /// Imported

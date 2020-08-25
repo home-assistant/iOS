@@ -284,7 +284,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+
+        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        }
     }
 
     public func open(inline url: URL) {
@@ -542,11 +545,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     @objc private func updateWebViewSettings() {
-        if #available(iOS 12, *) {
+        if #available(iOS 14, *) {
+            let viewScale = Current.settingsStore.pageZoom.viewScaleMultiple
+            Current.Log.info("setting view scale to \(viewScale)")
+            webView.pageZoom = viewScale
+        } else if #available(iOS 12, *) {
             // This is quasi-private API that has existed since pre-iOS 10, but the implementation
             // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
             // resizing the scrolling viewport.
-            let viewScale  = Current.settingsStore.pageZoom.viewScale
+            let viewScale = Current.settingsStore.pageZoom.viewScaleValue
             Current.Log.info("setting view scale to \(viewScale)")
             webView.setValue(viewScale, forKey: "viewScale")
         }

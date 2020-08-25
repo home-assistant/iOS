@@ -165,6 +165,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         $0.title = L10n.SettingsDetails.Location.Updates.Background.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
                         $0.disabled = .locationNotAlwaysOrBackgroundRefreshNotAvailable
+                        $0.hidden = .isCatalyst
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
@@ -303,10 +304,13 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             tableView.refreshControl = refreshControl
             refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
 
+            let actionsFooter = Current.isCatalyst ?
+                L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
+
             form +++ MultivaluedSection(
                 multivaluedOptions: [.Insert, .Delete, .Reorder],
                 header: "",
-                footer: L10n.SettingsDetails.Actions.footer
+                footer: actionsFooter
             ) { section in
                 section.tag = "actions"
                 section.multivaluedRowToInsertAt = { [unowned self] _ -> ButtonRowWithPresent<ActionConfigurator> in
@@ -746,6 +750,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
             updateRow(isInitial: true)
 
+            row.hidden = .isCatalyst
             row.title = L10n.SettingsDetails.Location.BackgroundRefresh.title
             row.cellUpdate { cell, _ in
                 cell.accessoryType = .disclosureIndicator

@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Start forfra";
 "7iT-bd-cdY.text" = "Manuel konfiguration";
 "PIW-dY-j0P.text" = "Indtast din Home Assistant-webadresse for at fortsætte. Det skal være en URL i formatet \"http://homeassistant.local:8123\" (det vil sige indeholde en protokol, værtsnavn og port).";
-"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "fx http://homeassistant.local:8123";

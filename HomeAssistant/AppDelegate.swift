@@ -239,6 +239,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13, *)
+    override func buildMenu(with builder: UIMenuBuilder) {
+        if builder.system == .main {
+            MenuManager(builder: builder).update()
+        }
+    }
+
+    @objc internal func openAbout() {
+        // TODO: multiple scenes, open window
+        let controller = AboutViewController()
+        let navigationController = UINavigationController(rootViewController: controller)
+        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
+    }
+
+    @objc internal func openMenuUrl(_ command: AnyObject) {
+        guard #available(iOS 13, *), let command = command as? UICommand else {
+            return
+        }
+
+        if let url = MenuManager.url(from: command) {
+            _ = application(UIApplication.shared, open: url, options: [:])
+        }
+    }
+
+    @objc internal func openPreferences() {
+        // TODO: multiple scenes, open window
+        webViewControllerPromise.done {
+            $0.showSettingsViewController()
+        }
+    }
+
+    @objc internal func openHelp() {
+        openURLInBrowser(
+            URL(string: "https://companion.home-assistant.io")!,
+            nil
+        )
+    }
+
     func applicationWillResignActive(_ application: UIApplication) {}
 
     func applicationDidEnterBackground(_ application: UIApplication) {

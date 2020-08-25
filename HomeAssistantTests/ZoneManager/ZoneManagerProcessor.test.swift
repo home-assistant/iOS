@@ -117,6 +117,9 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testLocationTooOld() throws {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = false
+
         let now = Date()
         Current.date = { now }
 
@@ -139,6 +142,88 @@ class ZoneManagerProcessorTests: XCTestCase {
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange(locations)))
 
         XCTAssertEqual(try hangForIgnoreReason(promise), .locationUpdateTooOld)
+
+        Current.isCatalyst = wasCatalyst
+    }
+
+    func testLocationTooOldOnCatalyst() throws {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+
+        let now = Date()
+        Current.date = { now }
+
+        let locations = [
+            CLLocation(
+                coordinate: .init(latitude: 123, longitude: 1.23),
+                altitude: 3.45,
+                horizontalAccuracy: 1.25,
+                verticalAccuracy: 0.36,
+                timestamp: now.addingTimeInterval(-31.0)
+            ),
+        ]
+        let event = ZoneManagerEvent(eventType: .locationChange(locations))
+        let promise = processor.perform(event: event)
+
+        let expectation = self.expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        // we don't care which this flow wants
+        let oneShotLocation = CLLocation(latitude: 1, longitude: 1)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+        XCTAssertNil(api.submitLocationInvocation?.zone)
+
+        XCTAssertTrue(promise.isFulfilled)
+
+        Current.isCatalyst = wasCatalyst
+    }
+
+    func testLocationNotTooOld() throws {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = false
+
+        let now = Date()
+        Current.date = { now }
+
+        let locations = [
+            CLLocation(
+                coordinate: .init(latitude: 123, longitude: 1.23),
+                altitude: 3.45,
+                horizontalAccuracy: 1.25,
+                verticalAccuracy: 0.36,
+                timestamp: now.addingTimeInterval(-5.0)
+            ),
+        ]
+        let event = ZoneManagerEvent(eventType: .locationChange(locations))
+        let promise = processor.perform(event: event)
+
+        let expectation = self.expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        // we don't care which this flow wants
+        let oneShotLocation = CLLocation(latitude: 1, longitude: 1)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+        XCTAssertNil(api.submitLocationInvocation?.zone)
+
+        XCTAssertTrue(promise.isFulfilled)
+
+        Current.isCatalyst = wasCatalyst
     }
 
     func testPerformingZoneStateBad() throws {

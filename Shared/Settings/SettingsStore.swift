@@ -224,8 +224,12 @@ public class SettingsStore {
             }
         }
 
-        public var viewScale: String {
+        public var viewScaleValue: String {
             return String(format: "%.02f", CGFloat(zoom) / 100.0)
+        }
+
+        public var viewScaleMultiple: CGFloat {
+            return CGFloat(zoom) / 100.0
         }
 
         public static let `default`: PageZoom = .init(100)

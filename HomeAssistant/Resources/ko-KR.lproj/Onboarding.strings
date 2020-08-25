@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Start Over";
 "7iT-bd-cdY.text" = "Manual Configuration";
 "PIW-dY-j0P.text" = "Please enter your Home Assistant URL to continue. It must be a fully formed URL of the format \"http://homeassistant.local:8123\" (that is, containing a scheme/protocol, hostname and port).";
-"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
