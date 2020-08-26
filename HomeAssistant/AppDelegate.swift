@@ -164,12 +164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupWindow() {
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.tintColor = Constants.tintColor
-        window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
-        window.makeKeyAndVisible()
-        self.window = window
-
+        let window = WindowController.window(preiOS12: ())
         let windowController = WindowController(window: window)
         self.windowController = windowController
         windowControllerSeal(windowController)

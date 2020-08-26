@@ -14,6 +14,22 @@ class WindowController {
 
     private var webViewControllerSeal: (WebViewController) -> Void
 
+    @available(iOS 13, *)
+    static func window(scene: UIWindowScene) -> UIWindow {
+        return with(UIWindow(windowScene: scene)) {
+            $0.tintColor = Constants.tintColor
+            $0.makeKeyAndVisible()
+        }
+    }
+
+    static func window(preiOS12: ()) -> UIWindow {
+        return with(UIWindow(frame: UIScreen.main.bounds)) {
+            $0.tintColor = Constants.tintColor
+            $0.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
+            $0.makeKeyAndVisible()
+        }
+    }
+
     init(window: UIWindow) {
         self.window = window
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
