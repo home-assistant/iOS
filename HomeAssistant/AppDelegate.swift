@@ -111,8 +111,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
-        // window must be created before willFinishLaunching completes, or state restoration will not occur
-        setupWindow()
+        if #available(iOS 13, *) {
+
+        } else {
+            // window must be created before willFinishLaunching completes, or state restoration will not occur
+            setupWindow()
+        }
 
         return true
     }
@@ -170,6 +174,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         windowControllerSeal(windowController)
     }
 
+    private func connectedScenes(for activity: SceneActivity) -> [UIScene] {
+        UIApplication.shared.connectedScenes.filter { scene in
+            scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
+        }
+    }
+
     func setupTokens() {
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
 
@@ -186,10 +196,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc internal func openAbout() {
-        // TODO: multiple scenes, open window
-        let controller = AboutViewController()
-        let navigationController = UINavigationController(rootViewController: controller)
-        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
+        UIApplication.shared.requestSceneSessionActivation(
+            connectedScenes(for: .about).first?.session,
+            userActivity: SceneActivity.about.activity,
+            options: nil) { error in
+            Current.Log.error(error)
+        }
     }
 
     @objc internal func openMenuUrl(_ command: AnyObject) {
@@ -203,9 +215,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc internal func openPreferences() {
-        // TODO: multiple scenes, open window
-        webViewControllerPromise().done {
-            $0.showSettingsViewController()
+        UIApplication.shared.requestSceneSessionActivation(
+            connectedScenes(for: .settings).first?.session,
+            userActivity: SceneActivity.settings.activity,
+            options: nil) { error in
+            Current.Log.error(error)
         }
     }
 
@@ -250,6 +264,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {}
+
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        let activity = options.userActivities
+            .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
+            .first ?? .webView
+        return activity.configuration
+    }
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
         if windowController?.requiresOnboarding == true {

@@ -511,6 +511,41 @@
 			</array>
 		</dict>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>WebView</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).WebViewSceneDelegate</string>
+				</dict>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SettingsSceneDelegate</string>
+					<key>UISceneConfigurationName</key>
+					<string>Settings</string>
+				</dict>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).AboutSceneDelegate</string>
+					<key>UISceneConfigurationName</key>
+					<string>About</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleVersion</key>
 	<string>6</string>
 	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>

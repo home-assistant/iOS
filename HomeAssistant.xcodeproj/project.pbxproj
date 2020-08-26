@@ -194,6 +194,11 @@
 		11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
 		11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */; };
 		11EFCDD324F5F39100314D85 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD224F5F39100314D85 /* WindowController.swift */; };
+		11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */; };
+		11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */; };
+		11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD924F5FE0600314D85 /* SceneActivity.swift */; };
+		11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */; };
+		11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */; };
 		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85824C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85924C4279700642676 /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85624C4279700642676 /* Zone.swift */; };
@@ -949,6 +954,11 @@
 		11EE9B5624C68F5700404AF8 /* Action+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Observation.swift"; sourceTree = "<group>"; };
 		11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.test.swift; sourceTree = "<group>"; };
 		11EFCDD224F5F39100314D85 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSceneDelegate.swift; sourceTree = "<group>"; };
+		11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSceneDelegate.swift; sourceTree = "<group>"; };
+		11EFCDD924F5FE0600314D85 /* SceneActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneActivity.swift; sourceTree = "<group>"; };
+		11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSceneDelegate.swift; sourceTree = "<group>"; };
+		11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSceneDelegate.swift; sourceTree = "<group>"; };
 		11F3B85524C4279700642676 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		11F3B85624C4279700642676 /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
@@ -1784,6 +1794,18 @@
 			path = Sensors;
 			sourceTree = "<group>";
 		};
+		11EFCDD424F5FA7E00314D85 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */,
+				11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */,
+				11EFCDD924F5FE0600314D85 /* SceneActivity.swift */,
+				11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */,
+				11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 		11F3D74F2495433800C05BBA /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
@@ -2129,6 +2151,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				D0EEF32F214E41CE00D1D360 /* Notifications */,
 				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
@@ -4120,6 +4143,7 @@
 				B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
+				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
@@ -4132,9 +4156,11 @@
 				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
+				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
+				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
@@ -4159,9 +4185,11 @@
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
+				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WindowController.swift in Sources */,
+				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,

@@ -34,6 +34,8 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         self.becomeFirstResponder()
 
+        title = L10n.Settings.NavigationBar.title
+
         ButtonRow.defaultCellSetup = { cell, row in
             cell.accessibilityIdentifier = row.tag
             cell.accessibilityLabel = row.title
@@ -44,7 +46,11 @@ class SettingsViewController: FormViewController {
             cell.accessibilityLabel = row.title
         }
 
-        if !Current.isCatalyst {
+        if Current.isCatalyst {
+            // not setting any navigation bars on catalyst at least on 10.15.6 causes an all-black window
+            // and appearance errors
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        } else {
             // About is in the Application menu on Catalyst
 
             let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
@@ -52,13 +58,13 @@ class SettingsViewController: FormViewController {
                                               action: #selector(SettingsViewController.openAbout(_:)))
 
             self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+
+            let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
+                                             action: closeSelector)
+
+            self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
-
-        let closeSelector = #selector(SettingsViewController.closeSettings(_:))
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
-                                         action: closeSelector)
-
-        self.navigationItem.setRightBarButton(doneButton, animated: true)
 
         form +++ Section(L10n.Settings.StatusSection.header) {
             $0.tag = "status"
