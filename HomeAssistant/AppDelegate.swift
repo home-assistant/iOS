@@ -37,10 +37,15 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 // swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    var windowController: WindowController?
     var safariVC: SFSafariViewController?
 
-    private var webViewControllerPromise: Guarantee<WebViewController>
-    private var webViewControllerSeal: (WebViewController) -> Void
+    private let windowControllerPromise: Guarantee<WindowController>
+    private let windowControllerSeal: (WindowController) -> Void
+
+    private func webViewControllerPromise() -> Guarantee<WebViewController> {
+        windowControllerPromise.then { $0.webViewControllerPromise }
+    }
 
     private var zoneManager: ZoneManager?
 
@@ -53,13 +58,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     override init() {
-        (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
-        super.init()
-    }
+        (self.windowControllerPromise, self.windowControllerSeal) = Guarantee<WindowController>.pending()
 
-    enum StateRestorationKey: String {
-        case mainWindow
-        case webViewNavigationController
+        super.init()
     }
 
     func application(
@@ -122,7 +123,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        setupView()
+        setupTokens()
+
+        windowController?.setup()
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
         connectAPI(reason: .cold)
@@ -166,76 +169,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
         window.makeKeyAndVisible()
         self.window = window
+
+        let windowController = WindowController(window: window)
+        self.windowController = windowController
+        windowControllerSeal(windowController)
     }
 
-    func updateRootViewController(to newValue: UIViewController) {
-        let newWebViewController = newValue.children.compactMap { $0 as? WebViewController }.first
-
-        // must be before the seal fires, or it may request during deinit of an old one
-        window?.rootViewController = newValue
-
-        if let newWebViewController = newWebViewController {
-            // any kind of ->webviewcontroller is the same, even if we are for some reason replacing an existing one
-            if webViewControllerPromise.isFulfilled {
-                webViewControllerPromise = .value(newWebViewController)
-            } else {
-                webViewControllerSeal(newWebViewController)
-            }
-        } else if webViewControllerPromise.isFulfilled {
-            // replacing one, so set up a new promise if necessary
-            (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
-        }
-    }
-
-    func setupView() {
+    func setupTokens() {
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
-
-        if requiresOnboarding {
-            Current.Log.info("showing onboarding")
-            updateRootViewController(to: onboardingNavigationController())
-        } else {
-            if let rootController = window?.rootViewController, !rootController.children.isEmpty {
-                Current.Log.info("state restoration loaded controller, not creating a new one")
-                // not changing anything, but handle the promises
-                updateRootViewController(to: rootController)
-            } else {
-                Current.Log.info("state restoration didn't load anything, constructing controllers manually")
-                let webViewController = WebViewController()
-                let navController = webViewNavigationController(rootViewController: webViewController)
-                updateRootViewController(to: navController)
-            }
-        }
 
         if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-        }
-
-        Current.authenticationControllerPresenter = { controller in
-            var presenter: UIViewController? = self.window?.rootViewController
-
-            while let next = presenter?.presentedViewController {
-                presenter = next
-            }
-
-            presenter?.present(controller, animated: true, completion: nil)
-        }
-
-        Current.signInRequiredCallback = { type in
-            let controller = self.onboardingNavigationController()
-            self.updateRootViewController(to: controller)
-
-            if type.shouldShowError {
-                let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
-                                              message: L10n.Alerts.AuthRequired.message, preferredStyle: .alert)
-
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-
-                controller.present(alert, animated: true, completion: nil)
-            }
-        }
-
-        Current.onboardingComplete = {
-            self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController()))
         }
     }
 
@@ -265,7 +209,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc internal func openPreferences() {
         // TODO: multiple scenes, open window
-        webViewControllerPromise.done {
+        webViewControllerPromise().done {
             $0.showSettingsViewController()
         }
     }
@@ -313,7 +257,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {}
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        if requiresOnboarding {
+        if windowController?.requiresOnboarding == true {
             Current.Log.info("disallowing state to be restored due to onboarding")
             return false
         }
@@ -347,13 +291,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewControllerWithRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        if identifierComponents == [StateRestorationKey.webViewNavigationController.rawValue] {
-            let navigationController = webViewNavigationController()
-            window?.rootViewController = navigationController
-            return navigationController
-        } else {
-            return nil
-        }
+        return windowController?.viewController(withRestorationIdentifierPath: identifierComponents)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -540,28 +478,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Private helpers
-
-    private var requiresOnboarding: Bool {
-        if HomeAssistantAPI.authenticatedAPI() == nil {
-            Current.Log.info("requiring onboarding due to no auth token")
-            return true
-        }
-
-        return false
-    }
-
-    private func onboardingNavigationController() -> UINavigationController {
-        return StoryboardScene.Onboarding.navController.instantiate()
-    }
-
-    private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
-        let navigationController = UINavigationController()
-        navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
-        if let rootViewController = rootViewController {
-            navigationController.viewControllers = [rootViewController]
-        }
-        return navigationController
-    }
 
     private func invalidatePeriodicUpdateTimer() {
         periodicUpdateTimer = nil
@@ -1106,7 +1022,7 @@ extension AppConfiguration {
 extension AppDelegate: UNUserNotificationCenterDelegate {
     private func open(urlString openUrlRaw: String) {
         if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
-            webViewControllerPromise.done { webViewController in
+            webViewControllerPromise().done { webViewController in
                 webViewController.open(inline: webviewURL)
             }
         } else if let url = URL(string: openUrlRaw) {

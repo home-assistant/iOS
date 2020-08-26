@@ -193,6 +193,7 @@
 		11EE9B5424C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
 		11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
 		11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */; };
+		11EFCDD324F5F39100314D85 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD224F5F39100314D85 /* WindowController.swift */; };
 		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85824C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85924C4279700642676 /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85624C4279700642676 /* Zone.swift */; };
@@ -947,6 +948,7 @@
 		11EE9B5324C62EB300404AF8 /* RealmScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmScene.swift; sourceTree = "<group>"; };
 		11EE9B5624C68F5700404AF8 /* Action+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Observation.swift"; sourceTree = "<group>"; };
 		11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.test.swift; sourceTree = "<group>"; };
+		11EFCDD224F5F39100314D85 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		11F3B85524C4279700642676 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		11F3B85624C4279700642676 /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
@@ -2342,6 +2344,7 @@
 				11948E8824DA5D50006F5657 /* InfoLabelRow.swift */,
 				11993D2124E787C700627944 /* UIApplicationDelegate+FullScreenConfirm.swift */,
 				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
+				11EFCDD224F5F39100314D85 /* WindowController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -4158,6 +4161,7 @@
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
+				11EFCDD324F5F39100314D85 /* WindowController.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
