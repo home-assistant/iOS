@@ -185,9 +185,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         self.webView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
 
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        refreshControl.addTarget(self, action: #selector(self.pullToRefresh(_:)), for: .valueChanged)
-        webView.scrollView.addSubview(refreshControl)
-        webView.scrollView.bounces = true
+
+        if !Current.isCatalyst {
+            // refreshing is handled by menu/keyboard shortcuts
+            refreshControl.addTarget(self, action: #selector(self.pullToRefresh(_:)), for: .valueChanged)
+            webView.scrollView.addSubview(refreshControl)
+            webView.scrollView.bounces = true
+        }
 
         self.settingsButton.addTarget(self, action: #selector(self.openSettingsView(_:)), for: .touchDown)
 
@@ -457,7 +461,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         webView.load(URLRequest(url: desiredURL))
     }
 
-    @objc func pullToRefresh(_ sender: UIRefreshControl) {
+    @objc private func refresh() {
+        // called via menu/keyboard shortcut too
         if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
             if webView.url?.baseIsEqual(to: webviewURL) == true {
                 webView.reload()
@@ -465,7 +470,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 webView.load(URLRequest(url: webviewURL))
             }
         }
+    }
 
+    @objc private func updateSensors() {
+        // called via menu/keyboard shortcut too
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api -> Promise<Void> in
@@ -491,15 +499,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             } else {
                 return updateWithoutLocation()
             }
-        }.catch {error in
+        }.catch { error in
             self.showSwiftMessageError((error as NSError).localizedDescription)
-//            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
-//            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-//                                          message: message, preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-//            self.navigationController?.present(alert, animated: true, completion: nil)
-//            alert.popoverPresentationController?.sourceView = self.webView
         }
+    }
+
+    @objc func pullToRefresh(_ sender: UIRefreshControl) {
+        refresh()
+        updateSensors()
     }
 
     func showSwiftMessageError(_ body: String, duration: SwiftMessages.Duration = .automatic) {
