@@ -1,12 +1,13 @@
 import Foundation
 import UIKit
 
+@available(iOS 13, *)
 class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
 
     struct BasicConfig {
-        let title: String
-        let rootViewController: UIViewController
+        var title: String
+        var rootViewController: UIViewController
     }
 
     class func basicConfig() -> BasicConfig {
@@ -32,10 +33,11 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         // never activate the settings scene for anything incoming
         scene.activationConditions.canActivateForTargetContentIdentifierPredicate = NSPredicate(value: false)
 
-        if #available(macCatalyst 13, *), let titlebar = scene.titlebar {
+        #if targetEnvironment(macCatalyst)
+        if let titlebar = scene.titlebar {
             titlebar.titleVisibility = .hidden
             titlebar.toolbar = nil
         }
-
+        #endif
     }
 }

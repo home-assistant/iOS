@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+@available(iOS 13, *)
 class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
     var windowController: WindowController?
@@ -19,10 +20,12 @@ class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
         windowController.setup()
 
-        if #available(macCatalyst 13, *), let titlebar = scene.titlebar {
+        #if targetEnvironment(macCatalyst)
+        if let titlebar = scene.titlebar {
             // disabling this also disables the "show tab bar" window tab bar (aka not uitabbar)
             titlebar.titleVisibility = .hidden
             titlebar.toolbar = nil
         }
+        #endif
     }
 }

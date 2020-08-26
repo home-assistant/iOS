@@ -43,10 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let windowControllerPromise: Guarantee<WindowController>
     private let windowControllerSeal: (WindowController) -> Void
 
-    private func webViewControllerPromise() -> Guarantee<WebViewController> {
-        windowControllerPromise.then { $0.webViewControllerPromise }
-    }
-
     private var zoneManager: ZoneManager?
 
     private var periodicUpdateTimer: Timer? {
@@ -129,7 +125,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupTokens()
 
-        windowController?.setup()
+        if #available(iOS 13, *) {
+
+        } else {
+            windowController?.setup()
+        }
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
         connectAPI(reason: .cold)
@@ -174,6 +174,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         windowControllerSeal(windowController)
     }
 
+    @available(iOS 13, *)
     private func connectedScenes(for activity: SceneActivity) -> [UIScene] {
         UIApplication.shared.connectedScenes.filter { scene in
             scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
@@ -195,6 +196,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13, *)
     @objc internal func openAbout() {
         UIApplication.shared.requestSceneSessionActivation(
             connectedScenes(for: .about).first?.session,
@@ -204,8 +206,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13, *)
     @objc internal func openMenuUrl(_ command: AnyObject) {
-        guard #available(iOS 13, *), let command = command as? UICommand else {
+        guard let command = command as? UICommand else {
             return
         }
 
@@ -214,6 +217,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13, *)
     @objc internal func openPreferences() {
         UIApplication.shared.requestSceneSessionActivation(
             connectedScenes(for: .settings).first?.session,
@@ -265,6 +269,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {}
 
+    @available(iOS 13, *)
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
@@ -1042,9 +1047,7 @@ extension AppConfiguration {
 extension AppDelegate: UNUserNotificationCenterDelegate {
     private func open(urlString openUrlRaw: String) {
         if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
-            webViewControllerPromise().done { webViewController in
-                webViewController.open(inline: webviewURL)
-            }
+            windowControllerPromise.done { $0.navigate(to: webviewURL) }
         } else if let url = URL(string: openUrlRaw) {
             let presentingViewController = { () -> UIViewController? in
                 var rootViewController = self.window!.rootViewController

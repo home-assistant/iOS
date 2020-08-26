@@ -131,6 +131,12 @@ class WindowController {
         }
     }
 
+    func navigate(to url: URL) {
+        webViewControllerPromise.done { webViewController in
+            webViewController.open(inline: url)
+        }
+    }
+
     func viewController(
         withRestorationIdentifierPath identifierComponents: [String]
     ) -> UIViewController? {
