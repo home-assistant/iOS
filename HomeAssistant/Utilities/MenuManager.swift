@@ -7,6 +7,8 @@ import Shared
 private extension UIMenu.Identifier {
     static var haActions: Self { .init(rawValue: "ha.actions") }
     static var haHelp: Self { .init(rawValue: "ha.help") }
+    static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
+    static var haFile: Self { .init(rawValue: "ha.file") }
 }
 
 @available(iOS 13, *)
@@ -48,6 +50,8 @@ class MenuManager {
         builder.insertSibling(preferencesMenu(), afterMenu: .about)
         builder.replaceChildren(ofMenu: .help) { _ in helpMenus() }
         builder.insertSibling(actionsMenu(), beforeMenu: .window)
+        builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
+        builder.insertChild(fileMenu(), atStartOfMenu: .file)
     }
 
     private func aboutMenu() -> UIMenu {
@@ -144,4 +148,44 @@ class MenuManager {
             children: Array(children)
         )
     }
+
+    private func webViewActionsMenu() -> UIMenu {
+        UIMenu(
+            title: "",
+            image: nil,
+            identifier: .haWebViewActions,
+            options: .displayInline,
+            children: [
+                UIKeyCommand(
+                    title: L10n.Menu.View.reloadPage,
+                    image: nil,
+                    action: #selector(refresh),
+                    input: "R",
+                    modifierFlags: [.command]
+                )
+            ]
+        )
+    }
+
+    private func fileMenu() -> UIMenu {
+        UIMenu(
+            title: "",
+            image: nil,
+            identifier: .haFile,
+            options: .displayInline,
+            children: [
+                UIKeyCommand(
+                    title: L10n.Menu.File.updateSensors,
+                    image: nil,
+                    action: #selector(updateSensors),
+                    input: "R",
+                    modifierFlags: [.command, .shift]
+                )
+            ]
+        )
+    }
+
+    // selectors that use responder chain
+    @objc private func refresh() {}
+    @objc private func updateSensors() {}
 }
