@@ -1,11 +1,3 @@
-//
-//  HACoreMediaObjectCamera.swift
-//  HomeAssistant
-//
-//  Created by Zac West on 8/28/20.
-//  Copyright © 2020 Home Assistant. All rights reserved.
-//
-
 import Foundation
 
 #if canImport(CoreMediaIO)
