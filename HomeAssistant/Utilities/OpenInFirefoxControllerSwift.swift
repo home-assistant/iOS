@@ -23,7 +23,7 @@ open class OpenInFirefoxControllerSwift {
 
     fileprivate func encodeByAddingPercentEscapes(_ input: String) -> String {
         return NSString(string: input).addingPercentEncoding(
-            withAllowedCharacters: CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[]")
+            withAllowedCharacters: .urlQueryAllowed
         )!
     }
 

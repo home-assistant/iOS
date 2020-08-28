@@ -875,4 +875,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "menu.application.about" = "About %@";
 "menu.application.preferences" = "Preferences…";
 "menu.help.help" = "%@ Help";
+"menu.view.reload_page" = "Reload Page";
+"menu.file.update_sensors" = "Update Sensors";
 "open_label" = "Open";

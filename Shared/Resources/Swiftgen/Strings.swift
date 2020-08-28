@@ -498,11 +498,19 @@ internal enum L10n {
       /// Preferences…
       internal static let preferences = L10n.tr("Localizable", "menu.application.preferences")
     }
+    internal enum File {
+      /// Update Sensors
+      internal static let updateSensors = L10n.tr("Localizable", "menu.file.update_sensors")
+    }
     internal enum Help {
       /// %@ Help
       internal static func help(_ p1: Any) -> String {
         return L10n.tr("Localizable", "menu.help.help", String(describing: p1))
       }
+    }
+    internal enum View {
+      /// Reload Page
+      internal static let reloadPage = L10n.tr("Localizable", "menu.view.reload_page")
     }
   }
 

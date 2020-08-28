@@ -25,5 +25,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)$(BUNDLE_ID_PREFIX).HomeAssistant</string>
 	</array>
+	<key>com.apple.security.device.camera</key>
+	<true/>
 </dict>
 </plist>
