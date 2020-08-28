@@ -22,6 +22,7 @@ private class LiveUpdateInfo: SensorProviderLiveUpdateInfo {
             Current.Log.info("camera info updated for \(id)")
             self?.handler()
         })
+        observedObjects.insert(object)
     }
 }
 
