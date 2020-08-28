@@ -81,7 +81,7 @@ public class MacCameraSensor: SensorProvider {
         let sensor = WebhookSensor(
             name: camera.name ?? "Unknown Camera",
             uniqueID: "camera_\(camera.deviceID)",
-            icon: camera.isOn ? .cameraIcon : .cameraOffIcon,
+            icon: camera.isOn ? "mdi:camera" : "mdi:camera-off",
             state: camera.isOn
         )
 
