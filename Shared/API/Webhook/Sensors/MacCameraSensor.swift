@@ -5,6 +5,26 @@ import AVFoundation
 import CoreMediaIO
 #endif
 
+private class LiveUpdateInfo: SensorProviderLiveUpdateInfo {
+    let handler: () -> Void
+    private var observedObjects = Set<CMIOObjectID>()
+
+    required init(notifying: @escaping () -> Void) {
+        self.handler = notifying
+    }
+
+    func addObserver(
+        for object: CMIOObjectID,
+        address: UnsafePointer<CMIOObjectPropertyAddress>
+    ) {
+        guard !observedObjects.contains(object) else { return }
+        CMIOObjectAddPropertyListenerBlock(object, address, .main, { [weak self] id, _ in
+            Current.Log.info("camera info updated for \(id)")
+            self?.handler()
+        })
+    }
+}
+
 public class MacCameraSensor: SensorProvider {
     public enum MacCameraError: Error, Equatable {
         case noCameras
@@ -17,18 +37,30 @@ public class MacCameraSensor: SensorProvider {
 
     #if targetEnvironment(macCatalyst)
     public func sensors() -> Promise<[WebhookSensor]> {
-        firstly {
+        let liveUpdateInfo: LiveUpdateInfo = request.dependencies.liveUpdateInfo(for: self)
+
+        return firstly {
             Promise<Void>.value(())
-        }.map(on: .global(qos: .userInitiated)) {
-            let cams = self.cameras
-            if cams.count == 0 {
+        }.map(on: .global(qos: .userInitiated)) { () -> [Camera] in
+            self.cameras
+        }.mapValues { (camera: Camera) -> WebhookSensor in
+            let sensor = Self.sensor(camera: camera)
+            var address = camera.isOnOPA
+            liveUpdateInfo.addObserver(
+                for: camera.id,
+                address: &address
+            )
+            return sensor
+        }.recover { (error) -> Promise<[WebhookSensor]> in
+            if case PMKError.compactMap = error {
                 throw MacCameraError.noCameras
+            } else {
+                throw error
             }
-            return try cams.compactMap { try Self.sensor(camera: $0) }
         }
     }
 
-    private static func sensor(camera: Camera) throws -> WebhookSensor {
+    private static func sensor(camera: Camera) -> WebhookSensor {
         let sensor = WebhookSensor(
             name: camera.name ?? "Unknown Camera",
             uniqueID: "camera_\(camera.id)",
@@ -117,12 +149,16 @@ public class MacCameraSensor: SensorProvider {
             return manufName as String?
         }
 
-        var isOn: Bool {
-            var opa = CMIOObjectPropertyAddress(
+        var isOnOPA: CMIOObjectPropertyAddress {
+            CMIOObjectPropertyAddress(
                 mSelector: CMIOObjectPropertySelector(kCMIODevicePropertyDeviceIsRunningSomewhere),
                 mScope: CMIOObjectPropertyScope(kCMIOObjectPropertyScopeWildcard),
                 mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementWildcard)
             )
+        }
+
+        var isOn: Bool {
+            var opa = isOnOPA
 
             var isUsed = false
 
