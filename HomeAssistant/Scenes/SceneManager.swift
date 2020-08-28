@@ -58,8 +58,8 @@ class SceneManager {
 
     func activateAnyScene(for activity: SceneActivity) {
         UIApplication.shared.requestSceneSessionActivation(
-            existingScenes(for: .about).first?.session,
-            userActivity: SceneActivity.about.activity,
+            existingScenes(for: activity).first?.session,
+            userActivity: activity.activity,
             options: nil
         ) { error in
             Current.Log.error(error)
