@@ -171,6 +171,8 @@ public class MacCameraSensor: SensorProvider {
                     result = CMIOObjectGetPropertyData(self.id, &opa, 0, nil, dataSize, &dataUsed, data)
                     let on = data.assumingMemoryBound(to: UInt8.self)
                     isUsed = on.pointee != 0
+
+                    free(data)
                 }
             }
 
