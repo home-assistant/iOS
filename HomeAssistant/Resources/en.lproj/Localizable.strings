@@ -875,3 +875,4 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "menu.application.about" = "About %@";
 "menu.application.preferences" = "Preferences…";
 "menu.help.help" = "%@ Help";
+"open_label" = "Open";

@@ -27,7 +27,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         scene.sizeRestrictions?.maximumSize.width = 800.0
         scene.sizeRestrictions?.minimumSize.width = 300.0
 
-        let window = WindowController.window(scene: scene)
+        let window = WebViewWindowController.window(scene: scene)
         window.rootViewController = config.rootViewController
 
         // never activate the settings scene for anything incoming
@@ -39,5 +39,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
             titlebar.toolbar = nil
         }
         #endif
+
+        informManager(from: connectionOptions)
     }
 }

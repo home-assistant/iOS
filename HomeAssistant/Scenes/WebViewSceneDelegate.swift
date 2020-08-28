@@ -1,10 +1,11 @@
 import Foundation
 import UIKit
+import PromiseKit
 
 @available(iOS 13, *)
-class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
+final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
-    var windowController: WindowController?
+    var windowController: WebViewWindowController?
 
     func scene(
         _ scene: UIScene,
@@ -13,8 +14,8 @@ class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         guard let scene = scene as? UIWindowScene else { return }
 
-        let window = WindowController.window(scene: scene)
-        let windowController = WindowController(window: window)
+        let window = WebViewWindowController.window(scene: scene)
+        let windowController = WebViewWindowController(window: window)
         self.window = window
         self.windowController = windowController
 
@@ -27,5 +28,24 @@ class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             titlebar.toolbar = nil
         }
         #endif
+
+        informManager(from: connectionOptions)
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        windowController = nil
+        window = nil
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+
+    }
+
+    func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
+        nil
+    }
+
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        print("continue user activity \(userActivity)")
     }
 }

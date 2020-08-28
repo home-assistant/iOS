@@ -8,7 +8,7 @@ enum StateRestorationKey: String {
     case webViewNavigationController
 }
 
-class WindowController {
+class WebViewWindowController {
     let window: UIWindow
     var webViewControllerPromise: Guarantee<WebViewController>
 
@@ -22,7 +22,7 @@ class WindowController {
         }
     }
 
-    static func window(preiOS12: ()) -> UIWindow {
+    static func window(foriOS12: ()) -> UIWindow {
         return with(UIWindow(frame: UIScreen.main.bounds)) {
             $0.tintColor = Constants.tintColor
             $0.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
@@ -34,14 +34,8 @@ class WindowController {
         self.window = window
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
 
-        Current.authenticationControllerPresenter = { [window] controller in
-            var presenter: UIViewController? = window.rootViewController
-
-            while let next = presenter?.presentedViewController {
-                presenter = next
-            }
-
-            presenter?.present(controller, animated: true, completion: nil)
+        Current.authenticationControllerPresenter = { [weak self] controller in
+            self?.present(controller)
         }
 
         Current.signInRequiredCallback = { [weak self] type in
@@ -137,15 +131,68 @@ class WindowController {
         }
     }
 
+    func present(_ viewController: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
+        window.rootViewController?.present(viewController, animated: animated, completion: completion)
+    }
+
+    var presentingViewController: UIViewController? {
+        var currentController = window.rootViewController
+        while let controller = currentController?.presentedViewController {
+            currentController = controller
+        }
+        return currentController
+    }
+
     func viewController(
         withRestorationIdentifierPath identifierComponents: [String]
     ) -> UIViewController? {
+        // iOS 12 and below state restoration code path only
         if identifierComponents == [StateRestorationKey.webViewNavigationController.rawValue] {
             let navigationController = webViewNavigationController()
             window.rootViewController = navigationController
             return navigationController
         } else {
             return nil
+        }
+    }
+
+    func open(urlString openUrlRaw: String) {
+        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
+            navigate(to: webviewURL)
+            return
+        }
+
+        guard let url = URL(string: openUrlRaw) else {
+            return
+        }
+
+        let triggerOpen = {
+            openURLInBrowser(url, self.presentingViewController)
+        }
+
+        if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+            let alert = UIAlertController(
+                title: L10n.Alerts.OpenUrlFromNotification.title,
+                message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
+                preferredStyle: UIAlertController.Style.alert
+            )
+
+            alert.addAction(UIAlertAction(
+                title: L10n.cancelLabel,
+                style: .cancel,
+                handler: nil
+            ))
+
+            alert.addAction(UIAlertAction(
+                title: L10n.openLabel,
+                style: .default
+            ) { _ in
+                triggerOpen()
+            })
+
+            present(alert)
+        } else {
+            triggerOpen()
         }
     }
 }

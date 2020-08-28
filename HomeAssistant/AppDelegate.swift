@@ -33,15 +33,35 @@ let keychain = Constants.Keychain
 
 let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
+extension UIApplication {
+    var typedDelegate: AppDelegate {
+        // swiftlint:disable:next force_cast
+        delegate as! AppDelegate
+    }
+}
+
 @UIApplicationMain
 // swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var windowController: WindowController?
-    var safariVC: SFSafariViewController?
 
-    private let windowControllerPromise: Guarantee<WindowController>
-    private let windowControllerSeal: (WindowController) -> Void
+    let sceneManager = SceneManager()
+
+    var webViewWindowControllerPromise: Promise<WebViewWindowController> {
+        if #available(iOS 13, *) {
+            return firstly { () -> Promise<WebViewSceneDelegate> in
+                sceneManager.scene(for: .init(activity: .webView))
+            }.compactMap { delegate in
+                delegate.windowController
+            }
+        } else {
+            return Promise(iOS12WindowControllerPromise)
+        }
+    }
+
+    var iOS12WindowController: WebViewWindowController?
+    private let iOS12WindowControllerPromise: Guarantee<WebViewWindowController>
+    private let iOS12WindowControllerSeal: (WebViewWindowController) -> Void
 
     private var zoneManager: ZoneManager?
 
@@ -54,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     override init() {
-        (self.windowControllerPromise, self.windowControllerSeal) = Guarantee<WindowController>.pending()
+        (self.iOS12WindowControllerPromise, self.iOS12WindowControllerSeal) = Guarantee<WebViewWindowController>.pending()
 
         super.init()
     }
@@ -111,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         } else {
             // window must be created before willFinishLaunching completes, or state restoration will not occur
-            setupWindow()
+            setupWindowForiOS12()
         }
 
         return true
@@ -128,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13, *) {
 
         } else {
-            windowController?.setup()
+
         }
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
@@ -136,6 +156,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setup14Workaround()
         checkForUpdate()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+            self.webViewWindowControllerPromise.done {
+                $0.open(urlString: "/lovelace-teest/0")
+            }
+        }
 
         return true
     }
@@ -167,18 +193,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func setupWindow() {
-        let window = WindowController.window(preiOS12: ())
-        let windowController = WindowController(window: window)
-        self.windowController = windowController
-        windowControllerSeal(windowController)
-    }
-
-    @available(iOS 13, *)
-    private func connectedScenes(for activity: SceneActivity) -> [UIScene] {
-        UIApplication.shared.connectedScenes.filter { scene in
-            scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
+    func setupWindowForiOS12() {
+        if #available(iOS 13, *) {
+            fatalError("bad code path: iOS 12 window controller shouldn't be set up on iOS 13 or above")
         }
+
+        let window = WebViewWindowController.window(foriOS12: ())
+        let windowController = WebViewWindowController(window: window)
+        self.iOS12WindowController = windowController
+        iOS12WindowControllerSeal(windowController)
     }
 
     func setupTokens() {
@@ -198,12 +221,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13, *)
     @objc internal func openAbout() {
-        UIApplication.shared.requestSceneSessionActivation(
-            connectedScenes(for: .about).first?.session,
-            userActivity: SceneActivity.about.activity,
-            options: nil) { error in
-            Current.Log.error(error)
-        }
+        sceneManager.activateAnyScene(for: .about)
     }
 
     @available(iOS 13, *)
@@ -219,12 +237,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13, *)
     @objc internal func openPreferences() {
-        UIApplication.shared.requestSceneSessionActivation(
-            connectedScenes(for: .settings).first?.session,
-            userActivity: SceneActivity.settings.activity,
-            options: nil) { error in
-            Current.Log.error(error)
-        }
+        sceneManager.activateAnyScene(for: .settings)
     }
 
     @objc internal func openHelp() {
@@ -282,7 +295,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        if windowController?.requiresOnboarding == true {
+        if iOS12WindowController?.requiresOnboarding == true {
             Current.Log.info("disallowing state to be restored due to onboarding")
             return false
         }
@@ -316,7 +329,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewControllerWithRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        return windowController?.viewController(withRestorationIdentifierPath: identifierComponents)
+        return iOS12WindowController?.viewController(withRestorationIdentifierPath: identifierComponents)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -1045,46 +1058,6 @@ extension AppConfiguration {
 #endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    private func open(urlString openUrlRaw: String) {
-        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
-            windowControllerPromise.done { $0.navigate(to: webviewURL) }
-        } else if let url = URL(string: openUrlRaw) {
-            let presentingViewController = { () -> UIViewController? in
-                var rootViewController = self.window!.rootViewController
-                while let controller = rootViewController?.presentedViewController {
-                    rootViewController = controller
-                }
-                return rootViewController
-            }
-
-            let triggerOpen = {
-                openURLInBrowser(url, presentingViewController())
-            }
-
-            if prefs.bool(forKey: "confirmBeforeOpeningUrl"), let presenter = presentingViewController() {
-                let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
-                                              message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
-                                              preferredStyle: UIAlertController.Style.alert)
-                alert.addAction(UIAlertAction(
-                    title: L10n.noLabel,
-                    style: UIAlertAction.Style.default,
-                    handler: nil
-                ))
-                alert.addAction(UIAlertAction(
-                    title: L10n.yesLabel,
-                    style: UIAlertAction.Style.default
-                ) { _ in
-                    triggerOpen()
-                })
-
-                alert.popoverPresentationController?.sourceView = presenter.view
-                presenter.present(alert, animated: true, completion: nil)
-            } else {
-                triggerOpen()
-            }
-        }
-    }
-
     // swiftlint:disable:next function_body_length
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -1117,7 +1090,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
 
         if let openURLRaw = userInfo["url"] as? String {
-            open(urlString: openURLRaw)
+            webViewWindowControllerPromise.done { $0.open(urlString: openURLRaw) }
         } else if let openURLDictionary = userInfo["url"] as? [String: String] {
             let url = openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -1131,7 +1104,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }.first
 
             if let url = url {
-                open(urlString: url)
+                webViewWindowControllerPromise.done { $0.open(urlString: url) }
             } else {
                 Current.Log.error(
                     "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
