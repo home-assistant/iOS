@@ -192,6 +192,7 @@
 		11D15BF824F1EDEA00507AEF /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
+		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
@@ -965,6 +966,7 @@
 		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
+		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Development.entitlements"; sourceTree = "<group>"; };
 		11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Beta.entitlements"; sourceTree = "<group>"; };
@@ -2410,6 +2412,7 @@
 				11993D2124E787C700627944 /* UIApplicationDelegate+FullScreenConfirm.swift */,
 				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
+				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -4207,6 +4210,7 @@
 				B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
+				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */,

@@ -6,6 +6,7 @@ import PromiseKit
 final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
     var windowController: WebViewWindowController?
+    var urlHandler: IncomingURLHandler?
 
     func scene(
         _ scene: UIScene,
@@ -18,6 +19,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         let windowController = WebViewWindowController(window: window)
         self.window = window
         self.windowController = windowController
+
+        self.urlHandler = IncomingURLHandler(windowController: windowController)
 
         windowController.setup()
 
@@ -38,7 +41,9 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-
+        for url in URLContexts.map(\.url) {
+            urlHandler?.handle(url: url)
+        }
     }
 
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
@@ -46,6 +51,6 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        print("continue user activity \(userActivity)")
+        urlHandler?.handle(userActivity: userActivity)
     }
 }

@@ -17,10 +17,47 @@ extension UIWindowSceneDelegate {
     }
 }
 
+struct SceneManagerPreSceneCompatibility {
+    var windowController: WebViewWindowController?
+    var urlHandler: IncomingURLHandler?
+    let windowControllerPromise: Guarantee<WebViewWindowController>
+    let windowControllerSeal: (WebViewWindowController) -> Void
+
+    init() {
+        (self.windowControllerPromise, self.windowControllerSeal) = Guarantee<WebViewWindowController>.pending()
+    }
+
+    mutating func start() {
+        let window = WebViewWindowController.window(foriOS12: ())
+        let windowController = WebViewWindowController(window: window)
+        self.windowController = windowController
+        self.urlHandler = IncomingURLHandler(windowController: windowController)
+        windowControllerSeal(windowController)
+    }
+
+    func setup() {
+        windowControllerPromise.done { $0.setup() }
+    }
+}
+
 class SceneManager {
     // types too hard here
     static var activityUserInfoKeyResolver = "resolver"
     private var pendingResolvers: [String: Any] = [:]
+
+    var compatibility = SceneManagerPreSceneCompatibility()
+
+    var webViewWindowControllerPromise: Promise<WebViewWindowController> {
+        if #available(iOS 13, *) {
+            return firstly { () -> Promise<WebViewSceneDelegate> in
+                scene(for: .init(activity: .webView))
+            }.compactMap { delegate in
+                delegate.windowController
+            }
+        } else {
+            return Promise(compatibility.windowControllerPromise)
+        }
+    }
 
     func pendingResolver<T>(from activities: Set<NSUserActivity>) -> Resolver<T> {
         let (promise, outerResolver) = Promise<T>.pending()
