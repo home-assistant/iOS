@@ -47,14 +47,16 @@ class SettingsViewController: FormViewController {
         }
 
         if !Current.isCatalyst {
-            // About is in the Application menu on Catalyst
+            // About is in the Application menu on Catalyst, and closing the button is direct
 
             let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                               style: .plain, target: self,
                                               action: #selector(SettingsViewController.openAbout(_:)))
 
             self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+        }
 
+        if !Current.sceneManager.supportsMultipleScenes {
             let closeSelector = #selector(SettingsViewController.closeSettings(_:))
             let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                              action: closeSelector)

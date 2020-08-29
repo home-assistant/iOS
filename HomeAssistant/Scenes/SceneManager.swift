@@ -98,9 +98,12 @@ class SceneManager {
         }
     }
 
-    @available(iOS 13, *)
     public var supportsMultipleScenes: Bool {
-        UIApplication.shared.supportsMultipleScenes
+        if #available(iOS 13, *) {
+            return UIApplication.shared.supportsMultipleScenes
+        } else {
+            return false
+        }
     }
 
     @available(iOS 13, *)
