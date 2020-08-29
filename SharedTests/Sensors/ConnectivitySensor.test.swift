@@ -21,7 +21,11 @@ class ConnectivitySensorTests: XCTestCase {
         Current.connectivity.telephonyCarriers = { cellular }
         Current.connectivity.telephonyRadioAccessTechnology = { radioTech }
 
-        let promise = ConnectivitySensor(request: .init(reason: .trigger("unit-test"))).sensors()
+        let promise = ConnectivitySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil
+        )).sensors()
         let sensors = try hang(promise)
 
         return (

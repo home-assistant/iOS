@@ -46,6 +46,8 @@ public class MacCameraSensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
+
+    #if canImport(CoreMediaIO)
     let systemObject: HACoreMediaObjectSystem
 
     required public init(request: SensorProviderRequest) {
@@ -53,7 +55,6 @@ public class MacCameraSensor: SensorProvider {
         self.systemObject = HACoreMediaObjectSystem()
     }
 
-    #if canImport(CoreMediaIO)
     public func sensors() -> Promise<[WebhookSensor]> {
         let updateSignaler: CameraUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
@@ -90,6 +91,10 @@ public class MacCameraSensor: SensorProvider {
     }
 
     #else
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
     public func sensors() -> Promise<[WebhookSensor]> {
         return .init(error: MacCameraError.noCameras)
     }
