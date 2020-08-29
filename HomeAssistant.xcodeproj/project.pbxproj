@@ -92,6 +92,7 @@
 		1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */; };
 		1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */; };
 		1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */; };
+		1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1182620924F9D2EE000795C6 /* CoreMediaIO.framework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (Weak, ); }; };
 		118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118511C124B25BEB00D18F60 /* WebhookManager.test.swift */; };
 		1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187DE4124D77CCC00F0A6A6 /* NFCTagViewController.swift */; };
 		1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */; };
@@ -882,6 +883,7 @@
 		1182620024F9C3F7000795C6 /* HACoreMediaObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaObject.swift; sourceTree = "<group>"; };
 		1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaObjectSystem.swift; sourceTree = "<group>"; };
 		1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaObjectCamera.swift; sourceTree = "<group>"; };
+		1182620924F9D2EE000795C6 /* CoreMediaIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMediaIO.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/CoreMediaIO.framework; sourceTree = DEVELOPER_DIR; };
 		118511C124B25BEB00D18F60 /* WebhookManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.test.swift; sourceTree = "<group>"; };
 		1187DE4124D77CCC00F0A6A6 /* NFCTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCTagViewController.swift; sourceTree = "<group>"; };
 		1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorNFCManager.swift; sourceTree = "<group>"; };
@@ -1627,6 +1629,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				111D294224F2F6AE00C8A7D1 /* Realm in Frameworks */,
@@ -1838,6 +1841,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1182620924F9D2EE000795C6 /* CoreMediaIO.framework */,
 				11D826F024E39F2D005B8A86 /* CoreNFC.framework */,
 				D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */,
 				D0C8845F211ED11900CCB501 /* SafariServices.framework */,
