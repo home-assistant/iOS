@@ -233,8 +233,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     public func showSettingsViewController() {
-        if #available(iOS 13, *), Current.isCatalyst {
-            UIApplication.shared.typedDelegate.sceneManager.activateAnyScene(for: .settings)
+        if #available(iOS 13, *), Current.sceneManager.supportsMultipleScenes {
+            Current.sceneManager.activateAnyScene(for: .settings)
         } else {
             let settingsView = SettingsViewController()
             settingsView.hidesBottomBarWhenPushed = true

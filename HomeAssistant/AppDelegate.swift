@@ -33,10 +33,16 @@ let keychain = Constants.Keychain
 
 let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
-extension UIApplication {
+private extension UIApplication {
     var typedDelegate: AppDelegate {
         // swiftlint:disable:next force_cast
         delegate as! AppDelegate
+    }
+}
+
+extension Environment {
+    var sceneManager: SceneManager {
+        UIApplication.shared.typedDelegate.sceneManager
     }
 }
 
@@ -190,6 +196,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13, *)
     @objc internal func openAbout() {
+        precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .about)
     }
 
@@ -206,6 +213,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13, *)
     @objc internal func openPreferences() {
+        precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .settings)
     }
 

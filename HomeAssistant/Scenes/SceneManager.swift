@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import PromiseKit
 import Shared
+import MBProgressHUD
 
 // todo: can i combine this with the enum?
 @available(iOS 13, *)
@@ -12,7 +13,7 @@ struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
 @available(iOS 13, *)
 extension UIWindowSceneDelegate {
     func informManager(from connectionOptions: UIScene.ConnectionOptions) {
-        let pendingResolver: (Self) -> Void = UIApplication.shared.typedDelegate.sceneManager
+        let pendingResolver: (Self) -> Void = Current.sceneManager
             .pendingResolver(from: connectionOptions.userActivities)
 
         pendingResolver(self)
@@ -98,6 +99,11 @@ class SceneManager {
     }
 
     @available(iOS 13, *)
+    public var supportsMultipleScenes: Bool {
+        UIApplication.shared.supportsMultipleScenes
+    }
+
+    @available(iOS 13, *)
     public func activateAnyScene(for activity: SceneActivity) {
         UIApplication.shared.requestSceneSessionActivation(
             existingScenes(for: activity).first?.session,
@@ -145,5 +151,25 @@ class SceneManager {
         )
 
         return promise
+    }
+
+    public func showFullScreenConfirm(
+        icon: MaterialDesignIcons,
+        text: String
+    ) {
+        firstly {
+            webViewWindowControllerPromise
+        }.compactMap {
+            $0.window
+        }.done { window in
+            let hud = MBProgressHUD.showAdded(to: window, animated: true)
+            hud.mode = .customView
+            hud.backgroundView.style = .blur
+            hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {
+                $0.iconDrawable = icon
+            }
+            hud.label.text = text
+            hud.hide(animated: true, afterDelay: 3)
+        }.cauterize()
     }
 }

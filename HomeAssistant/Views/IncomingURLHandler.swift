@@ -55,7 +55,7 @@ class IncomingURLHandler {
                 }
             }()
 
-            UIApplication.shared.typedDelegate.showFullScreenConfirm(icon: icon, text: text)
+            Current.sceneManager.showFullScreenConfirm(icon: icon, text: text)
             return true
         case .unhandled:
             return false
@@ -284,12 +284,12 @@ extension IncomingURLHandler {
         let actionID = url.pathComponents[1]
 
         guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-            UIApplication.shared.typedDelegate
+            Current.sceneManager
                 .showFullScreenConfirm(icon: .alertCircleIcon, text: L10n.UrlHandler.Error.actionNotFound)
             return
         }
 
-        UIApplication.shared.typedDelegate
+        Current.sceneManager
             .showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
 
         HomeAssistantAPI.authenticatedAPI()?
