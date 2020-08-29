@@ -9,7 +9,7 @@ class HACoreMediaObject {
         self.id = id
     }
 
-    func propertyData<T>(for address: CMIOObjectPropertyAddress) -> T? {
+    func property<T>(for address: HACoreMediaProperty<T>) -> T? {
         let propsize: UInt32 = UInt32(MemoryLayout<T>.size)
 
         let data = UnsafeMutableRawPointer.allocate(
@@ -20,7 +20,7 @@ class HACoreMediaObject {
             data.deallocate()
         }
 
-        let result = withUnsafePointer(to: address) { addressPtr -> OSStatus in
+        let result = withUnsafePointer(to: address.address) { addressPtr -> OSStatus in
             var dataUsed: UInt32 = 0
             return OSStatus(CMIOObjectGetPropertyData(id, addressPtr, 0, nil, propsize, &dataUsed, data))
         }
@@ -32,9 +32,9 @@ class HACoreMediaObject {
         }
     }
 
-    func propertyArray<T>(for address: CMIOObjectPropertyAddress) -> [T]? {
+    func property<ValueType>(for address: HACoreMediaProperty<[ValueType]>) -> [ValueType]? {
         var countBytes: UInt32 = 0
-        let countResult = withUnsafePointer(to: address) { addressPtr -> OSStatus in
+        let countResult = withUnsafePointer(to: address.address) { addressPtr -> OSStatus in
             OSStatus(CMIOObjectGetPropertyDataSize(id, addressPtr, 0, nil, &countBytes))
         }
 
@@ -42,23 +42,23 @@ class HACoreMediaObject {
             return nil
         }
 
-        let dataCount = Int(countBytes) / MemoryLayout<T>.size
+        let dataCount = Int(countBytes) / MemoryLayout<ValueType>.size
         let data = UnsafeMutableRawPointer.allocate(
             byteCount: dataCount,
-            alignment: MemoryLayout<T>.alignment
+            alignment: MemoryLayout<ValueType>.alignment
         )
         defer {
             data.deallocate()
         }
 
-        let getResult = withUnsafePointer(to: address) { addressPtr -> OSStatus in
+        let getResult = withUnsafePointer(to: address.address) { addressPtr -> OSStatus in
             var dataUsed: UInt32 = 0
             return OSStatus(CMIOObjectGetPropertyData(id, addressPtr, 0, nil, countBytes, &dataUsed, data))
         }
 
         if getResult == OSStatus(kCMIOHardwareNoError) {
-            let buffer = data.bindMemory(to: T.self, capacity: dataCount)
-            return Array(UnsafeBufferPointer<T>(start: buffer, count: dataCount))
+            let buffer = data.bindMemory(to: ValueType.self, capacity: dataCount)
+            return Array(UnsafeBufferPointer<ValueType>(start: buffer, count: dataCount))
         } else {
             return nil
         }

@@ -9,7 +9,7 @@ class HACoreMediaObjectSystem: HACoreMediaObject {
     }
 
     var allCameras: [HACoreMediaObjectCamera] {
-        if let ids: [CMIOObjectID] = propertyArray(for: .allCameras) {
+        if let ids = property(for: .allDevices) {
             return ids.map { HACoreMediaObjectCamera(id: $0) }
         } else {
             return []

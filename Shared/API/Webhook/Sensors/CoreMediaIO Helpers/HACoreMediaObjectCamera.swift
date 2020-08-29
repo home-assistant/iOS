@@ -4,33 +4,33 @@ import Foundation
 import CoreMediaIO
 
 class HACoreMediaObjectCamera: HACoreMediaObject {
-    var deviceID: String {
-        if let string: CFString = propertyData(for: .deviceID) {
-            return string as String
+    var deviceUID: String {
+        if let string = property(for: .deviceUID) {
+            return string.takeRetainedValue() as String
         } else {
             return "\(id)"
         }
     }
 
     var name: String? {
-        if let cfString: CFString = propertyData(for: .cameraName) {
-            return cfString as String
+        if let cfString = property(for: .name) {
+            return cfString.takeRetainedValue() as String
         } else {
             return nil
         }
     }
 
     var manufacturer: String? {
-        if let cfString: CFString = propertyData(for: .cameraManufacturer) {
-            return cfString as String
+        if let cfString = property(for: .manufacturer) {
+            return cfString.takeRetainedValue() as String
         } else {
             return nil
         }
     }
 
     var isOn: Bool {
-        if let anyOn: [Int32] = propertyArray(for: .cameraIsOn) {
-            return anyOn.contains(where: { $0 != 0 })
+        if let isOn = property(for: .isRunningSomewhere) {
+            return isOn != 0
         } else {
             return false
         }

@@ -16,18 +16,18 @@ private class CameraUpdateSignaler: SensorProviderUpdateSignaler {
         self.signal = signal
 
         #if canImport(CoreMediaIO)
-        addObserver(for: CMIOObjectID(kCMIOObjectSystemObject), address: .allCameras)
+        addObserver(for: CMIOObjectID(kCMIOObjectSystemObject), address: .allDevices)
         #endif
     }
 
     #if canImport(CoreMediaIO)
-    func addObserver(
+    func addObserver<PropertyType>(
         for object: CMIOObjectID,
-        address: CMIOObjectPropertyAddress
+        address: HACoreMediaProperty<PropertyType>
     ) {
         guard !observedObjects.contains(object) else { return }
 
-        let observedStatus = withUnsafePointer(to: address) { ptr in
+        let observedStatus = withUnsafePointer(to: address.address) { ptr in
             OSStatus(CMIOObjectAddPropertyListenerBlock(object, ptr, .main, { [weak self] _, _ in
                 Current.Log.info("camera info updated for \(object)")
                 self?.signal()
@@ -63,7 +63,7 @@ public class MacCameraSensor: SensorProvider {
             systemObject.allCameras
         }.mapValues { (camera: HACoreMediaObjectCamera) -> WebhookSensor in
             let sensor = Self.sensor(camera: camera)
-            updateSignaler.addObserver(for: camera.id, address: .cameraIsOn)
+            updateSignaler.addObserver(for: camera.id, address: .isRunningSomewhere)
             return sensor
         }.recover { (error) -> Promise<[WebhookSensor]> in
             if case PMKError.compactMap = error {
@@ -77,7 +77,7 @@ public class MacCameraSensor: SensorProvider {
     private static func sensor(camera: HACoreMediaObjectCamera) -> WebhookSensor {
         let sensor = WebhookSensor(
             name: camera.name ?? "Unknown Camera",
-            uniqueID: "camera_\(camera.deviceID)",
+            uniqueID: "camera_\(camera.deviceUID)",
             icon: camera.isOn ? "mdi:camera" : "mdi:camera-off",
             state: camera.isOn
         )
