@@ -27,11 +27,11 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         scene.sizeRestrictions?.maximumSize.width = 800.0
         scene.sizeRestrictions?.minimumSize.width = 300.0
 
+        // never activate these basic scenes scene for anything incoming
+        scene.activationConditions.canActivateForTargetContentIdentifierPredicate = NSPredicate(value: false)
+
         let window = WebViewWindowController.window(scene: scene)
         window.rootViewController = config.rootViewController
-
-        // never activate the settings scene for anything incoming
-        scene.activationConditions.canActivateForTargetContentIdentifierPredicate = NSPredicate(value: false)
 
         #if targetEnvironment(macCatalyst)
         if let titlebar = scene.titlebar {
