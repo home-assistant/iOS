@@ -9,7 +9,7 @@ class HACoreMediaObject {
         self.id = id
     }
 
-    func property<T>(for address: HACoreMediaProperty<T>) -> T? {
+    func property<T>(for property: HACoreMediaProperty<T>) -> T? {
         let propsize: UInt32 = UInt32(MemoryLayout<T>.size)
 
         let data = UnsafeMutableRawPointer.allocate(
@@ -20,7 +20,7 @@ class HACoreMediaObject {
             data.deallocate()
         }
 
-        let result = withUnsafePointer(to: address.address) { addressPtr -> OSStatus in
+        let result = withUnsafePointer(to: property.address) { addressPtr -> OSStatus in
             var dataUsed: UInt32 = 0
             return OSStatus(CMIOObjectGetPropertyData(id, addressPtr, 0, nil, propsize, &dataUsed, data))
         }
@@ -32,13 +32,13 @@ class HACoreMediaObject {
         }
     }
 
-    func property<ValueType>(for address: HACoreMediaProperty<[ValueType]>) -> [ValueType]? {
+    func property<ValueType>(for property: HACoreMediaProperty<[ValueType]>) -> [ValueType]? {
         var countBytes: UInt32 = 0
-        let countResult = withUnsafePointer(to: address.address) { addressPtr -> OSStatus in
+        let countResult = withUnsafePointer(to: property.address) { addressPtr -> OSStatus in
             OSStatus(CMIOObjectGetPropertyDataSize(id, addressPtr, 0, nil, &countBytes))
         }
 
-        guard countResult == OSStatus(kCMIOHardwareNoError) else {
+        guard countResult == OSStatus(kCMIOHardwareNoError), countBytes > 0 else {
             return nil
         }
 
@@ -51,7 +51,7 @@ class HACoreMediaObject {
             data.deallocate()
         }
 
-        let getResult = withUnsafePointer(to: address.address) { addressPtr -> OSStatus in
+        let getResult = withUnsafePointer(to: property.address) { addressPtr -> OSStatus in
             var dataUsed: UInt32 = 0
             return OSStatus(CMIOObjectGetPropertyData(id, addressPtr, 0, nil, countBytes, &dataUsed, data))
         }
