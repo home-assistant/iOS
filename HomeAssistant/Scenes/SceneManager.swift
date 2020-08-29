@@ -30,7 +30,7 @@ struct SceneManagerPreSceneCompatibility {
         (self.windowControllerPromise, self.windowControllerSeal) = Guarantee<WebViewWindowController>.pending()
     }
 
-    mutating func start() {
+    mutating func willFinishLaunching() {
         let window = UIWindow(haForiOS12: ())
         let windowController = WebViewWindowController(window: window, restorationActivity: nil)
         self.windowController = windowController
@@ -38,8 +38,8 @@ struct SceneManagerPreSceneCompatibility {
         windowControllerSeal(windowController)
     }
 
-    func setup() {
-        windowControllerPromise.done { $0.setup() }
+    mutating func didFinishLaunching() {
+        windowController?.setup()
     }
 }
 

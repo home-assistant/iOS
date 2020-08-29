@@ -117,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         } else {
             // window must be created before willFinishLaunching completes, or state restoration will not occur
-            sceneManager.compatibility.start()
+            sceneManager.compatibility.willFinishLaunching()
         }
 
         return true
@@ -134,7 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13, *) {
 
         } else {
-            sceneManager.compatibility.setup()
+            sceneManager.compatibility.didFinishLaunching()
         }
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
