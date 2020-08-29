@@ -26,7 +26,7 @@ class HACoreMediaObject {
         }
 
         if result == OSStatus(kCMIOHardwareNoError) {
-            return data.bindMemory(to: T.self, capacity: 1).pointee
+            return data.load(as: T.self)
         } else {
             return nil
         }
