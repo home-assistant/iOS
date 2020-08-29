@@ -5,7 +5,7 @@ import CoreMediaIO
 
 class HACoreMediaObjectCamera: HACoreMediaObject {
     var deviceUID: String {
-        if let string = property(for: .deviceUID) {
+        if let string = value(for: .deviceUID) {
             return string.takeRetainedValue() as String
         } else {
             return "\(id)"
@@ -13,7 +13,7 @@ class HACoreMediaObjectCamera: HACoreMediaObject {
     }
 
     var name: String? {
-        if let cfString = property(for: .name) {
+        if let cfString = value(for: .name) {
             return cfString.takeRetainedValue() as String
         } else {
             return nil
@@ -21,7 +21,7 @@ class HACoreMediaObjectCamera: HACoreMediaObject {
     }
 
     var manufacturer: String? {
-        if let cfString = property(for: .manufacturer) {
+        if let cfString = value(for: .manufacturer) {
             return cfString.takeRetainedValue() as String
         } else {
             return nil
@@ -29,7 +29,7 @@ class HACoreMediaObjectCamera: HACoreMediaObject {
     }
 
     var isOn: Bool {
-        if let isOn = property(for: .isRunningSomewhere) {
+        if let isOn = value(for: .isRunningSomewhere) {
             return isOn != 0
         } else {
             return false

@@ -9,7 +9,7 @@ class HACoreMediaObject {
         self.id = id
     }
 
-    func property<T>(for property: HACoreMediaProperty<T>) -> T? {
+    func value<T>(for property: HACoreMediaProperty<T>) -> T? {
         let propsize: UInt32 = UInt32(MemoryLayout<T>.size)
 
         let data = UnsafeMutableRawPointer.allocate(
@@ -32,7 +32,7 @@ class HACoreMediaObject {
         }
     }
 
-    func property<ValueType>(for property: HACoreMediaProperty<[ValueType]>) -> [ValueType]? {
+    func value<ValueType>(for property: HACoreMediaProperty<[ValueType]>) -> [ValueType]? {
         var countBytes: UInt32 = 0
         let countResult = withUnsafePointer(to: property.address) { addressPtr -> OSStatus in
             OSStatus(CMIOObjectGetPropertyDataSize(id, addressPtr, 0, nil, &countBytes))
