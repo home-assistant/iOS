@@ -30,7 +30,7 @@ struct SceneManagerPreSceneCompatibility {
 
     mutating func start() {
         let window = UIWindow(haForiOS12: ())
-        let windowController = WebViewWindowController(window: window)
+        let windowController = WebViewWindowController(window: window, restorationActivity: nil)
         self.windowController = windowController
         self.urlHandler = IncomingURLHandler(windowController: windowController)
         windowControllerSeal(windowController)

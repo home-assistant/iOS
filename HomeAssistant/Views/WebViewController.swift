@@ -36,10 +36,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         withRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        let webViewController = WebViewController()
-        // although the system is also going to call through this restoration method, it's going to do it _too late_
-        webViewController.decodeRestorableState(with: coder)
-        return webViewController
+        if #available(iOS 13, *) {
+            return nil
+        } else {
+            let webViewController = WebViewController(restorationActivity: nil)
+            // although the system is also going to call through this restoration method, it's going to do it _too late_
+            webViewController.decodeRestorableState(with: coder)
+            return webViewController
+        }
     }
 
     let settingsButton: UIButton! = {
@@ -70,26 +74,38 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        coder.encode(webView.url as NSURL?, forKey: RestorableStateKey.lastURL.rawValue)
+        if #available(iOS 13, *) {
+
+        } else {
+            super.encodeRestorableState(with: coder)
+            coder.encode(webView.url as NSURL?, forKey: RestorableStateKey.lastURL.rawValue)
+        }
     }
 
     override func decodeRestorableState(with coder: NSCoder) {
-        guard !isViewLoaded else {
-            // this is state decoding late in the cycle, not our initial one; ignore.
-            return
-        }
+        if #available(iOS 13, *) {
 
-        initialURL = coder.decodeObject(of: NSURL.self, forKey: RestorableStateKey.lastURL.rawValue) as URL?
-        super.decodeRestorableState(with: coder)
+        } else {
+            guard !isViewLoaded else {
+                // this is state decoding late in the cycle, not our initial one; ignore.
+                return
+            }
+
+            initialURL = coder.decodeObject(of: NSURL.self, forKey: RestorableStateKey.lastURL.rawValue) as URL?
+            super.decodeRestorableState(with: coder)
+        }
     }
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        restorationClass = Self.self
-        restorationIdentifier = String(describing: Self.self)
+        if #available(iOS 13, *) {
+
+        } else {
+            restorationClass = Self.self
+            restorationIdentifier = String(describing: Self.self)
+        }
 
         self.becomeFirstResponder()
         // self.showWhatsNew()
@@ -160,18 +176,23 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         self.webView.isOpaque = false
         self.view!.addSubview(webView)
 
-        urlObserver = self.webView.observe(\.url) { (webView, _) in
-            if let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
-                let cleanURL = URL(string: currentURL), let scheme = cleanURL.scheme {
-                if !scheme.hasPrefix("http") {
-                    Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(currentURL)")
-                    return
-                }
-                self.userActivity = NSUserActivity(activityType: "\(Constants.BundleID).frontend")
-                self.userActivity?.isEligibleForHandoff = true
-                self.userActivity?.webpageURL = cleanURL
-                self.userActivity?.becomeCurrent()
+        urlObserver = self.webView.observe(\.url) { [weak self] (webView, _) in
+            guard let self = self else { return }
+
+            guard let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
+                  let cleanURL = URL(string: currentURL), let scheme = cleanURL.scheme
+            else {
+                return
             }
+
+            guard scheme.hasPrefix("http") else {
+                Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(currentURL)")
+                return
+            }
+
+            self.userActivity?.webpageURL = cleanURL
+            self.userActivity?.userInfo = [RestorableStateKey.lastURL.rawValue: cleanURL]
+            self.userActivity?.becomeCurrent()
         }
 
         self.webView.navigationDelegate = self
@@ -256,6 +277,23 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.userActivity?.resignCurrent()
+    }
+
+    init(restorationActivity: NSUserActivity?) {
+        super.init(nibName: nil, bundle: nil)
+
+        userActivity = with(NSUserActivity(activityType: "\(Constants.BundleID).frontend")) {
+            $0.isEligibleForHandoff = true
+        }
+
+        if let url = restorationActivity?.userInfo?[RestorableStateKey.lastURL.rawValue] as? URL {
+            initialURL = url
+        }
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     deinit {

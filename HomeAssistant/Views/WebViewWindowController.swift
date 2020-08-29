@@ -11,12 +11,16 @@ enum StateRestorationKey: String {
 
 class WebViewWindowController {
     let window: UIWindow
+    var restorationActivity: NSUserActivity?
+
     var webViewControllerPromise: Guarantee<WebViewController>
 
     private var webViewControllerSeal: (WebViewController) -> Void
 
-    init(window: UIWindow) {
+    init(window: UIWindow, restorationActivity: NSUserActivity?) {
         self.window = window
+        self.restorationActivity = restorationActivity
+
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
 
         Current.authenticationControllerPresenter = { [weak self] controller in
@@ -47,8 +51,16 @@ class WebViewWindowController {
 
         Current.onboardingComplete = { [weak self] in
             guard let self = self else { return }
-            self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController()))
+            self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController(
+                restorationActivity: self.restorationActivity
+            )))
+
+            self.restorationActivity = nil
         }
+    }
+
+    func stateRestorationActivity() -> NSUserActivity? {
+        webViewControllerPromise.value?.userActivity
     }
 
     private func updateRootViewController(to newValue: UIViewController) {
@@ -109,9 +121,11 @@ class WebViewWindowController {
                 updateRootViewController(to: rootController)
             } else {
                 Current.Log.info("state restoration didn't load anything, constructing controllers manually")
-                let webViewController = WebViewController()
+                let webViewController = WebViewController(restorationActivity: restorationActivity)
                 let navController = webViewNavigationController(rootViewController: webViewController)
                 updateRootViewController(to: navController)
+
+                restorationActivity = nil
             }
         }
     }

@@ -16,10 +16,12 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         guard let scene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(haScene: scene)
-        let windowController = WebViewWindowController(window: window)
+        let windowController = WebViewWindowController(
+            window: window,
+            restorationActivity: session.stateRestorationActivity
+        )
         self.window = window
         self.windowController = windowController
-
         self.urlHandler = IncomingURLHandler(windowController: windowController)
 
         windowController.setup()
@@ -38,6 +40,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     func sceneDidDisconnect(_ scene: UIScene) {
         windowController = nil
         window = nil
+        urlHandler = nil
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -47,7 +50,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
-        nil
+        windowController?.stateRestorationActivity()
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
