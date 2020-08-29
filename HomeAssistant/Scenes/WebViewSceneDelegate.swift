@@ -15,7 +15,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         guard let scene = scene as? UIWindowScene else { return }
 
-        let window = WebViewWindowController.window(scene: scene)
+        let window = UIWindow(haScene: scene)
         let windowController = WebViewWindowController(window: window)
         self.window = window
         self.windowController = windowController

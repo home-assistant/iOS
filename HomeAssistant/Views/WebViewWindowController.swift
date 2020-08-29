@@ -3,6 +3,7 @@ import UIKit
 import Shared
 import PromiseKit
 
+@available(iOS, deprecated: 13.0)
 enum StateRestorationKey: String {
     case mainWindow
     case webViewNavigationController
@@ -13,22 +14,6 @@ class WebViewWindowController {
     var webViewControllerPromise: Guarantee<WebViewController>
 
     private var webViewControllerSeal: (WebViewController) -> Void
-
-    @available(iOS 13, *)
-    static func window(scene: UIWindowScene) -> UIWindow {
-        return with(UIWindow(windowScene: scene)) {
-            $0.tintColor = Constants.tintColor
-            $0.makeKeyAndVisible()
-        }
-    }
-
-    static func window(foriOS12: ()) -> UIWindow {
-        return with(UIWindow(frame: UIScreen.main.bounds)) {
-            $0.tintColor = Constants.tintColor
-            $0.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
-            $0.makeKeyAndVisible()
-        }
-    }
 
     init(window: UIWindow) {
         self.window = window
@@ -100,7 +85,13 @@ class WebViewWindowController {
 
     private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
         let navigationController = UINavigationController()
-        navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
+
+        if #available(iOS 13, *) {
+
+        } else {
+            navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
+        }
+
         if let rootViewController = rootViewController {
             navigationController.viewControllers = [rootViewController]
         }

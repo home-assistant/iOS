@@ -17,6 +17,7 @@ extension UIWindowSceneDelegate {
     }
 }
 
+@available(iOS, deprecated: 13.0)
 struct SceneManagerPreSceneCompatibility {
     var windowController: WebViewWindowController?
     var urlHandler: IncomingURLHandler?
@@ -28,7 +29,7 @@ struct SceneManagerPreSceneCompatibility {
     }
 
     mutating func start() {
-        let window = WebViewWindowController.window(foriOS12: ())
+        let window = UIWindow(haForiOS12: ())
         let windowController = WebViewWindowController(window: window)
         self.windowController = windowController
         self.urlHandler = IncomingURLHandler(windowController: windowController)

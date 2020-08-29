@@ -287,14 +287,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        if Current.settingsStore.restoreLastURL == false {
-            // if we let it capture state -- even if we don't use the url -- it will take a screenshot
-            Current.Log.info("disallowing state to be saved due to setting")
+        if #available(iOS 13, *) {
             return false
-        }
+        } else {
+            if Current.settingsStore.restoreLastURL == false {
+                // if we let it capture state -- even if we don't use the url -- it will take a screenshot
+                Current.Log.info("disallowing state to be saved due to setting")
+                return false
+            }
 
-        Current.Log.info("allowing state to be saved")
-        return true
+            Current.Log.info("allowing state to be saved")
+            return true
+        }
     }
 
     func application(

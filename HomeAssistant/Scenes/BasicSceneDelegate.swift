@@ -30,7 +30,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         // never activate these basic scenes scene for anything incoming
         scene.activationConditions.canActivateForTargetContentIdentifierPredicate = NSPredicate(value: false)
 
-        let window = WebViewWindowController.window(scene: scene)
+        let window = UIWindow(haScene: scene)
         window.rootViewController = config.rootViewController
         self.window = window
 
