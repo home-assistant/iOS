@@ -82,8 +82,6 @@ class SceneManager {
     private func existingScenes(for activity: SceneActivity) -> [UIScene] {
         UIApplication.shared.connectedScenes.filter { scene in
             scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
-        }.filter {
-            $0.activationState != .unattached
         }.sorted { a, b in
             switch (a.activationState, b.activationState) {
             case (.unattached, .unattached): return true
@@ -131,6 +129,8 @@ class SceneManager {
             )
             return .value(delegate)
         }
+
+        assert(supportsMultipleScenes, "if we don't support multiple scenes, how are we running without one?")
 
         let (promise, resolver) = Guarantee<DelegateType>.pending()
 

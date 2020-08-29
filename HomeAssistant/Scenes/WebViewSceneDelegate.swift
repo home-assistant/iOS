@@ -43,6 +43,12 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             self.windowScene(scene, performActionFor: shortcutItem, completionHandler: { _ in })
         }
 
+        if !connectionOptions.userActivities.isEmpty {
+            for activity in connectionOptions.userActivities {
+                self.scene(scene, continue: activity)
+            }
+        }
+
         informManager(from: connectionOptions)
     }
 
