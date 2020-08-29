@@ -83,6 +83,7 @@ public class MacCameraSensor: SensorProvider {
             state: camera.isOn
         )
 
+        sensor.Type = "binary_sensor"
         sensor.Attributes = [
             "Manufacturer": camera.manufacturer ?? "Unknown"
         ]
