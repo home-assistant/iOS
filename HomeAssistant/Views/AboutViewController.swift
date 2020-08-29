@@ -20,9 +20,11 @@ class AboutViewController: FormViewController {
 
         self.title = L10n.About.title
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                                 target: self,
-                                                                 action: #selector(AboutViewController.close(_:)))
+        if !Current.isCatalyst {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                                     target: self,
+                                                                     action: #selector(AboutViewController.close(_:)))
+        }
 
         func pushLookingButtonRow(_ configure: (ButtonRow) -> Void) -> ButtonRow {
             let row = ButtonRow(nil, configure)

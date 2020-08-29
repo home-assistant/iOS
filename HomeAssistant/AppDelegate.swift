@@ -33,14 +33,36 @@ let keychain = Constants.Keychain
 
 let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
+private extension UIApplication {
+    var typedDelegate: AppDelegate {
+        // swiftlint:disable:next force_cast
+        delegate as! AppDelegate
+    }
+}
+
+extension Environment {
+    var sceneManager: SceneManager {
+        UIApplication.shared.typedDelegate.sceneManager
+    }
+}
+
 @UIApplicationMain
 // swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
-    var safariVC: SFSafariViewController?
+    var window: UIWindow? {
+        get {
+            if #available(iOS 13, *) {
+                return nil
+            } else {
+                return sceneManager.compatibility.windowController?.window
+            }
+        }
+        set { // swiftlint:disable:this unused_setter_value
+            fatalError("window is not settable in app delegate")
+        }
+    }
 
-    private var webViewControllerPromise: Guarantee<WebViewController>
-    private var webViewControllerSeal: (WebViewController) -> Void
+    let sceneManager = SceneManager()
 
     private var zoneManager: ZoneManager?
 
@@ -50,16 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 periodicUpdateTimer?.invalidate()
             }
         }
-    }
-
-    override init() {
-        (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
-        super.init()
-    }
-
-    enum StateRestorationKey: String {
-        case mainWindow
-        case webViewNavigationController
     }
 
     func application(
@@ -98,8 +110,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                 type: .unknown)
         Current.clientEventStore.addEvent(event)
 
-        self.registerCallbackURLKitHandlers()
-
         self.zoneManager = ZoneManager()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
@@ -107,11 +117,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Iconic.registerMaterialDesignIcons()
 
         setupWatchCommunicator()
+        setupiOS12Features()
 
-        if #available(iOS 12.0, *) { setupiOS12Features() }
+        if #available(iOS 13, *) {
 
-        // window must be created before willFinishLaunching completes, or state restoration will not occur
-        setupWindow()
+        } else {
+            // window must be created before willFinishLaunching completes, or state restoration will not occur
+            sceneManager.compatibility.willFinishLaunching()
+        }
 
         return true
     }
@@ -122,7 +135,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        setupView()
+        setupTokens()
+
+        if #available(iOS 13, *) {
+
+        } else {
+            sceneManager.compatibility.didFinishLaunching()
+        }
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
         connectAPI(reason: .cold)
@@ -160,82 +179,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func setupWindow() {
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.tintColor = Constants.tintColor
-        window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
-        window.makeKeyAndVisible()
-        self.window = window
-    }
-
-    func updateRootViewController(to newValue: UIViewController) {
-        let newWebViewController = newValue.children.compactMap { $0 as? WebViewController }.first
-
-        // must be before the seal fires, or it may request during deinit of an old one
-        window?.rootViewController = newValue
-
-        if let newWebViewController = newWebViewController {
-            // any kind of ->webviewcontroller is the same, even if we are for some reason replacing an existing one
-            if webViewControllerPromise.isFulfilled {
-                webViewControllerPromise = .value(newWebViewController)
-            } else {
-                webViewControllerSeal(newWebViewController)
-            }
-        } else if webViewControllerPromise.isFulfilled {
-            // replacing one, so set up a new promise if necessary
-            (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
-        }
-    }
-
-    func setupView() {
+    func setupTokens() {
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
-
-        if requiresOnboarding {
-            Current.Log.info("showing onboarding")
-            updateRootViewController(to: onboardingNavigationController())
-        } else {
-            if let rootController = window?.rootViewController, !rootController.children.isEmpty {
-                Current.Log.info("state restoration loaded controller, not creating a new one")
-                // not changing anything, but handle the promises
-                updateRootViewController(to: rootController)
-            } else {
-                Current.Log.info("state restoration didn't load anything, constructing controllers manually")
-                let webViewController = WebViewController()
-                let navController = webViewNavigationController(rootViewController: webViewController)
-                updateRootViewController(to: navController)
-            }
-        }
 
         if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-        }
-
-        Current.authenticationControllerPresenter = { controller in
-            var presenter: UIViewController? = self.window?.rootViewController
-
-            while let next = presenter?.presentedViewController {
-                presenter = next
-            }
-
-            presenter?.present(controller, animated: true, completion: nil)
-        }
-
-        Current.signInRequiredCallback = { type in
-            let controller = self.onboardingNavigationController()
-            self.updateRootViewController(to: controller)
-
-            if type.shouldShowError {
-                let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
-                                              message: L10n.Alerts.AuthRequired.message, preferredStyle: .alert)
-
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-
-                controller.present(alert, animated: true, completion: nil)
-            }
-        }
-
-        Current.onboardingComplete = {
-            self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController()))
         }
     }
 
@@ -246,28 +194,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13, *)
     @objc internal func openAbout() {
-        // TODO: multiple scenes, open window
-        let controller = AboutViewController()
-        let navigationController = UINavigationController(rootViewController: controller)
-        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
+        precondition(Current.sceneManager.supportsMultipleScenes)
+        sceneManager.activateAnyScene(for: .about)
     }
 
+    @available(iOS 13, *)
     @objc internal func openMenuUrl(_ command: AnyObject) {
-        guard #available(iOS 13, *), let command = command as? UICommand else {
+        guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
         }
 
-        if let url = MenuManager.url(from: command) {
-            _ = application(UIApplication.shared, open: url, options: [:])
+        let delegate: Guarantee<WebViewSceneDelegate> = sceneManager.scene(for: .init(activity: .webView))
+        delegate.done {
+            $0.urlHandler?.handle(url: url)
         }
     }
 
+    @available(iOS 13, *)
     @objc internal func openPreferences() {
-        // TODO: multiple scenes, open window
-        webViewControllerPromise.done {
-            $0.showSettingsViewController()
-        }
+        precondition(Current.sceneManager.supportsMultipleScenes)
+        sceneManager.activateAnyScene(for: .settings)
     }
 
     @objc internal func openHelp() {
@@ -312,34 +260,54 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {}
 
+    @available(iOS 13, *)
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        let activity = options.userActivities
+            .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
+            .first ?? .webView
+        return activity.configuration
+    }
+
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        if requiresOnboarding {
-            Current.Log.info("disallowing state to be restored due to onboarding")
+        if #available(iOS 13, *) {
             return false
-        }
+        } else {
+            if sceneManager.compatibility.windowController?.requiresOnboarding == true {
+                Current.Log.info("disallowing state to be restored due to onboarding")
+                return false
+            }
 
-        if Current.appConfiguration == .FastlaneSnapshot {
-            Current.Log.info("disallowing state to be restored due to fastlane snapshot")
-            return false
-        }
+            if Current.appConfiguration == .FastlaneSnapshot {
+                Current.Log.info("disallowing state to be restored due to fastlane snapshot")
+                return false
+            }
 
-        if NSClassFromString("XCTest") != nil {
-            return false
-        }
+            if NSClassFromString("XCTest") != nil {
+                return false
+            }
 
-        Current.Log.info("allowing state to be restored")
-        return true
+            Current.Log.info("allowing state to be restored")
+            return true
+        }
     }
 
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        if Current.settingsStore.restoreLastURL == false {
-            // if we let it capture state -- even if we don't use the url -- it will take a screenshot
-            Current.Log.info("disallowing state to be saved due to setting")
+        if #available(iOS 13, *) {
             return false
-        }
+        } else {
+            if Current.settingsStore.restoreLastURL == false {
+                // if we let it capture state -- even if we don't use the url -- it will take a screenshot
+                Current.Log.info("disallowing state to be saved due to setting")
+                return false
+            }
 
-        Current.Log.info("allowing state to be saved")
-        return true
+            Current.Log.info("allowing state to be saved")
+            return true
+        }
     }
 
     func application(
@@ -347,12 +315,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewControllerWithRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        if identifierComponents == [StateRestorationKey.webViewNavigationController.rawValue] {
-            let navigationController = webViewNavigationController()
-            window?.rootViewController = navigationController
-            return navigationController
-        } else {
+        if #available(iOS 13, *) {
             return nil
+        } else {
+            return sceneManager.compatibility.windowController?.viewController(
+                withRestorationIdentifierPath: identifierComponents
+            )
         }
     }
 
@@ -451,77 +419,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func application(_ app: UIApplication,
-                     open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        Current.Log.verbose("Received URL: \(url)")
-        var serviceData: [String: String] = [:]
-        if let queryItems = url.queryItems {
-            serviceData = queryItems
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        if #available(iOS 13, *) {
+            fatalError("scene delegate should be invoked on iOS 13")
+        } else {
+            return sceneManager.compatibility.urlHandler?.handle(url: url) ?? false
         }
-        guard let host = url.host else { return true }
-        switch host.lowercased() {
-        case "x-callback-url":
-            return Manager.shared.handleOpen(url: url)
-        case "call_service":
-            callServiceURLHandler(url, serviceData)
-        case "fire_event":
-            fireEventURLHandler(url, serviceData)
-        case "send_location":
-            sendLocationURLHandler()
-        case "perform_action":
-            performActionURLHandler(url, serviceData: serviceData)
-        case "auth-callback": // homeassistant://auth-callback
-           NotificationCenter.default.post(name: Notification.Name("AuthCallback"), object: nil,
-                                           userInfo: ["url": url])
-        default:
-            Current.Log.warning("Can't route incoming URL: \(url)")
-            showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
-        }
-        return true
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem,
                      completionHandler: @escaping (Bool) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completionHandler(false)
-            return
-        }
-
-        application.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
-            if shortcutItem.type == "sendLocation" {
-                return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
-            } else {
-                return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+        if #available(iOS 13, *) {
+            fatalError("scene delegate should be invoked on iOS 13")
+        } else {
+            enum NoHandler: Error {
+                case noHandler
             }
-        }.done {
-            completionHandler(true)
-        }.catch { error in
-            Current.Log.error("Received error from handleAction during App Shortcut: \(error)")
-            completionHandler(false)
+
+            firstly { () -> Promise<Void> in
+                if let handler = sceneManager.compatibility.urlHandler {
+                    return handler.handle(shortcutItem: shortcutItem)
+                } else {
+                    throw NoHandler.noHandler
+                }
+            }.done {
+                completionHandler(true)
+            }.catch { _ in
+                completionHandler(false)
+            }
         }
     }
 
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity,
-                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        Current.Log.info(userActivity)
-
-        switch Current.tags.handle(userActivity: userActivity) {
-        case .handled(let type):
-            let (icon, text) = { () -> (MaterialDesignIcons, String) in
-                 switch type {
-                 case .nfc:
-                     return (.nfcVariantIcon, L10n.Nfc.tagRead)
-                 case .generic:
-                     return (.qrcodeIcon, L10n.Nfc.genericTagRead)
-                 }
-             }()
-            showFullScreenConfirm(icon: icon, text: text)
-            return true
-        case .unhandled:
-            return false
-        case .open(let url):
-            // NFC-based URL
-            return self.application(application, open: url)
+    func application(
+        _ application: UIApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
+    ) -> Bool {
+        if #available(iOS 13, *) {
+            fatalError("scene delegate should be invoked on iOS 13")
+        } else {
+            return sceneManager.compatibility.urlHandler?.handle(userActivity: userActivity) ?? false
         }
     }
 
@@ -540,28 +481,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Private helpers
-
-    private var requiresOnboarding: Bool {
-        if HomeAssistantAPI.authenticatedAPI() == nil {
-            Current.Log.info("requiring onboarding due to no auth token")
-            return true
-        }
-
-        return false
-    }
-
-    private func onboardingNavigationController() -> UINavigationController {
-        return StoryboardScene.Onboarding.navController.instantiate()
-    }
-
-    private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
-        let navigationController = UINavigationController()
-        navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
-        if let rootViewController = rootViewController {
-            navigationController.viewControllers = [rootViewController]
-        }
-        return navigationController
-    }
 
     private func invalidatePeriodicUpdateTimer() {
         periodicUpdateTimer = nil
@@ -603,175 +522,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.finally {
             self.schedulePeriodicUpdateTimer()
         }
-    }
-
-    // swiftlint:disable:next function_body_length
-    private func registerCallbackURLKitHandlers() {
-        Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
-
-        Manager.shared["fire_event"] = { parameters, success, failure, cancel in
-            guard let eventName = parameters["eventName"] else {
-                failure(XCallbackError.eventNameMissing)
-                return
-            }
-
-            var cleanParamters = parameters
-            cleanParamters.removeValue(forKey: "eventName")
-            let eventData = cleanParamters
-
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.done { _ in
-                success(nil)
-            }.catch { error -> Void in
-                Current.Log.error("Received error from createEvent during X-Callback-URL call: \(error)")
-                failure(XCallbackError.generalError)
-            }
-        }
-
-        Manager.shared["call_service"] = { parameters, success, failure, cancel in
-            guard let service = parameters["service"] else {
-                failure(XCallbackError.serviceMissing)
-                return
-            }
-
-            let splitService = service.components(separatedBy: ".")
-            let serviceDomain = splitService[0]
-            let serviceName = splitService[1]
-
-            var cleanParamters = parameters
-            cleanParamters.removeValue(forKey: "service")
-            let serviceData = cleanParamters
-
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
-            }.done { _ in
-                success(nil)
-            }.catch { error in
-                Current.Log.error("Received error from callService during X-Callback-URL call: \(error)")
-                failure(XCallbackError.generalError)
-            }
-        }
-
-        Manager.shared["send_location"] = { parameters, success, failure, cancel in
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.GetAndSendLocation(trigger: .XCallbackURL)
-            }.done { _ in
-                success(nil)
-            }.catch { error in
-                Current.Log.error("Received error from getAndSendLocation during X-Callback-URL call: \(error)")
-                failure(XCallbackError.generalError)
-            }
-        }
-
-        Manager.shared["render_template"] = { parameters, success, failure, cancel in
-            guard let template = parameters["template"] else {
-                failure(XCallbackError.templateMissing)
-                return
-            }
-
-            var cleanParamters = parameters
-            cleanParamters.removeValue(forKey: "template")
-            let variablesDict = cleanParamters
-
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.RenderTemplate(templateStr: template, variables: variablesDict)
-            }.done { rendered in
-                success(["rendered": rendered])
-            }.catch { error in
-                Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
-                failure(XCallbackError.generalError)
-            }
-        }
-    }
-
-    private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
-        // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
-
-        _ = firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
-                          message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
-            }.catch { error -> Void in
-                showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
-                                                                           error.localizedDescription))
-        }
-    }
-
-    private func callServiceURLHandler(_ url: URL, _ serviceData: [String: String]) {
-        // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-        let domain = url.pathComponents[1].components(separatedBy: ".")[0]
-        let service = url.pathComponents[1].components(separatedBy: ".")[1]
-
-        _ = firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CallService(domain: domain, service: service, serviceData: serviceData)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.CallService.Success.title,
-                          message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
-            }.catch { error in
-                showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
-                                                                             error.localizedDescription))
-        }
-    }
-
-    private func sendLocationURLHandler() {
-        // homeassistant://send_location/
-        _ = firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.GetAndSendLocation(trigger: .URLScheme)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
-                          message: L10n.UrlHandler.SendLocation.Success.message)
-            }.catch { error in
-                showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
-        }
-    }
-
-    private func performActionURLHandler(_ url: URL, serviceData: [String: String]) {
-        let pathComponents = url.pathComponents
-        guard pathComponents.count > 1 else {
-            Current.Log.error("not enough path components for perform action handler")
-            return
-        }
-
-        let source: HomeAssistantAPI.ActionSource = {
-            if let sourceString = serviceData["source"],
-               let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
-                return source
-            } else {
-                return .URLHandler
-            }
-        }()
-
-        let actionID = url.pathComponents[1]
-
-        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-            showFullScreenConfirm(icon: .alertCircleIcon, text: L10n.UrlHandler.Error.actionNotFound)
-            return
-        }
-
-        showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
-
-        HomeAssistantAPI.authenticatedAPI()?
-            .HandleAction(actionID: actionID, source: source)
-            .cauterize()
     }
 
     func checkForUpdate() {
@@ -851,7 +601,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 12.0, *)
     func setupiOS12Features() {
         // Tell the system we have a app notification settings screen and want critical alerts
         // This is effectively a migration
@@ -1104,48 +853,6 @@ extension AppConfiguration {
 #endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    private func open(urlString openUrlRaw: String) {
-        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
-            webViewControllerPromise.done { webViewController in
-                webViewController.open(inline: webviewURL)
-            }
-        } else if let url = URL(string: openUrlRaw) {
-            let presentingViewController = { () -> UIViewController? in
-                var rootViewController = self.window!.rootViewController
-                while let controller = rootViewController?.presentedViewController {
-                    rootViewController = controller
-                }
-                return rootViewController
-            }
-
-            let triggerOpen = {
-                openURLInBrowser(url, presentingViewController())
-            }
-
-            if prefs.bool(forKey: "confirmBeforeOpeningUrl"), let presenter = presentingViewController() {
-                let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
-                                              message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
-                                              preferredStyle: UIAlertController.Style.alert)
-                alert.addAction(UIAlertAction(
-                    title: L10n.noLabel,
-                    style: UIAlertAction.Style.default,
-                    handler: nil
-                ))
-                alert.addAction(UIAlertAction(
-                    title: L10n.yesLabel,
-                    style: UIAlertAction.Style.default
-                ) { _ in
-                    triggerOpen()
-                })
-
-                alert.popoverPresentationController?.sourceView = presenter.view
-                presenter.present(alert, animated: true, completion: nil)
-            } else {
-                triggerOpen()
-            }
-        }
-    }
-
     // swiftlint:disable:next function_body_length
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -1178,7 +885,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
 
         if let openURLRaw = userInfo["url"] as? String {
-            open(urlString: openURLRaw)
+            sceneManager.webViewWindowControllerPromise.done { $0.open(urlString: openURLRaw) }
         } else if let openURLDictionary = userInfo["url"] as? [String: String] {
             let url = openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -1192,7 +899,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }.first
 
             if let url = url {
-                open(urlString: url)
+                sceneManager.webViewWindowControllerPromise.done { $0.open(urlString: url) }
             } else {
                 Current.Log.error(
                     "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
@@ -1262,39 +969,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let navController = UINavigationController(rootViewController: view)
             rootViewController?.present(navController, animated: true, completion: nil)
         })
-    }
-}
-
-enum XCallbackError: FailureCallbackError {
-    case generalError
-    case eventNameMissing
-    case serviceMissing
-    case templateMissing
-
-    var code: Int {
-        switch self {
-        case .generalError:
-            return 0
-        case .eventNameMissing:
-            return 1
-        case .serviceMissing:
-            return 2
-        case .templateMissing:
-            return 2
-        }
-    }
-
-    var message: String {
-        switch self {
-        case .generalError:
-            return L10n.UrlHandler.XCallbackUrl.Error.general
-        case .eventNameMissing:
-            return L10n.UrlHandler.XCallbackUrl.Error.eventNameMissing
-        case .serviceMissing:
-            return L10n.UrlHandler.XCallbackUrl.Error.serviceMissing
-        case .templateMissing:
-            return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
-        }
     }
 }
 

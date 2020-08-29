@@ -63,14 +63,6 @@ func convertToDictionary(text: String) -> [String: Any]? {
     return nil
 }
 
-func showAlert(title: String, message: String) {
-    let alert = UIAlertController(title: title, message: message,
-                                  preferredStyle: UIAlertController.Style.alert)
-    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
-    UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true,
-                                                                completion: nil)
-}
-
 func setDefaults() {
     // before we reset the value, read in the last version number -- if it's pre-team migration, save that
     if let previous = prefs.string(forKey: "lastInstalledShortVersion"),

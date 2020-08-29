@@ -30,6 +30,8 @@ internal enum L10n {
   internal static let okLabel = L10n.tr("Localizable", "ok_label")
   /// On
   internal static let onLabel = L10n.tr("Localizable", "on_label")
+  /// Open
+  internal static let openLabel = L10n.tr("Localizable", "open_label")
   /// Preview Output
   internal static let previewOutput = L10n.tr("Localizable", "preview_output")
   /// Retry

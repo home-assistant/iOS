@@ -43,10 +43,13 @@ class ManualSetupViewController: UIViewController {
         }.catch { error in
             Current.Log.error("Couldn't make a URL: \(error)")
 
-            showAlert(
+            let alert = UIAlertController(
                 title: L10n.Onboarding.ManualSetup.CouldntMakeUrl.title,
-                message: L10n.Onboarding.ManualSetup.CouldntMakeUrl.message(self.urlField.text ?? "")
+                message: L10n.Onboarding.ManualSetup.CouldntMakeUrl.message(self.urlField.text ?? ""),
+                preferredStyle: .alert
             )
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 

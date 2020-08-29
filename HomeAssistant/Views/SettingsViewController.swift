@@ -34,6 +34,8 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         self.becomeFirstResponder()
 
+        title = L10n.Settings.NavigationBar.title
+
         ButtonRow.defaultCellSetup = { cell, row in
             cell.accessibilityIdentifier = row.tag
             cell.accessibilityLabel = row.title
@@ -45,7 +47,7 @@ class SettingsViewController: FormViewController {
         }
 
         if !Current.isCatalyst {
-            // About is in the Application menu on Catalyst
+            // About is in the Application menu on Catalyst, and closing the button is direct
 
             let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                               style: .plain, target: self,
@@ -54,11 +56,13 @@ class SettingsViewController: FormViewController {
             self.navigationItem.setLeftBarButton(aboutButton, animated: true)
         }
 
-        let closeSelector = #selector(SettingsViewController.closeSettings(_:))
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
-                                         action: closeSelector)
+        if !Current.sceneManager.supportsMultipleScenes {
+            let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
+                                             action: closeSelector)
 
-        self.navigationItem.setRightBarButton(doneButton, animated: true)
+            self.navigationItem.setRightBarButton(doneButton, animated: true)
+        }
 
         form +++ Section(L10n.Settings.StatusSection.header) {
             $0.tag = "status"
