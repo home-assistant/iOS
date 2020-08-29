@@ -424,22 +424,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem,
                      completionHandler: @escaping (Bool) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completionHandler(false)
-            return
-        }
-
-        application.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
-            if shortcutItem.type == "sendLocation" {
-                return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
-            } else {
-                return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+        if #available(iOS 13, *) {
+            fatalError("scene delegate should be invoked on iOS 13")
+        } else {
+            enum NoHandler: Error {
+                case noHandler
             }
-        }.done {
-            completionHandler(true)
-        }.catch { error in
-            Current.Log.error("Received error from handleAction during App Shortcut: \(error)")
-            completionHandler(false)
+
+            firstly { () -> Promise<Void> in
+                if let handler = sceneManager.compatibility.urlHandler {
+                    return handler.handle(shortcutItem: shortcutItem)
+                } else {
+                    throw NoHandler.noHandler
+                }
+            }.done {
+                completionHandler(true)
+            }.catch { _ in
+                completionHandler(false)
+            }
         }
     }
 

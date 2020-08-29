@@ -233,7 +233,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     public func showSettingsViewController() {
-        if Current.isCatalyst {
+        if #available(iOS 13, *), Current.isCatalyst {
             UIApplication.shared.typedDelegate.sceneManager.activateAnyScene(for: .settings)
         } else {
             let settingsView = SettingsViewController()

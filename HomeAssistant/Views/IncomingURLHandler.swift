@@ -65,6 +65,20 @@ class IncomingURLHandler {
         }
     }
 
+    func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
+        return firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            UIApplication.shared.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+                if shortcutItem.type == "sendLocation" {
+                    return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
+                } else {
+                    return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+                }
+            }
+        }
+    }
+
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(
             title: title,

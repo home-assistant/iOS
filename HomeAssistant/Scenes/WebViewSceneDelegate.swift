@@ -20,9 +20,10 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             window: window,
             restorationActivity: session.stateRestorationActivity
         )
+        let urlHandler = IncomingURLHandler(windowController: windowController)
         self.window = window
         self.windowController = windowController
-        self.urlHandler = IncomingURLHandler(windowController: windowController)
+        self.urlHandler = urlHandler
 
         windowController.setup()
 
@@ -34,6 +35,14 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         #endif
 
+        if !connectionOptions.urlContexts.isEmpty {
+            self.scene(scene, openURLContexts: connectionOptions.urlContexts)
+        }
+
+        if let shortcutItem = connectionOptions.shortcutItem {
+            self.windowScene(scene, performActionFor: shortcutItem, completionHandler: { _ in })
+        }
+
         informManager(from: connectionOptions)
     }
 
@@ -41,6 +50,19 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         windowController = nil
         window = nil
         urlHandler = nil
+    }
+
+    func windowScene(
+        _ windowScene: UIWindowScene,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        urlHandler?.handle(shortcutItem: shortcutItem)
+            .done {
+                completionHandler(true)
+            }.catch { _ in
+                completionHandler(false)
+            }
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

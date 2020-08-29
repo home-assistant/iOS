@@ -4,10 +4,12 @@ import PromiseKit
 import Shared
 
 // todo: can i combine this with the enum?
+@available(iOS 13, *)
 struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
     let activity: SceneActivity
 }
 
+@available(iOS 13, *)
 extension UIWindowSceneDelegate {
     func informManager(from connectionOptions: UIScene.ConnectionOptions) {
         let pendingResolver: (Self) -> Void = UIApplication.shared.typedDelegate.sceneManager
