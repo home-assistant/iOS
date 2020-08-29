@@ -5,15 +5,15 @@ import AVFoundation
 import CoreMediaIO
 #endif
 
-private class LiveUpdateInfo: SensorProviderLiveUpdateInfo {
-    let handler: () -> Void
+private class CameraUpdateSignaler: SensorProviderUpdateSignaler {
+    let signal: () -> Void
 
     #if canImport(CoreMediaIO)
     private var observedObjects = Set<CMIOObjectID>()
     #endif
 
-    required init(notifying: @escaping () -> Void) {
-        self.handler = notifying
+    required init(signal: @escaping () -> Void) {
+        self.signal = signal
 
         #if canImport(CoreMediaIO)
         addObserver(for: CMIOObjectID(kCMIOObjectSystemObject), address: .allCameras)
@@ -30,7 +30,7 @@ private class LiveUpdateInfo: SensorProviderLiveUpdateInfo {
         let observedStatus = withUnsafePointer(to: address) { ptr in
             OSStatus(CMIOObjectAddPropertyListenerBlock(object, ptr, .main, { [weak self] _, _ in
                 Current.Log.info("camera info updated for \(object)")
-                self?.handler()
+                self?.signal()
             }))
         }
 
@@ -55,7 +55,7 @@ public class MacCameraSensor: SensorProvider {
 
     #if canImport(CoreMediaIO)
     public func sensors() -> Promise<[WebhookSensor]> {
-        let liveUpdateInfo: LiveUpdateInfo = request.dependencies.liveUpdateInfo(for: self)
+        let updateSignaler: CameraUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         return firstly {
             Promise<Void>.value(())
@@ -63,10 +63,7 @@ public class MacCameraSensor: SensorProvider {
             systemObject.allCameras
         }.mapValues { (camera: HACoreMediaObjectCamera) -> WebhookSensor in
             let sensor = Self.sensor(camera: camera)
-            liveUpdateInfo.addObserver(
-                for: camera.id,
-                address: .cameraIsOn
-            )
+            updateSignaler.addObserver(for: camera.id, address: .cameraIsOn)
             return sensor
         }.recover { (error) -> Promise<[WebhookSensor]> in
             if case PMKError.compactMap = error {

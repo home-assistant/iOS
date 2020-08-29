@@ -73,7 +73,7 @@ class SensorListViewController: FormViewController, SensorObserver {
         }.cauterize()
     }
 
-    func sensorContainerRequestsUpdate(
+    func sensorContainerDidSignalForUpdate(
         _ container: SensorContainer
     ) {
         // we don't do anything for this

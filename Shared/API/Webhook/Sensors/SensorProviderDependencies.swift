@@ -1,30 +1,28 @@
 import Foundation
 
-public protocol SensorProviderLiveUpdateInfo: AnyObject {
-    init(notifying: @escaping () -> Void)
+public protocol SensorProviderUpdateSignaler: AnyObject {
+    init(signal: @escaping () -> Void)
 }
 
 public class SensorProviderDependencies {
-    internal var liveUpdateHandler: (SensorProvider.Type) -> Void = { _ in }
-    private var liveUpdateInfos = [
-        String: [SensorProviderLiveUpdateInfo]
-    ]()
+    internal var updateSignalHandler: (SensorProvider.Type) -> Void = { _ in }
+    private var updateSignalers: [String: [SensorProviderUpdateSignaler]] = [:]
 
-    public func liveUpdateInfo<InfoType: SensorProviderLiveUpdateInfo>(
+    public func updateSignaler<SignalerType: SensorProviderUpdateSignaler>(
         for sensorProvider: SensorProvider
-    ) -> InfoType {
+    ) -> SignalerType {
         let key = String(describing: type(of: sensorProvider))
 
-        if let existingValue = liveUpdateInfos[key]?.compactMap({ $0 as? InfoType }).first {
+        if let existingValue = updateSignalers[key]?.compactMap({ $0 as? SignalerType }).first {
             return existingValue
         }
 
         let sensorType = type(of: sensorProvider)
-        let created = InfoType.init(notifying: { [weak self] in
-            self?.liveUpdateHandler(sensorType)
+        let created = SignalerType.init(signal: { [weak self] in
+            self?.updateSignalHandler(sensorType)
         })
 
-        liveUpdateInfos[key, default: []] += [created]
+        updateSignalers[key, default: []] += [created]
         return created
     }
 }

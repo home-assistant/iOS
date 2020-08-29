@@ -3,12 +3,12 @@ import XCTest
 import PromiseKit
 
 class SensorProviderDependenciesTests: XCTestCase {
-    func testLiveUpdateInfoGivenHandler() {
+    func testUpdateSignalerGivenHandler() {
         let dependencies = SensorProviderDependencies()
 
         var updateType: SensorProvider.Type?
 
-        dependencies.liveUpdateHandler = { type in
+        dependencies.updateSignalHandler = { type in
             updateType = type
         }
 
@@ -18,14 +18,14 @@ class SensorProviderDependenciesTests: XCTestCase {
             location: nil
         ))
 
-        let info: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider)
+        let info: MockUpdateSignaler = dependencies.updateSignaler(for: provider)
         XCTAssertNil(updateType)
 
-        info.notify()
+        info.signal()
         XCTAssertTrue(updateType == MockSensorProvider1.self)
     }
 
-    func testLiveUpdateInfoCachesExisting() {
+    func testUpdateSignalerCachesExisting() {
         let dependencies = SensorProviderDependencies()
 
         let provider1 = MockSensorProvider1(request: .init(
@@ -39,12 +39,12 @@ class SensorProviderDependenciesTests: XCTestCase {
             location: nil
         ))
 
-        let info1: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider1)
-        let info2: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider2)
+        let info1: MockUpdateSignaler = dependencies.updateSignaler(for: provider1)
+        let info2: MockUpdateSignaler = dependencies.updateSignaler(for: provider2)
         XCTAssertTrue(info1 === info2)
     }
 
-    func testLiveUpdateInfoNotSharedAcrossProviders() {
+    func testUpdateSignalerNotSharedAcrossProviders() {
         let dependencies = SensorProviderDependencies()
 
         let provider1 = MockSensorProvider1(request: .init(
@@ -58,10 +58,10 @@ class SensorProviderDependenciesTests: XCTestCase {
             location: nil
         ))
 
-        let info1_1: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider1)
-        let info1_2: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider1)
-        let info2_1: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider2)
-        let info2_2: MockLiveUpdateInfo = dependencies.liveUpdateInfo(for: provider2)
+        let info1_1: MockUpdateSignaler = dependencies.updateSignaler(for: provider1)
+        let info1_2: MockUpdateSignaler = dependencies.updateSignaler(for: provider1)
+        let info2_1: MockUpdateSignaler = dependencies.updateSignaler(for: provider2)
+        let info2_2: MockUpdateSignaler = dependencies.updateSignaler(for: provider2)
         XCTAssertTrue(info1_1 !== info2_1)
         XCTAssertTrue(info1_1 === info1_2)
 
@@ -80,9 +80,9 @@ private class MockSensorProvider2: SensorProvider {
     func sensors() -> Promise<[WebhookSensor]> { fatalError() }
 }
 
-private class MockLiveUpdateInfo: SensorProviderLiveUpdateInfo {
-    let notify: () -> Void
-    required init(notifying: @escaping () -> Void) {
-        self.notify = notifying
+private class MockUpdateSignaler: SensorProviderUpdateSignaler {
+    let signal: () -> Void
+    required init(signal: @escaping () -> Void) {
+        self.signal = signal
     }
 }

@@ -763,7 +763,7 @@ Thank you.\
 "settings_sensors.periodic_update.off" = "Off";
 "location_change_notification.launch.body" = "Location updated via app launch";
 "location_change_notification.periodic.body" = "Location updated via periodic update";
-"location_change_notification.live.body" = "Location updated via live update";
+"location_change_notification.signaled.body" = "Location updated via update signal";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";

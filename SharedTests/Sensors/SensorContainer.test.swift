@@ -164,15 +164,15 @@ class SensorContainerTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(observer.requestedUpdateCount, 0)
+        XCTAssertEqual(observer.updateSignalCount, 0)
 
-        let info: MockLiveUpdateInfo = lastCreated
+        let info: MockUpdateSignaler = lastCreated
             .request
             .dependencies
-            .liveUpdateInfo(for: lastCreated)
-        info.notify()
+            .updateSignaler(for: lastCreated)
+        info.signal()
 
-        XCTAssertEqual(observer.requestedUpdateCount, 1)
+        XCTAssertEqual(observer.updateSignalCount, 1)
     }
 }
 
@@ -184,7 +184,7 @@ private extension WebhookSensor {
 
 private class MockSensorObserver: SensorObserver {
     var updates: [SensorObserverUpdate] = []
-    var requestedUpdateCount: Int = 0
+    var updateSignalCount: Int = 0
 
     func sensorContainer(
         _ container: SensorContainer,
@@ -193,8 +193,8 @@ private class MockSensorObserver: SensorObserver {
         updates.append(update)
     }
 
-    func sensorContainerRequestsUpdate(_ container: SensorContainer) {
-        requestedUpdateCount += 1
+    func sensorContainerDidSignalForUpdate(_ container: SensorContainer) {
+        updateSignalCount += 1
     }
 }
 
@@ -219,9 +219,9 @@ private class MockSensorProvider: SensorProvider {
     }
 }
 
-private class MockLiveUpdateInfo: SensorProviderLiveUpdateInfo {
-    let notify: () -> Void
-    required init(notifying: @escaping () -> Void) {
-        self.notify = notifying
+private class MockUpdateSignaler: SensorProviderUpdateSignaler {
+    let signal: () -> Void
+    required init(signal: @escaping () -> Void) {
+        self.signal = signal
     }
 }

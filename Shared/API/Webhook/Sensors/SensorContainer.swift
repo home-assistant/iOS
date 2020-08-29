@@ -16,7 +16,7 @@ public protocol SensorObserver: AnyObject {
         _ container: SensorContainer,
         didUpdate update: SensorObserverUpdate
     )
-    func sensorContainerRequestsUpdate(
+    func sensorContainerDidSignalForUpdate(
         _ container: SensorContainer
     )
 }
@@ -28,8 +28,8 @@ public class SensorContainer {
 
     init() {
         self.providerDependencies = SensorProviderDependencies()
-        self.providerDependencies.liveUpdateHandler = { [weak self] type in
-            self?.liveUpdate(from: type)
+        self.providerDependencies.updateSignalHandler = { [weak self] type in
+            self?.updateSignaled(from: type)
         }
     }
 
@@ -97,12 +97,12 @@ public class SensorContainer {
         return sensors
     }
 
-    private func liveUpdate(from type: SensorProvider.Type) {
+    private func updateSignaled(from type: SensorProvider.Type) {
         Current.Log.info("live update triggering from \(type)")
 
         observers
             .allObjects
             .compactMap { $0 as? SensorObserver }
-            .forEach { $0.sensorContainerRequestsUpdate(self) }
+            .forEach { $0.sensorContainerDidSignalForUpdate(self) }
     }
 }
