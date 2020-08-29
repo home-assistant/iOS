@@ -10,10 +10,10 @@ struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
 
 extension UIWindowSceneDelegate {
     func informManager(from connectionOptions: UIScene.ConnectionOptions) {
-        let pendingResolver: Resolver<Self> = UIApplication.shared.typedDelegate.sceneManager
+        let pendingResolver: (Self) -> Void = UIApplication.shared.typedDelegate.sceneManager
             .pendingResolver(from: connectionOptions.userActivities)
 
-        pendingResolver.fulfill(self)
+        pendingResolver(self)
     }
 }
 
@@ -47,27 +47,27 @@ class SceneManager {
 
     var compatibility = SceneManagerPreSceneCompatibility()
 
-    var webViewWindowControllerPromise: Promise<WebViewWindowController> {
+    var webViewWindowControllerPromise: Guarantee<WebViewWindowController> {
         if #available(iOS 13, *) {
-            return firstly { () -> Promise<WebViewSceneDelegate> in
+            return firstly { () -> Guarantee<WebViewSceneDelegate> in
                 scene(for: .init(activity: .webView))
-            }.compactMap { delegate in
-                delegate.windowController
+            }.map { delegate in
+                delegate.windowController!
             }
         } else {
-            return Promise(compatibility.windowControllerPromise)
+            return compatibility.windowControllerPromise
         }
     }
 
-    func pendingResolver<T>(from activities: Set<NSUserActivity>) -> Resolver<T> {
-        let (promise, outerResolver) = Promise<T>.pending()
+    func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
+        let (promise, outerResolver) = Guarantee<T>.pending()
 
         activities.compactMap { activity in
             activity.userInfo?[Self.activityUserInfoKeyResolver] as? String
         }.compactMap { token in
-            pendingResolvers[token] as? Resolver<T>
+            pendingResolvers[token] as? (T) -> Void
         }.forEach { resolver in
-            promise.pipe(to: { resolver.resolve($0) })
+            promise.done { resolver($0) }
         }
 
         return outerResolver
@@ -106,7 +106,7 @@ class SceneManager {
     @available(iOS 13, *)
     func scene<DelegateType: UIWindowSceneDelegate>(
         for query: SceneQuery<DelegateType>
-    ) -> Promise<DelegateType> {
+    ) -> Guarantee<DelegateType> {
         if let active = existingScenes(for: query.activity).first,
            let delegate = active.delegate as? DelegateType {
             UIApplication.shared.requestSceneSessionActivation(
@@ -118,7 +118,7 @@ class SceneManager {
             return .value(delegate)
         }
 
-        let (promise, resolver) = Promise<DelegateType>.pending()
+        let (promise, resolver) = Guarantee<DelegateType>.pending()
 
         let token = UUID().uuidString
         pendingResolvers[token] = resolver
@@ -133,7 +133,9 @@ class SceneManager {
             userActivity: activity,
             options: nil,
             errorHandler: { error in
-                resolver.reject(error)
+                // error is called in most cases, even when no error occurs, so we silently swallow it
+                // todo: does this actually happen in normal circumstances?
+                Current.Log.error("scene activation error: \(error)")
             }
         )
 

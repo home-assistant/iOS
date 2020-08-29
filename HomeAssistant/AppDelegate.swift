@@ -43,7 +43,14 @@ extension UIApplication {
 @UIApplicationMain
 // swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
+    var window: UIWindow? {
+        get {
+            sceneManager.compatibility.windowController?.window
+        }
+        set {
+            fatalError("window is not settable in app delegate")
+        }
+    }
 
     let sceneManager = SceneManager()
 
@@ -55,12 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 periodicUpdateTimer?.invalidate()
             }
         }
-    }
-
-    override init() {
-        
-
-        super.init()
     }
 
     func application(
