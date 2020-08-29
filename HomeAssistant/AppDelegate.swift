@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         get {
             sceneManager.compatibility.windowController?.window
         }
-        set {
+        set { // swiftlint:disable:this unused_setter_value
             fatalError("window is not settable in app delegate")
         }
     }
@@ -295,7 +295,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewControllerWithRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        return sceneManager.compatibility.windowController?.viewController(withRestorationIdentifierPath: identifierComponents)
+        return sceneManager.compatibility.windowController?.viewController(
+            withRestorationIdentifierPath: identifierComponents
+        )
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
