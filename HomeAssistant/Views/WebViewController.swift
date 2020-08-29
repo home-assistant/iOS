@@ -233,12 +233,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     public func showSettingsViewController() {
-        let settingsView = SettingsViewController()
-        // settingsView.doneButton = true
-        // settingsView.delegate = self
-        settingsView.hidesBottomBarWhenPushed = true
-        let navController = UINavigationController(rootViewController: settingsView)
-        self.navigationController?.present(navController, animated: true, completion: nil)
+        if Current.isCatalyst {
+            UIApplication.shared.typedDelegate.sceneManager.activateAnyScene(for: .settings)
+        } else {
+            let settingsView = SettingsViewController()
+            settingsView.hidesBottomBarWhenPushed = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            self.navigationController?.present(navController, animated: true, completion: nil)
+        }
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
