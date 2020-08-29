@@ -147,6 +147,33 @@ class SensorContainerTests: XCTestCase {
         let result = try hang(Promise(promise))
         XCTAssertEqual(result.map { $0.UniqueID }, [ "test" ])
     }
+
+    func testDependenciesInformsUpdate() throws {
+        container.register(provider: MockSensorProvider.self)
+        container.register(observer: observer)
+
+        MockSensorProvider.returnedPromises = [
+            .value([]),
+        ]
+
+        let promise = container.sensors(reason: .trigger("unit-test"))
+        _ = try hang(Promise(promise))
+
+        guard let lastCreated = MockSensorProvider.lastCreated else {
+            XCTFail("expected a provider to have been created")
+            return
+        }
+
+        XCTAssertEqual(observer.requestedUpdateCount, 0)
+
+        let info: MockLiveUpdateInfo = lastCreated
+            .request
+            .dependencies
+            .liveUpdateInfo(for: lastCreated)
+        info.notify()
+
+        XCTAssertEqual(observer.requestedUpdateCount, 1)
+    }
 }
 
 private extension WebhookSensor {
@@ -156,11 +183,8 @@ private extension WebhookSensor {
 }
 
 private class MockSensorObserver: SensorObserver {
-    func sensorContainerRequestsUpdate(_ container: SensorContainer) {
-        
-    }
-
     var updates: [SensorObserverUpdate] = []
+    var requestedUpdateCount: Int = 0
 
     func sensorContainer(
         _ container: SensorContainer,
@@ -168,16 +192,22 @@ private class MockSensorObserver: SensorObserver {
     ) {
         updates.append(update)
     }
+
+    func sensorContainerRequestsUpdate(_ container: SensorContainer) {
+        requestedUpdateCount += 1
+    }
 }
 
 private class MockSensorProvider: SensorProvider {
     static var returnedPromises: [Promise<[WebhookSensor]>] = []
+    static var lastCreated: MockSensorProvider?
 
     let request: SensorProviderRequest
     let returnedPromise: Promise<[WebhookSensor]>
     required init(request: SensorProviderRequest) {
         self.request = request
         self.returnedPromise = Self.returnedPromises.popLast() ?? .init(error: InvalidTest.noPromiseProvided)
+        Self.lastCreated = self
     }
 
     enum InvalidTest: Error {
@@ -189,3 +219,9 @@ private class MockSensorProvider: SensorProvider {
     }
 }
 
+private class MockLiveUpdateInfo: SensorProviderLiveUpdateInfo {
+    let notify: () -> Void
+    required init(notifying: @escaping () -> Void) {
+        self.notify = notifying
+    }
+}

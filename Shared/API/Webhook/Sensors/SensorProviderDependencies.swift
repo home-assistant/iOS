@@ -6,20 +6,25 @@ public protocol SensorProviderLiveUpdateInfo: AnyObject {
 
 public class SensorProviderDependencies {
     internal var liveUpdateHandler: (SensorProvider.Type) -> Void = { _ in }
-    private var liveUpdateInfos = [SensorProviderLiveUpdateInfo]()
+    private var liveUpdateInfos = [
+        String: [SensorProviderLiveUpdateInfo]
+    ]()
 
     public func liveUpdateInfo<InfoType: SensorProviderLiveUpdateInfo>(
         for sensorProvider: SensorProvider
     ) -> InfoType {
-        if let existing = liveUpdateInfos.compactMap({ $0 as? InfoType }).first {
-            return existing
+        let key = String(describing: type(of: sensorProvider))
+
+        if let existingValue = liveUpdateInfos[key]?.compactMap({ $0 as? InfoType }).first {
+            return existingValue
         }
 
         let sensorType = type(of: sensorProvider)
         let created = InfoType.init(notifying: { [weak self] in
             self?.liveUpdateHandler(sensorType)
         })
-        liveUpdateInfos.append(created)
+
+        liveUpdateInfos[key, default: []] += [created]
         return created
     }
 }
