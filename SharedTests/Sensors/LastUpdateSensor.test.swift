@@ -5,7 +5,12 @@ import PromiseKit
 
 class LastUpdateSensorTests: XCTestCase {
     func testManualTrigger() throws {
-        let promise = LastUpdateSensor(request: .init(reason: .trigger("Manual"))).sensors()
+        let request: SensorProviderRequest = .init(
+            reason: .trigger("Manual"),
+            dependencies: .init(),
+            location: nil
+        )
+        let promise = LastUpdateSensor(request: request).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].UniqueID, "last_update_trigger")

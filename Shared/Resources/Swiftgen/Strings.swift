@@ -440,6 +440,10 @@ internal enum L10n {
         return L10n.tr("Localizable", "location_change_notification.region_exit.body", String(describing: p1))
       }
     }
+    internal enum Signaled {
+      /// Location updated via update signal
+      internal static let body = L10n.tr("Localizable", "location_change_notification.signaled.body")
+    }
     internal enum SignificantLocationUpdate {
       /// Significant location change detected
       internal static let body = L10n.tr("Localizable", "location_change_notification.significant_location_update.body")

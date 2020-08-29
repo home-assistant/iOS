@@ -4,7 +4,11 @@ import XCTest
 @testable import Shared
 
 class StorageSensorTests: XCTestCase {
-    private var request: SensorProviderRequest = .init(reason:  .trigger("unit-test"))
+    private var request: SensorProviderRequest = .init(
+        reason: .trigger("unit-test"),
+        dependencies: .init(),
+        location: nil
+    )
 
     func testNilDataReturnsError() {
         Current.device.volumes = { nil }

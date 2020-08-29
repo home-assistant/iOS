@@ -92,6 +92,8 @@ public class HomeAssistantAPI {
         self.manager = manager
 
         removeOldDownloadDirectory()
+
+        Current.sensors.register(observer: self)
     }
 
     private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
@@ -690,7 +692,7 @@ public class HomeAssistantAPI {
 
     public func RegisterSensors() -> Promise<Void> {
         return firstly {
-            Current.sensors.sensors(request: .init(reason: .registration))
+            Current.sensors.sensors(reason: .registration)
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map { $0.UniqueID  })")
         }.thenMap { sensor in
@@ -703,10 +705,10 @@ public class HomeAssistantAPI {
     public func UpdateSensors(trigger: LocationUpdateTrigger,
                               location: CLLocation? = nil) -> Promise<Void> {
         return firstly {
-            Current.sensors.sensors(request: .init(
+            Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 location: location
-            ))
+            )
         }.map { sensors in
             Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
 
@@ -745,5 +747,15 @@ extension HomeAssistantAPI.APIError: LocalizedError {
         case .unknown, .unacceptableStatusCode:
             return L10n.HaApi.ApiError.unknown
         }
+    }
+}
+
+extension HomeAssistantAPI: SensorObserver {
+    public func sensorContainerDidSignalForUpdate(_ container: SensorContainer) {
+        UpdateSensors(trigger: .Signaled).cauterize()
+    }
+
+    public func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        // we don't do anything for this
     }
 }

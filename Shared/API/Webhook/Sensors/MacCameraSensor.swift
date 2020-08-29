@@ -1,9 +1,44 @@
 import Foundation
 import PromiseKit
-#if targetEnvironment(macCatalyst)
+#if canImport(CoreMediaIO)
 import AVFoundation
 import CoreMediaIO
 #endif
+
+private class CameraUpdateSignaler: SensorProviderUpdateSignaler {
+    let signal: () -> Void
+
+    #if canImport(CoreMediaIO)
+    private var observedObjects = Set<CMIOObjectID>()
+    #endif
+
+    required init(signal: @escaping () -> Void) {
+        self.signal = signal
+
+        #if canImport(CoreMediaIO)
+        addObserver(for: CMIOObjectID(kCMIOObjectSystemObject), address: .allDevices)
+        #endif
+    }
+
+    #if canImport(CoreMediaIO)
+    func addObserver<PropertyType>(
+        for object: CMIOObjectID,
+        address: HACoreMediaProperty<PropertyType>
+    ) {
+        guard !observedObjects.contains(object) else { return }
+
+        let observedStatus = withUnsafePointer(to: address.address) { ptr in
+            OSStatus(CMIOObjectAddPropertyListenerBlock(object, ptr, .main, { [weak self] _, _ in
+                Current.Log.info("camera info updated for \(object)")
+                self?.signal()
+            }))
+        }
+
+        Current.Log.info("added observer for \(object): \(observedStatus)")
+        observedObjects.insert(object)
+    }
+    #endif
+}
 
 public class MacCameraSensor: SensorProvider {
     public enum MacCameraError: Error, Equatable {
@@ -11,28 +46,40 @@ public class MacCameraSensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
+
+    #if canImport(CoreMediaIO)
+    let systemObject: HACoreMediaObjectSystem
+
     required public init(request: SensorProviderRequest) {
         self.request = request
+        self.systemObject = HACoreMediaObjectSystem()
     }
 
-    #if targetEnvironment(macCatalyst)
     public func sensors() -> Promise<[WebhookSensor]> {
-        firstly {
+        let updateSignaler: CameraUpdateSignaler = request.dependencies.updateSignaler(for: self)
+
+        return firstly {
             Promise<Void>.value(())
-        }.map(on: .global(qos: .userInitiated)) {
-            let cams = self.cameras
-            if cams.count == 0 {
+        }.map(on: .global(qos: .userInitiated)) { [systemObject] () -> [HACoreMediaObjectCamera] in
+            systemObject.allCameras
+        }.mapValues { (camera: HACoreMediaObjectCamera) -> WebhookSensor in
+            let sensor = Self.sensor(camera: camera)
+            updateSignaler.addObserver(for: camera.id, address: .isRunningSomewhere)
+            return sensor
+        }.recover { (error) -> Promise<[WebhookSensor]> in
+            if case PMKError.compactMap = error {
                 throw MacCameraError.noCameras
+            } else {
+                throw error
             }
-            return try cams.compactMap { try Self.sensor(camera: $0) }
         }
     }
 
-    private static func sensor(camera: Camera) throws -> WebhookSensor {
+    private static func sensor(camera: HACoreMediaObjectCamera) -> WebhookSensor {
         let sensor = WebhookSensor(
             name: camera.name ?? "Unknown Camera",
-            uniqueID: "camera_\(camera.id)",
-            icon: camera.isOn ? .cameraIcon : .cameraOffIcon,
+            uniqueID: "camera_\(camera.deviceUID)",
+            icon: camera.isOn ? "mdi:camera" : "mdi:camera-off",
             state: camera.isOn
         )
 
@@ -43,105 +90,11 @@ public class MacCameraSensor: SensorProvider {
         return sensor
     }
 
-    var cameras: [Camera] {
-        var innerArray: [Camera] = []
-        var opa = CMIOObjectPropertyAddress(
-            mSelector: CMIOObjectPropertySelector(kCMIOHardwarePropertyDevices),
-            mScope: CMIOObjectPropertyScope(kCMIOObjectPropertyScopeGlobal),
-            mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementMaster)
-        )
-
-        var dataSize: UInt32 = 0
-        var dataUsed: UInt32 = 0
-        var result = CMIOObjectGetPropertyDataSize(CMIOObjectID(kCMIOObjectSystemObject), &opa, 0, nil, &dataSize)
-        var devices: UnsafeMutableRawPointer?
-
-        repeat {
-            if devices != nil {
-                free(devices)
-                devices = nil
-            }
-
-            devices = malloc(Int(dataSize))
-            result = CMIOObjectGetPropertyData(CMIOObjectID(kCMIOObjectSystemObject), &opa, 0, nil, dataSize, &dataUsed,
-                                               devices)
-        } while result == OSStatus(kCMIOHardwareBadPropertySizeError)
-
-        if let devices = devices {
-            for offset in stride(from: 0, to: dataSize, by: MemoryLayout<CMIOObjectID>.size) {
-                let current = devices.advanced(by: Int(offset)).assumingMemoryBound(to: CMIOObjectID.self)
-                innerArray.append(Camera(id: current.pointee))
-            }
-        }
-
-        free(devices)
-
-        return innerArray
-    }
-
-    struct Camera {
-        var id: CMIOObjectID
-        var name: String? {
-            var address: CMIOObjectPropertyAddress = CMIOObjectPropertyAddress(
-                mSelector: CMIOObjectPropertySelector(kCMIOObjectPropertyName),
-                mScope: CMIOObjectPropertyScope(kCMIOObjectPropertyScopeGlobal),
-                mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementMaster))
-
-            var name: CFString?
-            let propsize: UInt32 = UInt32(MemoryLayout<CFString?>.size)
-            var dataUsed: UInt32 = 0
-
-            let result: OSStatus = CMIOObjectGetPropertyData(self.id, &address, 0, nil, propsize, &dataUsed, &name)
-            if result != 0 {
-                return nil
-            }
-
-            return name as String?
-        }
-
-        var manufacturer: String? {
-            var address: CMIOObjectPropertyAddress = CMIOObjectPropertyAddress(
-                mSelector: CMIOObjectPropertySelector(kCMIOObjectPropertyManufacturer),
-                mScope: CMIOObjectPropertyScope(kCMIOObjectPropertyScopeGlobal),
-                mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementMaster))
-
-            var manufName: CFString?
-            let propsize: UInt32 = UInt32(MemoryLayout<CFString?>.size)
-            var dataUsed: UInt32 = 0
-
-            let result: OSStatus = CMIOObjectGetPropertyData(self.id, &address, 0, nil, propsize, &dataUsed, &manufName)
-            if result != 0 {
-                return nil
-            }
-
-            return manufName as String?
-        }
-
-        var isOn: Bool {
-            var opa = CMIOObjectPropertyAddress(
-                mSelector: CMIOObjectPropertySelector(kCMIODevicePropertyDeviceIsRunningSomewhere),
-                mScope: CMIOObjectPropertyScope(kCMIOObjectPropertyScopeWildcard),
-                mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementWildcard)
-            )
-
-            var isUsed = false
-
-            var dataSize: UInt32 = 0
-            var dataUsed: UInt32 = 0
-            var result = CMIOObjectGetPropertyDataSize(self.id, &opa, 0, nil, &dataSize)
-            if result == OSStatus(kCMIOHardwareNoError) {
-                if let data = malloc(Int(dataSize)) {
-                    result = CMIOObjectGetPropertyData(self.id, &opa, 0, nil, dataSize, &dataUsed, data)
-                    let on = data.assumingMemoryBound(to: UInt8.self)
-                    isUsed = on.pointee != 0
-                }
-            }
-
-            return isUsed
-        }
-    }
-
     #else
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
     public func sensors() -> Promise<[WebhookSensor]> {
         return .init(error: MacCameraError.noCameras)
     }
