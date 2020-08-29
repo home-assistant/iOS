@@ -140,12 +140,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setup14Workaround()
         checkForUpdate()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
-            self.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(urlString: "/lovelace-teest/0")
-            }
-        }
-
         return true
     }
 
