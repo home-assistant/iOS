@@ -221,7 +221,11 @@ class BatterySensorTests: XCTestCase {
         Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .unplugged }
         Current.device.isLowPowerMode = { true }
 
-        let uPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
+        let uPromise = BatterySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil
+        )).sensors()
         let uSensors = try hang(uPromise)
         XCTAssertEqual(uSensors.count, 2)
 
@@ -240,7 +244,11 @@ class BatterySensorTests: XCTestCase {
         Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .charging }
         Current.device.isLowPowerMode = { true }
 
-        let cPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
+        let cPromise = BatterySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil
+        )).sensors()
         let cSensors = try hang(cPromise)
         XCTAssertEqual(cSensors.count, 2)
 

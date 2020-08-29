@@ -8,10 +8,12 @@ public struct SensorProviderRequest {
         case trigger(String)
     }
     public var reason: Reason
+    public var dependencies: SensorProviderDependencies
     public var location: CLLocation?
 
-    public init(reason: Reason, location: CLLocation? = nil) {
+    public init(reason: Reason, dependencies: SensorProviderDependencies, location: CLLocation?) {
         self.reason = reason
+        self.dependencies = dependencies
         self.location = location
     }
 

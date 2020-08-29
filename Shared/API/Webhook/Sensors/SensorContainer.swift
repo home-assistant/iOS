@@ -1,5 +1,6 @@
 import Foundation
 import PromiseKit
+import CoreLocation
 
 public struct SensorObserverUpdate {
     public let sensors: Guarantee<[WebhookSensor]>
@@ -16,11 +17,22 @@ public protocol SensorObserver: AnyObject {
         _ container: SensorContainer,
         didUpdate update: SensorObserverUpdate
     )
+    func sensorContainerDidSignalForUpdate(
+        _ container: SensorContainer
+    )
 }
 
 public class SensorContainer {
     private var providers = [SensorProvider.Type]()
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
+    private var providerDependencies: SensorProviderDependencies
+
+    init() {
+        self.providerDependencies = SensorProviderDependencies()
+        self.providerDependencies.updateSignalHandler = { [weak self] type in
+            self?.updateSignaled(from: type)
+        }
+    }
 
     public func register(provider: SensorProvider.Type) {
         providers.append(provider)
@@ -48,7 +60,16 @@ public class SensorContainer {
         }
     }
 
-    internal func sensors(request: SensorProviderRequest) -> Guarantee<[WebhookSensor]> {
+    internal func sensors(
+        reason: SensorProviderRequest.Reason,
+        location: CLLocation? = nil
+    ) -> Guarantee<[WebhookSensor]> {
+        let request = SensorProviderRequest(
+            reason: reason,
+            dependencies: providerDependencies,
+            location: location
+        )
+
         let sensors = firstly {
             let promises = providers
                 .map { providerType in providerType.init(request: request) }
@@ -75,5 +96,14 @@ public class SensorContainer {
         }
 
         return sensors
+    }
+
+    private func updateSignaled(from type: SensorProvider.Type) {
+        Current.Log.info("live update triggering from \(type)")
+
+        observers
+            .allObjects
+            .compactMap { $0 as? SensorObserver }
+            .forEach { $0.sensorContainerDidSignalForUpdate(self) }
     }
 }

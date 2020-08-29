@@ -41,7 +41,7 @@ class SensorContainerTests: XCTestCase {
 
         let date = Date()
         Current.date = { date }
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b", "test2a", "test2b"
@@ -68,7 +68,7 @@ class SensorContainerTests: XCTestCase {
             ])
         ]
 
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b"
@@ -84,7 +84,7 @@ class SensorContainerTests: XCTestCase {
             ])
         ]
 
-        let promise = container.sensors(request: .init(reason: .registration))
+        let promise = container.sensors(reason: .registration)
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b"
@@ -105,7 +105,7 @@ class SensorContainerTests: XCTestCase {
 
         let date = Date(timeIntervalSinceNow: -200)
         Current.date = { date }
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b"
@@ -131,7 +131,7 @@ class SensorContainerTests: XCTestCase {
             .value([ WebhookSensor(name: "test", uniqueID: "test") ])
         ]
 
-        _ = container.sensors(request: .init(reason: .trigger("unit-test")))
+        _ = container.sensors(reason: .trigger("unit-test"))
         XCTAssertTrue(observer.updates.isEmpty)
     }
 
@@ -143,9 +143,36 @@ class SensorContainerTests: XCTestCase {
             .value([ WebhookSensor(name: "test", uniqueID: "test") ])
         ]
 
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(result.map { $0.UniqueID }, [ "test" ])
+    }
+
+    func testDependenciesInformsUpdate() throws {
+        container.register(provider: MockSensorProvider.self)
+        container.register(observer: observer)
+
+        MockSensorProvider.returnedPromises = [
+            .value([]),
+        ]
+
+        let promise = container.sensors(reason: .trigger("unit-test"))
+        _ = try hang(Promise(promise))
+
+        guard let lastCreated = MockSensorProvider.lastCreated else {
+            XCTFail("expected a provider to have been created")
+            return
+        }
+
+        XCTAssertEqual(observer.updateSignalCount, 0)
+
+        let info: MockUpdateSignaler = lastCreated
+            .request
+            .dependencies
+            .updateSignaler(for: lastCreated)
+        info.signal()
+
+        XCTAssertEqual(observer.updateSignalCount, 1)
     }
 }
 
@@ -157,6 +184,7 @@ private extension WebhookSensor {
 
 private class MockSensorObserver: SensorObserver {
     var updates: [SensorObserverUpdate] = []
+    var updateSignalCount: Int = 0
 
     func sensorContainer(
         _ container: SensorContainer,
@@ -164,16 +192,22 @@ private class MockSensorObserver: SensorObserver {
     ) {
         updates.append(update)
     }
+
+    func sensorContainerDidSignalForUpdate(_ container: SensorContainer) {
+        updateSignalCount += 1
+    }
 }
 
 private class MockSensorProvider: SensorProvider {
     static var returnedPromises: [Promise<[WebhookSensor]>] = []
+    static var lastCreated: MockSensorProvider?
 
     let request: SensorProviderRequest
     let returnedPromise: Promise<[WebhookSensor]>
     required init(request: SensorProviderRequest) {
         self.request = request
         self.returnedPromise = Self.returnedPromises.popLast() ?? .init(error: InvalidTest.noPromiseProvided)
+        Self.lastCreated = self
     }
 
     enum InvalidTest: Error {
@@ -182,5 +216,12 @@ private class MockSensorProvider: SensorProvider {
 
     func sensors() -> Promise<[WebhookSensor]> {
         return returnedPromise
+    }
+}
+
+private class MockUpdateSignaler: SensorProviderUpdateSignaler {
+    let signal: () -> Void
+    required init(signal: @escaping () -> Void) {
+        self.signal = signal
     }
 }
