@@ -20,11 +20,7 @@ class AboutViewController: FormViewController {
 
         self.title = L10n.About.title
 
-        if Current.isCatalyst {
-            // not setting any navigation bars on catalyst at least on 10.15.6 causes an all-black window
-            // and appearance errors
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        } else {
+        if !Current.isCatalyst {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                                      target: self,
                                                                      action: #selector(AboutViewController.close(_:)))

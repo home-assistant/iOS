@@ -32,6 +32,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
 
         let window = WebViewWindowController.window(scene: scene)
         window.rootViewController = config.rootViewController
+        self.window = window
 
         #if targetEnvironment(macCatalyst)
         if let titlebar = scene.titlebar {
