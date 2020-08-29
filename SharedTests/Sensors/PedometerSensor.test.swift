@@ -10,7 +10,11 @@ class PedometerSensorTests: XCTestCase {
         case someError
     }
 
-    private var request: SensorProviderRequest = .init(reason: .trigger("unit-test"))
+    private var request: SensorProviderRequest = .init(
+        reason: .trigger("unit-test"),
+        dependencies: .init(),
+        location: nil
+    )
 
     override func setUp() {
         super.setUp()

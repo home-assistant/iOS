@@ -38,7 +38,11 @@ class GeocoderSensorTests: XCTestCase {
     }
 
     func testLocationForRegistration() throws {
-        let promise = GeocoderSensor(request: .init(reason: .registration)).sensors()
+        let promise = GeocoderSensor(request: .init(
+            reason: .registration,
+            dependencies: .init(),
+            location: nil
+        )).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
 
@@ -51,7 +55,11 @@ class GeocoderSensorTests: XCTestCase {
     func testLocationNoPlacemarks() throws {
         setUp(placemarks: [])
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -60,7 +68,11 @@ class GeocoderSensorTests: XCTestCase {
 
     func testNoLocation() throws {
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: nil
+            )
         ).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? GeocoderSensor.GeocoderError, .noLocation)
@@ -70,7 +82,11 @@ class GeocoderSensorTests: XCTestCase {
     func testPlacemarkError() throws {
         Current.geocoder.geocode = { _ in .init(error: TestError.someError) }
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? TestError, .someError)
@@ -80,7 +96,11 @@ class GeocoderSensorTests: XCTestCase {
     func testAddresslessPlacemark() throws {
         setUp(placemarks: [ .addressless ])
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -93,7 +113,11 @@ class GeocoderSensorTests: XCTestCase {
             .bobsBurgers
         ])
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -104,7 +128,11 @@ class GeocoderSensorTests: XCTestCase {
     func testTwoPlacemarksFirstOneEmpty() throws {
         setUp(placemarks: [ .empty, .bobsBurgers ])
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -119,7 +147,11 @@ class GeocoderSensorTests: XCTestCase {
             }
         ])
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -147,7 +179,11 @@ class GeocoderSensorTests: XCTestCase {
         }
 
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -190,7 +226,11 @@ class GeocoderSensorTests: XCTestCase {
         }
 
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -236,7 +276,11 @@ class GeocoderSensorTests: XCTestCase {
         }
 
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -280,7 +324,11 @@ class GeocoderSensorTests: XCTestCase {
         }
 
         let promise = GeocoderSensor(
-            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+            request: .init(
+                reason: .trigger("unit-test"),
+                dependencies: .init(),
+                location: CLLocation(latitude: 37, longitude: -122)
+            )
         ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)

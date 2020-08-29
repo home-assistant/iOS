@@ -41,7 +41,7 @@ class SensorContainerTests: XCTestCase {
 
         let date = Date()
         Current.date = { date }
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b", "test2a", "test2b"
@@ -68,7 +68,7 @@ class SensorContainerTests: XCTestCase {
             ])
         ]
 
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b"
@@ -84,7 +84,7 @@ class SensorContainerTests: XCTestCase {
             ])
         ]
 
-        let promise = container.sensors(request: .init(reason: .registration))
+        let promise = container.sensors(reason: .registration)
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b"
@@ -105,7 +105,7 @@ class SensorContainerTests: XCTestCase {
 
         let date = Date(timeIntervalSinceNow: -200)
         Current.date = { date }
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.map { $0.UniqueID }), Set([
             "test1a", "test1b"
@@ -131,7 +131,7 @@ class SensorContainerTests: XCTestCase {
             .value([ WebhookSensor(name: "test", uniqueID: "test") ])
         ]
 
-        _ = container.sensors(request: .init(reason: .trigger("unit-test")))
+        _ = container.sensors(reason: .trigger("unit-test"))
         XCTAssertTrue(observer.updates.isEmpty)
     }
 
@@ -143,7 +143,7 @@ class SensorContainerTests: XCTestCase {
             .value([ WebhookSensor(name: "test", uniqueID: "test") ])
         ]
 
-        let promise = container.sensors(request: .init(reason: .trigger("unit-test")))
+        let promise = container.sensors(reason: .trigger("unit-test"))
         let result = try hang(Promise(promise))
         XCTAssertEqual(result.map { $0.UniqueID }, [ "test" ])
     }
@@ -156,6 +156,10 @@ private extension WebhookSensor {
 }
 
 private class MockSensorObserver: SensorObserver {
+    func sensorContainerRequestsUpdate(_ container: SensorContainer) {
+        
+    }
+
     var updates: [SensorObserverUpdate] = []
 
     func sensorContainer(
@@ -184,3 +188,4 @@ private class MockSensorProvider: SensorProvider {
         return returnedPromise
     }
 }
+

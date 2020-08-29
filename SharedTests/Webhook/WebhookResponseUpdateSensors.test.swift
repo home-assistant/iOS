@@ -82,7 +82,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
     func testUpdatedRequiringRegistration() throws {
         // it's probably too much work to mock out the sensors here, so this implicitly
         // depends on one of the registered sensors. to make this more obvious, grab one.
-        let sensors = try hang(Promise(Current.sensors.sensors(request: .init(reason: .registration))))
+        let sensors = try hang(Promise(Current.sensors.sensors(reason: .registration)))
         let handler = WebhookResponseUpdateSensors(api: api)
         let request = WebhookRequest(type: "update_sensor_states", data: [:])
 
