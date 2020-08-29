@@ -45,7 +45,11 @@ extension UIApplication {
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? {
         get {
-            sceneManager.compatibility.windowController?.window
+            if #available(iOS 13, *) {
+                return nil
+            } else {
+                return sceneManager.compatibility.windowController?.window
+            }
         }
         set { // swiftlint:disable:this unused_setter_value
             fatalError("window is not settable in app delegate")
@@ -107,8 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Iconic.registerMaterialDesignIcons()
 
         setupWatchCommunicator()
-
-        if #available(iOS 12.0, *) { setupiOS12Features() }
+        setupiOS12Features()
 
         if #available(iOS 13, *) {
 
@@ -261,22 +264,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        if sceneManager.compatibility.windowController?.requiresOnboarding == true {
-            Current.Log.info("disallowing state to be restored due to onboarding")
+        if #available(iOS 13, *) {
             return false
-        }
+        } else {
+            if sceneManager.compatibility.windowController?.requiresOnboarding == true {
+                Current.Log.info("disallowing state to be restored due to onboarding")
+                return false
+            }
 
-        if Current.appConfiguration == .FastlaneSnapshot {
-            Current.Log.info("disallowing state to be restored due to fastlane snapshot")
-            return false
-        }
+            if Current.appConfiguration == .FastlaneSnapshot {
+                Current.Log.info("disallowing state to be restored due to fastlane snapshot")
+                return false
+            }
 
-        if NSClassFromString("XCTest") != nil {
-            return false
-        }
+            if NSClassFromString("XCTest") != nil {
+                return false
+            }
 
-        Current.Log.info("allowing state to be restored")
-        return true
+            Current.Log.info("allowing state to be restored")
+            return true
+        }
     }
 
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
@@ -295,9 +302,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewControllerWithRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        return sceneManager.compatibility.windowController?.viewController(
-            withRestorationIdentifierPath: identifierComponents
-        )
+        if #available(iOS 13, *) {
+            return nil
+        } else {
+            return sceneManager.compatibility.windowController?.viewController(
+                withRestorationIdentifierPath: identifierComponents
+            )
+        }
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -400,7 +411,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey: Any] = [:]
     ) -> Bool {
-        return sceneManager.compatibility.urlHandler?.handle(url: url) ?? false
+        if #available(iOS 13, *) {
+            fatalError("scene delegate should be invoked on iOS 13")
+        } else {
+            return sceneManager.compatibility.urlHandler?.handle(url: url) ?? false
+        }
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem,
@@ -429,8 +444,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         continue userActivity: NSUserActivity,
         restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
     ) -> Bool {
-        Current.Log.info(userActivity)
-        return sceneManager.compatibility.urlHandler?.handle(userActivity: userActivity) ?? false
+        if #available(iOS 13, *) {
+            fatalError("scene delegate should be invoked on iOS 13")
+        } else {
+            return sceneManager.compatibility.urlHandler?.handle(userActivity: userActivity) ?? false
+        }
     }
 
     func application(
@@ -568,7 +586,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 12.0, *)
     func setupiOS12Features() {
         // Tell the system we have a app notification settings screen and want critical alerts
         // This is effectively a migration

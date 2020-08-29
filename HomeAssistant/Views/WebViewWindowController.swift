@@ -125,12 +125,6 @@ class WebViewWindowController {
         }
     }
 
-    func navigate(to url: URL) {
-        webViewControllerPromise.done { webViewController in
-            webViewController.open(inline: url)
-        }
-    }
-
     func present(_ viewController: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
         window.rootViewController?.present(viewController, animated: animated, completion: completion)
     }
@@ -143,6 +137,7 @@ class WebViewWindowController {
         return currentController
     }
 
+    @available(iOS, deprecated: 13.0)
     func viewController(
         withRestorationIdentifierPath identifierComponents: [String]
     ) -> UIViewController? {
@@ -153,6 +148,12 @@ class WebViewWindowController {
             return navigationController
         } else {
             return nil
+        }
+    }
+
+    func navigate(to url: URL) {
+        webViewControllerPromise.done { webViewController in
+            webViewController.open(inline: url)
         }
     }
 

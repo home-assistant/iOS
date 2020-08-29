@@ -42,9 +42,10 @@ struct SceneManagerPreSceneCompatibility {
 
 class SceneManager {
     // types too hard here
-    static var activityUserInfoKeyResolver = "resolver"
+    fileprivate static var activityUserInfoKeyResolver = "resolver"
     private var pendingResolvers: [String: Any] = [:]
 
+    @available(iOS, deprecated: 13.0)
     var compatibility = SceneManagerPreSceneCompatibility()
 
     var webViewWindowControllerPromise: Guarantee<WebViewWindowController> {
@@ -59,7 +60,7 @@ class SceneManager {
         }
     }
 
-    func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
+    fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
         let (promise, outerResolver) = Guarantee<T>.pending()
 
         activities.compactMap { activity in
@@ -74,7 +75,7 @@ class SceneManager {
     }
 
     @available(iOS 13, *)
-    func existingScenes(for activity: SceneActivity) -> [UIScene] {
+    private func existingScenes(for activity: SceneActivity) -> [UIScene] {
         UIApplication.shared.connectedScenes.filter { scene in
             scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
         }.filter {
@@ -93,7 +94,8 @@ class SceneManager {
         }
     }
 
-    func activateAnyScene(for activity: SceneActivity) {
+    @available(iOS 13, *)
+    public func activateAnyScene(for activity: SceneActivity) {
         UIApplication.shared.requestSceneSessionActivation(
             existingScenes(for: activity).first?.session,
             userActivity: activity.activity,
@@ -104,7 +106,7 @@ class SceneManager {
     }
 
     @available(iOS 13, *)
-    func scene<DelegateType: UIWindowSceneDelegate>(
+    public func scene<DelegateType: UIWindowSceneDelegate>(
         for query: SceneQuery<DelegateType>
     ) -> Guarantee<DelegateType> {
         if let active = existingScenes(for: query.activity).first,
