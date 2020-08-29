@@ -124,6 +124,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 <<< SwitchRow {
+                    // mac has a system-level setting for state restoration
+                    $0.hidden = .isCatalyst
+
                     $0.title = L10n.SettingsDetails.General.Restoration.title
                     $0.value = Current.settingsStore.restoreLastURL
                     $0.onChange { row in
