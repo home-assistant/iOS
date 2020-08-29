@@ -64,43 +64,56 @@ class IncomingURLHandler {
             return handle(url: url)
         }
     }
+
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+        windowController.webViewControllerPromise.done {
+            $0.present(alert, animated: true, completion: nil)
+        }
+    }
 }
 
 extension IncomingURLHandler {
-    private func registerCallbackURLKitHandlers() {
-        enum XCallbackError: FailureCallbackError {
-            case generalError
-            case eventNameMissing
-            case serviceMissing
-            case templateMissing
+    enum XCallbackError: FailureCallbackError {
+        case generalError
+        case eventNameMissing
+        case serviceMissing
+        case templateMissing
 
-            var code: Int {
-                switch self {
-                case .generalError:
-                    return 0
-                case .eventNameMissing:
-                    return 1
-                case .serviceMissing:
-                    return 2
-                case .templateMissing:
-                    return 2
-                }
-            }
-
-            var message: String {
-                switch self {
-                case .generalError:
-                    return L10n.UrlHandler.XCallbackUrl.Error.general
-                case .eventNameMissing:
-                    return L10n.UrlHandler.XCallbackUrl.Error.eventNameMissing
-                case .serviceMissing:
-                    return L10n.UrlHandler.XCallbackUrl.Error.serviceMissing
-                case .templateMissing:
-                    return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
-                }
+        var code: Int {
+            switch self {
+            case .generalError:
+                return 0
+            case .eventNameMissing:
+                return 1
+            case .serviceMissing:
+                return 2
+            case .templateMissing:
+                return 2
             }
         }
 
+        var message: String {
+            switch self {
+            case .generalError:
+                return L10n.UrlHandler.XCallbackUrl.Error.general
+            case .eventNameMissing:
+                return L10n.UrlHandler.XCallbackUrl.Error.eventNameMissing
+            case .serviceMissing:
+                return L10n.UrlHandler.XCallbackUrl.Error.serviceMissing
+            case .templateMissing:
+                return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
+            }
+        }
+    }
+
+    // swiftlint:disable:next function_body_length
+    private func registerCallbackURLKitHandlers() {
         Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
 
         Manager.shared["fire_event"] = { parameters, success, failure, cancel in
@@ -186,9 +199,6 @@ extension IncomingURLHandler {
             }
         }
     }
-}
-
-extension IncomingURLHandler {
 
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
@@ -198,10 +208,10 @@ extension IncomingURLHandler {
             }.then { api in
                 api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
             }.done { _ in
-                showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
+                self.showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
                           message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
             }.catch { error -> Void in
-                showAlert(title: L10n.errorLabel,
+                self.showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
                                                                            error.localizedDescription))
         }
@@ -217,10 +227,10 @@ extension IncomingURLHandler {
             }.then { api in
                 api.CallService(domain: domain, service: service, serviceData: serviceData)
             }.done { _ in
-                showAlert(title: L10n.UrlHandler.CallService.Success.title,
+                self.showAlert(title: L10n.UrlHandler.CallService.Success.title,
                           message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
             }.catch { error in
-                showAlert(title: L10n.errorLabel,
+                self.showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
                                                                              error.localizedDescription))
         }
@@ -233,10 +243,10 @@ extension IncomingURLHandler {
             }.then { api in
                 api.GetAndSendLocation(trigger: .URLScheme)
             }.done { _ in
-                showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
+                self.showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
             }.catch { error in
-                showAlert(title: L10n.errorLabel,
+                self.showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
         }
     }
@@ -260,11 +270,13 @@ extension IncomingURLHandler {
         let actionID = url.pathComponents[1]
 
         guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-            UIApplication.shared.typedDelegate.showFullScreenConfirm(icon: .alertCircleIcon, text: L10n.UrlHandler.Error.actionNotFound)
+            UIApplication.shared.typedDelegate
+                .showFullScreenConfirm(icon: .alertCircleIcon, text: L10n.UrlHandler.Error.actionNotFound)
             return
         }
 
-        UIApplication.shared.typedDelegate.showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
+        UIApplication.shared.typedDelegate
+            .showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
 
         HomeAssistantAPI.authenticatedAPI()?
             .HandleAction(actionID: actionID, source: source)
