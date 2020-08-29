@@ -202,12 +202,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13, *)
     @objc internal func openMenuUrl(_ command: AnyObject) {
-        guard let command = command as? UICommand else {
+        guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
         }
 
-        if let url = MenuManager.url(from: command) {
-            _ = application(UIApplication.shared, open: url, options: [:])
+        let delegate: Guarantee<WebViewSceneDelegate> = sceneManager.scene(for: .init(activity: .webView))
+        delegate.done {
+            $0.urlHandler?.handle(url: url)
         }
     }
 
