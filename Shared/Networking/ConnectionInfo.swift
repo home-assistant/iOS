@@ -354,6 +354,7 @@ public class ConnectionInfo: Codable {
             guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
             return interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
         }
+        return nil
         #else
         return nil
         #endif
@@ -369,6 +370,7 @@ public class ConnectionInfo: Codable {
             guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
             return interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
         }
+        return nil
         #else
         return nil
         #endif
