@@ -523,7 +523,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func checkForUpdate() {
+    @objc func checkForUpdate(_ sender: AnyObject? = nil) {
         guard #available(macCatalyst 13, *) else {
             // don't need to look for updates on iOS
             return
@@ -547,8 +547,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sceneManager.webViewWindowControllerPromise.done {
                 $0.present(alert, animated: true, completion: nil)
             }
-        }.catch { error in
-            Current.Log.error("no update available: \(error)")
+        }.catch { [sceneManager] error in
+            Current.Log.error("check error: \(error)")
+
+            if sender != nil {
+                // sender means it's from a ui element, so give a result
+                let alert = UIAlertController(
+                    title: L10n.Updater.NoUpdatesAvailable.title,
+                    message: error.localizedDescription,
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+
+                sceneManager.webViewWindowControllerPromise.done {
+                    $0.present(alert, animated: true, completion: nil)
+                }
+            }
         }
     }
 
