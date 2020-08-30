@@ -49,13 +49,10 @@ extension Environment {
 @UIApplicationMain
 // swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    @available(iOS, deprecated: 13.0)
     var window: UIWindow? {
         get {
-            if #available(iOS 13, *) {
-                return nil
-            } else {
-                return sceneManager.compatibility.windowController?.window
-            }
+            return sceneManager.compatibility.windowController?.window
         }
         set { // swiftlint:disable:this unused_setter_value
             fatalError("window is not settable in app delegate")
@@ -156,6 +153,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
+        guard !Current.isCatalyst else {
+            return
+        }
+
         if #available(iOS 14, *), Current.isTestFlight || Current.appConfiguration == .Debug {
             let controller = UIAlertController(
                 title: "Work around iOS 14 background crash?",
@@ -171,7 +172,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 prefs.set(true, forKey: Self.hasAsked14Workaround)
             }))
             controller.addAction(UIAlertAction(title: "Ask Again Later", style: .cancel, handler: nil))
-            window?.rootViewController?.present(controller, animated: true, completion: nil)
+            sceneManager.webViewWindowControllerPromise.done {
+                $0.present(controller, animated: true, completion: nil)
+            }
         }
     }
 
@@ -526,7 +529,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        Current.updater.check().done { [window] update in
+        Current.updater.check().done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
                 message: update.body,
@@ -540,7 +543,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             ))
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
-            window?.rootViewController?.present(alert, animated: true, completion: nil)
+
+            sceneManager.webViewWindowControllerPromise.done {
+                $0.present(alert, animated: true, completion: nil)
+            }
         }.catch { error in
             Current.Log.error("no update available: \(error)")
         }
@@ -957,14 +963,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        openSettingsFor notification: UNNotification?) {
         let view = NotificationSettingsViewController()
         view.doneButton = true
-        var rootViewController = self.window?.rootViewController
-        if let navigationController = rootViewController as? UINavigationController {
-            rootViewController = navigationController.viewControllers.first
+
+        sceneManager.webViewWindowControllerPromise.done {
+            var rootViewController = $0.window.rootViewController
+            if let navigationController = rootViewController as? UINavigationController {
+                rootViewController = navigationController.viewControllers.first
+            }
+            rootViewController?.dismiss(animated: false, completion: {
+                let navController = UINavigationController(rootViewController: view)
+                rootViewController?.present(navController, animated: true, completion: nil)
+            })
         }
-        rootViewController?.dismiss(animated: false, completion: {
-            let navController = UINavigationController(rootViewController: view)
-            rootViewController?.present(navController, animated: true, completion: nil)
-        })
     }
 }
 
