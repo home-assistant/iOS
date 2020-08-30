@@ -181,13 +181,29 @@ public class DeviceWrapper {
 
     public lazy var systemVersion: () -> String = {
         #if os(iOS)
-        return UIDevice.current.systemVersion
+        if Current.isCatalyst {
+            // Catalyst on 11.0 (at least 20A5354i) reports "14.0" to `UIDevice`
+            let version = ProcessInfo.processInfo.operatingSystemVersion
+            return "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        } else {
+            return UIDevice.current.systemVersion
+        }
         #elseif os(watchOS)
         return WKInterfaceDevice.current().systemVersion
         #endif
     }
 
-    public lazy var systemModel: () -> String = {
+    private static func sysctlModel() -> String {
+        let name = "hw.model"
+        var charCount: Int = 0
+        sysctlbyname(name, nil, &charCount, nil, 0)
+        let ptr = UnsafeMutablePointer<CChar>.allocate(capacity: charCount)
+        defer { ptr.deallocate() }
+        sysctlbyname(name, ptr, /* serves as input */ &charCount, nil, 0)
+        return String(cString: ptr)
+    }
+
+    private static func unameMachine() -> String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let mirror = Mirror(reflecting: systemInfo.machine)
@@ -197,5 +213,13 @@ public class DeviceWrapper {
             return identifier + String(UnicodeScalar(UInt8(value)))
         }
         return identifier
+    }
+
+    public lazy var systemModel: () -> String = {
+        if Current.isCatalyst {
+            return Self.sysctlModel()
+        } else {
+            return Self.unameMachine()
+        }
     }
 }
