@@ -39,7 +39,10 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             self.scene(scene, openURLContexts: connectionOptions.urlContexts)
         }
 
-        if let shortcutItem = connectionOptions.shortcutItem {
+        // This getter does not exist on macOS 10.15, so we need to check that it responds.
+        // Of course, this is not documented via availability headers, of course.
+        if connectionOptions.responds(to: #selector(getter: UIScene.ConnectionOptions.shortcutItem)),
+           let shortcutItem = connectionOptions.shortcutItem {
             self.windowScene(scene, performActionFor: shortcutItem, completionHandler: { _ in })
         }
 
