@@ -1,5 +1,5 @@
 import Foundation
-#if targetEnvironment(macCatalyst)
+#if canImport(IOKit)
 import IOKit.ps
 #endif
 #if os(iOS)
@@ -11,8 +11,10 @@ import WatchKit
 
 /// Wrapper around UIDevice/WKInterfaceDevice
 public class DeviceWrapper {
+    public lazy var batteryNotificationCenter = DeviceWrapperBatteryNotificationCenter()
+
     public lazy var verboseBatteryInfo: () -> [String: Any] = {
-        #if targetEnvironment(macCatalyst)
+        #if canImport(IOKit)
         /// keys: https://developer.apple.com/documentation/iokit/iopskeys_h/defines
         let blob = IOPSCopyPowerSourcesInfo().takeRetainedValue()
         let powerSources = IOPSCopyPowerSourcesList(blob).takeRetainedValue() as [CFTypeRef]
