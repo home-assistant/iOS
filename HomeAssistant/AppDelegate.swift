@@ -78,10 +78,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        if NSClassFromString("XCTest") != nil {
-            return true
-        }
-
         setDefaults()
         Current.isBackgroundRequestsImmediate = {
             if Current.isCatalyst {

@@ -4,6 +4,34 @@ import PromiseKit
 import XCTest
 
 class BatterySensorTests: XCTestCase {
+    func testUpdateSignalerCreated() throws {
+        Current.device.batteryLevel = { 100 }
+        Current.device.batteryState = { .unplugged }
+        Current.device.isLowPowerMode = { false }
+
+        let dependencies = SensorProviderDependencies()
+        let provider = BatterySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: dependencies,
+            location: nil
+        ))
+        let promise = provider.sensors()
+        _ = try hang(promise)
+
+        let signaler: BatterySensorUpdateSignaler? = dependencies.existingSignaler(for: provider)
+        XCTAssertNotNil(signaler)
+    }
+
+    func testSignaler() {
+        var didSignal = false
+        let signaler = BatterySensorUpdateSignaler(signal: {
+            didSignal = true
+        })
+
+        signaler.deviceBatteryStateDidChange(Current.device.batteryNotificationCenter)
+        XCTAssertTrue(didSignal)
+    }
+
     func testAdditionalInfo() throws {
         Current.device.verboseBatteryInfo = { [
             "test": true
@@ -265,5 +293,6 @@ class BatterySensorTests: XCTestCase {
 
         return (uLevel, uState, cLevel, cState)
     }
+
 
 }
