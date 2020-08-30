@@ -244,6 +244,14 @@ class SettingsViewController: FormViewController {
 
                 let activityViewController = UIActivityViewController(activityItems: [zipDest],
                                                                       applicationActivities: nil)
+                activityViewController.completionWithItemsHandler = { type, completed, _, _ in
+                    let didCancelEntirely = type == nil && !completed
+                    let didCompleteEntirely = completed
+
+                    if didCancelEntirely || didCompleteEntirely {
+                        try? fileManager.removeItem(at: zipDest)
+                    }
+                }
                 self.present(activityViewController, animated: true, completion: {})
                 if let popOver = activityViewController.popoverPresentationController {
                     popOver.sourceView = cell
