@@ -732,14 +732,18 @@ extension WebViewController: WKScriptMessageHandler {
 
         switch incomingMessage.MessageType {
         case "config/get":
-            response = .value(WebSocketMessage(
-                id: incomingMessage.ID!,
-                type: "result",
-                result: [
-                    "hasSettingsScreen": true,
-                    "canWriteTag": Current.tags.isNFCAvailable
-                ]
-            ))
+            response = Guarantee { seal in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    seal(WebSocketMessage(
+                        id: incomingMessage.ID!,
+                        type: "result",
+                        result: [
+                            "hasSettingsScreen": !Current.isCatalyst,
+                            "canWriteTag": Current.tags.isNFCAvailable
+                        ]
+                    ))
+                }
+            }
         case "config_screen/show":
             self.showSettingsViewController()
         case "haptic":
