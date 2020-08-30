@@ -1,6 +1,19 @@
 import Foundation
 import PromiseKit
 
+final class BatterySensorUpdateSignaler: SensorProviderUpdateSignaler, DeviceWrapperBatteryNotificationObserver {
+    let signal: () -> Void
+    init(signal: @escaping () -> Void) {
+        self.signal = signal
+        Current.device.batteryNotificationCenter.register(observer: self)
+    }
+
+    func deviceBatteryStateDidChange(_ center: DeviceWrapperBatteryNotificationCenter) {
+        Current.Log.info("signalling battery status change")
+        signal()
+    }
+}
+
 public class BatterySensor: SensorProvider {
     public let request: SensorProviderRequest
     required public init(request: SensorProviderRequest) {
@@ -55,6 +68,9 @@ public class BatterySensor: SensorProvider {
                 "Low Power Mode": isLowPowerMode
             ].merging(batteryAttributes, uniquingKeysWith: { a, _ in a })
         }
+
+        // Set up our observer for battery state changes
+        let _: BatterySensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         return .value([levelSensor, stateSensor])
     }

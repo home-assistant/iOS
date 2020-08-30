@@ -8,13 +8,22 @@ public class SensorProviderDependencies {
     internal var updateSignalHandler: (SensorProvider.Type) -> Void = { _ in }
     private var updateSignalers: [String: [SensorProviderUpdateSignaler]] = [:]
 
+    private func key(for sensorProvider: SensorProvider) -> String {
+        String(describing: type(of: sensorProvider))
+    }
+
+    internal func existingSignaler<SignalerType: SensorProviderUpdateSignaler>(
+        for sensorProvider: SensorProvider
+    ) -> SignalerType? {
+        let key = self.key(for: sensorProvider)
+        return updateSignalers[key]?.compactMap({ $0 as? SignalerType }).first
+    }
+
     public func updateSignaler<SignalerType: SensorProviderUpdateSignaler>(
         for sensorProvider: SensorProvider
     ) -> SignalerType {
-        let key = String(describing: type(of: sensorProvider))
-
-        if let existingValue = updateSignalers[key]?.compactMap({ $0 as? SignalerType }).first {
-            return existingValue
+        if let existing: SignalerType = existingSignaler(for: sensorProvider) {
+            return existing
         }
 
         let sensorType = type(of: sensorProvider)
@@ -22,7 +31,7 @@ public class SensorProviderDependencies {
             self?.updateSignalHandler(sensorType)
         })
 
-        updateSignalers[key, default: []] += [created]
+        updateSignalers[key(for: sensorProvider), default: []] += [created]
         return created
     }
 }
