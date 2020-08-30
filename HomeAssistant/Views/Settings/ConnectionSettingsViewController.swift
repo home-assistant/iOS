@@ -101,14 +101,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
-                if Current.isCatalyst {
-                    if #available(macCatalyst 14.0, *) {
-                        row.hidden = false
-                    } else {
-                        // wifi information is not available on pre-14.0 catalyst
-                        row.hidden = true
-                    }
-                }
+                // need to write crazy indirection to get access to wifi ssid information via CoreWLAN
+                row.hidden = .isCatalyst
 
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
