@@ -25,7 +25,7 @@ public class ActiveStateManager {
     public private(set) var isFastUserSwitched = false
     public private(set) var isIdle = false
 
-    public var idleTime: Measurement<UnitDuration> {
+    public var minimumIdleTime: Measurement<UnitDuration> {
         get {
             if Current.settingsStore.prefs.object(forKey: UserDefaultsKeys.minimumIdleTime.rawValue) == nil {
                 return .init(value: 5.0, unit: .minutes)

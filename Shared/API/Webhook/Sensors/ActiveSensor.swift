@@ -59,8 +59,8 @@ final class ActiveSensor: SensorProvider {
         sensor.Settings = [
             .init(
                 type: .stepper(
-                    getter: { activeState.idleTime.converted(to: .minutes).value },
-                    setter: { activeState.idleTime = .init(value: $0, unit: .minutes) },
+                    getter: { activeState.minimumIdleTime.converted(to: .minutes).value },
+                    setter: { activeState.minimumIdleTime = .init(value: $0, unit: .minutes) },
                     minimum: 1,
                     maximum: .greatestFiniteMagnitude,
                     step: 1.0,
