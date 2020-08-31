@@ -401,7 +401,7 @@ public class WebhookManager: NSObject {
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server).toJSON(request)
-            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
 
             // httpBody is ignored by URLSession but is made available in tests
             urlRequest.httpBody = data
