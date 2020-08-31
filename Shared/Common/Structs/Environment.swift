@@ -81,7 +81,7 @@ public class Environment {
 
     public var updater: Updater = Updater()
 
-    public var activeState: ActiveStateManager = ActiveStateManager()
+    public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
 
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
