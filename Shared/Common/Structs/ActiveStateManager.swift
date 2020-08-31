@@ -67,6 +67,7 @@ public class ActiveStateManager {
 
     internal var idleTimer: Timer? {
         willSet {
+            Current.Log.info(newValue == nil ? "removing timer" : "starting timer")
             idleTimer?.invalidate()
         }
     }
