@@ -37,6 +37,17 @@ public struct AvailableUpdate: Codable {
 public class Updater {
     private var apiUrl: URL { URL(string: "https://api.github.com/repos/home-assistant/ios/releases?per_page=5")! }
 
+    private enum UpdateError: LocalizedError {
+        case onLatestVersion
+
+        var errorDescription: String? {
+            switch self {
+            case .onLatestVersion:
+                return L10n.Updater.NoUpdatesAvailable.onLatestVersion
+            }
+        }
+    }
+
     public func check() -> Promise<AvailableUpdate> {
         firstly {
             URLSession.shared.dataTask(.promise, with: apiUrl)
@@ -46,13 +57,20 @@ public class Updater {
             }.decode([AvailableUpdate].self, from: data)
         }.get { updates in
             Current.Log.info("found releases: \(updates)")
-        }.compactMap { updates in
+        }.map { updates in
             let current = AvailableUpdate.joinedVersionString(version: Constants.version, build: Constants.build)
-            if let first = updates.first(where: { !$0.assets.isEmpty }), first.versionString != current {
+            if let first = updates.first(where: { !$0.assets.isEmpty }) {
                 // skip over any without assets, but then only check the version numbrer of the first one
-                return first
+                if first.versionString == current {
+                    // the same version number, so no update is available
+                    throw UpdateError.onLatestVersion
+                } else {
+                    // not the same version number, so an update is available
+                    return first
+                }
             } else {
-                return nil
+                // Response included updates, but none had assets, assume transient API issue and don't share
+                throw UpdateError.onLatestVersion
             }
         }
     }

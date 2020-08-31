@@ -2106,6 +2106,16 @@ internal enum L10n {
   }
 
   internal enum Updater {
+    internal enum CheckForUpdatesMenu {
+      /// Check for Updates…
+      internal static let title = L10n.tr("Localizable", "updater.check_for_updates_menu.title")
+    }
+    internal enum NoUpdatesAvailable {
+      /// You're on the latest version!
+      internal static let onLatestVersion = L10n.tr("Localizable", "updater.no_updates_available.on_latest_version")
+      /// Check for Updates
+      internal static let title = L10n.tr("Localizable", "updater.no_updates_available.title")
+    }
     internal enum UpdateAvailable {
       /// View '%@'
       internal static func `open`(_ p1: Any) -> String {

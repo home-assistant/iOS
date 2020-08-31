@@ -57,10 +57,17 @@ class MenuManager {
     private func aboutMenu() -> UIMenu {
         let title = L10n.Menu.Application.about(appName)
 
-        let command = UICommand(
+        let about = UICommand(
             title: title,
             image: nil,
             action: #selector(AppDelegate.openAbout),
+            propertyList: nil
+        )
+
+        let checkForUpdates = UICommand(
+            title: L10n.Updater.CheckForUpdatesMenu.title,
+            image: nil,
+            action: #selector(AppDelegate.checkForUpdate(_:)),
             propertyList: nil
         )
 
@@ -69,7 +76,7 @@ class MenuManager {
             image: nil,
             identifier: .about,
             options: .displayInline,
-            children: [command]
+            children: [about, checkForUpdates]
         )
     }
 
