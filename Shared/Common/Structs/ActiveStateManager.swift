@@ -88,34 +88,46 @@ public class ActiveStateManager {
         case minimumIdleTime = "active_minimum_idle_time"
     }
 
-    private func setup() {
-        let distributedNotificationCenter: NotificationCenter? = {
-            #if targetEnvironment(macCatalyst)
-            if let type = NSClassFromString("NSDistributedNotificationCenter") as? NotificationCenter.Type {
-                return type.default
-            } else {
-                Current.Log.error("couldn't find distributed notification center")
-                return nil
-            }
-            #else
-            return nil
-            #endif
-        }()
-        let workspaceNotificationCenter: NotificationCenter? = {
-            #if targetEnvironment(macCatalyst)
-            let center = NSClassFromString("NSWorkspace")?
-                .value(forKeyPath: "sharedWorkspace.notificationCenter") as? NotificationCenter
+    private static func distributedNotificationCenter() -> NotificationCenter? {
+        if NSClassFromString("XCTest") != nil {
+            return NotificationCenter.default
+        }
 
-            if let center = center {
-                return center
-            } else {
-                Current.Log.error("couldn't find workspace notification center")
-                return nil
-            }
-            #else
+        #if targetEnvironment(macCatalyst)
+        if let type = NSClassFromString("NSDistributedNotificationCenter") as? NotificationCenter.Type {
+            return type.default
+        } else {
+            Current.Log.error("couldn't find distributed notification center")
             return nil
-            #endif
-        }()
+        }
+        #else
+        return nil
+        #endif
+    }
+
+    private static func workspaceNotificationCenter() -> NotificationCenter? {
+        if NSClassFromString("XCTest") != nil {
+            return NotificationCenter.default
+        }
+
+        #if targetEnvironment(macCatalyst)
+        let center = NSClassFromString("NSWorkspace")?
+            .value(forKeyPath: "sharedWorkspace.notificationCenter") as? NotificationCenter
+
+        if let center = center {
+            return center
+        } else {
+            Current.Log.error("couldn't find workspace notification center")
+            return nil
+        }
+        #else
+        return nil
+        #endif
+    }
+
+    private func setup() {
+        let distributedNotificationCenter = Self.distributedNotificationCenter()
+        let workspaceNotificationCenter = Self.workspaceNotificationCenter()
 
         for name in UpdateType.allCases {
             switch name.notification {
@@ -185,7 +197,11 @@ public class ActiveStateManager {
     }
 
     private func checkIdle() {
-        let currentTime = currentIdleTime()
+        guard let currentTime = Current.device.idleTime() else {
+            Current.Log.error("checking idle time on a platform which doesn't support it")
+            return
+        }
+
         let minimumTime = minimumIdleTime
         let shouldBeIdle = currentTime > minimumTime
 
@@ -232,27 +248,6 @@ public class ActiveStateManager {
         if oldStates != states {
             activeDidChange()
         }
-    }
-
-    private func currentIdleTime() -> Measurement<UnitDuration> {
-        #if targetEnvironment(macCatalyst)
-        let seconds = CGEventSource.secondsSinceLastEventType(
-            .combinedSessionState,
-            eventType: {
-                /*
-                 Apple's docs say:
-                 > The event type to access. To get the elapsed time since the previous input event—keyboard, mouse, or
-                 > tablet—specify kCGAnyInputEventType.
-                 But kCGAnyInputEventType isn't available in Swift. In Objective-C it's defined as `((CGEventType)(~0))`
-                 */
-                return CGEventType(rawValue: ~0)!
-            }()
-        )
-        #else
-        let seconds = 1000.0
-        #endif
-
-        return .init(value: seconds, unit: .seconds)
     }
 }
 
