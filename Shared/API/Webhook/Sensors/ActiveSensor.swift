@@ -40,7 +40,9 @@ final class ActiveSensor: SensorProvider {
         sensor.Attributes = [
             "Screensaver": activeState.isScreensavering,
             "Locked": activeState.isLocked,
-            "Sleep": activeState.isSleeping
+            "Screen Off": activeState.isScreenOff,
+            "Fast User Switched": activeState.isFastUserSwitched,
+            "Sleeping": activeState.isSleeping
         ]
 
         // Set up our observer
