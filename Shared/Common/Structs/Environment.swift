@@ -74,11 +74,14 @@ public class Environment {
         $0.register(provider: GeocoderSensor.self)
         $0.register(provider: LastUpdateSensor.self)
         $0.register(provider: MacCameraSensor.self)
+        $0.register(provider: ActiveSensor.self)
     }
 
     public var tags: TagManager = EmptyTagManager()
 
     public var updater: Updater = Updater()
+
+    public var activeState: ActiveStateManager = ActiveStateManager()
 
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
