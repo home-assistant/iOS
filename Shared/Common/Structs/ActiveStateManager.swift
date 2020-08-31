@@ -7,11 +7,7 @@ public protocol ActiveStateObserver: AnyObject {
 
 public class ActiveStateManager {
     public var canTrackActiveStatus: Bool {
-        #if targetEnvironment(macCatalyst)
-        return true
-        #else
-        return false
-        #endif
+        return Current.isCatalyst
     }
 
     public var isActive: Bool {
@@ -69,7 +65,7 @@ public class ActiveStateManager {
         setup()
     }
 
-    private var idleTimer: Timer? {
+    internal var idleTimer: Timer? {
         willSet {
             idleTimer?.invalidate()
         }
@@ -93,16 +89,16 @@ public class ActiveStateManager {
             return NotificationCenter.default
         }
 
-        #if targetEnvironment(macCatalyst)
-        if let type = NSClassFromString("NSDistributedNotificationCenter") as? NotificationCenter.Type {
-            return type.default
+        if Current.isCatalyst {
+            if let type = NSClassFromString("NSDistributedNotificationCenter") as? NotificationCenter.Type {
+                return type.default
+            } else {
+                Current.Log.error("couldn't find distributed notification center")
+                return nil
+            }
         } else {
-            Current.Log.error("couldn't find distributed notification center")
             return nil
         }
-        #else
-        return nil
-        #endif
     }
 
     private static func workspaceNotificationCenter() -> NotificationCenter? {
@@ -110,19 +106,19 @@ public class ActiveStateManager {
             return NotificationCenter.default
         }
 
-        #if targetEnvironment(macCatalyst)
-        let center = NSClassFromString("NSWorkspace")?
-            .value(forKeyPath: "sharedWorkspace.notificationCenter") as? NotificationCenter
+        if Current.isCatalyst {
+            let center = NSClassFromString("NSWorkspace")?
+                .value(forKeyPath: "sharedWorkspace.notificationCenter") as? NotificationCenter
 
-        if let center = center {
-            return center
+            if let center = center {
+                return center
+            } else {
+                Current.Log.error("couldn't find workspace notification center")
+                return nil
+            }
         } else {
-            Current.Log.error("couldn't find workspace notification center")
             return nil
         }
-        #else
-        return nil
-        #endif
     }
 
     private func setup() {
@@ -203,7 +199,7 @@ public class ActiveStateManager {
         }
 
         let minimumTime = minimumIdleTime
-        let shouldBeIdle = currentTime > minimumTime
+        let shouldBeIdle = currentTime >= minimumTime
 
         if shouldBeIdle && !states.isIdle {
             Current.Log.info("idle time of \(currentTime) exceeds \(minimumTime)")
