@@ -65,7 +65,7 @@ class MenuManager {
         )
 
         let checkForUpdates = UICommand(
-            title: "Check for updates…",
+            title: L10n.Updater.CheckForUpdatesMenu.title,
             image: nil,
             action: #selector(AppDelegate.checkForUpdate(_:)),
             propertyList: nil
