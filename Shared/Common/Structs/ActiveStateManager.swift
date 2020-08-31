@@ -23,6 +23,26 @@ public class ActiveStateManager {
     public private(set) var isSleeping = false
     public private(set) var isScreenOff = false
     public private(set) var isFastUserSwitched = false
+    public private(set) var isIdle = false
+
+    public var idleTime: Measurement<UnitDuration> {
+        get {
+            if Current.settingsStore.prefs.object(forKey: UserDefaultsKeys.minimumIdleTime.rawValue) == nil {
+                return .init(value: 5.0, unit: .minutes)
+            } else {
+                return .init(
+                    value: Current.settingsStore.prefs.double(forKey: UserDefaultsKeys.minimumIdleTime.rawValue),
+                    unit: .seconds
+                )
+            }
+        }
+        set {
+            Current.settingsStore.prefs.set(
+                newValue.converted(to: .seconds).value,
+                forKey: UserDefaultsKeys.minimumIdleTime.rawValue
+            )
+        }
+    }
 
     init() {
         setup()
@@ -36,6 +56,10 @@ public class ActiveStateManager {
 
     public func unregister(observer: ActiveStateObserver) {
         observers.remove(observer)
+    }
+
+    private enum UserDefaultsKeys: String {
+        case minimumIdleTime = "active_minimum_idle_time"
     }
 
     private func setup() {
