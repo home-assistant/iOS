@@ -5,9 +5,7 @@ public protocol ActiveStateObserver: AnyObject {
 }
 
 public class ActiveStateManager {
-    private var observers = NSHashTable<AnyObject>(options: .weakMemory)
-
-    var canTrackActiveStatus: Bool {
+    public var canTrackActiveStatus: Bool {
         #if targetEnvironment(macCatalyst)
         return true
         #else
@@ -15,20 +13,22 @@ public class ActiveStateManager {
         #endif
     }
 
-    var isActive: Bool {
+    public var isActive: Bool {
         precondition(canTrackActiveStatus)
         return !isScreensavering && !isLocked && !isSleeping && !isScreenOff && !isFastUserSwitched
     }
 
-    private(set) var isScreensavering = false
-    private(set) var isLocked = false
-    private(set) var isSleeping = false
-    private(set) var isScreenOff = false
-    private(set) var isFastUserSwitched = false
+    public private(set) var isScreensavering = false
+    public private(set) var isLocked = false
+    public private(set) var isSleeping = false
+    public private(set) var isScreenOff = false
+    public private(set) var isFastUserSwitched = false
 
     init() {
         setup()
     }
+
+    private var observers = NSHashTable<AnyObject>(options: .weakMemory)
 
     public func register(observer: ActiveStateObserver) {
         observers.add(observer)
