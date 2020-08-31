@@ -15,20 +15,36 @@ public class ActiveStateManager {
     }
 
     public var isActive: Bool {
-        precondition(canTrackActiveStatus)
-        return isActiveExceptForIdle && !isIdle
+        return isActiveExceptForIdle
+            && !states.isIdle
     }
 
     private var isActiveExceptForIdle: Bool {
-        return !isScreensavering && !isLocked && !isSleeping && !isScreenOff && !isFastUserSwitched
+        return !states.isScreensavering
+            && !states.isLocked
+            && !states.isSleeping
+            && !states.isScreenOff
+            && !states.isFastUserSwitched
     }
 
-    public private(set) var isScreensavering = false
-    public private(set) var isLocked = false
-    public private(set) var isSleeping = false
-    public private(set) var isScreenOff = false
-    public private(set) var isFastUserSwitched = false
-    public private(set) var isIdle = false
+    public struct States: Equatable {
+        public var isScreensavering = false
+        public var isLocked = false
+        public var isSleeping = false
+        public var isScreenOff = false
+        public var isFastUserSwitched = false
+        public var isIdle = false
+
+        public var attributes: [String: Any] { [
+            "Idle": isIdle,
+            "Screensaver": isScreensavering,
+            "Locked": isLocked,
+            "Screen Off": isScreenOff,
+            "Fast User Switched": isFastUserSwitched,
+            "Sleeping": isSleeping
+        ] }
+    }
+    public private(set) var states: States = States()
 
     public var minimumIdleTime: Measurement<UnitDuration> {
         get {
@@ -121,10 +137,10 @@ public class ActiveStateManager {
             }
         }
 
-        setupIdleTimer()
+        setupIdleTimer(isInitial: true)
     }
 
-    private func setupIdleTimer() {
+    private func setupIdleTimer(isInitial: Bool) {
         guard isActiveExceptForIdle else {
             // Inactive for a reason other than idle; we can turn off the timer until we're back to active
             idleTimer = nil
@@ -139,13 +155,18 @@ public class ActiveStateManager {
         idleTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true, block: { [weak self] _ in
             self?.checkIdle()
         })
+
+        if !isInitial {
+            // If we're returning from another state, we may have had a cached idle value we want to fix
+            idleTimer?.fire()
+        }
     }
 
     private func activeDidChange() {
         Current.Log.info("notifying about change of active from \(!isActive) to \(isActive)")
 
         // in case we need to start/stop the idle timer
-        setupIdleTimer()
+        setupIdleTimer(isInitial: false)
 
         observers
             .allObjects
@@ -168,17 +189,17 @@ public class ActiveStateManager {
         let minimumTime = minimumIdleTime
         let shouldBeIdle = currentTime > minimumTime
 
-        if shouldBeIdle && !isIdle {
+        if shouldBeIdle && !states.isIdle {
             Current.Log.info("idle time of \(currentTime) exceeds \(minimumTime)")
             handle(updateType: .idleStart)
-        } else if !shouldBeIdle && isIdle {
+        } else if !shouldBeIdle && states.isIdle {
             Current.Log.info("idle time of \(currentTime) is less than \(minimumTime)")
             handle(updateType: .idleEnd)
         }
     }
 
     private func handle(updateType: UpdateType) {
-        let affectedKeyPath: ReferenceWritableKeyPath<ActiveStateManager, Bool> = {
+        let affectedKeyPath: WritableKeyPath<States, Bool> = {
             switch updateType {
             case .screensaverStart, .screensaverEnd:
                 return \.isScreensavering
@@ -195,7 +216,7 @@ public class ActiveStateManager {
             }
         }()
 
-        let currentValue = self[keyPath: affectedKeyPath]
+        let currentValue = states[keyPath: affectedKeyPath]
         let newValue = updateType.isStart
 
         guard currentValue != newValue else {
@@ -203,12 +224,12 @@ public class ActiveStateManager {
             return
         }
 
-        let wasActive = isActive
+        let oldStates = states
 
         Current.Log.info("from \(updateType) setting its state to \(newValue)")
-        self[keyPath: affectedKeyPath] = newValue
+        states[keyPath: affectedKeyPath] = newValue
 
-        if wasActive != isActive {
+        if oldStates != states {
             activeDidChange()
         }
     }
@@ -285,6 +306,7 @@ private enum UpdateType: CaseIterable {
         case .screenOffEnd: return .workspace(.init("NSWorkspaceScreensDidWakeNotification"))
         case .fastUserSwitchStart: return .workspace(.init("NSWorkspaceSessionDidResignActiveNotification"))
         case .fastUserSwitchEnd: return .workspace(.init("NSWorkspaceSessionDidBecomeActiveNotification"))
+        // not notifications
         case .idleStart, .idleEnd: return nil
         }
     }

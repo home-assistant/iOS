@@ -37,17 +37,10 @@ final class ActiveSensor: SensorProvider {
             name: "Active",
             uniqueID: "active",
             icon: isActive ? "mdi:monitor" : "mdi:monitor-off",
-            state: activeState.isActive
+            state: isActive
         )
         sensor.Type = "binary_sensor"
-        sensor.Attributes = [
-            "Idle": activeState.isIdle,
-            "Screensaver": activeState.isScreensavering,
-            "Locked": activeState.isLocked,
-            "Screen Off": activeState.isScreenOff,
-            "Fast User Switched": activeState.isFastUserSwitched,
-            "Sleeping": activeState.isSleeping
-        ]
+        sensor.Attributes = activeState.states.attributes
 
         let durationFormatter = with(DateComponentsFormatter()) {
             $0.allowedUnits = [.minute]
