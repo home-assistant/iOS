@@ -857,3 +857,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "menu.application.about" = "About %@";
 "menu.application.preferences" = "Preferences…";
 "menu.help.help" = "%@ Help";
+"location_change_notification.signaled.body" = "Location updated via update signal";
+"updater.check_for_updates_menu.title" = "Check for Updates…";
+"updater.no_updates_available.title" = "Check for Updates";
+"updater.no_updates_available.on_latest_version" = "You're on the latest version!";
+"menu.view.reload_page" = "Reload Page";
+"menu.file.update_sensors" = "Update Sensors";
+"open_label" = "Open";
+"sensors.active.setting.time_until_idle" = "Time Until Idle";
