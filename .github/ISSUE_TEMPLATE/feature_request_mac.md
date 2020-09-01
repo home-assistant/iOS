@@ -1,5 +1,5 @@
 ---
-name: Feature request (iOS/iPadOS)
+name: Feature request (macOS)
 about: Suggest an idea for the macOS app
 title: ''
 labels: feature-request, ios

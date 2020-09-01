@@ -1,5 +1,5 @@
 ---
-name: Bug report (iOS/iPadOS)
+name: Bug report (macOS)
 about: Create a report to help us improve the macOS
 title: ''
 labels: bug, mac
