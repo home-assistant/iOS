@@ -47,6 +47,10 @@
 		111D295124F2F6D900C8A7D1 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 111D295024F2F6D900C8A7D1 /* Sodium */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
+		11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
+		11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
+		11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
+		11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
 		113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
@@ -158,6 +162,8 @@
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
+		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
+		11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */; };
 		11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */; };
 		11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
 		11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
@@ -843,6 +849,8 @@
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
+		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
+		11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.swift; sourceTree = "<group>"; };
 		113D04E124D76CD3003CE877 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		113D04E324D76CDB003CE877 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
 		113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocation.swift"; sourceTree = "<group>"; };
@@ -946,6 +954,8 @@
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
+		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
+		11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.test.swift; sourceTree = "<group>"; };
 		11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
 		11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+RetryNetworking.swift"; sourceTree = "<group>"; };
 		11C4628124B053A800031902 /* WebhookResponseUpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateSensors.swift; sourceTree = "<group>"; };
@@ -1817,6 +1827,7 @@
 				119385A3249E8E360097F497 /* StorageSensor.swift */,
 				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
 				B613936824F728F8002B8C5D /* MacCameraSensor.swift */,
+				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
 				118261FF24F9C3D6000795C6 /* CoreMediaIO Helpers */,
 			);
@@ -1835,6 +1846,7 @@
 				119385A6249E9F930097F497 /* StorageSensor.test.swift */,
 				1109F82324A25A41002590F2 /* SensorContainer.test.swift */,
 				1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */,
+				11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -2593,6 +2605,7 @@
 				1101568624D7712F009424C9 /* TagManagerProtocol.swift */,
 				11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */,
 				11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */,
+				11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */,
 			);
 			path = Structs;
 			sourceTree = "<group>";
@@ -2655,6 +2668,7 @@
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
 				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
+				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
 			);
 			path = SharedTests;
 			sourceTree = "<group>";
@@ -4349,6 +4363,7 @@
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
+				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
@@ -4388,6 +4403,7 @@
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
+				11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
 				1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */,
@@ -4485,6 +4501,7 @@
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveryInfo.swift in Sources */,
+				11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
@@ -4524,6 +4541,7 @@
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
+				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,
 				B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */,
@@ -4551,6 +4569,7 @@
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
 				11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */,
+				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
@@ -4570,6 +4589,7 @@
 				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
 				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
+				11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -62,7 +62,7 @@ public struct WebhookRequest: ImmutableMappable {
 
         let sodium = Sodium()
 
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []) else {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: [.sortedKeys]) else {
             Current.Log.error("Unable to convert JSON dictionary to data!")
             return nil
         }

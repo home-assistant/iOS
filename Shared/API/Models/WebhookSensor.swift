@@ -12,6 +12,14 @@ import ObjectMapper
 public struct WebhookSensorSetting {
     public enum SettingType {
         case `switch`(getter: () -> Bool, setter: (Bool) -> Void)
+        case stepper(
+                getter: () -> Double,
+                setter: (Double) -> Void,
+                minimum: Double = 0,
+                maximum: Double = 100,
+                step: Double = 1,
+                displayValueFor: ((Double?) -> String?)?
+             )
     }
 
     public let type: SettingType

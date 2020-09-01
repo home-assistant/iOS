@@ -52,25 +52,7 @@ class SensorDetailViewController: FormViewController {
         form +++ baseSection
 
         if sensor.Settings.isEmpty == false {
-            let settingsSection = Section(
-                header: L10n.SettingsSensors.Settings.header,
-                footer: L10n.SettingsSensors.Settings.footer
-            )
-
-            settingsSection.append(contentsOf: sensor.Settings.map { setting -> BaseRow in
-                switch setting.type {
-                case .switch(let getter, let setter):
-                    return SwitchRow {
-                        $0.title = setting.title
-                        $0.value = getter()
-                        $0.onChange { row in
-                            setter(row.value ?? false)
-                        }
-                    }
-                }
-            })
-
-            form.append(settingsSection)
+            form.append(Self.settingsSection(from: sensor.Settings))
         }
 
         if let attributes = sensor.Attributes {
@@ -81,6 +63,48 @@ class SensorDetailViewController: FormViewController {
             attributesSection.append(contentsOf: attributeRows)
             form.append(attributesSection)
         }
+    }
+
+    class func settingsSection(from settings: [WebhookSensorSetting]) -> Section {
+        let section = Section(
+            header: L10n.SettingsSensors.Settings.header,
+            footer: L10n.SettingsSensors.Settings.footer
+        )
+
+        section.append(contentsOf: settings.map { setting -> BaseRow in
+            switch setting.type {
+            case .switch(let getter, let setter):
+                return SwitchRow {
+                    $0.title = setting.title
+                    $0.value = getter()
+                    $0.onChange { row in
+                        setter(row.value ?? false)
+                    }
+                }
+            case .stepper(let getter, let setter, let minimum, let maximum, let step, let displayValueFor):
+                return StepperRow {
+                    $0.title = setting.title
+                    $0.value = getter()
+                    $0.onChange { row in
+                        setter(row.value ?? 0)
+                    }
+
+                    if let displayValueFor = displayValueFor {
+                        $0.displayValueFor = displayValueFor
+                    }
+
+                    $0.cellSetup { cell, _ in
+                        with(cell.stepper) {
+                            $0?.minimumValue = minimum
+                            $0?.maximumValue = maximum
+                            $0?.stepValue = step
+                        }
+                    }
+                }
+            }
+        })
+
+        return section
     }
 
     class func row(attribute: String, value: Any) -> BaseRow {
