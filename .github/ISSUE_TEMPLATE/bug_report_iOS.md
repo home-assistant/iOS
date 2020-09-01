@@ -1,8 +1,8 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug report (iOS/iPadOS)
+about: Create a report to help us improve the mobile app
 title: ''
-labels: bug
+labels: bug, ios
 assignees: ''
 
 ---

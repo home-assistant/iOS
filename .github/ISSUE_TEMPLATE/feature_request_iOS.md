@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Feature request (iOS/iPadOS)
+about: Suggest an idea for the mobile app
 title: ''
-labels: feature-request
+labels: feature-request, mac
 assignees: ''
 
 ---
@@ -12,7 +12,5 @@ assignees: ''
 
 **Describe the solution you'd like**
 
-**Describe alternatives you've considered**
-<!--Are there any alternative solutions or features you've considered -->
 
 **Additional context**
