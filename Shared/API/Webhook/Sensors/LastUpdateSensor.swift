@@ -8,9 +8,21 @@ public class LastUpdateSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
+        let icon: String
+
+        if Current.isCatalyst {
+            if Current.device.systemModel().lowercased().contains("book") {
+                icon = "mdi:laptop-mac"
+            } else {
+                icon = "mdi:desktop-mac"
+            }
+        } else {
+            icon = "mdi:cellphone-wireless"
+        }
+
         return .value([
             with(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")) {
-                $0.Icon = "mdi:cellphone-wireless"
+                $0.Icon = icon
                 $0.State = request.lastUpdateReason
             }
         ])
