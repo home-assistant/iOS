@@ -565,7 +565,7 @@ public class HomeAssistantAPI {
 
     private class var sharedEventDeviceInfo: [String: String] { [
         "sourceDevicePermanentID": Constants.PermanentID,
-        "sourceDeviceName": Current.device.deviceName(),
+        "sourceDeviceName": Current.settingsStore.overrideDeviceName ?? Current.device.deviceName(),
         "sourceDeviceID": Current.settingsStore.deviceID
     ] }
 
