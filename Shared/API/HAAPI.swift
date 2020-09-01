@@ -565,7 +565,7 @@ public class HomeAssistantAPI {
 
     private class var sharedEventDeviceInfo: [String: String] { [
         "sourceDevicePermanentID": Constants.PermanentID,
-        "sourceDeviceName": Current.device.deviceName(),
+        "sourceDeviceName": Current.settingsStore.overrideDeviceName ?? Current.device.deviceName(),
         "sourceDeviceID": Current.settingsStore.deviceID
     ] }
 
@@ -752,7 +752,9 @@ extension HomeAssistantAPI.APIError: LocalizedError {
 
 extension HomeAssistantAPI: SensorObserver {
     public func sensorContainerDidSignalForUpdate(_ container: SensorContainer) {
-        UpdateSensors(trigger: .Signaled).cauterize()
+        ProcessInfo.processInfo.backgroundTask(withName: "signaled-update-sensors") { _ in
+            UpdateSensors(trigger: .Signaled)
+        }.cauterize()
     }
 
     public func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {

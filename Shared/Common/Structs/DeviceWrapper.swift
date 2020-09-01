@@ -222,4 +222,24 @@ public class DeviceWrapper {
             return Self.unameMachine()
         }
     }
+
+    public lazy var idleTime: () -> Measurement<UnitDuration>? = {
+        #if targetEnvironment(macCatalyst)
+        let seconds = CGEventSource.secondsSinceLastEventType(
+            .combinedSessionState,
+            eventType: {
+                /*
+                 Apple's docs say:
+                 > The event type to access. To get the elapsed time since the previous input event—keyboard, mouse, or
+                 > tablet—specify kCGAnyInputEventType.
+                 But kCGAnyInputEventType isn't available in Swift. In Objective-C it's defined as `((CGEventType)(~0))`
+                 */
+                return CGEventType(rawValue: ~0)!
+            }()
+        )
+        return .init(value: seconds, unit: .seconds)
+        #else
+        return nil
+        #endif
+    }
 }

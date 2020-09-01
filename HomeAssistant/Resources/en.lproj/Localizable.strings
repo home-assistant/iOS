@@ -763,7 +763,6 @@ Thank you.\
 "settings_sensors.periodic_update.off" = "Off";
 "location_change_notification.launch.body" = "Location updated via app launch";
 "location_change_notification.periodic.body" = "Location updated via periodic update";
-"location_change_notification.signaled.body" = "Location updated via update signal";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
@@ -871,14 +870,16 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "url_handler.error.action_not_found" = "Action Not Found";
 "widgets.actions.title" = "Actions";
 "widgets.actions.not_configured" = "No Actions Configured";
-"updater.check_for_updates_menu.title" = "Check for Updates…";
 "updater.update_available.title" = "Update Available";
 "updater.update_available.open" = "View '%@'";
-"updater.no_updates_available.title" = "Check for Updates";
-"updater.no_updates_available.on_latest_version" = "You're on the latest version!";
 "menu.application.about" = "About %@";
 "menu.application.preferences" = "Preferences…";
 "menu.help.help" = "%@ Help";
+"location_change_notification.signaled.body" = "Location updated via update signal";
+"updater.check_for_updates_menu.title" = "Check for Updates…";
+"updater.no_updates_available.title" = "Check for Updates";
+"updater.no_updates_available.on_latest_version" = "You're on the latest version!";
 "menu.view.reload_page" = "Reload Page";
 "menu.file.update_sensors" = "Update Sensors";
 "open_label" = "Open";
+"sensors.active.setting.time_until_idle" = "Time Until Idle";

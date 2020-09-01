@@ -910,6 +910,12 @@ internal enum L10n {
     internal static let notAvailableState = L10n.tr("Localizable", "sensors.not_available_state")
     /// Unknown
     internal static let unknownState = L10n.tr("Localizable", "sensors.unknown_state")
+    internal enum Active {
+      internal enum Setting {
+        /// Time Until Idle
+        internal static let timeUntilIdle = L10n.tr("Localizable", "sensors.active.setting.time_until_idle")
+      }
+    }
     internal enum Activity {
       /// Activity
       internal static let name = L10n.tr("Localizable", "sensors.activity.name")
