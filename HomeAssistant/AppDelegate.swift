@@ -484,11 +484,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
-        guard #available(macCatalyst 13, *) else {
-            // don't need to look for updates on iOS
-            return
-        }
-
         Current.updater.check().done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
