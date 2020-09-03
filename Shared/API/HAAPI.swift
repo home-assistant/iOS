@@ -415,7 +415,16 @@ public class HomeAssistantAPI {
                 MobileAppConfig(push: $0)
             }
         } else {
-            return Current.webhooks.sendEphemeral(request: .init(type: "get_yaml_config", data: [:]))
+            return firstly { () -> Promise<MobileAppConfig> in
+                requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
+            }.recover { error -> Promise<MobileAppConfig> in
+                if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
+                    Current.Log.info("ios component is not loaded; pretending there's no config")
+                    return .value(.init())
+                }
+
+                throw error
+            }
         }
     }
 
