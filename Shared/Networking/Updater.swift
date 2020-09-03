@@ -38,10 +38,13 @@ public class Updater {
     private var apiUrl: URL { URL(string: "https://api.github.com/repos/home-assistant/ios/releases?per_page=5")! }
 
     private enum UpdateError: LocalizedError {
+        case unsupportedPlatform
         case onLatestVersion
 
         var errorDescription: String? {
             switch self {
+            case .unsupportedPlatform:
+                return "<unsupported platform>"
             case .onLatestVersion:
                 return L10n.Updater.NoUpdatesAvailable.onLatestVersion
             }
@@ -49,7 +52,11 @@ public class Updater {
     }
 
     public func check() -> Promise<AvailableUpdate> {
-        firstly {
+        guard Current.isCatalyst else {
+            return .init(error: UpdateError.unsupportedPlatform)
+        }
+
+        return firstly {
             URLSession.shared.dataTask(.promise, with: apiUrl)
         }.map { data, _ -> [AvailableUpdate] in
             return try with(JSONDecoder()) {

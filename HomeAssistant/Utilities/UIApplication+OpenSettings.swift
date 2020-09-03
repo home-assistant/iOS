@@ -1,4 +1,5 @@
 import UIKit
+import Shared
 
 extension UIApplication {
     enum OpenSettingsDestination {
@@ -8,7 +9,7 @@ extension UIApplication {
         case backgroundRefresh
 
         var url: URL? {
-            if #available(macCatalyst 13.0, *) {
+            if Current.isCatalyst {
                 let query: String?
                 let bundleIdentifier: String?
 
