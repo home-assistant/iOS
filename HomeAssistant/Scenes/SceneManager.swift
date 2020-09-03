@@ -67,12 +67,19 @@ class SceneManager {
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
         let (promise, outerResolver) = Guarantee<T>.pending()
 
-        activities.compactMap { activity in
-            activity.userInfo?[Self.activityUserInfoKeyResolver] as? String
-        }.compactMap { token in
-            pendingResolvers[token] as? (T) -> Void
-        }.forEach { resolver in
-            promise.done { resolver($0) }
+        if supportsMultipleScenes {
+            activities.compactMap { activity in
+                activity.userInfo?[Self.activityUserInfoKeyResolver] as? String
+            }.compactMap { token in
+                pendingResolvers[token] as? (T) -> Void
+            }.forEach { resolver in
+                promise.done { resolver($0) }
+            }
+        } else {
+            pendingResolvers
+                .values
+                .compactMap { $0 as? (T) -> Void }
+                .forEach { resolver in promise.done { resolver($0) } }
         }
 
         return outerResolver
@@ -130,28 +137,31 @@ class SceneManager {
             return .value(delegate)
         }
 
-        assert(supportsMultipleScenes, "if we don't support multiple scenes, how are we running without one?")
+        assert(supportsMultipleScenes || query.activity == .webView,
+               "if we don't support multiple scenes, how are we running without one besides at immediate startup?")
 
         let (promise, resolver) = Guarantee<DelegateType>.pending()
 
         let token = UUID().uuidString
         pendingResolvers[token] = resolver
 
-        let activity = query.activity.activity
-        activity.userInfo = [
-            Self.activityUserInfoKeyResolver: token
-        ]
+        if supportsMultipleScenes {
+            let activity = query.activity.activity
+            activity.userInfo = [
+                Self.activityUserInfoKeyResolver: token
+            ]
 
-        UIApplication.shared.requestSceneSessionActivation(
-            nil,
-            userActivity: activity,
-            options: nil,
-            errorHandler: { error in
-                // error is called in most cases, even when no error occurs, so we silently swallow it
-                // todo: does this actually happen in normal circumstances?
-                Current.Log.error("scene activation error: \(error)")
-            }
-        )
+            UIApplication.shared.requestSceneSessionActivation(
+                nil,
+                userActivity: activity,
+                options: nil,
+                errorHandler: { error in
+                    // error is called in most cases, even when no error occurs, so we silently swallow it
+                    // todo: does this actually happen in normal circumstances?
+                    Current.Log.error("scene activation error: \(error)")
+                }
+            )
+        }
 
         return promise
     }
