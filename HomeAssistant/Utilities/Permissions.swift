@@ -235,7 +235,7 @@ public extension UNAuthorizationOptions {
         if #available(iOS 12.0, *) {
             opts.formUnion([.providesAppNotificationSettings])
 
-            if #available(macCatalyst 13.0, *) {
+            if Current.isCatalyst {
                 // we don't have provisioning for critical alerts in catalyst yet, and asking for permission errors
             } else {
                 opts.insert(.criticalAlert)
