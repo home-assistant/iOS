@@ -416,10 +416,18 @@ public class HomeAssistantAPI {
             }
         } else {
             return firstly { () -> Promise<MobileAppConfig> in
-                requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
+                if Current.serverVersion() < .actionSyncing {
+                    let old: Promise<MobileAppConfigPush> = requestImmutable(
+                        path: "ios/push",
+                        callingFunctionName: "\(#function)"
+                    )
+                    return old.map { MobileAppConfig(push: $0) }
+                } else {
+                    return requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
+                }
             }.recover { error -> Promise<MobileAppConfig> in
                 if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
-                    Current.Log.info("ios component is not loaded; pretending there's no config")
+                    Current.Log.info("ios component is not loaded; pretending there's no push config")
                     return .value(.init())
                 }
 
