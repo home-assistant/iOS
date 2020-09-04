@@ -62,23 +62,25 @@ public class MacCameraSensor: SensorProvider {
             Promise<Void>.value(())
         }.map(on: .global(qos: .userInitiated)) { [systemObject] () -> [HACoreMediaObjectCamera] in
             systemObject.allCameras
-        }.mapValues { (camera: HACoreMediaObjectCamera) -> WebhookSensor in
-            let sensor = Self.sensor(camera: camera)
+        }.compactMapValues { (camera: HACoreMediaObjectCamera) -> WebhookSensor? in
             updateSignaler.addObserver(for: camera.id, address: .isRunningSomewhere)
-            return sensor
-        }.recover { (error) -> Promise<[WebhookSensor]> in
-            if case PMKError.compactMap = error {
+            return Self.sensor(camera: camera)
+        }.get { cameras in
+            if cameras.isEmpty {
                 throw MacCameraError.noCameras
-            } else {
-                throw error
             }
         }
     }
 
-    private static func sensor(camera: HACoreMediaObjectCamera) -> WebhookSensor {
+    private static func sensor(camera: HACoreMediaObjectCamera) -> WebhookSensor? {
+        guard let deviceUID = camera.deviceUID else {
+            Current.Log.error("ignoring camera with id \(camera.id) due to not unique ID")
+            return nil
+        }
+
         let sensor = WebhookSensor(
             name: camera.name ?? "Unknown Camera",
-            uniqueID: "camera_\(camera.deviceUID)",
+            uniqueID: "camera_\(deviceUID)",
             icon: camera.isOn ? "mdi:camera" : "mdi:camera-off",
             state: camera.isOn
         )
