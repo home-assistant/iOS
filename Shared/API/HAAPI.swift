@@ -401,38 +401,23 @@ public class HomeAssistantAPI {
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
-        if Current.serverVersion() < .actionSyncing {
-            return firstly { () -> Promise<MobileAppConfigPush> in
-                requestImmutable(path: "ios/push", callingFunctionName: "\(#function)")
-            }.recover { error -> Promise<MobileAppConfigPush> in
-                if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
-                    Current.Log.info("ios component is not loaded; pretending there's no push config")
-                    return .value(.init())
-                }
-
-                throw error
-            }.map {
-                MobileAppConfig(push: $0)
+        return firstly { () -> Promise<MobileAppConfig> in
+            if Current.serverVersion() < .actionSyncing {
+                let old: Promise<MobileAppConfigPush> = requestImmutable(
+                    path: "ios/push",
+                    callingFunctionName: "\(#function)"
+                )
+                return old.map { MobileAppConfig(push: $0) }
+            } else {
+                return requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
             }
-        } else {
-            return firstly { () -> Promise<MobileAppConfig> in
-                if Current.serverVersion() < .actionSyncing {
-                    let old: Promise<MobileAppConfigPush> = requestImmutable(
-                        path: "ios/push",
-                        callingFunctionName: "\(#function)"
-                    )
-                    return old.map { MobileAppConfig(push: $0) }
-                } else {
-                    return requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
-                }
-            }.recover { error -> Promise<MobileAppConfig> in
-                if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
-                    Current.Log.info("ios component is not loaded; pretending there's no push config")
-                    return .value(.init())
-                }
-
-                throw error
+        }.recover { error -> Promise<MobileAppConfig> in
+            if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
+                Current.Log.info("ios component is not loaded; pretending there's no push config")
+                return .value(.init())
             }
+
+            throw error
         }
     }
 
