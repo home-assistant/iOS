@@ -131,5 +131,5 @@ public extension Version {
     static var pedometerIconsAvailable: Version = .init(minor: 105)
     static var tagWebhookAvailable: Version = .init(minor: 114, prerelease: "b5")
     static var tagPlatformTrigger: Version = .init(minor: 115, prerelease: "any0")
-    static var actionSyncing: Version = .init(minor: 200)
+    static var actionSyncing: Version = .init(minor: 115, prerelease: "any0")
 }
