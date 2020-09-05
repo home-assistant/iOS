@@ -4,11 +4,12 @@ import Foundation
 import CoreMediaIO
 
 class HACoreMediaObjectCamera: HACoreMediaObject {
-    var deviceUID: String {
+    var deviceUID: String? {
         if let string = value(for: .deviceUID) {
             return string.takeRetainedValue() as String
         } else {
-            return "\(id)"
+            // UID can actually come back as nil occasionally
+            return nil
         }
     }
 
