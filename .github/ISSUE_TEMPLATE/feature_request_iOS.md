@@ -2,7 +2,7 @@
 name: Feature request (iOS/iPadOS)
 about: Suggest an idea for the mobile app
 title: ''
-labels: feature-request, mac
+labels: feature-request, ios
 assignees: ''
 
 ---
