@@ -150,6 +150,11 @@ public class ActiveStateManager {
     }
 
     private func setupIdleTimer(isInitial: Bool) {
+        guard canTrackActiveStatus else {
+            // Don't bother setting up idle timer if we aren't going to be used
+            return
+        }
+
         guard isActiveExceptForIdle else {
             // Inactive for a reason other than idle; we can turn off the timer until we're back to active
             idleTimer = nil
