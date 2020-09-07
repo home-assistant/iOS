@@ -15,6 +15,14 @@ class HACoreAudioObjectSystem: HACoreAudioObject {
             return []
         }
     }
+
+    var allInputDevices: [HACoreAudioObjectDevice] {
+        allDevices.filter(\.isInput)
+    }
+
+    var allOutputDevices: [HACoreAudioObjectDevice] {
+        allDevices.filter(\.isOutput)
+    }
 }
 
 #endif
