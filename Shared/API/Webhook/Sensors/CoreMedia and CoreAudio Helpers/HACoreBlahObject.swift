@@ -6,12 +6,12 @@ class HACoreBlahObject {
         self.id = id
     }
 
-    func value<T>(for property: HACoreBlahProperty<T>) -> T? {
-        let propsize: UInt32 = UInt32(MemoryLayout<T>.size)
+    fileprivate func value<PropertyType: HACoreBlahProperty>(for property: PropertyType) -> PropertyType.ValueType? {
+        let propsize: UInt32 = UInt32(MemoryLayout<PropertyType.ValueType>.size)
 
         let data = UnsafeMutableRawPointer.allocate(
             byteCount: Int(propsize),
-            alignment: MemoryLayout<T>.alignment
+            alignment: MemoryLayout<PropertyType.ValueType>.alignment
         )
         defer {
             data.deallocate()
@@ -20,13 +20,15 @@ class HACoreBlahObject {
         let result = property.getPropertyData(objectID: id, dataSize: propsize, output: data)
 
         if result == OSStatus(0) {
-            return data.load(as: T.self)
+            return data.load(as: PropertyType.ValueType.self)
         } else {
             return nil
         }
     }
 
-    func value<ValueType>(for property: HACoreBlahProperty<[ValueType]>) -> [ValueType]? {
+    fileprivate func value<PropertyType: HACoreBlahProperty, ElementType>(
+        for property: PropertyType
+    ) -> [ElementType]? where PropertyType.ValueType == [ElementType] {
         var countBytes: UInt32 = 0
         let countResult = property.getPropertyDataSize(objectID: id, dataSize: &countBytes)
 
@@ -34,10 +36,10 @@ class HACoreBlahObject {
             return nil
         }
 
-        let dataCount = Int(countBytes) / MemoryLayout<ValueType>.size
+        let dataCount = Int(countBytes) / MemoryLayout<ElementType>.size
         let data = UnsafeMutableRawPointer.allocate(
             byteCount: dataCount,
-            alignment: MemoryLayout<ValueType>.alignment
+            alignment: MemoryLayout<ElementType>.alignment
         )
         defer {
             data.deallocate()
@@ -46,10 +48,46 @@ class HACoreBlahObject {
         let getResult = property.getPropertyData(objectID: id, dataSize: countBytes, output: data)
 
         if getResult == OSStatus(0) {
-            let buffer = data.bindMemory(to: ValueType.self, capacity: dataCount)
-            return Array(UnsafeBufferPointer<ValueType>(start: buffer, count: dataCount))
+            let buffer = data.bindMemory(to: ElementType.self, capacity: dataCount)
+            return Array(UnsafeBufferPointer<ElementType>(start: buffer, count: dataCount))
         } else {
             return nil
         }
     }
 }
+
+#if canImport(CoreMediaIO)
+import CoreMediaIO
+
+class HACoreMediaObject: HACoreBlahObject {
+    override init(id: CMIOObjectID) {
+        super.init(id: id)
+    }
+
+    func value<T>(for property: HACoreMediaProperty<T>) -> T? {
+        super.value(for: property)
+    }
+
+    func value<ValueType>(for property: HACoreMediaProperty<[ValueType]>) -> [ValueType]? {
+        super.value(for: property)
+    }
+}
+#endif
+
+#if targetEnvironment(macCatalyst)
+import CoreAudio
+
+class HACoreAudioObject: HACoreBlahObject {
+    override init(id: AudioObjectID) {
+        super.init(id: id)
+    }
+
+    func value<T>(for property: HACoreAudioProperty<T>) -> T? {
+        super.value(for: property)
+    }
+
+    func value<ValueType>(for property: HACoreAudioProperty<[ValueType]>) -> [ValueType]? {
+        super.value(for: property)
+    }
+}
+#endif

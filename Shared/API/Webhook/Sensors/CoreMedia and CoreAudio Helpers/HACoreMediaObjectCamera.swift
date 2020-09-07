@@ -3,9 +3,9 @@ import Foundation
 #if canImport(CoreMediaIO)
 import CoreMediaIO
 
-class HACoreMediaObjectCamera: HACoreBlahObject {
+class HACoreMediaObjectCamera: HACoreMediaObject {
     var deviceUID: String? {
-        if let string = value(for: .cmDeviceUID) {
+        if let string = value(for: .deviceUID) {
             return string.takeRetainedValue() as String
         } else {
             // UID can actually come back as nil occasionally
@@ -14,7 +14,7 @@ class HACoreMediaObjectCamera: HACoreBlahObject {
     }
 
     var name: String? {
-        if let cfString = value(for: .cmName) {
+        if let cfString = value(for: .name) {
             return cfString.takeRetainedValue() as String
         } else {
             return nil
@@ -22,7 +22,7 @@ class HACoreMediaObjectCamera: HACoreBlahObject {
     }
 
     var manufacturer: String? {
-        if let cfString = value(for: .cmManufacturer) {
+        if let cfString = value(for: .manufacturer) {
             return cfString.takeRetainedValue() as String
         } else {
             return nil
@@ -30,7 +30,7 @@ class HACoreMediaObjectCamera: HACoreBlahObject {
     }
 
     var isOn: Bool {
-        if let isOn = value(for: .cmIsRunningSomewhere) {
+        if let isOn = value(for: .isRunningSomewhere) {
             return isOn != 0
         } else {
             return false

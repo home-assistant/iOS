@@ -41,21 +41,18 @@ private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         self.signal = signal
 
         #if canImport(CoreMediaIO)
-        addObserver(for: .coreMedia(CMIOObjectID(kCMIOObjectSystemObject)), address: .cmAllDevices)
+        addCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject), property: .allDevices)
         #endif
 
         #if targetEnvironment(macCatalyst)
-        addObserver(for: .coreAudio(AudioObjectID(kAudioObjectSystemObject)), address: .caAllDevices)
+        addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
         #endif
     }
 
-    func addObserver<PropertyType>(
-        for object: ObservedObjectType,
-        address: HACoreBlahProperty<PropertyType>
-    ) {
+    private func addObserver<PropertyType: HACoreBlahProperty>(object: ObservedObjectType, property: PropertyType) {
         guard !observedObjects.contains(object) else { return }
 
-        let observedStatus = address.addListener(objectID: object.id) { [weak self] in
+        let observedStatus = property.addListener(objectID: object.id) { [weak self] in
             Current.Log.info("info updated for \(object)")
             self?.signal()
         }
@@ -63,6 +60,26 @@ private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         Current.Log.info("added observer for \(object): \(observedStatus)")
         observedObjects.insert(object)
     }
+
+    // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
+
+    #if targetEnvironment(macCatalyst)
+    func addCoreAudioObserver<PropertyType>(
+        for id: AudioObjectID,
+        property: HACoreAudioProperty<PropertyType>
+    ) {
+        addObserver(object: .coreAudio(id), property: property)
+    }
+    #endif
+
+    #if canImport(CoreMediaIO)
+    func addCoreMediaObserver<PropertyType>(
+        for id: CMIOObjectID,
+        property: HACoreMediaProperty<PropertyType>
+    ) {
+        addObserver(object: .coreMedia(id), property: property)
+    }
+    #endif
 }
 
 public class InputDeviceSensor: SensorProvider {
@@ -100,7 +117,7 @@ public class InputDeviceSensor: SensorProvider {
         }.map(on: .global(qos: .userInitiated)) { [cameraSystemObject] () -> [HACoreMediaObjectCamera] in
             cameraSystemObject.allCameras
         }.compactMapValues { (camera: HACoreMediaObjectCamera) -> WebhookSensor? in
-            updateSignaler.addObserver(for: .coreMedia(camera.id), address: .cmIsRunningSomewhere)
+            updateSignaler.addCoreMediaObserver(for: camera.id, property: .isRunningSomewhere)
             return Self.sensor(camera: camera)
         }
         #else
@@ -115,7 +132,7 @@ public class InputDeviceSensor: SensorProvider {
         }.map(on: .global(qos: .userInitiated)) { [audioSystemObject] () -> [HACoreAudioObjectDevice] in
             audioSystemObject.allDevices.filter(\.isInput)
         }.compactMapValues { (microphone: HACoreAudioObjectDevice) -> WebhookSensor? in
-            updateSignaler.addObserver(for: .coreAudio(microphone.id), address: .caIsRunningSomewhere)
+            updateSignaler.addCoreAudioObserver(for: microphone.id, property: .isRunningSomewhere)
             return Self.sensor(microphone: microphone)
         }
         #else
@@ -124,6 +141,11 @@ public class InputDeviceSensor: SensorProvider {
 
         return when(fulfilled: [ cameras, microphones ])
             .map { $0.flatMap { $0 } }
+            .get { sensors in
+                if sensors.isEmpty {
+                    throw InputDeviceError.noInputs
+                }
+            }
     }
 
     #if canImport(CoreMediaIO)

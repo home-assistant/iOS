@@ -3,13 +3,13 @@ import Foundation
 #if targetEnvironment(macCatalyst)
 import CoreAudio
 
-class HACoreAudioObjectSystem: HACoreBlahObject {
+class HACoreAudioObjectSystem: HACoreAudioObject {
     init() {
         super.init(id: UInt32(kAudioObjectSystemObject))
     }
 
     var allDevices: [HACoreAudioObjectDevice] {
-        if let ids = value(for: .caAllDevices) {
+        if let ids = value(for: .allDevices) {
             return ids.map { HACoreAudioObjectDevice(id: $0) }
         } else {
             return []
