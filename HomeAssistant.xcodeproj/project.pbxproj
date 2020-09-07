@@ -58,6 +58,8 @@
 		1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
 		1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
+		11482AD62505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
+		11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
 		1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148A44F24E9AF9200345050 /* MDIMigration.swift */; };
 		1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148A44F24E9AF9200345050 /* MDIMigration.swift */; };
@@ -90,10 +92,10 @@
 		118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261F424F8C7C1000795C6 /* SceneManager.swift */; };
 		118261F724F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */; };
 		118261F824F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */; };
-		118261FD24F9B81A000795C6 /* HACoreMediaProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261FC24F9B81A000795C6 /* HACoreMediaProperty.swift */; };
-		118261FE24F9B81A000795C6 /* HACoreMediaProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261FC24F9B81A000795C6 /* HACoreMediaProperty.swift */; };
-		1182620124F9C3F7000795C6 /* HACoreMediaObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620024F9C3F7000795C6 /* HACoreMediaObject.swift */; };
-		1182620224F9C3F7000795C6 /* HACoreMediaObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620024F9C3F7000795C6 /* HACoreMediaObject.swift */; };
+		118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261FC24F9B81A000795C6 /* HACoreBlahProperty.swift */; };
+		118261FE24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118261FC24F9B81A000795C6 /* HACoreBlahProperty.swift */; };
+		1182620124F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620024F9C3F7000795C6 /* HACoreBlahObject.swift */; };
+		1182620224F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620024F9C3F7000795C6 /* HACoreBlahObject.swift */; };
 		1182620424F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */; };
 		1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */; };
 		1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */; };
@@ -185,6 +187,8 @@
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C8E8AD24F36535003E7F89 /* DeviceWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */; };
 		11C8E8AE24F3778E003E7F89 /* DeviceWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */; };
+		11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */; };
+		11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */; };
 		11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */; };
 		11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */; };
 		11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
@@ -397,8 +401,8 @@
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */; };
-		B613936924F728F8002B8C5D /* MacCameraSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* MacCameraSensor.swift */; };
-		B613936A24F728F8002B8C5D /* MacCameraSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* MacCameraSensor.swift */; };
+		B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
+		B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
 		B616B299227ED68E00828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
 		B616B29A227ED69300828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
 		B616B29B227ED69500828165 /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B291227EB00D00828165 /* DNSResolver.swift */; };
@@ -857,6 +861,7 @@
 		113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocationTests.swift"; sourceTree = "<group>"; };
 		1141182524AF9A0500E6525C /* WebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.swift; sourceTree = "<group>"; };
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
+		11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreAudioObjectDevice.swift; sourceTree = "<group>"; };
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
@@ -900,8 +905,8 @@
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		118261F424F8C7C1000795C6 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProviderDependencies.swift; sourceTree = "<group>"; };
-		118261FC24F9B81A000795C6 /* HACoreMediaProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaProperty.swift; sourceTree = "<group>"; };
-		1182620024F9C3F7000795C6 /* HACoreMediaObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaObject.swift; sourceTree = "<group>"; };
+		118261FC24F9B81A000795C6 /* HACoreBlahProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreBlahProperty.swift; sourceTree = "<group>"; };
+		1182620024F9C3F7000795C6 /* HACoreBlahObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreBlahObject.swift; sourceTree = "<group>"; };
 		1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaObjectSystem.swift; sourceTree = "<group>"; };
 		1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreMediaObjectCamera.swift; sourceTree = "<group>"; };
 		1182620924F9D2EE000795C6 /* CoreMediaIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMediaIO.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/CoreMediaIO.framework; sourceTree = DEVELOPER_DIR; };
@@ -968,6 +973,7 @@
 		11C590EC24A832CA0066085D /* YamlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamlSection.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
 		11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapper.swift; sourceTree = "<group>"; };
+		11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreAudioObjectSystem.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C9249E62E700B05222 /* Version+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.swift"; sourceTree = "<group>"; };
@@ -1219,7 +1225,7 @@
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePlayerState.swift; sourceTree = "<group>"; };
-		B613936824F728F8002B8C5D /* MacCameraSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCameraSensor.swift; sourceTree = "<group>"; };
+		B613936824F728F8002B8C5D /* InputDeviceSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDeviceSensor.swift; sourceTree = "<group>"; };
 		B616B28F227EAFFB00828165 /* InternetAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetAddress.swift; sourceTree = "<group>"; };
 		B616B291227EB00D00828165 /* DNSResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSResolver.swift; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
@@ -1760,15 +1766,17 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		118261FF24F9C3D6000795C6 /* CoreMediaIO Helpers */ = {
+		118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				1182620024F9C3F7000795C6 /* HACoreMediaObject.swift */,
+				1182620024F9C3F7000795C6 /* HACoreBlahObject.swift */,
 				1182620624F9C492000795C6 /* HACoreMediaObjectCamera.swift */,
 				1182620324F9C453000795C6 /* HACoreMediaObjectSystem.swift */,
-				118261FC24F9B81A000795C6 /* HACoreMediaProperty.swift */,
+				118261FC24F9B81A000795C6 /* HACoreBlahProperty.swift */,
+				11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */,
+				11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */,
 			);
-			path = "CoreMediaIO Helpers";
+			path = "CoreMedia and CoreAudio Helpers";
 			sourceTree = "<group>";
 		};
 		118511C024B25BDC00D18F60 /* Webhook */ = {
@@ -1826,10 +1834,10 @@
 				11AF4D18249C8253006C74C0 /* PedometerSensor.swift */,
 				119385A3249E8E360097F497 /* StorageSensor.swift */,
 				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
-				B613936824F728F8002B8C5D /* MacCameraSensor.swift */,
+				B613936824F728F8002B8C5D /* InputDeviceSensor.swift */,
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
-				118261FF24F9C3D6000795C6 /* CoreMediaIO Helpers */,
+				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -4321,6 +4329,7 @@
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
+				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				B6723348225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
@@ -4334,8 +4343,9 @@
 				B67CE87622200F220034C1D0 /* Notifications.swift in Sources */,
 				11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				B6B74CBB2283983900D58A68 /* CLKComplication+Strings.swift in Sources */,
-				1182620224F9C3F7000795C6 /* HACoreMediaObject.swift in Sources */,
+				1182620224F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
+				11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
@@ -4349,7 +4359,7 @@
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
-				B613936A24F728F8002B8C5D /* MacCameraSensor.swift in Sources */,
+				B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
 				11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */,
@@ -4408,7 +4418,7 @@
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
 				1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */,
 				114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
-				118261FE24F9B81A000795C6 /* HACoreMediaProperty.swift in Sources */,
+				118261FE24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */,
 				B67CE89D22200F220034C1D0 /* Config.swift in Sources */,
@@ -4459,6 +4469,7 @@
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
@@ -4472,8 +4483,9 @@
 				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
 				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
-				1182620124F9C3F7000795C6 /* HACoreMediaObject.swift in Sources */,
+				1182620124F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
+				11482AD62505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
 				11AF4D25249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
 				11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
@@ -4487,7 +4499,7 @@
 				D0EEF31B214DD7A400D1D360 /* Services.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
-				B613936924F728F8002B8C5D /* MacCameraSensor.swift in Sources */,
+				B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
@@ -4546,7 +4558,7 @@
 				B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */,
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
-				118261FD24F9B81A000795C6 /* HACoreMediaProperty.swift in Sources */,
+				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,

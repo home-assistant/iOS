@@ -73,7 +73,7 @@ public class Environment {
         $0.register(provider: ConnectivitySensor.self)
         $0.register(provider: GeocoderSensor.self)
         $0.register(provider: LastUpdateSensor.self)
-        $0.register(provider: MacCameraSensor.self)
+        $0.register(provider: InputDeviceSensor.self)
         $0.register(provider: ActiveSensor.self)
     }
 
