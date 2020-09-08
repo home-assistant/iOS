@@ -36,9 +36,8 @@ class HACoreBlahObject {
             return nil
         }
 
-        let dataCount = Int(countBytes) / MemoryLayout<ElementType>.size
         let data = UnsafeMutableRawPointer.allocate(
-            byteCount: dataCount,
+            byteCount: Int(countBytes),
             alignment: MemoryLayout<ElementType>.alignment
         )
         defer {
@@ -48,8 +47,9 @@ class HACoreBlahObject {
         let getResult = property.getPropertyData(objectID: id, dataSize: countBytes, output: data)
 
         if getResult == OSStatus(0) {
-            let buffer = data.bindMemory(to: ElementType.self, capacity: dataCount)
-            return Array(UnsafeBufferPointer<ElementType>(start: buffer, count: dataCount))
+            let elementCount = Int(countBytes) / MemoryLayout<ElementType>.size
+            let buffer = data.bindMemory(to: ElementType.self, capacity: elementCount)
+            return Array(UnsafeBufferPointer<ElementType>(start: buffer, count: elementCount))
         } else {
             return nil
         }
