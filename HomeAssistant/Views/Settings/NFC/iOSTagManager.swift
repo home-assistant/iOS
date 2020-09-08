@@ -8,7 +8,12 @@ class iOSTagManager: TagManager {
     var isNFCAvailable: Bool {
         if #available(iOS 13, *) {
             // We need both iOS 13 and NFC
-            return NFCNDEFReaderSession.readingAvailable
+            if Current.isCatalyst {
+                // NFC doesn't work on Catalyst but _does_ crash occasionally asking
+                return false
+            } else {
+                return NFCNDEFReaderSession.readingAvailable
+            }
         } else {
             return false
         }
