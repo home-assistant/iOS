@@ -860,3 +860,4 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "menu.file.update_sensors" = "Update Sensors";
 "open_label" = "Open";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
+"widgets.actions.description" = "Perform Home Assistant actions.";

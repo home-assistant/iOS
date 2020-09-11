@@ -180,7 +180,7 @@
 "extensions.map.value_missing_or_uncastable.longitude.message" = "找不到經度或無法轉換為字串！";
 "extensions.notification_content.error.no_entity_id" = "Payload 中未找到 entity_id！";
 "extensions.notification_content.error.request.auth_failed" = "驗證失敗！";
-"extensions.notification_content.error.request.entity_not_found" = "找不到物件 '%@'！";
+"extensions.notification_content.error.request.entity_not_found" = "找不到實體 '%@'！";
 "extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%li）";
 "extensions.notification_content.error.request.unknown" = "未知錯誤！";
 "extensions.notification_content.hud.loading" = "正在載入 %@...";
@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "加入新 SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "加入目前 SSID %@";
-"onboarding.connection_test_result.ssl_container.description" = "連線至物件時發生錯誤，%@。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
+"onboarding.connection_test_result.ssl_container.description" = "連線至設備時發生錯誤，%@。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.authentication_unsupported.description" = "不支援認證類型%@。";
 "onboarding.connection_test_result.ssl_untrusted.description" = "SSL 認證未信任。%@。";
@@ -805,7 +805,7 @@
 \
 所有的動作與本地設定都會於重新登入後復原。";
 "onboarding.logged_out_from_move.learn_more" = "詳細了解轉移訊息。";
-"onboarding.logged_out_from_move.duplicate_warning" = "為了避免產生重複的物件，於重新登入前、必須於此裝置的瀏覽器內移除現有的 mobile_app 整合。登入後重新啟動  HA 以更新服務。";
+"onboarding.logged_out_from_move.duplicate_warning" = "為了避免產生重複的實體，於重新登入前、必須於此裝置的瀏覽器內移除現有的 mobile_app 整合。登入後重新啟動  HA 以更新服務。";
 "onboarding.logged_out_from_move.continue" = "繼續";
 "settings_details.privacy.analytics.generic_title" = "分析資料";
 "settings_details.privacy.analytics.generic_description" = "允許收集關於設備與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
@@ -875,11 +875,12 @@
 "menu.application.about" = "關於 %@";
 "menu.application.preferences" = "偏好設定...";
 "menu.help.help" = "%@ 說明";
-"location_change_notification.signaled.body" = "Location updated via update signal";
-"updater.check_for_updates_menu.title" = "Check for Updates…";
-"updater.no_updates_available.title" = "Check for Updates";
-"updater.no_updates_available.on_latest_version" = "You're on the latest version!";
-"menu.view.reload_page" = "Reload Page";
-"menu.file.update_sensors" = "Update Sensors";
-"open_label" = "Open";
-"sensors.active.setting.time_until_idle" = "Time Until Idle";
+"location_change_notification.signaled.body" = "透過更新訊號更新座標";
+"updater.check_for_updates_menu.title" = "檢查更新...";
+"updater.no_updates_available.title" = "檢查更新";
+"updater.no_updates_available.on_latest_version" = "已經是最新版本！";
+"menu.view.reload_page" = "重新載入頁面";
+"menu.file.update_sensors" = "更新傳感器";
+"open_label" = "開啟";
+"sensors.active.setting.time_until_idle" = "閒置前時間";
+"widgets.actions.description" = "Perform Home Assistant actions.";
