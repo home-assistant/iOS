@@ -225,11 +225,12 @@ public class SettingsStore {
         }
 
         public var viewScaleValue: String {
-            return String(format: "%.02f", CGFloat(zoom) / 100.0)
-        }
-
-        public var viewScaleMultiple: CGFloat {
-            return CGFloat(zoom) / 100.0
+            if Current.isCatalyst {
+                // Catalyst apps are sized down to 77% of normal, so invert it to get normal
+                return String(format: "%.02f", CGFloat(zoom) / 100.0 * 1.0/0.77)
+            } else {
+                return String(format: "%.02f", CGFloat(zoom) / 100.0)
+            }
         }
 
         public static let `default`: PageZoom = .init(100)
