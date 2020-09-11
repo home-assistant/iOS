@@ -148,6 +148,10 @@ class ConnectInstanceViewController: UIViewController {
             let cloudState: AnimationState = cloudAvailable ? .success : .failed
             self.setAnimationStatus(self.cloudStatus, state: cloudState)
 
+            if cloudAvailable {
+                Current.settingsStore.connectionInfo?.useCloud = true
+            }
+
             let encryptState: AnimationState = regResponse.WebhookSecret != nil ? .success : .failed
             self.setAnimationStatus(self.encrypted, state: encryptState)
 
