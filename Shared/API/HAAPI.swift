@@ -57,7 +57,14 @@ public class HomeAssistantAPI {
     }
 
     var tokenManager: TokenManager?
-    public var connectionInfo: ConnectionInfo
+
+    public func connectionInfo() throws -> ConnectionInfo {
+        if let connectionInfo = Current.settingsStore.connectionInfo {
+            return connectionInfo
+        } else {
+            throw HomeAssistantAPI.APIError.notConfigured
+        }
+    }
 
     public static var clientVersionDescription: String {
         "\(Constants.version) (\(Constants.build))"
@@ -82,10 +89,8 @@ public class HomeAssistantAPI {
     }
 
     /// Initialize an API object with an authenticated tokenManager.
-    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
-        self.connectionInfo = connectionInfo
-
-        self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+    public init(tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
+        self.tokenManager = TokenManager(tokenInfo: tokenInfo)
         let manager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
         manager.retrier = self.tokenManager
         manager.adapter = self.tokenManager
@@ -125,13 +130,12 @@ public class HomeAssistantAPI {
             return api
         }
 
-        guard let connectionInfo = Current.settingsStore.connectionInfo else {
+        guard Current.settingsStore.connectionInfo != nil else {
             return nil
         }
 
         if let tokenInfo = Current.settingsStore.tokenInfo {
-            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       tokenInfo: tokenInfo, urlConfig: urlConfig)
+            let api = HomeAssistantAPI(tokenInfo: tokenInfo, urlConfig: urlConfig)
             self.sharedAPI = api
         }
 
@@ -236,9 +240,11 @@ public class HomeAssistantAPI {
             let dataManager: Alamofire.SessionManager = needsAuth ? self.manager : Self.unauthenticatedManager
 
             if needsAuth {
-                if !url.absoluteString.hasPrefix(self.connectionInfo.activeURL.absoluteString) {
+                let activeURL = try connectionInfo().activeURL
+
+                if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
                     Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
-                    finalURL = self.connectionInfo.activeURL.appendingPathComponent(url.absoluteString)
+                    finalURL = activeURL.appendingPathComponent(url.absoluteString)
                 }
 
                 Current.Log.verbose("Data download needs auth!")
@@ -282,8 +288,9 @@ public class HomeAssistantAPI {
                 throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
             }
 
-            self.connectionInfo.cloudhookURL = config.CloudhookURL
-            self.connectionInfo.setAddress(config.RemoteUIURL, .remoteUI)
+            let connectionInfo = try self.connectionInfo()
+            connectionInfo.cloudhookURL = config.CloudhookURL
+            connectionInfo.setAddress(config.RemoteUIURL, .remoteUI)
 
             self.prefs.setValue(config.LocationName, forKey: "location_name")
             self.prefs.setValue(config.Latitude, forKey: "latitude")
@@ -356,7 +363,9 @@ public class HomeAssistantAPI {
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         return Promise { seal in
-            let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
+            let connectionInfo = try self.connectionInfo()
+
+            let queryUrl = connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
             _ = manager.request(queryUrl)
                 .validate()
                 .responseData { response in
@@ -379,11 +388,11 @@ public class HomeAssistantAPI {
             .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
                 Current.Log.verbose("Registration response \(resp)")
 
-                self.connectionInfo.setAddress(resp.RemoteUIURL, .remoteUI)
-
-                self.connectionInfo.cloudhookURL = resp.CloudhookURL
-                self.connectionInfo.webhookID = resp.WebhookID
-                self.connectionInfo.webhookSecret = resp.WebhookSecret
+                let connectionInfo = try self.connectionInfo()
+                connectionInfo.setAddress(resp.RemoteUIURL, .remoteUI)
+                connectionInfo.cloudhookURL = resp.CloudhookURL
+                connectionInfo.webhookID = resp.WebhookID
+                connectionInfo.webhookSecret = resp.WebhookSecret
 
                 return Promise.value(resp)
         }

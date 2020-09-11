@@ -147,8 +147,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupTokens() {
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
 
-        if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
-            Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        if let tokenInfo = Current.settingsStore.tokenInfo {
+            Current.tokenManager = TokenManager(tokenInfo: tokenInfo)
         }
     }
 
@@ -611,7 +611,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let tokenInfo = TokenInfo(accessToken: token, refreshToken: "", expiration: Date.distantFuture)
 
-        let api = HomeAssistantAPI(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        let api = HomeAssistantAPI(tokenInfo: tokenInfo)
 
         Current.settingsStore.tokenInfo = tokenInfo
         Current.settingsStore.connectionInfo = connectionInfo

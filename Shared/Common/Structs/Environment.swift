@@ -114,7 +114,6 @@ public class Environment {
 
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
         self.tokenManager = authenticatedAPI.tokenManager
-        self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
     }
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.

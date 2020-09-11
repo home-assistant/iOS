@@ -59,9 +59,8 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if let tokenInfo = Current.settingsStore.tokenInfo,
-            let connectionInfo = Current.settingsStore.connectionInfo {
-            Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        if let tokenInfo = Current.settingsStore.tokenInfo {
+            Current.tokenManager = TokenManager(tokenInfo: tokenInfo)
         }
     }
 

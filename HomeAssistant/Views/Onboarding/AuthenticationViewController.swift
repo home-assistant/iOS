@@ -111,19 +111,20 @@ class AuthenticationViewController: UIViewController {
         }
         Current.Log.verbose("Attempting browser auth to: \(connectionInfo.activeURL)")
         let url = connectionInfo.activeURL
-        let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
+        let initialTokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
         self.authenticationController.authenticateWithBrowser(at: url).then { (code: String) -> Promise<TokenInfo> in
             Current.Log.verbose("Browser auth succeeded, getting token")
-            return tokenManager.initialTokenWithCode(code)
+            return initialTokenManager.initialTokenWithCode(code)
         }.then { tokenInfo -> Promise<ConfigResponse> in
             Current.Log.verbose("Got token info \(tokenInfo)")
 
-            self.tokenManager = tokenManager
-            Current.tokenManager = tokenManager
+            let newTokenManager = TokenManager(tokenInfo: tokenInfo, forcedConnectionInfo: nil)
+            self.tokenManager = newTokenManager
+            Current.tokenManager = newTokenManager
 
             Current.settingsStore.connectionInfo = self.connectionInfo
 
-            return HomeAssistantAPI(connectionInfo: connectionInfo, tokenInfo: tokenInfo).GetConfig(false)
+            return HomeAssistantAPI(tokenInfo: tokenInfo).GetConfig(false)
         }.done { _ in
             self.perform(segue: StoryboardSegue.Onboarding.permissions, sender: nil)
         }.catch { error in

@@ -6,6 +6,7 @@ import UIKit
 
 class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
     let api: HomeAssistantAPI
+    let connectionInfo: ConnectionInfo
     let response: StreamCameraResponse
     let imageView: UIImageView
     let streamer: MJPEGStreamer
@@ -51,6 +52,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         }
 
         self.api = api
+        self.connectionInfo = try api.connectionInfo()
         self.response = response
         self.streamer = streamer
         self.imageView = UIImageView()
@@ -111,7 +113,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
             fatalError("we checked for a non-nil path on init, this should not be possible")
         }
 
-        let url = api.connectionInfo.activeURL.appendingPathComponent(path)
+        let url = connectionInfo.activeURL.appendingPathComponent(path)
 
         // assume 16:9
         lastSize = CGSize(width: 16, height: 9)

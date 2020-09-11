@@ -19,6 +19,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     private var tokenInfo: TokenInfo?
     private var authenticationAPI: AuthenticationAPI
+    private let forcedConnectionInfo: ConnectionInfo?
 
     private class RefreshPromiseCache {
         // we can be asked to refresh from any queue - alamofire's utility queue, webview's main queue, so guard
@@ -45,16 +46,19 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
     private let refreshPromiseCache = RefreshPromiseCache()
-    private let connectionInfo: ConnectionInfo
 
     public var isAuthenticated: Bool {
         return self.tokenInfo != nil
     }
 
-    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo? = nil) {
-        self.connectionInfo = connectionInfo
-        self.authenticationAPI = AuthenticationAPI(connectionInfo: self.connectionInfo)
+    public init(tokenInfo: TokenInfo? = nil, forcedConnectionInfo: ConnectionInfo? = nil) {
+        self.authenticationAPI = AuthenticationAPI(forcedConnectionInfo: forcedConnectionInfo)
         self.tokenInfo = tokenInfo
+        self.forcedConnectionInfo = forcedConnectionInfo
+    }
+
+    private var connectionInfo: ConnectionInfo? {
+        forcedConnectionInfo ?? Current.settingsStore.connectionInfo
     }
 
     /// After authenticating with the server and getting a code, call this method to exchange the code for
@@ -117,8 +121,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     public func should(_ manager: SessionManager, retry request: Request, with error: Error,
                        completion: @escaping RequestRetryCompletion) {
-        guard let connectionInfo = Current.settingsStore.connectionInfo,
-            let requestURL = request.request?.url else {
+        guard let connectionInfo = connectionInfo, let requestURL = request.request?.url else {
             completion(false, 0)
             return
         }
@@ -181,7 +184,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
         var newRequest = urlRequest
 
-        let adaptedURL = Current.settingsStore.connectionInfo?.adaptAPIURL(url)
+        let adaptedURL = connectionInfo?.adaptAPIURL(url)
 
         if newRequest.url != adaptedURL {
             newRequest.url = adaptedURL
@@ -209,7 +212,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     // MARK: - Private helpers
 
     private func loggableString(for url: URL) -> String {
-        guard let urlType = Current.settingsStore.connectionInfo?.getURLType(url) else {
+        guard let urlType = connectionInfo?.getURLType(url) else {
             return "[Non-HASS URL]\(url.path)"
         }
 
@@ -240,11 +243,11 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     }
 
     private func isURLValid(_ url: URL, for connectionInfo: ConnectionInfo) -> Bool {
-        return Current.settingsStore.connectionInfo?.checkURLMatches(url) ?? false
+        return connectionInfo.checkURLMatches(url)
     }
 
     private func url(_ url: URL, matchesPrefixOf referenceURL: URL) -> Bool {
-        guard let connectionInfo = Current.settingsStore.connectionInfo else { return false }
+        guard let connectionInfo = connectionInfo else { return false }
         return connectionInfo.checkURLMatches(url)
     }
 

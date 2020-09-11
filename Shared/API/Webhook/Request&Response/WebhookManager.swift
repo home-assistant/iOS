@@ -384,7 +384,7 @@ public class WebhookManager: NSObject {
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         return Promise { seal in
-            guard let api = Current.api() else {
+            guard let connectionInfo = Current.settingsStore.connectionInfo else {
                 seal.reject(WebhookManagerError.noApi)
                 return
             }
@@ -392,9 +392,9 @@ public class WebhookManager: NSObject {
             let webhookURL: URL
 
             if let baseURL = baseURL {
-                webhookURL = baseURL.appendingPathComponent(api.connectionInfo.webhookPath, isDirectory: false)
+                webhookURL = baseURL.appendingPathComponent(connectionInfo.webhookPath, isDirectory: false)
             } else {
-                webhookURL = api.connectionInfo.webhookURL
+                webhookURL = connectionInfo.webhookURL
             }
 
             var urlRequest = try URLRequest(url: webhookURL, method: .post)
