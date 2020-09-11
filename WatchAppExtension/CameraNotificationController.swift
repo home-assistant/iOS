@@ -76,8 +76,13 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
             return
         }
 
+        guard let connectionInfo = try? api.connectionInfo() else {
+            Current.Log.error("no connection info available")
+            return
+        }
+
         self.streamer = streamer
-        let apiURL = api.connectionInfo.activeAPIURL
+        let apiURL = connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
         streamer.streamImages(fromURL: queryUrl) { (image, error) in

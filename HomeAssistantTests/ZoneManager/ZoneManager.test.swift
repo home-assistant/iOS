@@ -31,15 +31,6 @@ class ZoneManagerTests: XCTestCase {
 
         realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
         api = FakeHassAPI(
-            connectionInfo: ConnectionInfo(
-                externalURL: nil,
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: "id",
-                webhookSecret: nil,
-                internalSSIDs: nil
-            ),
             tokenInfo: TokenInfo(
                 accessToken: "token",
                 refreshToken: "token",

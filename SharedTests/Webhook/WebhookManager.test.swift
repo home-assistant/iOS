@@ -14,23 +14,25 @@ class WebhookManagerTests: XCTestCase {
         super.setUp()
 
         api = FakeHassAPI(
-            connectionInfo: ConnectionInfo(
-                externalURL: URL(string: "http://example.com"),
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: "given_id",
-                webhookSecret: nil,
-                internalSSIDs: nil
-            ), tokenInfo: TokenInfo(
+            tokenInfo: TokenInfo(
                 accessToken: "accessToken",
                 refreshToken: "refreshToken",
                 expiration: Date()
             )
         )
 
-        webhookURL = api.connectionInfo.webhookURL
+        let connectionInfo = ConnectionInfo(
+            externalURL: URL(string: "http://example.com"),
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "given_id",
+            webhookSecret: nil,
+            internalSSIDs: nil
+        )
+        webhookURL = connectionInfo.webhookURL
 
+        Current.settingsStore.connectionInfo = connectionInfo
         Current.api = { [weak self] in self?.api }
 
         manager = WebhookManager()
@@ -42,6 +44,7 @@ class WebhookManagerTests: XCTestCase {
 
         ReplacingTestHandler.reset()
 
+        Current.settingsStore.connectionInfo = nil
         Current.isBackgroundRequestsImmediate = { true }
     }
 
@@ -153,22 +156,27 @@ class WebhookManagerTests: XCTestCase {
     func testSendingEphemeralFailsOnceThenSucceedsWithAChangedURL() {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
+        let connectionInfo = ConnectionInfo(
+            externalURL: URL(string: "http://example.changed"),
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "given_id",
+            webhookSecret: nil,
+            internalSSIDs: nil
+        )
+
         let nextAPI = FakeHassAPI(
-            connectionInfo: ConnectionInfo(
-                externalURL: URL(string: "http://example.changed"),
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: "given_id",
-                webhookSecret: nil,
-                internalSSIDs: nil
-            ), tokenInfo: TokenInfo(
+            tokenInfo: TokenInfo(
                 accessToken: "accessToken",
                 refreshToken: "refreshToken",
                 expiration: Date()
             )
         )
-        let nextAPIWebhookURL = nextAPI.connectionInfo.webhookURL
+
+        Current.settingsStore.connectionInfo = connectionInfo
+
+        let nextAPIWebhookURL = connectionInfo.webhookURL
 
         stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
             XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
@@ -184,6 +192,8 @@ class WebhookManagerTests: XCTestCase {
         })
 
         XCTAssertNoThrow(try hang(manager.sendEphemeral(request: expectedRequest)))
+
+        Current.settingsStore.connectionInfo = nil
     }
 
     func testSendingEphemeralExpectingString() throws {
