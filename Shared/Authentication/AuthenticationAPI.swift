@@ -14,22 +14,34 @@ import ObjectMapper
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
 public class AuthenticationAPI {
-    let connectionInfo: ConnectionInfo
     public enum AuthenticationError: Error {
         case unexepectedType
         case unexpectedResponse
         case invalidCode
+        case noConnectionInfo
     }
 
-    init(connectionInfo: ConnectionInfo) {
-        self.connectionInfo = connectionInfo
+    private let forcedConnectionInfo: ConnectionInfo?
+
+    init(forcedConnectionInfo: ConnectionInfo? = nil) {
+        self.forcedConnectionInfo = forcedConnectionInfo
+    }
+
+    private func activeURL() throws -> URL {
+        if let forcedConnectionInfo = forcedConnectionInfo {
+            return forcedConnectionInfo.activeURL
+        } else if let url = Current.settingsStore.connectionInfo?.activeURL {
+            return url
+        } else {
+            throw AuthenticationError.noConnectionInfo
+        }
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
         return Promise { seal in
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
-                                      baseURL: self.connectionInfo.activeURL)
+                                      baseURL: try activeURL())
             let request = Alamofire.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
@@ -49,7 +61,7 @@ public class AuthenticationAPI {
         return Promise { seal in
             let token = tokenInfo.accessToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
-                                      baseURL: self.connectionInfo.activeURL)
+                                      baseURL: try activeURL())
             let request = Alamofire.request(routeInfo)
 
             request.validate().response { _ in
@@ -66,7 +78,7 @@ public class AuthenticationAPI {
     public func fetchTokenWithCode(_ authorizationCode: String) -> Promise<TokenInfo> {
         return Promise { seal in
             let routeInfo = RouteInfo(route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                                      baseURL: self.connectionInfo.activeURL)
+                                      baseURL: try activeURL())
             let request = Alamofire.request(routeInfo)
 
             request.validate().responseObject { (dataresponse: DataResponse<TokenInfo>) in

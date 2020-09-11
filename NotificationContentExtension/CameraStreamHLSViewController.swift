@@ -6,6 +6,7 @@ import AVKit
 
 class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     let api: HomeAssistantAPI
+    let connectionInfo: ConnectionInfo
     let response: StreamCameraResponse
     let playerViewController: AVPlayerViewController
     let promise: Promise<Void>
@@ -33,6 +34,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         }
 
         self.api = api
+        self.connectionInfo = try api.connectionInfo()
         self.response = response
         self.playerViewController = AVPlayerViewController()
         (self.promise, self.seal) = Promise<Void>.pending()
@@ -96,7 +98,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
             fatalError("we checked for a non-nil path on init, this should not be possible")
         }
 
-        let url = api.connectionInfo.activeURL.appendingPathComponent(path)
+        let url = connectionInfo.activeURL.appendingPathComponent(path)
         let videoPlayer = AVPlayer(url: url)
         playerViewController.player = videoPlayer
         videoPlayer.isMuted = true

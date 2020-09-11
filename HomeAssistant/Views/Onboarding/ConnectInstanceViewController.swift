@@ -60,7 +60,8 @@ class ConnectInstanceViewController: UIViewController {
             self.overallProgress.loopMode = .playOnce
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-                Current.onboardingComplete?()
+                Current.onboardingObservation.complete()
+
                 if let navVC = self.navigationController as? OnboardingNavigationViewController {
                     Current.Log.verbose("Dismissing from permissions")
                     navVC.dismiss()
@@ -147,6 +148,10 @@ class ConnectInstanceViewController: UIViewController {
             let cloudAvailable = (regResponse.CloudhookURL != nil || regResponse.RemoteUIURL != nil)
             let cloudState: AnimationState = cloudAvailable ? .success : .failed
             self.setAnimationStatus(self.cloudStatus, state: cloudState)
+
+            if cloudAvailable {
+                Current.settingsStore.connectionInfo?.useCloud = true
+            }
 
             let encryptState: AnimationState = regResponse.WebhookSecret != nil ? .success : .failed
             self.setAnimationStatus(self.encrypted, state: encryptState)

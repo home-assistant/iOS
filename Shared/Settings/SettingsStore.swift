@@ -44,11 +44,17 @@ public class SettingsStore {
         }
     }
 
+    private var cachedConnectionInfo: ConnectionInfo?
     public var connectionInfo: ConnectionInfo? {
         get {
-            if !self.hasMigratedConnection {
-                self.migrateConnectionInfo()
+            if let cachedConnectionInfo = cachedConnectionInfo {
+                return cachedConnectionInfo
             }
+
+            if NSClassFromString("XCTest") != nil {
+                return nil
+            }
+
             guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
                 let unwrappedData = connectionData else {
                     return nil
@@ -62,6 +68,12 @@ public class SettingsStore {
             return nil
         }
         set {
+            cachedConnectionInfo = newValue
+
+            if NSClassFromString("XCTest") != nil {
+                return
+            }
+
             guard let info = newValue else {
                 keychain["connectionInfo"] = nil
                 return
@@ -225,11 +237,12 @@ public class SettingsStore {
         }
 
         public var viewScaleValue: String {
-            return String(format: "%.02f", CGFloat(zoom) / 100.0)
-        }
-
-        public var viewScaleMultiple: CGFloat {
-            return CGFloat(zoom) / 100.0
+            if Current.isCatalyst {
+                // Catalyst apps are sized down to 77% of normal, so invert it to get normal
+                return String(format: "%.02f", CGFloat(zoom) / 100.0 * 1.0/0.77)
+            } else {
+                return String(format: "%.02f", CGFloat(zoom) / 100.0)
+            }
         }
 
         public static let `default`: PageZoom = .init(100)
@@ -332,15 +345,6 @@ public class SettingsStore {
 
     // MARK: - Private helpers
 
-    private var hasMigratedConnection: Bool {
-        get {
-            return prefs.bool(forKey: "migratedConnectionInfo")
-        }
-        set {
-            prefs.set(newValue, forKey: "migratedConnectionInfo")
-        }
-    }
-
     private var defaultDeviceID: String {
         let baseID = self.removeSpecialCharsFromString(text: Current.device.deviceName())
             .replacingOccurrences(of: " ", with: "_")
@@ -357,26 +361,5 @@ public class SettingsStore {
         let okayChars: Set<Character> =
             Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890")
         return String(text.filter {okayChars.contains($0) })
-    }
-
-    private func migrateConnectionInfo() {
-        if let baseURLString = keychain["baseURL"], let baseURL = URL(string: baseURLString) {
-            var internalURL: URL?
-            if let internalURLString = keychain["internalBaseURL"],
-                let parsedURL = URL(string: internalURLString) {
-                internalURL = parsedURL
-            }
-
-            var ssids: [String] = []
-            if let ssid = keychain["internalBaseURLSSID"] {
-                ssids = [ssid]
-            }
-
-            self.connectionInfo = ConnectionInfo(externalURL: baseURL, internalURL: internalURL, cloudhookURL: nil,
-                                                 remoteUIURL: nil, webhookID: "", webhookSecret: nil,
-                                                 internalSSIDs: ssids)
-            self.hasMigratedConnection = true
-        }
-
     }
 }

@@ -85,25 +85,7 @@ public class Environment {
 
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
-    #if os(iOS)
-    public var authenticationControllerPresenter: ((UIViewController) -> Void)?
-    #endif
-
-    public enum SignInRequiredType {
-        case logout
-        case error
-
-        public var shouldShowError: Bool {
-            switch self {
-            case .logout: return false
-            case .error:  return true
-            }
-        }
-    }
-
-    public var signInRequiredCallback: ((SignInRequiredType) -> Void)?
-
-    public var onboardingComplete: (() -> Void)?
+    public var onboardingObservation = OnboardingStateObservation()
 
     public var isPerformingSingleShotLocationQuery = false
 
@@ -114,7 +96,6 @@ public class Environment {
 
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
         self.tokenManager = authenticatedAPI.tokenManager
-        self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
     }
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.

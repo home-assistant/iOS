@@ -13,15 +13,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
         super.setUp()
 
         api = FakeHomeAssistantAPI(
-            connectionInfo: .init(
-                externalURL: nil,
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: "id",
-                webhookSecret: nil,
-                internalSSIDs: nil
-            ), tokenInfo: .init(
+            tokenInfo: .init(
                 accessToken: "atoken",
                 refreshToken: "refreshtoken",
                 expiration: Date()
