@@ -23,40 +23,7 @@ class WebViewWindowController {
 
         (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
 
-        Current.authenticationControllerPresenter = { [weak self] controller in
-            self?.present(controller)
-        }
-
-        Current.signInRequiredCallback = { [weak self] type in
-            guard let self = self else { return }
-            let controller = self.onboardingNavigationController()
-            self.updateRootViewController(to: controller)
-
-            if type.shouldShowError {
-                let alert = UIAlertController(
-                    title: L10n.Alerts.AuthRequired.title,
-                    message: L10n.Alerts.AuthRequired.message,
-                    preferredStyle: .alert
-                )
-
-                alert.addAction(UIAlertAction(
-                    title: L10n.okLabel,
-                    style: .default,
-                    handler: nil
-                ))
-
-                controller.present(alert, animated: true, completion: nil)
-            }
-        }
-
-        Current.onboardingComplete = { [weak self] in
-            guard let self = self else { return }
-            self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController(
-                restorationActivity: self.restorationActivity
-            )))
-
-            self.restorationActivity = nil
-        }
+        Current.onboardingObservation.register(observer: self)
     }
 
     func stateRestorationActivity() -> NSUserActivity? {
@@ -199,6 +166,38 @@ class WebViewWindowController {
             present(alert)
         } else {
             triggerOpen()
+        }
+    }
+}
+
+extension WebViewWindowController: OnboardingStateObserver {
+    func onboardingStateDidChange(to state: OnboardingState) {
+        switch state {
+        case .needed(let type):
+            let controller = onboardingNavigationController()
+            updateRootViewController(to: controller)
+
+            if type.shouldShowError {
+                let alert = UIAlertController(
+                    title: L10n.Alerts.AuthRequired.title,
+                    message: L10n.Alerts.AuthRequired.message,
+                    preferredStyle: .alert
+                )
+
+                alert.addAction(UIAlertAction(
+                    title: L10n.okLabel,
+                    style: .default,
+                    handler: nil
+                ))
+
+                controller.present(alert, animated: true, completion: nil)
+            }
+        case .complete:
+            updateRootViewController(to: webViewNavigationController(rootViewController: WebViewController(
+                restorationActivity: restorationActivity
+            )))
+
+            restorationActivity = nil
         }
     }
 }

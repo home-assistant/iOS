@@ -60,7 +60,8 @@ class ConnectInstanceViewController: UIViewController {
             self.overallProgress.loopMode = .playOnce
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-                Current.onboardingComplete?()
+                Current.onboardingObservation.complete()
+
                 if let navVC = self.navigationController as? OnboardingNavigationViewController {
                     Current.Log.verbose("Dismissing from permissions")
                     navVC.dismiss()
