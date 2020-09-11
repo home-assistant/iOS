@@ -48,15 +48,6 @@ class ZoneManagerProcessorTests: XCTestCase {
         }
 
         api = FakeHassAPI(
-            connectionInfo: ConnectionInfo(
-                externalURL: nil,
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: "id",
-                webhookSecret: nil,
-                internalSSIDs: nil
-            ),
             tokenInfo: TokenInfo(
                 accessToken: "token",
                 refreshToken: "token",

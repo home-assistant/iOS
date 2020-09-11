@@ -51,6 +51,10 @@ public class SettingsStore {
                 return cachedConnectionInfo
             }
 
+            if NSClassFromString("XCTest") != nil {
+                return nil
+            }
+
             guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
                 let unwrappedData = connectionData else {
                     return nil
@@ -65,6 +69,10 @@ public class SettingsStore {
         }
         set {
             cachedConnectionInfo = newValue
+
+            if NSClassFromString("XCTest") != nil {
+                return
+            }
 
             guard let info = newValue else {
                 keychain["connectionInfo"] = nil
