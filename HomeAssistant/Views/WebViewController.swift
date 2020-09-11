@@ -678,7 +678,7 @@ extension WebViewController: WKScriptMessageHandler {
                 Current.Log.verbose("Running revoke external auth callback \(script)")
 
                 self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
-                    Current.signInRequiredCallback?(.logout)
+                    Current.onboardingObservation.needed(.logout)
 
                     if let error = error {
                         Current.Log.error("Failed calling sign out callback: \(error)")

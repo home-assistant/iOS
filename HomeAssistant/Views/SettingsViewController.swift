@@ -479,7 +479,7 @@ class SettingsViewController: FormViewController {
             prefs.removePersistentDomain(forName: bundleId)
             prefs.synchronize()
 
-            Current.signInRequiredCallback?(.logout)
+            Current.onboardingObservation.needed(.logout)
         }
     }
 
