@@ -203,6 +203,8 @@
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
+		11E1639A250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
+		11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
@@ -985,6 +987,7 @@
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
+		11E16399250B1B760076D612 /* OnboardingStateObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservation.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Development.entitlements"; sourceTree = "<group>"; };
 		11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Beta.entitlements"; sourceTree = "<group>"; };
@@ -2614,6 +2617,7 @@
 				11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */,
 				11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */,
 				11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */,
+				11E16399250B1B760076D612 /* OnboardingStateObservation.swift */,
 			);
 			path = Structs;
 			sourceTree = "<group>";
@@ -4389,6 +4393,7 @@
 				1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				B67CE8A222200F220034C1D0 /* Services.swift in Sources */,
+				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
@@ -4529,6 +4534,7 @@
 				1182620424F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
 				D0EEF2FF214D8D4C00D1D360 /* CLError+DebugDescription.swift in Sources */,
 				B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
+				11E1639A250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,

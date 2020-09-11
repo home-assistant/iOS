@@ -38,16 +38,22 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
         return Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
 
-            var redirectURI = "homeassistant://auth-callback"
-
-            var clientID = "https://home-assistant.io/iOS"
+            let redirectURI: String
+            let scheme: String
+            let clientID: String
 
             if Current.appConfiguration == .Debug {
                 clientID = "https://home-assistant.io/iOS/dev-auth"
                 redirectURI = "homeassistant-dev://auth-callback"
+                scheme = "homeassistant-dev"
             } else if Current.appConfiguration == .Beta {
                 clientID = "https://home-assistant.io/iOS/beta-auth"
                 redirectURI = "homeassistant-beta://auth-callback"
+                scheme = "homeassistant-beta"
+            } else {
+                clientID = "https://home-assistant.io/iOS"
+                redirectURI = "homeassistant://auth-callback"
+                scheme = "homeassistant"
             }
 
             var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
@@ -74,7 +80,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
 
                 if #available(iOS 12.0, *) {
                     self.authStyle = "ASWebAuthenticationSession"
-                    let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
+                    let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: scheme,
                                                                     completionHandler: newStyleAuthCallback)
 
                     if #available(iOS 13.0, *) {

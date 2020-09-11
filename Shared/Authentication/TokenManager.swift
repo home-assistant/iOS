@@ -167,7 +167,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 completion(false, 0)
 
                 DispatchQueue.main.async {
-                    Current.signInRequiredCallback?(.error)
+                    Current.onboardingObservation.needed(.error)
                 }
             } else {
                 completion(false, 0)
@@ -289,7 +289,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
                         self.tokenInfo = nil
                         Current.settingsStore.tokenInfo = nil
-                        Current.signInRequiredCallback?(.error)
+                        Current.onboardingObservation.needed(.error)
                     }
                 case .fulfilled:
                     Current.Log.info("refresh token got success")
