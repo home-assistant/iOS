@@ -880,3 +880,4 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "menu.file.update_sensors" = "Update Sensors";
 "open_label" = "Open";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
+"widgets.actions.description" = "Perform Home Assistant actions.";
