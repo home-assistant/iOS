@@ -2889,6 +2889,8 @@ internal enum L10n {
 
   internal enum Widgets {
     internal enum Actions {
+      /// Perform Home Assistant actions.
+      internal static let description = L10n.tr("Localizable", "widgets.actions.description")
       /// No Actions Configured
       internal static let notConfigured = L10n.tr("Localizable", "widgets.actions.not_configured")
       /// Actions
