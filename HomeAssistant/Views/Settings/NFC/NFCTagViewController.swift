@@ -112,7 +112,6 @@ class NFCTagViewController: FormViewController {
                     return """
                     - platform: tag
                       tag_id: \(identifier)
-                      device_id: \(Current.settingsStore.integrationDeviceID)
                     """
                 }
             }, present: { [weak self] viewController in
