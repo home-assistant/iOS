@@ -21,29 +21,72 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    var config: WatchComplication = WatchComplication()
-    var newConfig: Bool = true
+    let config: WatchComplication
+    private var displayTemplate: ComplicationTemplate
 
-    convenience init(_ config: WatchComplication?) {
-        self.init()
+    init(config: WatchComplication) {
+        self.config = config
+        self.displayTemplate = config.Template
 
-        if let config = config {
-            self.config = config
-            self.newConfig = false
+        super.init(style: .grouped)
+
+        if #available(iOS 13, *) {
+            self.isModalInPresentation = true
         }
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func cancel() {
+        onDismissCallback?(self)
+    }
+
+    @objc private func save() {
+        do {
+            let realm = Current.realm()
+            try realm.write {
+                self.config.Template = displayTemplate
+                self.config.Data = getValuesGroupedBySection()
+
+                Current.Log.verbose("COMPLICATION \(self.config) \(self.config.Data)")
+
+                realm.add(self.config, update: .all)
+            }
+        } catch {
+            Current.Log.error(error)
+        }
+
+        onDismissCallback?(self)
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        navigationItem.leftBarButtonItems = [
+            UIBarButtonItem(
+                barButtonSystemItem: .cancel,
+                target: self,
+                action: #selector(cancel)
+            )
+        ]
 
         let infoBarButtonItem = Constants.helpBarButtonItem
 
         infoBarButtonItem.action = #selector(getInfoAction)
         infoBarButtonItem.target = self
 
-        self.navigationItem.rightBarButtonItem = infoBarButtonItem
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(
+                barButtonSystemItem: .save,
+                target: self,
+                action: #selector(save)
+            ),
+            infoBarButtonItem
+        ]
 
         self.title = self.config.Family.name
 
@@ -53,8 +96,6 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             cell.textView.smartQuotesType = .no
             cell.textView.smartDashesType = .no
         }
-
-        let realm = Current.realm()
 
         self.form
 
@@ -66,7 +107,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             $0.tag = "template"
             $0.title = L10n.Watch.Configurator.Rows.Template.title
             $0.options = self.config.Family.templates
-            $0.value = self.config.Template
+            $0.value = displayTemplate
             $0.selectorTitle = L10n.Watch.Configurator.Rows.Template.selectorTitle
         }.onPresent { _, to in
             to.enableDeselection = false
@@ -78,18 +119,20 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
                 cell.detailTextLabel?.text = row.selectableValue?.description
                 cell.detailTextLabel?.numberOfLines = 0
                 cell.detailTextLabel?.lineBreakMode = .byWordWrapping
+                if #available(iOS 13, *) {
+                    cell.detailTextLabel?.textColor = .secondaryLabel
+                } else {
+                    cell.detailTextLabel?.textColor = .darkGray
+                }
             }
             to.selectableRowCellUpdate = { cell, row in
                 cell.textLabel?.text = row.selectableValue?.style
                 cell.detailTextLabel?.text = row.selectableValue?.description
             }
-        }.onChange { row in
+        }.onChange { [weak self] row in
             if let template = row.value {
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    self.config.Template = template
-                }
-                self.reloadForm(template: template)
+                self?.displayTemplate = template
+                self?.reloadForm()
             }
         }.cellUpdate { cell, row in
             cell.detailTextLabel?.text = row.value?.style
@@ -103,7 +146,9 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
 
         +++ Section {
             $0.tag = "row2alignment"
-            $0.hidden = true
+            $0.hidden = .function([], { [weak self] _ in
+                return self?.displayTemplate.supportsRow2Alignment == false
+            })
         }
 
         <<< SegmentedRow<String> {
@@ -117,8 +162,10 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
 
         +++ Section(header: L10n.Watch.Configurator.Sections.Gauge.header,
                     footer: L10n.Watch.Configurator.Sections.Gauge.footer) {
-                        $0.tag = "gauge"
-                        $0.hidden = true
+            $0.tag = "gauge"
+            $0.hidden = .function([], { [weak self] _ in
+                return self?.displayTemplate.hasGauge == false
+            })
         }
 
         <<< TextAreaRow {
@@ -180,7 +227,9 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         +++ Section(header: L10n.Watch.Configurator.Sections.Ring.header,
                     footer: L10n.Watch.Configurator.Sections.Ring.footer) {
             $0.tag = "ring"
-            $0.hidden = true
+            $0.hidden = .function([], { [weak self] _ in
+                return self?.displayTemplate.hasRing == false
+            })
         }
 
         <<< TextAreaRow {
@@ -216,7 +265,9 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         +++ Section(header: L10n.Watch.Configurator.Sections.Icon.header,
                     footer: L10n.Watch.Configurator.Sections.Icon.footer) {
             $0.tag = "icon"
-            $0.hidden = true
+            $0.hidden = .function([], { [weak self] _ in
+                return self?.displayTemplate.hasImage == false
+            })
         }
 
         <<< SearchPushRow<String> {
@@ -274,29 +325,8 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
                 }
             }
 
-        reloadForm(template: self.config.Family.templates.first!)
+        reloadForm()
 
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        if self.isBeingDismissed || self.isMovingFromParent {
-            self.onDismissCallback?(self)
-            let realm = Current.realm()
-
-            // swiftlint:disable:next force_try
-            try! realm.write {
-                self.config.Data = getValuesGroupedBySection()
-
-                Current.Log.verbose("COMPLICATION \(self.config) \(self.config.Data)")
-
-                realm.add(self.config, update: .all)
-            }
-        }
     }
 
     @objc
@@ -349,7 +379,9 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         let key = "textarea_" + location.slug
         let section = Section(header: location.label, footer: location.description) {
             $0.tag = location.slug
-            $0.hidden = true
+            $0.hidden = .function([], { [weak self] _ in
+                return self?.displayTemplate.textAreas.map(\.slug).contains(location.slug) == false
+            })
         }
 
         var dataDict: [String: Any] = [String: Any]()
@@ -393,51 +425,20 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         return section
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
-    func reloadForm(template: ComplicationTemplate) {
+    func reloadForm() {
         for section in self.form.allSections {
-            if section.tag == "template" {
-                continue
-            }
-            section.hidden = true
             section.evaluateHidden()
         }
 
-        for textarea in template.textAreas {
-            if let section = self.form.sectionBy(tag: textarea.slug) {
-                section.hidden = false
-                section.evaluateHidden()
+        if displayTemplate.hasGauge, let gaugeType = self.form.rowBy(tag: "gauge_type") as? SegmentedRow<String> {
+            if displayTemplate.gaugeIsOpenStyle {
+                gaugeType.value = gaugeType.options?[0]
+            } else if displayTemplate.gaugeIsClosedStyle {
+                gaugeType.value = gaugeType.options?[1]
             }
-        }
-
-        if template.hasGauge, let gaugeSection = self.form.sectionBy(tag: "gauge") {
-            gaugeSection.hidden = false
-            gaugeSection.evaluateHidden()
-            if let gaugeType = self.form.rowBy(tag: "gauge_type") as? SegmentedRow<String> {
-                if template.gaugeIsOpenStyle {
-                    gaugeType.value = gaugeType.options?[0]
-                } else if template.gaugeIsClosedStyle {
-                    gaugeType.value = gaugeType.options?[1]
-                }
-                gaugeType.disabled = true
-                gaugeType.evaluateDisabled()
-                gaugeType.reload()
-            }
-        }
-
-        if template.hasImage, let iconSection = self.form.sectionBy(tag: "icon") {
-            iconSection.hidden = false
-            iconSection.evaluateHidden()
-        }
-
-        if template.hasRing, let ringSection = self.form.sectionBy(tag: "ring") {
-            ringSection.hidden = false
-            ringSection.evaluateHidden()
-        }
-
-        if template.supportsRow2Alignment, let row2AlignmentSection = self.form.sectionBy(tag: "row2alignment") {
-            row2AlignmentSection.hidden = false
-            row2AlignmentSection.evaluateHidden()
+            gaugeType.disabled = true
+            gaugeType.evaluateDisabled()
+            gaugeType.reload()
         }
     }
 

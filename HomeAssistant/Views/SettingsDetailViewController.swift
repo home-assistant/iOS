@@ -262,14 +262,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 self.form +++ Section(header: header, footer: group.description)
 
                 for member in members {
+                    let config: WatchComplication
 
-                    var config = existingComplications.filter(NSPredicate(format: "rawFamily == %@",
-                                                                          member.rawValue)).first
-
-                    if config == nil {
-                        let newConfig = WatchComplication()
-                        newConfig.Family = member
-                        config = newConfig
+                    if let persistedConfig = existingComplications.filter(
+                        NSPredicate(format: "rawFamily == %@", member.rawValue)
+                    ).first {
+                        config = persistedConfig
+                    } else {
+                        config = WatchComplication()
+                        config.Family = member
                     }
 
                     self.form.last!
@@ -277,11 +278,16 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                             $0.cellStyle = .subtitle
                             $0.title = member.shortName
                             $0.presentationMode = .show(controllerProvider: .callback {
-                                    return WatchComplicationConfigurator(config)
+                                return WatchComplicationConfigurator(config: config)
                             }, onDismiss: { vc in
                                 _ = vc.navigationController?.popViewController(animated: true)
                             })
                         }.cellUpdate({ (cell, _) in
+                            if #available(iOS 13, *) {
+                                cell.detailTextLabel?.textColor = .secondaryLabel
+                            } else {
+                                cell.detailTextLabel?.textColor = .darkGray
+                            }
                             cell.detailTextLabel?.text = member.description
                             cell.detailTextLabel?.numberOfLines = 0
                             cell.detailTextLabel?.lineBreakMode = .byWordWrapping
