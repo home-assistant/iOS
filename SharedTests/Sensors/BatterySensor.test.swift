@@ -5,9 +5,7 @@ import XCTest
 
 class BatterySensorTests: XCTestCase {
     func testUpdateSignalerCreated() throws {
-        Current.device.batteryLevel = { 100 }
-        Current.device.batteryState = { .unplugged }
-        Current.device.isLowPowerMode = { false }
+        Current.device.batteries = { [ DeviceBattery(level: 100, state: .unplugged, attributes: [:]) ] }
 
         let dependencies = SensorProviderDependencies()
         let provider = BatterySensor(request: .init(
@@ -33,11 +31,7 @@ class BatterySensorTests: XCTestCase {
     }
 
     func testAdditionalInfo() throws {
-        Current.device.verboseBatteryInfo = { [
-            "test": true
-        ] }
-
-        let (uLevel, uState, cLevel, cState) = try sensors(level: 100)
+        let (uLevel, uState, cLevel, cState) = try sensors(level: 100, attributes: [ "test": true ])
         XCTAssertEqual(uLevel.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(uState.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(cLevel.Attributes?["test"] as? Bool, true)
@@ -226,27 +220,97 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(cState.State as? String, "Full")
     }
 
-    private func XCTAssertLevel(_ sensor: WebhookSensor, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(sensor.Name, "Battery Level", file: file, line: line)
-        XCTAssertEqual(sensor.UniqueID, "battery_level", file: file, line: line)
+    func testMultipleBatteries() throws {
+        let (unplugged, charging) = try sensors(levels: [0, 99], names: ["one", "two"], uniqueIds: ["u1", "u2"])
+
+        XCTAssertEqual(unplugged[0].level.State as? Int, 0)
+        XCTAssertEqual(unplugged[0].state.State as? String, "Not Charging")
+        XCTAssertEqual(unplugged[1].level.State as? Int, 99)
+        XCTAssertEqual(unplugged[1].state.State as? String, "Not Charging")
+
+        XCTAssertEqual(charging[0].level.State as? Int, 0)
+        XCTAssertEqual(charging[0].state.State as? String, "Charging")
+        XCTAssertEqual(charging[1].level.State as? Int, 99)
+        XCTAssertEqual(charging[1].state.State as? String, "Charging")
+    }
+
+    func testNoBatteries() throws {
+        let (unplugged, charging) = try sensors(levels: [])
+        XCTAssertTrue(unplugged.isEmpty)
+        XCTAssertTrue(charging.isEmpty)
+    }
+
+    private func XCTAssertLevel(
+        _ sensor: WebhookSensor,
+        name: String? = nil,
+        uniqueId: String? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(sensor.Name, "\(name ?? "Battery") Level", file: file, line: line)
+        XCTAssertEqual(sensor.UniqueID, "\(uniqueId ?? "battery")_level", file: file, line: line)
         XCTAssertEqual(sensor.DeviceClass, .battery, file: file, line: line)
         XCTAssertEqual(sensor.UnitOfMeasurement, "%", file: file, line: line)
     }
 
-    private func XCTAssertState(_ sensor: WebhookSensor, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(sensor.Name, "Battery State", file: file, line: line)
-        XCTAssertEqual(sensor.UniqueID, "battery_state", file: file, line: line)
+    private func XCTAssertState(
+        _ sensor: WebhookSensor,
+        name: String? = nil,
+        uniqueId: String? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(sensor.Name, "\(name ?? "Battery") State", file: file, line: line)
+        XCTAssertEqual(sensor.UniqueID, "\(uniqueId ?? "battery")_state", file: file, line: line)
         XCTAssertEqual(sensor.DeviceClass, .battery, file: file, line: line)
     }
 
     func sensors(
         level: Int,
         forceNotFull: Bool = false,
+        attributes: [String: Any] = [:],
         file: StaticString = #filePath,
         line: UInt = #line
     ) throws -> (uLevel: WebhookSensor, uState: WebhookSensor, cLevel: WebhookSensor, cState: WebhookSensor) {
-        Current.device.batteryLevel = { level }
-        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .unplugged }
+        let (u, c) = try sensors(
+            levels: [level],
+            forceNotFull: forceNotFull,
+            attributes: attributes,
+            file: file,
+            line: line
+        )
+        return (uLevel: u[0].level, uState: u[0].state, cLevel: c[0].level, cState: c[0].state)
+    }
+
+    func sensors(
+        levels: [Int],
+        names: [String] = [],
+        uniqueIds: [String] = [],
+        forceNotFull: Bool = false,
+        attributes: [String: Any] = [:],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> (u: [(level: WebhookSensor, state: WebhookSensor)], c: [(level: WebhookSensor, state: WebhookSensor)]) {
+        Current.device.batteries = {
+            levels.enumerated().map { idx, level in
+                var battery = DeviceBattery(
+                    level: level,
+                    state: level == 100 && !forceNotFull ? .full : .unplugged,
+                    attributes: attributes
+                )
+
+                if !names.isEmpty {
+                    battery.name = names[idx]
+                }
+
+                if !uniqueIds.isEmpty {
+                    battery.uniqueID = uniqueIds[idx]
+                }
+
+                return battery
+            }
+        }
+
         Current.device.isLowPowerMode = { true }
 
         let uPromise = BatterySensor(request: .init(
@@ -255,21 +319,45 @@ class BatterySensorTests: XCTestCase {
             location: nil
         )).sensors()
         let uSensors = try hang(uPromise)
-        XCTAssertEqual(uSensors.count, 2)
+        XCTAssertEqual(uSensors.count, levels.count * 2)
 
-        let uLevel = uSensors[0]
-        let uState = uSensors[1]
+        var uReturn = [(level: WebhookSensor, state: WebhookSensor)]()
 
-        XCTAssertLevel(uLevel, file: file, line: line)
-        XCTAssertEqual(uLevel.Attributes?["Battery State"] as? String, uState.State as? String, file: file, line: line)
-        XCTAssertEqual(uLevel.Attributes?["Low Power Mode"] as? Bool, true)
+        for idx in stride(from: 0, to: uSensors.count, by: 2) {
+            let uLevel = uSensors[idx]
+            let uState = uSensors[idx + 1]
 
-        XCTAssertState(uState, file: file, line: line)
-        XCTAssertEqual(uState.Attributes?["Battery Level"] as? Int, uLevel.State as? Int, file: file, line: line)
-        XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
+            XCTAssertLevel(uLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
+            XCTAssertEqual(uLevel.Attributes?["Battery State"] as? String, uState.State as? String, file: file, line: line)
+            XCTAssertEqual(uLevel.Attributes?["Low Power Mode"] as? Bool, true)
 
-        Current.device.batteryLevel = { level }
-        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .charging }
+            XCTAssertState(uState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
+            XCTAssertEqual(uState.Attributes?["Battery Level"] as? Int, uLevel.State as? Int, file: file, line: line)
+            XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
+
+            uReturn.append((level: uLevel, state: uState))
+        }
+
+        Current.device.batteries = {
+            levels.enumerated().map { idx, level in
+                var battery = DeviceBattery(
+                    level: level,
+                    state: level == 100 && !forceNotFull ? .full : .charging,
+                    attributes: attributes
+                )
+
+                if !names.isEmpty {
+                    battery.name = names[idx]
+                }
+
+                if !uniqueIds.isEmpty {
+                    battery.uniqueID = uniqueIds[idx]
+                }
+
+                return battery
+            }
+        }
+
         Current.device.isLowPowerMode = { true }
 
         let cPromise = BatterySensor(request: .init(
@@ -278,21 +366,25 @@ class BatterySensorTests: XCTestCase {
             location: nil
         )).sensors()
         let cSensors = try hang(cPromise)
-        XCTAssertEqual(cSensors.count, 2)
+        XCTAssertEqual(cSensors.count, levels.count * 2)
 
-        let cLevel = cSensors[0]
-        let cState = cSensors[1]
+        var cReturn = [(level: WebhookSensor, state: WebhookSensor)]()
 
-        XCTAssertLevel(cLevel, file: file, line: line)
-        XCTAssertEqual(cLevel.Attributes?["Battery State"] as? String, cState.State as? String, file: file, line: line)
-        XCTAssertEqual(cLevel.Attributes?["Low Power Mode"] as? Bool, true)
+        for idx in stride(from: 0, to: cSensors.count, by: 2) {
+            let cLevel = cSensors[idx]
+            let cState = cSensors[idx + 1]
 
-        XCTAssertState(cState, file: file, line: line)
-        XCTAssertEqual(cState.Attributes?["Battery Level"] as? Int, cLevel.State as? Int, file: file, line: line)
-        XCTAssertEqual(cState.Attributes?["Low Power Mode"] as? Bool, true)
+            XCTAssertLevel(cLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2],file: file, line: line)
+            XCTAssertEqual(cLevel.Attributes?["Battery State"] as? String, cState.State as? String, file: file, line: line)
+            XCTAssertEqual(cLevel.Attributes?["Low Power Mode"] as? Bool, true)
 
-        return (uLevel, uState, cLevel, cState)
+            XCTAssertState(cState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2],file: file, line: line)
+            XCTAssertEqual(cState.Attributes?["Battery Level"] as? Int, cLevel.State as? Int, file: file, line: line)
+            XCTAssertEqual(cState.Attributes?["Low Power Mode"] as? Bool, true)
+
+            cReturn.append((level: cLevel, state: cState))
+        }
+
+        return (uReturn, cReturn)
     }
-
-
 }

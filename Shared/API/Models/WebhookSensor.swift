@@ -63,9 +63,9 @@ public class WebhookSensor: Mappable {
         self.init(name: name, uniqueID: uniqueID, icon: "mdi:\(icon.name)", state: state, unit: unit)
     }
 
-    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, deviceClass: DeviceClass,
+    convenience init(name: String, uniqueID: String, icon: String, deviceClass: DeviceClass,
                      state: Any, unit: String? = nil) {
-        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit)
+        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit)
         self.DeviceClass = deviceClass
     }
 

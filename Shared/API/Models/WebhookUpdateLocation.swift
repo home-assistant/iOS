@@ -39,7 +39,7 @@ public class WebhookUpdateLocation: Mappable {
         self.init()
 
         self.Trigger = trigger
-        self.Battery = Current.device.batteryLevel()
+        self.Battery = Current.device.batteries().first?.level ?? -1
 
         let useLocation: Bool
 
