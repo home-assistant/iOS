@@ -21,58 +21,58 @@ public class BatterySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        let level = Current.device.batteryLevel()
-        var state = "Unknown"
-        var icon = "mdi:battery"
+        // Set up our observer for battery state changes
+        let _: BatterySensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
-        let batteryAttributes = Current.device.verboseBatteryInfo()
-        let batState = Current.device.batteryState()
+        return .value(
+            Current.device.batteries()
+                .flatMap { Self.sensors(battery: $0) }
+        )
+    }
+
+    private static func sensors(battery: DeviceBattery) -> [WebhookSensor] {
+        let icon: String = {
+            switch battery.state {
+            case .charging:
+                return Self.chargingIcon(level: battery.level)
+            case .unplugged:
+                return Self.unpluggedIcon(level: battery.level)
+            case .full:
+                return "mdi:battery"
+            }
+        }()
         let isLowPowerMode = Current.device.isLowPowerMode()
-
-        switch batState {
-        case .charging:
-            state = "Charging"
-            icon = Self.chargingIcon(level: level)
-        case .unplugged:
-            state = "Not Charging"
-            icon = Self.unpluggedIcon(level: level)
-        case .full:
-            state = "Full"
-        }
+        let sensorNamePrefix = battery.name ?? "Battery"
+        let sensorIDPrefix = battery.uniqueID ?? "battery"
 
         let levelSensor = with(WebhookSensor(
-            name: "Battery Level",
-            uniqueID: "battery_level",
-            icon: .batteryIcon,
+            name: "\(sensorNamePrefix) Level",
+            uniqueID: "\(sensorIDPrefix)_level",
+            icon: icon,
             deviceClass: .battery,
-            state: level
+            state: battery.level
         )) {
-            $0.Icon = icon
             $0.Attributes = [
-                "Battery State": state,
+                "Battery State": battery.state.description,
                 "Low Power Mode": isLowPowerMode
-            ].merging(batteryAttributes, uniquingKeysWith: { a, _ in a })
+            ].merging(battery.attributes, uniquingKeysWith: { a, _ in a })
             $0.UnitOfMeasurement = "%"
         }
 
         let stateSensor = with(WebhookSensor(
-            name: "Battery State",
-            uniqueID: "battery_state",
-            icon: .batteryIcon,
+            name: "\(sensorNamePrefix) State",
+            uniqueID: "\(sensorIDPrefix)_state",
+            icon: icon,
             deviceClass: .battery,
-            state: state
+            state: battery.state.description
         )) {
-            $0.Icon = icon
             $0.Attributes = [
-                "Battery Level": level,
+                "Battery Level": battery.level,
                 "Low Power Mode": isLowPowerMode
-            ].merging(batteryAttributes, uniquingKeysWith: { a, _ in a })
+            ].merging(battery.attributes, uniquingKeysWith: { a, _ in a })
         }
 
-        // Set up our observer for battery state changes
-        let _: BatterySensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
-
-        return .value([levelSensor, stateSensor])
+        return [levelSensor, stateSensor]
     }
 
     // swiftlint:disable:next cyclomatic_complexity

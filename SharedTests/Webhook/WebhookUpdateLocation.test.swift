@@ -12,7 +12,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     func testBeaconEnterNotPassive() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         guard let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
@@ -69,7 +69,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     func testBeaconExitNotPassive() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         guard let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
@@ -99,7 +99,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     func testBeaconEnterHome() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         guard let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
@@ -128,7 +128,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     func testBeaconExitHome() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         guard let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
@@ -158,7 +158,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     func testBeaconExitPassive() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         guard let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
@@ -190,7 +190,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
     @available(iOS 13.4, *)
     func testGPSEnter() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         let now = Date()
 
@@ -232,7 +232,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
     @available(iOS 13.4, *)
     func testGPSExit() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         let now = Date()
 
@@ -275,7 +275,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
     @available(iOS 13.4, *)
     func testGPSEnterHome() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         let now = Date()
 
@@ -317,7 +317,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
     @available(iOS 13.4, *)
     func testGPSExitHome() {
-        Current.device.batteryLevel = { 44 }
+        Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
         let now = Date()
 

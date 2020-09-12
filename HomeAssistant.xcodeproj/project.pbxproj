@@ -31,6 +31,8 @@
 		110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */; };
 		1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
 		1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
+		1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
+		1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111858D324CB5B8900B8CDDC /* PerformAction.swift */; };
 		111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
 		111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
@@ -853,6 +855,7 @@
 		110FB4512499DB3A000865B4 /* map_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = map_notification.apns; sourceTree = "<group>"; };
 		110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationErrorViewController.swift; sourceTree = "<group>"; };
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
+		1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
@@ -2618,6 +2621,7 @@
 				11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */,
 				11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */,
 				11E16399250B1B760076D612 /* OnboardingStateObservation.swift */,
+				1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */,
 			);
 			path = Structs;
 			sourceTree = "<group>";
@@ -4340,6 +4344,7 @@
 				B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */,
 				B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				11AF4D1A249C8253006C74C0 /* PedometerSensor.swift in Sources */,
+				1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				11F855DB24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */,
 				B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
@@ -4481,6 +4486,7 @@
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
+				1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				11F855DA24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */,
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,

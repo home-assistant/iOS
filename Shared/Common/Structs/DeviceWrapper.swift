@@ -13,106 +13,19 @@ import WatchKit
 public class DeviceWrapper {
     public lazy var batteryNotificationCenter = DeviceWrapperBatteryNotificationCenter()
 
-    public lazy var verboseBatteryInfo: () -> [String: Any] = {
-        #if canImport(IOKit)
-        /// keys: https://developer.apple.com/documentation/iokit/iopskeys_h/defines
+    public lazy var batteries: () -> [DeviceBattery] = {
+        #if targetEnvironment(macCatalyst)
         let blob = IOPSCopyPowerSourcesInfo().takeRetainedValue()
         let powerSources = IOPSCopyPowerSourcesList(blob).takeRetainedValue() as [CFTypeRef]
 
         return powerSources
             .map { IOPSGetPowerSourceDescription(blob, $0).takeUnretainedValue() }
             .compactMap { $0 as? [String: Any] }
-            .reduce(into: [String: Any]()) { current, added in
-                current.merge(added, uniquingKeysWith: { a, _ in a })
-            }
-        #else
-        return [:]
-        #endif
-    }
-
-    public lazy var batteryLevel: () -> Int = {
-        #if targetEnvironment(macCatalyst)
-        return self.verboseBatteryInfo()[kIOPSCurrentCapacityKey] as? Int ?? -1
+            .map { DeviceBattery(powerSourceDescription: $0) }
         #elseif os(iOS)
-        let isMonitoringEnabled = UIDevice.current.isBatteryMonitoringEnabled
-        defer {
-            UIDevice.current.isBatteryMonitoringEnabled = isMonitoringEnabled
-        }
-        #if targetEnvironment(simulator)
-            return 100
-        #else
-            return Int(round(UIDevice.current.batteryLevel * 100))
-        #endif
+        return [ DeviceBattery(device: UIDevice.current) ]
         #elseif os(watchOS)
-        let isMonitoringEnabled = WKInterfaceDevice.current().isBatteryMonitoringEnabled
-        defer {
-            WKInterfaceDevice.current().isBatteryMonitoringEnabled = isMonitoringEnabled
-        }
-        return Int(round(WKInterfaceDevice.current().batteryLevel * 100))
-        #endif
-    }
-
-    public enum BatteryState {
-        case charging
-        case unplugged
-        case full
-
-        #if targetEnvironment(macCatalyst)
-        init(verboseInfo: [String: Any]) {
-            let isCharged = verboseInfo[kIOPSIsChargedKey] as? Bool ?? false
-            let isCharging = verboseInfo[kIOPSIsChargingKey] as? Bool ?? false
-
-            switch (isCharged, isCharging) {
-            case (true, _):
-                self = .full
-            case (false, true):
-                self = .charging
-            case (false, false):
-                self = .unplugged
-            }
-        }
-        #endif
-
-        #if os(iOS)
-        init(state: UIDevice.BatteryState) {
-            switch state {
-            case .charging: self = .charging
-            case .full: self = .full
-            case .unplugged: self = .unplugged
-            case .unknown: self = .full
-            @unknown default: self = .full
-            }
-        }
-        #endif
-
-        #if os(watchOS)
-        init(state: WKInterfaceDeviceBatteryState) {
-            switch state {
-            case .charging: self = .charging
-            case .full: self = .full
-            case .unplugged: self = .unplugged
-            case .unknown: self = .full
-            @unknown default: self = .full
-            }
-        }
-        #endif
-    }
-
-    public lazy var batteryState: () -> BatteryState = {
-        #if targetEnvironment(macCatalyst)
-        return .init(verboseInfo: self.verboseBatteryInfo())
-        #elseif os(iOS)
-        let isMonitoringEnabled = UIDevice.current.isBatteryMonitoringEnabled
-        defer {
-            UIDevice.current.isBatteryMonitoringEnabled = isMonitoringEnabled
-        }
-        return .init(state: UIDevice.current.batteryState)
-        #elseif os(watchOS)
-        let isMonitoringEnabled = WKInterfaceDevice.current().isBatteryMonitoringEnabled
-        defer {
-            WKInterfaceDevice.current().isBatteryMonitoringEnabled = isMonitoringEnabled
-        }
-        return .init(state: WKInterfaceDevice.current().batteryState)
+        return [ DeviceBattery(device: WKInterfaceDevice.current()) ]
         #endif
     }
 
