@@ -641,7 +641,9 @@ public class HomeAssistantAPI {
     ) -> (eventType: String, eventData: [String: String]) {
         var eventData = [String: String]()
         eventData["tag_id"] = tagPath
-        eventData["device_id"] = Current.settingsStore.integrationDeviceID
+        if Current.serverVersion() < .tagWebhookAvailable {
+            eventData["device_id"] = Current.settingsStore.integrationDeviceID
+        }
         return (eventType: "tag_scanned", eventData: eventData)
     }
 
