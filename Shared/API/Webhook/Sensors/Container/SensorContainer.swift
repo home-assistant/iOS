@@ -50,6 +50,10 @@ public class SensorContainer {
         observers.remove(observer)
     }
 
+    public func settings(for sensor: WebhookSensor) -> [SensorProviderSetting] {
+        providers.flatMap { $0.settings(for: sensor) ?? [] }
+    }
+
     private var lastUpdate: SensorObserverUpdate? {
         didSet {
             guard let lastUpdate = lastUpdate else { return }

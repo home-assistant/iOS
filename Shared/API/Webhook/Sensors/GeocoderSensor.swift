@@ -23,6 +23,20 @@ public class GeocoderSensor: SensorProvider {
         self.request = request
     }
 
+    public static func settings(for sensor: WebhookSensor) -> [SensorProviderSetting]? {
+        if sensor.UniqueID == "geocoded_location" {
+            return [
+                .init(type: .switch(getter: {
+                    Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
+                }, setter: {
+                    Current.settingsStore.prefs.set($0, forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
+                }), title: UserDefaultsKeys.geocodeUseZone.title)
+            ]
+        } else {
+            return []
+        }
+    }
+
     public func sensors() -> Promise<[WebhookSensor]> {
         return firstly { () -> Promise<[CLPlacemark]> in
             guard let location = request.location else {
@@ -37,13 +51,6 @@ public class GeocoderSensor: SensorProvider {
             let sensor = with(WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")) {
                 $0.State = "Unknown"
                 $0.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
-                $0.Settings = [
-                    .init(type: .switch(getter: {
-                        Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
-                    }, setter: {
-                        Current.settingsStore.prefs.set($0, forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
-                    }), title: UserDefaultsKeys.geocodeUseZone.title)
-                ]
             }
 
             guard !placemarks.isEmpty else {

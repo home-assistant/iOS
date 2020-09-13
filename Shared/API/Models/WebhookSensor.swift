@@ -9,23 +9,6 @@
 import Foundation
 import ObjectMapper
 
-public struct WebhookSensorSetting {
-    public enum SettingType {
-        case `switch`(getter: () -> Bool, setter: (Bool) -> Void)
-        case stepper(
-                getter: () -> Double,
-                setter: (Double) -> Void,
-                minimum: Double = 0,
-                maximum: Double = 100,
-                step: Double = 1,
-                displayValueFor: ((Double?) -> String?)?
-             )
-    }
-
-    public let type: SettingType
-    public let title: String
-}
-
 public class WebhookSensor: Mappable, Equatable {
     public var Attributes: [String: Any]?
     public var DeviceClass: DeviceClass?
@@ -35,8 +18,6 @@ public class WebhookSensor: Mappable, Equatable {
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
-
-    public var Settings: [WebhookSensorSetting] = []
 
     init() {}
 

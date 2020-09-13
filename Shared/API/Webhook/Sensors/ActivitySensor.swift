@@ -19,7 +19,7 @@ public class ActivitySensor: SensorProvider {
             Self.latestMotionActivity()
         }.map { activity in
             with(WebhookSensor(name: "Activity", uniqueID: "activity")) {
-                $0.State = activity.activityTypes.first
+                $0.State = activity.activityTypes.first ?? "Unknown"
                 $0.Attributes = [
                     "Confidence": activity.confidence.description,
                     "Types": activity.activityTypes

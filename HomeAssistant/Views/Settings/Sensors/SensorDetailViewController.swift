@@ -51,8 +51,10 @@ class SensorDetailViewController: FormViewController {
 
         form +++ baseSection
 
-        if sensor.Settings.isEmpty == false {
-            form.append(Self.settingsSection(from: sensor.Settings))
+        let settings = Current.sensors.settings(for: sensor)
+
+        if settings.isEmpty == false {
+            form.append(Self.settingsSection(from: settings))
         }
 
         if let attributes = sensor.attributeDescriptions {
@@ -65,7 +67,7 @@ class SensorDetailViewController: FormViewController {
         }
     }
 
-    class func settingsSection(from settings: [WebhookSensorSetting]) -> Section {
+    class func settingsSection(from settings: [SensorProviderSetting]) -> Section {
         let section = Section(
             header: L10n.SettingsSensors.Settings.header,
             footer: L10n.SettingsSensors.Settings.footer
