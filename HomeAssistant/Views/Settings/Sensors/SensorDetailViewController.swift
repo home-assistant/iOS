@@ -110,7 +110,13 @@ class SensorDetailViewController: FormViewController {
     class func row(attribute: String, value: Any) -> BaseRow {
         return LabelRow { row in
             row.title = attribute
-            row.value = String(describing: value)
+
+            if let value = value as? NSNumber, value === kCFBooleanTrue || value === kCFBooleanFalse {
+                // boolean from objective-c is represented by NSNumber, which would normally be `0` or `1` here
+                row.value = String(describing: value.boolValue)
+            } else {
+                row.value = String(describing: value)
+            }
         }
     }
 }
