@@ -4,10 +4,26 @@ import WidgetKit
 
 struct WidgetActionsActionView: View {
     let action: Action
+    let sizeStyle: SizeStyle
     @SwiftUI.Environment(\.widgetFamily) var family: WidgetFamily
 
-    init(action: Action) {
+    enum SizeStyle {
+        case single
+        case multiple(expanded: Bool)
+
+        var font: Font {
+            switch self {
+            case .single:
+                return .subheadline
+            case .multiple(expanded: let expanded):
+                return expanded ? .subheadline : .footnote
+            }
+        }
+    }
+
+    init(action: Action, sizeStyle: SizeStyle) {
         self.action = action
+        self.sizeStyle = sizeStyle
         MaterialDesignIcons.register()
     }
 
@@ -21,7 +37,7 @@ struct WidgetActionsActionView: View {
                     .foregroundColor(.init(hex: action.IconColor))
                 Spacer()
                 Text(verbatim: action.Text)
-                    .font(family == .systemSmall ? .subheadline : .footnote)
+                    .font(sizeStyle.font)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.leading)
                     .foregroundColor(.init(hex: action.TextColor))
@@ -36,13 +52,13 @@ struct WidgetActionsActionView_Previews: PreviewProvider {
     static func shortAction() -> some View {
         WidgetActionsActionView(action: with(Action()) {
             $0.Text = "Short Name"
-        })
+        }, sizeStyle: .single)
     }
 
     static func longAction() -> some View {
         WidgetActionsActionView(action: with(Action()) {
             $0.Text = "Very Long Name Which Exceeds One Line"
-        })
+        }, sizeStyle: .single)
     }
 
     static var previews: some View {

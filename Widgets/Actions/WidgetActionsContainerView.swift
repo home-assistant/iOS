@@ -23,23 +23,23 @@ struct WidgetActionsContainerView: View {
     }
 
     func singleView(for action: Action) -> some View {
-        WidgetActionsActionView(action: action)
+        WidgetActionsActionView(action: action, sizeStyle: .single)
             .widgetURL(action.widgetLinkURL)
     }
 
     @ViewBuilder
     func multiView(for actions: [Action]) -> some View {
-        let columns = columnify(
-            count: Self.columnCount(family: family, actionCount: actions.count),
-            actions: actions
-        )
+        let columnCount = Self.columnCount(family: family, actionCount: actions.count)
+        let rows = Array(columnify(count: columnCount, actions: actions))
+        let maximumRowCount = Self.maximumCount(family: family) / columnCount
+        let sizeStyle: WidgetActionsActionView.SizeStyle = .multiple(expanded: rows.count < maximumRowCount)
 
         VStack(alignment: .leading, spacing: 1) {
-            ForEach(Array(columns), id: \.self) { column in
+            ForEach(rows, id: \.self) { column in
                 HStack(spacing: 1) {
                     ForEach(column, id: \.ID) { action in
                         Link(destination: action.widgetLinkURL) {
-                            WidgetActionsActionView(action: action)
+                            WidgetActionsActionView(action: action, sizeStyle: sizeStyle)
                         }
                     }
                 }
@@ -57,7 +57,7 @@ struct WidgetActionsContainerView: View {
         }
     }
 
-    private static func columnCount(family: WidgetFamily, actionCount: Int) -> Int {
+    static func columnCount(family: WidgetFamily, actionCount: Int) -> Int {
         switch family {
         case .systemSmall: return 1
         case .systemMedium: return 2
@@ -69,6 +69,15 @@ struct WidgetActionsContainerView: View {
                 return 2
             }
         @unknown default: return 2
+        }
+    }
+
+    static func maximumCount(family: WidgetFamily) -> Int {
+        switch family {
+        case .systemSmall: return 1
+        case .systemMedium: return 4
+        case .systemLarge: return 8
+        @unknown default: return 8
         }
     }
 }

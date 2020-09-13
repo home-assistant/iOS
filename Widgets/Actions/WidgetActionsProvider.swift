@@ -10,17 +10,9 @@ struct WidgetActionsProvider: IntentTimelineProvider {
     typealias Intent = WidgetActionsIntent
     typealias Entry = WidgetActionsEntry
 
-    private static func actionCount(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall: return 1
-        case .systemMedium: return 4
-        case .systemLarge: return 8
-        @unknown default: return 8
-        }
-    }
-
     func placeholder(in context: Context) -> WidgetActionsEntry {
-        let actions = stride(from: 0, to: Self.actionCount(for: context.family), by: 1).map { _ in
+        let count = WidgetActionsContainerView.maximumCount(family: context.family)
+        let actions = stride(from: 0, to: count, by: 1).map { _ in
             with(Action()) {
                 $0.Text = "Redacted Text"
                 $0.IconName = MaterialDesignIcons.bedEmptyIcon.name
@@ -32,7 +24,7 @@ struct WidgetActionsProvider: IntentTimelineProvider {
 
     private static func defaultActions(in context: Context) -> [Action] {
         let allActions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
-        let maxCount = Self.actionCount(for: context.family)
+        let maxCount = WidgetActionsContainerView.maximumCount(family: context.family)
 
         switch allActions.count {
         case 0: return []
