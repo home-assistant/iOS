@@ -68,6 +68,8 @@
 		114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
+		1155DD00250EC01A003405C0 /* PersistedSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DCFF250EC01A003405C0 /* PersistedSensor.swift */; };
+		1155DD01250EC01A003405C0 /* PersistedSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DCFF250EC01A003405C0 /* PersistedSensor.swift */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
@@ -870,6 +872,7 @@
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
+		1155DCFF250EC01A003405C0 /* PersistedSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedSensor.swift; sourceTree = "<group>"; };
 		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
@@ -1733,6 +1736,15 @@
 			path = "Request&Response";
 			sourceTree = "<group>";
 		};
+		1155DCFE250EC007003405C0 /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				B6D3B4EB225B26300082BB4F /* SensorContainer.swift */,
+				1155DCFF250EC01A003405C0 /* PersistedSensor.swift */,
+			);
+			path = Container;
+			sourceTree = "<group>";
+		};
 		1161C01924D7633700A0E3C4 /* NFC */ = {
 			isa = PBXGroup;
 			children = (
@@ -1831,7 +1843,7 @@
 		11AF4D0F249C7DD8006C74C0 /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
-				B6D3B4EB225B26300082BB4F /* SensorContainer.swift */,
+				1155DCFE250EC007003405C0 /* Container */,
 				11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */,
 				11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */,
 				11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */,
@@ -4432,6 +4444,7 @@
 				1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */,
 				B67CE89D22200F220034C1D0 /* Config.swift in Sources */,
+				1155DD01250EC01A003405C0 /* PersistedSensor.swift in Sources */,
 				11F3B85824C4279700642676 /* Entity.swift in Sources */,
 				11F855D924DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */,
@@ -4574,6 +4587,7 @@
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,
+				1155DD00250EC01A003405C0 /* PersistedSensor.swift in Sources */,
 				D0EEF316214DD7A400D1D360 /* Config.swift in Sources */,
 				11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11F3B85724C4279700642676 /* Entity.swift in Sources */,

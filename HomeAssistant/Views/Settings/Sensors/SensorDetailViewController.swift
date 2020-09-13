@@ -55,7 +55,7 @@ class SensorDetailViewController: FormViewController {
             form.append(Self.settingsSection(from: sensor.Settings))
         }
 
-        if let attributes = sensor.Attributes {
+        if let attributes = sensor.attributeDescriptions {
             let attributesSection = Section(header: L10n.SettingsSensors.Detail.attributes, footer: nil)
             let attributeRows = attributes
                 .sorted(by: { lhs, rhs in lhs.0 < rhs.0 })
@@ -107,16 +107,10 @@ class SensorDetailViewController: FormViewController {
         return section
     }
 
-    class func row(attribute: String, value: Any) -> BaseRow {
+    class func row(attribute: String, value: String) -> BaseRow {
         return LabelRow { row in
             row.title = attribute
-
-            if let value = value as? NSNumber, value === kCFBooleanTrue || value === kCFBooleanFalse {
-                // boolean from objective-c is represented by NSNumber, which would normally be `0` or `1` here
-                row.value = String(describing: value.boolValue)
-            } else {
-                row.value = String(describing: value)
-            }
+            row.value = value
         }
     }
 }

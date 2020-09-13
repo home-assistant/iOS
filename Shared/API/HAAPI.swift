@@ -722,17 +722,25 @@ public class HomeAssistantAPI {
                 reason: .trigger(trigger.rawValue),
                 location: location
             )
-        }.map { sensors in
-            Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
-
-            let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
-                                               shouldIncludeNilValues: false)
-            return mapper.toJSONArray(sensors)
+        }.map { sensors -> [[String: Any]]? in
+            if !sensors.isEmpty {
+                Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
+                let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
+                                                   shouldIncludeNilValues: false)
+                return mapper.toJSONArray(sensors)
+            } else {
+                Current.Log.info("updating sensors (none - none changed)")
+                return nil
+            }
         }.then { (payload) -> Promise<Void> in
-            Current.webhooks.send(
-                identifier: .updateSensors,
-                request: .init(type: "update_sensor_states", data: payload)
-            )
+            if let payload = payload {
+                return Current.webhooks.send(
+                    identifier: .updateSensors,
+                    request: .init(type: "update_sensor_states", data: payload)
+                )
+            } else {
+                return .value(())
+            }
         }
     }
 }

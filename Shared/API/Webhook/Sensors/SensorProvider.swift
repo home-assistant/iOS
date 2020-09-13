@@ -6,6 +6,13 @@ public struct SensorProviderRequest {
     public enum Reason {
         case registration
         case trigger(String)
+
+        var shouldAllowPersistedFilter: Bool {
+            switch self {
+            case .registration: return false
+            case .trigger: return true
+            }
+        }
     }
     public var reason: Reason
     public var dependencies: SensorProviderDependencies

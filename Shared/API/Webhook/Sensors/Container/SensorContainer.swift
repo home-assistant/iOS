@@ -53,10 +53,53 @@ public class SensorContainer {
     private var lastUpdate: SensorObserverUpdate? {
         didSet {
             guard let lastUpdate = lastUpdate else { return }
-            observers
-                .allObjects
-                .compactMap { $0 as? SensorObserver }
-                .forEach { $0.sensorContainer(self, didUpdate: lastUpdate) }
+
+            DispatchQueue.main.async { [observers] in
+                observers
+                    .allObjects
+                    .compactMap { $0 as? SensorObserver }
+                    .forEach { $0.sensorContainer(self, didUpdate: lastUpdate) }
+            }
+        }
+    }
+
+    private func updateLastUpdate() {
+        lastUpdate = .init(sensors: Self.allPersisted())
+    }
+
+    private static func allPersisted() -> Guarantee<[WebhookSensor]> {
+        .value(
+            Current.realm().objects(PersistedSensor.self).map(\.sensor).sorted(by: {
+                $0.Name ?? "" < $1.Name ?? ""
+            })
+        )
+    }
+
+    private static func isPersisted(sensor: WebhookSensor) -> Bool {
+        if let uniqueID = sensor.UniqueID,
+           let persisted = Current.realm().object(ofType: PersistedSensor.self, forPrimaryKey: uniqueID) {
+            return persisted.sensor == sensor
+        } else {
+            return false
+        }
+    }
+
+    private static func persist(sensor: WebhookSensor) {
+        let realm = Current.realm()
+        precondition(realm.isInWriteTransaction)
+
+        guard let uniqueID = sensor.UniqueID else {
+            assertionFailure("uniqueID should not be nil")
+            Current.Log.error("failed to persist sensor: unique ID was nil")
+            return
+        }
+
+        if let existing = realm.object(ofType: PersistedSensor.self, forPrimaryKey: uniqueID) {
+            existing.sensor = sensor
+        } else if let persisted = PersistedSensor(sensor: sensor) {
+            realm.add(persisted, update: .all)
+        } else {
+            Current.Log.error("failed to persist sensor: couldn't find or create")
         }
     }
 
@@ -70,7 +113,7 @@ public class SensorContainer {
             location: location
         )
 
-        let sensors = firstly {
+        return firstly {
             let promises = providers
                 .map { providerType in providerType.init(request: request) }
                 .map { provider in provider.sensors().map { ($0, provider) } }
@@ -85,17 +128,24 @@ public class SensorContainer {
                     return nil
                 }
             }.flatMap { $0 }
+        }.filterValues { sensor in
+            if request.reason.shouldAllowPersistedFilter {
+                return !Self.isPersisted(sensor: sensor)
+            } else {
+                return true
+            }
+        }.get(on: .global(qos: .userInitiated)) { [weak self] sensors in
+            do {
+                try Current.realm().write {
+                    for sensor in sensors {
+                        Self.persist(sensor: sensor)
+                    }
+                }
+                self?.updateLastUpdate()
+            } catch {
+                Current.Log.error("couldn't update persisted sensors: \(error)")
+            }
         }
-
-        switch request.reason {
-        case .trigger:
-            // only store when we know we're sending the maximum kind of data
-            lastUpdate = .init(sensors: sensors)
-        case .registration:
-            break
-        }
-
-        return sensors
     }
 
     private func updateSignaled(from type: SensorProvider.Type) {

@@ -26,12 +26,12 @@ public struct WebhookSensorSetting {
     public let title: String
 }
 
-public class WebhookSensor: Mappable {
+public class WebhookSensor: Mappable, Equatable {
     public var Attributes: [String: Any]?
     public var DeviceClass: DeviceClass?
     public var Icon: String?
     public var Name: String?
-    public var State: Any? = "Initial"
+    public var State: Any = "Initial"
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
@@ -86,12 +86,46 @@ public class WebhookSensor: Mappable {
         }
     }
 
-    public var StateDescription: String? {
-        if let value = State {
-            return String(describing: value) + (UnitOfMeasurement.flatMap { " " + $0 } ?? "")
+    private static func string(for value: Any) -> String {
+        if let value = value as? String {
+            return value
         } else {
-            return nil
+            // Swift e.g. arrays print nicely from String(describing:) but if we persist/load from disk
+            // we end up with values that print like NSArray versions, which are grossly verbose
+            do {
+                return String(
+                    data: try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed]),
+                    encoding: .utf8
+                ) ?? ""
+            } catch {
+                Current.Log.error("couldn't describe value '\(value)'")
+                return String(describing: value)
+            }
         }
+    }
+
+    public var attributeDescriptions: [String: String]? {
+        Attributes?.mapValues(Self.string(for:))
+    }
+
+    public var StateDescription: String? {
+        let value: String
+
+        // swiftlint:disable:next syntactic_sugar
+        if case Optional<Any>.some(let inside) = State {
+            value = Self.string(for: inside)
+        } else {
+            value = Self.string(for: State)
+        }
+
+        return value + (UnitOfMeasurement.flatMap { " " + $0 } ?? "")
+    }
+
+    public static func == (lhs: WebhookSensor, rhs: WebhookSensor) -> Bool {
+        let mapper = Mapper<WebhookSensor>()
+        let lhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(lhs), options: [.sortedKeys])
+        let rhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(rhs), options: [.sortedKeys])
+        return lhsData == rhsData
     }
 }
 
