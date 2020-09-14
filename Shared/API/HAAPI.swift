@@ -665,6 +665,22 @@ public class HomeAssistantAPI {
         }
     }
 
+    public class func shareEvent(
+        entered: String,
+        url: URL?,
+        text: String?
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData = sharedEventDeviceInfo
+        eventData["entered"] = entered
+        eventData["url"] = url?.absoluteString
+        eventData["text"] = text
+
+        return (
+            eventType: "ios.share",
+            eventData: eventData
+        )
+    }
+
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
