@@ -19,35 +19,32 @@ class ShareViewController: SLComposeServiceViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    enum EventError: LocalizedError {
+        case invalidExtensionContext
+    }
+
     private func event() -> Promise<(eventType: String, eventData: [String: String])> {
-        let extensionItems = extensionContext?.inputItems.compactMap { $0 as? NSExtensionItem } ?? []
+        guard let extensionContext = extensionContext else {
+            return .init(error: EventError.invalidExtensionContext)
+        }
 
         let entered: Guarantee<String> = .value(contentText)
-
-        let url: Guarantee<URL?> = Guarantee { seal in
-            let attachments = extensionItems
-                .flatMap { $0.attachments ?? [] }
-                .filter { $0.hasItemConformingToTypeIdentifier(kUTTypeURL as String) }
-
-            if let first = attachments.first {
-                first.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil) { urlData, _ in
-                    let url = urlData as? URL
-                    Current.Log.info("got url: \(String(describing: url)) from \(type(of: urlData))")
-                    seal(url)
-                }
+        let url: Guarantee<URL?> = extensionContext.inputItemAttachments(for: .url).map { $0.first }
+        let text: Guarantee<String?> = extensionContext.inputItemAttachments(for: .text).map { values in
+            if values.isEmpty {
+                return nil
             } else {
-                Current.Log.info("no attachments contain URLs")
-                seal(nil)
+                return values.joined(separator: "\n")
             }
         }
 
         return firstly {
-            when(fulfilled: entered, url)
-        }.map { entered, url in
+            when(fulfilled: entered, url, text)
+        }.map { entered, url, text in
             HomeAssistantAPI.shareEvent(
                 entered: entered,
                 url: url,
-                text: nil
+                text: text
             )
         }
     }
@@ -81,9 +78,9 @@ class ShareViewController: SLComposeServiceViewController {
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
         return [
-            with(SLComposeSheetConfigurationItem()) {
-                $0?.title = "View Event"
-                $0?.tapHandler = { [weak self] in
+            with(SLComposeSheetConfigurationItem()!) {
+                $0.title = "View Event"
+                $0.tapHandler = { [weak self] in
                     self?.pushExampleViewController()
                 }
             }
@@ -93,9 +90,7 @@ class ShareViewController: SLComposeServiceViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        placeholder = "text"
-
-        
+        placeholder = "entered"
     }
 
     private func pushExampleViewController() {
