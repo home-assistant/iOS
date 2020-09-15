@@ -669,14 +669,14 @@ public class HomeAssistantAPI {
         entered: String,
         url: URL?,
         text: String?
-    ) -> (eventType: String, eventData: [String: Any]) {
+    ) -> (eventType: String, eventData: [String: String]) {
         var eventData = sharedEventDeviceInfo
         eventData["entered"] = entered
         eventData["url"] = url?.absoluteString
         eventData["text"] = text
 
         return (
-            eventType: "ios.share",
+            eventType: "mobile_app.share",
             eventData: eventData
         )
     }
