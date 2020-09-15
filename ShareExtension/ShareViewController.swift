@@ -70,8 +70,14 @@ class ShareViewController: SLComposeServiceViewController {
         }.then { api, event -> Promise<Void> in
             Current.Log.verbose("starting request")
             return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
-        }.ensure { [extensionContext] in
+        }.done { [extensionContext] in
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        }.catch { [weak self] error in
+            let alert = UIAlertController(title: "Couldn't Send", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+                self?.extensionContext?.cancelRequest(withError: error)
+            }))
+            self?.present(alert, animated: true, completion: nil)
         }
     }
 
