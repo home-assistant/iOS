@@ -64,6 +64,22 @@ class SceneManager {
         }
     }
 
+    init() {
+        Current.realmFatalPresentation = { [weak self] viewController in
+            guard let self = self else { return }
+
+            let under = UIViewController()
+            under.view.backgroundColor = .black
+            under.modalPresentationStyle = .fullScreen
+
+            self.webViewWindowControllerPromise.done { parent in
+                parent.present(under, animated: false, completion: {
+                    under.present(viewController, animated: true, completion: nil)
+                })
+            }
+        }
+    }
+
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
         let (promise, outerResolver) = Guarantee<T>.pending()
 
