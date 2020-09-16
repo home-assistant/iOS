@@ -68,6 +68,7 @@
 		114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
+		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
@@ -870,6 +871,7 @@
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
+		1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ManualPodLicenses.plist; path = ../../../../Desktop/ManualPodLicenses.plist; sourceTree = "<group>"; };
 		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
@@ -2491,6 +2493,7 @@
 			children = (
 				B661FC74226C792000E541DD /* Lottie Files */,
 				B672AB022215057600175465 /* Alternate Icons */,
+				1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */,
 				B65B15042273188300635D5C /* Assets.swift */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
@@ -3567,6 +3570,7 @@
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
 				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
+				1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */,
 				B60616471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav in Resources */,
 				B60616181D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav in Resources */,
 				B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */,
