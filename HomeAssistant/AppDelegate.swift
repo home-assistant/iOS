@@ -60,16 +60,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     let sceneManager = SceneManager()
+    let lifecycleManager = LifecycleManager()
 
     private var zoneManager: ZoneManager?
-
-    private var periodicUpdateTimer: Timer? {
-        willSet {
-            if periodicUpdateTimer != newValue {
-                periodicUpdateTimer?.invalidate()
-            }
-        }
-    }
 
     func application(
         _ application: UIApplication,
@@ -136,8 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sceneManager.compatibility.didFinishLaunching()
         }
 
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
-        connectAPI(reason: .cold)
+        lifecycleManager.didFinishLaunching()
 
         checkForUpdate()
 
@@ -189,35 +181,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             nil
         )
     }
-
-    func applicationWillResignActive(_ application: UIApplication) {}
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
-        invalidatePeriodicUpdateTimer()
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        connectAPI(reason: .warm)
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
-
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.checkForUpdates { (updated, error) in
-            if let error = error {
-                Current.Log.error("Error when updating Lokalise: \(error)")
-                return
-            }
-            if updated {
-                Current.Log.info("Lokalise updated? \(updated)")
-            }
-        }
-        #endif
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {}
 
     @available(iOS 13, *)
     func application(
@@ -440,48 +403,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Private helpers
-
-    private func invalidatePeriodicUpdateTimer() {
-        periodicUpdateTimer = nil
-    }
-
-    private func schedulePeriodicUpdateTimer() {
-        guard periodicUpdateTimer == nil || periodicUpdateTimer?.isValid == false else {
-            return
-        }
-
-        guard UIApplication.shared.applicationState != .background else {
-            // it's fine to schedule, but we don't wanna fire two when we come back to foreground later
-            Current.Log.info("not scheduling periodic update; backgrounded")
-            return
-        }
-
-        guard let interval = Current.settingsStore.periodicUpdateInterval else {
-            Current.Log.info("not scheduling periodic update; disabled")
-            return
-        }
-
-        periodicUpdateTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-            self?.connectAPI(reason: .periodic)
-        }
-    }
-
-    private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.then { api in
-            return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
-                api.Connect(reason: reason)
-            }
-        }.done {
-            Current.Log.info("Connect finished for reason \(reason)")
-        }.catch { error in
-            // if the error is e.g. token is invalid, we'll force onboarding through status-code-watching mechanisms
-            Current.Log.error("Couldn't connect for reason \(reason): \(error)")
-        }.finally {
-            self.schedulePeriodicUpdateTimer()
-        }
-    }
 
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
         Current.updater.check().done { [sceneManager] update in
