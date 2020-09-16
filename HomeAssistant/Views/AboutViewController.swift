@@ -158,7 +158,22 @@ class AboutViewController: FormViewController {
     }
 
     func generateAcknowledgements() -> CPDAcknowledgementsViewController {
-        return CPDAcknowledgementsViewController.init(style: nil, acknowledgements: nil, contributions: nil)
+        var licenses = [CPDLibrary]()
+
+        for fileName in [
+            "Pods-HomeAssistant-metadata",
+            "ManualPodLicenses"
+        ] {
+            if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),
+               let dictionary = NSDictionary(contentsOf: file),
+               let license = dictionary["specs"] as? [[String: Any]] {
+                licenses += license.map { CPDLibrary.init(cocoaPodsMetadataPlistDictionary: $0) }
+            }
+        }
+
+        licenses.sort(by: { $0.title < $1.title })
+
+        return CPDAcknowledgementsViewController(style: nil, acknowledgements: licenses, contributions: nil)
     }
 
     func openInTwitterApp(username: String) {
