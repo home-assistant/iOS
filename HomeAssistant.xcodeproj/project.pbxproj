@@ -121,6 +121,7 @@
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
+		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
 		11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */; };
 		11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
@@ -932,6 +933,7 @@
 		119EC3D824D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Onboarding.strings"; sourceTree = "<group>"; };
 		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		11A183B22511BCF300CA326A /* LifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManager.swift; sourceTree = "<group>"; };
 		11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.test.swift; sourceTree = "<group>"; };
 		11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCategory+Observation.swift"; sourceTree = "<group>"; };
 		11A48D8224CA9D010021BDD9 /* RealmSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSection.swift; sourceTree = "<group>"; };
@@ -2593,6 +2595,7 @@
 				11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */,
 				B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
+				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -4268,6 +4271,7 @@
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
+				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
