@@ -225,19 +225,14 @@ extension Realm {
                 exit(1)
             }))
 
-            let win = UIWindow(frame: UIScreen.main.bounds)
-            let vc = UIViewController()
-            vc.view.backgroundColor = .black
-            win.rootViewController = vc
-            win.windowLevel = UIWindow.Level.statusBar
-            win.makeKeyAndVisible()
-            vc.present(alert, animated: true, completion: nil)
-
-            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [win] _ in
-                // we don't know when in the lifecycle this will present, we may get another window on top
-                // this is basically fatal so it isn't really problematic to never, well, stop doing this
-                win.makeKeyAndVisible()
+            let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { timer in
+                if let handler = Current.realmFatalPresentation {
+                    handler(alert)
+                    timer.invalidate()
+                }
             })
+
+            timer.fire()
         }
         #else
         fatalError("\(message) \(error.localizedDescription)")
