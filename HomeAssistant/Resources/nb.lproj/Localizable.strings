@@ -883,4 +883,4 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "menu.file.update_sensors" = "Oppdater sensorer";
 "open_label" = "Åpen";
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
-"widgets.actions.description" = "Perform Home Assistant actions.";
+"widgets.actions.description" = "Utfør Home Assistant handlinger.";
