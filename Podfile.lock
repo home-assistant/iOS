@@ -104,6 +104,7 @@ PODS:
     - Sentry/Core (= 5.2.0)
   - Sentry/Core (5.2.0)
   - SimulatorStatusMagic (2.4.1)
+  - Sodium (0.8.0)
   - SwiftGen (6.3.0)
   - SwiftLint (0.40.0)
   - SwiftMessages (8.0.1):
@@ -140,6 +141,7 @@ DEPENDENCIES:
   - ReachabilitySwift
   - Sentry
   - SimulatorStatusMagic
+  - Sodium
   - SwiftGen (~> 6.3.0)
   - SwiftLint
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
@@ -176,6 +178,7 @@ SPEC REPOS:
     - ReachabilitySwift
     - Sentry
     - SimulatorStatusMagic
+    - Sodium
     - SwiftGen
     - SwiftLint
     - TABObserverSet
@@ -261,6 +264,7 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Sentry: 6e04bc3e11bf771ca79140a112de64dcfbc7d8cb
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
+  Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SwiftGen: 3d5024a47ea79e408cded20763d7a17d18a4548c
   SwiftLint: 4154893c73a4c52d6240195507eb7a3e3c64087e
   SwiftMessages: 23da0c444ba4e3f4f2dc81edbc7cb70be18f69e3
@@ -272,6 +276,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 9b8a817a320499f97e8a3adcee67159c468abf09
+PODFILE CHECKSUM: e6d58ebf2d020bb4e8bc069bec1b7a30b50b50b8
 
 COCOAPODS: 1.10.0.rc.1
