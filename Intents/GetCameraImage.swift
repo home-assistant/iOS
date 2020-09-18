@@ -15,17 +15,13 @@ import Intents
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     func resolveCameraID(for intent: GetCameraImageIntent,
                          with completion: @escaping (INStringResolutionResult) -> Void) {
-        guard let cameraID = intent.cameraID else {
-            completion(.confirmationRequired(with: intent.cameraID))
-            return
+        if let cameraID = intent.cameraID, cameraID.hasPrefix("camera.") {
+            Current.Log.info("using given \(cameraID)")
+            completion(.success(with: cameraID))
+        } else {
+            Current.Log.info("loading values due to no camera id")
+            completion(.needsValue())
         }
-
-        if !cameraID.hasPrefix("camera.") {
-            completion(.confirmationRequired(with: intent.cameraID))
-            return
-        }
-
-        completion(.success(with: cameraID))
     }
 
     func provideCameraIDOptions(for intent: GetCameraImageIntent,

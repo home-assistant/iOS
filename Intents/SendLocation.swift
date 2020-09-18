@@ -16,10 +16,12 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func resolveLocation(for intent: SendLocationIntent,
                          with completion: @escaping (INPlacemarkResolutionResult) -> Void) {
         if let loc = intent.location {
+            Current.Log.info("using provided \(loc)")
             completion(.success(with: loc))
-            return
+        } else {
+            Current.Log.info("requesting a value")
+            completion(.needsValue())
         }
-        completion(.confirmationRequired(with: intent.location))
     }
 
     func confirm(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
