@@ -497,7 +497,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2020.6</string>
+	<string>2020.6.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -547,7 +547,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleVersion</key>
-	<string>15</string>
+	<string>1</string>
 	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
 	<false/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
