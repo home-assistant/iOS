@@ -14,11 +14,13 @@ import Intents
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
     func resolveTemplate(for intent: RenderTemplateIntent,
                          with completion: @escaping (INStringResolutionResult) -> Void) {
-        if let templateStr = intent.template {
+        if let templateStr = intent.template, templateStr.isEmpty == false {
+            Current.Log.info("using provided '\(templateStr)'")
             completion(.success(with: templateStr))
-            return
+        } else {
+            Current.Log.info("requesting a value")
+            completion(.needsValue())
         }
-        completion(.confirmationRequired(with: intent.template))
     }
 
     func confirm(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
