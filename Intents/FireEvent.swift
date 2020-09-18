@@ -13,19 +13,23 @@ import Intents
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     func resolveEventName(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        if let eventName = intent.eventName {
+        if let eventName = intent.eventName, eventName.isEmpty == false {
+            Current.Log.info("using provided \(eventName)")
             completion(.success(with: eventName))
-            return
+        } else {
+            Current.Log.info("requesting a value")
+            completion(.needsValue())
         }
-        completion(.confirmationRequired(with: intent.eventName))
     }
 
     func resolveEventData(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        if let eventData = intent.eventData {
+        if let eventData = intent.eventData, eventData.isEmpty == false {
+            Current.Log.info("using provided data \(eventData)")
             completion(.success(with: eventData))
-            return
+        } else {
+            Current.Log.info("using empty dictionary")
+            completion(.notRequired())
         }
-        completion(.confirmationRequired(with: intent.eventData))
     }
 
     func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {

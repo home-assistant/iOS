@@ -13,23 +13,23 @@ import Intents
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        guard let serviceName = intent.service else {
-            completion(.confirmationRequired(with: intent.service))
-            return
+        if let serviceName = intent.service, serviceName.isEmpty == false {
+            Current.Log.info("using given \(serviceName)")
+            completion(.success(with: serviceName))
+        } else {
+            Current.Log.info("loading values due to no service")
+            completion(.needsValue())
         }
-
-        completion(.success(with: serviceName))
-        return
     }
 
     func resolvePayload(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        guard let servicePayload = intent.payload else {
-            completion(.confirmationRequired(with: intent.payload))
-            return
+        if let servicePayload = intent.payload, servicePayload.isEmpty == false {
+            Current.Log.info("using provided \(servicePayload)")
+            completion(.success(with: servicePayload))
+        } else {
+            Current.Log.info("requesting a value")
+            completion(.needsValue())
         }
-
-        completion(.success(with: servicePayload))
-        return
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
