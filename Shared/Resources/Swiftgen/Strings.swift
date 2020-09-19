@@ -494,6 +494,12 @@ internal enum L10n {
   }
 
   internal enum Menu {
+    internal enum Actions {
+      /// Configure…
+      internal static let configure = L10n.tr("Localizable", "menu.actions.configure")
+      /// Actions
+      internal static let title = L10n.tr("Localizable", "menu.actions.title")
+    }
     internal enum Application {
       /// About %@
       internal static func about(_ p1: Any) -> String {
