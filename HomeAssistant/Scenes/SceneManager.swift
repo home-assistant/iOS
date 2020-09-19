@@ -47,7 +47,22 @@ struct SceneManagerPreSceneCompatibility {
 class SceneManager {
     // types too hard here
     fileprivate static var activityUserInfoKeyResolver = "resolver"
-    private var pendingResolvers: [String: Any] = [:]
+
+    private struct PendingResolver {
+        private var handleBlock: (Any) -> Void
+        init<T>(resolver: @escaping (T) -> Void) {
+            self.handleBlock = { value in
+                if let value = value as? T {
+                    resolver(value)
+                }
+            }
+        }
+
+        func resolve<T>(with possible: T) {
+            handleBlock(possible)
+        }
+    }
+    private var pendingResolvers: [String: PendingResolver] = [:]
 
     @available(iOS, deprecated: 13.0)
     var compatibility = SceneManagerPreSceneCompatibility()
@@ -87,15 +102,14 @@ class SceneManager {
             activities.compactMap { activity in
                 activity.userInfo?[Self.activityUserInfoKeyResolver] as? String
             }.compactMap { token in
-                pendingResolvers[token] as? (T) -> Void
+                pendingResolvers[token]
             }.forEach { resolver in
-                promise.done { resolver($0) }
+                promise.done { resolver.resolve(with: $0) }
             }
         } else {
             pendingResolvers
                 .values
-                .compactMap { $0 as? (T) -> Void }
-                .forEach { resolver in promise.done { resolver($0) } }
+                .forEach { resolver in promise.done { resolver.resolve(with: $0) } }
         }
 
         return outerResolver
@@ -159,7 +173,7 @@ class SceneManager {
         let (promise, resolver) = Guarantee<DelegateType>.pending()
 
         let token = UUID().uuidString
-        pendingResolvers[token] = resolver
+        pendingResolvers[token] = PendingResolver(resolver: resolver)
 
         if supportsMultipleScenes {
             let activity = query.activity.activity
