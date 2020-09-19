@@ -15,6 +15,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         guard let scene = scene as? UIWindowScene else { return }
 
+        ScaleFactorMutator.record(sceneIdentifier: session.persistentIdentifier)
+
         let window = UIWindow(haScene: scene)
         let windowController = WebViewWindowController(
             window: window,
