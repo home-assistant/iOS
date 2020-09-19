@@ -14,6 +14,9 @@ class LifecycleManager {
             }
         }
     }
+    private var supportsBackgroundPeriodicUpdates: Bool {
+        Current.isCatalyst
+    }
 
     init() {
         NotificationCenter.default.addObserver(
@@ -77,7 +80,9 @@ class LifecycleManager {
     }
 
     private func invalidatePeriodicUpdateTimer() {
-        periodicUpdateTimer = nil
+        if !supportsBackgroundPeriodicUpdates {
+            periodicUpdateTimer = nil
+        }
     }
 
     private func schedulePeriodicUpdateTimer() {
@@ -85,7 +90,7 @@ class LifecycleManager {
             return
         }
 
-        guard UIApplication.shared.applicationState != .background else {
+        guard supportsBackgroundPeriodicUpdates || UIApplication.shared.applicationState != .background else {
             // it's fine to schedule, but we don't wanna fire two when we come back to foreground later
             Current.Log.info("not scheduling periodic update; backgrounded")
             return
