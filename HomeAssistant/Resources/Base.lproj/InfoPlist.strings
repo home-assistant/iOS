@@ -8,3 +8,4 @@
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
