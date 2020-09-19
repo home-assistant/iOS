@@ -83,7 +83,10 @@ public class DeviceWrapper {
     }
 
     public lazy var systemName: () -> String = {
-        #if os(iOS)
+        #if targetEnvironment(macCatalyst)
+        // UIDevice returns 'iOS' on Mac, so we hard-code it
+        return "macOS"
+        #elseif os(iOS)
         // iOS
         return UIDevice.current.systemName
         #elseif os(watchOS)
