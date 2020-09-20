@@ -27,7 +27,6 @@
 		110E694624E771AB004AA96D /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
 		110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		110ECA0C2517094A009C9A1B /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 110ECA0B2517094A009C9A1B /* Sodium */; };
 		110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */; };
 		110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */; };
 		110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */; };
@@ -46,7 +45,6 @@
 		111D294424F2F6AE00C8A7D1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294324F2F6AE00C8A7D1 /* RealmSwift */; };
 		111D294624F2F6B600C8A7D1 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294524F2F6B600C8A7D1 /* Realm */; };
 		111D294824F2F6B600C8A7D1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294724F2F6B600C8A7D1 /* RealmSwift */; };
-		111D295124F2F6D900C8A7D1 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 111D295024F2F6D900C8A7D1 /* Sodium */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
@@ -61,6 +59,8 @@
 		1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
 		1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
+		1147C6D325181200002BEB20 /* Clibsodium in Frameworks */ = {isa = PBXBuildFile; productRef = 1147C6D225181200002BEB20 /* Clibsodium */; };
+		1147C6D525181208002BEB20 /* Clibsodium in Frameworks */ = {isa = PBXBuildFile; productRef = 1147C6D425181208002BEB20 /* Clibsodium */; };
 		11482AD62505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
 		11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
 		1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -112,6 +112,8 @@
 		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
 		118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		118F046A24CB895B00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
+		118F8733251806BD001E1AD7 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 118F8732251806BD001E1AD7 /* Sodium */; };
+		118F8737251806CA001E1AD7 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 118F8736251806CA001E1AD7 /* Sodium */; };
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
@@ -1646,8 +1648,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				111D295124F2F6D900C8A7D1 /* Sodium in Frameworks */,
+				118F8737251806CA001E1AD7 /* Sodium in Frameworks */,
 				111D294824F2F6B600C8A7D1 /* RealmSwift in Frameworks */,
+				1147C6D525181208002BEB20 /* Clibsodium in Frameworks */,
 				111D294624F2F6B600C8A7D1 /* Realm in Frameworks */,
 				28F97CE2A585EB2423FB7003 /* Pods_Shared_watchOS.framework in Frameworks */,
 			);
@@ -1680,8 +1683,9 @@
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				111D294224F2F6AE00C8A7D1 /* Realm in Frameworks */,
 				111D294424F2F6AE00C8A7D1 /* RealmSwift in Frameworks */,
+				1147C6D325181200002BEB20 /* Clibsodium in Frameworks */,
 				AE8183AD1524FA72946974B8 /* Pods_Shared_iOS.framework in Frameworks */,
-				110ECA0C2517094A009C9A1B /* Sodium in Frameworks */,
+				118F8733251806BD001E1AD7 /* Sodium in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3070,16 +3074,13 @@
 			buildRules = (
 			);
 			dependencies = (
-				11751E1B25170BBC00698C8A /* PBXTargetDependency */,
-				11751E1D25170BBC00698C8A /* PBXTargetDependency */,
-				11751E1725170BB600698C8A /* PBXTargetDependency */,
-				11751E1925170BB600698C8A /* PBXTargetDependency */,
 			);
 			name = "Shared-watchOS";
 			packageProductDependencies = (
 				111D294524F2F6B600C8A7D1 /* Realm */,
 				111D294724F2F6B600C8A7D1 /* RealmSwift */,
-				111D295024F2F6D900C8A7D1 /* Sodium */,
+				118F8736251806CA001E1AD7 /* Sodium */,
+				1147C6D425181208002BEB20 /* Clibsodium */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -3155,16 +3156,13 @@
 			buildRules = (
 			);
 			dependencies = (
-				110ECA4225170A00009C9A1B /* PBXTargetDependency */,
-				110ECA40251709FE009C9A1B /* PBXTargetDependency */,
-				110ECA3E251709FA009C9A1B /* PBXTargetDependency */,
-				110ECA3C251709F6009C9A1B /* PBXTargetDependency */,
 			);
 			name = "Shared-iOS";
 			packageProductDependencies = (
 				111D294124F2F6AE00C8A7D1 /* Realm */,
 				111D294324F2F6AE00C8A7D1 /* RealmSwift */,
-				110ECA0B2517094A009C9A1B /* Sodium */,
+				118F8732251806BD001E1AD7 /* Sodium */,
+				1147C6D225181200002BEB20 /* Clibsodium */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -3399,7 +3397,7 @@
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
 				111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
-				111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */,
+				118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -4635,22 +4633,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		110ECA3C251709F6009C9A1B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 110ECA3B251709F6009C9A1B /* Sodium */;
-		};
-		110ECA3E251709FA009C9A1B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 110ECA3D251709FA009C9A1B /* Clibsodium */;
-		};
-		110ECA40251709FE009C9A1B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 110ECA3F251709FE009C9A1B /* Realm */;
-		};
-		110ECA4225170A00009C9A1B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 110ECA4125170A00009C9A1B /* RealmSwift */;
-		};
 		1171507524DFCDEE0065E874 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1171506824DFCDE60065E874 /* WidgetsExtension */;
@@ -4660,22 +4642,6 @@
 			isa = PBXTargetDependency;
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = 1171507D24DFCE0D0065E874 /* PBXContainerItemProxy */;
-		};
-		11751E1725170BB600698C8A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 11751E1625170BB600698C8A /* Realm */;
-		};
-		11751E1925170BB600698C8A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 11751E1825170BB600698C8A /* RealmSwift */;
-		};
-		11751E1B25170BBC00698C8A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 11751E1A25170BBC00698C8A /* Clibsodium */;
-		};
-		11751E1D25170BBC00698C8A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 11751E1C25170BBC00698C8A /* Sodium */;
 		};
 		119A172724D74DA800D1B66D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4932,7 +4898,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Widgets/Resources/WidgetsExtension development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension development-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -4967,7 +4933,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Widgets/Resources/WidgetsExtension.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -5000,7 +4966,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Widgets/Resources/WidgetsExtension beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension beta-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -5028,7 +4994,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "NotificationContentExtension/NotificationContentExtension Development.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5053,7 +5019,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = NotificationContentExtension/NotificationContentExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5102,7 +5068,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -5135,7 +5101,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Beta-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENV_URL_HANDLER = "homeassistant-beta";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5214,7 +5180,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService Beta-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5237,7 +5203,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "NotificationContentExtension/NotificationContentExtension Beta.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5264,10 +5230,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
@@ -5277,6 +5243,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
@@ -5323,7 +5290,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents Beta-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -5362,7 +5329,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "WatchApp/WatchApp Beta.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IBSC_MODULE = WatchAppExtension;
@@ -5391,7 +5358,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "WatchAppExtension/Resources/WatchAppExtension Beta.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
@@ -5444,7 +5411,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -5509,7 +5476,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -5542,7 +5509,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Development-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENV_URL_HANDLER = "homeassistant-dev";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5590,7 +5557,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENV_URL_HANDLER = homeassistant;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5702,7 +5669,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents Development-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -5744,7 +5711,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Intents/SiriIntents.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -5783,7 +5750,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "TodayWidget/TodayWidget Development.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TodayWidget/Info.plist;
@@ -5816,7 +5783,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = TodayWidget/TodayWidget.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TodayWidget/Info.plist;
@@ -5847,7 +5814,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "TodayWidget/TodayWidget Beta.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TodayWidget/Info.plist;
@@ -5878,10 +5845,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
@@ -5893,6 +5860,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
@@ -5916,10 +5884,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
@@ -5930,6 +5898,7 @@
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
@@ -5952,10 +5921,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
@@ -5966,6 +5935,7 @@
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
@@ -5986,7 +5956,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService Development-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6011,7 +5981,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService-catalyst.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6037,7 +6007,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "WatchApp/WatchApp Development.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IBSC_MODULE = WatchAppExtension;
@@ -6068,7 +6038,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = WatchApp/WatchApp.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IBSC_MODULE = WatchAppExtension;
@@ -6097,7 +6067,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "WatchAppExtension/Resources/WatchAppExtension Development.entitlements";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
@@ -6130,7 +6100,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = WatchAppExtension/Resources/WatchAppExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
@@ -6161,10 +6131,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
@@ -6174,6 +6144,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
@@ -6197,10 +6168,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
@@ -6210,6 +6181,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
@@ -6422,7 +6394,7 @@
 				minimumVersion = 5.3.5;
 			};
 		};
-		111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
+		118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jedisct1/swift-sodium";
 			requirement = {
@@ -6433,31 +6405,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		110ECA0B2517094A009C9A1B /* Sodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Sodium;
-		};
-		110ECA3B251709F6009C9A1B /* Sodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Sodium;
-		};
-		110ECA3D251709FA009C9A1B /* Clibsodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Clibsodium;
-		};
-		110ECA3F251709FE009C9A1B /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = Realm;
-		};
-		110ECA4125170A00009C9A1B /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = RealmSwift;
-		};
 		111D294124F2F6AE00C8A7D1 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
@@ -6478,29 +6425,24 @@
 			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
 		};
-		111D295024F2F6D900C8A7D1 /* Sodium */ = {
+		1147C6D225181200002BEB20 /* Clibsodium */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Sodium;
-		};
-		11751E1625170BB600698C8A /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = Realm;
-		};
-		11751E1825170BB600698C8A /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = RealmSwift;
-		};
-		11751E1A25170BBC00698C8A /* Clibsodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
 			productName = Clibsodium;
 		};
-		11751E1C25170BBC00698C8A /* Sodium */ = {
+		1147C6D425181208002BEB20 /* Clibsodium */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 111D294924F2F6CC00C8A7D1 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Clibsodium;
+		};
+		118F8732251806BD001E1AD7 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		118F8736251806CA001E1AD7 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
 			productName = Sodium;
 		};
 /* End XCSwiftPackageProductDependency section */
