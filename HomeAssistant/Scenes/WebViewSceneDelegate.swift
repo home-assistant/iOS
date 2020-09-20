@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import PromiseKit
+import Shared
 
 @available(iOS 13, *)
 final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
@@ -26,6 +27,10 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         self.window = window
         self.windowController = windowController
         self.urlHandler = urlHandler
+
+        with(scene.sizeRestrictions) {
+            $0?.minimumSize = CGSize(width: 300, height: 300)
+        }
 
         windowController.setup()
 
