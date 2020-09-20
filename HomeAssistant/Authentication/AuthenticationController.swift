@@ -92,6 +92,9 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
 
                     self.authenticationViewController = webAuthSession
                 } else {
+                    // the `SFAuthenticationSession` symbol is unavailable on earlier 10.15.x releases
+                    // but the oldest version we support has ASWebAuthenticationSession
+                    #if !targetEnvironment(macCatalyst)
                     self.authStyle = "SFAuthenticationSession"
                     let webAuthSession = SFAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
                                                                  completionHandler: newStyleAuthCallback)
@@ -99,6 +102,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                     webAuthSession.start()
 
                     self.authenticationViewController = webAuthSession
+                    #endif
                 }
             } else {
                 resolver.reject(AuthenticationControllerError.invalidURL)
@@ -128,7 +132,11 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             if #available(iOS 12.0, *) {
                 (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
             } else {
+                // the `SFAuthenticationSession` symbol is unavailable on earlier 10.15.x releases
+                // but the oldest version we support has ASWebAuthenticationSession
+                #if !targetEnvironment(macCatalyst)
                 (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
+                #endif
             }
             guard let url = notification.userInfo?["url"] as? URL else {
                     return
@@ -139,7 +147,11 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             if #available(iOS 12.0, *) {
                 (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
             } else {
+                // the `SFAuthenticationSession` symbol is unavailable on earlier 10.15.x releases
+                // but the oldest version we support has ASWebAuthenticationSession
+                #if !targetEnvironment(macCatalyst)
                 (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
+                #endif
             }
 
             self.cleanUp()
