@@ -8,3 +8,4 @@
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Wyślij lokalizację";
 "NSLocalNetworkUsageDescription" = "Zlokalizuj i komunikuj się z Twoją instancją Home Assistant'a.";
 "NFCReaderUsageDescription" = "Odczytywanie i zapisywanie tagów NFC umożliwia wyzwalanie zdarzeń.";
+"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";

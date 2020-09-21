@@ -31,7 +31,7 @@
 "VGzL7U" = "Failed to update location, the clipboard contents could not be parsed";
 "WXKbGy" = "Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.";
 "ZwJ0Xx" = "Renders the found text on the clipboard";
-"c00c45" = "Fire event";
+"c00c45" = "Disparar esdeveniment";
 "cK9jdK" = "Failed to render template with error: ${error}";
 "cnzI5h" = "Renders ${template}";
 "foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";

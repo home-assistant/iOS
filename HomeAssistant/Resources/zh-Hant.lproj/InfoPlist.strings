@@ -8,3 +8,4 @@
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "傳送座標";
 "NSLocalNetworkUsageDescription" = "與 Home Assistant 設備確認與進行通訊。";
 "NFCReaderUsageDescription" = "讀寫NFC標籤可觸發事件";
+"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";

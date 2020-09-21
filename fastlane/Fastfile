@@ -174,7 +174,7 @@ platform :ios do
   desc "Download latest localization files from Lokalize"
   lane :update_strings do
     lokalise(destination: "HomeAssistant/Resources/", use_original: true)
-    sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen strings --output Shared/Resources/SwiftGen/Strings.swift --templateName structured-swift4 HomeAssistant/Resources/en.lproj/Localizable.strings")
+    sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen")
   end
 
   desc "Upload App Store Connect metadata to Lokalise"
