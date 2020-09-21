@@ -67,11 +67,11 @@ class ShareViewController: SLComposeServiceViewController {
         }.catch { [weak self] error in
             Current.Log.error("failed to post: \(error)")
             let alert = UIAlertController(
-                title: "Couldn't Send",
+                title: L10n.ShareExtension.Error.title,
                 message: error.localizedDescription,
                 preferredStyle: .alert
             )
-            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: { _ in
                 self?.extensionContext?.cancelRequest(withError: error)
             }))
             self?.present(alert, animated: true, completion: nil)
@@ -79,56 +79,11 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     override func configurationItems() -> [Any]! {
-        return [
-            with(SLComposeSheetConfigurationItem()!) {
-                $0.title = "View Event"
-                $0.tapHandler = { [weak self] in
-                    self?.pushExampleViewController()
-                }
-            }
-        ]
+        return []
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        placeholder = "entered"
-    }
-
-    private func pushExampleViewController() {
-        class ExampleViewController: UIViewController {
-            let display: Promise<String>
-            init(display: Promise<String>) {
-                self.display = display
-                super.init(nibName: nil, bundle: nil)
-            }
-
-            @available(*, unavailable)
-            required init?(coder: NSCoder) {
-                fatalError("init(coder:) has not been implemented")
-            }
-
-            override func viewDidLoad() {
-                super.viewDidLoad()
-
-                let textView = UITextView()
-                view.addSubview(textView)
-                textView.frame = view.bounds
-
-                display.done { textView.text = $0 }
-            }
-        }
-
-        pushConfigurationViewController(ExampleViewController(display: event().map { event in
-            let eventDataStrings = event.eventData.map { $0 + ": " + $1 }.sorted()
-            let indentation = "\n    "
-
-            return """
-            - platform: event
-              event_type: \(event.eventType)
-              event_data:
-                \(eventDataStrings.joined(separator: indentation))
-            """
-        }))
+        placeholder = L10n.ShareExtension.enteredPlaceholder
     }
 }

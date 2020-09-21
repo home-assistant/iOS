@@ -886,3 +886,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "menu.actions.title" = "Actions";
 "menu.actions.configure" = "Configure…";
+/* this describes the placeholder in the share screen which posts an event with a key called 'enterred' - and this placeholder is where the user enters that text*/
+"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.error.title" = "Couldn't Send";

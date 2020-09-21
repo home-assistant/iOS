@@ -2041,6 +2041,15 @@ public enum L10n {
     }
   }
 
+  public enum ShareExtension {
+    /// 'entered' in event
+    public static var enteredPlaceholder: String { return L10n.tr("Localizable", "share_extension.entered_placeholder") }
+    public enum Error {
+      /// Couldn't Send
+      public static var title: String { return L10n.tr("Localizable", "share_extension.error.title") }
+    }
+  }
+
   public enum SiriShortcuts {
     public enum Configurator {
       public enum Fields {
