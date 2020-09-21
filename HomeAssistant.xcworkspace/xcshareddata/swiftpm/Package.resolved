@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/realm/realm-cocoa",
         "state": {
           "branch": null,
-          "revision": "5cc154f5eeea5878bd65aed347d09874b8839135",
-          "version": "5.3.6"
+          "revision": "f64ac045d8cb171d8e317d9b854df7215aed7466",
+          "version": "5.4.2"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/realm/realm-core",
         "state": {
           "branch": null,
-          "revision": "3d570c234f55c9e718adcc991a198c3f870d5d96",
-          "version": "6.0.23"
+          "revision": "e051fc73c56830bf3ab0b8a82f7a613968cec6c6",
+          "version": "6.0.26"
         }
       },
       {
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/jedisct1/swift-sodium",
         "state": {
           "branch": "master",
-          "revision": "22aa94881c5d01358d31a29f6d8d94780d78acd7",
+          "revision": "86b616ddb6522e05e14c000dab6eac690ef48227",
           "version": null
         }
       }

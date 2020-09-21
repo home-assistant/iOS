@@ -6,6 +6,7 @@ import Shared
 @available(iOS 13, *)
 private extension UIMenu.Identifier {
     static var haActions: Self { .init(rawValue: "ha.actions") }
+    static var haActionsConfigure: Self { .init(rawValue: "ha.actions.configure") }
     static var haHelp: Self { .init(rawValue: "ha.help") }
     static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
     static var haFile: Self { .init(rawValue: "ha.file") }
@@ -145,10 +146,19 @@ class MenuManager {
                     action: #selector(AppDelegate.openMenuUrl(_:)),
                     propertyList: Self.propertyList(for: action.widgetLinkURL)
                 )
-            }
+            } + [
+                UIMenu(title: "", image: nil, identifier: .haActionsConfigure, options: [.displayInline], children: [
+                    UICommand(
+                        title: L10n.Menu.Actions.configure,
+                        image: nil,
+                        action: #selector(AppDelegate.openActionsPreferences),
+                        propertyList: nil
+                    )
+                ])
+            ]
 
         return UIMenu(
-            title: L10n.Widgets.Actions.title,
+            title: L10n.Menu.Actions.title,
             image: nil,
             identifier: .haActions,
             options: [],

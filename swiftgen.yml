@@ -4,6 +4,9 @@ strings:
   outputs:
     - templateName: structured-swift5
       output: Shared/Resources/SwiftGen/Strings.swift
+      params:
+        publicAccess: true
+        lookupFunction: Current.localized.string
 ib:
   inputs:
     - HomeAssistant/Resources/Base.lproj/Onboarding.storyboard

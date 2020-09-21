@@ -883,4 +883,4 @@
 "menu.file.update_sensors" = "更新傳感器";
 "open_label" = "開啟";
 "sensors.active.setting.time_until_idle" = "閒置前時間";
-"widgets.actions.description" = "Perform Home Assistant actions.";
+"widgets.actions.description" = "執行 Home Assistant 動作。";

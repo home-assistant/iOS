@@ -52,6 +52,10 @@ public class Environment {
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
 
+    #if os(iOS)
+    public var realmFatalPresentation: ((UIViewController) -> Void)?
+    #endif
+
     public var api: () -> HomeAssistantAPI? = { HomeAssistantAPI.authenticatedAPI() }
     public var modelManager = ModelManager()
     public var tokenManager: TokenManager?
@@ -76,6 +80,8 @@ public class Environment {
         $0.register(provider: InputDeviceSensor.self)
         $0.register(provider: ActiveSensor.self)
     }
+
+    public var localized = LocalizedManager()
 
     public var tags: TagManager = EmptyTagManager()
 

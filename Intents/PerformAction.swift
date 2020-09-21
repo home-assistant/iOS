@@ -32,8 +32,10 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         @escaping (IntentActionResolutionResult) -> Void
     ) {
         if let result = intent.action?.asActionWithUpdated() {
+            Current.Log.info("using action \(result.updated.identifier)")
             completion(.success(with: result.updated))
         } else {
+            Current.Log.info("asking for value")
             completion(.needsValue())
         }
     }

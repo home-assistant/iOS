@@ -3,6 +3,7 @@ import Eureka
 import UIKit
 import CoreLocation
 import CoreMotion
+import Shared
 
 public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>>, RowType {
     required public init(tag: String?) {

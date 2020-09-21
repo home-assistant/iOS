@@ -11,7 +11,7 @@ import CallbackURLKit
 import Communicator
 import Firebase
 import KeychainAccess
-#if !targetEnvironment(macCatalyst)
+#if canImport(Lokalise) && !targetEnvironment(macCatalyst)
 import Lokalise
 #endif
 import PromiseKit
@@ -60,16 +60,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     let sceneManager = SceneManager()
+    let lifecycleManager = LifecycleManager()
 
     private var zoneManager: ZoneManager?
-
-    private var periodicUpdateTimer: Timer? {
-        willSet {
-            if periodicUpdateTimer != newValue {
-                periodicUpdateTimer?.invalidate()
-            }
-        }
-    }
 
     func application(
         _ application: UIApplication,
@@ -95,8 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.setupSentry()
         self.setupFirebase()
         self.setupModels()
-
-        self.configureLokalise()
+        self.setupLocalization()
 
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -136,8 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sceneManager.compatibility.didFinishLaunching()
         }
 
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
-        connectAPI(reason: .cold)
+        lifecycleManager.didFinishLaunching()
 
         checkForUpdate()
 
@@ -183,41 +174,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sceneManager.activateAnyScene(for: .settings)
     }
 
+    @available(iOS 13, *)
+    @objc internal func openActionsPreferences(_ command: UICommand) {
+        precondition(Current.sceneManager.supportsMultipleScenes)
+        let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
+        delegate.done { $0.pushDetail(group: "actions", animated: true) }
+    }
+
     @objc internal func openHelp() {
         openURLInBrowser(
             URL(string: "https://companion.home-assistant.io")!,
             nil
         )
     }
-
-    func applicationWillResignActive(_ application: UIApplication) {}
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
-        invalidatePeriodicUpdateTimer()
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        connectAPI(reason: .warm)
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
-
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.checkForUpdates { (updated, error) in
-            if let error = error {
-                Current.Log.error("Error when updating Lokalise: \(error)")
-                return
-            }
-            if updated {
-                Current.Log.info("Lokalise updated? \(updated)")
-            }
-        }
-        #endif
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {}
 
     @available(iOS 13, *)
     func application(
@@ -441,48 +410,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Private helpers
 
-    private func invalidatePeriodicUpdateTimer() {
-        periodicUpdateTimer = nil
-    }
-
-    private func schedulePeriodicUpdateTimer() {
-        guard periodicUpdateTimer == nil || periodicUpdateTimer?.isValid == false else {
-            return
-        }
-
-        guard UIApplication.shared.applicationState != .background else {
-            // it's fine to schedule, but we don't wanna fire two when we come back to foreground later
-            Current.Log.info("not scheduling periodic update; backgrounded")
-            return
-        }
-
-        guard let interval = Current.settingsStore.periodicUpdateInterval else {
-            Current.Log.info("not scheduling periodic update; disabled")
-            return
-        }
-
-        periodicUpdateTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-            self?.connectAPI(reason: .periodic)
-        }
-    }
-
-    private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.then { api in
-            return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
-                api.Connect(reason: reason)
-            }
-        }.done {
-            Current.Log.info("Connect finished for reason \(reason)")
-        }.catch { error in
-            // if the error is e.g. token is invalid, we'll force onboarding through status-code-watching mechanisms
-            Current.Log.error("Couldn't connect for reason \(reason): \(error)")
-        }.finally {
-            self.schedulePeriodicUpdateTimer()
-        }
-    }
-
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
         Current.updater.check().done { [sceneManager] update in
             let alert = UIAlertController(
@@ -701,14 +628,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func configureLokalise() {
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
-                                     token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
-        Lokalise.shared.swizzleMainBundle()
+    func setupLocalization() {
+        #if canImport(Lokalise) && !targetEnvironment(macCatalyst)
+        let lokalise = with(Lokalise.shared) {
+            $0.setProjectID(
+                "834452985a05254348aee2.46389241",
+                token: "fe314d5c54f3000871ac18ccac8b62b20c143321"
+            )
+            $0.localizationType = {
+                switch Current.appConfiguration {
+                case .Release:
+                    if Current.isTestFlight {
+                        return .prerelease
+                    } else {
+                        return .release
+                    }
+                case .Beta:
+                    return .prerelease
+                case .Debug, .FastlaneSnapshot:
+                    return .local
+                }
+            }()
+            // applies to e.g. storyboards and whatnot, but not L10n-read strings
+            $0.swizzleMainBundle()
+        }
 
-        Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+        Current.localized.add(stringProvider: { request in
+            let string = lokalise.localizedString(forKey: request.key, value: nil, table: request.table)
+            if string != request.key {
+                return string
+            } else {
+                return nil
+            }
+        })
         #endif
+
+        Current.localized.add(stringProvider: { request in
+            if prefs.bool(forKey: "showTranslationKeys") {
+                return request.key
+            } else {
+                return nil
+            }
+        })
     }
 
     func setupSentry() {
@@ -804,24 +765,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCategory.setupObserver()
     }
 }
-
-#if !targetEnvironment(macCatalyst)
-extension AppConfiguration {
-    var lokaliseEnv: LokaliseLocalizationType {
-        if prefs.bool(forKey: "showTranslationKeys") {
-            return .debug
-        }
-        switch self {
-        case .Release:
-            return .release
-        case .Beta:
-            return .prerelease
-        case .Debug, .FastlaneSnapshot:
-            return .local
-        }
-    }
-}
-#endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     // swiftlint:disable:next function_body_length
