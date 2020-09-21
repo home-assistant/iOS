@@ -372,10 +372,6 @@ class SettingsViewController: FormViewController {
         }.onCellSelection { cell, _ in
             prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
 
-            #if !targetEnvironment(macCatalyst)
-            Current.localized.updateTranslations()
-            #endif
-
             let alert = UIAlertController(title: L10n.okLabel, message: nil, preferredStyle: .alert)
 
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))

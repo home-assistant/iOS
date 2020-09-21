@@ -2964,6 +2964,7 @@
 				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
 				110EC9FF251708D5009C9A1B /* Embed Frameworks */,
+				11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */,
 			);
 			buildRules = (
 			);
@@ -3190,7 +3191,7 @@
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Original;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Home Assistant";
 				TargetAttributes = {
 					1171506824DFCDE60065E874 = {
@@ -3732,7 +3733,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		111D295224F30A5B00C8A7D1 /* Unembed Lokalise for Catalyst */ = {
+		11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
