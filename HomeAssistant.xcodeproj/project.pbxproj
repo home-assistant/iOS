@@ -15,10 +15,6 @@
 		1101568524D770B2009424C9 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E124D76CD3003CE877 /* NFCReader.swift */; };
 		1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
 		1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
-		110702C024E7B12B00679B94 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		110702C324E7B34A00679B94 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
-		110702C524E7B38600679B94 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
-		110702C624E7B49B00679B94 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
@@ -54,6 +50,9 @@
 		113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
+		113E72ED251842BE004006D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		113E73102518457C004006D8 /* LocalizedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E730F2518457C004006D8 /* LocalizedManager.swift */; };
+		113E73112518457C004006D8 /* LocalizedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E730F2518457C004006D8 /* LocalizedManager.swift */; };
 		113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113FB1122515A065000AC680 /* ScaleFactorMutator.swift */; };
 		1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
 		1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
@@ -525,9 +524,6 @@
 		B672334B225DDF410031D629 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723349225DDF410031D629 /* Event.swift */; };
 		B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672334C225DE1490031D629 /* SubscribeEvents.swift */; };
 		B672334E225DE1490031D629 /* SubscribeEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672334C225DE1490031D629 /* SubscribeEvents.swift */; };
-		B672AB522216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B672AB532216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B672AB542216A1F100175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB562216B07500175465 /* gallery.ckcomplication in Resources */ = {isa = PBXBuildFile; fileRef = B672AB552216B07500175465 /* gallery.ckcomplication */; };
 		B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */; };
 		B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */; };
@@ -568,7 +564,6 @@
 		B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
 		B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CB20D778B50034574D /* ClientEvent.swift */; };
 		B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */; };
-		B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */; };
 		B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */; };
@@ -578,7 +573,6 @@
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
 		B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */; };
-		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B699339B1E2338960054453D /* SnapshotHelper.swift */; };
 		B6A258452232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */; };
 		B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */; };
@@ -625,7 +619,6 @@
 		B6E2D4BB2270407500446DFA /* Debug LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */; };
 		B6E2D4D52270706300446DFA /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4D42270706200446DFA /* ha-loading.json */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
-		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		C346BC5570250C2987D7A44B /* Pods-HomeAssistantTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9D9755DDCFA473A79F125A3 /* Pods-HomeAssistantTests-metadata.plist */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -867,6 +860,7 @@
 		113D04E324D76CDB003CE877 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
 		113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocation.swift"; sourceTree = "<group>"; };
 		113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocationTests.swift"; sourceTree = "<group>"; };
+		113E730F2518457C004006D8 /* LocalizedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedManager.swift; sourceTree = "<group>"; };
 		113FB1122515A065000AC680 /* ScaleFactorMutator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleFactorMutator.swift; sourceTree = "<group>"; };
 		1141182524AF9A0500E6525C /* WebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.swift; sourceTree = "<group>"; };
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
@@ -2631,6 +2625,7 @@
 				11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */,
 				11E16399250B1B760076D612 /* OnboardingStateObservation.swift */,
 				1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */,
+				113E730F2518457C004006D8 /* LocalizedManager.swift */,
 			);
 			path = Structs;
 			sourceTree = "<group>";
@@ -2968,8 +2963,8 @@
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
 				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
-				111D295224F30A5B00C8A7D1 /* Unembed Lokalise for Catalyst */,
 				110EC9FF251708D5009C9A1B /* Embed Frameworks */,
+				11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */,
 			);
 			buildRules = (
 			);
@@ -3196,7 +3191,7 @@
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Original;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Home Assistant";
 				TargetAttributes = {
 					1171506824DFCDE60065E874 = {
@@ -3426,7 +3421,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */,
-				110702C024E7B12B00679B94 /* Localizable.strings in Resources */,
 				1710EFA0554773DCAEEA4A1E /* Pods-WidgetsExtension-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3436,7 +3430,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */,
-				B6E42618215C761E007FEB7E /* Localizable.strings in Resources */,
 				B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3571,7 +3564,6 @@
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
-				B69933951E232AEA0054453D /* Localizable.strings in Resources */,
 				11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
@@ -3681,7 +3673,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */,
-				B672AB542216A1F100175465 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3690,6 +3681,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11F855D724DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */,
+				113E72ED251842BE004006D8 /* Localizable.strings in Resources */,
 				9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3707,7 +3699,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */,
-				B672AB532216A1E200175465 /* Localizable.strings in Resources */,
 				B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3717,7 +3708,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
-				B672AB522216A1E200175465 /* Localizable.strings in Resources */,
 				6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3743,7 +3733,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		111D295224F30A5B00C8A7D1 /* Unembed Lokalise for Catalyst */ = {
+		11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4163,7 +4153,6 @@
 			files = (
 				11993D2424E78A3700627944 /* WidgetActionsActionView.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
-				110702C324E7B34A00679B94 /* Strings.swift in Sources */,
 				110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
@@ -4177,7 +4166,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */,
-				110702C524E7B38600679B94 /* Strings.swift in Sources */,
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
@@ -4225,7 +4213,6 @@
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				B65B15032273184F00635D5C /* Colors.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
-				110702C624E7B49B00679B94 /* Strings.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
@@ -4398,6 +4385,7 @@
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
+				113E73112518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295724F30E2500C8A7D1 /* Updater.swift in Sources */,
 				B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */,
@@ -4473,7 +4461,6 @@
 				B658AA7B2250AE4900C9BFE3 /* String+HA.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
-				B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */,
 				B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */,
@@ -4540,6 +4527,7 @@
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
+				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,

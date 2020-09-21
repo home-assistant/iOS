@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Shared
 
 @available(iOS 13, *)
 @objc class AboutSceneDelegate: BasicSceneDelegate {

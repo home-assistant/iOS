@@ -1,6 +1,7 @@
 import Foundation
 import Eureka
 import UIKit
+import Shared
 
 final public class YamlSection: Section {
     private let yamlRow = TextAreaRow { row in

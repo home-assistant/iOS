@@ -8,6 +8,7 @@
 
 import UIKit
 import Lottie
+import Shared
 
 class ConnectionErrorViewController: UIViewController {
 

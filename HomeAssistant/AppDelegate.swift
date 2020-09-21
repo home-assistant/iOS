@@ -11,7 +11,7 @@ import CallbackURLKit
 import Communicator
 import Firebase
 import KeychainAccess
-#if !targetEnvironment(macCatalyst)
+#if canImport(Lokalise) && !targetEnvironment(macCatalyst)
 import Lokalise
 #endif
 import PromiseKit
@@ -88,8 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.setupSentry()
         self.setupFirebase()
         self.setupModels()
-
-        self.configureLokalise()
+        self.setupLocalization()
 
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -629,14 +628,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func configureLokalise() {
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
-                                     token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
-        Lokalise.shared.swizzleMainBundle()
+    func setupLocalization() {
+        #if canImport(Lokalise) && !targetEnvironment(macCatalyst)
+        let lokalise = with(Lokalise.shared) {
+            $0.setProjectID(
+                "834452985a05254348aee2.46389241",
+                token: "fe314d5c54f3000871ac18ccac8b62b20c143321"
+            )
+            $0.localizationType = {
+                switch Current.appConfiguration {
+                case .Release:
+                    if Current.isTestFlight {
+                        return .prerelease
+                    } else {
+                        return .release
+                    }
+                case .Beta:
+                    return .prerelease
+                case .Debug, .FastlaneSnapshot:
+                    return .local
+                }
+            }()
+            // applies to e.g. storyboards and whatnot, but not L10n-read strings
+            $0.swizzleMainBundle()
+        }
 
-        Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+        Current.localized.add(stringProvider: { request in
+            let string = lokalise.localizedString(forKey: request.key, value: nil, table: request.table)
+            if string != request.key {
+                return string
+            } else {
+                return nil
+            }
+        })
         #endif
+
+        Current.localized.add(stringProvider: { request in
+            if prefs.bool(forKey: "showTranslationKeys") {
+                return request.key
+            } else {
+                return nil
+            }
+        })
     }
 
     func setupSentry() {
@@ -732,24 +765,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCategory.setupObserver()
     }
 }
-
-#if !targetEnvironment(macCatalyst)
-extension AppConfiguration {
-    var lokaliseEnv: LokaliseLocalizationType {
-        if prefs.bool(forKey: "showTranslationKeys") {
-            return .debug
-        }
-        switch self {
-        case .Release:
-            return .release
-        case .Beta:
-            return .prerelease
-        case .Debug, .FastlaneSnapshot:
-            return .local
-        }
-    }
-}
-#endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     // swiftlint:disable:next function_body_length
