@@ -5317,7 +5317,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8B99BAC287C6B3CE69C9267A /* Pods-HomeAssistant.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Beta-catalyst.entitlements";
@@ -5726,7 +5725,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 94F2E1DA1A69FE4CED834348 /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Development-catalyst.entitlements";
@@ -5775,7 +5773,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 25CF94434FED72A01C6A594B /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant-catalyst.entitlements";
