@@ -661,6 +661,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return nil
             }
         })
+        #endif
 
         Current.localized.add(stringProvider: { request in
             if prefs.bool(forKey: "showTranslationKeys") {
@@ -669,7 +670,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return nil
             }
         })
-        #endif
     }
 
     func setupSentry() {
