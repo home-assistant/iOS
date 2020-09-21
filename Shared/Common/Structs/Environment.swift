@@ -81,6 +81,8 @@ public class Environment {
         $0.register(provider: ActiveSensor.self)
     }
 
+    public var localized = LocalizedManager()
+
     public var tags: TagManager = EmptyTagManager()
 
     public var updater: Updater = Updater()

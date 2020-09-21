@@ -88,8 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.setupSentry()
         self.setupFirebase()
         self.setupModels()
-
-        self.configureLokalise()
+        self.setupLocalization()
 
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -629,14 +628,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func configureLokalise() {
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
-                                     token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
-        Lokalise.shared.swizzleMainBundle()
-
-        Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
-        #endif
+    func setupLocalization() {
+        _ = Current.localized
     }
 
     func setupSentry() {
@@ -732,24 +725,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCategory.setupObserver()
     }
 }
-
-#if !targetEnvironment(macCatalyst)
-extension AppConfiguration {
-    var lokaliseEnv: LokaliseLocalizationType {
-        if prefs.bool(forKey: "showTranslationKeys") {
-            return .debug
-        }
-        switch self {
-        case .Release:
-            return .release
-        case .Beta:
-            return .prerelease
-        case .Debug, .FastlaneSnapshot:
-            return .local
-        }
-    }
-}
-#endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     // swiftlint:disable:next function_body_length

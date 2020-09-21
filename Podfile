@@ -38,6 +38,7 @@ end
 def ios_shared_pods
     shared_pods
 
+    pod 'Lokalise', '~> 0.10.0'
     pod 'ReachabilitySwift'
 end
 
@@ -49,7 +50,6 @@ target 'HomeAssistant' do
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Firebase/Messaging'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
-    pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'MBProgressHUD', '~> 1.2.0'
     pod 'Sentry'

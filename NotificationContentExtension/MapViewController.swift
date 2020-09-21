@@ -11,6 +11,7 @@ import UserNotifications
 import UserNotificationsUI
 import MapKit
 import PromiseKit
+import Shared
 
 class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
     private var mapView: MKMapView!

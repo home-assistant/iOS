@@ -2,9 +2,6 @@ import Foundation
 import UIKit
 import Shared
 import PromiseKit
-#if !targetEnvironment(macCatalyst)
-import Lokalise
-#endif
 
 class LifecycleManager {
     private var periodicUpdateTimer: Timer? {
@@ -42,16 +39,7 @@ class LifecycleManager {
     func didFinishLaunching() {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
 
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.checkForUpdates { (updated, error) in
-            if let error = error {
-                Current.Log.error("Error when updating Lokalise: \(error)")
-            } else {
-                Current.Log.info("Lokalise updated? \(updated)")
-            }
-        }
-        #endif
-
+        Current.localized.updateTranslations()
         connectAPI(reason: .cold)
     }
 
