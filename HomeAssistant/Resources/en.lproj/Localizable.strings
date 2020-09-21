@@ -886,3 +886,5 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "menu.actions.title" = "Actions";
 "menu.actions.configure" = "Configure…";
+"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.error.title" = "Couldn't Send";
