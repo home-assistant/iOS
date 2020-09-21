@@ -6,5 +6,6 @@
 "NSPhotoLibraryAddUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";
 "NSPhotoLibraryUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Enviar ubicació";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NSLocalNetworkUsageDescription" = "Cerqueu i comuniqueu-vos amb la vostra instància de Home Assistant.";
 "NFCReaderUsageDescription" = "Llegir i escriure etiquetes NFC us permet activar esdeveniments.";
+"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";

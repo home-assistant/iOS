@@ -881,3 +881,7 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "open_label" = "Open";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "widgets.actions.description" = "Perform Home Assistant actions.";
+"menu.actions.title" = "Actions";
+"menu.actions.configure" = "Configure…";
+"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.error.title" = "Couldn't Send";

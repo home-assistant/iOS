@@ -883,4 +883,8 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "menu.file.update_sensors" = "Opdater sensorer";
 "open_label" = "Åbn";
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
-"widgets.actions.description" = "Perform Home Assistant actions.";
+"widgets.actions.description" = "Udfør Home Assistant-handlinger.";
+"menu.actions.title" = "Actions";
+"menu.actions.configure" = "Configure…";
+"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.error.title" = "Couldn't Send";

@@ -884,3 +884,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "open_label" = "Åpen";
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
 "widgets.actions.description" = "Utfør Home Assistant handlinger.";
+"menu.actions.title" = "Actions";
+"menu.actions.configure" = "Configure…";
+"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.error.title" = "Couldn't Send";

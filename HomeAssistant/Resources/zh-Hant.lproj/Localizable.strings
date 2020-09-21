@@ -884,3 +884,7 @@
 "open_label" = "開啟";
 "sensors.active.setting.time_until_idle" = "閒置前時間";
 "widgets.actions.description" = "執行 Home Assistant 動作。";
+"menu.actions.title" = "Actions";
+"menu.actions.configure" = "Configure…";
+"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.error.title" = "Couldn't Send";
