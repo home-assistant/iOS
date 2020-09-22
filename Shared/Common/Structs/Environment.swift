@@ -87,6 +87,24 @@ public class Environment {
 
     public var updater: Updater = Updater()
 
+    #if targetEnvironment(macCatalyst)
+    public var macBridge: MacBridge = {
+        guard let pluginUrl = Bundle.main.builtInPlugInsURL,
+              let bundle = Bundle(url: pluginUrl.appendingPathComponent("MacBridge.bundle"))
+        else {
+            fatalError("couldn't load mac bridge bundle")
+        }
+
+        bundle.load()
+
+        if let principalClass = bundle.principalClass as? MacBridge.Type {
+            return principalClass.init()
+        } else {
+            fatalError("couldn't load mac bridge principal class")
+        }
+    }()
+    #endif
+
     public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
 
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
