@@ -90,16 +90,11 @@ public class ActiveStateManager {
             return NotificationCenter.default
         }
 
-        if Current.isCatalyst {
-            if let type = NSClassFromString("NSDistributedNotificationCenter") as? NotificationCenter.Type {
-                return type.default
-            } else {
-                Current.Log.error("couldn't find distributed notification center")
-                return nil
-            }
-        } else {
-            return nil
-        }
+        #if targetEnvironment(macCatalyst)
+        return Current.macBridge.distributedNotificationCenter
+        #else
+        return NotificationCenter.default
+        #endif
     }
 
     private static func workspaceNotificationCenter() -> NotificationCenter? {
@@ -107,19 +102,11 @@ public class ActiveStateManager {
             return NotificationCenter.default
         }
 
-        if Current.isCatalyst {
-            let center = NSClassFromString("NSWorkspace")?
-                .value(forKeyPath: "sharedWorkspace.notificationCenter") as? NotificationCenter
-
-            if let center = center {
-                return center
-            } else {
-                Current.Log.error("couldn't find workspace notification center")
-                return nil
-            }
-        } else {
-            return nil
-        }
+        #if targetEnvironment(macCatalyst)
+        return Current.macBridge.workspaceNotificationCenter
+        #else
+        return NotificationCenter.default
+        #endif
     }
 
     private func setup() {
