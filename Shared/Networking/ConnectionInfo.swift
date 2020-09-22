@@ -344,10 +344,18 @@ public class ConnectionInfo: Codable {
         #endif
     }
 
+    public static var hasWiFi: Bool {
+        #if targetEnvironment(macCatalyst)
+        return Current.macBridge.wifiConnectivity != nil
+        #else
+        return true
+        #endif
+    }
+
     /// Returns the current SSID if it exists and the platform supports it.
     public static var CurrentWiFiSSID: String? {
         #if targetEnvironment(macCatalyst)
-        return nil
+        return Current.macBridge.wifiConnectivity?.ssid
         #elseif os(iOS)
         guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
         for interface in interfaces {
@@ -363,7 +371,7 @@ public class ConnectionInfo: Codable {
     /// Returns the current BSSID if it exists and the platform supports it.
     public static var CurrentWiFiBSSID: String? {
         #if targetEnvironment(macCatalyst)
-        return nil
+        return Current.macBridge.wifiConnectivity?.bssid
         #elseif os(iOS)
         guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
         for interface in interfaces {

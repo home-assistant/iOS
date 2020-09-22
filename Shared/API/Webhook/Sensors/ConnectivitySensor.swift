@@ -17,13 +17,17 @@ public class ConnectivitySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        return firstly {
-            when(resolved: [
-                ssid(),
-                connectionType(),
-                cellularProviders()
-            ])
+        #if os(iOS)
+        return firstly { () -> Guarantee<[Result<[WebhookSensor]>]> in
+            var sensors = [Promise<[WebhookSensor]>]()
+
+            sensors.append(ssid())
+            #if !targetEnvironment(macCatalyst)
+            sensors.append(connectionType())
+            sensors.append(cellularProviders())
+            #endif
+
+            return when(resolved: sensors)
         }.map { sensors -> [WebhookSensor] in
             sensors.compactMap { (result: Result<[WebhookSensor]>) -> [WebhookSensor]? in
                 if case .fulfilled(let value) = result {
@@ -38,9 +42,13 @@ public class ConnectivitySensor: SensorProvider {
         #endif
     }
 
-    #if os(iOS) && !targetEnvironment(macCatalyst)
+    #if os(iOS)
 
     private func ssid() -> Promise<[WebhookSensor]> {
+        guard Current.connectivity.hasWiFi() else {
+            return .init(error: ConnectivityError.unsupportedPlatform)
+        }
+
         return .value([
             with(WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid")) { sensor in
                 if let ssid = Current.connectivity.currentWiFiSSID() {
@@ -62,6 +70,10 @@ public class ConnectivitySensor: SensorProvider {
             }
         ])
     }
+
+    #endif
+
+    #if os(iOS) && !targetEnvironment(macCatalyst)
 
     private func connectionType() -> Promise<[WebhookSensor]> {
         let simple = Current.connectivity.simpleNetworkType()

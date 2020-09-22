@@ -12,8 +12,10 @@ class ConnectivitySensorTests: XCTestCase {
         networkType: NetworkType,
         cellularNetworkType: NetworkType?,
         cellular: [String?: CTCarrier]? = nil,
-        radioTech: [String?: String]? = nil
+        radioTech: [String?: String]? = nil,
+        hasWiFi: Bool = true
     ) throws -> (ssid: WebhookSensor?, bssid: WebhookSensor?, connection: WebhookSensor?, sims: [WebhookSensor]) {
+        Current.connectivity.hasWiFi = { hasWiFi }
         Current.connectivity.currentWiFiSSID = { ssid }
         Current.connectivity.currentWiFiBSSID = { bssid }
         Current.connectivity.simpleNetworkType = { networkType }
@@ -36,6 +38,19 @@ class ConnectivitySensorTests: XCTestCase {
                 $0.UniqueID?.contains("sim") == true || $0.UniqueID?.contains("cellular") == true
             }.sorted(by: { lhs, rhs in (lhs.UniqueID ?? "") < (rhs.UniqueID ?? "") })
         )
+    }
+
+    func testNoWifiAtAll() throws {
+        let s = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .noConnection,
+            cellularNetworkType: nil,
+            hasWiFi: false
+        )
+
+        XCTAssertNil(s.ssid)
+        XCTAssertNil(s.bssid)
     }
 
     func testNoWifiNoCellular() throws {

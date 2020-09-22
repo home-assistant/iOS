@@ -6,4 +6,11 @@ import Foundation
 
     var distributedNotificationCenter: NotificationCenter { get }
     var workspaceNotificationCenter: NotificationCenter { get }
+
+    var wifiConnectivity: MacBridgeWiFiConnectivity? { get }
+}
+
+@objc(MacBridgeWiFiConnectivity) public protocol MacBridgeWiFiConnectivity: NSObjectProtocol {
+    var ssid: String? { get }
+    var bssid: String? { get }
 }
