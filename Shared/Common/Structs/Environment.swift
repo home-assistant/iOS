@@ -268,6 +268,7 @@ public class Environment {
 
     /// Wrapper around CoreTelephony, Reachability
     public struct Connectivity {
+        public var hasWiFi: () -> Bool = { ConnectionInfo.hasWiFi }
         public var currentWiFiSSID: () -> String? = { ConnectionInfo.CurrentWiFiSSID }
         public var currentWiFiBSSID: () -> String? = { ConnectionInfo.CurrentWiFiBSSID }
         #if os(iOS) && !targetEnvironment(macCatalyst)

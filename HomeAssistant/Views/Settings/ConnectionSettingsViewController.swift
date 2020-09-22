@@ -101,8 +101,9 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
-                // need to write crazy indirection to get access to wifi ssid information via CoreWLAN
-                row.hidden = .isCatalyst
+                row.hidden = .function([],  { _ in
+                    ConnectionInfo.hasWiFi == false
+                })
 
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
@@ -113,6 +114,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                     row.updateCell()
                     navigationController?.popViewController(animated: true)
                 })
+
+                row.evaluateHidden()
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
