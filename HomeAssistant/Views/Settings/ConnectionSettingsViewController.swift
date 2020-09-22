@@ -101,7 +101,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
-                row.hidden = .function([],  { _ in
+                row.hidden = .function([], { _ in
                     ConnectionInfo.hasWiFi == false
                 })
 
