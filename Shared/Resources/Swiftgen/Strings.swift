@@ -2028,6 +2028,8 @@ public enum L10n {
     public enum PeriodicUpdate {
       /// When enabled, these sensors will update with this frequency while the app is open in the foreground.
       public static var description: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.description") }
+      /// When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.
+      public static var descriptionMac: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.description_mac") }
       /// Off
       public static var off: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.off") }
       /// Periodic Update
