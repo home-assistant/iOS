@@ -44,7 +44,15 @@ class iOSTagManager: TagManager {
                 return .init(error: TagManagerError.notHomeAssistantTag)
             }
 
-            let message = NFCNDEFMessage(records: [ payload ])
+            // https://developer.android.com/guide/topics/connectivity/nfc/nfc.html#aar
+            let aarPayload = NFCNDEFPayload.init(
+                format: NFCTypeNameFormat.nfcExternal,
+                type: "android.com:pkg".data(using: String.Encoding.utf8)!,
+                identifier: Data(),
+                payload: "io.homeassistant.companion.android".data(using: String.Encoding.utf8)!
+            )
+
+            let message = NFCNDEFMessage(records: [ payload, aarPayload ])
             let writer = NFCWriter(message: message)
             var writerRetain: NFCWriter? = writer
 
