@@ -7,6 +7,9 @@ SWIFT_INSTALL_OBJC_HEADER=NO
 // watchOS simulator incompatibility with xcode 12 betas and our dependencies
 EXCLUDED_ARCHS[sdk=watchsimulator*] = x86_64 arm64
 
+// works around a realm crash on series 1-3 watches, see https://github.com/home-assistant/iOS/issues/1058
+DEAD_CODE_STRIPPING[sdk=watchos*] = NO
+
 // Create this file to override configuration. It's ignored by git
 #include? "HomeAssistant.overrides.xcconfig"
 
