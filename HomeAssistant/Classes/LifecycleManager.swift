@@ -14,7 +14,7 @@ class LifecycleManager {
             }
         }
     }
-    private var supportsBackgroundPeriodicUpdates: Bool {
+    static var supportsBackgroundPeriodicUpdates: Bool {
         Current.isCatalyst
     }
 
@@ -80,7 +80,7 @@ class LifecycleManager {
     }
 
     private func invalidatePeriodicUpdateTimer() {
-        if !supportsBackgroundPeriodicUpdates {
+        if !Self.supportsBackgroundPeriodicUpdates {
             periodicUpdateTimer = nil
         }
     }
@@ -90,7 +90,7 @@ class LifecycleManager {
             return
         }
 
-        guard supportsBackgroundPeriodicUpdates || UIApplication.shared.applicationState != .background else {
+        guard Self.supportsBackgroundPeriodicUpdates || UIApplication.shared.applicationState != .background else {
             // it's fine to schedule, but we don't wanna fire two when we come back to foreground later
             Current.Log.info("not scheduling periodic update; backgrounded")
             return

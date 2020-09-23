@@ -19,7 +19,15 @@ class SensorListViewController: FormViewController, SensorObserver {
 
         tableView.alwaysBounceVertical = true
 
-        form +++ Section(header: nil, footer: L10n.SettingsSensors.PeriodicUpdate.description)
+        let periodicDescription: String
+
+        if LifecycleManager.supportsBackgroundPeriodicUpdates {
+            periodicDescription = L10n.SettingsSensors.PeriodicUpdate.descriptionMac
+        } else {
+            periodicDescription = L10n.SettingsSensors.PeriodicUpdate.description
+        }
+
+        form +++ Section(header: nil, footer: periodicDescription)
         <<< PushRow<TimeInterval?> {
             $0.title =  L10n.SettingsSensors.PeriodicUpdate.title
             $0.options = {
