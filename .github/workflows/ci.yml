@@ -28,8 +28,12 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
     - name: "Xcode 12 CoreNFC Workaround"
+      # FB8697856 - works around Xcode 12 unable to link with CoreNFC in simulator
       run: |
         cp -f /Applications/Xcode_12_beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+    - name: "Xcode 12 Git Workaround"
+      # FB8742330 - works around Xcode 12's built-in git having issues cloning without getting curl errors
+      run: |
         ln -sf $(which git) /Applications/Xcode_12.2.app/Contents/Developer/usr/bin/git
 
     - uses: actions/checkout@v2
@@ -80,7 +84,7 @@ jobs:
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     - name: Run tests
-      run: bundle exec fastlane ios test --verbose
+      run: bundle exec fastlane ios test
 
     - uses: actions/upload-artifact@v2
       name: "Upload Test Logs"
