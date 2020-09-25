@@ -75,9 +75,9 @@ jobs:
         path: |
           ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Realm*
           ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Sodium*
-          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Realm*
-          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Firebase*
-          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Sodium*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-*/Realm*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-*/Firebase*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-*/Sodium*
         key: ${{ runner.os }}-expensive-dependencies-${{ hashFiles('**/Podfile.lock', 'HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
         restore-keys: |
           ${{ runner.os }}-expensive-dependencies-
