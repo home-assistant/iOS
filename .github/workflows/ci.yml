@@ -66,6 +66,6 @@ jobs:
       with:
         name: test-logs
         path: |
+          ~/Library/Logs/DiagnosticReports
           ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
           ~/Library/Logs/scan
-          
