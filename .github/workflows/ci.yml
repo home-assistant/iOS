@@ -25,31 +25,8 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
     steps:
-    - uses: actions/checkout@v2
-
-    - uses: actions/cache@v2
-      with:
-        path: |
-          Pods
-          Tools/MaterialDesignIcons.ttf
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
-
-    - uses: actions/cache@v2
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
-
-    - name: Install Gems
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
-
-    - name: Install Pods
-      run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
-
-    - name: Run tests
-      run: bundle exec fastlane ios test --verbose
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/dependencies
+        name: Install Dependencies
+      - name: Run tests
+        run: bundle exec fastlane ios test --verbose
