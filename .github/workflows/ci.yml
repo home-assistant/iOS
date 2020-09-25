@@ -53,3 +53,12 @@ jobs:
 
     - name: Run tests
       run: bundle exec fastlane ios test --verbose
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: test-logs
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+          ~/Library/Logs/scan
+          
