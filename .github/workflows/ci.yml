@@ -89,7 +89,9 @@ jobs:
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     - name: Run tests
-      run: bundle exec fastlane ios test
+      # retry in case a build failure happens. at the time of writing, Clibsodium via SPM will occasionally fail on first build
+      # because it cannot find the Clibsodium xcframework due to some internal-to-Xcode race condition
+      run: bundle exec fastlane ios test || bundle exec fastlane ios test
 
     - uses: actions/upload-artifact@v2
       name: "Upload Test Logs"
