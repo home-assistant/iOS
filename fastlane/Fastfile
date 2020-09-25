@@ -272,7 +272,11 @@ platform :ios do
 
   desc "Run tests"
   lane :test do
-    run_tests(workspace: 'HomeAssistant.xcworkspace', scheme: 'Debug')
+    run_tests(
+      workspace: 'HomeAssistant.xcworkspace', 
+      scheme: 'Debug', 
+      prelaunch_simulator: true
+    )
   end
 
   desc "Submit a new beta build to TestFlight"
