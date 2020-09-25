@@ -26,7 +26,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
     - run: |
-      cp -f /Applications/Xcode_12_beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+        cp -f /Applications/Xcode_12_beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
 
     - uses: actions/checkout@v2
 
