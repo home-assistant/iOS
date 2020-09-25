@@ -22,6 +22,7 @@ jobs:
           HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
       - name: Commit changes
         run: |
+          git diff --exit-code HomeAssistant/Resources/en.lproj/Localizable.strings >/dev/null
           git checkout -- HomeAssistant.xcodeproj/project.pbxproj
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
