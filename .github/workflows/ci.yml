@@ -82,7 +82,7 @@ jobs:
       run: bundle exec fastlane ios test --verbose
 
     - uses: actions/upload-artifact@v2
-      name: "Upload Failure Artifacts"
+      name: "Upload Test Logs"
       if: ${{ always() }}
       with:
         name: test-logs
