@@ -1,0 +1,17 @@
+name: Update Localized Strings
+on:
+  workflow_dispatch:
+
+jobs:
+  update_strings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Download from Lokalise
+        run: bundle exec fastlane update_strings
