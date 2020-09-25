@@ -43,6 +43,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
+    - uses: actions/cache@v2
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/SourcePackages/
+        key: ${{ runner.os }}-spm-${{ hashFiles('HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
     - name: Install Gems
       run: |
         bundle config path vendor/bundle
