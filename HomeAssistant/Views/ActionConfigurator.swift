@@ -47,16 +47,6 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        let cancelSelector = #selector(ActionConfigurator.cancel)
-
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
-                                                                 action: cancelSelector)
-
-        let saveSelector = #selector(ActionConfigurator.save)
-
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
-                                                                 action: saveSelector)
-
         TextRow.defaultCellUpdate = { cell, row in
             if !row.isValid {
                 cell.textLabel?.textColor = .red
@@ -88,19 +78,20 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
         }
 
-        if #available(iOS 13.0, *) {
-            firstSection <<< VoiceShortcutRow {
-                $0.buttonStyle = .automaticOutline
-                $0.value = .intent(PerformActionIntent(action: action))
-            }
-        }
-
         let visuals = Section(
 
         )
 
         if action.canConfigure(\Action.Text) || action.isServerControlled {
-            visuals <<< TextRow("text") {
+            let section: Section
+
+            if action.canConfigure(\Action.Text) {
+                section = visuals
+            } else {
+                section = firstSection
+            }
+
+            section <<< TextRow("text") {
                 $0.title = L10n.ActionsConfigurator.Rows.Text.title
                 $0.value = self.action.Text
                 $0.placeholder = L10n.ActionsConfigurator.Rows.Text.title
@@ -111,6 +102,14 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                     self.action.Text = value
                     self.updatePreviews()
                 }
+            }
+        }
+
+        if #available(iOS 13.0, *) {
+            // after text if uneditable
+            firstSection <<< VoiceShortcutRow {
+                $0.buttonStyle = .automaticOutline
+                $0.value = .intent(PerformActionIntent(action: action))
             }
         }
 
@@ -212,6 +211,23 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 }
             }
         } else {
+            // only show cancel/save flow for editable actions
+            navigationItem.leftBarButtonItems = [
+                UIBarButtonItem(
+                    barButtonSystemItem: .cancel,
+                    target: self,
+                    action: #selector(cancel)
+                )
+            ]
+
+            navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(
+                    barButtonSystemItem: .save,
+                    target: self,
+                    action: #selector(save)
+                )
+            ]
+
             if action.triggerType == .scene {
                 let keys = [Scene.textColorKey, Scene.backgroundColorKey, Scene.iconColorKey]
                 let list: String

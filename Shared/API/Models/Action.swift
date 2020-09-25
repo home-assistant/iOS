@@ -212,7 +212,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         var components = URLComponents()
         components.scheme = "homeassistant"
         components.host = "perform_action"
-        components.path = "/" + ID.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        components.path = "/" + ID
         components.queryItems = [
             .init(name: "source", value: HomeAssistantAPI.ActionSource.Widget.rawValue)
         ]

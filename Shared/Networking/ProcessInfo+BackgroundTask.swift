@@ -1,7 +1,16 @@
 import Foundation
 import PromiseKit
 
-extension ProcessInfo {
+public class ProcessInfoBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+    public func callAsFunction<PromiseValue>(
+        withName name: String,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue> {
+        ProcessInfo.processInfo.backgroundTask(withName: name, wrapping: wrapping)
+    }
+}
+
+private extension ProcessInfo {
     func backgroundTask<PromiseValue>(
         withName name: String,
         wrapping: (TimeInterval?) -> Promise<PromiseValue>

@@ -176,7 +176,7 @@ public class WebhookManager: NSObject {
     }
 
     public func sendEphemeral<ResponseType>(request: WebhookRequest) -> Promise<ResponseType> {
-        ProcessInfo.processInfo.backgroundTask(withName: "webhook-send-ephemeral") { [self, dataQueue] _ in
+        Current.backgroundTask(withName: "webhook-send-ephemeral") { [self, dataQueue] _ in
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request)
@@ -266,7 +266,7 @@ public class WebhookManager: NSObject {
         // wrap this in a background task, but don't let the expiration cause the resolve chain to be aborted
         // this is important because we may be woken up later and asked to continue the same request, even if timed out
         // since, you know, background execution and whatnot
-        ProcessInfo.processInfo.backgroundTask(withName: "webhook-send") { _ in promise }.cauterize()
+        Current.backgroundTask(withName: "webhook-send") { _ in promise }.cauterize()
 
         firstly {
             Self.urlRequest(for: request)

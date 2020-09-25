@@ -115,6 +115,7 @@ public class Environment {
 
     public var logEvent: ((String, [String: Any]) -> Void)?
     public var logError: ((NSError) -> Void)?
+    public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
 
     public var setUserProperty: ((String?, String) -> Void)?
 
