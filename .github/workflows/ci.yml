@@ -25,12 +25,14 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
-    - run: |
+    - name: "Xcode 12 CoreNFC Workaround"
+      run: |
         cp -f /Applications/Xcode_12_beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
 
     - uses: actions/checkout@v2
 
     - uses: actions/cache@v2
+      name: "Cache: Pods"
       with:
         path: |
           Pods
@@ -40,6 +42,7 @@ jobs:
           ${{ runner.os }}-pods-
 
     - uses: actions/cache@v2
+      name: "Cache: Gems"
       with:
         path: vendor/bundle
         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -47,6 +50,7 @@ jobs:
           ${{ runner.os }}-gems-
 
     - uses: actions/cache@v2
+      name: "Cache: Swift Package Manager"
       with:
         path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/SourcePackages/
         key: ${{ runner.os }}-spm-${{ hashFiles('HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
@@ -54,6 +58,7 @@ jobs:
           ${{ runner.os }}-spm-
 
     - uses: actions/cache@v2
+      name: "Cache: Expensive Dependencies"
       with:
         path: |
           ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Realm*
@@ -73,8 +78,11 @@ jobs:
 
     - name: Run tests
       run: bundle exec fastlane ios test --verbose
+      env:
+        GIT_CURL_VERBOSE: 1
 
     - uses: actions/upload-artifact@v2
+      name: "Upload Failure Artifacts"
       if: failure()
       with:
         name: test-logs
