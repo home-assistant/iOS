@@ -67,7 +67,7 @@ class ZoneManager {
 
         // although technically the processor also does this, it does it after some async processing.
         // let's be very confident that we're not going to miss out on an update due to being suspended
-        UIApplication.shared.backgroundTask(withName: "zone-manager-perform-event") { _ in
+        Current.backgroundTask(withName: "zone-manager-perform-event") { _ in
             processor.perform(event: event)
         }.get { [weak self] _ in
             // a location change means we should consider changing our monitored regions

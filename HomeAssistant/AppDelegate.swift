@@ -69,6 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         setDefaults()
+
+        Current.backgroundTask = ApplicationBackgroundTaskRunner()
+
         Current.isBackgroundRequestsImmediate = {
             if Current.isCatalyst {
                 return false
@@ -293,7 +296,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                     Current.Log.verbose("Received remote request to provide a location update")
 
-                    application.backgroundTask(withName: "push-location-request") { remaining in
+                    Current.backgroundTask(withName: "push-location-request") { remaining in
                         api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                     }.done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
@@ -325,7 +328,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
-        application.backgroundTask(withName: "background-fetch") { remaining in
+        Current.backgroundTask(withName: "background-fetch") { remaining in
             let updatePromise: Promise<Void>
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
@@ -828,7 +831,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            UIApplication.shared.backgroundTask(withName: "handle-push-action") { _ in
+            Current.backgroundTask(withName: "handle-push-action") { _ in
                 api.handlePushAction(
                     identifier: response.actionIdentifier,
                     category: response.notification.request.content.categoryIdentifier,
