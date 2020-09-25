@@ -50,6 +50,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-spm-
 
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Realm*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Realm*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Firebase*
+        key: ${{ runner.os }}-expensive-dependencies-${{ hashFiles('**/Podfile.lock', 'HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-expensive-dependencies-
+
     - name: Install Gems
       run: |
         bundle config path vendor/bundle
