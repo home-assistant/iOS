@@ -270,26 +270,14 @@ platform :ios do
     end
   end
 
-  private_lane :execute_tests do
+  desc "Run tests"
+  lane :test do
     run_tests(
       workspace: 'HomeAssistant.xcworkspace', 
       scheme: 'Debug', 
       prelaunch_simulator: true,
       result_bundle: true
     )
-  end
-
-  desc "Run tests"
-  lane :test do
-    begin
-      execute_tests
-    rescue
-      puts "Tests failed, retrying once..."
-      clear_derived_data
-      # retry in case a build failure happens. at the time of writing, Clibsodium via SPM will occasionally fail on first build
-      # because it cannot find the Clibsodium xcframework due to some internal-to-Xcode race condition
-      execute_tests 
-    end
   end
 
   desc "Submit a new beta build to TestFlight"

@@ -74,8 +74,10 @@ jobs:
       with:
         path: |
           ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Realm*
-          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Realm*
-          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Firebase*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Sodium*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-*/Realm*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-*/Firebase*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-*/Sodium*
         key: ${{ runner.os }}-expensive-dependencies-${{ hashFiles('**/Podfile.lock', 'HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
         restore-keys: |
           ${{ runner.os }}-expensive-dependencies-
@@ -89,7 +91,9 @@ jobs:
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     - name: Run tests
-      run: bundle exec fastlane ios test
+      # retry in case a build failure happens. at the time of writing, Clibsodium via SPM will occasionally fail on first build
+      # because it cannot find the Clibsodium xcframework due to some internal-to-Xcode race condition
+      run: bundle exec fastlane ios test || bundle exec fastlane ios test
 
     - uses: actions/upload-artifact@v2
       name: "Upload Test Logs"
