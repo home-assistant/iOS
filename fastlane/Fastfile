@@ -275,7 +275,8 @@ platform :ios do
     run_tests(
       workspace: 'HomeAssistant.xcworkspace', 
       scheme: 'Debug', 
-      prelaunch_simulator: true
+      prelaunch_simulator: true,
+      result_bundle: true
     )
   end
 
