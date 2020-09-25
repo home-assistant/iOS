@@ -30,7 +30,12 @@ jobs:
     - name: "Xcode 12 CoreNFC Workaround"
       # FB8697856 - works around Xcode 12 unable to link with CoreNFC in simulator
       run: |
-        cp -f /Applications/Xcode_12_beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+        pushd /tmp
+        curl -LO https://github.com/home-assistant/iOS/files/5285110/libnfshared.dylib.zip
+        unzip libnfshared.dylib.zip
+        cp -f libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+        cp -f libnfshared.dylib /Applications/Xcode_12.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+
     - name: "Xcode 12 Git Workaround"
       # FB8742330 - works around Xcode 12's built-in git having issues cloning without getting curl errors
       run: |
