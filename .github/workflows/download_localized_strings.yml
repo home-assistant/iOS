@@ -17,6 +17,9 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: Download from Lokalise
         run: bundle exec fastlane update_strings
+        env:
+          HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
+          HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
       - name: Commit changes
         run: |
           git config --global user.name 'Home Assistant Bot'
