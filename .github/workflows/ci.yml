@@ -83,7 +83,7 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       name: "Upload Failure Artifacts"
-      if: failure()
+      if: ${{ always() }}
       with:
         name: test-logs
         path: |
