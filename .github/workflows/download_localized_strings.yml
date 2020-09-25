@@ -1,4 +1,4 @@
-name: Update Localized Strings
+name: Download Localized Strings
 on:
   workflow_dispatch:
 
@@ -15,3 +15,9 @@ jobs:
             ${{ runner.os }}-gems-
       - name: Download from Lokalise
         run: bundle exec fastlane update_strings
+      - name: Commit changes
+        run: |
+          git config --global user.name 'Home Assistant Bot'
+          git config --global user.email 'hello@home-assistant.io'
+          git commit -am "Update Localized Strings"
+          git push
