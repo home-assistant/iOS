@@ -78,8 +78,6 @@ jobs:
 
     - name: Run tests
       run: bundle exec fastlane ios test --verbose
-      env:
-        GIT_CURL_VERBOSE: 1
 
     - uses: actions/upload-artifact@v2
       name: "Upload Failure Artifacts"
