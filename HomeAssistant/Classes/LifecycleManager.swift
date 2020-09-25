@@ -110,7 +110,7 @@ class LifecycleManager {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
+            return Current.backgroundTask(withName: "connect-api") { _ in
                 api.Connect(reason: reason)
             }
         }.done {

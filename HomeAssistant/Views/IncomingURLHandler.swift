@@ -69,7 +69,7 @@ class IncomingURLHandler {
         return firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            UIApplication.shared.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+            Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
                 if shortcutItem.type == "sendLocation" {
                     return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
                 } else {

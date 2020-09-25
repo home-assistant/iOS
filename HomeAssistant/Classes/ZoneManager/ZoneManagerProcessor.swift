@@ -35,7 +35,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                 self.delegate?.processor(self, didLog: .didIgnore(event, error))
             }
         }.then {
-            UIApplication.shared.backgroundTask(withName: event.backgroundTaskDescription) { remaining in
+            Current.backgroundTask(withName: event.backgroundTaskDescription) { remaining in
                 let trigger = event.asTrigger()
                 return firstly { () -> Promise<CLLocation?> in
                     if event.shouldOneShotLocation {

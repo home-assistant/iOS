@@ -8,6 +8,13 @@ public enum BackgroundTaskError: Error {
     case outOfTime
 }
 
+public protocol HomeAssistantBackgroundTaskRunner {
+    func callAsFunction<PromiseValue>(
+        withName name: String,
+        wrapping: (TimeInterval?) -> Promise<PromiseValue>
+    ) -> Promise<PromiseValue>
+}
+
 // enum for namespacing
 public enum HomeAssistantBackgroundTask {
     public static func execute<ReturnType, IdentifierType>(

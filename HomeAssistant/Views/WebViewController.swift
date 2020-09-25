@@ -525,7 +525,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             }
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                return UIApplication.shared.backgroundTask(withName: "manual-location-update") { remaining in
+                return Current.backgroundTask(withName: "manual-location-update") { remaining in
                     return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
                         .recover { error -> Promise<Void> in
                             if error is CLError {
