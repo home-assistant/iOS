@@ -30,6 +30,7 @@ jobs:
     - name: "Xcode 12 CoreNFC Workaround"
       run: |
         cp -f /Applications/Xcode_12_beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+        ln -sf $(which git) /Applications/Xcode-12.2b1.app/Contents/Developer/usr/bin/git
 
     - uses: actions/checkout@v2
 
