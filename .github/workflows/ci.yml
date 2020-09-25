@@ -17,17 +17,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: GitHub Action for SwiftLint
+      - name: SwiftLint
         uses: norio-nomura/action-swiftlint@3.1.0
+        env:
+          DIFF_BASE: ${{ github.base_ref }}
 
   test:
     runs-on: macos-latest
     env:
-      DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
+    - name: "Xcode 12 CoreNFC Workaround"
+      # FB8697856 - works around Xcode 12 unable to link with CoreNFC in simulator
+      run: |
+        pushd /tmp
+        curl -LO https://github.com/home-assistant/iOS/files/5285110/libnfshared.dylib.zip
+        unzip libnfshared.dylib.zip
+        cp -f libnfshared.dylib /Applications/Xcode_12.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+        cp -f libnfshared.dylib /Applications/Xcode_12.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libnfshared.dylib 
+
+    - name: "Xcode 12 Git Workaround"
+      # FB8742330 - works around Xcode 12's built-in git having issues cloning without getting curl errors
+      run: |
+        ln -sf $(which git) /Applications/Xcode_12.2.app/Contents/Developer/usr/bin/git
+
     - uses: actions/checkout@v2
 
     - uses: actions/cache@v2
+      name: "Cache: Pods"
       with:
         path: |
           Pods
@@ -37,11 +54,31 @@ jobs:
           ${{ runner.os }}-pods-
 
     - uses: actions/cache@v2
+      name: "Cache: Gems"
       with:
         path: vendor/bundle
         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
           ${{ runner.os }}-gems-
+
+    - uses: actions/cache@v2
+      name: "Cache: Swift Package Manager"
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/SourcePackages/
+        key: ${{ runner.os }}-spm-${{ hashFiles('HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
+    - uses: actions/cache@v2
+      name: "Cache: Expensive Dependencies"
+      with:
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Intermediates.noindex/Realm*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Realm*
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/*/Firebase*
+        key: ${{ runner.os }}-expensive-dependencies-${{ hashFiles('**/Podfile.lock', 'HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-expensive-dependencies-
 
     - name: Install Gems
       run: |
@@ -52,4 +89,14 @@ jobs:
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     - name: Run tests
-      run: bundle exec fastlane ios test --verbose
+      run: bundle exec fastlane ios test
+
+    - uses: actions/upload-artifact@v2
+      name: "Upload Test Logs"
+      if: ${{ always() }}
+      with:
+        name: test-logs
+        path: |
+          ~/Library/Logs/DiagnosticReports
+          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+          ~/Library/Logs/scan
