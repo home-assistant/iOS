@@ -14,6 +14,8 @@ ib:
   outputs:
     - templateName: scenes-swift5
       output: HomeAssistant/Resources/Scenes.swift
+      params:
+        module: HomeAssistant
     - templateName: segues-swift5
       output: HomeAssistant/Resources/Segues.swift
 xcassets:
