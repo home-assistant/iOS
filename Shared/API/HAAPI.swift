@@ -34,9 +34,7 @@ public class HomeAssistantAPI {
         case notConfigured
         case updateNotPossible
         case mobileAppComponentNotLoaded
-        case webhookGone
         case mustUpgradeHomeAssistant(Version)
-        case unacceptableStatusCode(Int)
         case unknown
     }
 
@@ -179,16 +177,27 @@ public class HomeAssistantAPI {
         return firstly {
             self.UpdateRegistration()
         }.recover { error -> Promise<MobileAppRegistrationResponse> in
-            guard (error as NSError).domain != NSURLErrorDomain, !(error is BackgroundTaskError) else {
-                Current.Log.info("not re-registering because of network error")
+            switch error as? WebhookError {
+            case .unmappableValue,
+                 .unexpectedType,
+                 .unacceptableStatusCode(404),
+                 .unacceptableStatusCode(410):
+                // cloudhook will send a 404 for deleted
+                // ha directly will send a 200 with an empty body for deleted
+
+                let message = "Integration is missing; registering."
+                Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
+                    "error": String(describing: error)
+                ]))
+                return self.Register()
+            case .noApi,
+                 .unregisteredIdentifier,
+                 .unacceptableStatusCode,
+                 .none:
+                // not a WebhookError, or not one we think requires reintegration
+                Current.Log.info("not re-registering, but failed to update registration: \(error)")
                 throw error
             }
-
-            let message = "Failed to update integration; trying to register instead."
-            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
-                "error": String(describing: error)
-            ]))
-            return self.Register()
         }.then { _ in
             return when(fulfilled: [
                 self.GetConfig().asVoid(),
@@ -768,12 +777,10 @@ extension HomeAssistantAPI.APIError: LocalizedError {
             return L10n.HaApi.ApiError.updateNotPossible
         case .mobileAppComponentNotLoaded:
             return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
-        case .webhookGone:
-            return L10n.HaApi.ApiError.webhookGone
         case .mustUpgradeHomeAssistant(let current):
             return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(current.description,
                                                                 HomeAssistantAPI.minimumRequiredVersion.description)
-        case .unknown, .unacceptableStatusCode:
+        case .unknown:
             return L10n.HaApi.ApiError.unknown
         }
     }
