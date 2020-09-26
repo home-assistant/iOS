@@ -3,10 +3,11 @@ import PromiseKit
 import UserNotifications
 import ObjectMapper
 
-internal enum WebhookManagerError: Error {
+internal enum WebhookError: Error, Equatable {
     case noApi
     case unregisteredIdentifier
     case unexpectedType(given: String, desire: String)
+    case unacceptableStatusCode(Int)
     case unmappableValue
 }
 
@@ -159,7 +160,7 @@ public class WebhookManager: NSObject {
             if let result = Mapper<MappableResult>().map(JSONObject: $0) {
                 return result
             } else {
-                throw WebhookManagerError.unmappableValue
+                throw WebhookError.unmappableValue
             }
         }
     }
@@ -170,7 +171,7 @@ public class WebhookManager: NSObject {
             if let result = Mapper<MappableResult>(shouldIncludeNilValues: false).mapArray(JSONObject: $0) {
                 return result
             } else {
-                throw WebhookManagerError.unmappableValue
+                throw WebhookError.unmappableValue
             }
         }
     }
@@ -195,7 +196,7 @@ public class WebhookManager: NSObject {
             if let value = possible as? ResponseType {
                 return value
             } else {
-                throw WebhookManagerError.unexpectedType(
+                throw WebhookError.unexpectedType(
                     given: String(describing: type(of: possible)),
                     desire: String(describing: ResponseType.self)
                 )
@@ -258,7 +259,7 @@ public class WebhookManager: NSObject {
     ) -> Promise<Void> {
         guard let handlerType = responseHandlers[identifier] else {
             Current.Log.error("no existing handler for \(identifier), not sending request")
-            return .init(error: WebhookManagerError.unregisteredIdentifier)
+            return .init(error: WebhookError.unregisteredIdentifier)
         }
 
         let (promise, seal) = Promise<Void>.pending()
@@ -385,7 +386,7 @@ public class WebhookManager: NSObject {
     ) -> Promise<(URLRequest, Data)> {
         return Promise { seal in
             guard let connectionInfo = Current.settingsStore.connectionInfo else {
-                seal.reject(WebhookManagerError.noApi)
+                seal.reject(WebhookError.noApi)
                 return
             }
 

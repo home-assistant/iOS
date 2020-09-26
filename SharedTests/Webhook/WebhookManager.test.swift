@@ -217,7 +217,7 @@ class WebhookManagerTests: XCTestCase {
 
         let promise: Promise<String> = manager.sendEphemeral(request: expectedRequest)
         XCTAssertThrowsError(try hang(promise)) { error in
-            switch error as? WebhookManagerError {
+            switch error as? WebhookError {
             case .unexpectedType:
                 break
             default:
@@ -271,7 +271,7 @@ class WebhookManagerTests: XCTestCase {
 
         let promise: Promise<ExampleMappable> = manager.sendEphemeral(request: expectedRequest)
         XCTAssertThrowsError(try hang(promise)) { error in
-            switch error as? WebhookManagerError {
+            switch error as? WebhookError {
             case .unmappableValue:
                 break
             default:
@@ -312,7 +312,7 @@ class WebhookManagerTests: XCTestCase {
 
         let promise: Promise<[ExampleMappable]> = manager.sendEphemeral(request: expectedRequest)
         XCTAssertThrowsError(try hang(promise)) { error in
-            switch error as? WebhookManagerError {
+            switch error as? WebhookError {
             case .unmappableValue:
                 break
             default:
@@ -358,7 +358,7 @@ class WebhookManagerTests: XCTestCase {
     func testSendingUnregisteredIdentifierErrors() {
         let promise1 = manager.send(identifier: .init(rawValue: "unregistered"), request: .init(type: "test", data: ()))
         XCTAssertThrowsError(try hang(promise1)) { error in
-            switch error as? WebhookManagerError {
+            switch error as? WebhookError {
             case .unregisteredIdentifier:
                 break
             default:

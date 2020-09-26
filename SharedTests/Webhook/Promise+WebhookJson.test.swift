@@ -74,7 +74,19 @@ class PromiseWebhookJsonTests: XCTestCase {
         let promise = Promise<Data>.value(String("abcdefg").data(using: .utf8)!)
         let json = promise.webhookJson(statusCode: 404)
         XCTAssertThrowsError(try hang(json)) { error in
-            if case HomeAssistantAPI.APIError.mobileAppComponentNotLoaded = error {
+            if case WebhookError.unacceptableStatusCode(404) = error {
+                // pass
+            } else {
+                XCTFail("unexpected error \(error)")
+            }
+        }
+    }
+
+    func testUnencryptedStatus504() {
+        let promise = Promise<Data>.value(String("abcdefg").data(using: .utf8)!)
+        let json = promise.webhookJson(statusCode: 504)
+        XCTAssertThrowsError(try hang(json)) { error in
+            if case WebhookError.unacceptableStatusCode(504) = error {
                 // pass
             } else {
                 XCTFail("unexpected error \(error)")
@@ -86,7 +98,7 @@ class PromiseWebhookJsonTests: XCTestCase {
         let promise = Promise<Data>.value(String("abcdefg").data(using: .utf8)!)
         let json = promise.webhookJson(statusCode: 410)
         XCTAssertThrowsError(try hang(json)) { error in
-            if case HomeAssistantAPI.APIError.webhookGone = error {
+            if case WebhookError.unacceptableStatusCode(410) = error {
                 // pass
             } else {
                 XCTFail("unexpected error \(error)")
