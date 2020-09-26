@@ -189,6 +189,48 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     @available(iOS 13.4, *)
+    func testGPSEnterNoBattery() {
+        Current.device.batteries = { [] }
+
+        let now = Date()
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .GPSRegionEnter,
+            location: CLLocation(
+                coordinate: .init(latitude: 1.23, longitude: 4.56),
+                altitude: 103,
+                horizontalAccuracy: 104,
+                verticalAccuracy: 105,
+                course: 106,
+                courseAccuracy: 107,
+                speed: 108,
+                speedAccuracy: 109,
+                timestamp: now.addingTimeInterval(-110)
+            ),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertNil(json["battery"])
+        XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
+        XCTAssertNil(json["location_name"])
+        XCTAssertEqual(json["speed"] as? Double, 108)
+        XCTAssertEqual(json["altitude"] as? Double, 103)
+        XCTAssertEqual(json["course"] as? Double, 106)
+        XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+    }
+
+    @available(iOS 13.4, *)
     func testGPSEnter() {
         Current.device.batteries = { [ DeviceBattery(level: 44, state: .charging, attributes: [:]) ] }
 
