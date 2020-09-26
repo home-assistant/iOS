@@ -172,6 +172,21 @@ public class ConnectionInfo: Codable {
         }
     }
 
+    private func sanitize(_ url: URL) -> URL {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url
+        }
+
+        if components.path.hasSuffix("/") {
+            while components.path.hasSuffix("/") {
+                components.path.removeLast()
+            }
+            return components.url ?? url
+        } else {
+            return url
+        }
+    }
+
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
     public var activeURL: URL {
         switch self.activeURLType {
@@ -184,11 +199,11 @@ public class ConnectionInfo: Codable {
                         self.activeURLType = .external
                     } else {
                         // no change - we don't have one to switch to
-                        return url
+                        return sanitize(url)
                     }
                     return self.activeURL
                 }
-                return url
+                return sanitize(url)
             } else {
                 // No internal URL available, so fallback to an external URL
                 if self.useCloud && self.remoteUIURL != nil {
@@ -202,9 +217,9 @@ public class ConnectionInfo: Codable {
             if let url = self.remoteUIURL {
                 if let internalURL = self.internalURL, self.isOnInternalNetwork {
                     self.activeURLType = .internal
-                    return internalURL
+                    return sanitize(internalURL)
                 }
-                return url
+                return sanitize(url)
             } else if self.externalURL != nil {
                 self.activeURLType = .external
                 return self.activeURL
@@ -213,9 +228,9 @@ public class ConnectionInfo: Codable {
             if let url = self.externalURL {
                 if let internalURL = self.internalURL, self.isOnInternalNetwork {
                     self.activeURLType = .internal
-                    return internalURL
+                    return sanitize(internalURL)
                 }
-                return url
+                return sanitize(url)
             } else if self.useCloud, self.remoteUIURL != nil {
                 self.activeURLType = .remoteUI
                 return self.activeURL
