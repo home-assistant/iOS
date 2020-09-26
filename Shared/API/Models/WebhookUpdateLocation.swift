@@ -19,7 +19,7 @@ public enum LocationNames: String {
 public class WebhookUpdateLocation: Mappable {
 
     public var HorizontalAccuracy: CLLocationAccuracy?
-    public var Battery: Int = 0
+    public var Battery: Int?
     public var Location: CLLocationCoordinate2D?
     public var LocationName: String?
 
@@ -39,7 +39,10 @@ public class WebhookUpdateLocation: Mappable {
         self.init()
 
         self.Trigger = trigger
-        self.Battery = Current.device.batteries().first?.level ?? -1
+
+        if let battery = Current.device.batteries().first {
+            self.Battery = battery.level
+        }
 
         let useLocation: Bool
 
