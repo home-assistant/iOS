@@ -187,52 +187,44 @@ platform :ios do
     lokalise_metadata(action: "update_itunes")
   end
 
+  private_lane :set_version_info do |options|
+    File.write(
+      '../Configuration/Version.xcconfig', 
+      "MARKETING_VERSION=#{options[:version]}\nCURRENT_PROJECT_VERSION=#{options[:build]}\n"
+    )
+  end
+
+  private_lane :get_xcconfig_marketing_version do
+    `source ../Configuration/Version.xcconfig; echo $MARKETING_VERSION`.strip!
+  end
+
+  private_lane :get_xcconfig_build_number do
+    `source ../Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION`.to_i
+  end
+
   desc "Bump build number"
   lane :bump_build do
-    git_pull(only_tags: true)
-
-    increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
-    increment_build_number
-
-    finalize_bump
+    set_version_info(
+      version: get_xcconfig_marketing_version(),
+      build: get_xcconfig_build_number() + 1
+    )
   end
 
-  desc "Bump version number"
-  lane :bump_version do
-    git_pull(only_tags: true)
+  desc "Set version number"
+  lane :set_version do |options|
+    version = options[:version]
 
-    increment_version_number
-    increment_build_number(build_number: 1)
-
-    finalize_bump
-  end
-
-  lane :set_beta_version do
-    increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
-    increment_build_number(build_number: latest_testflight_build_number(app_identifier: bundle_id("beta"), version: get_version_number(target: "HomeAssistant")) + 1)
-  end
-
-  private_lane :finalize_bump do
-    # Needed so that the changelog doesn"t include the version bump commit
-    change_log = change_log_since_last_tag
-
-    commit_message = "Version bump to #{complete_version_number}"
-
-    if is_ci
-      commit_message = "[ci skip] Version bump to #{complete_version_number}"
+    if not version
+      if !is_ci
+        version = prompt(text: "Version number: ")
+      else
+        UI.error "no version provided"
+      end
     end
 
-    commit_version_bump(message: commit_message, xcodeproj: "HomeAssistant.xcodeproj")
-
-    push_to_git_remote(remote_branch: git_branch)
-
-    set_github_release(
-      repository_name: "home-assistant/ios",
-      api_token: ENV["HOMEASSISTANT_GITHUB_API_TOKEN"],
-      name: complete_version_number,
-      tag_name: tag_name("testflight", get_version_number(target: "HomeAssistant"), get_build_number),
-      description: change_log || "Release commit",
-      is_prerelease: false
+    set_version_info(
+      version: version,
+      build: 1
     )
   end
 
