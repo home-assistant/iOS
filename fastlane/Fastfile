@@ -195,11 +195,11 @@ platform :ios do
   end
 
   private_lane :get_xcconfig_marketing_version do
-    `source ../Configuration/Version.xcconfig; echo $MARKETING_VERSION`.strip!
+    sh('cd .. ; . Configuration/Version.xcconfig ; echo $MARKETING_VERSION').strip!
   end
 
   private_lane :get_xcconfig_build_number do
-    `source ../Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION`.to_i
+    sh('cd .. ; . Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION').to_i
   end
 
   desc "Bump build number"
@@ -213,6 +213,7 @@ platform :ios do
   desc "Set version number"
   lane :set_version do |options|
     version = options[:version]
+    build = options[:build] or 1
 
     if not version
       if !is_ci
@@ -224,7 +225,7 @@ platform :ios do
 
     set_version_info(
       version: version,
-      build: 1
+      build: build
     )
   end
 
