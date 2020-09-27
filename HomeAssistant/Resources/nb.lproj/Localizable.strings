@@ -884,7 +884,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "open_label" = "Åpen";
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
 "widgets.actions.description" = "Utfør Home Assistant handlinger.";
-"menu.actions.title" = "Actions";
-"menu.actions.configure" = "Configure…";
-"share_extension.entered_placeholder" = "'entered' in event";
-"share_extension.error.title" = "Couldn't Send";
+"menu.actions.title" = "Handlinger";
+"menu.actions.configure" = "Konfigurere...";
+"share_extension.entered_placeholder" = "'angitt' i tilfelle";
+"share_extension.error.title" = "Kunne ikke sende";
+"settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";

@@ -21,10 +21,18 @@ jobs:
           HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
           HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
       - name: Commit changes
+        id: commit
         run: |
-          git diff --exit-code HomeAssistant/Resources/en.lproj/Localizable.strings >/dev/null
           git checkout -- HomeAssistant.xcodeproj/project.pbxproj
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
           git commit -am "Update Localized Strings"
-          git push
+          git clean -xfd
+          echo ::set-output name=pr_title::"$(git log -1 --pretty='%s')"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          base: master
+          branch: create-pull-request/download_strings
+          title: ${{ steps.commit.outputs.pr_title }}
+          body: "Automatically created by ${{ github.actor }}."
