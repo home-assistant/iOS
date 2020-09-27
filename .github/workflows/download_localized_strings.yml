@@ -27,4 +27,5 @@ jobs:
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
           git commit -am "Update Localized Strings"
-          git push
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
