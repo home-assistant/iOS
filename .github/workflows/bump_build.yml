@@ -25,5 +25,5 @@ jobs:
       uses: peter-evans/create-pull-request@v3
       with:
         branch: create-pull-request/bump_build
-        title: ${{ steps.vars.outputs.pr_title }}
+        title: ${{ steps.commit.outputs.pr_title }}
         body: "Automatically created by ${{ github.actor }}."
