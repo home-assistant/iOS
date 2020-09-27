@@ -1,0 +1,25 @@
+dist: trusty
+language: ruby
+cache: bundler
+rvm:
+   - 2.0.0-p647
+   - 2.3.4
+   - 2.4.1
+   - 2.6.3
+addons:
+ code_climate:
+   repo_token: 937468c2cbb0d7c0546b62d0fcbcba8a2a8b82714a64a52ffd0b951e71df626d
+
+before_install:
+  - export GEM_HOME=$HOME/.gem
+  - export PATH=$GEM_HOME/bin:$PATH
+  # There is a bug in travis. When using system ruby, bundler is not
+  # installed and causes the default install action to fail.
+  - if [ "$TRAVIS_RUBY_VERSION" = "system" ]; then sudo gem install "bundler:~> 1.13"; else gem install "bundler:~> 1.13"; fi
+  # RubyGems 2.0.14 isn't a fun time on 2.0.0p451
+  - if [ "$TRAVIS_RUBY_VERSION" = "system" ]; then sudo gem update --system; fi
+
+install:
+  - bundle install --without=documentation
+
+script: bundle exec rake spec

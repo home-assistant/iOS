@@ -1,0 +1,44 @@
+  <%= $terminal.color "NAME", :bold %>:
+
+    <%= program :name %>
+
+  <%= $terminal.color "DESCRIPTION", :bold %>:
+
+    <%= Commander::HelpFormatter.indent 4, program(:description) %>
+
+  <%= "#{$terminal.color "COMMANDS", :bold}:#{default_command_description}" %>
+<% for name, command in @commands.sort -%>
+	<% unless alias? name %>
+    <%= "%-#{max_command_length}s #{summary_prefix(command.name)}%s" % [command.name, command.summary || command.description] -%>
+	<% end -%>
+<% end %>
+<% unless @aliases.empty? %>
+  <%= $terminal.color "ALIASES", :bold %>:
+  <% for alias_name, args in @aliases.sort %>
+    <%= "%-#{max_aliases_length}s %s %s" % [alias_name, command(alias_name).name, args.join(' ')] -%>
+  <% end %>
+<% end %>
+<% unless @options.empty? -%>
+  <%= $terminal.color "GLOBAL OPTIONS", :bold %>:
+	<% for option in @options -%>
+
+    <%= option[:switches].join ', ' %> 
+        <%= option[:description] %>
+	<% end -%>
+<% end -%>
+<% unless default_command_options.empty? %>
+  <%= $terminal.color "OPTIONS for #{@default_command}", :bold %>:
+	<% for option in @default_command_options -%>
+
+    <%= option[:switches].join ', ' %> 
+        <%= option[:description] %>
+	<% end -%>
+<% end -%>
+<% if program :help -%>
+  <% for title, body in program(:help) %>
+  <%= $terminal.color title.to_s.upcase, :bold %>:
+
+    <%= body %>
+  <% end -%>
+<% end -%>
+

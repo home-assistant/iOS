@@ -1,0 +1,24 @@
+---
+before_install:
+  - gem update --system
+  - gem install bundler -v "~> 2.0"
+
+language: ruby
+sudo: false
+cache:
+  - bundler
+
+rvm:
+  - 2.5
+  - 2.6
+  - 2.7
+  - jruby
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+  allow_failures:
+    - rvm: jruby
+
+script: bundle exec rake spec

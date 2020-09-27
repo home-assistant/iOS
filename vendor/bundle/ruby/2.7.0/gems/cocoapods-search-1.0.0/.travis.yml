@@ -1,0 +1,10 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.0.0-p451
+
+branches:
+  only:
+    - master
+    - /.+-stable$/
+    

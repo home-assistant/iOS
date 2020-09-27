@@ -1,0 +1,100 @@
+require 'spaceship'
+
+require 'base64'
+
+require_relative 'manager'
+require_relative 'module'
+
+module Sigh
+  class DownloadAll
+    # Download all valid provisioning profiles
+    def download_all(download_xcode_profiles: false)
+      UI.message("Starting login with user '#{Sigh.config[:username]}'")
+      Spaceship.login(Sigh.config[:username], nil)
+      Spaceship.select_team
+      UI.message("Successfully logged in")
+
+      if download_xcode_profiles
+        UI.deprecated("The App Store Connect API does not support querying for Xcode managed profiles: --download_code_profiles is deprecated")
+      end
+
+      case Sigh.config[:platform].to_s
+      when 'ios'
+        profile_types = [
+          Spaceship::ConnectAPI::Profile::ProfileType::IOS_APP_STORE,
+          Spaceship::ConnectAPI::Profile::ProfileType::IOS_APP_INHOUSE,
+          Spaceship::ConnectAPI::Profile::ProfileType::IOS_APP_ADHOC,
+          Spaceship::ConnectAPI::Profile::ProfileType::IOS_APP_DEVELOPMENT
+        ]
+      when 'macos'
+        profile_types = [
+          Spaceship::ConnectAPI::Profile::ProfileType::MAC_APP_STORE,
+          Spaceship::ConnectAPI::Profile::ProfileType::MAC_APP_DEVELOPMENT,
+          Spaceship::ConnectAPI::Profile::ProfileType::MAC_APP_DIRECT
+        ]
+      when 'catalyst'
+        profile_types = [
+          Spaceship::ConnectAPI::Profile::ProfileType::MAC_CATALYST_APP_STORE,
+          Spaceship::ConnectAPI::Profile::ProfileType::MAC_CATALYST_APP_DEVELOPMENT,
+          Spaceship::ConnectAPI::Profile::ProfileType::MAC_CATALYST_APP_DIRECT
+        ]
+      when 'tvos'
+        profile_types = [
+          Spaceship::ConnectAPI::Profile::ProfileType::TVOS_APP_STORE,
+          Spaceship::ConnectAPI::Profile::ProfileType::TVOS_APP_INHOUSE,
+          Spaceship::ConnectAPI::Profile::ProfileType::TVOS_APP_ADHOC,
+          Spaceship::ConnectAPI::Profile::ProfileType::TVOS_APP_DEVELOPMENT
+        ]
+      end
+
+      # Filtering on 'profileType' seems to be undocumented as of 2020-07-30
+      # but works on both web session and official API
+      profiles = Spaceship::ConnectAPI::Profile.all(filter: { profileType: profile_types.join(",") }, includes: "bundleId")
+      download_profiles(profiles)
+    end
+
+    # @param profiles [Array] Array of all the provisioning profiles we want to download
+    def download_profiles(profiles)
+      UI.important("No profiles available for download") if profiles.empty?
+
+      profiles.each do |profile|
+        if profile.valid?
+          UI.message("Downloading profile '#{profile.name}'...")
+          download_profile(profile)
+        else
+          UI.important("Skipping invalid/expired profile '#{profile.name}'")
+        end
+      end
+    end
+
+    def pretty_type(profile_type)
+      return Sigh.profile_pretty_type(profile_type)
+    end
+
+    # @param profile [ProvisioningProfile] A profile we plan to download and store
+    def download_profile(profile)
+      FileUtils.mkdir_p(Sigh.config[:output_path])
+
+      type_name = pretty_type(profile.profile_type)
+      profile_name = "#{type_name}_#{profile.uuid}_#{profile.bundle_id.identifier}"
+
+      if Sigh.config[:platform].to_s == 'tvos'
+        profile_name += "_tvos"
+      end
+
+      if ['macos', 'catalyst'].include?(Sigh.config[:platform].to_s)
+        profile_name += '.provisionprofile'
+      else
+        profile_name += '.mobileprovision'
+      end
+
+      output_path = File.join(Sigh.config[:output_path], profile_name)
+      File.open(output_path, "wb") do |f|
+        content = Base64.decode64(profile.profile_content)
+        f.write(content)
+      end
+
+      Manager.install_profile(output_path) unless Sigh.config[:skip_install]
+    end
+  end
+end

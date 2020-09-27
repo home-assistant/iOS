@@ -1,0 +1,37 @@
+inherit_from: .rubocop_todo.yml
+
+# Offense count: 5
+Encoding:
+  Enabled: false
+
+# Enforce trailing comma after last item of multiline hashes.
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
+
+Metrics/BlockLength:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: only_fail
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/NumericLiteralPrefix:
+  EnforcedOctalStyle: zero_only
+
+Style/MethodMissing:
+  Enabled: false
+
+Style/SpaceInsideStringInterpolation:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  Enabled: false
+
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+
+Metrics/ModuleLength:
+  CountComments: false  # count full line comments?
+  Max: 150

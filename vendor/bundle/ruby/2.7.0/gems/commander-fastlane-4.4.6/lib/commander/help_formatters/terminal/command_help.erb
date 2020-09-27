@@ -1,0 +1,35 @@
+
+  <%= $terminal.color "NAME", :bold %>:
+
+    <%= @name %>
+<% if @syntax -%>
+
+  <%= $terminal.color "SYNOPSIS", :bold %>:
+
+    <%= @syntax -%>
+
+<% end -%>
+
+  <%= $terminal.color "DESCRIPTION", :bold %>:
+
+    <%= Commander::HelpFormatter.indent 4, (@description || @summary || 'No description.') -%>
+
+<% unless @examples.empty? -%>
+
+  <%= $terminal.color "EXAMPLES", :bold %>:
+	<% for description, command in @examples -%>
+
+    # <%= description %>
+    <%= command %>
+	<% end -%>
+<% end -%>
+<% unless @options.empty? -%>
+
+  <%= $terminal.color "OPTIONS", :bold %>:
+	<% for option in @options -%>
+
+    <%= option[:switches].join ', ' %> 
+        <%= Commander::HelpFormatter.indent 8, option[:description] %>
+	<% end -%>
+<% end -%>
+
