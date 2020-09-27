@@ -74,7 +74,6 @@
 		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
-		1167405D25198FDD00F51626 /* MacBridge.bundle in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -135,6 +134,7 @@
 		119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
+		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */; };
 		11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
@@ -698,13 +698,6 @@
 			remoteGlobalIDString = D03D891620E0A85200D4F28D;
 			remoteInfo = "Shared-iOS";
 		};
-		1167405E25198FDD00F51626 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1167402125198F9A00F51626;
-			remoteInfo = MacBridge;
-		};
 		1171507424DFCDEE0065E874 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -725,6 +718,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B6CC5D8D2159D10E00833E5D;
 			remoteInfo = WatchAppExtension;
+		};
+		11A31C92252128B900D50A78 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1167402125198F9A00F51626;
+			remoteInfo = MacBridge;
 		};
 		B627CB131D83C87B0057173E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -828,6 +828,17 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		11A31CA1252128C200D50A78 /* Embed Plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */,
+			);
+			name = "Embed Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B61DA2A7221E8D8F00AADEDD /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -850,7 +861,6 @@
 				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
 				1171507624DFCDEE0065E874 /* WidgetsExtension.appex in Embed App Extensions */,
 				B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */,
-				1167405D25198FDD00F51626 /* MacBridge.bundle in Embed App Extensions */,
 				B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -3146,7 +3156,6 @@
 				B66C58AB215086F0004AB261 /* PBXTargetDependency */,
 				1171507524DFCDEE0065E874 /* PBXTargetDependency */,
 				1155DD0F250F4101003405C0 /* PBXTargetDependency */,
-				1167405F25198FDD00F51626 /* PBXTargetDependency */,
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
@@ -3316,12 +3325,14 @@
 				F396C7F080362F87E8D0861E /* [CP] Check Pods Manifest.lock */,
 				D03D891220E0A85200D4F28D /* Sources */,
 				D03D891320E0A85200D4F28D /* Frameworks */,
+				11A31CA1252128C200D50A78 /* Embed Plugins */,
 				D03D891420E0A85200D4F28D /* Headers */,
 				D03D891520E0A85200D4F28D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				11A31C93252128B900D50A78 /* PBXTargetDependency */,
 			);
 			name = "Shared-iOS";
 			packageProductDependencies = (
@@ -4868,12 +4879,6 @@
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = 1155DD20250F446F003405C0 /* PBXContainerItemProxy */;
 		};
-		1167405F25198FDD00F51626 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = maccatalyst;
-			target = 1167402125198F9A00F51626 /* MacBridge */;
-			targetProxy = 1167405E25198FDD00F51626 /* PBXContainerItemProxy */;
-		};
 		1171507524DFCDEE0065E874 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1171506824DFCDE60065E874 /* WidgetsExtension */;
@@ -4888,6 +4893,12 @@
 			isa = PBXTargetDependency;
 			target = B6CC5D8D2159D10E00833E5D /* WatchAppExtension */;
 			targetProxy = 119A172624D74DA800D1B66D /* PBXContainerItemProxy */;
+		};
+		11A31C93252128B900D50A78 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = maccatalyst;
+			target = 1167402125198F9A00F51626 /* MacBridge */;
+			targetProxy = 11A31C92252128B900D50A78 /* PBXContainerItemProxy */;
 		};
 		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

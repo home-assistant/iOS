@@ -89,7 +89,7 @@ public class Environment {
 
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {
-        guard let pluginUrl = Bundle.main.builtInPlugInsURL,
+        guard let pluginUrl = Bundle(for: Environment.self).builtInPlugInsURL,
               let bundle = Bundle(url: pluginUrl.appendingPathComponent("MacBridge.bundle"))
         else {
             fatalError("couldn't load mac bridge bundle")
