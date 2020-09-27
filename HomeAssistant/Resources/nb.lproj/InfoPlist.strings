@@ -8,4 +8,4 @@
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send plassering";
 "NSLocalNetworkUsageDescription" = "Finn og kommuniser med Home Assistant-forekomsten.";
 "NFCReaderUsageDescription" = "Å lese og skrive NFC-tagger lar deg utløse hendelser.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NSCameraUsageDescription" = "Ta bilder og send dem til Home Assistant-serveren.";

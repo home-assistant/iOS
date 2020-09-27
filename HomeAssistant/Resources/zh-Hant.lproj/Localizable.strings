@@ -759,7 +759,7 @@
 "settings_sensors.detail.device_class" = "設備類別";
 "settings_sensors.detail.icon" = "圖示";
 "settings_sensors.periodic_update.title" = "週期更新";
-"settings_sensors.periodic_update.description" = "開啟後、傳感器將會依設定更新時間持續更新。";
+"settings_sensors.periodic_update.description" = "開啟後、傳感器將會依設定於 App 於背景開啟時持續更新。";
 "settings_sensors.periodic_update.off" = "關閉";
 "location_change_notification.launch.body" = "已透過 App 啟動更新座標";
 "location_change_notification.periodic.body" = "已透過週期更新更新座標";
@@ -884,7 +884,8 @@
 "open_label" = "開啟";
 "sensors.active.setting.time_until_idle" = "閒置前時間";
 "widgets.actions.description" = "執行 Home Assistant 動作。";
-"menu.actions.title" = "Actions";
-"menu.actions.configure" = "Configure…";
-"share_extension.entered_placeholder" = "'entered' in event";
-"share_extension.error.title" = "Couldn't Send";
+"menu.actions.title" = "動作";
+"menu.actions.configure" = "設定...";
+"share_extension.entered_placeholder" = "事件中的 'entered'";
+"share_extension.error.title" = "無法傳送";
+"settings_sensors.periodic_update.description_mac" = "開啟後、傳感器將會依設定於 App 開啟時持續更新，部分感測器更新頻率將更密集。";
