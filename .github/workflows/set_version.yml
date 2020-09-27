@@ -1,0 +1,24 @@
+name: Set Version
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: "New Version Number"
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Gems
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+    - run: "bundle exec fastlane set_version version:${{ github.event.inputs.version }}"
+    - name: Commit changes
+      run: |
+        git config --global user.name 'Home Assistant Bot'
+        git config --global user.email 'hello@home-assistant.io'
+        git add Configuration/Version.xcconfig
+        git commit -m "Bump Build to $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)"
+        git push
