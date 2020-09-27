@@ -1,0 +1,21 @@
+name: "Version: Bump Build"
+on:
+  workflow_dispatch:
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+        bundler-cache: true
+    - run: "bundle exec fastlane bump_build"
+    - name: Commit changes
+      run: |
+        source Configuration/Version.xcconfig
+        git config --global user.name 'Home Assistant Bot'
+        git config --global user.email 'hello@home-assistant.io'
+        git add Configuration/Version.xcconfig
+        git commit -m "Bump Build to $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)"
+        git push

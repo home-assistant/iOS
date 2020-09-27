@@ -66,16 +66,11 @@ Download App Store Connect metadata from Lokalise and upload to App Store Connec
 fastlane ios bump_build
 ```
 Bump build number
-### ios bump_version
+### ios set_version
 ```
-fastlane ios bump_version
+fastlane ios set_version
 ```
-Bump version number
-### ios set_beta_version
-```
-fastlane ios set_beta_version
-```
-
+Set version number
 ### ios ci
 ```
 fastlane ios ci
