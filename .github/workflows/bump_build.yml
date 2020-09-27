@@ -19,7 +19,7 @@ jobs:
         git config --global user.email 'hello@home-assistant.io'
         git add Configuration/Version.xcconfig
         git commit -m "Bump Build to $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)"
-        git checkout -- .
+        git clean -d -f
         echo ::set-output name=pr_title::\"$(git log -1 --pretty='%s')\"
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3
