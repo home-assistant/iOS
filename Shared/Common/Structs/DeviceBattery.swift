@@ -87,8 +87,12 @@ public struct DeviceBattery {
         } else {
             self.name = name
         }
-        if let id = info[kIOPSPowerSourceIDKey] as? Int {
-            self.uniqueID = String(describing: id)
+        if let serialNumber = info[kIOPSHardwareSerialNumberKey] as? String {
+            self.uniqueID = serialNumber
+        } else if let name = name {
+            self.uniqueID = name
+        } else if let type = info[kIOPSTypeKey] as? String {
+            self.uniqueID = type
         } else {
             self.uniqueID = nil
         }
