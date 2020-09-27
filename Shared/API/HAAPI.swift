@@ -228,7 +228,9 @@ public class HomeAssistantAPI {
 
     private func getTemporaryDownloadDataPath(_ downloadingURL: URL) -> URL? {
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent(downloadingURL.lastPathComponent, isDirectory: false)
+            // using a random file name so we always have one, see https://github.com/home-assistant/iOS/issues/1068
+            .appendingPathComponent(UUID().uuidString, isDirectory: false)
+            .appendingPathExtension(downloadingURL.pathExtension)
     }
 
     private func removeOldDownloadDirectory() {
