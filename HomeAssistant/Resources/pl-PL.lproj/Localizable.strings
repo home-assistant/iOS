@@ -885,3 +885,4 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "menu.actions.configure" = "Configure…";
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
+"settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";
