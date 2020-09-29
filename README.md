@@ -1,87 +1,48 @@
-Home Assistant for iOS
+Home Assistant for Apple Platforms
 =================
 
 [![TestFlight Beta invite](https://img.shields.io/badge/TestFlight-Beta-blue.svg)](https://www.home-assistant.io/ios/beta/)
 [![Download on the App Store](https://img.shields.io/itunes/v/1099568401.svg)](https://itunes.apple.com/app/home-assistant-open-source-home-automation/id1099568401)
-[![Swift 3.0](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
-[![Platform iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
-[![Build Status](https://github.com/home-assistant/iOS/workflows/API/CI.svg)](https://github.com/home-assistant/iOS/actions)
-[![codebeat badge](https://codebeat.co/badges/c6e6173b-c64f-44be-a692-29b922891db7)](https://codebeat.co/projects/github-com-home-assistant-iOS)
 [![GitHub issues](https://img.shields.io/github/issues/home-assistant/iOS.svg?style=flat)](https://github.com/home-assistant/iOS/issues)
-[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/home-assistant/iOS/blob/master/LICENSE)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/home_assistant.svg?style=social)](https://twitter.com/home_assistant)
+[![License Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green.svg?style=flat)](https://github.com/home-assistant/iOS/blob/master/LICENSE)
 
 ## Getting Started
 
-Run the following two commands to install Xcode's command line tools and bundler, if you don't have that yet.
-
-```bash
-[sudo] gem install bundler
-xcode-select --install
-```
-
-The following commands will clone the repo and install all the required dependencies.
+Home Assistant uses Bundler, Cocoapods and Swift Package Manager to manage build dependencies. You'll need Xcode 12.0 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get this running using the following commands:
 
 ```bash
 git clone https://github.com/home-assistant/iOS.git
 cd iOS
+[sudo] gem install bundler
 bundle install
-pod install --repo-update
-bundle exec pod install
+bundle exec pod install --repo-update
 ```
 
-Now you can open `HomeAssistant.xcworkspace` and run the `HomeAssistant` target onto your simulator or iOS device.
+Once this completes, you can launch  `HomeAssistant.xcworkspace` and run the `Debug` target onto your simulator or iOS device.
+
+## Code Signing
+
+Although the app is set up to use Automatic provisioning for Debug builds, you'll need to customize a few of the options. This is because the app makes heavy use of entitlements that require code signing, even for simulator builds.
+
+Edit the file `Configuration/HomeAssistant.overrides.xcconfig` (which will not exist by default and is ignored by git) and add the following:
+
+```bash
+DEVELOPMENT_TEAM = YourTeamID
+BUNDLE_ID_PREFIX = some.bundle.prefix
+```
+
+Xcode should generate provisioning profiles in your Team ID and our configuration will disable features your team doesn't have like Critical Alerts. You can find your Team ID on Apple's [developer portal](https://developer.apple.com/account).
+
+## Xcode 12 Issues
+
+Apple shipped Xcode 12 with several regressions that impact Home Assistant and you will need to work around those that we cannot automatically fix in code:
+
+1. If you experience `Clibsodium` module errors, retrying the build should find it afterwards.
+1. You will need to copy `libnfshared.dylib` from an older version of the Xcode 12 betas to run on the iOS 14 simulator. You can replicate the steps the [CI does to get compatibility](https://github.com/home-assistant/iOS/blob/master/.github/workflows/ci.yml).
 
 ## Code style
 
-This project will follow the [GitHub Swift Styleguide](https://github.com/github/swift-style-guide) in every way possible.
-
-In order to enforce this, the project will also have a [Swiftlint](https://github.com/realm/SwiftLint) build phase to run the linter everytime the app is built.
-
-## Project Structure
-
-To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https://github.com/venmo/synx).
-
-## Dependencies
-
-### Model
-
-- [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper): Simple JSON Object mapping written in Swift
-
-### Networking
-
-- [Alamofire](https://github.com/Alamofire/Alamofire): Elegant HTTP Networking in Swift
-- [AlamofireImage](https://github.com/Alamofire/AlamofireImage): AlamofireImage is an image component library for Alamofire
-- [AlamofireNetworkActivityIndicator](https://github.com/Alamofire/AlamofireNetworkActivityIndicator): Controls the visibility of the network activity indicator on iOS using Alamofire.
-- [AlamofireObjectMapper](https://github.com/tristanhimmelman/AlamofireObjectMapper): An Alamofire extension which converts JSON response data into swift objects using ObjectMapper
-- [IKEventSource](https://github.com/inaka/EventSource): A simple Swift client library for Server Sent Events (SSE)
-
-### UI
-
-- [CPDAcknowledgements](https://github.com/CocoaPods/CPDAcknowledgements): Show your CocoaPods dependencies in-app.
-- [Eureka](https://github.com/xmartlabs/Eureka): Elegant iOS form builder in Swift
-- [FontAwesomeKit](https://github.com/robbiet480/FontAwesomeKit): Icon font library for iOS.
-- [MBProgressHUD](https://github.com/jdg/MBProgressHUD): MBProgressHUD + Customizations
-- [Whisper](https://github.com/hyperoslo/Whisper): Whisper is a component that will make the task of display messages and in-app notifications simple. It has three different views inside
-
-### Translations
--  [Lokalise](https://lokalise.com/public/834452985a05254348aee2.46389241/): Translations are handled through Lokalise and not through this repository. To contribute to the translations please join the [Lokalise](https://lokalise.com/public/834452985a05254348aee2.46389241/) team.
-
-### Utilities
-
-- [DeviceKit](https://github.com/dennisweissmann/DeviceKit): DeviceKit is a value-type replacement of UIDevice.
-- [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess): Simple Swift wrapper for Keychain that works on iOS and OS X
-- [PromiseKit](https://github.com/mxcl/PromiseKit): Promises for Swift & ObjC
-- [SwiftLocation](https://github.com/malcommac/SwiftLocation): Easy Location Manager and Beacon Monitoring in Swift sauce
-
-### Environment
-
-- [SwiftLint](https://github.com/realm/SwiftLint): A tool to enforce Swift style and conventions.
-- [SwiftGen](https://github.com/AliSoftware/SwiftGen): A collection of Swift tools to generate Swift code (enums for your assets, storyboards, Localizable.strings, …)
-- [Firebase](https://firebase.google.com/): Firebase gives you functionality like analytics, databases, messaging and crash reporting so you can move quickly and focus on your users.
-- [Crashlytics](https://firebase.google.com/products/crashlytics): The most powerful, yet lightest weight crash reporting solution
-- [Synx](https://github.com/venmo/synx): A command-line tool that reorganizes your Xcode project folder to match your Xcode groups
-- [Fastlane](https://github.com/fastlane/fastlane): The easiest way to automate building and releasing your iOS and Android apps
+SwiftLint runs as part of Pull Request checks and will run automatically when building the project.
 
 ## Continuous Integration
 
