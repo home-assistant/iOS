@@ -59,7 +59,7 @@ extension RateLimitResponse.RateLimits {
             $0.title = { () -> String in
                 switch keyPath {
                 case \.attempts:
-                    return L10n.SettingsDetails.Notifications.RateLimits.errors
+                    return L10n.SettingsDetails.Notifications.RateLimits.attempts
                 case \.successful:
                     return L10n.SettingsDetails.Notifications.RateLimits.delivered
                 case \.errors:
