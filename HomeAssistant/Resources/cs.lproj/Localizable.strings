@@ -863,7 +863,6 @@ Thank you.\
 "settings.developer.show_log_files.title" = "Zobrazit log soubory ve Finderu";
 "settings_details.actions.footer_mac" = "Akce se používají v nabídce a widgetech.";
 "ha_api.api_error.update_not_possible" = "Operaci nelze provést.";
-"settings_details.notifications.sounds.import_mac_instructions" = "Přidejte vlastní zvuky do složky, které je možné používat v oznámeních. K zavolání služby použijte název souboru bez přípony";
 "settings_details.notifications.sounds.import_mac_open_folder" = "Otevřít složku ve Finderu";
 "url_handler.error.action_not_found" = "Akce nenalezeny";
 "widgets.actions.title" = "Akce";
@@ -887,3 +886,4 @@ Thank you.\
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
 "settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Add custom sounds to your Sounds folder to use them in notifications. Use their filename as the sound value in the service call.";

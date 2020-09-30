@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Baştan başlamak";
 "7iT-bd-cdY.text" = "Manuel Yapılandırma";
 "PIW-dY-j0P.text" = "Devam etmek için lütfen Home Assistant URL si giriniz. Tam formatlı uygun URL formatında olmalıdır \"http://homeassistant.local:8123\" (protokol, sunucu adı ve portu).";
-"xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "örn. http://homeassistant.local:8123";
