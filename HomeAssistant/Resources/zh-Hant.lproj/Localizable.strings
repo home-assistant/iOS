@@ -865,7 +865,6 @@
 "settings.developer.show_log_files.title" = "於 Finder 顯示日誌檔案";
 "settings_details.actions.footer_mac" = "動作可用於應用程式選單及 Widget。";
 "ha_api.api_error.update_not_possible" = "動作無法執行。";
-"settings_details.notifications.sounds.import_mac_instructions" = "新增自訂音效至音效資料夾以於通知中使用。於呼叫服務中、使用音效檔案檔名、不包含附屬檔名作為音效設定值。";
 "settings_details.notifications.sounds.import_mac_open_folder" = "於 Finder 開啟檔案夾";
 "url_handler.error.action_not_found" = "找不到動作";
 "widgets.actions.title" = "動作";
@@ -889,3 +888,4 @@
 "share_extension.entered_placeholder" = "事件中的 'entered'";
 "share_extension.error.title" = "無法傳送";
 "settings_sensors.periodic_update.description_mac" = "開啟後、傳感器將會依設定於 App 開啟時持續更新，部分感測器更新頻率將更密集。";
+"settings_details.notifications.sounds.import_mac_instructions" = "Add custom sounds to your Sounds folder to use them in notifications. Use their filename as the sound value in the service call.";

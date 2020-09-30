@@ -1848,7 +1848,7 @@ public enum L10n {
         public static var importCustom: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.import_custom") }
         /// Import sounds from iTunes File Sharing
         public static var importFileSharing: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.import_file_sharing") }
-        /// Add custom sounds to your Sounds folder to use them in notifications. Use their filename without extension as the sound value in the service call.
+        /// Add custom sounds to your Sounds folder to use them in notifications. Use their filename as the sound value in the service call.
         public static var importMacInstructions: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.import_mac_instructions") }
         /// Open Folder in Finder
         public static var importMacOpenFolder: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.import_mac_open_folder") }
