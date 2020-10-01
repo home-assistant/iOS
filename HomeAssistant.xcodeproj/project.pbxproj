@@ -887,6 +887,10 @@
 		1100D51E2496F63400B1073C /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColors.swift; sourceTree = "<group>"; };
 		1100D52024974D6700B1073C /* camera_notification.apns */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = camera_notification.apns; sourceTree = "<group>"; };
 		1101568624D7712F009424C9 /* TagManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagManagerProtocol.swift; sourceTree = "<group>"; };
+		1109B6BA25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Intents.strings; sourceTree = "<group>"; };
+		1109B6BB25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		1109B6BC25263EEF005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1109B6BD25263F1D005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1109F81E24A1C011002590F2 /* SensorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProvider.swift; sourceTree = "<group>"; };
 		1109F82324A25A41002590F2 /* SensorContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.test.swift; sourceTree = "<group>"; };
 		110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsContainerView.swift; sourceTree = "<group>"; };
@@ -3576,6 +3580,7 @@
 				uk,
 				"en-GB",
 				cs,
+				el,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
@@ -4990,6 +4995,7 @@
 				B646B05224D10A5400093E6A /* uk */,
 				119EC3D924D5395B00617D51 /* en-GB */,
 				B64C5B2B24DCB5390038AB3D /* cs */,
+				1109B6BC25263EEF005D51C2 /* el */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -5023,6 +5029,7 @@
 				B646B05024D10A5400093E6A /* uk */,
 				119EC3D724D5395B00617D51 /* en-GB */,
 				B64C5B2924DCB5390038AB3D /* cs */,
+				1109B6BA25263EEE005D51C2 /* el */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -5065,6 +5072,7 @@
 				B646B05124D10A5400093E6A /* uk */,
 				119EC3D824D5395B00617D51 /* en-GB */,
 				B64C5B2A24DCB5390038AB3D /* cs */,
+				1109B6BB25263EEE005D51C2 /* el */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -5105,6 +5113,7 @@
 				B646B05324D10A5400093E6A /* uk */,
 				119EC3DA24D5395C00617D51 /* en-GB */,
 				B64C5B2C24DCB5390038AB3D /* cs */,
+				1109B6BD25263F1D005D51C2 /* el */,
 			);
 			name = Localizable.strings;
 			path = .;
