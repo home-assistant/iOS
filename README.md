@@ -37,8 +37,8 @@ Xcode should generate provisioning profiles in your Team ID and our configuratio
 
 Apple shipped Xcode 12 with several regressions that impact Home Assistant and you will need to work around those that we cannot automatically fix in code:
 
-1. If you experience `Clibsodium` module errors, retrying the build should find it afterwards.
-1. You will need to copy `libnfshared.dylib` from an older version of the Xcode 12 betas to run on the iOS 14 simulator. You can replicate the steps the [CI does to get compatibility](https://github.com/home-assistant/iOS/blob/master/.github/workflows/ci.yml).
+1. If you experience `Clibsodium` module errors, retrying the build should find it afterwards after a few attempts. Once it is able to build once, it should stop misbehaving.
+1. For Xcode 12 releases before 12.2 beta 2, you will need to copy `libnfshared.dylib` from an older version of the Xcode 12 betas to run on the iOS 14 simulator. You can replicate the steps the [CI does to get compatibility](https://github.com/home-assistant/iOS/blob/master/.github/workflows/ci.yml).
 
 ## Code style
 
