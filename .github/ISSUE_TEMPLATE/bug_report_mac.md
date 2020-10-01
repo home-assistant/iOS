@@ -13,9 +13,9 @@ If your issue relates to something not looking right on Home Assistant within th
 <!-- Please include your mac's model and version as listed in 'About This Mac'. Please also give the app version listed in the Home Assistant>About Home Assistant, please include the number in brackets. Safari can be found by launching it in Safari > About Safari. -->
 
 Model Name: 
-Software Version: 
-App version: 
-Safari version:
+macOS Version: 
+App Version: 
+Safari Version:
 
 **Home Assistant Core Version**
 <!-- Please give the version number of Home Assistant Core you are running -->
