@@ -1,0 +1,180 @@
+"0aqrcy" = "Failed to render template with error: ${error}";
+
+"2KWKqM" = "Failed to call service, Home Assistant is not currently reachable";
+
+"2b0Uo4" = "Service";
+
+"3jKamg" = "{{ now() }}";
+
+"4fFx9y" = "Location updated";
+
+"5ZzwZD" = "Failed to update location, Home Assistant is not currently reachable";
+
+"5bVvn0" = "Failed to update location with error: ${error}";
+
+"637QjD" = "Error";
+
+"6ozAdN" = "Camera Image";
+
+"7boBzr" = "Call ${service} with data";
+
+"8BMgur" = "Successfully sent ${eventName} to Home Assistant";
+
+"8skKro" = "Which actions?";
+
+"B4bXyc" = "Successfully rendered template";
+
+"CmlkE4" = "shortcut_event";
+
+"DdnZyl" = "Got the latest still from${cameraID}";
+
+"DsasVx" = "Error";
+
+"EWqRDj" = "Failed to perform action: ${error}";
+
+"FBQiVD" = "Call a service on the Home Assistant instance";
+
+"FZ9qkT" = "Render Template";
+
+"FtQqoU" = "Location updated";
+
+"HCM8Oe" = "Fire ${eventName} with data";
+
+"HSLcG7" = "Event Name";
+
+"HoH8wg" = "Actions";
+
+"KHH48D" = "Failed to update location, Home Assistant is not currently reachable";
+
+"KJS2jk" = "Failed to update location with error: ${error}";
+
+"KM7mXC" = "Action";
+
+"KzOHYA" = "Failed to get camera image with error: ${error}";
+
+"LVEY3e" = "Camera ID";
+
+"Lgymq2" = "Which service?";
+
+"MTPojJ" = "What is the event name?";
+
+"N9iJpK" = "Get Camera Image";
+
+"NdG9Jz" = "Renders the Home Assistant template";
+
+"NsbUTz" = "Camera Entity";
+
+"Q2Qp4a" = "Action";
+
+"QVD2lM" = "Service Data";
+
+"QmGpOH" = "Error";
+
+"RCQAlr" = "Get Camera Image from ${cameraID}";
+
+"RMQY3r" = "Send location to Home Assistant";
+
+"RsOw3P" = "Successfully rendered template";
+
+"ULka1b" = "Actions";
+
+"VP2XpM" = "Event Data";
+
+"X02YQ2" = "${action}";
+
+"X4A8Cc" = "Service Domain";
+
+"Xq7UuD" = "Render the provided template";
+
+"YNQXwq" = "Error";
+
+"ZApPxB" = "Service Name";
+
+"ZT9Mld" = "Event Name";
+
+"ZmUm9Q" = "What template would you like to render?";
+
+"bqPSU7" = "Failed to get camera image, Home Assistant is not currently reachable";
+
+"cK9jdK" = "Failed to render template with error: ${error}";
+
+"cLmTme" = "Action";
+
+"cuflz3" = "Failed to render template, Home Assistant is not currently reachable";
+
+"dFHPYK" = "Successfully performed ${action}.";
+
+"f1KX0Q" = "View and run actions";
+
+"fkQXDn" = "There are ${count} options matching ‘${action}’.";
+
+"flUgtx" = "Which action?";
+
+"foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
+
+"fuRWMi" = "Send ${location} to Home Assistant";
+
+"g8g7Af" = "Perform the action";
+
+"gI3mme" = "What service data do you want to send?";
+
+"gePUyy" = "Location";
+
+"glRCfJ" = "Failed to fire event, Home Assistant is not currently reachable";
+
+"gv7Gg6" = "Location";
+
+"hLFNfv" = "Failed to get camera image with error: ${error}";
+
+"hsrlTY" = "Get a single still frame from a camera";
+
+"jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
+
+"kGB23u" = "Perform Action";
+
+"lNmaCR" = "Template";
+
+"lxHlyQ" = "Fire Event";
+
+"mAibJP" = "Failed to get camera image, Home Assistant is not currently reachable";
+
+"mJ6CrP" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
+
+"mZnRHS" = "Successfully sent ${eventName} to Home Assistant";
+
+"mi6B62" = "What data do you want to send with the event?";
+
+"nzqmFA" = "Got the latest still from${cameraID}";
+
+"oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
+
+"pQhTjo" = "Failed to fire event, Home Assistant is not currently reachable";
+
+"qayMH6" = "Call Service";
+
+"qzje4k" = "Failed to call service with error: ${error}";
+
+"r32M7N" = "Failed: ${error}";
+
+"rFSNpu" = "Called ${domain}.${service}";
+
+"rOlW1x" = "What location do you want to send?";
+
+"sNFoWe" = "Which camera?";
+
+"sQJAJS" = "Error";
+
+"sfDGvk" = "Rendered Template";
+
+"tycImk" = "Performs an action defined in the app";
+
+"v7TSD5" = "Send Location";
+
+"wfPQQQ" = "Fire an event to the Home Assistant event bus";
+
+"xhwpj4" = "Done.";
+
+"ypnPyU" = "Perform ${action}";
+
+"yyjTxO" = "Error";
+
