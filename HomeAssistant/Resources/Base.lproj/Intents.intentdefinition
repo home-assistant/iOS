@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>19G2021</string>
+	<string>20A5384c</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>12A8179i</string>
+	<string>12B5025f</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>12.0</string>
+	<string>12.2</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -1243,6 +1243,74 @@
 			<string>Custom</string>
 			<key>INIntentVerb</key>
 			<string>Open</string>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>share</string>
+			<key>INIntentConfigurable</key>
+			<true/>
+			<key>INIntentDescription</key>
+			<string>Send a sensor update to Home Assistant</string>
+			<key>INIntentDescriptionID</key>
+			<string>vAIAF2</string>
+			<key>INIntentIneligibleForSuggestions</key>
+			<true/>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Update Sensors</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>pjQR7t</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
+			<key>INIntentName</key>
+			<string>UpdateSensors</string>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Sensors updated.</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>fnz838</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Done!</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>MwEpGz</string>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to update sensors.</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>lGqSSG</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Unsuccessful!</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>r6LXFe</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentTitle</key>
+			<string>Update Sensors</string>
+			<key>INIntentTitleID</key>
+			<string>h1xQ53</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentVerb</key>
+			<string>Send</string>
 		</dict>
 	</array>
 	<key>INTypes</key>
