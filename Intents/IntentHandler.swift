@@ -38,6 +38,9 @@ class IntentHandler: INExtension {
             if intent is PerformActionIntent {
                 return PerformActionIntentHandler()
             }
+            if intent is UpdateSensorsIntent {
+                return UpdateSensorsIntentHandler()
+            }
             if #available(iOS 14, *), intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
             }

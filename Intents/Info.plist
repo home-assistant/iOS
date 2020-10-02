@@ -41,6 +41,7 @@
 				<string>PerformActionIntent</string>
 				<string>RenderTemplateIntent</string>
 				<string>SendLocationIntent</string>
+				<string>UpdateSensorsIntent</string>
 				<string>WidgetActionsIntent</string>
 			</array>
 		</dict>
