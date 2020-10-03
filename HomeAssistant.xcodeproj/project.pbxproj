@@ -923,13 +923,7 @@
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		1155DD06250F4100003405C0 /* Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
-		1155DD17250F42EA003405C0 /* ShareExtension Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension Beta-catalyst.entitlements"; sourceTree = "<group>"; };
-		1155DD18250F42EA003405C0 /* ShareExtension Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension Development-catalyst.entitlements"; sourceTree = "<group>"; };
-		1155DD19250F42EA003405C0 /* ShareExtension Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension Beta.entitlements"; sourceTree = "<group>"; };
-		1155DD1A250F42EA003405C0 /* ShareExtension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension-catalyst.entitlements"; sourceTree = "<group>"; };
-		1155DD1B250F42EA003405C0 /* ShareExtension Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension Development.entitlements"; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1155DD1D250F42EA003405C0 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ManualPodLicenses.plist; sourceTree = "<group>"; };
 		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
@@ -945,25 +939,12 @@
 		1171507124DFCDEE0065E874 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1171507324DFCDEE0065E874 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1171508024DFCEC50065E874 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
-		1171508224DFCF810065E874 /* WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetsExtension.entitlements; sourceTree = "<group>"; };
 		117318AA25199E1A0013E010 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
 		117318AC25199E220013E010 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
 		1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProviderDependencies.test.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
-		117F07CB24F2CC450097B4D1 /* HomeAssistant Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07CC24F2CC450097B4D1 /* HomeAssistant Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Development-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07CD24F2CC450097B4D1 /* HomeAssistant-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07CE24F2CD070097B4D1 /* SiriIntents Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Development-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07CF24F2CD070097B4D1 /* SiriIntents-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SiriIntents-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D024F2CD070097B4D1 /* SiriIntents Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Beta-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D124F2CD7B0097B4D1 /* APNSAttachmentService-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D224F2CD7B0097B4D1 /* APNSAttachmentService Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Beta-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D324F2CD7B0097B4D1 /* APNSAttachmentService Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Development-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D424F2CD9C0097B4D1 /* WidgetsExtension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D524F2CD9C0097B4D1 /* WidgetsExtension Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Beta-catalyst.entitlements"; sourceTree = "<group>"; };
-		117F07D624F2CD9D0097B4D1 /* WidgetsExtension Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Development-catalyst.entitlements"; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
 		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
 		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };
@@ -1018,6 +999,11 @@
 		11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCLLocationManager.swift; sourceTree = "<group>"; };
 		11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.test.swift; sourceTree = "<group>"; };
 		11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.swift; sourceTree = "<group>"; };
+		11AF1EC62528FB2300AAE364 /* Extension-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-ios.entitlements"; sourceTree = "<group>"; };
+		11AF1EC72528FB2300AAE364 /* Extension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-catalyst.entitlements"; sourceTree = "<group>"; };
+		11AF1EC82528FB2300AAE364 /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
+		11AF1EC92528FB2300AAE364 /* App-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "App-catalyst.entitlements"; sourceTree = "<group>"; };
+		11AF1ECA2528FB2300AAE364 /* App-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "App-ios.entitlements"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySensor.swift; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
 		11AF4D18249C8253006C74C0 /* PedometerSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.swift; sourceTree = "<group>"; };
@@ -1062,8 +1048,6 @@
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11E16399250B1B760076D612 /* OnboardingStateObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservation.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
-		11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Development.entitlements"; sourceTree = "<group>"; };
-		11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Beta.entitlements"; sourceTree = "<group>"; };
 		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
 		11EE9B4824C5116F00404AF8 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
@@ -1311,12 +1295,6 @@
 		B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reachability+NetworkType.swift"; sourceTree = "<group>"; };
 		B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookSensor.swift; sourceTree = "<group>"; };
 		B630F295238C9A1200C6E4BE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
-		B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta.entitlements"; sourceTree = "<group>"; };
-		B637243C21697B06006B102A /* APNSAttachmentService Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Beta.entitlements"; sourceTree = "<group>"; };
-		B637243D21697B19006B102A /* SiriIntents Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Beta.entitlements"; sourceTree = "<group>"; };
-		B637243E21697B2F006B102A /* NotificationContentExtension Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "NotificationContentExtension Beta.entitlements"; sourceTree = "<group>"; };
-		B637243F21697B42006B102A /* WatchApp Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchApp Beta.entitlements"; sourceTree = "<group>"; };
-		B637244021697B52006B102A /* WatchAppExtension Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchAppExtension Beta.entitlements"; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutsManager.swift; sourceTree = "<group>"; };
 		B63CCDC8216442BB00123C50 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -1441,7 +1419,6 @@
 		B66C58B02150891B004AB261 /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B66C58B22150892A004AB261 /* FireEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireEvent.swift; sourceTree = "<group>"; };
 		B66C58B42150898A004AB261 /* SendLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLocation.swift; sourceTree = "<group>"; };
-		B66C58BF2150B410004AB261 /* SiriIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SiriIntents.entitlements; sourceTree = "<group>"; };
 		B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotificationController.swift; sourceTree = "<group>"; };
 		B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraNotificationController.swift; sourceTree = "<group>"; };
 		B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHelpers.swift; sourceTree = "<group>"; };
@@ -1449,9 +1426,6 @@
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 		B66F9F2B216B1E61000CAA0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodayWidget.entitlements; sourceTree = "<group>"; };
-		B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Beta.entitlements"; sourceTree = "<group>"; };
-		B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Development.entitlements"; sourceTree = "<group>"; };
 		B672333D225DB68B0031D629 /* WebSocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketMessage.swift; sourceTree = "<group>"; };
 		B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+JSON.swift"; sourceTree = "<group>"; };
 		B6723343225DBACF0031D629 /* AuthRequestMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestMessage.swift; sourceTree = "<group>"; };
@@ -1473,8 +1447,6 @@
 		B6872E652226842100C475D1 /* MobileAppRegistrationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppRegistrationResponse.swift; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
 		B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperTransformers.swift; sourceTree = "<group>"; };
-		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
-		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
 		B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategoryConfigurator.swift; sourceTree = "<group>"; };
 		B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationActionConfigurator.swift; sourceTree = "<group>"; };
 		B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifierEurekaRow.swift; sourceTree = "<group>"; };
@@ -1485,7 +1457,6 @@
 		B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+EncryptedResponses.swift"; sourceTree = "<group>"; };
 		B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.swift; sourceTree = "<group>"; };
 		B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiriIntents+ConvenienceInits.swift"; sourceTree = "<group>"; };
-		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
 		B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-NotificationService.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		B6AAD7A51D827DD40090B220 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1517,16 +1488,8 @@
 		B6CC5D972159D10E00833E5D /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
 		B6CC5D992159D10F00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CC5D9B2159D10F00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B6CC5DA72159D14B00833E5D /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
-		B6CC5DA82159D15700833E5D /* WatchAppExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchAppExtension.entitlements; sourceTree = "<group>"; };
 		B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentryLogDestination.swift; sourceTree = "<group>"; };
 		B6CDC095228CF5C2009355DD /* RemoteMediaPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteMediaPlayer.swift; sourceTree = "<group>"; };
-		B6D35C632169905400D1F86B /* HomeAssistant Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Development.entitlements"; sourceTree = "<group>"; };
-		B6D35C652169906A00D1F86B /* APNSAttachmentService Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Development.entitlements"; sourceTree = "<group>"; };
-		B6D35C692169909400D1F86B /* SiriIntents Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Development.entitlements"; sourceTree = "<group>"; };
-		B6D35C6A2169909C00D1F86B /* NotificationContentExtension Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "NotificationContentExtension Development.entitlements"; sourceTree = "<group>"; };
-		B6D35C6B216990A500D1F86B /* WatchApp Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchApp Development.entitlements"; sourceTree = "<group>"; };
-		B6D35C6C216990B100D1F86B /* WatchAppExtension Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchAppExtension Development.entitlements"; sourceTree = "<group>"; };
 		B6D3B4EB225B26300082BB4F /* SensorContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.swift; sourceTree = "<group>"; };
 		B6D8A3252271448900FA765D /* empty-list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "empty-list.json"; sourceTree = "<group>"; };
 		B6D8A3272271448D00FA765D /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
@@ -1858,13 +1821,7 @@
 		1155DD16250F42EA003405C0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1155DD17250F42EA003405C0 /* ShareExtension Beta-catalyst.entitlements */,
-				1155DD18250F42EA003405C0 /* ShareExtension Development-catalyst.entitlements */,
-				1155DD19250F42EA003405C0 /* ShareExtension Beta.entitlements */,
-				1155DD1A250F42EA003405C0 /* ShareExtension-catalyst.entitlements */,
-				1155DD1B250F42EA003405C0 /* ShareExtension Development.entitlements */,
 				1155DD1C250F42EA003405C0 /* Info.plist */,
-				1155DD1D250F42EA003405C0 /* ShareExtension.entitlements */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1906,12 +1863,6 @@
 		1171508324DFCF960065E874 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1171508224DFCF810065E874 /* WidgetsExtension.entitlements */,
-				11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */,
-				11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */,
-				117F07D524F2CD9C0097B4D1 /* WidgetsExtension Beta-catalyst.entitlements */,
-				117F07D624F2CD9D0097B4D1 /* WidgetsExtension Development-catalyst.entitlements */,
-				117F07D424F2CD9C0097B4D1 /* WidgetsExtension-catalyst.entitlements */,
 				1171507124DFCDEE0065E874 /* Assets.xcassets */,
 				1171507324DFCDEE0065E874 /* Info.plist */,
 			);
@@ -1980,6 +1931,18 @@
 				11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */,
 			);
 			path = ZoneManager;
+			sourceTree = "<group>";
+		};
+		11AF1EC52528FB2300AAE364 /* Entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				11AF1EC62528FB2300AAE364 /* Extension-ios.entitlements */,
+				11AF1EC72528FB2300AAE364 /* Extension-catalyst.entitlements */,
+				11AF1EC82528FB2300AAE364 /* WatchApp.entitlements */,
+				11AF1EC92528FB2300AAE364 /* App-catalyst.entitlements */,
+				11AF1ECA2528FB2300AAE364 /* App-ios.entitlements */,
+			);
+			path = Entitlements;
 			sourceTree = "<group>";
 		};
 		11AF4D0F249C7DD8006C74C0 /* Sensors */ = {
@@ -2087,6 +2050,7 @@
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				11AF1EC52528FB2300AAE364 /* Entitlements */,
 				118A93322520411100227076 /* Version.xcconfig */,
 				9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */,
 				9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */,
@@ -2318,9 +2282,6 @@
 				1100D5222497578800B1073C /* TestNotifications */,
 				B678DB351EA9999C0045312F /* MainInterface.storyboard */,
 				B627CB121D83C87B0057173E /* Info.plist */,
-				B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */,
-				B637243E21697B2F006B102A /* NotificationContentExtension Beta.entitlements */,
-				B6D35C6A2169909C00D1F86B /* NotificationContentExtension Development.entitlements */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 				B63CCDC8216442BB00123C50 /* CameraViewController.swift */,
 				B63CCDCA216442C200123C50 /* MapViewController.swift */,
@@ -2454,12 +2415,6 @@
 		B66C58A6215086F0004AB261 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
-				B66C58BF2150B410004AB261 /* SiriIntents.entitlements */,
-				B637243D21697B19006B102A /* SiriIntents Beta.entitlements */,
-				B6D35C692169909400D1F86B /* SiriIntents Development.entitlements */,
-				117F07D024F2CD070097B4D1 /* SiriIntents Beta-catalyst.entitlements */,
-				117F07CE24F2CD070097B4D1 /* SiriIntents Development-catalyst.entitlements */,
-				117F07CF24F2CD070097B4D1 /* SiriIntents-catalyst.entitlements */,
 				B66C58A7215086F0004AB261 /* IntentHandler.swift */,
 				B66C58A9215086F0004AB261 /* Info.plist */,
 				B66C58B02150891B004AB261 /* CallService.swift */,
@@ -2477,9 +2432,6 @@
 		B66F9F25216B1E61000CAA0F /* Today */ = {
 			isa = PBXGroup;
 			children = (
-				B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */,
-				B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */,
-				B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */,
 				B66F9F26216B1E61000CAA0F /* TodayViewController.swift */,
 				B66F9F2B216B1E61000CAA0F /* Info.plist */,
 			);
@@ -2631,12 +2583,6 @@
 				1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */,
 				B65B15042273188300635D5C /* Assets.swift */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
-				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
-				B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */,
-				B6D35C632169905400D1F86B /* HomeAssistant Development.entitlements */,
-				117F07CB24F2CC450097B4D1 /* HomeAssistant Beta-catalyst.entitlements */,
-				117F07CC24F2CC450097B4D1 /* HomeAssistant Development-catalyst.entitlements */,
-				117F07CD24F2CC450097B4D1 /* HomeAssistant-catalyst.entitlements */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
 				B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */,
@@ -2659,12 +2605,6 @@
 		B6AAD7A21D827DD40090B220 /* NotificationService */ = {
 			isa = PBXGroup;
 			children = (
-				B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */,
-				B637243C21697B06006B102A /* APNSAttachmentService Beta.entitlements */,
-				B6D35C652169906A00D1F86B /* APNSAttachmentService Development.entitlements */,
-				117F07D224F2CD7B0097B4D1 /* APNSAttachmentService Beta-catalyst.entitlements */,
-				117F07D324F2CD7B0097B4D1 /* APNSAttachmentService Development-catalyst.entitlements */,
-				117F07D124F2CD7B0097B4D1 /* APNSAttachmentService-catalyst.entitlements */,
 				B6AAD7A51D827DD40090B220 /* Info.plist */,
 				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 			);
@@ -2674,9 +2614,6 @@
 		B6CC5D832159D10D00833E5D /* WatchApp */ = {
 			isa = PBXGroup;
 			children = (
-				B6CC5DA72159D14B00833E5D /* WatchApp.entitlements */,
-				B637243F21697B42006B102A /* WatchApp Beta.entitlements */,
-				B6D35C6B216990A500D1F86B /* WatchApp Development.entitlements */,
 				B6CC5D842159D10D00833E5D /* Interface.storyboard */,
 				B6CC5D872159D10E00833E5D /* Assets.xcassets */,
 				B6CC5D892159D10E00833E5D /* Info.plist */,
@@ -2703,9 +2640,6 @@
 		B6CC5DAA2159D60900833E5D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B6CC5DA82159D15700833E5D /* WatchAppExtension.entitlements */,
-				B637244021697B52006B102A /* WatchAppExtension Beta.entitlements */,
-				B6D35C6C216990B100D1F86B /* WatchAppExtension Development.entitlements */,
 				B6CC5D992159D10F00833E5D /* Assets.xcassets */,
 				B6CC5D9B2159D10F00833E5D /* Info.plist */,
 			);
