@@ -34,7 +34,7 @@ abstract_target 'iOS' do
 
     target 'Shared-iOS' do
         target 'Tests-Shared' do
-            inherit! :search_paths
+            inherit! :complete
             test_pods
         end
     end

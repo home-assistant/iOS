@@ -272,6 +272,7 @@
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
 		55C9C5FE82DD16937AA3DCC8 /* Pods-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E7C0655F0C75F84AFCDF1C65 /* Pods-Tests-Shared-metadata.plist */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
+		78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
 		81A0C1BBDEFF4F8C5FC314BE /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F356D0219C7F8A24234511B /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		83206D4876AF7F77D76DCCB7 /* Pods-iOS-Extensions-Today-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
@@ -623,6 +624,7 @@
 		B6E2D4D52270706300446DFA /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4D42270706200446DFA /* ha-loading.json */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B9820AF29664869FD0B25CDF /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD90A8F251D0671EFAC931ED /* Pods_iOS_App.framework */; };
+		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
 		C6478E5ADCB3EB7EC959EB53 /* Pods_iOS_Extensions_Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */; };
 		CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */; };
 		CB1983AFBFED0A03533DBE85 /* Pods_iOS_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C851CA22DDEEA359D12221C3 /* Pods_iOS_Extensions_Share.framework */; };
@@ -671,7 +673,6 @@
 		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
-		D41CCEFD2FCEB66082B4C489 /* Pods_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16AD6968388497B876063FD5 /* Pods_Tests_Shared.framework */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
 		FD5FEB304713F1E6BFE498DC /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE950A9D74B3E7FF5665CB38 /* Pods_iOS_Extensions_NotificationService.framework */; };
 /* End PBXBuildFile section */
@@ -1066,14 +1067,16 @@
 		11F855D524DF6C7A0018013E /* IconImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconImageView.swift; sourceTree = "<group>"; };
 		11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsEmptyView.swift; sourceTree = "<group>"; };
 		11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSItemProvider+Additions.swift"; sourceTree = "<group>"; };
-		16AD6968388497B876063FD5 /* Pods_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A736E7381A523E7A888D24E /* Pods-iOS-Extensions-Today.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Today.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Today/Pods-iOS-Extensions-Today.debug.xcconfig"; sourceTree = "<group>"; };
 		1C5C1EC99DF5FCB63422D279 /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; sourceTree = "<group>"; };
 		1F356D0219C7F8A24234511B /* Pods_iOS_Extensions_NotificationContent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationContent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Share-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Share-metadata.plist"; sourceTree = "<group>"; };
 		213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		24D1E9D7BDB9EF7C2F924116 /* Pods-Tests-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-Shared/Pods-Tests-Shared.beta.xcconfig"; sourceTree = "<group>"; };
+		287FA864ED0E47B2BB71E1C8 /* Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
+		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
 		57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1103,6 +1106,7 @@
 		ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
 		AF744211EE471EE671F7C928 /* Pods-iOS-Extensions-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		B086E41966E89AE531E3C1A5 /* Pods-iOS-Extensions-Widgets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.debug.xcconfig"; sourceTree = "<group>"; };
+		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
 		B60221F5226D84B500E8DBFE /* loader-success-failed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "loader-success-failed.json"; sourceTree = "<group>"; };
 		B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionButton.swift; sourceTree = "<group>"; };
 		B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionLineItemView.swift; sourceTree = "<group>"; };
@@ -1563,6 +1567,7 @@
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
 		D0FF79D420D87DB10034574D /* ClientEvents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClientEvents.storyboard; sourceTree = "<group>"; };
 		D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Widgets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D404CC38F07CE4476FCF69B4 /* Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig"; sourceTree = "<group>"; };
 		D5E3CB71A877FCB1F0F5DE99 /* Pods-iOS-Extensions-Share.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Share.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Share/Pods-iOS-Extensions-Share.release.xcconfig"; sourceTree = "<group>"; };
 		D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Today-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Today-metadata.plist"; sourceTree = "<group>"; };
 		DA2CE827B2DBBDBFB11559DF /* Pods-iOS-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.beta.xcconfig"; sourceTree = "<group>"; };
@@ -1722,7 +1727,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
-				D41CCEFD2FCEB66082B4C489 /* Pods_Tests_Shared.framework in Frameworks */,
+				78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2166,8 +2171,8 @@
 				D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */,
 				213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */,
 				A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */,
-				16AD6968388497B876063FD5 /* Pods_Tests_Shared.framework */,
 				6F1D92E4B7A5CD1007EB0782 /* Pods_watchOS_Shared_watchOS.framework */,
+				3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2236,6 +2241,10 @@
 				BEE6D44D86AC3F2F3E43950D /* Pods-watchOS-Shared-watchOS.debug.xcconfig */,
 				0194775556E59C6E64735937 /* Pods-watchOS-Shared-watchOS.release.xcconfig */,
 				CDB131E7598C0AC03BB5B998 /* Pods-watchOS-Shared-watchOS.beta.xcconfig */,
+				32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */,
+				D404CC38F07CE4476FCF69B4 /* Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig */,
+				287FA864ED0E47B2BB71E1C8 /* Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig */,
+				B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -3881,6 +3890,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55C9C5FE82DD16937AA3DCC8 /* Pods-Tests-Shared-metadata.plist in Resources */,
+				C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3965,7 +3975,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Tests-Shared-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-iOS-Shared-iOS-Tests-Shared-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4295,15 +4305,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tests-Shared/Pods-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tests-Shared/Pods-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tests-Shared/Pods-Tests-Shared-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -5437,7 +5447,7 @@
 		};
 		B637243621697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 24D1E9D7BDB9EF7C2F924116 /* Pods-Tests-Shared.beta.xcconfig */;
+			baseConfigurationReference = 287FA864ED0E47B2BB71E1C8 /* Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Shared/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6040,7 +6050,7 @@
 		};
 		D03D894B20E0BC1800D4F28D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 70BD75E459F27A02219AEF8E /* Pods-Tests-Shared.debug.xcconfig */;
+			baseConfigurationReference = 32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Shared/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6055,7 +6065,7 @@
 		};
 		D03D894C20E0BC1800D4F28D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B41A6E7B20B3BD9FD7FF520 /* Pods-Tests-Shared.release.xcconfig */;
+			baseConfigurationReference = D404CC38F07CE4476FCF69B4 /* Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Shared/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
