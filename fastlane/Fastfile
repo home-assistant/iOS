@@ -135,7 +135,7 @@ platform :ios do
     download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id())
     dir = "../dSYMS"
     files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-    upload_symbols_to_crashlytics(gsp_path: "./HomeAssistant/Resources/GoogleService-Info-Release.plist",
+    upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Release.plist",
                                   dsym_paths: files, dsym_worker_threads: 6)
     clean_build_artifacts
   end
@@ -145,7 +145,7 @@ platform :ios do
     download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id("beta"))
     dir = "../dSYMS"
     files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-    upload_symbols_to_crashlytics(gsp_path: "./HomeAssistant/Resources/GoogleService-Info-Beta.plist",
+    upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Beta.plist",
                                   dsym_paths: files, dsym_worker_threads: 6)
     clean_build_artifacts
   end
@@ -162,9 +162,9 @@ platform :ios do
 
   desc "Generate proper icons for all build trains"
   lane :icons do
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing])
 
     appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "WatchIcon.dev.appiconset", appicon_devices: [:watch, :watch_marketing])
     appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "WatchIcon.beta.appiconset", appicon_devices: [:watch, :watch_marketing])
@@ -173,7 +173,7 @@ platform :ios do
 
   desc "Download latest localization files from Lokalize"
   lane :update_strings do
-    lokalise(destination: "HomeAssistant/Resources/", use_original: true)
+    lokalise(destination: "Sources/App/Resources/", use_original: true)
     sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen")
   end
 

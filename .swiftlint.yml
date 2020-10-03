@@ -4,7 +4,5 @@ disabled_rules:
   - large_tuple
 excluded:
   - fastlane
-  - HomeAssistantTests
-  - HomeAssistantUITests
-  - SharedTests
+  - Tests
   - Pods
