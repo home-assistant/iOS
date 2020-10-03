@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03E6DB9A0D8C6F20C0CAC381 /* Pods_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6211F600B813D631C9D7CAB5 /* Pods_Shared_iOS_Tests_Shared.framework */; };
 		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
 		1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
@@ -71,7 +72,7 @@
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
 		1155DD09250F4100003405C0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DD08250F4100003405C0 /* ShareViewController.swift */; };
-		1155DD10250F4101003405C0 /* Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1155DD10250F4101003405C0 /* Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* Extensions-Share.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
@@ -262,24 +263,31 @@
 		11F89CB224E79E5400C373D9 /* WidgetActionsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */; };
 		11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
 		11FA53F3251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
+		165955E006864CFE23355451 /* Pods_Tests_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */; };
 		1710EFA0554773DCAEEA4A1E /* Pods-WidgetsExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 032AE24C657C0629A05D8219 /* Pods-WidgetsExtension-metadata.plist */; };
+		1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */; };
 		28F97CE2A585EB2423FB7003 /* Pods_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */; };
+		38020054A7E6EDEA1ED0A75E /* Pods-Extensions-Today-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9B1E67EA1787F1DA1021A188 /* Pods-Extensions-Today-metadata.plist */; };
 		3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */; };
+		464C50E47AA45286B3B90A3B /* Pods-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3849359A9CEC06AE751A2EDC /* Pods-Extensions-Share-metadata.plist */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
+		50533D00040D9B005A308023 /* Pods_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710A4BA10D57FD7599C19285 /* Pods_WatchExtension_Watch.framework */; };
 		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
-		6C4FFEB9F3881ECFD4FDDBA8 /* Pods_WidgetsExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C17A82382164664C5349 /* Pods_WidgetsExtension.framework */; };
-		6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */; };
+		66C2809A2385554390C53EC8 /* Pods_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB984523DA209D3C69ADE9B6 /* Pods_Extensions_Widgets.framework */; };
+		671FC2485607C8BA78189DC3 /* Pods-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0E1BB877A908ED536A10EEF3 /* Pods-Extensions-NotificationContent-metadata.plist */; };
+		69CB7EABBA07B29173FF057B /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEF5EC5ED0A17BDE221624A0 /* Pods_App.framework */; };
+		6DF1734AEBBF126ECAD3EB95 /* Pods_Extensions_Today.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A27D29CD4D2BFC531DAE177 /* Pods_Extensions_Today.framework */; };
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
 		73A61E04292D393FAC7AAE4F /* Pods-ShareExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3689779AED958D025280CF08 /* Pods-ShareExtension-metadata.plist */; };
-		7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */; };
 		7B89513B80682680F831CB93 /* Pods-Shared-iOS-SharedTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB6A838ABF06C7A70E359303 /* Pods-Shared-iOS-SharedTests-metadata.plist */; };
-		9C6DA9943461C9F73DE026E5 /* Pods_Shared_iOS_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31B6C4E8C47A1C4B9AEFEC67 /* Pods_Shared_iOS_SharedTests.framework */; };
-		9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3744F977190C345382928F90 /* Pods_TodayWidget.framework */; };
+		9BE6C285736F73AC7A0B255E /* Pods_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AA75883BEC8E41DDCD2F2EF /* Pods_Extensions_NotificationContent.framework */; };
+		9E603F7FF8FB65266378BFAC /* Pods-Extensions-Widgets-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9DC8153B301F828853C3D249 /* Pods-Extensions-Widgets-metadata.plist */; };
+		9E76661C86F603BC574D4E80 /* Pods-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 391EFD9FBDBF45486BBE8A8F /* Pods-WatchExtension-Watch-metadata.plist */; };
 		9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */; };
+		A4228BBF956B0F902EFF7298 /* Pods-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 06ABECB3B16F7AACA11AF23C /* Pods-App-metadata.plist */; };
 		A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */; };
-		A878F53E975DE79AC797AD45 /* Pods_WatchAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C92C48489465D60D4914E3 /* Pods_WatchAppExtension.framework */; };
+		A9D75F6DC44C05951A952799 /* Pods-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 23D6147249D7DFFE00853DA7 /* Pods-Extensions-NotificationService-metadata.plist */; };
 		AE8183AD1524FA72946974B8 /* Pods_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */; };
-		B28248018AD4202CBDAA9179 /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94309E9FC28067C2D07463D7 /* Pods_NotificationContentExtension.framework */; };
 		B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */; };
 		B60221F6226D84B500E8DBFE /* loader-success-failed.json in Resources */ = {isa = PBXBuildFile; fileRef = B60221F5226D84B500E8DBFE /* loader-success-failed.json */; };
 		B60221F8226D9AEE00E8DBFE /* PermissionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */; };
@@ -628,7 +636,10 @@
 		B6E2D4BB2270407500446DFA /* Debug LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */; };
 		B6E2D4D52270706300446DFA /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4D42270706200446DFA /* ha-loading.json */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
+		B8723B9A65D0C24CBF82B604 /* Pods_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1D29805B8710DA237F9B37E /* Pods_Extensions_NotificationService.framework */; };
+		BB0E0A7C5DBC949052275BBA /* Pods-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 308CC8D181CC69F7793FC1F6 /* Pods-Extensions-Intents-metadata.plist */; };
 		C346BC5570250C2987D7A44B /* Pods-HomeAssistantTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9D9755DDCFA473A79F125A3 /* Pods-HomeAssistantTests-metadata.plist */; };
+		C5D7F56306870BFA278CD85E /* Pods_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39808EC04CBCF7B08F03CF6 /* Pods_Extensions_Share.framework */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
@@ -674,9 +685,7 @@
 		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
-		E1FA731332EB8E4C346F56FA /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */; };
-		EE72F26DDB4FB0874F75EB45 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85234822A725AD12E080425E /* Pods_HomeAssistantTests.framework */; };
-		FE2C6998B2744CB302699C16 /* Pods_ShareExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F9AB88C072978D239310679 /* Pods_ShareExtension.framework */; };
+		F8F0ED4D3C7CADC5A2D71462 /* Pods_Extensions_Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3634C31E74D2C3256F22B51 /* Pods_Extensions_Intents.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -877,8 +886,14 @@
 
 /* Begin PBXFileReference section */
 		032AE24C657C0629A05D8219 /* Pods-WidgetsExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WidgetsExtension-metadata.plist"; path = "Pods/Pods-WidgetsExtension-metadata.plist"; sourceTree = "<group>"; };
+		034B63381A4BFA12E0F53DE8 /* Pods-Extensions-Widgets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Widgets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Widgets/Pods-Extensions-Widgets.debug.xcconfig"; sourceTree = "<group>"; };
+		0530E43EB25FA786344F2674 /* Pods-Extensions-NotificationContent.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-NotificationContent.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-NotificationContent/Pods-Extensions-NotificationContent.beta.xcconfig"; sourceTree = "<group>"; };
+		06ABECB3B16F7AACA11AF23C /* Pods-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-App-metadata.plist"; path = "Pods/Pods-App-metadata.plist"; sourceTree = "<group>"; };
 		09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.debug.xcconfig"; sourceTree = "<group>"; };
 		0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-watchOS-metadata.plist"; path = "Pods/Pods-Shared-watchOS-metadata.plist"; sourceTree = "<group>"; };
+		0DAE895FBA1AE40431144F66 /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
+		0E1BB877A908ED536A10EEF3 /* Pods-Extensions-NotificationContent-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Extensions-NotificationContent-metadata.plist"; path = "Pods/Pods-Extensions-NotificationContent-metadata.plist"; sourceTree = "<group>"; };
+		10AB5FD314183F892512659C /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
 		1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionStatusRow.swift; sourceTree = "<group>"; };
 		1100D51E2496F63400B1073C /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColors.swift; sourceTree = "<group>"; };
 		1100D52024974D6700B1073C /* camera_notification.apns */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = camera_notification.apns; sourceTree = "<group>"; };
@@ -1085,57 +1100,79 @@
 		11F855D524DF6C7A0018013E /* IconImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconImageView.swift; sourceTree = "<group>"; };
 		11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsEmptyView.swift; sourceTree = "<group>"; };
 		11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSItemProvider+Additions.swift"; sourceTree = "<group>"; };
+		1A5C1F658520E785253CE2B5 /* Pods-WatchExtension-Watch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchExtension-Watch.release.xcconfig"; path = "Pods/Target Support Files/Pods-WatchExtension-Watch/Pods-WatchExtension-Watch.release.xcconfig"; sourceTree = "<group>"; };
 		1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		1D7FCBE55780B75D422923DC /* Pods-ShareExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.beta.xcconfig"; sourceTree = "<group>"; };
 		1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.release.xcconfig"; sourceTree = "<group>"; };
 		21EDD9B71A1DF5A5C8A2106E /* Pods-WidgetsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WidgetsExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-WidgetsExtension/Pods-WidgetsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		22DFD473C941D5E380068120 /* Pods-Shared-iOS-SharedTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-SharedTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests.beta.xcconfig"; sourceTree = "<group>"; };
 		23822AB93E5DB75D43DBE934 /* Pods-Shared-iOS-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
+		23D6147249D7DFFE00853DA7 /* Pods-Extensions-NotificationService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Extensions-NotificationService-metadata.plist"; path = "Pods/Pods-Extensions-NotificationService-metadata.plist"; sourceTree = "<group>"; };
 		25CF94434FED72A01C6A594B /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
+		2A27D29CD4D2BFC531DAE177 /* Pods_Extensions_Today.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Extensions_Today.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.beta.xcconfig"; sourceTree = "<group>"; };
-		31B6C4E8C47A1C4B9AEFEC67 /* Pods_Shared_iOS_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		308CC8D181CC69F7793FC1F6 /* Pods-Extensions-Intents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Extensions-Intents-metadata.plist"; path = "Pods/Pods-Extensions-Intents-metadata.plist"; sourceTree = "<group>"; };
 		342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
 		3689779AED958D025280CF08 /* Pods-ShareExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-ShareExtension-metadata.plist"; path = "Pods/Pods-ShareExtension-metadata.plist"; sourceTree = "<group>"; };
-		3744F977190C345382928F90 /* Pods_TodayWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3849359A9CEC06AE751A2EDC /* Pods-Extensions-Share-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Extensions-Share-metadata.plist"; path = "Pods/Pods-Extensions-Share-metadata.plist"; sourceTree = "<group>"; };
 		3918C5ABB4F1EE588A623B53 /* Pods-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
+		391EFD9FBDBF45486BBE8A8F /* Pods-WatchExtension-Watch-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchExtension-Watch-metadata.plist"; path = "Pods/Pods-WatchExtension-Watch-metadata.plist"; sourceTree = "<group>"; };
+		39ED8002022BDC0866F18A44 /* Pods-WatchExtension-Watch.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchExtension-Watch.beta.xcconfig"; path = "Pods/Target Support Files/Pods-WatchExtension-Watch/Pods-WatchExtension-Watch.beta.xcconfig"; sourceTree = "<group>"; };
 		3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-APNSAttachmentService-metadata.plist"; path = "Pods/Pods-APNSAttachmentService-metadata.plist"; sourceTree = "<group>"; };
+		3E43A9FB1EEFB75A8F316F41 /* Pods-Shared-iOS-Tests-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-Tests-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-Tests-Shared/Pods-Shared-iOS-Tests-Shared.release.xcconfig"; sourceTree = "<group>"; };
 		3EEB171001EFB8DAB63C4756 /* Pods-HomeAssistant-HomeAssistantTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-HomeAssistantTests-metadata.plist"; path = "Pods/Pods-HomeAssistant-HomeAssistantTests-metadata.plist"; sourceTree = "<group>"; };
 		4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.beta.xcconfig"; sourceTree = "<group>"; };
+		41FE3EF81F53AEAA32DE6C0C /* Pods-Extensions-NotificationService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-NotificationService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-NotificationService/Pods-Extensions-NotificationService.beta.xcconfig"; sourceTree = "<group>"; };
+		4687CA29F3B383431960C24A /* Pods-Extensions-Widgets.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Widgets.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Widgets/Pods-Extensions-Widgets.beta.xcconfig"; sourceTree = "<group>"; };
+		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		4A8A2EDC1B82E759DCE5F6C8 /* Pods-APNSAttachmentService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.release.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.release.xcconfig"; sourceTree = "<group>"; };
 		4D0BE10BAAFF4C6503DC4279 /* Pods-Shared-iOS-SharedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-SharedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests.release.xcconfig"; sourceTree = "<group>"; };
 		4E6031DDE8EEF47E7A3DA817 /* Pods-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-TodayWidget-metadata.plist"; path = "Pods/Pods-TodayWidget-metadata.plist"; sourceTree = "<group>"; };
 		514D3AC57D932CF15324A398 /* Pods-TodayWidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.debug.xcconfig"; sourceTree = "<group>"; };
+		57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B79F73EFD6BCA429A487EFF /* Pods-Shared-iOS-Tests-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-Tests-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-Tests-Shared/Pods-Shared-iOS-Tests-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		5C94D4856B4E21CCEC8B8BFC /* Pods-SharedTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.beta.xcconfig"; sourceTree = "<group>"; };
+		6211F600B813D631C9D7CAB5 /* Pods_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchAppExtension-metadata.plist"; path = "Pods/Pods-WatchAppExtension-metadata.plist"; sourceTree = "<group>"; };
 		6A0BD70C190D1F6E6756D486 /* Pods-Shared-watchOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.beta.xcconfig"; sourceTree = "<group>"; };
+		6A86A870D47EB2B4E61BD3AF /* Pods-Extensions-Today.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Today.release.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Today/Pods-Extensions-Today.release.xcconfig"; sourceTree = "<group>"; };
+		710A4BA10D57FD7599C19285 /* Pods_WatchExtension_Watch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WatchExtension_Watch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7161D3C0FA0F09EF697C0AB1 /* Pods-Shared-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.release.xcconfig"; sourceTree = "<group>"; };
-		71E0C17A82382164664C5349 /* Pods_WidgetsExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WidgetsExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75816D4DCB147E0887430503 /* Pods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
 		763E137E10EED8022E438DBB /* Pods-HomeAssistant-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant-HomeAssistantTests/Pods-HomeAssistant-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
-		78C92C48489465D60D4914E3 /* Pods_WatchAppExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WatchAppExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		799B3F55FAE1A57812B62339 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
 		7BF8E9A6F015B5C46C89FD14 /* Pods-WidgetsExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WidgetsExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-WidgetsExtension/Pods-WidgetsExtension.beta.xcconfig"; sourceTree = "<group>"; };
+		7BF98F90D042F13BFD0DC77A /* Pods-Extensions-Widgets.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Widgets.release.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Widgets/Pods-Extensions-Widgets.release.xcconfig"; sourceTree = "<group>"; };
+		80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.beta.xcconfig"; sourceTree = "<group>"; };
 		81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		85234822A725AD12E080425E /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		87A132CFD9E75BE5545C3491 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
 		87D2D3F10FEA013DD78E6D2D /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		8B99BAC287C6B3CE69C9267A /* Pods-HomeAssistant.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.beta.xcconfig"; sourceTree = "<group>"; };
+		9025CDF0D0BD8D34C8D07706 /* Pods-WatchExtension-Watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchExtension-Watch.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WatchExtension-Watch/Pods-WatchExtension-Watch.debug.xcconfig"; sourceTree = "<group>"; };
+		918333C4B7B2CA7E4EB30C5D /* Pods-Extensions-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-NotificationService/Pods-Extensions-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-metadata.plist"; path = "Pods/Pods-Shared-metadata.plist"; sourceTree = "<group>"; };
 		93628E0C56C78ABC653200FB /* Pods-WidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WidgetsExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WidgetsExtension/Pods-WidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		93D2F302F08DECAAD2B9C307 /* Pods-SharedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.release.xcconfig"; sourceTree = "<group>"; };
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
-		94309E9FC28067C2D07463D7 /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94F2E1DA1A69FE4CED834348 /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
+		9AA75883BEC8E41DDCD2F2EF /* Pods_Extensions_NotificationContent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Extensions_NotificationContent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B1E67EA1787F1DA1021A188 /* Pods-Extensions-Today-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Extensions-Today-metadata.plist"; path = "Pods/Pods-Extensions-Today-metadata.plist"; sourceTree = "<group>"; };
 		9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = HomeAssistant.debug.xcconfig; sourceTree = "<group>"; };
 		9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.release.xcconfig; sourceTree = "<group>"; };
 		9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.beta.xcconfig; sourceTree = "<group>"; };
 		9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.xcconfig; sourceTree = "<group>"; };
-		9F9AB88C072978D239310679 /* Pods_ShareExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ShareExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DC8153B301F828853C3D249 /* Pods-Extensions-Widgets-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Extensions-Widgets-metadata.plist"; path = "Pods/Pods-Extensions-Widgets-metadata.plist"; sourceTree = "<group>"; };
 		A773539FA6CBDC538A9D2EDD /* Pods-HomeAssistantTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.beta.xcconfig"; sourceTree = "<group>"; };
+		A7EC482514B50F7A79867DA2 /* Pods-Extensions-Share.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Share.release.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Share/Pods-Extensions-Share.release.xcconfig"; sourceTree = "<group>"; };
+		AB7D5B9D8C5B75B1EA2DAE44 /* Pods-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-NotificationContent/Pods-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
+		AB984523DA209D3C69ADE9B6 /* Pods_Extensions_Widgets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Extensions_Widgets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE58041D3926107C95F27BE7 /* Pods-SiriIntents.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.beta.xcconfig"; sourceTree = "<group>"; };
+		AEF5EC5ED0A17BDE221624A0 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3634C31E74D2C3256F22B51 /* Pods_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B39808EC04CBCF7B08F03CF6 /* Pods_Extensions_Share.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Extensions_Share.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B60221F5226D84B500E8DBFE /* loader-success-failed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "loader-success-failed.json"; sourceTree = "<group>"; };
 		B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionButton.swift; sourceTree = "<group>"; };
 		B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionLineItemView.swift; sourceTree = "<group>"; };
@@ -1468,6 +1505,7 @@
 		B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ComplicationDivination.swift"; sourceTree = "<group>"; };
 		B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPushRow.swift; sourceTree = "<group>"; };
 		B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
+		B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Tests-App-metadata.plist"; path = "Pods/Pods-Tests-App-metadata.plist"; sourceTree = "<group>"; };
 		B67CE816221FB13C0034C1D0 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B67CE817221FB13C0034C1D0 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B67CE819221FB1480034C1D0 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1573,12 +1611,13 @@
 		B6FD0573228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B6FD0574228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B7A8B1C3DDCDA0CE667420BF /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SiriIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B946AA2C449F998134509835 /* Pods-Extensions-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-NotificationService.release.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-NotificationService/Pods-Extensions-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
+		B94ECC97EB71A2C3D56592AD /* Pods-Extensions-Intents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Intents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Intents/Pods-Extensions-Intents.debug.xcconfig"; sourceTree = "<group>"; };
 		B9D9755DDCFA473A79F125A3 /* Pods-HomeAssistantTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistantTests-metadata.plist"; path = "Pods/Pods-HomeAssistantTests-metadata.plist"; sourceTree = "<group>"; };
 		BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.beta.xcconfig"; sourceTree = "<group>"; };
 		BB11108F0557714B775510FD /* Pods-HomeAssistant-HomeAssistantTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant-HomeAssistantTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant-HomeAssistantTests/Pods-HomeAssistant-HomeAssistantTests.beta.xcconfig"; sourceTree = "<group>"; };
 		BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-iOS-metadata.plist"; path = "Pods/Pods-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
-		C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDBFBFF07196266D9968F93D /* Pods-Extensions-Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Share.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Share/Pods-Extensions-Share.debug.xcconfig"; sourceTree = "<group>"; };
 		C601CA2C93D1D7B0B9CEDDC8 /* Pods-HomeAssistant-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant-HomeAssistantTests/Pods-HomeAssistant-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
 		D00302BD20D4BEDB004C2CA9 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
@@ -1619,13 +1658,22 @@
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
 		D0FF79D420D87DB10034574D /* ClientEvents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClientEvents.storyboard; sourceTree = "<group>"; };
 		D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
+		DD6684C56A26FAA3DFDB893D /* Pods-Extensions-NotificationContent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-NotificationContent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-NotificationContent/Pods-Extensions-NotificationContent.debug.xcconfig"; sourceTree = "<group>"; };
 		E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SiriIntents-metadata.plist"; path = "Pods/Pods-SiriIntents-metadata.plist"; sourceTree = "<group>"; };
+		E383A83923E91F812775D632 /* Pods-Extensions-Share.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Share.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Share/Pods-Extensions-Share.beta.xcconfig"; sourceTree = "<group>"; };
 		E46DEBD572E360E6FE1CBD43 /* Pods-TodayWidget.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.beta.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.beta.xcconfig"; sourceTree = "<group>"; };
-		F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APNSAttachmentService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E672709BC17B920FC7BC66C1 /* Pods-Extensions-Intents.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Intents.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Intents/Pods-Extensions-Intents.beta.xcconfig"; sourceTree = "<group>"; };
+		E7E550D06ED1392D53D32B7B /* Pods-Extensions-Today.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Today.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Today/Pods-Extensions-Today.beta.xcconfig"; sourceTree = "<group>"; };
+		F1640D9FBC35695F653F1110 /* Pods-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Intents/Pods-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
+		F1D29805B8710DA237F9B37E /* Pods_Extensions_NotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Extensions_NotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F317B17883D29CEC759E3023 /* Pods-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-Tests-Shared/Pods-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
+		F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
+		F54A454E017B903B2343709C /* Pods-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.beta.xcconfig"; sourceTree = "<group>"; };
 		F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.release.xcconfig"; sourceTree = "<group>"; };
 		F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		FB6A838ABF06C7A70E359303 /* Pods-Shared-iOS-SharedTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-iOS-SharedTests-metadata.plist"; path = "Pods/Pods-Shared-iOS-SharedTests-metadata.plist"; sourceTree = "<group>"; };
 		FC4F5F548BAFA196245ED90F /* Pods-SiriIntents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.debug.xcconfig"; sourceTree = "<group>"; };
+		FE6A9BF7BC091C813AA82682 /* Pods-Extensions-Today.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Extensions-Today.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Extensions-Today/Pods-Extensions-Today.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1634,7 +1682,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */,
-				FE2C6998B2744CB302699C16 /* Pods_ShareExtension.framework in Frameworks */,
+				C5D7F56306870BFA278CD85E /* Pods_Extensions_Share.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1654,7 +1702,7 @@
 				1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */,
 				1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */,
 				1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */,
-				6C4FFEB9F3881ECFD4FDDBA8 /* Pods_WidgetsExtension.framework in Frameworks */,
+				66C2809A2385554390C53EC8 /* Pods_Extensions_Widgets.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1672,7 +1720,7 @@
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
-				B28248018AD4202CBDAA9179 /* Pods_NotificationContentExtension.framework in Frameworks */,
+				9BE6C285736F73AC7A0B255E /* Pods_Extensions_NotificationContent.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1685,7 +1733,7 @@
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
-				7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */,
+				69CB7EABBA07B29173FF057B /* Pods_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1693,7 +1741,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE72F26DDB4FB0874F75EB45 /* Pods_HomeAssistantTests.framework in Frameworks */,
+				165955E006864CFE23355451 /* Pods_Tests_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1709,7 +1757,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6C09153215206BB00A326DC /* Shared.framework in Frameworks */,
-				6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */,
+				F8F0ED4D3C7CADC5A2D71462 /* Pods_Extensions_Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1719,7 +1767,7 @@
 			files = (
 				B6BDBBC72177FFB10044E0B9 /* Shared.framework in Frameworks */,
 				B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */,
-				9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */,
+				6DF1734AEBBF126ECAD3EB95 /* Pods_Extensions_Today.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1740,7 +1788,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
-				E1FA731332EB8E4C346F56FA /* Pods_APNSAttachmentService.framework in Frameworks */,
+				B8723B9A65D0C24CBF82B604 /* Pods_Extensions_NotificationService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1749,7 +1797,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
-				A878F53E975DE79AC797AD45 /* Pods_WatchAppExtension.framework in Frameworks */,
+				50533D00040D9B005A308023 /* Pods_WatchExtension_Watch.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1773,7 +1821,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
-				9C6DA9943461C9F73DE026E5 /* Pods_Shared_iOS_SharedTests.framework in Frameworks */,
+				03E6DB9A0D8C6F20C0CAC381 /* Pods_Shared_iOS_Tests_Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2074,20 +2122,20 @@
 				B627CB081D83C87B0057173E /* UserNotifications.framework */,
 				B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */,
 				B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */,
-				F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */,
-				C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */,
-				94309E9FC28067C2D07463D7 /* Pods_NotificationContentExtension.framework */,
-				B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */,
-				3744F977190C345382928F90 /* Pods_TodayWidget.framework */,
 				1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */,
 				81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */,
-				78C92C48489465D60D4914E3 /* Pods_WatchAppExtension.framework */,
-				85234822A725AD12E080425E /* Pods_HomeAssistantTests.framework */,
-				31B6C4E8C47A1C4B9AEFEC67 /* Pods_Shared_iOS_SharedTests.framework */,
 				1171506A24DFCDE60065E874 /* WidgetKit.framework */,
 				1171506C24DFCDE60065E874 /* SwiftUI.framework */,
-				71E0C17A82382164664C5349 /* Pods_WidgetsExtension.framework */,
-				9F9AB88C072978D239310679 /* Pods_ShareExtension.framework */,
+				AEF5EC5ED0A17BDE221624A0 /* Pods_App.framework */,
+				B3634C31E74D2C3256F22B51 /* Pods_Extensions_Intents.framework */,
+				9AA75883BEC8E41DDCD2F2EF /* Pods_Extensions_NotificationContent.framework */,
+				F1D29805B8710DA237F9B37E /* Pods_Extensions_NotificationService.framework */,
+				B39808EC04CBCF7B08F03CF6 /* Pods_Extensions_Share.framework */,
+				2A27D29CD4D2BFC531DAE177 /* Pods_Extensions_Today.framework */,
+				AB984523DA209D3C69ADE9B6 /* Pods_Extensions_Widgets.framework */,
+				6211F600B813D631C9D7CAB5 /* Pods_Shared_iOS_Tests_Shared.framework */,
+				57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */,
+				710A4BA10D57FD7599C19285 /* Pods_WatchExtension_Watch.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2163,6 +2211,45 @@
 				75816D4DCB147E0887430503 /* Pods-ShareExtension.release.xcconfig */,
 				1D7FCBE55780B75D422923DC /* Pods-ShareExtension.beta.xcconfig */,
 				3689779AED958D025280CF08 /* Pods-ShareExtension-metadata.plist */,
+				0DAE895FBA1AE40431144F66 /* Pods-App.debug.xcconfig */,
+				10AB5FD314183F892512659C /* Pods-App.release.xcconfig */,
+				F54A454E017B903B2343709C /* Pods-App.beta.xcconfig */,
+				B94ECC97EB71A2C3D56592AD /* Pods-Extensions-Intents.debug.xcconfig */,
+				F1640D9FBC35695F653F1110 /* Pods-Extensions-Intents.release.xcconfig */,
+				E672709BC17B920FC7BC66C1 /* Pods-Extensions-Intents.beta.xcconfig */,
+				DD6684C56A26FAA3DFDB893D /* Pods-Extensions-NotificationContent.debug.xcconfig */,
+				AB7D5B9D8C5B75B1EA2DAE44 /* Pods-Extensions-NotificationContent.release.xcconfig */,
+				0530E43EB25FA786344F2674 /* Pods-Extensions-NotificationContent.beta.xcconfig */,
+				918333C4B7B2CA7E4EB30C5D /* Pods-Extensions-NotificationService.debug.xcconfig */,
+				B946AA2C449F998134509835 /* Pods-Extensions-NotificationService.release.xcconfig */,
+				41FE3EF81F53AEAA32DE6C0C /* Pods-Extensions-NotificationService.beta.xcconfig */,
+				BDBFBFF07196266D9968F93D /* Pods-Extensions-Share.debug.xcconfig */,
+				A7EC482514B50F7A79867DA2 /* Pods-Extensions-Share.release.xcconfig */,
+				E383A83923E91F812775D632 /* Pods-Extensions-Share.beta.xcconfig */,
+				FE6A9BF7BC091C813AA82682 /* Pods-Extensions-Today.debug.xcconfig */,
+				6A86A870D47EB2B4E61BD3AF /* Pods-Extensions-Today.release.xcconfig */,
+				E7E550D06ED1392D53D32B7B /* Pods-Extensions-Today.beta.xcconfig */,
+				034B63381A4BFA12E0F53DE8 /* Pods-Extensions-Widgets.debug.xcconfig */,
+				7BF98F90D042F13BFD0DC77A /* Pods-Extensions-Widgets.release.xcconfig */,
+				4687CA29F3B383431960C24A /* Pods-Extensions-Widgets.beta.xcconfig */,
+				F317B17883D29CEC759E3023 /* Pods-Shared-iOS-Tests-Shared.debug.xcconfig */,
+				3E43A9FB1EEFB75A8F316F41 /* Pods-Shared-iOS-Tests-Shared.release.xcconfig */,
+				5B79F73EFD6BCA429A487EFF /* Pods-Shared-iOS-Tests-Shared.beta.xcconfig */,
+				479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */,
+				F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */,
+				80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */,
+				9025CDF0D0BD8D34C8D07706 /* Pods-WatchExtension-Watch.debug.xcconfig */,
+				1A5C1F658520E785253CE2B5 /* Pods-WatchExtension-Watch.release.xcconfig */,
+				39ED8002022BDC0866F18A44 /* Pods-WatchExtension-Watch.beta.xcconfig */,
+				06ABECB3B16F7AACA11AF23C /* Pods-App-metadata.plist */,
+				23D6147249D7DFFE00853DA7 /* Pods-Extensions-NotificationService-metadata.plist */,
+				0E1BB877A908ED536A10EEF3 /* Pods-Extensions-NotificationContent-metadata.plist */,
+				308CC8D181CC69F7793FC1F6 /* Pods-Extensions-Intents-metadata.plist */,
+				391EFD9FBDBF45486BBE8A8F /* Pods-WatchExtension-Watch-metadata.plist */,
+				9B1E67EA1787F1DA1021A188 /* Pods-Extensions-Today-metadata.plist */,
+				9DC8153B301F828853C3D249 /* Pods-Extensions-Widgets-metadata.plist */,
+				3849359A9CEC06AE751A2EDC /* Pods-Extensions-Share-metadata.plist */,
+				B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -3621,6 +3708,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73A61E04292D393FAC7AAE4F /* Pods-ShareExtension-metadata.plist in Resources */,
+				464C50E47AA45286B3B90A3B /* Pods-Extensions-Share-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3637,6 +3725,7 @@
 			files = (
 				1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */,
 				1710EFA0554773DCAEEA4A1E /* Pods-WidgetsExtension-metadata.plist in Resources */,
+				9E603F7FF8FB65266378BFAC /* Pods-Extensions-Widgets-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3646,6 +3735,7 @@
 			files = (
 				5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */,
 				B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */,
+				671FC2485607C8BA78189DC3 /* Pods-Extensions-NotificationContent-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3854,6 +3944,7 @@
 				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
 				B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */,
 				B64E754723F3BFF200472C04 /* old-beta@3x.png in Resources */,
+				A4228BBF956B0F902EFF7298 /* Pods-App-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3862,6 +3953,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C346BC5570250C2987D7A44B /* Pods-HomeAssistantTests-metadata.plist in Resources */,
+				1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3879,6 +3971,7 @@
 			files = (
 				0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */,
 				B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */,
+				BB0E0A7C5DBC949052275BBA /* Pods-Extensions-Intents-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3887,6 +3980,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */,
+				38020054A7E6EDEA1ED0A75E /* Pods-Extensions-Today-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3905,6 +3999,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */,
+				A9D75F6DC44C05951A952799 /* Pods-Extensions-NotificationService-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3923,6 +4018,7 @@
 			files = (
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
 				6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */,
+				9E76661C86F603BC574D4E80 /* Pods-WatchExtension-Watch-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3981,7 +4077,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HomeAssistant-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-App-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4003,7 +4099,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WidgetsExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Extensions-Widgets-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4025,7 +4121,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Shared-iOS-SharedTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Shared-iOS-Tests-Shared-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4038,15 +4134,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		28DC53645D4ECB9451F1344C /* [CP] Check Pods Manifest.lock */ = {
@@ -4064,7 +4160,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SiriIntents-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Extensions-Intents-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4086,7 +4182,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WatchAppExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-WatchExtension-Watch-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4108,7 +4204,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HomeAssistantTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Tests-App-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4130,7 +4226,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ShareExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Extensions-Share-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4143,15 +4239,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-App/Pods-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-App/Pods-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-App/Pods-App-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		92900B26C59033E149C20AE4 /* [CP] Check Pods Manifest.lock */ = {
@@ -4169,7 +4265,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-APNSAttachmentService-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Extensions-NotificationService-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4273,7 +4369,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TodayWidget-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Extensions-Today-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4317,7 +4413,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NotificationContentExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Extensions-NotificationContent-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -4352,15 +4448,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-WatchExtension-Watch/Pods-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-WatchExtension-Watch/Pods-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WatchExtension-Watch/Pods-WatchExtension-Watch-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F6F1EAA08C3E5179B7848A38 /* [CP] Embed Pods Frameworks */ = {
@@ -4369,15 +4465,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-Tests-Shared/Pods-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-Tests-Shared/Pods-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-Tests-Shared/Pods-Shared-iOS-Tests-Shared-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -4878,6 +4974,7 @@
 /* Begin PBXTargetDependency section */
 		1155DD0F250F4101003405C0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 1155DD05250F4100003405C0 /* Extensions-Share */;
 			targetProxy = 1155DD0E250F4101003405C0 /* PBXContainerItemProxy */;
 		};
@@ -5150,7 +5247,7 @@
 /* Begin XCBuildConfiguration section */
 		1155DD13250F4101003405C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87D2D3F10FEA013DD78E6D2D /* Pods-ShareExtension.debug.xcconfig */;
+			baseConfigurationReference = BDBFBFF07196266D9968F93D /* Pods-Extensions-Share.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Share/Resources/ShareExtension development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
@@ -5169,7 +5266,7 @@
 		};
 		1155DD14250F4101003405C0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 75816D4DCB147E0887430503 /* Pods-ShareExtension.release.xcconfig */;
+			baseConfigurationReference = A7EC482514B50F7A79867DA2 /* Pods-Extensions-Share.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Share/Resources/ShareExtension.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
@@ -5188,7 +5285,7 @@
 		};
 		1155DD15250F4101003405C0 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D7FCBE55780B75D422923DC /* Pods-ShareExtension.beta.xcconfig */;
+			baseConfigurationReference = E383A83923E91F812775D632 /* Pods-Extensions-Share.beta.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Share/Resources/ShareExtension beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
@@ -5264,7 +5361,7 @@
 		};
 		1171507724DFCDEE0065E874 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 93628E0C56C78ABC653200FB /* Pods-WidgetsExtension.debug.xcconfig */;
+			baseConfigurationReference = 034B63381A4BFA12E0F53DE8 /* Pods-Extensions-Widgets.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -5287,7 +5384,7 @@
 		};
 		1171507824DFCDEE0065E874 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 21EDD9B71A1DF5A5C8A2106E /* Pods-WidgetsExtension.release.xcconfig */;
+			baseConfigurationReference = 7BF98F90D042F13BFD0DC77A /* Pods-Extensions-Widgets.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -5310,7 +5407,7 @@
 		};
 		1171507924DFCDEE0065E874 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7BF8E9A6F015B5C46C89FD14 /* Pods-WidgetsExtension.beta.xcconfig */;
+			baseConfigurationReference = 4687CA29F3B383431960C24A /* Pods-Extensions-Widgets.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -5333,7 +5430,7 @@
 		};
 		B627CB161D83C87B0057173E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */;
+			baseConfigurationReference = DD6684C56A26FAA3DFDB893D /* Pods-Extensions-NotificationContent.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationContent/NotificationContentExtension Development.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5352,7 +5449,7 @@
 		};
 		B627CB171D83C87B0057173E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */;
+			baseConfigurationReference = AB7D5B9D8C5B75B1EA2DAE44 /* Pods-Extensions-NotificationContent.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/NotificationContent/NotificationContentExtension.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5378,7 +5475,7 @@
 		};
 		B637243021697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B99BAC287C6B3CE69C9267A /* Pods-HomeAssistant.beta.xcconfig */;
+			baseConfigurationReference = F54A454E017B903B2343709C /* Pods-App.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "Sources/App/Resources/HomeAssistant Beta.entitlements";
@@ -5421,7 +5518,7 @@
 		};
 		B637243121697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A773539FA6CBDC538A9D2EDD /* Pods-HomeAssistantTests.beta.xcconfig */;
+			baseConfigurationReference = 80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Info.plist;
@@ -5448,7 +5545,7 @@
 		};
 		B637243321697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */;
+			baseConfigurationReference = 41FE3EF81F53AEAA32DE6C0C /* Pods-Extensions-NotificationService.beta.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationService/APNSAttachmentService Beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService Beta-catalyst.entitlements";
@@ -5467,7 +5564,7 @@
 		};
 		B637243421697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */;
+			baseConfigurationReference = 0530E43EB25FA786344F2674 /* Pods-Extensions-NotificationContent.beta.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationContent/NotificationContentExtension Beta.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5510,7 +5607,7 @@
 		};
 		B637243621697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 22DFD473C941D5E380068120 /* Pods-Shared-iOS-SharedTests.beta.xcconfig */;
+			baseConfigurationReference = 5B79F73EFD6BCA429A487EFF /* Pods-Shared-iOS-Tests-Shared.beta.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Shared/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5525,7 +5622,7 @@
 		};
 		B637243721697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE58041D3926107C95F27BE7 /* Pods-SiriIntents.beta.xcconfig */;
+			baseConfigurationReference = E672709BC17B920FC7BC66C1 /* Pods-Extensions-Intents.beta.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Intents/SiriIntents Beta.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents Beta-catalyst.entitlements";
@@ -5572,7 +5669,7 @@
 		};
 		B637243921697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */;
+			baseConfigurationReference = 39ED8002022BDC0866F18A44 /* Pods-WatchExtension-Watch.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Watch/Resources/WatchAppExtension Beta.entitlements";
@@ -5607,7 +5704,7 @@
 		};
 		B657A9111CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 94F2E1DA1A69FE4CED834348 /* Pods-HomeAssistant.debug.xcconfig */;
+			baseConfigurationReference = 0DAE895FBA1AE40431144F66 /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "Sources/App/Resources/HomeAssistant Development.entitlements";
@@ -5650,7 +5747,7 @@
 		};
 		B657A9121CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25CF94434FED72A01C6A594B /* Pods-HomeAssistant.release.xcconfig */;
+			baseConfigurationReference = 10AB5FD314183F892512659C /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = Sources/App/Resources/HomeAssistant.entitlements;
@@ -5693,7 +5790,7 @@
 		};
 		B657A9141CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87A132CFD9E75BE5545C3491 /* Pods-HomeAssistantTests.debug.xcconfig */;
+			baseConfigurationReference = 479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Info.plist;
@@ -5705,7 +5802,7 @@
 		};
 		B657A9151CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */;
+			baseConfigurationReference = F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Info.plist;
@@ -5747,7 +5844,7 @@
 		};
 		B66C58AE215086F0004AB261 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FC4F5F548BAFA196245ED90F /* Pods-SiriIntents.debug.xcconfig */;
+			baseConfigurationReference = B94ECC97EB71A2C3D56592AD /* Pods-Extensions-Intents.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Intents/SiriIntents Development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents Development-catalyst.entitlements";
@@ -5775,7 +5872,7 @@
 		};
 		B66C58AF215086F0004AB261 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 799B3F55FAE1A57812B62339 /* Pods-SiriIntents.release.xcconfig */;
+			baseConfigurationReference = F1640D9FBC35695F653F1110 /* Pods-Extensions-Intents.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Intents/SiriIntents.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents-catalyst.entitlements";
@@ -5803,7 +5900,7 @@
 		};
 		B66F9F2F216B1E61000CAA0F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 514D3AC57D932CF15324A398 /* Pods-TodayWidget.debug.xcconfig */;
+			baseConfigurationReference = FE6A9BF7BC091C813AA82682 /* Pods-Extensions-Today.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Today/TodayWidget Development.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5824,7 +5921,7 @@
 		};
 		B66F9F30216B1E61000CAA0F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */;
+			baseConfigurationReference = 6A86A870D47EB2B4E61BD3AF /* Pods-Extensions-Today.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Today/TodayWidget.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5845,7 +5942,7 @@
 		};
 		B66F9F31216B1E61000CAA0F /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E46DEBD572E360E6FE1CBD43 /* Pods-TodayWidget.beta.xcconfig */;
+			baseConfigurationReference = E7E550D06ED1392D53D32B7B /* Pods-Extensions-Today.beta.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Today/TodayWidget Beta.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5941,7 +6038,7 @@
 		};
 		B6AAD7AA1D827DD40090B220 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */;
+			baseConfigurationReference = 918333C4B7B2CA7E4EB30C5D /* Pods-Extensions-NotificationService.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationService/APNSAttachmentService Development.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService Development-catalyst.entitlements";
@@ -5960,7 +6057,7 @@
 		};
 		B6AAD7AB1D827DD40090B220 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4A8A2EDC1B82E759DCE5F6C8 /* Pods-APNSAttachmentService.release.xcconfig */;
+			baseConfigurationReference = B946AA2C449F998134509835 /* Pods-Extensions-NotificationService.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/NotificationService/APNSAttachmentService.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService-catalyst.entitlements";
@@ -6017,7 +6114,7 @@
 		};
 		B6CC5DA12159D10F00833E5D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */;
+			baseConfigurationReference = 9025CDF0D0BD8D34C8D07706 /* Pods-WatchExtension-Watch.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Watch/Resources/WatchAppExtension Development.entitlements";
@@ -6038,7 +6135,7 @@
 		};
 		B6CC5DA22159D10F00833E5D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */;
+			baseConfigurationReference = 1A5C1F658520E785253CE2B5 /* Pods-WatchExtension-Watch.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Watch/Resources/WatchAppExtension.entitlements;
@@ -6107,7 +6204,7 @@
 		};
 		D03D894B20E0BC1800D4F28D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 23822AB93E5DB75D43DBE934 /* Pods-Shared-iOS-SharedTests.debug.xcconfig */;
+			baseConfigurationReference = F317B17883D29CEC759E3023 /* Pods-Shared-iOS-Tests-Shared.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Shared/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6122,7 +6219,7 @@
 		};
 		D03D894C20E0BC1800D4F28D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D0BE10BAAFF4C6503DC4279 /* Pods-Shared-iOS-SharedTests.release.xcconfig */;
+			baseConfigurationReference = 3E43A9FB1EEFB75A8F316F41 /* Pods-Shared-iOS-Tests-Shared.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = Tests/Shared/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
