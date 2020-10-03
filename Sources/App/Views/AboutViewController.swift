@@ -161,7 +161,7 @@ class AboutViewController: FormViewController {
         var licenses = [CPDLibrary]()
 
         for fileName in [
-            "Pods-HomeAssistant-metadata",
+            "Pods-App-metadata",
             "ManualPodLicenses"
         ] {
             if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),
