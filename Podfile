@@ -4,27 +4,23 @@ inhibit_all_warnings!
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
 plugin 'cocoapods-acknowledgements'
 
-if not File.exist?("Tools/MaterialDesignIcons.ttf")
-    puts "Didn't find Tools/MaterialDesignIcons.ttf, downloading and building now"
-    system("./Tools/BuildMaterialDesignIconsFont.sh")
-else
-    puts "Tools/MaterialDesignIcons.ttf already exists"
-end
+system("./Tools/BuildMaterialDesignIconsFont.sh")
 
-# Set FONT_PATH and CUSTOM_FONT_NAME variables for MDI
-puts "Setting FONT_PATH to '#{File.expand_path('./Tools/MaterialDesignIcons.ttf')}'"
-ENV['FONT_PATH'] = File.expand_path('./Tools/MaterialDesignIcons.ttf')
-puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
-ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 pod 'Alamofire', '~> 4.0'
 pod 'Communicator', '~> 3.3.0'
-#pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
 pod 'KeychainAccess'
 pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
 pod 'PromiseKit'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
+
+# Set FONT_PATH and CUSTOM_FONT_NAME variables for MDI
+#puts "Setting FONT_PATH to '#{File.expand_path('./Tools/MaterialDesignIcons.ttf')}'"
+#ENV['FONT_PATH'] = File.expand_path('./Tools/MaterialDesignIcons.ttf')
+#puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
+#ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
+#pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
 
 def test_pods
     pod 'OHHTTPStubs/Swift'
