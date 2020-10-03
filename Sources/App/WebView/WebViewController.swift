@@ -15,7 +15,6 @@ import SwiftMessages
 import Shared
 import AVFoundation
 import AVKit
-import WhatsNewKit
 import CoreLocation
 
 // swiftlint:disable:next type_body_length
@@ -108,8 +107,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
 
         self.becomeFirstResponder()
-        // self.showWhatsNew()
-        // self.remotePlayer.delegate = self
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
                                                name: HomeAssistantAPI.didConnectNotification,

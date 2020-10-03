@@ -43,7 +43,7 @@ abstract_target 'iOS' do
         pod 'CallbackURLKit'
         pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
         pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
-        pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
+        pod 'Eureka'
         pod 'Firebase/Messaging'
         pod 'Lokalise', '~> 0.10.0'
         pod 'lottie-ios'
@@ -51,9 +51,8 @@ abstract_target 'iOS' do
         pod 'SimulatorStatusMagic', :configurations => ['Debug']
         pod 'SwiftGen', '~> 6.3.0'
         pod 'SwiftLint'
-        pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
+        pod 'SwiftMessages'
         pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
-        pod 'WhatsNewKit'
         pod 'ZIPFoundation', '~> 0.9'
 
         target 'Tests-App' do
