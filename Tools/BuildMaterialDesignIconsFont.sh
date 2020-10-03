@@ -40,6 +40,6 @@ echo "Changing font name to MaterialDesignIcons"
 python3 fontname.py MaterialDesignIcons MaterialDesignIcons-$MDI_VERSION.ttf
 
 echo "Successfully built MaterialDesignIcons.ttf"
-ln MaterialDesignIcons-$MDI_VERSION.ttf MaterialDesignIcons.ttf
+ln -f MaterialDesignIcons-$MDI_VERSION.ttf MaterialDesignIcons.ttf
 
 popd
