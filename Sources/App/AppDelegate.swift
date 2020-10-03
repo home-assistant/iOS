@@ -676,24 +676,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupSentry() {
+        guard Current.settingsStore.privacy.crashes else {
+            return
+        }
+
         Current.Log.add(destination: SentryLogDestination())
 
         SentrySDK.start { options in
             options.dsn = "https://762c198b86594fa2b6bedf87028db34d@o427061.ingest.sentry.io/5372775"
-            options.debug = NSNumber(value: Current.appConfiguration == .Debug)
-            options.enableAutoSessionTracking = NSNumber(value: Current.settingsStore.privacy.analytics)
-            options.enabled = NSNumber(value: Current.settingsStore.privacy.crashes)
+            options.debug = Current.appConfiguration == .Debug
+            options.enableAutoSessionTracking = Current.settingsStore.privacy.analytics
             options.maxBreadcrumbs = 1000
 
             var integrations = type(of: options).defaultIntegrations()
 
             let analyticsIntegrations = Set([
-                NSStringFromClass(SentryAutoBreadcrumbTrackingIntegration.self),
-                NSStringFromClass(SentryAutoSessionTrackingIntegration.self)
+                "SentryAutoBreadcrumbTrackingIntegration",
+                "SentryAutoSessionTrackingIntegration"
             ])
 
             let crashesIntegrations = Set([
-                NSStringFromClass(SentryCrashIntegration.self)
+                "SentryCrashIntegration"
             ])
 
             if !Current.settingsStore.privacy.crashes {
