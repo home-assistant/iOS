@@ -161,7 +161,7 @@ class AboutViewController: FormViewController {
         var licenses = [CPDLibrary]()
 
         for fileName in [
-            "Pods-App-metadata",
+            "Pods-iOS-App-metadata",
             "ManualPodLicenses"
         ] {
             if let file = Bundle.main.url(forResource: fileName, withExtension: "plist"),

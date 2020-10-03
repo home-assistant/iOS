@@ -1,9 +1,7 @@
-# Uncomment this line to define a global platform for your project
-platform :ios, '11.0'
-# Uncomment this line if you're using Swift
 use_frameworks!
 inhibit_all_warnings!
 
+project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
 plugin 'cocoapods-acknowledgements'
 
 if not File.exist?("Tools/MaterialDesignIcons.ttf")
@@ -18,101 +16,72 @@ puts "Setting FONT_PATH to '#{File.expand_path('./Tools/MaterialDesignIcons.ttf'
 ENV['FONT_PATH'] = File.expand_path('./Tools/MaterialDesignIcons.ttf')
 puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
 ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
+pod 'Alamofire', '~> 4.0'
+pod 'Communicator', '~> 3.3.0'
+#pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
+pod 'KeychainAccess'
+pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
+pod 'PromiseKit'
+pod 'UIColor_Hex_Swift'
+pod 'Version'
+pod 'XCGLogger'
 
-def shared_pods
-    pod 'Alamofire', '~> 4.0'
-    pod 'Communicator', '~> 3.3.0'
-    #pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
-    pod 'KeychainAccess'
-    pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
-    pod 'PromiseKit'
-    pod 'UIColor_Hex_Swift'
-    pod 'Version'
-    pod 'XCGLogger'
-end
-
-def shared_tests
+def test_pods
     pod 'OHHTTPStubs/Swift'
 end
 
-def ios_shared_pods
-    shared_pods
+abstract_target 'iOS' do
+    platform :ios, '11.0'
 
+    pod 'MBProgressHUD', '~> 1.2.0'
     pod 'ReachabilitySwift'
-end
 
-target 'App' do
-    ios_shared_pods
-
-    pod 'CallbackURLKit'
-    pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
-    pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
-    pod 'Firebase/Messaging'
-    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
-    pod 'Lokalise', '~> 0.10.0'
-    pod 'lottie-ios'
-    pod 'MBProgressHUD', '~> 1.2.0'
-    pod 'Sentry'
-    pod 'SimulatorStatusMagic', :configurations => ['Debug']
-    pod 'SwiftGen', '~> 6.3.0'
-    pod 'SwiftLint'
-    pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
-    pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
-    pod 'WhatsNewKit'
-    pod 'ZIPFoundation', '~> 0.9'
-
-    target 'Tests-App' do
-        inherit! :search_paths
-        shared_tests
+    target 'Shared-iOS' do
+        target 'Tests-Shared' do
+            inherit! :search_paths
+            test_pods
+        end
     end
-end
 
-target 'Shared-iOS' do
-    ios_shared_pods
+    target 'App' do
+        pod 'CallbackURLKit'
+        pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
+        pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
+        pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
+        pod 'Firebase/Messaging'
+        pod 'Lokalise', '~> 0.10.0'
+        pod 'lottie-ios'
+        pod 'Sentry'
+        pod 'SimulatorStatusMagic', :configurations => ['Debug']
+        pod 'SwiftGen', '~> 6.3.0'
+        pod 'SwiftLint'
+        pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
+        pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
+        pod 'WhatsNewKit'
+        pod 'ZIPFoundation', '~> 0.9'
 
-    target 'Tests-Shared' do
-      shared_tests
+        target 'Tests-App' do
+            inherit! :search_paths
+            test_pods
+        end
     end
+
+    target 'Extensions-Intents'
+    target 'Extensions-NotificationContent'
+    target 'Extensions-NotificationService'
+    target 'Extensions-Share'
+    target 'Extensions-Today'
+    target 'Extensions-Widgets'
 end
 
-target 'Shared-watchOS' do
+abstract_target 'watchOS' do
     platform :watchos, '5.0'
 
-    shared_pods
-end
+    target 'Shared-watchOS'
 
-target 'Extensions-NotificationService' do
-    ios_shared_pods
-end
-
-target 'Extensions-NotificationContent' do
-    ios_shared_pods
-
-    pod 'MBProgressHUD', '~> 1.2.0'
-end
-
-target 'Extensions-Intents' do
-    ios_shared_pods
-end
-
-target 'WatchExtension-Watch' do
-    platform :watchos, '5.0'
-
-    shared_pods
-
-    pod 'EMTLoadingIndicator', :git => 'https://github.com/hirokimu/EMTLoadingIndicator', :branch => 'master'
-end
-
-target 'Extensions-Today' do
-    ios_shared_pods
-end
-
-target 'Extensions-Widgets' do
-    ios_shared_pods
-end
-
-target 'Extensions-Share' do
-    ios_shared_pods
+    target 'WatchExtension-Watch' do
+        pod 'EMTLoadingIndicator', :git => 'https://github.com/hirokimu/EMTLoadingIndicator', :branch => 'master'
+    end
 end
 
 post_install do |installer|
