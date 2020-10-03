@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B627CB061D83C87B0057173E"
-               BuildableName = "NotificationContentExtension.appex"
-               BlueprintName = "NotificationContentExtension"
+               BuildableName = "Extensions-NotificationContent.appex"
+               BlueprintName = "Extensions-NotificationContent"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,7 +31,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8E51CA646EB00121384"
                BuildableName = "Home Assistant.app"
-               BlueprintName = "HomeAssistant"
+               BlueprintName = "App"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -54,15 +54,14 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES"
-      notificationPayloadFile = "NotificationContentExtension/TestNotifications/camera_notification.apns">
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -80,7 +79,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

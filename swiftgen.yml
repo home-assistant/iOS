@@ -1,39 +1,34 @@
 strings:
   inputs:
-    - HomeAssistant/Resources/en.lproj/Localizable.strings
+    - Sources/App/Resources/en.lproj/Localizable.strings
   outputs:
     - templateName: structured-swift5
-      output: Shared/Resources/SwiftGen/Strings.swift
+      output: Sources/Shared/Resources/SwiftGen/Strings.swift
       params:
         publicAccess: true
         lookupFunction: Current.localized.string
 ib:
   inputs:
-    - HomeAssistant/Resources/Base.lproj/Onboarding.storyboard
-    - HomeAssistant/ClientEvents/Resources/ClientEvents.storyboard
+    - Sources/App/Resources/Base.lproj/Onboarding.storyboard
+    - Sources/App/ClientEvents/Resources/ClientEvents.storyboard
   outputs:
     - templateName: scenes-swift5
-      output: HomeAssistant/Resources/Scenes.swift
+      output: Sources/App/Resources/Scenes.swift
       params:
         module: HomeAssistant
     - templateName: segues-swift5
-      output: HomeAssistant/Resources/Segues.swift
+      output: Sources/App/Resources/Segues.swift
 xcassets:
-  inputs: HomeAssistant/Resources/Assets.xcassets
+  inputs: Sources/App/Resources/Assets.xcassets
   outputs:
     templateName: swift5
-    output: HomeAssistant/Resources/Assets.swift
-colors:
-  inputs: HomeAssistant/Resources/Colors.json
-  outputs:
-    templateName: swift5
-    output: HomeAssistant/Resources/Colors.swift
+    output: Sources/App/Resources/Assets.swift
 plist:
   inputs:
-  - Shared/Info.plist
+  - Sources/Shared/Info.plist
   outputs:
   - templateName: runtime-swift5
-    output: Shared/Resources/SwiftGen/SharedPlist.swift
+    output: Sources/Shared/Resources/SwiftGen/SharedPlist.swift
     params: 
       enumName: SharedPlistFiles
       forceFileNameEnum: true

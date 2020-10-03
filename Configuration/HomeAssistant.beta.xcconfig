@@ -1,1 +1,4 @@
-#include "HomeAssistant.xcconfig"
+#include "HomeAssistant.release.xcconfig"
+
+BUNDLE_ID_SUFFIX = .beta-nc
+OTHER_SWIFT_FLAGS = $(inherited) -DBETA -DRELEASE

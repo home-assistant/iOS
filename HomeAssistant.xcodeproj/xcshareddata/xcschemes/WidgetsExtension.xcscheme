@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1171506824DFCDE60065E874"
-               BuildableName = "WidgetsExtension.appex"
-               BlueprintName = "WidgetsExtension"
+               BuildableName = "Extensions-Widgets.appex"
+               BlueprintName = "Extensions-Widgets"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,7 +31,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8E51CA646EB00121384"
                BuildableName = "Home Assistant.app"
-               BlueprintName = "HomeAssistant"
+               BlueprintName = "App"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -63,8 +63,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1171506824DFCDE60065E874"
-            BuildableName = "WidgetsExtension.appex"
-            BlueprintName = "WidgetsExtension"
+            BuildableName = "Extensions-Widgets.appex"
+            BlueprintName = "Extensions-Widgets"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
@@ -73,7 +73,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -108,7 +108,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

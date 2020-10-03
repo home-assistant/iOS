@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B66C58A4215086F0004AB261"
-               BuildableName = "SiriIntents.appex"
-               BlueprintName = "SiriIntents"
+               BuildableName = "Extensions-Intents.appex"
+               BlueprintName = "Extensions-Intents"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,7 +31,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8E51CA646EB00121384"
                BuildableName = "Home Assistant.app"
-               BlueprintName = "HomeAssistant"
+               BlueprintName = "App"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -63,7 +63,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -81,7 +81,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

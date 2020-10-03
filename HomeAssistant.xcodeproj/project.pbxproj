@@ -29,6 +29,7 @@
 		110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */; };
 		1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
 		1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
+		1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
 		1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111858D324CB5B8900B8CDDC /* PerformAction.swift */; };
@@ -70,7 +71,7 @@
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
 		1155DD09250F4100003405C0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DD08250F4100003405C0 /* ShareViewController.swift */; };
-		1155DD10250F4101003405C0 /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1155DD10250F4101003405C0 /* Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
@@ -82,7 +83,7 @@
 		1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506C24DFCDE60065E874 /* SwiftUI.framework */; };
 		1171507024DFCDE60065E874 /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171506F24DFCDE60065E874 /* Widgets.swift */; };
 		1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1171507124DFCDEE0065E874 /* Assets.xcassets */; };
-		1171507624DFCDEE0065E874 /* WidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1171506924DFCDE60065E874 /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1171507624DFCDEE0065E874 /* Extensions-Widgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1171506924DFCDE60065E874 /* Extensions-Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171508024DFCEC50065E874 /* WidgetActions.swift */; };
 		117318AB25199E1A0013E010 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117318AA25199E1A0013E010 /* AppKit.framework */; };
@@ -128,7 +129,7 @@
 		11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11948E8824DA5D50006F5657 /* InfoLabelRow.swift */; };
 		1194B4162519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1194B4152519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift */; };
 		11993D2424E78A3700627944 /* WidgetActionsActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11993D2324E78A3700627944 /* WidgetActionsActionView.swift */; };
-		119A172524D74DA800D1B66D /* WatchAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		119A172524D74DA800D1B66D /* WatchExtension-Watch.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
@@ -433,7 +434,7 @@
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
-		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B627CB151D83C87B0057173E /* Extensions-NotificationContent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplate.swift */; };
 		B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
 		B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
@@ -494,15 +495,12 @@
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
-		B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		B658AA792250ACF200C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		B658AA7A2250ACFB00C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		B658AA7B2250AE4900C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B65B14E52273157A00635D5C /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B65B14E72273157A00635D5C /* Onboarding.storyboard */; };
-		B65B14FF227317D700635D5C /* Colors.json in Resources */ = {isa = PBXBuildFile; fileRef = B65B14FE227317D700635D5C /* Colors.json */; };
-		B65B15032273184F00635D5C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15022273184F00635D5C /* Colors.swift */; };
 		B65B15052273188300635D5C /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
@@ -517,7 +515,7 @@
 		B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */; };
 		B661FC8F226D606600E541DD /* 5401-loading-19-satellite-dish.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
-		B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* SiriIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66C58AC215086F0004AB261 /* Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66C58B12150891B004AB261 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallService.swift */; };
 		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
 		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
@@ -525,7 +523,7 @@
 		B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */; };
 		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
 		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
-		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66F9F2E216B1E61000CAA0F /* Extensions-Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
@@ -543,7 +541,6 @@
 		B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */; };
 		B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
-		B67CE82822200D420034C1D0 /* Shared_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = B67CE82622200D420034C1D0 /* Shared_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; };
 		B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B67CE87622200F220034C1D0 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF326214DF31D00D1D360 /* Notifications.swift */; };
@@ -578,7 +575,6 @@
 		B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
 		B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CB20D778B50034574D /* ClientEvent.swift */; };
 		B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */; };
-		B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */; };
 		B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */; };
 		B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */; };
@@ -593,12 +589,11 @@
 		B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */; };
 		B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
-		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B6AAD7A81D827DD40090B220 /* Extensions-NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E69F216A940700D39A26 /* ActionRow.swift */; };
 		B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */; };
 		B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */; };
 		B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
-		B6B74CB7228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
 		B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
 		B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
 		B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
@@ -824,7 +819,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				119A172524D74DA800D1B66D /* WatchAppExtension.appex in Embed App Extensions */,
+				119A172524D74DA800D1B66D /* WatchExtension-Watch.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -857,12 +852,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1155DD10250F4101003405C0 /* ShareExtension.appex in Embed App Extensions */,
-				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
-				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
-				1171507624DFCDEE0065E874 /* WidgetsExtension.appex in Embed App Extensions */,
-				B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */,
-				B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */,
+				1155DD10250F4101003405C0 /* Extensions-Share.appex in Embed App Extensions */,
+				B6AAD7A81D827DD40090B220 /* Extensions-NotificationService.appex in Embed App Extensions */,
+				B627CB151D83C87B0057173E /* Extensions-NotificationContent.appex in Embed App Extensions */,
+				1171507624DFCDEE0065E874 /* Extensions-Widgets.appex in Embed App Extensions */,
+				B66F9F2E216B1E61000CAA0F /* Extensions-Today.appex in Embed App Extensions */,
+				B66C58AC215086F0004AB261 /* Extensions-Intents.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -921,7 +916,7 @@
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
-		1155DD06250F4100003405C0 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1155DD06250F4100003405C0 /* Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD17250F42EA003405C0 /* ShareExtension Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension Beta-catalyst.entitlements"; sourceTree = "<group>"; };
 		1155DD18250F42EA003405C0 /* ShareExtension Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShareExtension Development-catalyst.entitlements"; sourceTree = "<group>"; };
@@ -938,7 +933,7 @@
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
-		1171506924DFCDE60065E874 /* WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1171506924DFCDE60065E874 /* Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1171506A24DFCDE60065E874 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1171506C24DFCDE60065E874 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		1171506F24DFCDE60065E874 /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
@@ -1084,7 +1079,7 @@
 		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
 		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
-		11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialDesignIcons.ttf; path = ../../Tools/MaterialDesignIcons.ttf; sourceTree = "<group>"; };
+		11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialDesignIcons.ttf; path = Tools/MaterialDesignIcons.ttf; sourceTree = SOURCE_ROOT; };
 		11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialDesignIcons.swift; sourceTree = "<group>"; };
 		11F855D424DF6C7A0018013E /* IconDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconDrawable.swift; sourceTree = "<group>"; };
 		11F855D524DF6C7A0018013E /* IconImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconImageView.swift; sourceTree = "<group>"; };
@@ -1313,7 +1308,7 @@
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
-		B627CB071D83C87B0057173E /* NotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-NotificationContent.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -1422,9 +1417,9 @@
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Release LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A8FC1CA646EB00121384 /* Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A9021CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAssistantUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A9071CA646EB00121384 /* Tests-UI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests-UI.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1433,8 +1428,6 @@
 		B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Beta.plist"; sourceTree = "<group>"; };
 		B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppUpdateRegistrationRequest.swift; sourceTree = "<group>"; };
 		B65B14E62273157A00635D5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
-		B65B14FE227317D700635D5C /* Colors.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Colors.json; sourceTree = "<group>"; };
-		B65B15022273184F00635D5C /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		B65B15042273188300635D5C /* Assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
 		B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
@@ -1448,7 +1441,7 @@
 		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
 		B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInstanceViewController.swift; sourceTree = "<group>"; };
 		B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "5401-loading-19-satellite-dish.json"; sourceTree = "<group>"; };
-		B66C58A5215086F0004AB261 /* SiriIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SiriIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B66C58A5215086F0004AB261 /* Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B66C58B02150891B004AB261 /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
@@ -1458,7 +1451,7 @@
 		B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotificationController.swift; sourceTree = "<group>"; };
 		B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraNotificationController.swift; sourceTree = "<group>"; };
 		B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHelpers.swift; sourceTree = "<group>"; };
-		B66F9F22216B1E61000CAA0F /* TodayWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodayWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Today.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 		B66F9F2B216B1E61000CAA0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1480,8 +1473,6 @@
 		B67CE819221FB1480034C1D0 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B67CE81A221FB1480034C1D0 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B67CE82422200D420034C1D0 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B67CE82622200D420034C1D0 /* Shared_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared_watchOS.h; sourceTree = "<group>"; };
-		B67CE82722200D420034C1D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObjectMapper+RealmList.swift"; sourceTree = "<group>"; };
 		B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppRegistrationRequest.swift; sourceTree = "<group>"; };
 		B6872E652226842100C475D1 /* MobileAppRegistrationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppRegistrationResponse.swift; sourceTree = "<group>"; };
@@ -1500,7 +1491,7 @@
 		B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.swift; sourceTree = "<group>"; };
 		B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiriIntents+ConvenienceInits.swift"; sourceTree = "<group>"; };
 		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
-		B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNSAttachmentService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-NotificationService.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		B6AAD7A51D827DD40090B220 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6B2E69F216A940700D39A26 /* ActionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRow.swift; sourceTree = "<group>"; };
@@ -1525,7 +1516,7 @@
 		B6CC5D852159D10D00833E5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		B6CC5D872159D10E00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CC5D892159D10E00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WatchAppExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WatchExtension-Watch.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CC5D932159D10E00833E5D /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
 		B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		B6CC5D972159D10E00833E5D /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
@@ -1596,7 +1587,7 @@
 		D03D891920E0A85300D4F28D /* Shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared.h; sourceTree = "<group>"; };
 		D03D891A20E0A85300D4F28D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D03D893A20E0B2E300D4F28D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		D03D894220E0BC1800D4F28D /* SharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D03D894220E0BC1800D4F28D /* Tests-Shared.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests-Shared.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D03D894620E0BC1800D4F28D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MJPEGStreamer.swift; sourceTree = "<group>"; };
 		D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventCell.swift; sourceTree = "<group>"; };
@@ -1810,6 +1801,42 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
+		1115018C2528411200DCFA94 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				D03D891820E0A85300D4F28D /* Shared */,
+				B6CC5D832159D10D00833E5D /* WatchApp */,
+				1167402325198F9A00F51626 /* MacBridge */,
+				111501A72528412C00DCFA94 /* Extensions */,
+				B657A8E81CA646EB00121384 /* App */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		111501A72528412C00DCFA94 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B66C58A6215086F0004AB261 /* Intents */,
+				B6CC5D922159D10E00833E5D /* Watch */,
+				B6AAD7A21D827DD40090B220 /* NotificationService */,
+				B627CB0C1D83C87B0057173E /* NotificationContent */,
+				B66F9F25216B1E61000CAA0F /* Today */,
+				1155DD07250F4100003405C0 /* Share */,
+				1171506E24DFCDE60065E874 /* Widgets */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		111501A82528414000DCFA94 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				B657A8FF1CA646EB00121384 /* App */,
+				B657A90A1CA646EB00121384 /* UI */,
+				D03D894320E0BC1800D4F28D /* Shared */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 		1141182824AFA0F000E6525C /* Request&Response */ = {
 			isa = PBXGroup;
 			children = (
@@ -1827,13 +1854,13 @@
 			path = "Request&Response";
 			sourceTree = "<group>";
 		};
-		1155DD07250F4100003405C0 /* ShareExtension */ = {
+		1155DD07250F4100003405C0 /* Share */ = {
 			isa = PBXGroup;
 			children = (
 				1155DD16250F42EA003405C0 /* Resources */,
 				1155DD08250F4100003405C0 /* ShareViewController.swift */,
 			);
-			path = ShareExtension;
+			path = Share;
 			sourceTree = "<group>";
 		};
 		1155DD16250F42EA003405C0 /* Resources */ = {
@@ -2301,7 +2328,7 @@
 			path = Generic;
 			sourceTree = "<group>";
 		};
-		B627CB0C1D83C87B0057173E /* NotificationContentExtension */ = {
+		B627CB0C1D83C87B0057173E /* NotificationContent */ = {
 			isa = PBXGroup;
 			children = (
 				1100D5222497578800B1073C /* TestNotifications */,
@@ -2318,31 +2345,18 @@
 				110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */,
 				110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */,
 			);
-			path = NotificationContentExtension;
+			path = NotificationContent;
 			sourceTree = "<group>";
 		};
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
 				9C4E5E20229D97FA0044C8EC /* Configuration */,
-				B657A8E81CA646EB00121384 /* HomeAssistant */,
-				D03D891820E0A85300D4F28D /* Shared */,
-				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
-				B66C58A6215086F0004AB261 /* Intents */,
-				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
-				B66F9F25216B1E61000CAA0F /* TodayWidget */,
-				B6CC5D832159D10D00833E5D /* WatchApp */,
-				B6CC5D922159D10E00833E5D /* WatchAppExtension */,
-				B67CE82522200D420034C1D0 /* Shared-watchOS */,
-				1171506E24DFCDE60065E874 /* Widgets */,
-				1155DD07250F4100003405C0 /* ShareExtension */,
-				1167402325198F9A00F51626 /* MacBridge */,
-				29278BB24639BA945D3D86B4 /* Frameworks */,
-				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
-				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
-				D03D894320E0BC1800D4F28D /* SharedTests */,
+				1115018C2528411200DCFA94 /* Sources */,
+				111501A82528414000DCFA94 /* Tests */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
 				B657A8E71CA646EB00121384 /* Products */,
+				29278BB24639BA945D3D86B4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2350,25 +2364,25 @@
 			isa = PBXGroup;
 			children = (
 				B657A8E61CA646EB00121384 /* Home Assistant Δ.app */,
-				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
-				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
-				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
-				B627CB071D83C87B0057173E /* NotificationContentExtension.appex */,
+				B657A8FC1CA646EB00121384 /* Tests-App.xctest */,
+				B657A9071CA646EB00121384 /* Tests-UI.xctest */,
+				B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */,
+				B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */,
 				D03D891720E0A85200D4F28D /* Shared.framework */,
-				D03D894220E0BC1800D4F28D /* SharedTests.xctest */,
-				B66C58A5215086F0004AB261 /* SiriIntents.appex */,
+				D03D894220E0BC1800D4F28D /* Tests-Shared.xctest */,
+				B66C58A5215086F0004AB261 /* Extensions-Intents.appex */,
 				B6CC5D822159D10D00833E5D /* WatchApp.app */,
-				B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */,
-				B66F9F22216B1E61000CAA0F /* TodayWidget.appex */,
+				B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */,
+				B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */,
 				B67CE82422200D420034C1D0 /* Shared.framework */,
-				1171506924DFCDE60065E874 /* WidgetsExtension.appex */,
-				1155DD06250F4100003405C0 /* ShareExtension.appex */,
+				1171506924DFCDE60065E874 /* Extensions-Widgets.appex */,
+				1155DD06250F4100003405C0 /* Extensions-Share.appex */,
 				1167402225198F9A00F51626 /* MacBridge.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
+		B657A8E81CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
@@ -2382,20 +2396,20 @@
 				B679B1F91E1F3CFB0071D366 /* Views */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 			);
-			path = HomeAssistant;
+			path = App;
 			sourceTree = "<group>";
 		};
-		B657A8FF1CA646EB00121384 /* HomeAssistantTests */ = {
+		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
 				B657A9021CA646EB00121384 /* Info.plist */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 				117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */,
 			);
-			path = HomeAssistantTests;
+			path = App;
 			sourceTree = "<group>";
 		};
-		B657A90A1CA646EB00121384 /* HomeAssistantUITests */ = {
+		B657A90A1CA646EB00121384 /* UI */ = {
 			isa = PBXGroup;
 			children = (
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
@@ -2404,7 +2418,7 @@
 				119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */,
 				B63CCDDE21649AE400123C50 /* BayArea.gpx */,
 			);
-			path = HomeAssistantUITests;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		B661FB6B226BCC8500E541DD /* Settings */ = {
@@ -2476,7 +2490,7 @@
 			path = Intents;
 			sourceTree = "<group>";
 		};
-		B66F9F25216B1E61000CAA0F /* TodayWidget */ = {
+		B66F9F25216B1E61000CAA0F /* Today */ = {
 			isa = PBXGroup;
 			children = (
 				B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */,
@@ -2485,7 +2499,7 @@
 				B66F9F26216B1E61000CAA0F /* TodayViewController.swift */,
 				B66F9F2B216B1E61000CAA0F /* Info.plist */,
 			);
-			path = TodayWidget;
+			path = Today;
 			sourceTree = "<group>";
 		};
 		B672333A225DB66A0031D629 /* WebSocket */ = {
@@ -2607,7 +2621,6 @@
 				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
 				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
-				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
@@ -2624,15 +2637,6 @@
 				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
 			);
 			path = Utilities;
-			sourceTree = "<group>";
-		};
-		B67CE82522200D420034C1D0 /* Shared-watchOS */ = {
-			isa = PBXGroup;
-			children = (
-				B67CE82622200D420034C1D0 /* Shared_watchOS.h */,
-				B67CE82722200D420034C1D0 /* Info.plist */,
-			);
-			path = "Shared-watchOS";
 			sourceTree = "<group>";
 		};
 		B69933961E232AF50054453D /* Resources */ = {
@@ -2661,8 +2665,6 @@
 				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
 				B661FB67226B961400E541DD /* WebSocketBridge.js */,
-				B65B14FE227317D700635D5C /* Colors.json */,
-				B65B15022273184F00635D5C /* Colors.swift */,
 				B648AE242275918E006972AF /* Scenes.swift */,
 				B648AE232275918E006972AF /* Segues.swift */,
 				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
@@ -2670,7 +2672,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		B6AAD7A21D827DD40090B220 /* APNSAttachmentService */ = {
+		B6AAD7A21D827DD40090B220 /* NotificationService */ = {
 			isa = PBXGroup;
 			children = (
 				B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */,
@@ -2682,7 +2684,7 @@
 				B6AAD7A51D827DD40090B220 /* Info.plist */,
 				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 			);
-			path = APNSAttachmentService;
+			path = NotificationService;
 			sourceTree = "<group>";
 		};
 		B6CC5D832159D10D00833E5D /* WatchApp */ = {
@@ -2698,7 +2700,7 @@
 			path = WatchApp;
 			sourceTree = "<group>";
 		};
-		B6CC5D922159D10E00833E5D /* WatchAppExtension */ = {
+		B6CC5D922159D10E00833E5D /* Watch */ = {
 			isa = PBXGroup;
 			children = (
 				B672AB592216C41000175465 /* Utilities */,
@@ -2711,7 +2713,7 @@
 				B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */,
 				B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */,
 			);
-			path = WatchAppExtension;
+			path = Watch;
 			sourceTree = "<group>";
 		};
 		B6CC5DAA2159D60900833E5D /* Resources */ = {
@@ -2782,6 +2784,7 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				B672333A225DB66A0031D629 /* WebSocket */,
 				B6E91C212232482A0014CB8D /* Webhook */,
 				D0B25BD0213218B000678C2C /* Requests */,
@@ -2823,7 +2826,7 @@
 			path = ClientEvents;
 			sourceTree = "<group>";
 		};
-		D03D894320E0BC1800D4F28D /* SharedTests */ = {
+		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
 				118511C024B25BDC00D18F60 /* Webhook */,
@@ -2839,7 +2842,7 @@
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
 			);
-			path = SharedTests;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		D06C750E20D87F4D00E9DB7F /* Views */ = {
@@ -3045,7 +3048,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B67CE82822200D420034C1D0 /* Shared_watchOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3060,9 +3062,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1155DD05250F4100003405C0 /* ShareExtension */ = {
+		1155DD05250F4100003405C0 /* Extensions-Share */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1155DD12250F4101003405C0 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
+			buildConfigurationList = 1155DD12250F4101003405C0 /* Build configuration list for PBXNativeTarget "Extensions-Share" */;
 			buildPhases = (
 				7E148D7357216F7E4E7108F6 /* [CP] Check Pods Manifest.lock */,
 				1155DD02250F4100003405C0 /* Sources */,
@@ -3074,9 +3076,9 @@
 			dependencies = (
 				1155DD21250F446F003405C0 /* PBXTargetDependency */,
 			);
-			name = ShareExtension;
+			name = "Extensions-Share";
 			productName = ShareExtension;
-			productReference = 1155DD06250F4100003405C0 /* ShareExtension.appex */;
+			productReference = 1155DD06250F4100003405C0 /* Extensions-Share.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		1167402125198F9A00F51626 /* MacBridge */ = {
@@ -3096,9 +3098,9 @@
 			productReference = 1167402225198F9A00F51626 /* MacBridge.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
-		1171506824DFCDE60065E874 /* WidgetsExtension */ = {
+		1171506824DFCDE60065E874 /* Extensions-Widgets */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1171507A24DFCDEF0065E874 /* Build configuration list for PBXNativeTarget "WidgetsExtension" */;
+			buildConfigurationList = 1171507A24DFCDEF0065E874 /* Build configuration list for PBXNativeTarget "Extensions-Widgets" */;
 			buildPhases = (
 				13A1C53F5260D6E9F66AF10B /* [CP] Check Pods Manifest.lock */,
 				1171506524DFCDE60065E874 /* Sources */,
@@ -3110,14 +3112,14 @@
 			dependencies = (
 				1171507E24DFCE0D0065E874 /* PBXTargetDependency */,
 			);
-			name = WidgetsExtension;
+			name = "Extensions-Widgets";
 			productName = WidgetsExtension;
-			productReference = 1171506924DFCDE60065E874 /* WidgetsExtension.appex */;
+			productReference = 1171506924DFCDE60065E874 /* Extensions-Widgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		B627CB061D83C87B0057173E /* NotificationContentExtension */ = {
+		B627CB061D83C87B0057173E /* Extensions-NotificationContent */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */;
+			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "Extensions-NotificationContent" */;
 			buildPhases = (
 				E8A710038DD9BF8F77365B02 /* [CP] Check Pods Manifest.lock */,
 				B627CB031D83C87B0057173E /* Sources */,
@@ -3129,14 +3131,14 @@
 			dependencies = (
 				D0EEF345214F15CA00D1D360 /* PBXTargetDependency */,
 			);
-			name = NotificationContentExtension;
+			name = "Extensions-NotificationContent";
 			productName = NotificationContentExtension;
-			productReference = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */;
+			productReference = B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		B657A8E51CA646EB00121384 /* HomeAssistant */ = {
+		B657A8E51CA646EB00121384 /* App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */;
+			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "App" */;
 			buildPhases = (
 				120054CCBDBFE9476AF3222E /* [CP] Check Pods Manifest.lock */,
 				B65B150722731CE300635D5C /* SwiftGen */,
@@ -3164,14 +3166,14 @@
 				1171507524DFCDEE0065E874 /* PBXTargetDependency */,
 				1155DD0F250F4101003405C0 /* PBXTargetDependency */,
 			);
-			name = HomeAssistant;
+			name = App;
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B657A8FB1CA646EB00121384 /* HomeAssistantTests */ = {
+		B657A8FB1CA646EB00121384 /* Tests-App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantTests" */;
+			buildConfigurationList = B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "Tests-App" */;
 			buildPhases = (
 				6B47CD8F0AAF5C691F8256D7 /* [CP] Check Pods Manifest.lock */,
 				B657A8F81CA646EB00121384 /* Sources */,
@@ -3184,14 +3186,14 @@
 			dependencies = (
 				B657A8FE1CA646EB00121384 /* PBXTargetDependency */,
 			);
-			name = HomeAssistantTests;
+			name = "Tests-App";
 			productName = HomeAssistantTests;
-			productReference = B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */;
+			productReference = B657A8FC1CA646EB00121384 /* Tests-App.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B657A9061CA646EB00121384 /* HomeAssistantUITests */ = {
+		B657A9061CA646EB00121384 /* Tests-UI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantUITests" */;
+			buildConfigurationList = B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "Tests-UI" */;
 			buildPhases = (
 				B657A9031CA646EB00121384 /* Sources */,
 				B657A9041CA646EB00121384 /* Frameworks */,
@@ -3202,14 +3204,14 @@
 			dependencies = (
 				B657A9091CA646EB00121384 /* PBXTargetDependency */,
 			);
-			name = HomeAssistantUITests;
+			name = "Tests-UI";
 			productName = HomeAssistantUITests;
-			productReference = B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */;
+			productReference = B657A9071CA646EB00121384 /* Tests-UI.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		B66C58A4215086F0004AB261 /* SiriIntents */ = {
+		B66C58A4215086F0004AB261 /* Extensions-Intents */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "SiriIntents" */;
+			buildConfigurationList = B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "Extensions-Intents" */;
 			buildPhases = (
 				28DC53645D4ECB9451F1344C /* [CP] Check Pods Manifest.lock */,
 				B66C58A1215086F0004AB261 /* Sources */,
@@ -3220,14 +3222,14 @@
 			);
 			dependencies = (
 			);
-			name = SiriIntents;
+			name = "Extensions-Intents";
 			productName = Intents;
-			productReference = B66C58A5215086F0004AB261 /* SiriIntents.appex */;
+			productReference = B66C58A5215086F0004AB261 /* Extensions-Intents.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		B66F9F21216B1E61000CAA0F /* TodayWidget */ = {
+		B66F9F21216B1E61000CAA0F /* Extensions-Today */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "TodayWidget" */;
+			buildConfigurationList = B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "Extensions-Today" */;
 			buildPhases = (
 				B8028AFF323FD2C0483872EB /* [CP] Check Pods Manifest.lock */,
 				B66F9F1E216B1E61000CAA0F /* Sources */,
@@ -3238,9 +3240,9 @@
 			);
 			dependencies = (
 			);
-			name = TodayWidget;
+			name = "Extensions-Today";
 			productName = TodayWidget;
-			productReference = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */;
+			productReference = B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B67CE82322200D420034C1D0 /* Shared-watchOS */ = {
@@ -3268,9 +3270,9 @@
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		B6AAD7A01D827DD40090B220 /* APNSAttachmentService */ = {
+		B6AAD7A01D827DD40090B220 /* Extensions-NotificationService */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */;
+			buildConfigurationList = B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "Extensions-NotificationService" */;
 			buildPhases = (
 				92900B26C59033E149C20AE4 /* [CP] Check Pods Manifest.lock */,
 				B6AAD79D1D827DD40090B220 /* Sources */,
@@ -3281,9 +3283,9 @@
 			);
 			dependencies = (
 			);
-			name = APNSAttachmentService;
+			name = "Extensions-NotificationService";
 			productName = APNSAttachmentService;
-			productReference = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */;
+			productReference = B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B6CC5D812159D10D00833E5D /* WatchApp */ = {
@@ -3304,9 +3306,9 @@
 			productReference = B6CC5D822159D10D00833E5D /* WatchApp.app */;
 			productType = "com.apple.product-type.application.watchapp2";
 		};
-		B6CC5D8D2159D10E00833E5D /* WatchAppExtension */ = {
+		B6CC5D8D2159D10E00833E5D /* WatchExtension-Watch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B6CC5DA32159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchAppExtension" */;
+			buildConfigurationList = B6CC5DA32159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchExtension-Watch" */;
 			buildPhases = (
 				59C2CF28F00F34975C1AC68B /* [CP] Check Pods Manifest.lock */,
 				B6CC5D8A2159D10E00833E5D /* Sources */,
@@ -3320,9 +3322,9 @@
 			dependencies = (
 				B67CE82A22200D420034C1D0 /* PBXTargetDependency */,
 			);
-			name = WatchAppExtension;
+			name = "WatchExtension-Watch";
 			productName = "WatchApp Extension";
-			productReference = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */;
+			productReference = B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
 		D03D891620E0A85200D4F28D /* Shared-iOS */ = {
@@ -3352,9 +3354,9 @@
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		D03D894120E0BC1800D4F28D /* SharedTests */ = {
+		D03D894120E0BC1800D4F28D /* Tests-Shared */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D03D894A20E0BC1800D4F28D /* Build configuration list for PBXNativeTarget "SharedTests" */;
+			buildConfigurationList = D03D894A20E0BC1800D4F28D /* Build configuration list for PBXNativeTarget "Tests-Shared" */;
 			buildPhases = (
 				19622669EFFCEFFF91BE89E4 /* [CP] Check Pods Manifest.lock */,
 				D03D893E20E0BC1800D4F28D /* Sources */,
@@ -3367,9 +3369,9 @@
 			dependencies = (
 				D03D894920E0BC1800D4F28D /* PBXTargetDependency */,
 			);
-			name = SharedTests;
+			name = "Tests-Shared";
 			productName = SharedTests;
-			productReference = D03D894220E0BC1800D4F28D /* SharedTests.xctest */;
+			productReference = D03D894220E0BC1800D4F28D /* Tests-Shared.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -3594,21 +3596,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B657A8E51CA646EB00121384 /* HomeAssistant */,
-				B657A8FB1CA646EB00121384 /* HomeAssistantTests */,
-				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
-				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
-				B627CB061D83C87B0057173E /* NotificationContentExtension */,
+				B657A8E51CA646EB00121384 /* App */,
+				B6CC5D812159D10D00833E5D /* WatchApp */,
 				D03D891620E0A85200D4F28D /* Shared-iOS */,
 				B67CE82322200D420034C1D0 /* Shared-watchOS */,
-				D03D894120E0BC1800D4F28D /* SharedTests */,
-				B66C58A4215086F0004AB261 /* SiriIntents */,
-				B6CC5D812159D10D00833E5D /* WatchApp */,
-				B6CC5D8D2159D10E00833E5D /* WatchAppExtension */,
-				B66F9F21216B1E61000CAA0F /* TodayWidget */,
-				1171506824DFCDE60065E874 /* WidgetsExtension */,
-				1155DD05250F4100003405C0 /* ShareExtension */,
 				1167402125198F9A00F51626 /* MacBridge */,
+				B657A8FB1CA646EB00121384 /* Tests-App */,
+				B657A9061CA646EB00121384 /* Tests-UI */,
+				D03D894120E0BC1800D4F28D /* Tests-Shared */,
+				B66C58A4215086F0004AB261 /* Extensions-Intents */,
+				B6AAD7A01D827DD40090B220 /* Extensions-NotificationService */,
+				B627CB061D83C87B0057173E /* Extensions-NotificationContent */,
+				1155DD05250F4100003405C0 /* Extensions-Share */,
+				B66F9F21216B1E61000CAA0F /* Extensions-Today */,
+				1171506824DFCDE60065E874 /* Extensions-Widgets */,
+				B6CC5D8D2159D10E00833E5D /* WatchExtension-Watch */,
 			);
 		};
 /* End PBXProject section */
@@ -3788,7 +3790,6 @@
 				B6E2D4D52270706300446DFA /* ha-loading.json in Resources */,
 				B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */,
 				B6D8A3262271448900FA765D /* empty-list.json in Resources */,
-				B65B14FF227317D700635D5C /* Colors.json in Resources */,
 				B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */,
 				B64E754223F3BFF200472C04 /* old-dev@2x.png in Resources */,
 				B60616201D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav in Resources */,
@@ -4451,7 +4452,6 @@
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
-				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
@@ -4464,7 +4464,6 @@
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
-				B65B15032273184F00635D5C /* Colors.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
@@ -4480,7 +4479,6 @@
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
-				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
 				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
@@ -4618,6 +4616,7 @@
 				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
 				11EE9B5224C62E7800404AF8 /* Scene.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
+				1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -4666,7 +4665,6 @@
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
 				119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */,
-				B6B74CB7228397D100D58A68 /* WatchHelpers.swift in Sources */,
 				1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */,
 				11FA53F3251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
@@ -4880,7 +4878,7 @@
 /* Begin PBXTargetDependency section */
 		1155DD0F250F4101003405C0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1155DD05250F4100003405C0 /* ShareExtension */;
+			target = 1155DD05250F4100003405C0 /* Extensions-Share */;
 			targetProxy = 1155DD0E250F4101003405C0 /* PBXContainerItemProxy */;
 		};
 		1155DD21250F446F003405C0 /* PBXTargetDependency */ = {
@@ -4890,7 +4888,7 @@
 		};
 		1171507524DFCDEE0065E874 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1171506824DFCDE60065E874 /* WidgetsExtension */;
+			target = 1171506824DFCDE60065E874 /* Extensions-Widgets */;
 			targetProxy = 1171507424DFCDEE0065E874 /* PBXContainerItemProxy */;
 		};
 		1171507E24DFCE0D0065E874 /* PBXTargetDependency */ = {
@@ -4900,7 +4898,7 @@
 		};
 		119A172724D74DA800D1B66D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B6CC5D8D2159D10E00833E5D /* WatchAppExtension */;
+			target = B6CC5D8D2159D10E00833E5D /* WatchExtension-Watch */;
 			targetProxy = 119A172624D74DA800D1B66D /* PBXContainerItemProxy */;
 		};
 		11A31C93252128B900D50A78 /* PBXTargetDependency */ = {
@@ -4912,28 +4910,28 @@
 		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = B627CB061D83C87B0057173E /* NotificationContentExtension */;
+			target = B627CB061D83C87B0057173E /* Extensions-NotificationContent */;
 			targetProxy = B627CB131D83C87B0057173E /* PBXContainerItemProxy */;
 		};
 		B657A8FE1CA646EB00121384 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B657A8E51CA646EB00121384 /* HomeAssistant */;
+			target = B657A8E51CA646EB00121384 /* App */;
 			targetProxy = B657A8FD1CA646EB00121384 /* PBXContainerItemProxy */;
 		};
 		B657A9091CA646EB00121384 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B657A8E51CA646EB00121384 /* HomeAssistant */;
+			target = B657A8E51CA646EB00121384 /* App */;
 			targetProxy = B657A9081CA646EB00121384 /* PBXContainerItemProxy */;
 		};
 		B66C58AB215086F0004AB261 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B66C58A4215086F0004AB261 /* SiriIntents */;
+			target = B66C58A4215086F0004AB261 /* Extensions-Intents */;
 			targetProxy = B66C58AA215086F0004AB261 /* PBXContainerItemProxy */;
 		};
 		B66F9F2D216B1E61000CAA0F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = B66F9F21216B1E61000CAA0F /* TodayWidget */;
+			target = B66F9F21216B1E61000CAA0F /* Extensions-Today */;
 			targetProxy = B66F9F2C216B1E61000CAA0F /* PBXContainerItemProxy */;
 		};
 		B67CE82A22200D420034C1D0 /* PBXTargetDependency */ = {
@@ -4943,7 +4941,7 @@
 		};
 		B6AAD7A71D827DD40090B220 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B6AAD7A01D827DD40090B220 /* APNSAttachmentService */;
+			target = B6AAD7A01D827DD40090B220 /* Extensions-NotificationService */;
 			targetProxy = B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */;
 		};
 		B6CC5D9D2159D10F00833E5D /* PBXTargetDependency */ = {
@@ -5154,21 +5152,18 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 87D2D3F10FEA013DD78E6D2D /* Pods-ShareExtension.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "ShareExtension/Resources/ShareExtension development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "ShareExtension/Resources/ShareExtension-catalyst.entitlements";
-				INFOPLIST_FILE = ShareExtension/Resources/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Share/Resources/ShareExtension development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/Share/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.ShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 			};
 			name = Debug;
 		};
@@ -5176,15 +5171,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 75816D4DCB147E0887430503 /* Pods-ShareExtension.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ShareExtension/Resources/ShareExtension.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "ShareExtension/Resources/ShareExtension-catalyst.entitlements";
-				INFOPLIST_FILE = ShareExtension/Resources/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Share/Resources/ShareExtension.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/Share/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.ShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5196,15 +5190,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1D7FCBE55780B75D422923DC /* Pods-ShareExtension.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "ShareExtension/Resources/ShareExtension beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "ShareExtension/Resources/ShareExtension-catalyst.entitlements";
-				INFOPLIST_FILE = ShareExtension/Resources/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Share/Resources/ShareExtension beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/Share/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.ShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5216,20 +5209,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MacBridge/Resources/Info.plist;
+				INFOPLIST_FILE = Sources/MacBridge/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.MacBridge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -5238,14 +5228,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MacBridge/Resources/Info.plist;
+				INFOPLIST_FILE = Sources/MacBridge/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.MacBridge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -5258,14 +5247,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MacBridge/Resources/Info.plist;
+				INFOPLIST_FILE = Sources/MacBridge/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.MacBridge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -5280,29 +5268,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Widgets/Resources/WidgetsExtension development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension development-catalyst.entitlements";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Widgets/Resources/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Widgets/Resources/WidgetsExtension development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Widgets/Resources/WidgetsExtension development-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -5313,27 +5291,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = Widgets/Resources/WidgetsExtension.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension-catalyst.entitlements";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Widgets/Resources/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Widgets/Resources/WidgetsExtension.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Widgets/Resources/WidgetsExtension-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -5344,27 +5314,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Widgets/Resources/WidgetsExtension beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension beta-catalyst.entitlements";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Widgets/Resources/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Widgets/Resources/WidgetsExtension beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Widgets/Resources/WidgetsExtension beta-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Beta;
@@ -5373,23 +5335,18 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_ENTITLEMENTS = "NotificationContentExtension/NotificationContentExtension Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationContent/NotificationContentExtension Development.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 			};
 			name = Debug;
 		};
@@ -5397,18 +5354,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_ENTITLEMENTS = NotificationContentExtension/NotificationContentExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/NotificationContent/NotificationContentExtension.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5420,61 +5373,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_ID_SUFFIX = .beta;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
-				TAPI_VERIFY_MODE = ErrorsAndWarnings;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 5.0;
 			};
 			name = Beta;
 		};
@@ -5483,13 +5381,11 @@
 			baseConfigurationReference = 8B99BAC287C6B3CE69C9267A /* Pods-HomeAssistant.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Beta-catalyst.entitlements";
-				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				CODE_SIGN_ENTITLEMENTS = "Sources/App/Resources/HomeAssistant Beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/App/Resources/HomeAssistant Beta-catalyst.entitlements";
 				ENV_URL_HANDLER = "homeassistant-beta";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
-				IS_SANDBOXED = false;
+				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Beta LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5516,12 +5412,10 @@
 					"\"UIKit\"",
 					"$(inherited)",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Beta;
 		};
@@ -5530,8 +5424,7 @@
 			baseConfigurationReference = A773539FA6CBDC538A9D2EDD /* Pods-HomeAssistantTests.beta.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
+				INFOPLIST_FILE = Tests/App/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
@@ -5547,7 +5440,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = HomeAssistant;
@@ -5558,18 +5450,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService Beta-catalyst.entitlements";
-				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationService/APNSAttachmentService Beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService Beta-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5581,18 +5469,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_ENTITLEMENTS = "NotificationContentExtension/NotificationContentExtension Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationContent/NotificationContentExtension Beta.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5604,19 +5488,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3918C5ABB4F1EE588A623B53 /* Pods-Shared-iOS.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5624,14 +5501,10 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Beta;
 		};
@@ -5639,22 +5512,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 22DFD473C941D5E380068120 /* Pods-Shared-iOS-SharedTests.beta.xcconfig */;
 			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SharedTests/Info.plist;
+				INFOPLIST_FILE = Tests/Shared/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Beta;
 		};
@@ -5662,25 +5527,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE58041D3926107C95F27BE7 /* Pods-SiriIntents.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents Beta-catalyst.entitlements";
-				DEAD_CODE_STRIPPING = NO;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Intents/SiriIntents Beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents Beta-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Intents/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -5688,35 +5544,24 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Beta;
 		};
 		B637243821697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "WatchApp/WatchApp Beta.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				CODE_SIGN_ENTITLEMENTS = "Sources/WatchApp/WatchApp Beta.entitlements";
 				IBSC_MODULE = WatchAppExtension;
-				INFOPLIST_FILE = WatchApp/Info.plist;
+				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -5730,27 +5575,18 @@
 			baseConfigurationReference = 4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "WatchAppExtension/Resources/WatchAppExtension Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Watch/Resources/WatchAppExtension Beta.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -5759,66 +5595,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_ID_SUFFIX = .dev;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
-				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TAPI_VERIFY_MODE = ErrorsAndWarnings;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WATCHOS_DEPLOYMENT_TARGET = 5.0;
 			};
 			name = Debug;
 		};
@@ -5826,61 +5602,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_ID_SUFFIX = "";
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
-				TAPI_VERIFY_MODE = ErrorsAndWarnings;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 5.0;
 			};
 			name = Release;
 		};
@@ -5889,13 +5610,11 @@
 			baseConfigurationReference = 94F2E1DA1A69FE4CED834348 /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Development-catalyst.entitlements";
-				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				CODE_SIGN_ENTITLEMENTS = "Sources/App/Resources/HomeAssistant Development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/App/Resources/HomeAssistant Development-catalyst.entitlements";
 				ENV_URL_HANDLER = "homeassistant-dev";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
-				IS_SANDBOXED = true;
+				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Debug LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5922,12 +5641,10 @@
 					"\"UIKit\"",
 					"$(inherited)",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -5936,13 +5653,11 @@
 			baseConfigurationReference = 25CF94434FED72A01C6A594B /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant-catalyst.entitlements";
-				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				CODE_SIGN_ENTITLEMENTS = Sources/App/Resources/HomeAssistant.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/App/Resources/HomeAssistant-catalyst.entitlements";
 				ENV_URL_HANDLER = homeassistant;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
-				IS_SANDBOXED = false;
+				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Release LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5969,12 +5684,10 @@
 					"\"UIKit\"",
 					"$(inherited)",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -5983,9 +5696,7 @@
 			baseConfigurationReference = 87A132CFD9E75BE5545C3491 /* Pods-HomeAssistantTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
+				INFOPLIST_FILE = Tests/App/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
@@ -5997,8 +5708,7 @@
 			baseConfigurationReference = CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
+				INFOPLIST_FILE = Tests/App/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
@@ -6014,7 +5724,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = HomeAssistant;
@@ -6030,7 +5739,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = HomeAssistant;
@@ -6041,26 +5749,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FC4F5F548BAFA196245ED90F /* Pods-SiriIntents.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents Development-catalyst.entitlements";
-				DEAD_CODE_STRIPPING = NO;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Intents/SiriIntents Development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents Development-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Intents/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -6068,13 +5766,10 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -6082,25 +5777,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 799B3F55FAE1A57812B62339 /* Pods-SiriIntents.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = Intents/SiriIntents.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents-catalyst.entitlements";
-				DEAD_CODE_STRIPPING = NO;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Intents/SiriIntents.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Intents/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -6108,12 +5794,10 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -6121,30 +5805,19 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 514D3AC57D932CF15324A398 /* Pods-TodayWidget.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "TodayWidget/TodayWidget Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Today/TodayWidget Development.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = TodayWidget/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -6153,24 +5826,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = TodayWidget/TodayWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Today/TodayWidget.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = TodayWidget/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6183,24 +5847,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E46DEBD572E360E6FE1CBD43 /* Pods-TodayWidget.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "TodayWidget/TodayWidget Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Today/TodayWidget Beta.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = TodayWidget/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6213,37 +5868,24 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
+				INFOPLIST_FILE = Sources/Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				TARGETED_DEVICE_FAMILY = 4;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
@@ -6251,35 +5893,24 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7161D3C0FA0F09EF697C0AB1 /* Pods-Shared-watchOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
+				INFOPLIST_FILE = Sources/Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -6287,35 +5918,24 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6A0BD70C190D1F6E6756D486 /* Pods-Shared-watchOS.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
+				INFOPLIST_FILE = Sources/Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Beta;
 		};
@@ -6323,23 +5943,18 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService Development-catalyst.entitlements";
-				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationService/APNSAttachmentService Development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService Development-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 			};
 			name = Debug;
 		};
@@ -6347,18 +5962,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4A8A2EDC1B82E759DCE5F6C8 /* Pods-APNSAttachmentService.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService-catalyst.entitlements";
-				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/NotificationService/APNSAttachmentService.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService-catalyst.entitlements";
+				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6369,29 +5980,18 @@
 		B6CC5D9F2159D10F00833E5D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "WatchApp/WatchApp Development.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				CODE_SIGN_ENTITLEMENTS = "Sources/WatchApp/WatchApp Development.entitlements";
 				IBSC_MODULE = WatchAppExtension;
-				INFOPLIST_FILE = WatchApp/Info.plist;
+				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -6399,23 +5999,14 @@
 		B6CC5DA02159D10F00833E5D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = WatchApp/WatchApp.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				CODE_SIGN_ENTITLEMENTS = Sources/WatchApp/WatchApp.entitlements;
 				IBSC_MODULE = WatchAppExtension;
-				INFOPLIST_FILE = WatchApp/Info.plist;
+				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -6429,29 +6020,18 @@
 			baseConfigurationReference = F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "WatchAppExtension/Resources/WatchAppExtension Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Watch/Resources/WatchAppExtension Development.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -6461,27 +6041,18 @@
 			baseConfigurationReference = F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = WatchAppExtension/Resources/WatchAppExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Watch/Resources/WatchAppExtension.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -6490,19 +6061,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4E6031DDE8EEF47E7A3DA817 /* Pods-Shared-iOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6510,15 +6074,10 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
@@ -6526,19 +6085,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6546,14 +6098,10 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -6561,23 +6109,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 23822AB93E5DB75D43DBE934 /* Pods-Shared-iOS-SharedTests.debug.xcconfig */;
 			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SharedTests/Info.plist;
+				INFOPLIST_FILE = Tests/Shared/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -6585,29 +6124,21 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4D0BE10BAAFF4C6503DC4279 /* Pods-Shared-iOS-SharedTests.release.xcconfig */;
 			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SharedTests/Info.plist;
+				INFOPLIST_FILE = Tests/Shared/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1155DD12250F4101003405C0 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
+		1155DD12250F4101003405C0 /* Build configuration list for PBXNativeTarget "Extensions-Share" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1155DD13250F4101003405C0 /* Debug */,
@@ -6627,7 +6158,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1171507A24DFCDEF0065E874 /* Build configuration list for PBXNativeTarget "WidgetsExtension" */ = {
+		1171507A24DFCDEF0065E874 /* Build configuration list for PBXNativeTarget "Extensions-Widgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1171507724DFCDEE0065E874 /* Debug */,
@@ -6637,7 +6168,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */ = {
+		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "Extensions-NotificationContent" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B627CB161D83C87B0057173E /* Debug */,
@@ -6657,7 +6188,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */ = {
+		B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B657A9111CA646EB00121384 /* Debug */,
@@ -6667,7 +6198,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantTests" */ = {
+		B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "Tests-App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B657A9141CA646EB00121384 /* Debug */,
@@ -6677,7 +6208,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantUITests" */ = {
+		B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "Tests-UI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B657A9171CA646EB00121384 /* Debug */,
@@ -6687,7 +6218,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "SiriIntents" */ = {
+		B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "Extensions-Intents" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B66C58AE215086F0004AB261 /* Debug */,
@@ -6697,7 +6228,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "TodayWidget" */ = {
+		B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "Extensions-Today" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B66F9F2F216B1E61000CAA0F /* Debug */,
@@ -6717,7 +6248,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */ = {
+		B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "Extensions-NotificationService" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6AAD7AA1D827DD40090B220 /* Debug */,
@@ -6727,7 +6258,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B6CC5DA32159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchAppExtension" */ = {
+		B6CC5DA32159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchExtension-Watch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6CC5DA12159D10F00833E5D /* Debug */,
@@ -6757,7 +6288,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D03D894A20E0BC1800D4F28D /* Build configuration list for PBXNativeTarget "SharedTests" */ = {
+		D03D894A20E0BC1800D4F28D /* Build configuration list for PBXNativeTarget "Tests-Shared" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D03D894B20E0BC1800D4F28D /* Debug */,

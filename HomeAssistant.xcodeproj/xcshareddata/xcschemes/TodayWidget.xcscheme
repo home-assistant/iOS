@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B66F9F21216B1E61000CAA0F"
-               BuildableName = "TodayWidget.appex"
-               BlueprintName = "TodayWidget"
+               BuildableName = "Extensions-Today.appex"
+               BlueprintName = "Extensions-Today"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,7 +31,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8E51CA646EB00121384"
                BuildableName = "Home Assistant.app"
-               BlueprintName = "HomeAssistant"
+               BlueprintName = "App"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -63,8 +63,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B66F9F21216B1E61000CAA0F"
-            BuildableName = "TodayWidget.appex"
-            BlueprintName = "TodayWidget"
+            BuildableName = "Extensions-Today.appex"
+            BlueprintName = "Extensions-Today"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
@@ -82,7 +82,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

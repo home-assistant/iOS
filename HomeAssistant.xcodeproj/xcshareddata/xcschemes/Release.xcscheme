@@ -10,14 +10,14 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Copy GoogleService-Info.plist"
-               scriptText = "if [[ $IS_MACCATALYST ]]; then&#10;    cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Contents/Resources/GoogleService-Info.plist&quot;&#10;    # works around xcode 12.0gm/12.2b copying in libsodium.a into Shared.framework&#10;    find &quot;${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Shared.framework&quot; -name &apos;libsodium.a&apos; -delete&#10;else&#10;    cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist&quot;&#10;    # works around xcode 12.0gm/12.2b copying in libsodium.a into Shared.framework for watch extension and app&#10;    rm -r &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Frameworks/Shared.framework/Frameworks&quot;&#10;    rm -r &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Watch/WatchApp.app/PlugIns/WatchAppExtension.appex/Frameworks/Shared.framework/Frameworks&quot;&#10;fi&#10;"
+               scriptText = "if [[ $IS_MACCATALYST ]]; then&#10;    cp &quot;${PROJECT_DIR}/Sources/App/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Contents/Resources/GoogleService-Info.plist&quot;&#10;    # works around xcode 12.0gm/12.2b copying in libsodium.a into Shared.framework&#10;    find &quot;${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Shared.framework&quot; -name &apos;libsodium.a&apos; -delete&#10;else&#10;    cp &quot;${PROJECT_DIR}/Sources/App/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist&quot;&#10;    # works around xcode 12.0gm/12.2b copying in libsodium.a into Shared.framework for watch extension and app&#10;    rm -r &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Frameworks/Shared.framework/Frameworks&quot;&#10;    rm -r &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Watch/WatchApp.app/PlugIns/WatchAppExtension.appex/Frameworks/Shared.framework/Frameworks&quot;&#10;fi&#10;"
                shellToInvoke = "/bin/sh">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "B657A8E51CA646EB00121384"
                      BuildableName = "Home Assistant.app"
-                     BlueprintName = "HomeAssistant"
+                     BlueprintName = "App"
                      ReferencedContainer = "container:HomeAssistant.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -35,7 +35,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8E51CA646EB00121384"
                BuildableName = "Home Assistant.app"
-               BlueprintName = "HomeAssistant"
+               BlueprintName = "App"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -52,8 +52,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A9061CA646EB00121384"
-               BuildableName = "HomeAssistantUITests.xctest"
-               BlueprintName = "HomeAssistantUITests"
+               BuildableName = "Tests-UI.xctest"
+               BlueprintName = "Tests-UI"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -62,8 +62,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D03D894120E0BC1800D4F28D"
-               BuildableName = "SharedTests.xctest"
-               BlueprintName = "SharedTests"
+               BuildableName = "Tests-Shared.xctest"
+               BlueprintName = "Tests-Shared"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -85,7 +85,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -109,7 +109,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

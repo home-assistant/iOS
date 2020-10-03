@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A9061CA646EB00121384"
-               BuildableName = "HomeAssistantUITests.xctest"
-               BlueprintName = "HomeAssistantUITests"
+               BuildableName = "Tests-UI.xctest"
+               BlueprintName = "Tests-UI"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -40,7 +40,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -60,7 +60,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B657A8E51CA646EB00121384"
             BuildableName = "Home Assistant.app"
-            BlueprintName = "HomeAssistant"
+            BlueprintName = "App"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
