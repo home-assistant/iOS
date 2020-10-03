@@ -836,50 +836,6 @@ extension WebViewController: UIScrollViewDelegate {
     }
 }
 
-/* extension WebViewController: RemoteMediaPlayerDelegate {
-    func sendStatus(_ state: RemotePlayerState) {
-        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
-            Current.Log.error("Unable to get webhookID!")
-            return
-        }
-        var jsonStr: String = "{}"
-        do {
-            let data = try JSONEncoder().encode(state)
-            jsonStr = String(data: data, encoding: .utf8) ?? "{}"
-        } catch {
-            Current.Log.error("Error while encoding RemotePlayerState: \(error)")
-            return
-        }
-        // swiftlint:disable:next line_length
-        let script = "window.activeHassConnection.sendMessage({type: 'mobile_app/update_media_player_state', webhook_id: '\(webhookID)', player_state: \(jsonStr)});"
-        Current.Log.verbose("Sending message \(script)")
-        self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
-            if let error = error {
-                Current.Log.error("Failed to update player state: \(error)")
-                return
-            }
-
-            Current.Log.verbose("Success when updating player state: \(String(describing: result))")
-        })
-    }
-
-    func showPlayer(_ playerViewController: AVPlayerViewController) {
-        // https://stackoverflow.com/a/40739474/486182
-        self.keepAliveTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { (_) in
-            self.webView.evaluateJavaScript("1+1", completionHandler: nil)
-        }
-        self.present(playerViewController, animated: true) {
-            Current.Log.verbose("Playing!")
-            playerViewController.player?.play()
-        }
-    }
-
-    func donePlaying() {
-        self.keepAliveTimer?.invalidate()
-    }
-
-} */
-
 extension ConnectionInfo {
     func webviewURL() -> URL? {
         if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17147" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17120"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -352,7 +352,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authentication" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lM3-aA-jqO">
-                                <rect key="frame" x="99.5" y="0.0" width="176" height="33.5"/>
+                                <rect key="frame" x="99" y="0.0" width="177" height="33.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -717,6 +717,18 @@
             <point key="canvasLocation" x="-4386.3999999999996" y="-1343.4782608695652"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="Buq-eK-7U7"/>
+        <designable name="Ge3-1c-5KC"/>
+        <designable name="N1e-YD-nWs"/>
+        <designable name="Vze-fN-mpk"/>
+        <designable name="XO8-eU-wSO"/>
+        <designable name="bTD-eO-lC0"/>
+        <designable name="d6V-o8-w1L"/>
+        <designable name="gw7-lF-3Zc"/>
+        <designable name="wD9-TR-rVF"/>
+        <designable name="xaH-oE-knW"/>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="KPp-1J-npF"/>
         <segue reference="Ywb-4q-gPS"/>

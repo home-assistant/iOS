@@ -422,7 +422,6 @@
 		B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */; };
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
-		B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */; };
 		B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
 		B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
 		B616B299227ED68E00828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
@@ -612,7 +611,6 @@
 		B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D992159D10F00833E5D /* Assets.xcassets */; };
 		B6CC5D9E2159D10F00833E5D /* WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B6CC5D822159D10D00833E5D /* WatchApp.app */; platformFilter = ios; };
 		B6CC96D624B0097500CE53ED /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
-		B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CDC095228CF5C2009355DD /* RemoteMediaPlayer.swift */; };
 		B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D8A3262271448900FA765D /* empty-list.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3252271448900FA765D /* empty-list.json */; };
@@ -652,7 +650,7 @@
 		D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
 		D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
-		D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* AuthenticationController.swift */; };
+		D0C88462211ED16300CCB501 /* OnboardingAuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */; };
 		D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
 		D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
 		D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */; };
@@ -672,7 +670,6 @@
 		D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
 		D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
 		D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF326214DF31D00D1D360 /* Notifications.swift */; };
-		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
 		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
@@ -1279,7 +1276,6 @@
 		B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
-		B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePlayerState.swift; sourceTree = "<group>"; };
 		B613936824F728F8002B8C5D /* InputDeviceSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDeviceSensor.swift; sourceTree = "<group>"; };
 		B616B28F227EAFFB00828165 /* InternetAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetAddress.swift; sourceTree = "<group>"; };
 		B616B291227EB00D00828165 /* DNSResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSResolver.swift; sourceTree = "<group>"; };
@@ -1489,7 +1485,6 @@
 		B6CC5D992159D10F00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CC5D9B2159D10F00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentryLogDestination.swift; sourceTree = "<group>"; };
-		B6CDC095228CF5C2009355DD /* RemoteMediaPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteMediaPlayer.swift; sourceTree = "<group>"; };
 		B6D3B4EB225B26300082BB4F /* SensorContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.swift; sourceTree = "<group>"; };
 		B6D8A3252271448900FA765D /* empty-list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "empty-list.json"; sourceTree = "<group>"; };
 		B6D8A3272271448D00FA765D /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
@@ -1554,7 +1549,7 @@
 		D0BE441121043B8100C74314 /* AuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationTests.swift; sourceTree = "<group>"; };
 		D0BE44152104410D00C74314 /* AuthenticationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationAPI.swift; sourceTree = "<group>"; };
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
-		D0C88461211ED16300CCB501 /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
+		D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthenticationController.swift; sourceTree = "<group>"; };
 		D0C88463211F33CE00CCB501 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+RequestHelpers.swift"; sourceTree = "<group>"; };
 		D0C884792122A65800CCB501 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
@@ -1566,7 +1561,6 @@
 		D0EEF31F214DE3B300D1D360 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTrigger.swift; sourceTree = "<group>"; };
 		D0EEF326214DF31D00D1D360 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Notifications.swift"; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
@@ -1933,6 +1927,118 @@
 			path = ZoneManager;
 			sourceTree = "<group>";
 		};
+		11AD2E1C2528FD6F00FBC437 /* Eureka */ = {
+			isa = PBXGroup;
+			children = (
+				11F3B85B24C4295200642676 /* EurekaLocationRow.swift */,
+				11C590EC24A832CA0066085D /* YamlSection.swift */,
+				11A48D8224CA9D010021BDD9 /* RealmSection.swift */,
+				11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */,
+				11948E8824DA5D50006F5657 /* InfoLabelRow.swift */,
+				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
+			);
+			path = Eureka;
+			sourceTree = "<group>";
+		};
+		11AD2E2A2528FDB700FBC437 /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
+				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
+				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
+				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
+			);
+			path = WebView;
+			sourceTree = "<group>";
+		};
+		11AD2E2B2528FDEB00FBC437 /* Observation */ = {
+			isa = PBXGroup;
+			children = (
+				11EE9B5624C68F5700404AF8 /* Action+Observation.swift */,
+				11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */,
+			);
+			path = Observation;
+			sourceTree = "<group>";
+		};
+		11AD2E392528FDF800FBC437 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
+				1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
+		11AD2E542528FE1300FBC437 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */,
+				B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */,
+				B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */,
+				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
+				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		11AD2E7C2528FF7A00FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B66C58A9215086F0004AB261 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		11AD2E7D2528FF8200FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1100D5222497578800B1073C /* TestNotifications */,
+				B627CB121D83C87B0057173E /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		11AD2E7E2528FF8F00FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B6AAD7A51D827DD40090B220 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		11AD2E7F2528FF9A00FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B66F9F2B216B1E61000CAA0F /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		11AD2EA7252900AA00FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B657A9021CA646EB00121384 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		11AD2EA8252900B500FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D03D894620E0BC1800D4F28D /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		11AD2EA9252900BC00FBC437 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B657A90D1CA646EB00121384 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		11AF1EC52528FB2300AAE364 /* Entitlements */ = {
 			isa = PBXGroup;
 			children = (
@@ -1943,6 +2049,25 @@
 				11AF1ECA2528FB2300AAE364 /* App-ios.entitlements */,
 			);
 			path = Entitlements;
+			sourceTree = "<group>";
+		};
+		11AF1ED82528FBAA00AAE364 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
+				D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */,
+				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
+				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
+				B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */,
+				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
+				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
+				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
+				B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */,
+				B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */,
+				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
+				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		11AF4D0F249C7DD8006C74C0 /* Sensors */ = {
@@ -2279,9 +2404,8 @@
 		B627CB0C1D83C87B0057173E /* NotificationContent */ = {
 			isa = PBXGroup;
 			children = (
-				1100D5222497578800B1073C /* TestNotifications */,
+				11AD2E7D2528FF8200FBC437 /* Resources */,
 				B678DB351EA9999C0045312F /* MainInterface.storyboard */,
-				B627CB121D83C87B0057173E /* Info.plist */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 				B63CCDC8216442BB00123C50 /* CameraViewController.swift */,
 				B63CCDCA216442C200123C50 /* MapViewController.swift */,
@@ -2331,15 +2455,15 @@
 			isa = PBXGroup;
 			children = (
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				D0C8845E211ED0BA00CCB501 /* Authentication */,
-				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
-				D0EEF32F214E41CE00D1D360 /* Notifications */,
+				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
+				11AF1ED82528FBAA00AAE364 /* Onboarding */,
 				B69933961E232AF50054453D /* Resources */,
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
-				B60614B31D1F116D00249C11 /* Sounds */,
+				B661FB6B226BCC8500E541DD /* Settings */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
-				B679B1F91E1F3CFB0071D366 /* Views */,
+				11AD2E2A2528FDB700FBC437 /* WebView */,
+				11A71C6924A463EE00D9565F /* ZoneManager */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2347,7 +2471,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				B657A9021CA646EB00121384 /* Info.plist */,
+				11AD2EA7252900AA00FBC437 /* Resources */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 				117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */,
 			);
@@ -2358,7 +2482,7 @@
 			isa = PBXGroup;
 			children = (
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
-				B657A90D1CA646EB00121384 /* Info.plist */,
+				11AD2EA9252900BC00FBC437 /* Resources */,
 				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 				119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */,
 				B63CCDDE21649AE400123C50 /* BayArea.gpx */,
@@ -2369,31 +2493,20 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				11AD2E2B2528FDEB00FBC437 /* Observation */,
+				11AD2E1C2528FD6F00FBC437 /* Eureka */,
 				1161C01924D7633700A0E3C4 /* NFC */,
 				11F3D74F2495433800C05BBA /* Sensors */,
-				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
-				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
-				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
-				1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */,
+				11AD2E392528FDF800FBC437 /* Connection */,
+				11AD2E542528FE1300FBC437 /* Notifications */,
+				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
+				B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */,
+				B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */,
+				B661FB69226BBDA900E541DD /* SettingsViewController.swift */,
+				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
+				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 			);
 			path = Settings;
-			sourceTree = "<group>";
-		};
-		B661FB72226C10AE00E541DD /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
-				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
-				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
-				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
-				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
-				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
-				B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */,
-				B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */,
-				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
-				B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */,
-			);
-			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		B661FC74226C792000E541DD /* Lottie Files */ = {
@@ -2415,8 +2528,8 @@
 		B66C58A6215086F0004AB261 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
+				11AD2E7C2528FF7A00FBC437 /* Resources */,
 				B66C58A7215086F0004AB261 /* IntentHandler.swift */,
-				B66C58A9215086F0004AB261 /* Info.plist */,
 				B66C58B02150891B004AB261 /* CallService.swift */,
 				B66C58B22150892A004AB261 /* FireEvent.swift */,
 				B66C58B42150898A004AB261 /* SendLocation.swift */,
@@ -2433,7 +2546,7 @@
 			isa = PBXGroup;
 			children = (
 				B66F9F26216B1E61000CAA0F /* TodayViewController.swift */,
-				B66F9F2B216B1E61000CAA0F /* Info.plist */,
+				11AD2E7F2528FF9A00FBC437 /* Resources */,
 			);
 			path = Today;
 			sourceTree = "<group>";
@@ -2516,35 +2629,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		B679B1F91E1F3CFB0071D366 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
-				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
-				11F3B85B24C4295200642676 /* EurekaLocationRow.swift */,
-				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
-				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
-				B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */,
-				B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */,
-				B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */,
-				B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */,
-				B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */,
-				B661FB69226BBDA900E541DD /* SettingsViewController.swift */,
-				B661FB6B226BCC8500E541DD /* Settings */,
-				B661FB72226C10AE00E541DD /* Onboarding */,
-				11C590EC24A832CA0066085D /* YamlSection.swift */,
-				11A48D8224CA9D010021BDD9 /* RealmSection.swift */,
-				11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */,
-				11948E8824DA5D50006F5657 /* InfoLabelRow.swift */,
-				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
-				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
-				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
-				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
-				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -2560,10 +2644,8 @@
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
-				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
 				B616B28F227EAFFB00828165 /* InternetAddress.swift */,
 				B616B291227EB00D00828165 /* DNSResolver.swift */,
-				B6CDC095228CF5C2009355DD /* RemoteMediaPlayer.swift */,
 				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
@@ -2578,26 +2660,27 @@
 		B69933961E232AF50054453D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B661FC74226C792000E541DD /* Lottie Files */,
 				B672AB022215057600175465 /* Alternate Icons */,
-				1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */,
 				B65B15042273188300635D5C /* Assets.swift */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
-				B657A8F71CA646EB00121384 /* Info.plist */,
-				B60247FE1FBD343000998205 /* InfoPlist.strings */,
-				B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */,
 				B6E2D4BA2270406B00446DFA /* Beta LaunchScreen.storyboard */,
 				B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */,
-				B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */,
-				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */,
-				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
-				B69933931E232AEA0054453D /* Localizable.strings */,
-				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
-				B661FB67226B961400E541DD /* WebSocketBridge.js */,
+				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
+				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */,
+				B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */,
+				B657A8F71CA646EB00121384 /* Info.plist */,
+				B60247FE1FBD343000998205 /* InfoPlist.strings */,
+				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
+				B69933931E232AEA0054453D /* Localizable.strings */,
+				B661FC74226C792000E541DD /* Lottie Files */,
+				1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */,
+				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
+				B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */,
 				B648AE242275918E006972AF /* Scenes.swift */,
 				B648AE232275918E006972AF /* Segues.swift */,
-				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
+				B60614B31D1F116D00249C11 /* Sounds */,
+				B661FB67226B961400E541DD /* WebSocketBridge.js */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2605,7 +2688,7 @@
 		B6AAD7A21D827DD40090B220 /* NotificationService */ = {
 			isa = PBXGroup;
 			children = (
-				B6AAD7A51D827DD40090B220 /* Info.plist */,
+				11AD2E7E2528FF8F00FBC437 /* Resources */,
 				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 			);
 			path = NotificationService;
@@ -2656,18 +2739,6 @@
 			path = Webhook;
 			sourceTree = "<group>";
 		};
-		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				11EE9B5624C68F5700404AF8 /* Action+Observation.swift */,
-				11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */,
-				B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */,
-				11A71C6924A463EE00D9565F /* ZoneManager */,
-				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
 		B6F02BEC1CB46E810029ABE7 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
@@ -2682,7 +2753,7 @@
 			path = Responses;
 			sourceTree = "<group>";
 		};
-		D00302BC20D4BEC0004C2CA9 /* Structs */ = {
+		D00302BC20D4BEC0004C2CA9 /* Environment */ = {
 			isa = PBXGroup;
 			children = (
 				D00302BD20D4BEDB004C2CA9 /* Environment.swift */,
@@ -2695,14 +2766,17 @@
 				1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */,
 				113E730F2518457C004006D8 /* LocalizedManager.swift */,
 				116740722519907400F51626 /* MacBridgeProtocol.swift */,
+				111D295424F30D2C00C8A7D1 /* Updater.swift */,
 			);
-			path = Structs;
+			path = Environment;
 			sourceTree = "<group>";
 		};
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
+				D0BE440B2104224A00C74314 /* Authentication */,
 				B672333A225DB66A0031D629 /* WebSocket */,
 				B6E91C212232482A0014CB8D /* Webhook */,
 				D0B25BD0213218B000678C2C /* Requests */,
@@ -2719,13 +2793,11 @@
 			isa = PBXGroup;
 			children = (
 				D014EEAA212928EC008EA6F5 /* API */,
-				D0BE440B2104224A00C74314 /* Authentication */,
 				D0FF79C920D7787F0034574D /* ClientEvents */,
+				D00302BC20D4BEC0004C2CA9 /* Environment */,
 				D0FF79D020D87CF60034574D /* Common */,
 				11F855D124DF6C7A0018013E /* Iconic */,
-				D03D891A20E0A85300D4F28D /* Info.plist */,
 				D0B25BC72130C9BB00678C2C /* Location */,
-				D0C8846E21212B5600CCB501 /* Networking */,
 				D0EEF325214DF30D00D1D360 /* Notifications */,
 				D0EEF31C214DDD3800D1D360 /* Resources */,
 				D0C884782122A64500CCB501 /* Settings */,
@@ -2737,9 +2809,10 @@
 		D03D893720E0AF1B00D4F28D /* ClientEvents */ = {
 			isa = PBXGroup;
 			children = (
-				D06C750E20D87F4D00E9DB7F /* Views */,
-				D0FF79D320D87D290034574D /* Resources */,
-				D0FF79CF20D87CE90034574D /* ViewControllers */,
+				D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */,
+				D0FF79D420D87DB10034574D /* ClientEvents.storyboard */,
+				D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */,
+				D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */,
 			);
 			path = ClientEvents;
 			sourceTree = "<group>";
@@ -2750,7 +2823,7 @@
 				118511C024B25BDC00D18F60 /* Webhook */,
 				11AF4D28249D88B2006C74C0 /* Sensors */,
 				D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */,
-				D03D894620E0BC1800D4F28D /* Info.plist */,
+				11AD2EA8252900B500FBC437 /* Resources */,
 				D0BE441121043B8100C74314 /* AuthorizationTests.swift */,
 				11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */,
 				113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */,
@@ -2761,14 +2834,6 @@
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
 			);
 			path = Shared;
-			sourceTree = "<group>";
-		};
-		D06C750E20D87F4D00E9DB7F /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		D0A6367320DBE91300E5C49B /* Extensions */ = {
@@ -2852,25 +2917,6 @@
 			path = Authentication;
 			sourceTree = "<group>";
 		};
-		D0C8845E211ED0BA00CCB501 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-				D0C88461211ED16300CCB501 /* AuthenticationController.swift */,
-			);
-			path = Authentication;
-			sourceTree = "<group>";
-		};
-		D0C8846E21212B5600CCB501 /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				111D295424F30D2C00C8A7D1 /* Updater.swift */,
-				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
-				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
-				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
-			);
-			path = Networking;
-			sourceTree = "<group>";
-		};
 		D0C884782122A64500CCB501 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2882,6 +2928,7 @@
 		D0EEF31C214DDD3800D1D360 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D03D891A20E0A85300D4F28D /* Info.plist */,
 				D0EEF31E214DDD9B00D1D360 /* Swiftgen */,
 			);
 			path = Resources;
@@ -2904,14 +2951,6 @@
 			path = Notifications;
 			sourceTree = "<group>";
 		};
-		D0EEF32F214E41CE00D1D360 /* Notifications */ = {
-			isa = PBXGroup;
-			children = (
-				D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */,
-			);
-			path = Notifications;
-			sourceTree = "<group>";
-		};
 		D0FF79C920D7787F0034574D /* ClientEvents */ = {
 			isa = PBXGroup;
 			children = (
@@ -2930,33 +2969,17 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		D0FF79CF20D87CE90034574D /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */,
-				D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
 		D0FF79D020D87CF60034574D /* Common */ = {
 			isa = PBXGroup;
 			children = (
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
+				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
+				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
-				D00302BC20D4BEC0004C2CA9 /* Structs */,
 				11AF4D15249C8082006C74C0 /* With.swift */,
 			);
 			path = Common;
-			sourceTree = "<group>";
-		};
-		D0FF79D320D87D290034574D /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				D0FF79D420D87DB10034574D /* ClientEvents.storyboard */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4372,7 +4395,6 @@
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
-				B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
@@ -4388,9 +4410,8 @@
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
-				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
-				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
+				D0C88462211ED16300CCB501 /* OnboardingAuthenticationController.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
@@ -4398,7 +4419,6 @@
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
-				B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */,
 				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
@@ -5242,7 +5262,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5262,7 +5282,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5330,7 +5350,7 @@
 			baseConfigurationReference = 80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = Tests/App/Info.plist;
+				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
@@ -5340,7 +5360,7 @@
 		B637243221697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
+				INFOPLIST_FILE = Tests/UI/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5358,7 +5378,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationService/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5378,7 +5398,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5400,7 +5420,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5419,7 +5439,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B79F73EFD6BCA429A487EFF /* Pods-Shared-iOS-Tests-Shared.beta.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Shared/Info.plist;
+				INFOPLIST_FILE = Tests/Shared/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5437,7 +5457,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Intents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5604,7 +5624,7 @@
 			baseConfigurationReference = 479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = Tests/App/Info.plist;
+				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
@@ -5616,7 +5636,7 @@
 			baseConfigurationReference = F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = Tests/App/Info.plist;
+				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
@@ -5626,7 +5646,7 @@
 		B657A9171CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
+				INFOPLIST_FILE = Tests/UI/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5641,7 +5661,7 @@
 		B657A9181CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
+				INFOPLIST_FILE = Tests/UI/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5660,7 +5680,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Intents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5688,7 +5708,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Intents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5716,7 +5736,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5738,7 +5758,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5760,7 +5780,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5784,7 +5804,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5809,7 +5829,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5834,7 +5854,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5856,7 +5876,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationService/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5875,7 +5895,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
+				INFOPLIST_FILE = Sources/Extensions/NotificationService/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -5979,7 +5999,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6003,7 +6023,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 2;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Shared/Info.plist;
+				INFOPLIST_FILE = Sources/Shared/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6022,7 +6042,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F317B17883D29CEC759E3023 /* Pods-Shared-iOS-Tests-Shared.debug.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Shared/Info.plist;
+				INFOPLIST_FILE = Tests/Shared/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -6037,7 +6057,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3E43A9FB1EEFB75A8F316F41 /* Pods-Shared-iOS-Tests-Shared.release.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/Shared/Info.plist;
+				INFOPLIST_FILE = Tests/Shared/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

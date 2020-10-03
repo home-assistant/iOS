@@ -10,7 +10,7 @@ strings:
 ib:
   inputs:
     - Sources/App/Resources/Base.lproj/Onboarding.storyboard
-    - Sources/App/ClientEvents/Resources/ClientEvents.storyboard
+    - Sources/App/ClientEvents/ClientEvents.storyboard
   outputs:
     - templateName: scenes-swift5
       output: Sources/App/Resources/Scenes.swift
@@ -25,7 +25,7 @@ xcassets:
     output: Sources/App/Resources/Assets.swift
 plist:
   inputs:
-  - Sources/Shared/Info.plist
+  - Sources/Shared/Resources/Info.plist
   outputs:
   - templateName: runtime-swift5
     output: Sources/Shared/Resources/SwiftGen/SharedPlist.swift

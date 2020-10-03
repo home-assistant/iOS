@@ -1,5 +1,5 @@
 //
-//  AuthenticationController.swift
+//  OnboardingAuthenticationController.swift
 //  HomeAssistant
 //
 //  Created by Stephan Vanterpool on 8/11/18.
@@ -13,7 +13,7 @@ import AuthenticationServices
 import Shared
 
 /// Manages browser verification to retrive an access code that can be exchanged for an authentication token.
-class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
+class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelegate {
     enum AuthenticationControllerError: Error {
         case invalidURL
         case userCancelled

@@ -692,6 +692,34 @@ public class HomeAssistantAPI {
         )
     }
 
+    public func handlePushAction(
+        identifier: String,
+        category: String?,
+        userInfo: [AnyHashable: Any],
+        userInput: String?
+    ) -> Promise<Void> {
+        return Promise { seal in
+            guard let api = HomeAssistantAPI.authenticatedAPI() else {
+                throw APIError.notConfigured
+            }
+
+            let action = Self.notificationActionEvent(
+                identifier: identifier,
+                category: category,
+                actionData: userInfo["homeassistant"],
+                textInput: userInput
+            )
+
+            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+
+            api.CreateEvent(eventType: action.eventType, eventData: action.eventData).done { _ -> Void in
+                seal.fulfill(())
+            }.catch {error in
+                seal.reject(error)
+            }
+        }
+    }
+
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {

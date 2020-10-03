@@ -16,7 +16,7 @@ import AuthenticationServices
 
 class AuthenticationViewController: UIViewController {
 
-    let authenticationController: AuthenticationController = AuthenticationController()
+    let authenticationController: OnboardingAuthenticationController = OnboardingAuthenticationController()
 
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo?
