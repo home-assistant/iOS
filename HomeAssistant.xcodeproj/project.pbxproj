@@ -5122,8 +5122,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BDBFBFF07196266D9968F93D /* Pods-Extensions-Share.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Share/Resources/ShareExtension development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Share/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5141,8 +5141,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A7EC482514B50F7A79867DA2 /* Pods-Extensions-Share.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Share/Resources/ShareExtension.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Share/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5160,8 +5160,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E383A83923E91F812775D632 /* Pods-Extensions-Share.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Share/Resources/ShareExtension beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Share/Resources/ShareExtension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Share/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5238,8 +5238,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Widgets/Resources/WidgetsExtension development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Widgets/Resources/WidgetsExtension development-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5261,8 +5261,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Widgets/Resources/WidgetsExtension.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Widgets/Resources/WidgetsExtension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5284,8 +5284,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Widgets/Resources/WidgetsExtension beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Widgets/Resources/WidgetsExtension beta-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Widgets/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5305,7 +5305,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DD6684C56A26FAA3DFDB893D /* Pods-Extensions-NotificationContent.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationContent/NotificationContentExtension Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5324,7 +5325,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AB7D5B9D8C5B75B1EA2DAE44 /* Pods-Extensions-NotificationContent.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/NotificationContent/NotificationContentExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5351,8 +5353,8 @@
 			baseConfigurationReference = F54A454E017B903B2343709C /* Pods-App.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = "Sources/App/Resources/HomeAssistant Beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/App/Resources/HomeAssistant Beta-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				ENV_URL_HANDLER = "homeassistant-beta";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
@@ -5420,8 +5422,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 41FE3EF81F53AEAA32DE6C0C /* Pods-Extensions-NotificationService.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationService/APNSAttachmentService Beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService Beta-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5439,7 +5441,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0530E43EB25FA786344F2674 /* Pods-Extensions-NotificationContent.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationContent/NotificationContentExtension Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5497,8 +5500,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E672709BC17B920FC7BC66C1 /* Pods-Extensions-Intents.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Intents/SiriIntents Beta.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents Beta-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -5525,7 +5528,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = "Sources/WatchApp/WatchApp Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
 				IBSC_MODULE = WatchAppExtension;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5545,7 +5548,8 @@
 			baseConfigurationReference = 39ED8002022BDC0866F18A44 /* Pods-WatchExtension-Watch.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Watch/Resources/WatchAppExtension Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5580,8 +5584,8 @@
 			baseConfigurationReference = 0DAE895FBA1AE40431144F66 /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = "Sources/App/Resources/HomeAssistant Development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/App/Resources/HomeAssistant Development-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				ENV_URL_HANDLER = "homeassistant-dev";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
@@ -5623,8 +5627,8 @@
 			baseConfigurationReference = 10AB5FD314183F892512659C /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = Sources/App/Resources/HomeAssistant.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/App/Resources/HomeAssistant-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				ENV_URL_HANDLER = homeassistant;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
@@ -5719,8 +5723,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B94ECC97EB71A2C3D56592AD /* Pods-Extensions-Intents.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Intents/SiriIntents Development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents Development-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -5747,8 +5751,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F1640D9FBC35695F653F1110 /* Pods-Extensions-Intents.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Intents/SiriIntents.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/Intents/SiriIntents-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -5775,7 +5779,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FE6A9BF7BC091C813AA82682 /* Pods-Extensions-Today.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Today/TodayWidget Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
@@ -5796,7 +5801,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6A86A870D47EB2B4E61BD3AF /* Pods-Extensions-Today.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Today/TodayWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
@@ -5817,7 +5823,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E7E550D06ED1392D53D32B7B /* Pods-Extensions-Today.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Today/TodayWidget Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
@@ -5913,8 +5920,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 918333C4B7B2CA7E4EB30C5D /* Pods-Extensions-NotificationService.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/NotificationService/APNSAttachmentService Development.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService Development-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5932,8 +5939,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B946AA2C449F998134509835 /* Pods-Extensions-NotificationService.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/NotificationService/APNSAttachmentService.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Sources/Extensions/NotificationService/APNSAttachmentService-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5951,7 +5958,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = "Sources/WatchApp/WatchApp Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
 				IBSC_MODULE = WatchAppExtension;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5970,7 +5977,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
-				CODE_SIGN_ENTITLEMENTS = Sources/WatchApp/WatchApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
 				IBSC_MODULE = WatchAppExtension;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5990,7 +5997,8 @@
 			baseConfigurationReference = 9025CDF0D0BD8D34C8D07706 /* Pods-WatchExtension-Watch.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = "Sources/Extensions/Watch/Resources/WatchAppExtension Development.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -6011,7 +6019,8 @@
 			baseConfigurationReference = 1A5C1F658520E785253CE2B5 /* Pods-WatchExtension-Watch.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = Sources/Extensions/Watch/Resources/WatchAppExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
