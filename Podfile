@@ -41,7 +41,7 @@ def ios_shared_pods
     pod 'ReachabilitySwift'
 end
 
-target 'HomeAssistant' do
+target 'App' do
     ios_shared_pods
 
     pod 'CallbackURLKit'
@@ -61,7 +61,7 @@ target 'HomeAssistant' do
     pod 'WhatsNewKit'
     pod 'ZIPFoundation', '~> 0.9'
 
-    target 'HomeAssistantTests' do
+    target 'Tests-App' do
         inherit! :search_paths
         shared_tests
     end
@@ -70,7 +70,7 @@ end
 target 'Shared-iOS' do
     ios_shared_pods
 
-    target 'SharedTests' do
+    target 'Tests-Shared' do
       shared_tests
     end
 end
@@ -81,21 +81,21 @@ target 'Shared-watchOS' do
     shared_pods
 end
 
-target 'APNSAttachmentService' do
+target 'Extensions-NotificationService' do
     ios_shared_pods
 end
 
-target 'NotificationContentExtension' do
+target 'Extensions-NotificationContent' do
     ios_shared_pods
 
     pod 'MBProgressHUD', '~> 1.2.0'
 end
 
-target 'SiriIntents' do
+target 'Extensions-Intents' do
     ios_shared_pods
 end
 
-target 'WatchAppExtension' do
+target 'WatchExtension-Watch' do
     platform :watchos, '5.0'
 
     shared_pods
@@ -103,15 +103,15 @@ target 'WatchAppExtension' do
     pod 'EMTLoadingIndicator', :git => 'https://github.com/hirokimu/EMTLoadingIndicator', :branch => 'master'
 end
 
-target 'TodayWidget' do
+target 'Extensions-Today' do
     ios_shared_pods
 end
 
-target 'WidgetsExtension' do
+target 'Extensions-Widgets' do
     ios_shared_pods
 end
 
-target 'ShareExtension' do
+target 'Extensions-Share' do
     ios_shared_pods
 end
 
