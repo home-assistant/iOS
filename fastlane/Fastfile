@@ -267,7 +267,7 @@ platform :ios do
   lane :test do
     run_tests(
       workspace: 'HomeAssistant.xcworkspace', 
-      scheme: 'Debug', 
+      scheme: 'App-Debug', 
       prelaunch_simulator: true,
       result_bundle: true
     )
@@ -300,12 +300,12 @@ platform :ios do
     provisioningProfiles = {}
 
     if git_branch == "master"
-      scheme = "Release"
+      scheme = "App-Release"
       config = "Release"
       app_id = bundle_id()
       provisioningProfiles = provisioning_profile_map()
     elsif git_branch == "beta"
-      scheme = "Beta"
+      scheme = "App-Beta"
       config = "Beta"
       app_id = bundle_id("beta")
       provisioningProfiles = provisioning_profile_map("Beta")
