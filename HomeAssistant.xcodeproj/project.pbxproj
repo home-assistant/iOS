@@ -5084,8 +5084,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.ShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .ShareExtension;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5103,8 +5103,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.ShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .ShareExtension;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5122,8 +5122,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.ShareExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .ShareExtension;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5140,8 +5140,8 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.MacBridge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
@@ -5159,8 +5159,8 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.MacBridge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
@@ -5178,8 +5178,8 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.MacBridge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
@@ -5201,8 +5201,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .Widgets;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5224,8 +5224,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .Widgets;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5247,8 +5247,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .Widgets;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5261,15 +5261,14 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -5281,15 +5280,14 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -5310,7 +5308,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				ENV_URL_HANDLER = "homeassistant-beta";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Beta LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5338,7 +5335,6 @@
 					"\"UIKit\"",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
 				SUPPORTS_MACCATALYST = YES;
@@ -5351,8 +5347,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .HomeAssistantTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
 			name = Beta;
@@ -5366,8 +5362,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .HomeAssistantUITests;
 				TEST_TARGET_NAME = HomeAssistant;
 			};
 			name = Beta;
@@ -5384,8 +5380,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5397,15 +5393,14 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/NotificationContent/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -5428,8 +5423,8 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_SUFFIX = .Shared;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5445,8 +5440,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .SharedTests;
 			};
 			name = Beta;
 		};
@@ -5456,7 +5451,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Intents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5471,8 +5465,8 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .Intents;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5489,8 +5483,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5504,16 +5498,14 @@
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .watchkitapp.watchkitextension;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
@@ -5541,7 +5533,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				ENV_URL_HANDLER = "homeassistant-dev";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Debug LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5569,7 +5560,6 @@
 					"\"UIKit\"",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
 				SUPPORTS_MACCATALYST = YES;
@@ -5584,7 +5574,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
 				ENV_URL_HANDLER = homeassistant;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Release LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5612,7 +5601,6 @@
 					"\"UIKit\"",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";
 				SUPPORTS_MACCATALYST = YES;
@@ -5625,8 +5613,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .HomeAssistantTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
 			name = Debug;
@@ -5637,8 +5625,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .HomeAssistantTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
 			name = Release;
@@ -5652,8 +5640,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .HomeAssistantUITests;
 				TEST_TARGET_NAME = HomeAssistant;
 			};
 			name = Debug;
@@ -5667,8 +5655,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .HomeAssistantUITests;
 				TEST_TARGET_NAME = HomeAssistant;
 			};
 			name = Release;
@@ -5679,7 +5667,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Intents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5694,8 +5681,8 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .Intents;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5707,7 +5694,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Intents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5722,8 +5708,8 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .Intents;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5735,7 +5721,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5743,8 +5728,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .TodayWidget;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5757,7 +5742,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5765,8 +5749,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .TodayWidget;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5779,7 +5763,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5787,8 +5770,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .TodayWidget;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5812,8 +5795,8 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5837,8 +5820,8 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5862,8 +5845,8 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5882,8 +5865,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5901,8 +5884,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5919,8 +5902,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5938,8 +5921,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5953,16 +5936,14 @@
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .watchkitapp.watchkitextension;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
@@ -5975,16 +5956,14 @@
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .watchkitapp.watchkitextension;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
@@ -6007,8 +5986,8 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_SUFFIX = .Shared;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6031,8 +6010,8 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.Shared";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_SUFFIX = .Shared;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6048,8 +6027,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .SharedTests;
 			};
 			name = Debug;
 		};
@@ -6063,8 +6042,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_SUFFIX = .SharedTests;
 			};
 			name = Release;
 		};
