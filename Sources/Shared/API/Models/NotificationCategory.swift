@@ -99,7 +99,7 @@ final public class NotificationCategory: Object, UpdatableModel {
           # use "\(Self.FallbackActionIdentifier)" as key for no action chosen
           url:
             "\(Self.FallbackActionIdentifier)": "http://example.com/fallback"
-            \(urlStrings.joined(separator: indentation + "- "))
+            \(urlStrings.joined(separator: indentation + "  "))
         """
     }
 
