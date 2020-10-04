@@ -98,7 +98,7 @@
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
 "url_handler.error.title" = "Error";
-"url_handler.no_service.message" = "%@ is not a valid route";
+"url_handler.no_service.message" = "%@ geçerli bir rota değildir";
 "url_handler.call_service.success.title" = "Called service";
 "url_handler.call_service.success.message" = "Successfully called %@";
 "url_handler.call_service.error.message" = "An error occurred while attempting to call service %@: %@";

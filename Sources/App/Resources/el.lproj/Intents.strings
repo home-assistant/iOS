@@ -1,180 +1,147 @@
-"0aqrcy" = "Failed to render template with error: ${error}";
-
 "2KWKqM" = "Failed to call service, Home Assistant is not currently reachable";
-
-"2b0Uo4" = "Service";
-
-"3jKamg" = "{{ now() }}";
-
+"30yAOG" = "Failed to call service, the clipboard contents could not be parsed";
+"47v44G" = "Fire an event to the Home Assistant event bus. Expects a JSON object on the clipboard like {\"eventName\": \"my.event\", \"eventData\": {\"foo\": \"bar\"}}";
 "4fFx9y" = "Location updated";
-
-"5ZzwZD" = "Failed to update location, Home Assistant is not currently reachable";
-
-"5bVvn0" = "Failed to update location with error: ${error}";
-
-"637QjD" = "Error";
-
-"6ozAdN" = "Camera Image";
-
-"7boBzr" = "Call ${service} with data";
-
+"4k18T7" = "Failed to get camera image, the clipboard contents could not be parsed for a valid entity ID";
+"4wVIAN" = "Call a service on Home Assistant. Expects a JSON object on the clipboard like {\"service\": \"homeassistant.turn_on\", \"serviceData\": {\"foo\": \"bar\"}}";
+"5MGDot" = "Send location";
+"5rztv4" = "Get a single still frame from the entity ID found on the clipboard and place it on the clipboard";
+"7NpJ76-0cl84c" = "Location updated to contents of clipboard that were parsed as Stored value";
+"7NpJ76-50P1YJ" = "Location updated to contents of clipboard that were parsed as Address";
+"7NpJ76-dC8g33" = "Location updated to contents of clipboard that were parsed as Coordinates";
 "8BMgur" = "Successfully sent ${eventName} to Home Assistant";
-
-"8skKro" = "Which actions?";
-
 "B4bXyc" = "Successfully rendered template";
-
-"CmlkE4" = "shortcut_event";
-
-"DdnZyl" = "Got the latest still from${cameraID}";
-
-"DsasVx" = "Error";
-
-"EWqRDj" = "Failed to perform action: ${error}";
-
+"CiB3s6" = "Call service ${serviceDomain}.${service} with clipboard data";
 "FBQiVD" = "Call a service on the Home Assistant instance";
-
+"FN8zqO" = "Get a single still frame from ${cameraID} and place it on the clipboard";
 "FZ9qkT" = "Render Template";
-
-"FtQqoU" = "Location updated";
-
-"HCM8Oe" = "Fire ${eventName} with data";
-
-"HSLcG7" = "Event Name";
-
-"HoH8wg" = "Actions";
-
+"GoLNMt" = "Fires an event named ${eventName} to the Home Assistant event bus with ${eventData}.";
 "KHH48D" = "Failed to update location, Home Assistant is not currently reachable";
-
 "KJS2jk" = "Failed to update location with error: ${error}";
-
-"KM7mXC" = "Action";
-
+"KU19Ap" = "Failed to fire event, the clipboard contents could not be parsed";
 "KzOHYA" = "Failed to get camera image with error: ${error}";
-
-"LVEY3e" = "Camera ID";
-
-"Lgymq2" = "Which service?";
-
-"MTPojJ" = "What is the event name?";
-
+"MDmaRg" = "Call service ￼${serviceDomain}.${service}";
 "N9iJpK" = "Get Camera Image";
-
 "NdG9Jz" = "Renders the Home Assistant template";
-
-"NsbUTz" = "Camera Entity";
-
-"Q2Qp4a" = "Action";
-
-"QVD2lM" = "Service Data";
-
-"QmGpOH" = "Error";
-
-"RCQAlr" = "Get Camera Image from ${cameraID}";
-
+"P3EyZ7" = "Render the provided template";
+"QFNpIx" = "Send ${location} to Home Assistant";
 "RMQY3r" = "Send location to Home Assistant";
-
-"RsOw3P" = "Successfully rendered template";
-
-"ULka1b" = "Actions";
-
-"VP2XpM" = "Event Data";
-
-"X02YQ2" = "${action}";
-
-"X4A8Cc" = "Service Domain";
-
-"Xq7UuD" = "Render the provided template";
-
-"YNQXwq" = "Error";
-
-"ZApPxB" = "Service Name";
-
-"ZT9Mld" = "Event Name";
-
-"ZmUm9Q" = "What template would you like to render?";
-
-"bqPSU7" = "Failed to get camera image, Home Assistant is not currently reachable";
-
+"SGxPSB" = "${serviceDescription}";
+"VEQtEQ" = "Get Camera Image from ${cameraID}";
+"VGzL7U" = "Failed to update location, the clipboard contents could not be parsed";
+"WXKbGy" = "Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.";
+"ZwJ0Xx" = "Renders the found text on the clipboard";
+"c00c45" = "Fire event";
 "cK9jdK" = "Failed to render template with error: ${error}";
-
-"cLmTme" = "Action";
-
-"cuflz3" = "Failed to render template, Home Assistant is not currently reachable";
-
-"dFHPYK" = "Successfully performed ${action}.";
-
-"f1KX0Q" = "View and run actions";
-
-"fkQXDn" = "There are ${count} options matching ‘${action}’.";
-
-"flUgtx" = "Which action?";
-
+"cnzI5h" = "Renders ${template}";
 "foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
-
-"fuRWMi" = "Send ${location} to Home Assistant";
-
-"g8g7Af" = "Perform the action";
-
-"gI3mme" = "What service data do you want to send?";
-
-"gePUyy" = "Location";
-
 "glRCfJ" = "Failed to fire event, Home Assistant is not currently reachable";
-
-"gv7Gg6" = "Location";
-
-"hLFNfv" = "Failed to get camera image with error: ${error}";
-
 "hsrlTY" = "Get a single still frame from a camera";
-
-"jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
-
-"kGB23u" = "Perform Action";
-
-"lNmaCR" = "Template";
-
+"khd61N" = "Render text found on clipboard";
+"le6NdS" = "Call service ${serviceDomain}.${service} with data: ${payload}";
+"lnrohM" = "Fire ${eventName} with clipboard data";
 "lxHlyQ" = "Fire Event";
-
 "mAibJP" = "Failed to get camera image, Home Assistant is not currently reachable";
-
-"mJ6CrP" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
-
-"mZnRHS" = "Successfully sent ${eventName} to Home Assistant";
-
-"mi6B62" = "What data do you want to send with the event?";
-
+"mgspvx" = "Latest still from camera entity found on clipboard,${cameraID}, placed on clipboard";
+"nIl9ET" = "Fires an event named ${eventName} to the Home Assistant event bus. Will send clipboard contents as event data.";
+"ntnbP2" = "Call Service";
 "nzqmFA" = "Got the latest still from${cameraID}";
-
 "oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
-
-"pQhTjo" = "Failed to fire event, Home Assistant is not currently reachable";
-
+"q0SnlK" = "Get Camera Image";
 "qayMH6" = "Call Service";
-
+"qfHa79" = "Successfully sent ${eventName} with clipboard contents to Home Assistant";
 "qzje4k" = "Failed to call service with error: ${error}";
-
-"r32M7N" = "Failed: ${error}";
-
 "rFSNpu" = "Called ${domain}.${service}";
-
-"rOlW1x" = "What location do you want to send?";
-
-"sNFoWe" = "Which camera?";
-
-"sQJAJS" = "Error";
-
-"sfDGvk" = "Rendered Template";
-
-"tycImk" = "Performs an action defined in the app";
-
+"ri4H1h" = "Successfully sent ${domain}.${service} with clipboard contents to Home Assistant";
+"rlOS6H" = "Successfully rendered template from clipboard";
+"rwj6u7" = "Report your current location as ${location} to Home Assistant";
+"sbkx4E" = "Failed to geocode ${pasteboardContents} to a valid location";
+"uUk5RX" = "Call ${serviceDomain}.${service} with data";
 "v7TSD5" = "Send Location";
-
+"wKnW1P" = "Call service ${serviceDomain}.${service} with clipboard data";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
-
-"xhwpj4" = "Done.";
-
-"ypnPyU" = "Perform ${action}";
-
+"yS9QV0" = "Fire ${eventName} with data";
+"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
+"YyQQL1" = "JSON was found on the clipboard but was invalid.";
+"boiLEw" = "JSON was found on the clipboard but was invalid.";
+"tHPm96" = "Location updated to your current location";
+"0aqrcy" = "Failed to render template with error: ${error}";
+"2b0Uo4" = "Service";
+"3jKamg" = "{{ now() }}";
+"4d1VvB" = "Event Data";
+"5ZzwZD" = "Failed to update location, Home Assistant is not currently reachable";
+"5bVvn0" = "Failed to update location with error: ${error}";
+"637QjD" = "Error";
+"6ozAdN" = "Camera Image";
+"7boBzr" = "Call ${service} with data";
+"CmlkE4" = "shortcut_event";
+"DKg2kH" = "Just to confirm, you wanted ‘${cameraID}’?";
+"DdnZyl" = "Got the latest still from${cameraID}";
+"FtQqoU" = "Location updated";
+"HCM8Oe" = "Fire ${eventName} with data";
+"HSLcG7" = "Event Name";
+"KNyYFZ" = "There are ${count} options matching ‘${service}’.";
+"LVEY3e" = "Camera ID";
+"MTPojJ" = "What is the event name?";
+"N4REJz" = "There are ${count} options matching ‘${cameraID}’.";
+"NsbUTz" = "Camera Entity";
+"QVD2lM" = "Service Data";
+"QmGpOH" = "Error";
+"RCQAlr" = "Get Camera Image from ${cameraID}";
+"RsOw3P" = "Successfully rendered template";
+"TRZLwT" = "Which one?";
+"VP2XpM" = "Event Data";
+"X4A8Cc" = "Service Domain";
+"Xq7UuD" = "Render the provided template";
+"YNQXwq" = "Error";
+"ZApPxB" = "Service Name";
+"ZT9Mld" = "Event Name";
+"ZmUm9Q" = "What template would you like to render?";
+"bqPSU7" = "Failed to get camera image, Home Assistant is not currently reachable";
+"cuflz3" = "Failed to render template, Home Assistant is not currently reachable";
+"fuRWMi" = "Send ${location} to Home Assistant";
+"gI3mme" = "What service data do you want to send?";
+"gePUyy" = "Location";
+"gv7Gg6" = "Location";
+"hLFNfv" = "Failed to get camera image with error: ${error}";
+"iU3gao" = "Just to confirm, you wanted ‘${service}’?";
+"j9Oxa5" = "Which one?";
+"lNmaCR" = "Template";
+"mJ6CrP" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
+"mZnRHS" = "Successfully sent ${eventName} to Home Assistant";
+"mi6B62" = "What data do you want to send with the event?";
+"pQhTjo" = "Failed to fire event, Home Assistant is not currently reachable";
+"rOlW1x" = "What location do you want to send?";
+"sQJAJS" = "Error";
+"sfDGvk" = "Rendered Template";
 "yyjTxO" = "Error";
-
+"AnaTY4" = "Which one?";
+"DsasVx" = "Error";
+"EWqRDj" = "Failed to perform action: ${error}";
+"KM7mXC" = "Action";
+"Q2Qp4a" = "Action";
+"X02YQ2" = "${action}";
+"cLmTme" = "Action";
+"dFHPYK" = "Successfully performed ${action}.";
+"fkQXDn" = "There are ${count} options matching ‘${action}’.";
+"g8g7Af" = "Perform the action";
+"jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
+"kGB23u" = "Perform Action";
+"r32M7N" = "Failed: ${error}";
+"tycImk" = "Performs an action defined in the app";
+"xhwpj4" = "Done.";
+"ypnPyU" = "Perform ${action}";
+"8skKro" = "Which actions?";
+"HoH8wg" = "Actions";
+"Lgymq2" = "Which service?";
+"ULka1b" = "Actions";
+"f1KX0Q" = "View and run actions";
+"flUgtx" = "Which action?";
+"sNFoWe" = "Which camera?";
+"MwEpGz" = "Done!";
+"fnz838" = "Sensors updated.";
+"h1xQ53" = "Update Sensors";
+"lGqSSG" = "Failed to update sensors.";
+"pjQR7t" = "Update Sensors";
+"r6LXFe" = "Unsuccessful!";
+"vAIAF2" = "Send a sensor update to Home Assistant";
