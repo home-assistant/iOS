@@ -5494,8 +5494,7 @@
 			baseConfigurationReference = 8E00CA53EFBB621A8470C22A /* Pods-watchOS-WatchExtension-Watch.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5932,8 +5931,7 @@
 			baseConfigurationReference = 1C5C1EC99DF5FCB63422D279 /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5952,8 +5950,7 @@
 			baseConfigurationReference = 755DF7AFFAA21F6CE428E998 /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

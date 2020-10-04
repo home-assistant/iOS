@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Copy GoogleService-Info.plist"
-               scriptText = "if [[ $IS_MACCATALYST ]]; then&#10;    cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Contents/Resources/GoogleService-Info.plist&quot;&#10;else&#10;    cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist&quot;&#10;fi&#10;"
+               scriptText = "if [[ $IS_MACCATALYST ]]; then&#10;    cp &quot;${PROJECT_DIR}/Sources/App/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Contents/Resources/GoogleService-Info.plist&quot;&#10;    # works around xcode 12.0gm/12.2b copying in libsodium.a into Shared.framework&#10;    find &quot;${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Shared.framework&quot; -name &apos;libsodium.a&apos; -delete&#10;else&#10;    cp &quot;${PROJECT_DIR}/Sources/App/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist&quot;&#10;    # works around xcode 12.0gm/12.2b copying in libsodium.a into Shared.framework&#10;    find &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}&quot; -name &apos;libsodium.a&apos; -delete&#10;    find &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}&quot; -empty -type d -delete&#10;fi&#10;"
                shellToInvoke = "/bin/sh">
                <EnvironmentBuildable>
                   <BuildableReference
