@@ -6,13 +6,14 @@
 //  Copyright © 2019 Robbie Trencheny. All rights reserved.
 //
 
+#if os(iOS)
 import Foundation
 import UIKit
 
 private var activityIndicatorAssociationKey: UInt8 = 0
 
-extension UIImageView {
-    var activityIndicator: UIActivityIndicatorView! {
+public extension UIImageView {
+    private var activityIndicator: UIActivityIndicatorView! {
         get {
             return objc_getAssociatedObject(self, &activityIndicatorAssociationKey) as? UIActivityIndicatorView
         }
@@ -53,3 +54,4 @@ extension UIImageView {
         })
     }
 }
+#endif
