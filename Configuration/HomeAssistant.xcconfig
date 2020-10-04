@@ -4,6 +4,9 @@ VERSIONING_SYSTEM = apple-generic
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
 
+// cascades down
+PRODUCT_BUNDLE_IDENTIFIER = ${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}${PROVISIONING_SUFFIX}
+
 // resolves some catalyst build-time issues with frameworks and @importing in the objc header we never use
 SWIFT_INSTALL_OBJC_HEADER=NO
 
