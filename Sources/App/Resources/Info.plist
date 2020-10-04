@@ -670,5 +670,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCrossWebsiteTrackingUsageDescription</key>
+	<string>Optionally enable cross-website tracking if your configuration requires it.</string>
 </dict>
 </plist>
