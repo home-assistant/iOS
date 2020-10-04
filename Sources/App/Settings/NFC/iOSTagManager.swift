@@ -40,12 +40,13 @@ class iOSTagManager: TagManager {
 
     func writeNFC(value: String) -> Promise<String> {
         if #available(iOS 13, *) {
-            guard let payload = NFCNDEFPayload.wellKnownTypeURIPayload(url: Self.url(for: value)) else {
+            guard let uriPayload = NFCNDEFPayload.wellKnownTypeURIPayload(url: Self.url(for: value)),
+                  let aarPayload = NFCNDEFPayload.androidPackage(payload: "io.homeassistant.companion.android")
+            else {
                 return .init(error: TagManagerError.notHomeAssistantTag)
             }
 
-            let message = NFCNDEFMessage(records: [ payload ])
-            let writer = NFCWriter(message: message)
+            let writer = NFCWriter(requiredPayload: [ uriPayload ], optionalPayload: [ aarPayload ])
             var writerRetain: NFCWriter? = writer
 
             return firstly {
@@ -54,7 +55,7 @@ class iOSTagManager: TagManager {
                 withExtendedLifetime(writerRetain) {
                     writerRetain = nil
                 }
-            }.then {
+            }.then { message in
                 // we use the same logic as reading, so we can be sure the identifier is right
                 Self.identifier(from: message)
             }

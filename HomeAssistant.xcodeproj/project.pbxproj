@@ -132,6 +132,7 @@
 		119A7DF32529761800D7000D /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
+		119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119A827B252A3C4700D7000D /* NFCNDEFPayload+Additions.swift */; };
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
@@ -963,6 +964,7 @@
 		1194B3EC2519B48500AA01C3 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1194B4152519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeWiFiConnectivityImpl.swift; sourceTree = "<group>"; };
 		11993D2324E78A3700627944 /* WidgetActionsActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsActionView.swift; sourceTree = "<group>"; };
+		119A827B252A3C4700D7000D /* NFCNDEFPayload+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCNDEFPayload+Additions.swift"; sourceTree = "<group>"; };
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
@@ -1821,10 +1823,11 @@
 			isa = PBXGroup;
 			children = (
 				1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */,
-				113D04E124D76CD3003CE877 /* NFCReader.swift */,
-				113D04E324D76CDB003CE877 /* NFCWriter.swift */,
 				1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */,
+				119A827B252A3C4700D7000D /* NFCNDEFPayload+Additions.swift */,
+				113D04E124D76CD3003CE877 /* NFCReader.swift */,
 				1187DE4124D77CCC00F0A6A6 /* NFCTagViewController.swift */,
+				113D04E324D76CDB003CE877 /* NFCWriter.swift */,
 				1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */,
 			);
 			path = NFC;
@@ -4437,6 +4440,7 @@
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
+				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,

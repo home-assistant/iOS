@@ -6,9 +6,10 @@ import Shared
 @available(iOS 13, *)
 class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
     private var readerSession: NFCNDEFReaderSession!
-    public let promise: Promise<Void>
-    private let seal: Resolver<Void>
-    private let message: NFCNDEFMessage
+    public let promise: Promise<NFCNDEFMessage>
+    private let seal: Resolver<NFCNDEFMessage>
+    private let requiredMessage: NFCNDEFMessage
+    private let optionalMessage: NFCNDEFMessage
 
     enum NFCWriterError: LocalizedError {
         case invalidFormat
@@ -27,9 +28,10 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         }
     }
 
-    init(message: NFCNDEFMessage) {
-        self.message = message
-        (self.promise, self.seal) = Promise<Void>.pending()
+    init(requiredPayload: [NFCNDEFPayload], optionalPayload: [NFCNDEFPayload]) {
+        self.requiredMessage = NFCNDEFMessage(records: requiredPayload)
+        self.optionalMessage = NFCNDEFMessage(records: requiredPayload + optionalPayload)
+        (self.promise, self.seal) = Promise<NFCNDEFMessage>.pending()
 
         super.init()
         readerSession = NFCNDEFReaderSession(
@@ -53,12 +55,29 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         // when you provide `reader(_:didDetect:)`.
     }
 
+    private static func message(
+        for capacity: Int,
+        required: NFCNDEFMessage,
+        optional: NFCNDEFMessage
+    ) throws -> NFCNDEFMessage {
+        if capacity >= optional.length {
+            return optional
+        } else if capacity >= required.length {
+            return required
+        } else {
+            throw NFCWriterError.insufficientCapacity(
+                required: required.length,
+                available: capacity
+            )
+        }
+    }
+
     func readerSession(_ session: NFCNDEFReaderSession, didDetect tags: [NFCNDEFTag]) {
         guard let tag = tags.first else {
             return
         }
 
-        session.connect(to: tag) { [seal, message] error in
+        session.connect(to: tag) { [seal, requiredMessage, optionalMessage] error in
             if error != nil {
                 session.restartPolling()
                 return
@@ -73,8 +92,11 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
 
                 switch status {
                 case .readWrite:
-                    if message.length > capacity {
-                        let error = NFCWriterError.insufficientCapacity(required: message.length, available: capacity)
+                    let message: NFCNDEFMessage
+
+                    do {
+                        message = try Self.message(for: capacity, required: requiredMessage, optional: optionalMessage)
+                    } catch {
                         session.invalidate(errorMessage: error.localizedDescription)
                         seal.reject(error)
                         return
@@ -87,7 +109,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
                         } else {
                             session.alertMessage = L10n.Nfc.Write.successMessage
                             session.invalidate()
-                            seal.fulfill(())
+                            seal.fulfill(message)
                         }
                     }
                 case .readOnly:
