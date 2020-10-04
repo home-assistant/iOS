@@ -98,8 +98,8 @@ final public class NotificationCategory: Object, UpdatableModel {
           # open a different url per action
           # use "\(Self.FallbackActionIdentifier)" as key for no action chosen
           url:
-          - "\(Self.FallbackActionIdentifier)": "http://example.com/fallback"
-          - \(urlStrings.joined(separator: indentation + "- "))
+            "\(Self.FallbackActionIdentifier)": "http://example.com/fallback"
+            \(urlStrings.joined(separator: indentation + "- "))
         """
     }
 
