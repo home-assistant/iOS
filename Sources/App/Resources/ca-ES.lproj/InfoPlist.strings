@@ -1,5 +1,5 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Us recomanem que seleccioneu \"Permet sempre\" per obtenir la millor experiència d'ubicació. Si seleccioneu \"Només mentre feu servir l'aplicació\", es desactivaran els iBeacons, les barres geogràfiques, les actualitzacions de la ubicació en segon pla i els informes precisos.";
+"NSLocationAlwaysUsageDescription" = "Sempre necessitem accés a la vostra ubicació per a funcions com ara iBeacons, geofences, actualitzacions de la ubicació en segon pla i informes precisos.";
 "NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSMotionUsageDescription" = "El moviment s’utilitza per millorar les actualitzacions d’ubicació amb el tipus de moviment actual, així com per proporcionar dades bàsiques del podòmetre.";
 "NSSiriUsageDescription" = "Utilitzem Siri per permetre que les dreceres creades interactuïn amb l’aplicació.";
@@ -8,4 +8,4 @@
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Enviar ubicació";
 "NSLocalNetworkUsageDescription" = "Cerqueu i comuniqueu-vos amb la vostra instància de Home Assistant.";
 "NFCReaderUsageDescription" = "Llegir i escriure etiquetes NFC us permet activar esdeveniments.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NSCameraUsageDescription" = "Feu fotos i envieu-les al servidor de Home Assistant.";
