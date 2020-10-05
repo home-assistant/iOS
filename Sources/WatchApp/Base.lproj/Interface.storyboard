@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
-    <device id="watch38" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="17156" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="17034"/>
     </dependencies>
     <scenes>
         <!--Home Assistant-->
@@ -15,7 +14,7 @@
                     <items>
                         <table alignment="left" id="wzm-z7-qRv">
                             <items>
-                                <tableRow identifier="actionRowType" id="Kqb-lS-KNT" customClass="ActionRowType" customModule="WatchAppExtension">
+                                <tableRow identifier="actionRowType" id="Kqb-lS-KNT" customClass="ActionRowType" customModule="WatchApp" customModuleProvider="target">
                                     <group key="rootItem" width="1" height="42" alignment="left" id="bW2-9l-fJW">
                                         <items>
                                             <imageView width="24" height="24" alignment="left" verticalAlignment="center" id="YLy-LH-2Xz"/>
@@ -59,7 +58,7 @@
         <!--Map Notification Controller-->
         <scene sceneID="Y1C-6b-E19">
             <objects>
-                <controller id="LrQ-kJ-7bY" customClass="MapNotificationController" customModule="WatchAppExtension">
+                <controller id="LrQ-kJ-7bY" customClass="MapNotificationController" customModule="WatchApp" customModuleProvider="target">
                     <items>
                         <label alignment="left" text="Title" numberOfLines="2" id="vyJ-v3-IgR">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
@@ -102,7 +101,7 @@
         <!--Camera Notification Controller-->
         <scene sceneID="YvE-lN-xpN">
             <objects>
-                <controller id="R7r-up-oD1" customClass="CameraNotificationController" customModule="WatchAppExtension">
+                <controller id="R7r-up-oD1" customClass="CameraNotificationController" customModule="WatchApp" customModuleProvider="target">
                     <items>
                         <label alignment="left" text="Title" numberOfLines="2" id="3tx-pE-mk3">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
