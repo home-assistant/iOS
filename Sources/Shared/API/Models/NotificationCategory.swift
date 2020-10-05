@@ -74,7 +74,7 @@ final public class NotificationCategory: Object, UpdatableModel {
     public var exampleServiceCall: String {
         let urlStrings = Actions.map { "\"\($0.Identifier)\": \"http://example.com/url\"" }
 
-        let indentation = "\n  "
+        let indentation = "\n    "
 
         return """
         service: notify.mobile_app_#name_here
@@ -99,7 +99,7 @@ final public class NotificationCategory: Object, UpdatableModel {
           # use "\(Self.FallbackActionIdentifier)" as key for no action chosen
           url:
             "\(Self.FallbackActionIdentifier)": "http://example.com/fallback"
-            \(urlStrings.joined(separator: indentation + "- "))
+            \(urlStrings.joined(separator: indentation))
         """
     }
 
