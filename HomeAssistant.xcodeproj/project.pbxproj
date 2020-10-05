@@ -5474,7 +5474,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
-				IBSC_MODULE = WatchAppExtension;
+				IBSC_MODULE = WatchExtension_Watch;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5892,7 +5892,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
-				IBSC_MODULE = WatchAppExtension;
+				IBSC_MODULE = WatchExtension_Watch;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5911,7 +5911,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
-				IBSC_MODULE = WatchAppExtension;
+				IBSC_MODULE = WatchExtension_Watch;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
