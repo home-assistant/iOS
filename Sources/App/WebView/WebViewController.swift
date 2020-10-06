@@ -108,10 +108,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         self.becomeFirstResponder()
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(WebViewController.loadActiveURLIfNeeded),
-                                               name: HomeAssistantAPI.didConnectNotification,
-                                               object: nil)
+        for name: Notification.Name in [
+            SettingsStore.connectionInfoDidChange,
+            HomeAssistantAPI.didConnectNotification
+        ] {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(loadActiveURLIfNeeded),
+                name: name,
+                object: nil
+            )
+        }
 
         let statusBarView = UIView()
         statusBarView.tag = 111

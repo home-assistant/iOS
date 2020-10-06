@@ -141,10 +141,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
     }
 
     @objc func ActiveURLTypeChanged(_ notification: Notification) {
-        guard let userInfo = notification.userInfo as? [String: ConnectionInfo.URLType],
-            let newType = userInfo["newType"],
-            let pathRow = self.form.rowBy(tag: "connectionPath") as? LabelRow else { return }
-        pathRow.value = newType.description
+        guard let pathRow = self.form.rowBy(tag: "connectionPath") as? LabelRow else { return }
+        pathRow.value = Current.settingsStore.connectionInfo?.activeURLType.description
         pathRow.updateCell()
     }
 }
