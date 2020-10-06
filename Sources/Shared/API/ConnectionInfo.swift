@@ -19,6 +19,7 @@ import Communicator
 public class ConnectionInfo: Codable {
     public private(set) var externalURL: URL? {
         didSet {
+            guard externalURL != oldValue else { return }
             Current.settingsStore.connectionInfo = self
             guard self.externalURL != nil else { return }
             Current.setUserProperty?("externalURL", "RemoteConnectionMethod")
@@ -26,11 +27,13 @@ public class ConnectionInfo: Codable {
     }
     public private(set) var internalURL: URL? {
         didSet {
+            guard internalURL != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
     }
     public private(set) var remoteUIURL: URL? {
         didSet {
+            guard remoteUIURL != oldValue else { return }
             Current.settingsStore.connectionInfo = self
             guard self.remoteUIURL != nil else { return }
             Current.setUserProperty?("remoteUI", "RemoteConnectionMethod")
@@ -38,26 +41,32 @@ public class ConnectionInfo: Codable {
     }
     public var webhookID: String {
         didSet {
+            guard webhookID != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
     }
     public var webhookSecret: String? {
         didSet {
+            guard webhookSecret != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
     }
     public var cloudhookURL: URL? {
         didSet {
+            guard cloudhookURL != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
     }
     public var internalSSIDs: [String]? {
         didSet {
+            guard internalSSIDs != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
     }
     public var useCloud: Bool = false {
         didSet {
+            guard useCloud != oldValue else { return }
+
             Current.settingsStore.connectionInfo = self
             if self.useCloud {
                 if self.internalURL != nil && self.isOnInternalNetwork {
