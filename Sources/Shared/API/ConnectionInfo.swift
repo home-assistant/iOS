@@ -77,8 +77,7 @@ public class ConnectionInfo: Codable {
 
     public var activeURLType: URLType = .external {
         didSet {
-            guard oldValue != self.activeURLType else { print("No change", oldValue, self.activeURLType); return }
-            Current.settingsStore.connectionInfo = self
+            guard oldValue != self.activeURLType else { return }
             var oldURL: String = "Unknown URL"
             switch oldValue {
             case .internal:
@@ -89,9 +88,7 @@ public class ConnectionInfo: Codable {
                 oldURL = self.externalURL?.absoluteString ?? oldURL
             }
             Current.Log.verbose("Updated URL from \(oldValue) (\(oldURL)) to \(activeURLType) \(self.activeURL)")
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connectioninfo.activeurltype_changed"),
-                                            object: nil,
-                                            userInfo: ["oldType": oldValue, "newType": activeURLType])
+            Current.settingsStore.connectionInfo = self
         }
     }
 
