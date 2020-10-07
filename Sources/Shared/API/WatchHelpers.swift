@@ -122,60 +122,17 @@ extension HomeAssistantAPI {
         return templates
     }
 
-    public func updateComplications() -> Promise<[WatchComplication]> {
+    public func updateComplications() -> Promise<Void> {
         let payload = HomeAssistantAPI.BuildWatchRenderTemplatePayload()
 
         if payload.isEmpty {
             Current.Log.verbose("No complications have templates, not sending the request!")
-            return Promise.value([WatchComplication]())
+            return .value(())
         }
 
-        return firstly { () -> Promise<Any> in
-            Current.webhooks.sendEphemeral(request: .init(type: "render_template", data: payload))
-        }.then { (respJSON: Any) -> Promise<[WatchComplication]> in
-            Current.Log.verbose("Got JSON \(respJSON)")
-            guard let jsonDict = respJSON as? [String: String] else {
-                Current.Log.error("Unable to cast JSON to [String: [String: String]]!")
-                return Promise.value([WatchComplication]())
-            }
-
-            Current.Log.verbose("JSON Dict1 \(jsonDict)")
-
-            var updatedComplications: [WatchComplication] = []
-
-            for (templateKey, renderedText) in jsonDict {
-                let components = templateKey.components(separatedBy: "|")
-                let rawTemplate = components[0]
-                let textAreaKey = components[1]
-                let pred = NSPredicate(format: "rawTemplate == %@", rawTemplate)
-                let realm = Realm.live()
-                guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
-                    Current.Log.error("Couldn't get complication from DB for \(rawTemplate)")
-                    continue
-                }
-
-                guard var storedAreas = complication.Data["textAreas"] as? [String: [String: Any]] else {
-                    Current.Log.error("Couldn't cast stored areas")
-                    continue
-                }
-
-                storedAreas[textAreaKey]!["renderedText"] = renderedText
-
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    complication.Data["textAreas"] = storedAreas
-                }
-
-                updatedComplications.append(complication)
-
-                Current.Log.verbose("complication \(complication.Data)")
-            }
-
-            if let syncError = HomeAssistantAPI.SyncWatchContext() {
-                return Promise(error: syncError)
-            }
-
-            return Promise.value(updatedComplications)
-        }
+        return Current.webhooks.send(
+            identifier: .updateComplications,
+            request: .init(type: "render_template", data: payload)
+        )
     }
 }

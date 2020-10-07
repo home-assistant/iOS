@@ -341,7 +341,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
             }
 
-            return when(fulfilled: [updatePromise, api.updateComplications().asVoid()]).asVoid()
+            return when(fulfilled: [updatePromise, api.updateComplications()]).asVoid()
         }.done {
             completionHandler(.newData)
         }.catch { error in
@@ -744,7 +744,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
-        #if targetEnvironment(simulator)
+        #if targetEnvironment(simulator) || DEBUG
         if FirebaseOptions.defaultOptions() == nil {
             Current.Log.error("*** Firebase options unavailable ***")
         } else {

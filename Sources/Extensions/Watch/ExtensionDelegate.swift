@@ -19,7 +19,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     // MARK: - Properties -
 
     var urlIdentifier: String?
-    var bgTask: WKRefreshBackgroundTask?
 
     // MARK: Fileprivate
 
@@ -83,8 +82,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKWatchConnectivityRefreshBackgroundTask received")
                 BackgroundRefreshScheduler.shared.schedule()
-                self.updateComplications()
-                self.bgTask = backgroundTask
+                updateComplications().done {
+                    backgroundTask.setTaskCompletedWithSnapshot(false)
+                }
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
                 snapshotTask.setTaskCompleted(restoredDefaultState: true,
@@ -95,7 +95,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
                 Current.Log.verbose("Should rejoin URLSession! \(String(describing: urlIdentifier))")
-                self.bgTask = urlSessionTask
+                Current.webhooks.handleBackground(for: urlSessionTask.sessionIdentifier) {
+                    urlSessionTask.setTaskCompletedWithSnapshot(false)
+                }
             case let relevantShortcutTask as WKRelevantShortcutRefreshBackgroundTask:
                 // Be sure to complete the relevant-shortcut task once you're done.
                 relevantShortcutTask.setTaskCompletedWithSnapshot(false)
@@ -198,10 +200,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                     realm.add(complications, update: .all)
                 }
 
-                self.updateComplications()
-
-                CLKComplicationServer.sharedInstance().activeComplications?.forEach {
-                    CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
+                self.updateComplications().done {
+                    CLKComplicationServer.sharedInstance().activeComplications?.forEach {
+                        CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
+                    }
                 }
             }
 
@@ -219,26 +221,16 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // First check we're not expecting more data
         guard !Communicator.shared.hasPendingDataToBeReceived else { return }
         // And then end the task (if there is one!)
-        self.watchConnectivityTask?.setTaskCompletedWithSnapshot(false)
+        self.watchConnectivityTask = nil
     }
 
-    func updateComplications() {
-        let urlID = NSUUID().uuidString
-
-        self.urlIdentifier = urlID
-
-        let backgroundConfigObject = URLSessionConfiguration.background(withIdentifier: urlID)
-        backgroundConfigObject.sessionSendsLaunchEvents = true
-
-        guard let api = HomeAssistantAPI.authenticatedAPI(urlConfig: backgroundConfigObject) else {
-            Current.Log.error("Couldn't get HAAPI instance")
-            return
-        }
-
-        _ = api.updateComplications().ensure {
-            self.bgTask?.setTaskCompletedWithSnapshot(false)
-        }.catch { error in
-            Current.Log.error("Error updating complications! \(error)")
+    func updateComplications() -> Guarantee<Void> {
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then {
+            $0.updateComplications()
+        }.recover { _ in
+            ()
         }
     }
 
