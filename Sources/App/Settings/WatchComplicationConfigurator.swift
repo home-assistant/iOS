@@ -253,14 +253,35 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             $0.tag = "ring_type"
             $0.title = L10n.Watch.Configurator.Rows.Ring.RingType.title
             $0.add(rule: RuleRequired())
-            $0.options = [L10n.Watch.Configurator.Rows.Ring.RingType.Options.open,
-                          L10n.Watch.Configurator.Rows.Ring.RingType.Options.closed]
+            $0.options = ["open", "closed"]
+
+            $0.displayValueFor = { value in
+                if value?.lowercased() == "open" {
+                    return L10n.Watch.Configurator.Rows.Ring.RingType.Options.open
+                } else {
+                    return L10n.Watch.Configurator.Rows.Ring.RingType.Options.closed
+                }
+            }
+
             $0.value = $0.options?.first
             if let dict = self.config.Data["ring"] as? [String: Any],
                 let value = dict[$0.tag!] as? String {
                 $0.value = value
             }
         }
+
+        <<< InlineColorPickerRow("ring_color") {
+                $0.title = L10n.Watch.Configurator.Rows.Ring.Color.title
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor.green
+                if let dict = self.config.Data["ring"] as? [String: Any],
+                    let value = dict[$0.tag!] as? String {
+                    $0.value = UIColor(hex: value)
+                }
+            }.onChange { (picker) in
+                Current.Log.verbose("ring color: \(picker.value!.hexString(false))")
+            }
 
         +++ Section(header: L10n.Watch.Configurator.Sections.Icon.header,
                     footer: L10n.Watch.Configurator.Sections.Icon.footer) {
