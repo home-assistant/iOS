@@ -16,10 +16,6 @@ import Shared
 import PromiseKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
-    // MARK: - Properties -
-
-    var urlIdentifier: String?
-
     // MARK: Fileprivate
 
     fileprivate var watchConnectivityTask: WKWatchConnectivityRefreshBackgroundTask? {
@@ -94,7 +90,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 watchConnectivityTask = connectivityTask
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
-                Current.Log.verbose("Should rejoin URLSession! \(String(describing: urlIdentifier))")
+                Current.Log.verbose("Should rejoin URLSession! \(urlSessionTask.sessionIdentifier)")
                 Current.webhooks.handleBackground(for: urlSessionTask.sessionIdentifier) {
                     urlSessionTask.setTaskCompletedWithSnapshot(false)
                 }
