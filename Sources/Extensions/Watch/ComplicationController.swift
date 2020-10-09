@@ -34,6 +34,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                  withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
         // Call the handler with the current timeline entry
 
+        Iconic.registerMaterialDesignIcons()
+
         Current.Log.verbose("Providing template for \(complication.family.description)")
 
         let matchedFamily = ComplicationGroupMember(family: complication.family)

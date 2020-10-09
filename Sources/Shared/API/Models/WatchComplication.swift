@@ -128,10 +128,11 @@ public class WatchComplication: Object, ImmutableMappable {
     public var iconProvider: CLKImageProvider? {
         if let iconDict = self.Data["icon"] as? [String: String], let iconName = iconDict["icon"],
             let iconColor = iconDict["icon_color"], let iconSize = self.Template.imageSize {
+            let iconColor = UIColor(iconColor)
             let icon = MaterialDesignIcons(named: iconName)
-            let image = icon.image(ofSize: iconSize, color: .clear)
+            let image = icon.image(ofSize: iconSize, color: iconColor)
             let provider = CLKImageProvider(onePieceImage: image)
-            provider.tintColor = UIColor(iconColor)
+            provider.tintColor = iconColor
             return provider
         }
 
@@ -163,14 +164,22 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     public var ringData: (Float, CLKComplicationRingStyle, UIColor) {
-        guard let ringDict = self.Data["ring"] as? [String: String], let ringValue = ringDict["ring"],
-            let floatVal = Float(ringValue), let ringColor = ringDict["ring_color"],
-            let ringStyle = ringDict["ring_style"] else {
-                Current.Log.warning("Unable to get ring data!")
-                return (0, .open, UIColor.black)
+        guard let ringDict = self.Data["ring"] as? [String: String],
+              let ringValue = ringDict["ring_value"],
+              let floatVal = Float(ringValue),
+              let ringColor = ringDict["ring_color"]
+        else {
+            Current.Log.warning("Unable to get ring data!")
+            return (0, .open, UIColor.black)
         }
 
-        let style = (ringStyle == "open" ? CLKComplicationRingStyle.open : CLKComplicationRingStyle.closed)
+        let style: CLKComplicationRingStyle
+
+        if ringDict["ring_type"]?.lowercased() == "open" {
+            style = .open
+        } else {
+            style = .closed
+        }
 
         return (floatVal, style, UIColor(ringColor))
     }

@@ -992,140 +992,140 @@ public enum ComplicationTemplate: String {
     // https://gist.github.com/robbiet480/2a38d499323cb964d47b2f5d8004694a
     public var imageSize: CGSize? {
         // Template: Device Size: Image Size @1x
-        let imageSizes: [String: [Int: CGSize]] = [
-            "CircularSmallRingImage": [
+        let imageSizes: [Self: [Int: CGSize]] = [
+            .CircularSmallRingImage: [
                 38: CGSize(width: 40, height: 40),
                 40: CGSize(width: 44, height: 44),
                 42: CGSize(width: 44, height: 44),
                 44: CGSize(width: 48, height: 48)
             ],
-            "CircularSmallSimpleImage": [
+            .CircularSmallSimpleImage: [
                 38: CGSize(width: 32, height: 32),
                 40: CGSize(width: 36, height: 36),
                 42: CGSize(width: 36, height: 36),
                 44: CGSize(width: 40, height: 40)
             ],
-            "CircularSmallStackImage": [
+            .CircularSmallStackImage: [
                 38: CGSize(width: 32, height: 14),
                 40: CGSize(width: 34, height: 16),
                 42: CGSize(width: 34, height: 16),
                 44: CGSize(width: 38, height: 18)
             ],
-            "ModularSmallRingImage": [
+            .ModularSmallRingImage: [
                 38: CGSize(width: 36, height: 36),
                 40: CGSize(width: 38, height: 38),
                 42: CGSize(width: 38, height: 38),
                 44: CGSize(width: 42, height: 42)
             ],
-            "ModularSmallSimpleImage": [
+            .ModularSmallSimpleImage: [
                 38: CGSize(width: 52, height: 52),
                 40: CGSize(width: 58, height: 58),
                 42: CGSize(width: 58, height: 58),
                 44: CGSize(width: 64, height: 64)
             ],
-            "ModularSmallStackImage": [
+            .ModularSmallStackImage: [
                 38: CGSize(width: 52, height: 28),
                 40: CGSize(width: 58, height: 30),
                 42: CGSize(width: 58, height: 30),
                 44: CGSize(width: 64, height: 34)
             ],
-            "ModularLargeColumnsImage": [
+            .ModularLargeColumns: [
                 38: CGSize(width: 64, height: 22),
                 40: CGSize(width: 74, height: 24),
                 42: CGSize(width: 74, height: 24),
                 44: CGSize(width: 84, height: 28)
             ],
-            "ModularLargeStandardBody": [
+            .ModularLargeStandardBody: [
                 38: CGSize(width: 64, height: 22),
                 40: CGSize(width: 74, height: 24),
                 42: CGSize(width: 74, height: 24),
                 44: CGSize(width: 84, height: 28)
             ],
-            "ModularLargeTable": [
+            .ModularLargeTable: [
                 38: CGSize(width: 64, height: 22),
                 40: CGSize(width: 74, height: 24),
                 42: CGSize(width: 74, height: 24),
                 44: CGSize(width: 84, height: 28)
             ],
-            "UtilitarianSmallFlatImage": [
+            .UtilitarianSmallFlat: [
                 38: CGSize(width: 42, height: 18),
                 40: CGSize(width: 44, height: 20),
                 42: CGSize(width: 44, height: 20)
                 // 44: CGSize(width: 20, height: 20) -- 44mm is marked "N/A" in HIG
             ],
-            "UtilitarianSmallRingImage": [
+            .UtilitarianSmallRingImage: [
                 38: CGSize(width: 28, height: 28),
                 40: CGSize(width: 28, height: 28),
                 42: CGSize(width: 28, height: 28),
                 44: CGSize(width: 32, height: 32)
             ],
-            "UtilitarianSmallSquareImage": [
+            .UtilitarianSmallSquare: [
                 38: CGSize(width: 40, height: 40),
                 40: CGSize(width: 44, height: 44),
                 42: CGSize(width: 44, height: 44),
                 44: CGSize(width: 50, height: 50)
             ],
-            "UtilitarianLargeFlatImage": [
+            .UtilitarianLargeFlat: [
                 38: CGSize(width: 42, height: 18),
                 40: CGSize(width: 44, height: 20),
                 42: CGSize(width: 44, height: 20)
                 // 44: CGSize(width: 20, height: 20) -- 44mm is marked "N/A" in HIG
             ],
-            "ExtraLargeRingImage": [
+            .ExtraLargeRingImage: [
                 38: CGSize(width: 126, height: 126),
                 40: CGSize(width: 133, height: 133),
                 42: CGSize(width: 133, height: 133),
                 44: CGSize(width: 146, height: 146)
             ],
-            "ExtraLargeSimpleImage": [
+            .ExtraLargeSimpleImage: [
                 38: CGSize(width: 182, height: 182),
                 40: CGSize(width: 203, height: 203),
                 42: CGSize(width: 203, height: 203),
                 44: CGSize(width: 224, height: 224)
             ],
-            "ExtraLargeStackImage": [
+            .ExtraLargeStackImage: [
                 38: CGSize(width: 156, height: 84),
                 40: CGSize(width: 174, height: 90),
                 42: CGSize(width: 174, height: 90),
                 44: CGSize(width: 192, height: 102)
             ],
-            "GraphicCornerCircularImage": [
+            .GraphicCornerCircularImage: [
                 40: CGSize(width: 64, height: 64),
                 44: CGSize(width: 72, height: 72)
             ],
-            "GraphicCornerGaugeImage": [
+            .GraphicCornerGaugeImage: [
                 40: CGSize(width: 40, height: 40),
                 44: CGSize(width: 44, height: 44)
             ],
-            "GraphicCornerTextImage": [
+            .GraphicCornerTextImage: [
                 40: CGSize(width: 40, height: 40),
                 44: CGSize(width: 44, height: 44)
             ],
-            "GraphicCircularImage": [
+            .GraphicCircularImage: [
                 40: CGSize(width: 84, height: 84),
                 44: CGSize(width: 94, height: 94)
             ],
-            "GraphicCircularClosedGaugeImage": [
+            .GraphicCircularClosedGaugeImage: [
                 40: CGSize(width: 54, height: 54),
                 44: CGSize(width: 62, height: 62)
             ],
-            "GraphicCircularOpenGaugeImage": [
+            .GraphicCircularOpenGaugeImage: [
                 40: CGSize(width: 22, height: 22),
                 44: CGSize(width: 24, height: 24)
             ],
-            "GraphicBezelCircularText": [
+            .GraphicBezelCircularText: [
                 40: CGSize(width: 42, height: 42),
                 44: CGSize(width: 47, height: 47)
             ],
-            "GraphicRectangularLargeImage": [
+            .GraphicRectangularLargeImage: [
                 40: CGSize(width: 300, height: 94),
                 44: CGSize(width: 342, height: 108)
             ],
-            "GraphicRectangularStandardBody": [
+            .GraphicRectangularStandardBody: [
                 40: CGSize(width: 24, height: 24),
                 44: CGSize(width: 27, height: 27)
             ],
-            "GraphicRectangularTextGauge": [
+            .GraphicRectangularTextGauge: [
                 40: CGSize(width: 24, height: 24),
                 44: CGSize(width: 27, height: 27)
             ]
@@ -1133,7 +1133,7 @@ public enum ComplicationTemplate: String {
 
         let deviceSize = WKInterfaceDevice.currentResolution().rawValue
 
-        if let sizeDict = imageSizes[self.rawValue], let size = sizeDict[deviceSize] {
+        if let sizeDict = imageSizes[self], let size = sizeDict[deviceSize] {
             return size
         }
 
