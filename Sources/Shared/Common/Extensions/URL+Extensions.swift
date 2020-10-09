@@ -11,6 +11,10 @@ import Foundation
 extension URL {
     /// Return true if receiver's host and scheme is equal to `otherURL`
     public func baseIsEqual(to otherURL: URL) -> Bool {
-        return self.host == otherURL.host && self.scheme == otherURL.scheme
+        return host == otherURL.host
+        && port == otherURL.port
+        && scheme == otherURL.scheme
+        && user == otherURL.user
+        && password == otherURL.password
     }
 }
