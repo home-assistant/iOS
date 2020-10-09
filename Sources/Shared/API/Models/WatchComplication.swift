@@ -588,13 +588,16 @@ public class WatchComplication: Object, ImmutableMappable {
             }
             return template
         case .GraphicBezelCircularText:
-            // TODO: need to implement CLKComplicationTemplateGraphicCircular
-            return nil
-//            let template = CLKComplicationTemplateGraphicBezelCircularText()
-//            if let textProvider = self.textDataProviders["Center"] {
-//                template.textProvider = textProvider
-//            }
-//            return template
+            let template = CLKComplicationTemplateGraphicBezelCircularText()
+            if let iconProvider = self.fullColorImageProvider {
+                template.circularTemplate = with(CLKComplicationTemplateGraphicCircularImage()) {
+                    $0.imageProvider = iconProvider
+                }
+            }
+            if let textProvider = self.textDataProviders["Center"] {
+                template.textProvider = textProvider
+            }
+            return template
         case .GraphicRectangularStandardBody:
             let template = CLKComplicationTemplateGraphicRectangularStandardBody()
             if let textProvider = self.textDataProviders["Header"] {

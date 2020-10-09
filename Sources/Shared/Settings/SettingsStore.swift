@@ -19,6 +19,7 @@ public class SettingsStore {
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
+    public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
 
     public var tokenInfo: TokenInfo? {
         get {
@@ -85,6 +86,12 @@ public class SettingsStore {
             } catch {
                 assertionFailure("Error while saving token info: \(error)")
             }
+
+            NotificationCenter.default.post(
+                name: Self.connectionInfoDidChange,
+                object: nil,
+                userInfo: nil
+            )
         }
     }
 

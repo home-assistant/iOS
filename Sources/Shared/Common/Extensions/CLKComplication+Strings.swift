@@ -1113,6 +1113,10 @@ public enum ComplicationTemplate: String {
                 40: CGSize(width: 22, height: 22),
                 44: CGSize(width: 24, height: 24)
             ],
+            .GraphicBezelCircularText: [
+                40: CGSize(width: 42, height: 42),
+                44: CGSize(width: 47, height: 47)
+            ],
             .GraphicRectangularLargeImage: [
                 40: CGSize(width: 300, height: 94),
                 44: CGSize(width: 342, height: 108)
@@ -1253,7 +1257,7 @@ public enum ComplicationTemplate: String {
              .GraphicCornerTextImage, .GraphicRectangularLargeImage, .GraphicRectangularStandardBody,
              .GraphicRectangularTextGauge, .ModularLargeColumns, .ModularLargeStandardBody, .ModularLargeTable,
              .ModularSmallRingImage, .ModularSmallSimpleImage, .ModularSmallStackImage, .UtilitarianLargeFlat,
-             .UtilitarianSmallFlat, .UtilitarianSmallRingImage, .UtilitarianSmallSquare:
+             .UtilitarianSmallFlat, .UtilitarianSmallRingImage, .UtilitarianSmallSquare, .GraphicBezelCircularText:
             return true
         default:
             return false
