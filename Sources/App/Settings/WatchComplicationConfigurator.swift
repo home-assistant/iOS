@@ -59,7 +59,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             Current.Log.error(error)
         }
 
-        _ = HomeAssistantAPI.SyncWatchContext()
+        HomeAssistantAPI.authenticatedAPI()?.updateComplications().cauterize()
 
         onDismissCallback?(self)
     }
@@ -490,11 +490,6 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
                     }
 
                     textAreasDict[sectionTag]![rowTag] = rowValue
-
-                    if rowTag == "text", let value = rowValue as? String {
-                        textAreasDict[sectionTag]!["textNeedsRender"] = (value.contains("{{") || value.contains("}}"))
-                    }
-
                 } else {
                     if groupedVals[sectionTag] == nil {
                         groupedVals[sectionTag] = [String: Any]()

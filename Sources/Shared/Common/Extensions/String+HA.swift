@@ -15,6 +15,10 @@ extension String {
         return unicodeScalars.map { $0.value }.reduce(5381) { ($0 << 5) &+ $0 &+ Int($1) }
     }
 
+    var containsJinjaTemplate: Bool {
+        return contains("{{") || contains("{%") || contains("{#")
+    }
+
     func dictionary() -> [String: Any]? {
         if let data = self.data(using: .utf8) {
             do {

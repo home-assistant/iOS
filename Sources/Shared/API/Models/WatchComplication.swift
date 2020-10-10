@@ -68,14 +68,12 @@ public class WatchComplication: Object, ImmutableMappable {
     @objc fileprivate dynamic var complicationData: Data?
     @objc dynamic public var CreatedAt = Date()
 
-    @objc dynamic public var RenderedData: [String: Any] = [String: Any]()
-
     override public static func primaryKey() -> String? {
         return "rawFamily"
     }
 
     override public static func ignoredProperties() -> [String] {
-        return ["RenderedData", "Family", "Template"]
+        return ["Family", "Template"]
     }
 
     public required init() {
@@ -98,14 +96,87 @@ public class WatchComplication: Object, ImmutableMappable {
         Family    >>> map["Family"]
     }
 
+    enum RenderedValueType: Hashable {
+        case textArea(String)
+        case gauge
+        case ring
+
+        init?(stringValue: String) {
+            let values = stringValue.components(separatedBy: ",")
+
+            guard values.count >= 1 else {
+                return nil
+            }
+
+            switch values[0] {
+            case "textArea" where values.count >= 2:
+                self = .textArea(values[1])
+            case "gauge":
+                self = .gauge
+            case "ring":
+                self = .ring
+            default:
+                return nil
+            }
+        }
+
+        var stringValue: String {
+            switch self {
+            case .textArea(let value): return "textArea,\(value)"
+            case .gauge: return "gauge"
+            case .ring: return "ring"
+            }
+        }
+    }
+
+    func renderedValues() -> [RenderedValueType: String] {
+        return (Data["rendered"] as? [String: String] ?? [:])
+            .compactMapKeys(RenderedValueType.init(stringValue:))
+    }
+
+    func updateRawRendered(from response: [String: String]) {
+        Data["rendered"] = response
+    }
+
+    func rawRendered() -> [String: String] {
+        var renders = [RenderedValueType: String]()
+
+        if let textAreas = Data["textAreas"] as? [String: [String: Any]], textAreas.isEmpty == false {
+            let toAdd = textAreas.compactMapValues { $0["text"] as? String }
+                .filter { $1.containsJinjaTemplate }
+                .mapKeys { RenderedValueType.textArea($0) }
+            renders.merge(toAdd, uniquingKeysWith: { a, _ in a })
+        }
+
+        if let gaugeDict = Data["gauge"] as? [String: String],
+           let gauge = gaugeDict["gauge"], gauge.containsJinjaTemplate {
+            renders[.gauge] = gauge
+        }
+
+        if let ringDict = self.Data["ring"] as? [String: String],
+           let ringValue = ringDict["ring_value"], ringValue.containsJinjaTemplate {
+            renders[.ring] = ringValue
+        }
+
+        return renders.mapKeys { $0.stringValue }
+    }
+
     #if os(watchOS)
+
+    private static func percentileNumber(from string: String) -> Float? {
+        // a bit more forgiving than Float(_:)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.number(from: string)?.floatValue
+    }
 
     public var textDataProviders: [String: CLKTextProvider] {
         var providers: [String: CLKTextProvider] = [String: CLKTextProvider]()
 
         if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
+            let rendered = renderedValues()
             for (key, textArea) in textAreas {
-                guard let text = textArea["text"] as? String else {
+                guard let text = rendered[.textArea(key)] ?? textArea["text"] as? String else {
                     Current.Log.warning("TextArea \(key) doesn't have any text!")
                     continue
                 }
@@ -113,12 +184,9 @@ public class WatchComplication: Object, ImmutableMappable {
                     Current.Log.warning("TextArea \(key) doesn't have a text color!")
                     continue
                 }
-                var provider = CLKSimpleTextProvider(text: text)
-                if let renderedText = textArea["renderedText"] as? String {
-                    provider = CLKSimpleTextProvider(text: renderedText)
+                providers[key] = with(CLKSimpleTextProvider(text: text)) {
+                    $0.tintColor = UIColor(color)
                 }
-                provider.tintColor = UIColor(color)
-                providers[key] = provider
             }
         }
 
@@ -151,10 +219,11 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     public var gaugeProvider: CLKSimpleGaugeProvider? {
-        if let gaugeDict = self.Data["gauge"] as? [String: String], let gaugeValue = gaugeDict["gauge"],
-            let floatVal = Float(gaugeValue), let gaugeColor = gaugeDict["gauge_color"],
-            let gaugeStyle = gaugeDict["gauge_style"] {
-
+        if let gaugeDict = self.Data["gauge"] as? [String: String],
+           let gaugeValue = renderedValues()[.gauge] ?? gaugeDict["gauge"],
+           let floatVal = Self.percentileNumber(from: gaugeValue),
+           let gaugeColor = gaugeDict["gauge_color"],
+           let gaugeStyle = gaugeDict["gauge_style"] {
             let style = (gaugeStyle == "fill" ? CLKGaugeProviderStyle.fill : CLKGaugeProviderStyle.ring)
 
             return CLKSimpleGaugeProvider(style: style, gaugeColor: UIColor(gaugeColor), fillFraction: floatVal)
@@ -165,8 +234,8 @@ public class WatchComplication: Object, ImmutableMappable {
 
     public var ringData: (Float, CLKComplicationRingStyle, UIColor) {
         guard let ringDict = self.Data["ring"] as? [String: String],
-              let ringValue = ringDict["ring_value"],
-              let floatVal = Float(ringValue),
+              let ringValue = renderedValues()[.ring] ?? ringDict["ring_value"],
+              let floatVal = Self.percentileNumber(from: ringValue),
               let ringColor = ringDict["ring_color"]
         else {
             Current.Log.warning("Unable to get ring data!")

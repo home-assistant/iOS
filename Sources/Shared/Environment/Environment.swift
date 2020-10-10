@@ -67,6 +67,7 @@ public class Environment {
         $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
         $0.register(responseHandler: WebhookResponseLocation.self, for: .location)
         $0.register(responseHandler: WebhookResponseServiceCall.self, for: .serviceCall)
+        $0.register(responseHandler: WebhookResponseUpdateComplications.self, for: .updateComplications)
     }
 
     public var sensors = with(SensorContainer()) {
