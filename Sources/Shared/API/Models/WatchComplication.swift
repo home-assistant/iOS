@@ -129,18 +129,16 @@ public class WatchComplication: Object, ImmutableMappable {
         }
     }
 
-    func rendered() -> [RenderedValueType: String] {
+    func renderedValues() -> [RenderedValueType: String] {
         return (Data["rendered"] as? [String: String] ?? [:])
             .compactMapKeys(RenderedValueType.init(stringValue:))
     }
 
-    func updateRawRendered(for key: String, value: String) {
-        var existing = Data["rendered"] as? [String: String] ?? [:]
-        existing[key] = value
-        Data["rendered"] = existing
+    func updateRawRendered(from response: [String: String]) {
+        Data["rendered"] = response
     }
 
-    func preRendered() -> [String: String] {
+    func rawRendered() -> [String: String] {
         var renders = [RenderedValueType: String]()
 
         if let textAreas = Data["textAreas"] as? [String: [String: Any]], textAreas.isEmpty == false {

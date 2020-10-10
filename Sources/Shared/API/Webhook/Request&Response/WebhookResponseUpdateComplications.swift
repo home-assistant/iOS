@@ -24,7 +24,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             let keyPrefix = "\(complication.Template.rawValue)|"
 
             payload.merge(
-                complication.preRendered()
+                complication.rawRendered()
                     .mapKeys { keyPrefix + $0 }
                     .mapValues { ["template": $0] },
                 uniquingKeysWith: { a, _ in a }
@@ -46,28 +46,29 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             result
         }.compactMap {
             return $0 as? [String: String]
-        }.then { jsonDict -> Promise<Void> in
-            Current.Log.verbose("JSON Dict1 \(jsonDict)")
-
-            for (templateKey, renderedText) in jsonDict {
-                let components = templateKey.components(separatedBy: "|")
-                let rawTemplate = components[0]
-                let key = components[1]
-                let pred = NSPredicate(format: "rawTemplate == %@", rawTemplate)
-                let realm = Realm.live()
-                guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
-                    Current.Log.error("Couldn't get complication from DB for \(rawTemplate)")
-                    continue
+        }.then { result -> Promise<Void> in
+            // turn the ["template|key": "value"] into ["template": ["key": "value"]]
+            let paired = result.reduce(into: [String: [String: String]]()) { accumulator, value in
+                let components = value.key.components(separatedBy: "|")
+                guard components.count >= 2 else {
+                    Current.Log.error("couldn't figure out naming for \(value.key)")
+                    return
                 }
+                accumulator[components[0], default: [:]][components[1]] = value.value
+            }
 
-                Current.Log.info("updating value for complication \(rawTemplate) key \(key)")
+            let realm = Current.realm()
+            let base = realm.objects(WatchComplication.self)
 
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    complication.updateRawRendered(for: key, value: renderedText)
+            try realm.write {
+                for (template, rendered) in paired {
+                    if let complication = base.filter("rawTemplate == %@", template).first {
+                        Current.Log.verbose("updating \(template) with \(rendered)")
+                        complication.updateRawRendered(from: rendered)
+                    } else {
+                        Current.Log.error("couldn't find complication for \(template)")
+                    }
                 }
-
-                Current.Log.verbose("complication \(complication.Data)")
             }
 
             if let syncError = HomeAssistantAPI.SyncWatchContext() {
