@@ -174,8 +174,9 @@ public class WatchComplication: Object, ImmutableMappable {
         var providers: [String: CLKTextProvider] = [String: CLKTextProvider]()
 
         if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
+            let rendered = renderedValues()
             for (key, textArea) in textAreas {
-                guard let text = rendered()[.textArea(key)] ?? textArea["text"] as? String else {
+                guard let text = rendered[.textArea(key)] ?? textArea["text"] as? String else {
                     Current.Log.warning("TextArea \(key) doesn't have any text!")
                     continue
                 }
@@ -219,7 +220,7 @@ public class WatchComplication: Object, ImmutableMappable {
 
     public var gaugeProvider: CLKSimpleGaugeProvider? {
         if let gaugeDict = self.Data["gauge"] as? [String: String],
-           let gaugeValue = rendered()[.gauge] ?? gaugeDict["gauge"],
+           let gaugeValue = renderedValues()[.gauge] ?? gaugeDict["gauge"],
            let floatVal = Self.percentileNumber(from: gaugeValue),
            let gaugeColor = gaugeDict["gauge_color"],
            let gaugeStyle = gaugeDict["gauge_style"] {
@@ -233,7 +234,7 @@ public class WatchComplication: Object, ImmutableMappable {
 
     public var ringData: (Float, CLKComplicationRingStyle, UIColor) {
         guard let ringDict = self.Data["ring"] as? [String: String],
-              let ringValue = rendered()[.ring] ?? ringDict["ring_value"],
+              let ringValue = renderedValues()[.ring] ?? ringDict["ring_value"],
               let floatVal = Self.percentileNumber(from: ringValue),
               let ringColor = ringDict["ring_color"]
         else {
