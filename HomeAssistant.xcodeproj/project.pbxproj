@@ -16,6 +16,8 @@
 		1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
 		1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */; };
 		1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */; };
+		1104FCA125323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */; };
+		1104FCB025323C2B00B8BE34 /* FakeWebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCAF25323C2B00B8BE34 /* FakeWebhookManager.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
@@ -884,6 +886,8 @@
 		1100D52024974D6700B1073C /* camera_notification.apns */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = camera_notification.apns; sourceTree = "<group>"; };
 		1101568624D7712F009424C9 /* TagManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagManagerProtocol.swift; sourceTree = "<group>"; };
 		1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Additions.swift"; sourceTree = "<group>"; };
+		1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateComplications.test.swift; sourceTree = "<group>"; };
+		1104FCAF25323C2B00B8BE34 /* FakeWebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeWebhookManager.swift; sourceTree = "<group>"; };
 		1109B6BA25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Intents.strings; sourceTree = "<group>"; };
 		1109B6BB25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		1109B6BC25263EEF005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1893,6 +1897,8 @@
 				11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */,
 				11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */,
 				11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */,
+				1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */,
+				1104FCAF25323C2B00B8BE34 /* FakeWebhookManager.swift */,
 			);
 			path = Webhook;
 			sourceTree = "<group>";
@@ -4781,6 +4787,7 @@
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
 				11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */,
+				1104FCB025323C2B00B8BE34 /* FakeWebhookManager.swift in Sources */,
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
@@ -4791,6 +4798,7 @@
 				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,
 				11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */,
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
+				1104FCA125323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift in Sources */,
 				113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */,
 				11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */,
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,

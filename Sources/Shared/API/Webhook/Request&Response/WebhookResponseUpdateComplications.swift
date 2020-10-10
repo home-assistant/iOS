@@ -9,6 +9,10 @@ extension WebhookResponseIdentifier {
 
 struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     let api: HomeAssistantAPI
+
+    // for tests, since Realm can't query subclasses in a query
+    var watchComplicationClass: WatchComplication.Type = WatchComplication.self
+
     init(api: HomeAssistantAPI) {
         self.api = api
     }
@@ -44,11 +48,11 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     ) -> Guarantee<WebhookResponseHandlerResult> {
         return firstly {
             result
-        }.compactMap {
-            return $0 as? [String: String]
-        }.then { result -> Promise<Void> in
+        }.compactMap { result in
+            result as? [String: String]
+        }.map { result in
             // turn the ["template|key": "value"] into ["template": ["key": "value"]]
-            let paired = result.reduce(into: [String: [String: String]]()) { accumulator, value in
+            result.reduce(into: [String: [String: String]]()) { accumulator, value in
                 let components = value.key.components(separatedBy: "|")
                 guard components.count >= 2 else {
                     Current.Log.error("couldn't figure out naming for \(value.key)")
@@ -56,9 +60,9 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 }
                 accumulator[components[0], default: [:]][components[1]] = value.value
             }
-
+        }.then { paired -> Promise<Void> in
             let realm = Current.realm()
-            let base = realm.objects(WatchComplication.self)
+            let base = realm.objects(watchComplicationClass)
 
             try realm.write {
                 for (template, rendered) in paired {
