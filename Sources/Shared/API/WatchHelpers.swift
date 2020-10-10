@@ -76,63 +76,28 @@ extension HomeAssistantAPI {
         return nil
     }
 
-    public static func BuildWatchRenderTemplatePayload() -> [String: Any] {
-        var templates = [String: [String: String]]()
+    public func updateComplications() -> Promise<Void> {
+        var complications = Set(Current.realm().objects(WatchComplication.self))
 
-        let complications = Current.realm().objects(WatchComplication.self)
+        #if os(watchOS)
+        let activeFamilies = Set(
+            CLKComplicationServer.sharedInstance()
+            .activeComplications?
+            .compactMap { ComplicationGroupMember(family: $0.family) } ?? []
+        )
 
-        Current.Log.verbose("complications \(complications)")
-
-        var activeFamilies: [String] = []
-
-        #if os(iOS)
-        let context = Communicator.shared.mostRecentlyReceievedContext.content
-        Current.Log.verbose("""
-            mostRecentlyReceievedContext.content
-            \(String(describing: context["activeFamilies"])) \(context.keys)
-        """)
-        guard let contextFamilies = context["activeFamilies"] as? [String] else { return [:] }
-        Current.Log.verbose("contextFamilies \(contextFamilies)")
-        activeFamilies = contextFamilies
-        #elseif os(watchOS)
-        guard let activeComplications = CLKComplicationServer.sharedInstance().activeComplications else { return [:] }
-        activeFamilies = activeComplications.compactMap { ComplicationGroupMember(family: $0.family).rawValue }
+        // on the watch, only do the minimal amount of request we need
+        complications = complications.filter { activeFamilies.contains($0.Family) }
         #endif
 
-        for complication in complications {
-            Current.Log.verbose("Check complication family \(complication.Family.rawValue)")
-            if activeFamilies.contains(complication.Family.rawValue) {
-                Current.Log.verbose("ACTIVE COMPLICATION! \(complication), \(complication.Data)")
-                if let textAreas = complication.Data["textAreas"] as? [String: [String: Any]] {
-                    for (textAreaKey, textArea) in textAreas {
-                        let key = "\(complication.Template.rawValue)|\(textAreaKey)"
-                        Current.Log.verbose("Got textArea \(key), \(textArea)")
-                        if let needsRender = textArea["textNeedsRender"] as? Bool,
-                            let text = textArea["text"] as? String, needsRender {
-                            Current.Log.verbose("TEXT NEEDS RENDER! \(key)")
-                            templates[key] = ["template": text]
-                        }
-                    }
-                }
-            }
-        }
-
-        Current.Log.verbose("JSON payload to send \(templates)")
-
-        return templates
-    }
-
-    public func updateComplications() -> Promise<Void> {
-        let payload = HomeAssistantAPI.BuildWatchRenderTemplatePayload()
-
-        if payload.isEmpty {
-            Current.Log.verbose("No complications have templates, not sending the request!")
+        guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
+            Current.Log.verbose("no complications need templates rendered")
             return .value(())
         }
 
         return Current.webhooks.send(
             identifier: .updateComplications,
-            request: .init(type: "render_template", data: payload)
+            request: request
         )
     }
 }

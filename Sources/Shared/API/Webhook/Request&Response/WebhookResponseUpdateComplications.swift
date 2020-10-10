@@ -17,6 +17,28 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         return true
     }
 
+    static func request(for complications: Set<WatchComplication>) -> WebhookRequest? {
+        Current.Log.verbose("complications \(complications.map { $0.Template.rawValue })")
+
+        let templates = complications.reduce(into: [String: [String: String]]()) { payload, complication in
+            let keyPrefix = "\(complication.Template.rawValue)|"
+
+            payload.merge(
+                complication.preRendered()
+                    .reduce(into: [String: [String: String]]()) {
+                        $0[keyPrefix + $1.key] = ["template": $1.value]
+                    },
+                uniquingKeysWith: { a, _ in a }
+            )
+        }
+
+        if templates.isEmpty {
+            return nil
+        } else {
+            return .init(type: "render_template", data: templates)
+        }
+    }
+
     func handle(
         request: Promise<WebhookRequest>,
         result: Promise<Any>
@@ -31,7 +53,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             for (templateKey, renderedText) in jsonDict {
                 let components = templateKey.components(separatedBy: "|")
                 let rawTemplate = components[0]
-                let textAreaKey = components[1]
+                let key = components[1]
                 let pred = NSPredicate(format: "rawTemplate == %@", rawTemplate)
                 let realm = Realm.live()
                 guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
@@ -39,16 +61,11 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                     continue
                 }
 
-                guard var storedAreas = complication.Data["textAreas"] as? [String: [String: Any]] else {
-                    Current.Log.error("Couldn't cast stored areas")
-                    continue
-                }
-
-                storedAreas[textAreaKey]!["renderedText"] = renderedText
+                Current.Log.info("updating value for complication \(rawTemplate) key \(key)")
 
                 // swiftlint:disable:next force_try
                 try! realm.write {
-                    complication.Data["textAreas"] = storedAreas
+                    complication.updateRawRendered(for: key, value: renderedText)
                 }
 
                 Current.Log.verbose("complication \(complication.Data)")
