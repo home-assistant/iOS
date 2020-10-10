@@ -130,12 +130,8 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     func rendered() -> [RenderedValueType: String] {
-        return (Data["rendered"] as? [String: String])?
-            .reduce(into: [RenderedValueType: String]()) {
-                if let key = RenderedValueType(stringValue: $1.key) {
-                    $0[key] = $1.value
-                }
-            } ?? [:]
+        return (Data["rendered"] as? [String: String] ?? [:])
+            .compactMapKeys(RenderedValueType.init(stringValue:))
     }
 
     func updateRawRendered(for key: String, value: String) {
@@ -148,14 +144,10 @@ public class WatchComplication: Object, ImmutableMappable {
         var renders = [RenderedValueType: String]()
 
         if let textAreas = Data["textAreas"] as? [String: [String: Any]], textAreas.isEmpty == false {
-            renders.merge(
-                textAreas.compactMapValues { $0["text"] as? String }
-                    .filter { $1.containsJinjaTemplate }
-                    .reduce(into: [RenderedValueType: String]()) {
-                        $0[.textArea($1.key)] = $1.value
-                    },
-                uniquingKeysWith: { a, _ in a }
-            )
+            let toAdd = textAreas.compactMapValues { $0["text"] as? String }
+                .filter { $1.containsJinjaTemplate }
+                .mapKeys { RenderedValueType.textArea($0) }
+            renders.merge(toAdd, uniquingKeysWith: { a, _ in a })
         }
 
         if let gaugeDict = Data["gauge"] as? [String: String],
@@ -168,9 +160,7 @@ public class WatchComplication: Object, ImmutableMappable {
             renders[.ring] = ringValue
         }
 
-        return renders.reduce(into: [String: String]()) {
-            $0[$1.key.stringValue] = $1.value
-        }
+        return renders.mapKeys { $0.stringValue }
     }
 
     #if os(watchOS)

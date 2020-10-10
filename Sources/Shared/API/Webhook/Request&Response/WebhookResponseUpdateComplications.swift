@@ -25,9 +25,8 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
 
             payload.merge(
                 complication.preRendered()
-                    .reduce(into: [String: [String: String]]()) {
-                        $0[keyPrefix + $1.key] = ["template": $1.value]
-                    },
+                    .mapKeys { keyPrefix + $0 }
+                    .mapValues { ["template": $0] },
                 uniquingKeysWith: { a, _ in a }
             )
         }
