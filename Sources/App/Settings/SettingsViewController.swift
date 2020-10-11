@@ -144,7 +144,7 @@ class SettingsViewController: FormViewController {
                 view.detailGroup = "watch"
                 return view
             }, onDismiss: { _ in
-                _ = HomeAssistantAPI.authenticatedAPI()?.updateComplications()
+                
             })
         }
 

@@ -540,8 +540,7 @@ public class HomeAssistantAPI {
                             zone: zone
                         )
                     )
-                ),
-                self.updateComplications().asVoid()
+                )
             )
         }.asVoid()
     }

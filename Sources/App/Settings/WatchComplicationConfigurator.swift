@@ -59,7 +59,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             Current.Log.error(error)
         }
 
-        HomeAssistantAPI.authenticatedAPI()?.updateComplications().cauterize()
+        _ = HomeAssistantAPI.SyncWatchContext()
 
         onDismissCallback?(self)
     }

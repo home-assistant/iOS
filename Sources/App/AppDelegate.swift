@@ -341,7 +341,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
             }
 
-            return when(fulfilled: [updatePromise, api.updateComplications()]).asVoid()
+            return updatePromise
         }.done {
             completionHandler(.newData)
         }.catch { error in
