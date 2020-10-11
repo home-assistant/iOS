@@ -49,7 +49,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         setupWatchCommunicator()
 
         // schedule the next background refresh
-        BackgroundRefreshScheduler.shared.schedule()
+        Current.backgroundRefreshScheduler.schedule().cauterize()
     }
 
     func applicationDidBecomeActive() {
@@ -65,7 +65,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
         Current.Log.verbose("willResignActive")
-        BackgroundRefreshScheduler.shared.schedule()
+        Current.backgroundRefreshScheduler.schedule().cauterize()
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
@@ -77,8 +77,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKWatchConnectivityRefreshBackgroundTask received")
-                BackgroundRefreshScheduler.shared.schedule()
-                updateComplications().done {
+
+                firstly {
+                    updateComplications()
+                }.then {
+                    Current.backgroundRefreshScheduler.schedule()
+                }.done {
                     backgroundTask.setTaskCompletedWithSnapshot(false)
                 }
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
@@ -92,7 +96,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 // Be sure to complete the URL session task once you’re done.
                 Current.Log.verbose("Should rejoin URLSession! \(urlSessionTask.sessionIdentifier)")
                 Current.webhooks.handleBackground(for: urlSessionTask.sessionIdentifier) {
-                    urlSessionTask.setTaskCompletedWithSnapshot(false)
+                    Current.backgroundRefreshScheduler.schedule().done {
+                        urlSessionTask.setTaskCompletedWithSnapshot(false)
+                    }
                 }
             case let relevantShortcutTask as WKRelevantShortcutRefreshBackgroundTask:
                 // Be sure to complete the relevant-shortcut task once you're done.
@@ -151,7 +157,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
             _ = HomeAssistantAPI.SyncWatchContext()
 
-            let realm = Realm.live()
+            let realm = Current.realm()
 
             if let connInfoData = context.content["connection_info"] as? Data {
                 let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoData)
@@ -196,11 +202,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                     realm.add(complications, update: .all)
                 }
 
-                self.updateComplications().done {
-                    CLKComplicationServer.sharedInstance().activeComplications?.forEach {
-                        CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
-                    }
-                }
+                self.updateComplications().cauterize()
             }
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()

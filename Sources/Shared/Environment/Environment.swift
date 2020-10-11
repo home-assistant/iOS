@@ -88,6 +88,10 @@ public class Environment {
 
     public var updater: Updater = Updater()
 
+    #if os(watchOS)
+    public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
+    #endif
+
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {
         guard let pluginUrl = Bundle(for: Environment.self).builtInPlugInsURL,
