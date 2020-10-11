@@ -2,6 +2,9 @@ import Foundation
 import UserNotifications
 import PromiseKit
 import RealmSwift
+#if os(watchOS)
+import ClockKit
+#endif
 
 extension WebhookResponseIdentifier {
     static var updateComplications: Self { .init(rawValue: "updateComplications") }
@@ -75,11 +78,17 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 }
             }
 
-            if let syncError = HomeAssistantAPI.SyncWatchContext() {
-                return .init(error: syncError)
-            }
-
             return .value(())
+        }.done {
+            #if os(watchOS)
+            let server = CLKComplicationServer.sharedInstance()
+
+            server.activeComplications?.forEach {
+                server.reloadTimeline(for: $0)
+            }
+            #else
+            _ = HomeAssistantAPI.SyncWatchContext()
+            #endif
         }.map { _ in
             WebhookResponseHandlerResult.default
         }.recover { error -> Guarantee<WebhookResponseHandlerResult> in
