@@ -11,8 +11,9 @@ public final class ModelManager {
     ) {
         notificationTokens.append(collection.observe { change in
             switch change {
-            case .initial(let collection),
-                 .update(let collection, deletions: _, insertions: _, modifications: _):
+            case .initial:
+                break
+            case .update(let collection, deletions: _, insertions: _, modifications: _):
                 handler(collection).cauterize()
             case .error(let error):
                 Current.Log.error("failed to watch \(collection): \(error)")

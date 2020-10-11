@@ -524,10 +524,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api -> Promise<Void> in
             func updateWithoutLocation() -> Promise<Void> {
-                return when(fulfilled: [
-                    api.UpdateSensors(trigger: .Manual),
-                    api.updateComplications()
-                ])
+                api.UpdateSensors(trigger: .Manual)
             }
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {

@@ -18,6 +18,12 @@
 		1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */; };
 		1104FCA125323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */; };
 		1104FCB025323C2B00B8BE34 /* FakeWebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCAF25323C2B00B8BE34 /* FakeWebhookManager.swift */; };
+		1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */; };
+		1104FCC02532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */; };
+		1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */; };
+		1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
+		1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
+		1104FD07253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
@@ -541,7 +547,6 @@
 		B672AB562216B07500175465 /* gallery.ckcomplication in Resources */ = {isa = PBXBuildFile; fileRef = B672AB552216B07500175465 /* gallery.ckcomplication */; };
 		B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */; };
 		B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */; };
-		B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; };
 		B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -888,6 +893,9 @@
 		1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Additions.swift"; sourceTree = "<group>"; };
 		1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateComplications.test.swift; sourceTree = "<group>"; };
 		1104FCAF25323C2B00B8BE34 /* FakeWebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeWebhookManager.swift; sourceTree = "<group>"; };
+		1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
+		1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.test.swift; sourceTree = "<group>"; };
+		1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guarantee+Additions.swift"; sourceTree = "<group>"; };
 		1109B6BA25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Intents.strings; sourceTree = "<group>"; };
 		1109B6BB25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		1109B6BC25263EEF005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1433,7 +1441,6 @@
 		B672AB552216B07500175465 /* gallery.ckcomplication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gallery.ckcomplication; sourceTree = "<group>"; };
 		B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ComplicationDivination.swift"; sourceTree = "<group>"; };
 		B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPushRow.swift; sourceTree = "<group>"; };
-		B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
 		B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Tests-App-metadata.plist"; path = "Pods/Pods-Tests-App-metadata.plist"; sourceTree = "<group>"; };
 		B67CE816221FB13C0034C1D0 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B67CE817221FB13C0034C1D0 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -2724,7 +2731,6 @@
 				B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
 				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
-				B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */,
 				B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */,
 				B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */,
 			);
@@ -2843,6 +2849,7 @@
 				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
+				1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2869,6 +2876,7 @@
 				11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */,
 				11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */,
 				1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */,
+				1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2990,6 +2998,7 @@
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
 				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
+				1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				11AF4D15249C8082006C74C0 /* With.swift */,
 			);
@@ -4528,6 +4537,7 @@
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				B6723348225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
+				1104FCC02532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */,
 				B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				11AF4D1A249C8253006C74C0 /* PedometerSensor.swift in Sources */,
@@ -4586,6 +4596,7 @@
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
 				119A7DF32529761800D7000D /* CLKComplication+Strings.swift in Sources */,
 				1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
+				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				B67CE8A222200F220034C1D0 /* Services.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
@@ -4653,7 +4664,6 @@
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */,
 				B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */,
-				B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4738,6 +4748,7 @@
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
+				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
@@ -4748,6 +4759,7 @@
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */,
+				1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
@@ -4810,6 +4822,8 @@
 				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
 				11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */,
+				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
+				1104FD07253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

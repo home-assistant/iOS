@@ -77,18 +77,7 @@ extension HomeAssistantAPI {
     }
 
     public func updateComplications() -> Promise<Void> {
-        var complications = Set(Current.realm().objects(WatchComplication.self))
-
-        #if os(watchOS)
-        let activeFamilies = Set(
-            CLKComplicationServer.sharedInstance()
-            .activeComplications?
-            .compactMap { ComplicationGroupMember(family: $0.family) } ?? []
-        )
-
-        // on the watch, only do the minimal amount of request we need
-        complications = complications.filter { activeFamilies.contains($0.Family) }
-        #endif
+        let complications = Set(Current.realm().objects(WatchComplication.self))
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")

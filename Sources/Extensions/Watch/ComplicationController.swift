@@ -65,7 +65,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             return
         }
 
-        Current.Log.verbose("Generated template for \(complication.family), \(template)")
+        Current.Log.verbose("Generated template for \(complication.family.rawValue), \(template)")
 
         handler(CLKComplicationTimelineEntry(date: date, complicationTemplate: template))
     }
