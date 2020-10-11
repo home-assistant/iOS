@@ -52,9 +52,9 @@
 "qfHa79" = "Enviado con éxito ${eventName} con el contenido del portapapeles a Home Assistant";
 "qzje4k" = "No se pudo llamar al servicio con el error: ${error}.";
 "rFSNpu" = "Llamado ${domain}.${service}";
-"ri4H1h" = "Se envió con éxito $ {domain} . $ {service} con el contenido del portapapeles a Home Assistant";
+"ri4H1h" = "Se envió con éxito ${domain} . ${service} con el contenido del portapapeles a Home Assistant";
 "rlOS6H" = "Plantilla renderizada con éxito desde el portapapeles";
-"rwj6u7" = "Reporta tu ubicación actual como $ {location} a Home Assistant";
+"rwj6u7" = "Reporta tu ubicación actual como ${location} a Home Assistant";
 "sbkx4E" = "No se ha podido geocodificar ${clipboardContents} en una ubicación válida";
 "uUk5RX" = "Llamar a ${serviceDomain}.${service} con datos";
 "v7TSD5" = "Enviar ubicación";

@@ -54,7 +54,7 @@
 "rFSNpu" = "Called ${domain}.${service}";
 "ri4H1h" = "Successfully sent ${domain}.${service} with clipboard contents to Home Assistant";
 "rlOS6H" = "Panodaki taslak başarılı bir şekilde oluşturuldu";
-"rwj6u7" = "Geçerli konumunuzu $ {location} olarak Home Assistant'a bildirin";
+"rwj6u7" = "Geçerli konumunuzu ${location} olarak Home Assistant'a bildirin";
 "sbkx4E" = "Failed to geocode ${pasteboardContents} to a valid location";
 "uUk5RX" = "${serviceDomain} çağır. Verisi ile birlikte ${service}";
 "v7TSD5" = "Konumu Gönder";
@@ -80,10 +80,10 @@
 "FtQqoU" = "Konum güncellendi";
 "HCM8Oe" = "${eventName}'i veri ile çalıştır";
 "HSLcG7" = "Etkinlik İsmi";
-"KNyYFZ" = "'$ {service} ' ile eşleşen $ {count} seçenek var.";
+"KNyYFZ" = "'${service} ' ile eşleşen ${count} seçenek var.";
 "LVEY3e" = "Kamera kimliği";
 "MTPojJ" = "Etkinlik adı nedir?";
-"N4REJz" = "'$ {cameraID} ' ile eşleşen $ {count} seçenek var.";
+"N4REJz" = "'${cameraID} ' ile eşleşen ${count} seçenek var.";
 "NsbUTz" = "Kamera Varlığı";
 "QVD2lM" = "Servis Verisi";
 "QmGpOH" = "Hata";

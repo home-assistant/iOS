@@ -43,7 +43,7 @@
 "lxHlyQ" = "Poženite dogodek";
 "mAibJP" = "Slike iz kamere ni bilo mogoče dobiti, Home Assistant trenutno ni dosegljiv";
 "mgspvx" = "Najnovejši od entitete kamere, odkrito v odložišču, ${cameraID} , nameščen v odložišče";
-"nIl9ET" = "Zažene dogodek z imenom ${eventName} v {eventName} dogodkov Home Assistant. Vsebino odložišča bo poslala kot podatke o dogodkih.";
+"nIl9ET" = "Zažene dogodek z imenom ${eventName} dogodkov Home Assistant. Vsebino odložišča bo poslala kot podatke o dogodkih.";
 "ntnbP2" = "Kliči storitev";
 "nzqmFA" = "Najnovejša slika od ${cameraID}";
 "oIWFyR" = "Ni uspelo poslati ${eventName} na Home Assistant z napako: ${error}";
@@ -54,7 +54,7 @@
 "rFSNpu" = "Klicana ${domain}. ${service}";
 "ri4H1h" = "Uspešno poslana ${domene}.${service} z vsebino odložišča na Home Assistant";
 "rlOS6H" = "Uspešno upodobljena predloga iz odložišča";
-"rwj6u7" = "Prijavite svojo trenutno lokacijo kot ${Location} na Home Assistant";
+"rwj6u7" = "Prijavite svojo trenutno lokacijo kot ${location} na Home Assistant";
 "sbkx4E" = "Ni bilo mogoče kodirati ${pasteboardContents} na veljavno lokacijo";
 "uUk5RX" = "Pokličite ${serviceDomain}. ${service} s podatki";
 "v7TSD5" = "Pošlji lokacijo";
@@ -80,10 +80,10 @@
 "FtQqoU" = "Lokacija posodobljena";
 "HCM8Oe" = "Poženi ${eventName} s podatki";
 "HSLcG7" = "Ime dogodka";
-"KNyYFZ" = "Obstaja ${count} možnosti ujemanja s/z '$ {Service}'.";
+"KNyYFZ" = "Obstaja ${count} možnosti ujemanja s/z '${service}'.";
 "LVEY3e" = "ID kamere";
 "MTPojJ" = "Kako se imenuje dogodek?";
-"N4REJz" = "Obstaja ${count} možnosti ujemanja z '$ {cameraID}'.";
+"N4REJz" = "Obstaja ${count} možnosti ujemanja z '${cameraID}'.";
 "NsbUTz" = "Subjekt kamere";
 "QVD2lM" = "Podatki o storitvi";
 "QmGpOH" = "Napaka";

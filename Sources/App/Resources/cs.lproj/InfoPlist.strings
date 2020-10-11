@@ -9,3 +9,4 @@
 "NSLocalNetworkUsageDescription" = "Vyhledat a komunikovat s vaší instanci Home Assistant";
 "NFCReaderUsageDescription" = "Čtení a zápis NFC tagů umožňuje spouštět události.";
 "NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";

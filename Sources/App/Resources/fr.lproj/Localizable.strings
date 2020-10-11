@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "L'URL interne sera utilisée lors de la connexion au SSID répertoriés";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Ajouter un nouveau SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "Ajouter le SSID actuel %@";
-"onboarding.connection_test_result.ssl_container.description" = "Nous avons rencontré une erreur lors de la connexion à votre instance. Votre certificat SSL n'est pas valide. En raison des limitations iOS, vous ne pourrez pas continuer l'installation tant qu'un certificat SSL valide n'est pas installé. Nous recommandons Lets Encrypt ou Nabu Casa Remote UI.";
+"onboarding.connection_test_result.ssl_container.description" = "Nous avons rencontré une erreur lors de la connexion à votre instance. Votre certificat SSL n'est pas valide. %@ En raison des limitations iOS, vous ne pourrez pas continuer l'installation tant qu'un certificat SSL valide n'est pas installé. Nous recommandons Lets Encrypt ou Nabu Casa Remote UI.";
 "onboarding.connection_test_result.basic_auth.description" = "L'authentification HTTP de base n'est pas prise en charge.";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Le type d'authentification n'est pas pris en charge %@ .";
 "onboarding.connection_test_result.ssl_untrusted.description" = "Votre certificat SSL n'est pas approuvé. %@ .";
