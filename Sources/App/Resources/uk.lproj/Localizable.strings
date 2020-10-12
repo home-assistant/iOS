@@ -795,7 +795,7 @@ Home Assistant Companion %@";
 "settings_details.notifications.categories_synced.header" = "Синхронізовані категорії";
 "settings_details.notifications.categories_synced.footer" = "Категорії, визначені у .yaml, не можна редагувати на пристрої.";
 "actions_configurator.visual_section.scene_defined" = "Поява цієї дії контролюється конфігурацією сцени.";
-"actions_configurator.visual_section.scene_hint_footer" = "Ви також можете змінити їх, налаштувавши атрибути сцени:% @";
+"actions_configurator.visual_section.scene_hint_footer" = "Ви також можете змінити їх, налаштувавши атрибути сцени: %@";
 "settings_details.actions.scenes.customize_action" = "Налаштувати";
 "settings_details.actions.scenes.footer" = "Коли ввімкнено, сцени показуватимуться поряд з діями. При виконанні, вони викликають зміни сцени.";
 "settings_details.actions.scenes.title" = "Дії сцени";

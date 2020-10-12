@@ -24,7 +24,7 @@
 "N9iJpK" = "Hent kamerabilde";
 "NdG9Jz" = "Gjengir malen til Home Assistant";
 "P3EyZ7" = "Gjengi den angitte malen";
-"QFNpIx" = "Send $ {location} til Home Assistant";
+"QFNpIx" = "Send ${location} til Home Assistant";
 "RMQY3r" = "Sende plasseringen til Home Assistant";
 "SGxPSB" = "${serviceDescription}";
 "VEQtEQ" = "Hent kamerabilde fra ${cameraID}";
@@ -46,13 +46,13 @@
 "nIl9ET" = "Utfører en hendelse som heter ${eventName} til Home Assistent event buss. Vil sende utklippstavle innholdet som event data.";
 "ntnbP2" = "Utfør tjeneste";
 "nzqmFA" = "Hentet det siste stillbildet fra ${cameraID}";
-"oIWFyR" = "Kunne ikke sende $ {eventName} til Home Assistant med feil: $ {error}";
+"oIWFyR" = "Kunne ikke sende ${eventName} til Home Assistant med feil: ${error}";
 "q0SnlK" = "Hent kamerabilde";
 "qayMH6" = "Utfør tjeneste";
-"qfHa79" = "Vellykket sendt $ {eventName} med utklippstavleinnhold til Home Assistant";
-"qzje4k" = "Kan ikke utføre tjenesten med feil: ${feil}";
+"qfHa79" = "Vellykket sendt ${eventName} med utklippstavleinnhold til Home Assistant";
+"qzje4k" = "Kan ikke utføre tjenesten med feil: ${error}";
 "rFSNpu" = "Utfør ${serviceDomain}.${service} med data";
-"ri4H1h" = "Vellykket sendt $ {domain} . $ {service} med utklippstavleinnhold til Home Assistant";
+"ri4H1h" = "Vellykket sendt ${domain} . ${service} med utklippstavleinnhold til Home Assistant";
 "rlOS6H" = "Vellykket gjengitt mal fra utklippstavlen";
 "rwj6u7" = "Rapporten din nåværende posisjon som ${location} Home Assistant";
 "sbkx4E" = "Kunne ikke geokode ${pasteboardContents} til et gyldig sted";

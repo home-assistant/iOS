@@ -7,5 +7,6 @@
 "NSPhotoLibraryUsageDescription" = "L'accesso al Rullino foto è necessario per consentire il salvataggio delle foto dalla visualizzazione Web.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Invia posizione";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NFCReaderUsageDescription" = "La lettura e la scrittura di tag NFC ti consente di attivare eventi.";
+"NSCameraUsageDescription" = "Scatta foto e inviale al tuo server Home Assistant.";
+"NSCrossWebsiteTrackingUsageDescription" = "Abilitare opzionalmente il  cross-website tracking se la vostra configurazione lo richiede.";
