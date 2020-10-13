@@ -377,8 +377,11 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
             Current.Log.verbose("Rendered value is \(val)")
 
-            let alert = UIAlertController(title: L10n.previewOutput, message: val,
-                                          preferredStyle: UIAlertController.Style.alert)
+            let alert = UIAlertController(
+                title: L10n.previewOutput,
+                message: String(describing: val),
+                preferredStyle: .alert
+            )
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)

@@ -129,12 +129,12 @@ public class WatchComplication: Object, ImmutableMappable {
         }
     }
 
-    func renderedValues() -> [RenderedValueType: String] {
-        return (Data["rendered"] as? [String: String] ?? [:])
+    func renderedValues() -> [RenderedValueType: Any] {
+        return (Data["rendered"] as? [String: Any] ?? [:])
             .compactMapKeys(RenderedValueType.init(stringValue:))
     }
 
-    func updateRawRendered(from response: [String: String]) {
+    func updateRawRendered(from response: [String: Any]) {
         Data["rendered"] = response
     }
 
@@ -163,11 +163,23 @@ public class WatchComplication: Object, ImmutableMappable {
 
     #if os(watchOS)
 
-    private static func percentileNumber(from string: String) -> Float? {
-        // a bit more forgiving than Float(_:)
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter.number(from: string)?.floatValue
+    private static func percentileNumber(from value: Any) -> Float? {
+        switch value {
+        case let value as String:
+            // a bit more forgiving than Float(_:)
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            return formatter.number(from: value)?.floatValue
+        case let value as Int:
+            return Float(value)
+        case let value as Double:
+            return Float(value)
+        case let value as Float:
+            return value
+        default:
+            Current.Log.info("unsure how to float-ify \(type(of: value)), trying as a string")
+            return Self.percentileNumber(from: String(describing: value))
+        }
     }
 
     public var textDataProviders: [String: CLKTextProvider] {
@@ -176,7 +188,9 @@ public class WatchComplication: Object, ImmutableMappable {
         if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
             let rendered = renderedValues()
             for (key, textArea) in textAreas {
-                guard let text = rendered[.textArea(key)] ?? textArea["text"] as? String else {
+                let renderedText = rendered[.textArea(key)].flatMap(String(describing:))
+
+                guard let text = renderedText ?? textArea["text"] as? String else {
                     Current.Log.warning("TextArea \(key) doesn't have any text!")
                     continue
                 }
@@ -219,38 +233,76 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     public var gaugeProvider: CLKSimpleGaugeProvider? {
-        if let gaugeDict = self.Data["gauge"] as? [String: String],
-           let gaugeValue = renderedValues()[.gauge] ?? gaugeDict["gauge"],
-           let floatVal = Self.percentileNumber(from: gaugeValue),
-           let gaugeColor = gaugeDict["gauge_color"],
-           let gaugeStyle = gaugeDict["gauge_style"] {
-            let style = (gaugeStyle == "fill" ? CLKGaugeProviderStyle.fill : CLKGaugeProviderStyle.ring)
-
-            return CLKSimpleGaugeProvider(style: style, gaugeColor: UIColor(gaugeColor), fillFraction: floatVal)
+        guard let info = self.Data["gauge"] as? [String: String] else {
+            return nil
         }
 
-        return nil
+        let fraction: Float
+
+        if let renderedFraction = renderedValues()[.gauge], let value = Self.percentileNumber(from: renderedFraction) {
+            fraction = value
+        } else if let stringFraction = info["gauge"], let value = Self.percentileNumber(from: stringFraction) {
+            fraction = value
+        } else {
+            fraction = 0
+        }
+
+        let color: UIColor
+
+        if let string = info["gauge_color"] {
+            color = UIColor(string)
+        } else {
+            color = .red
+        }
+
+        let style: CLKGaugeProviderStyle
+
+        if info["gauge_style"]?.lowercased() == "fill" {
+            style = .fill
+        } else {
+            style = .ring
+        }
+
+        return CLKSimpleGaugeProvider(
+            style: style,
+            gaugeColor: color,
+            fillFraction: fraction
+        )
     }
 
-    public var ringData: (Float, CLKComplicationRingStyle, UIColor) {
-        guard let ringDict = self.Data["ring"] as? [String: String],
-              let ringValue = renderedValues()[.ring] ?? ringDict["ring_value"],
-              let floatVal = Self.percentileNumber(from: ringValue),
-              let ringColor = ringDict["ring_color"]
-        else {
-            Current.Log.warning("Unable to get ring data!")
-            return (0, .open, UIColor.black)
+    public typealias RingData = (fraction: Float, style: CLKComplicationRingStyle, color: UIColor)
+    public var ringData: RingData {
+        guard let info = Data["ring"] as? [String: String] else {
+            return (fraction: 0, style: .closed, color: .red)
+        }
+
+        let fraction: Float
+
+        if let renderedFraction = renderedValues()[.ring], let value = Self.percentileNumber(from: renderedFraction) {
+            fraction = value
+        } else if let stringFraction = info["ring_value"], let value = Self.percentileNumber(from: stringFraction) {
+            fraction = value
+        } else {
+            fraction = 0
+        }
+
+        let color: UIColor
+
+        if let string = info["ring_color"] {
+            color = UIColor(string)
+        } else {
+            color = .red
         }
 
         let style: CLKComplicationRingStyle
 
-        if ringDict["ring_type"]?.lowercased() == "open" {
+        if info["ring_type"]?.lowercased() == "open" {
             style = .open
         } else {
             style = .closed
         }
 
-        return (floatVal, style, UIColor(ringColor))
+        return (fraction: fraction, style: style, color: color)
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -266,9 +318,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.imageProvider = iconProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .CircularSmallSimpleImage:
             let template = CLKComplicationTemplateCircularSmallSimpleImage()
@@ -291,9 +343,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.textProvider = textProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .CircularSmallSimpleText:
             let template = CLKComplicationTemplateCircularSmallSimpleText()
@@ -316,9 +368,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.imageProvider = iconProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .ExtraLargeSimpleImage:
             let template = CLKComplicationTemplateExtraLargeSimpleImage()
@@ -356,9 +408,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.textProvider = textProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .ExtraLargeSimpleText:
             let template = CLKComplicationTemplateExtraLargeSimpleText()
@@ -381,9 +433,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.imageProvider = iconProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .ModularSmallSimpleImage:
             let template = CLKComplicationTemplateModularSmallSimpleImage()
@@ -421,9 +473,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.textProvider = textProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .ModularSmallSimpleText:
             let template = CLKComplicationTemplateModularSmallSimpleText()
@@ -509,9 +561,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.imageProvider = iconProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .UtilitarianSmallRingText:
             let template = CLKComplicationTemplateUtilitarianSmallRingText()
@@ -519,9 +571,9 @@ public class WatchComplication: Object, ImmutableMappable {
                 template.textProvider = textProvider
             }
             let ringData = self.ringData
-            template.fillFraction = ringData.0
-            template.ringStyle = ringData.1
-            template.tintColor = ringData.2
+            template.fillFraction = ringData.fraction
+            template.ringStyle = ringData.style
+            template.tintColor = ringData.color
             return template
         case .UtilitarianSmallSquare:
             let template = CLKComplicationTemplateUtilitarianSmallSquare()
