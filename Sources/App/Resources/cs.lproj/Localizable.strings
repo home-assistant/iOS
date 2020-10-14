@@ -795,7 +795,7 @@ Thank you.\
 "settings_details.notifications.categories_synced.header" = "Synchronizované kategorie";
 "settings_details.notifications.categories_synced.footer" = "Kategorie definované v .yaml není možné upravit v zařízení";
 "actions_configurator.visual_section.scene_defined" = "Vzhled této akce je řízen konfigurací scény.";
-"actions_configurator.visual_section.scene_hint_footer" = "Je možné změnit přizpůsobením atributů scény: % @";
+"actions_configurator.visual_section.scene_hint_footer" = "Je možné změnit přizpůsobením atributů scény: %@";
 "settings_details.actions.scenes.customize_action" = "Přizpůsobit";
 "settings_details.actions.scenes.footer" = "Pokud je tato možnost povolena, scény se zobrazí společně s akcemi. Při provedení aktivují změny scény.";
 "settings_details.actions.scenes.title" = "Akce scény";

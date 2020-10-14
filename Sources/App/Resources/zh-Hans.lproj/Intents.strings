@@ -80,10 +80,10 @@
 "FtQqoU" = "位置已更新";
 "HCM8Oe" = "带参数触发 ${eventName}";
 "HSLcG7" = "事件名称";
-"KNyYFZ" = "有与“ $ {service} ”匹配的$ {count}选项。";
+"KNyYFZ" = "有与“ ${service} ”匹配的 ${count}选项。";
 "LVEY3e" = "相机ID";
 "MTPojJ" = "事件名称是什么？";
-"N4REJz" = "有与“ $ {cameraID} ”匹配的$ {count}选项。";
+"N4REJz" = "有与“ ${cameraID} ”匹配的${count}选项。";
 "NsbUTz" = "相机实体";
 "QVD2lM" = "服务数据";
 "QmGpOH" = "错误";

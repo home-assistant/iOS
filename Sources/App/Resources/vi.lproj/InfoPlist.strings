@@ -8,4 +8,5 @@
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NSCameraUsageDescription" = "Chụp ảnh và gửi chúng đến máy chủ Trợ lý gia đình của bạn.";
+"NSCrossWebsiteTrackingUsageDescription" = "Tùy chọn cho phép theo dõi trang web chéo nếu cấu hình của bạn yêu cầu.";

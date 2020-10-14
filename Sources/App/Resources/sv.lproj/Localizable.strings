@@ -629,7 +629,7 @@
 "onboarding.connection_test_result.ssl_expired.description" = "SSL-certifikatet har upphört att gälla.";
 "onboarding.connection_test_result.client_certificate.description" = "Klientcertifikatautentisering stöds inte.";
 "onboarding.connection_test_result.connection_error.description" = "Allmänt anslutningsfel %@.";
-"onboarding.connection_test_result.server_error.description" = "Server fel:% @";
+"onboarding.connection_test_result.server_error.description" = "Server fel: %@";
 "onboarding.connection_test_result.too_old.description" = "Du måste uppgradera din version av Home Assistant.";
 "onboarding.connection_test_result.unknown_error.description" = "Okänt fel: %@";
 "onboarding.discovery.results_label.plural" = "Vi hittade %d Home Assistant i ditt nätverk";
