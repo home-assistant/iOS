@@ -203,7 +203,7 @@ public class HomeAssistantAPI {
                 self.GetConfig().asVoid(),
                 Current.modelManager.fetch(),
                 self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
-                self.updateComplications().asVoid()
+                self.updateComplications(passively: false).asVoid()
             ]).asVoid()
         }.get { _ in
             NotificationCenter.default.post(name: Self.didConnectNotification,

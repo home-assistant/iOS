@@ -221,11 +221,11 @@ public class WebhookManager: NSObject {
 
         dataQueue.async { [dataQueue] in
             let sendRegular: () -> Promise<Void> = { [self] in
-                self.send(on: self.currentRegularSessionInfo, identifier: identifier, request: request)
+                send(on: currentRegularSessionInfo, identifier: identifier, request: request, waitForResponse: true)
             }
 
             let sendBackground: () -> Promise<Void> = { [self] in
-                self.send(on: self.currentBackgroundSessionInfo, identifier: identifier, request: request)
+                send(on: currentBackgroundSessionInfo, identifier: identifier, request: request, waitForResponse: true)
             }
 
             let promise: Promise<Void>
@@ -251,11 +251,26 @@ public class WebhookManager: NSObject {
         return promise
     }
 
+    public func sendPassive(
+        identifier: WebhookResponseIdentifier = .unhandled,
+        request: WebhookRequest
+    ) -> Promise<Void> {
+        let (promise, seal) = Promise<Void>.pending()
+
+        dataQueue.async { [self] in
+            send(on: currentBackgroundSessionInfo, identifier: identifier, request: request, waitForResponse: false)
+                .pipe(to: seal.resolve)
+        }
+
+        return promise
+    }
+
     // swiftlint:disable:next function_body_length
     private func send(
         on sessionInfo: WebhookSessionInfo,
         identifier: WebhookResponseIdentifier,
-        request: WebhookRequest
+        request: WebhookRequest,
+        waitForResponse: Bool
     ) -> Promise<Void> {
         guard let handlerType = responseHandlers[identifier] else {
             Current.Log.error("no existing handler for \(identifier), not sending request")
@@ -326,6 +341,10 @@ public class WebhookManager: NSObject {
                 result: .init(error: error),
                 resolver: seal
             )
+        }.finally {
+            if !waitForResponse {
+                seal.fulfill(())
+            }
         }
 
         return promise
