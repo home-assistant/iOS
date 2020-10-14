@@ -94,7 +94,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 watchConnectivityTask = connectivityTask
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
-                Current.Log.verbose("Should rejoin URLSession! \(urlSessionTask.sessionIdentifier)")
                 Current.webhooks.handleBackground(for: urlSessionTask.sessionIdentifier) {
                     Current.backgroundRefreshScheduler.schedule().done {
                         urlSessionTask.setTaskCompletedWithSnapshot(false)
@@ -226,7 +225,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then {
-            $0.updateComplications()
+            $0.updateComplications(passively: true)
         }.recover { _ in
             ()
         }
