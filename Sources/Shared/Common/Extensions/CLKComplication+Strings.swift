@@ -1264,9 +1264,9 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    public var supportsRow2Alignment: Bool {
+    public var supportsColumn2Alignment: Bool {
         switch self {
-        case .ModularLargeColumns, .ModularLargeTable, .ExtraLargeColumnsText:
+        case .ModularLargeColumns, .ModularLargeTable, .ExtraLargeColumnsText, .ModularSmallColumnsText:
             return true
         default:
             return false
