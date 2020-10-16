@@ -52,10 +52,10 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         return firstly {
             result
         }.compactMap { result in
-            result as? [String: String]
+            result as? [String: Any]
         }.map { result in
             // turn the ["template|key": "value"] into ["template": ["key": "value"]]
-            result.reduce(into: [String: [String: String]]()) { accumulator, value in
+            result.reduce(into: [String: [String: Any]]()) { accumulator, value in
                 let components = value.key.components(separatedBy: "|")
                 guard components.count >= 2 else {
                     Current.Log.error("couldn't figure out naming for \(value.key)")

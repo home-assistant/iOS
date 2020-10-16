@@ -183,6 +183,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         <<< TextAreaRow {
             $0.tag = "gauge"
             $0.title = L10n.Watch.Configurator.Rows.Gauge.title
+            $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
             $0.add(rule: RuleRequired())
             if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
                 let value = gaugeDict[$0.tag!] as? String {
@@ -194,7 +195,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             $0.tag = "gauge_render_template"
             $0.title = L10n.previewOutput
             }.onCellSelection({ _, _ in
-                self.renderTemplateForRow(rowTag: "gauge")
+                self.renderTemplateForRow(rowTag: "gauge", expectingPercentile: true)
             })
 
         <<< InlineColorPickerRow("gauge_color") {
@@ -259,6 +260,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         <<< TextAreaRow {
             $0.tag = "ring_value"
             $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
+            $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
             $0.add(rule: RuleRequired())
             if let dict = self.config.Data["ring"] as? [String: Any],
                 let value = dict[$0.tag!] as? String {
@@ -270,7 +272,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             $0.tag = "ring_render_template"
             $0.title = L10n.previewOutput
         }.onCellSelection({ _, _ in
-            self.renderTemplateForRow(rowTag: "ring_value")
+            self.renderTemplateForRow(rowTag: "ring_value", expectingPercentile: true)
         })
 
         <<< SegmentedRow<String> {
@@ -379,44 +381,78 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
     }
 
-    func renderTemplateForRow(rowTag: String) {
+    func renderTemplateForRow(rowTag: String, expectingPercentile: Bool) {
         if let row = self.form.rowBy(tag: rowTag) as? TextAreaRow, let value = row.value {
             Current.Log.verbose("Render template from \(value)")
 
-            renderTemplateValue(value, row)
+            renderTemplateValue(value, row, expectingPercentile: expectingPercentile)
         }
     }
 
-    func renderTemplateForRow(row: BaseRow) {
+    func renderTemplateForRow(row: BaseRow, expectingPercentile: Bool) {
         if let value = row.baseValue as? String {
             Current.Log.verbose("Render template from \(value)")
 
-            renderTemplateValue(value, row)
+            renderTemplateValue(value, row, expectingPercentile: expectingPercentile)
         }
     }
 
-    func renderTemplateValue(_ value: String, _ row: BaseRow) {
-        HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
+    enum RenderValueError: LocalizedError {
+        case expectedFloat(value: Any)
+        case outOfRange(value: Float)
+
+        var errorDescription: String? {
+            switch self {
+            case .expectedFloat(value: let value):
+                return L10n.Watch.Configurator.PreviewError.notNumber(type(of: value), value)
+            case .outOfRange(value: let value):
+                return L10n.Watch.Configurator.PreviewError.outOfRange(value)
+            }
+        }
+    }
+
+    func renderTemplateValue(_ value: String, _ row: BaseRow, expectingPercentile: Bool) {
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then {
+            $0.RenderTemplate(templateStr: value)
+        }.get { result in
+            if expectingPercentile {
+                if let number = WatchComplication.percentileNumber(from: result) {
+                    if !(0...1 ~= number) {
+                        throw RenderValueError.outOfRange(value: number)
+                    }
+                } else {
+                    throw RenderValueError.expectedFloat(value: result)
+                }
+            }
+        }.done { [self] val in
             Current.Log.verbose("Rendered value is \(val)")
 
-            let alert = UIAlertController(title: L10n.previewOutput, message: val,
-                                          preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
-                                          handler: nil))
-            self.present(alert, animated: true, completion: nil)
-
-            alert.popoverPresentationController?.sourceView = row.baseCell.formViewController()?.view
-
-            }.catch { renderErr in
-                Current.Log.error("Error rendering template! \(renderErr)")
-                let alert = UIAlertController(title: L10n.errorLabel,
-                                              message: renderErr.localizedDescription,
-                                              preferredStyle: UIAlertController.Style.alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
-                                              handler: nil))
-                self.present(alert, animated: true, completion: nil)
-
-                alert.popoverPresentationController?.sourceView = row.baseCell.formViewController()?.view
+            let alert = UIAlertController(
+                title: L10n.previewOutput,
+                message: String(describing: val),
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: L10n.okLabel,
+                style: .default,
+                handler: nil
+            ))
+            present(alert, animated: true, completion: nil)
+        }.catch { [self] renderErr in
+            Current.Log.error("Error rendering template! \(renderErr)")
+            let alert = UIAlertController(
+                title: L10n.errorLabel,
+                message: renderErr.localizedDescription,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: L10n.okLabel,
+                style: .default,
+                handler: nil
+            ))
+            present(alert, animated: true, completion: nil)
         }
     }
 
@@ -451,7 +487,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         section.append(ButtonRow {
             $0.title = L10n.previewOutput
         }.onCellSelection({ _, _ in
-            self.renderTemplateForRow(row: textRow)
+            self.renderTemplateForRow(row: textRow, expectingPercentile: false)
         }))
 
         section.append(InlineColorPickerRow {

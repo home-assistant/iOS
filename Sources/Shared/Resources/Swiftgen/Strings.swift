@@ -2224,6 +2224,16 @@ public enum L10n {
 
   public enum Watch {
     public enum Configurator {
+      public enum PreviewError {
+        /// Expected a number but got %1$@: '%2$@'
+        public static func notNumber(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "watch.configurator.preview_error.not_number", String(describing: p1), String(describing: p2))
+        }
+        /// Expected a number between 0.0 and 1.0 but got %1$f
+        public static func outOfRange(_ p1: Float) -> String {
+          return L10n.tr("Localizable", "watch.configurator.preview_error.out_of_range", p1)
+        }
+      }
       public enum Rows {
         public enum Color {
           /// Color

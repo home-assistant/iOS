@@ -354,21 +354,39 @@ public class HomeAssistantAPI {
         )
     }
 
-    public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<String> {
-        let hookPayload: [String: [String: Any]] = ["tpl": ["template": templateStr, "variables": variables]]
-        let req: Promise<Any> = Current.webhooks.sendEphemeral(
-            request: .init(type: "render_template", data: hookPayload)
-        )
-        return req.then { (resp: Any) -> Promise<String> in
-            guard let jsonDict = resp as? [String: String] else {
-                return Promise.value("Error")
-            }
+    public enum TemplateError: LocalizedError {
+        case unknownError
+        case error(String)
 
-            guard let rendered = jsonDict["tpl"] else {
-                return Promise.value("Error")
+        public var errorDescription: String? {
+            switch self {
+            case .error(let error): return error
+            case .unknownError: return L10n.HaApi.ApiError.unknown
             }
+        }
+    }
 
-            return Promise.value(rendered)
+    public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<Any> {
+        return firstly { () -> Promise<Any> in
+            Current.webhooks.sendEphemeral(
+                request: .init(type: "render_template", data: [
+                    "tpl": [
+                        "template": templateStr,
+                        "variables": variables
+                    ]
+                ])
+            )
+        }.map { value in
+            if let value = value as? [String: Any], let rendered = value["tpl"] {
+                return rendered
+            } else {
+                throw TemplateError.unknownError
+            }
+        }.get { value in
+            if let value = value as? [String: Any], let error = value["error"] as? String {
+                // the only error response for the template is {"error": "message"}
+                throw TemplateError.error(error)
+            }
         }
     }
 

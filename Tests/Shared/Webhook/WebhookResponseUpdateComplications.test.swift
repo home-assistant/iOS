@@ -114,10 +114,10 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         handler.watchComplicationClass = FakeWatchComplication.self
 
         let request = WebhookResponseUpdateComplications.request(for: Set(complications))!
-        let result: [String: String] = [
+        let result: [String: Any] = [
             complications[0].Template.rawValue + "|fwc1k1": "rendered_fwc1v1",
             complications[0].Template.rawValue + "|fwc1k2": "rendered_fwc1v2",
-            complications[2].Template.rawValue + "|fwc3k1": "rendered_fwc3v1",
+            complications[2].Template.rawValue + "|fwc3k1": 3,
         ]
 
         let expectation = self.expectation(description: "result")
@@ -127,15 +127,23 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 10)
 
-        XCTAssertEqual(FakeWatchComplication.rawRenderedUpdates, [
-            complications[0].Template.rawValue: [
-                "fwc1k1": "rendered_fwc1v1",
-                "fwc1k2": "rendered_fwc1v2"
-            ],
-            complications[2].Template.rawValue: [
-                "fwc3k1": "rendered_fwc3v1"
-            ]
-        ])
+        let complication0Updates = FakeWatchComplication.rawRenderedUpdates[complications[0].Template.rawValue]
+        let complication2Updates = FakeWatchComplication.rawRenderedUpdates[complications[2].Template.rawValue]
+
+        XCTAssertEqual(
+            complication0Updates?["fwc1k1"] as? String,
+            "rendered_fwc1v1"
+        )
+
+        XCTAssertEqual(
+            complication0Updates?["fwc1k2"] as? String,
+            "rendered_fwc1v2"
+        )
+
+        XCTAssertEqual(
+            complication2Updates?["fwc3k1"] as? Int,
+            3
+        )
     }
 }
 
@@ -150,9 +158,9 @@ class FakeWatchComplication: WatchComplication {
         resultRawRendered
     }
 
-    static var rawRenderedUpdates: [String: [String: String]] = [:]
+    static var rawRenderedUpdates: [String: [String: Any]] = [:]
 
-    override func updateRawRendered(from response: [String : String]) {
+    override func updateRawRendered(from response: [String : Any]) {
         Self.rawRenderedUpdates[Template.rawValue] = response
     }
 }

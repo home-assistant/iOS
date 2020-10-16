@@ -206,7 +206,7 @@ extension IncomingURLHandler {
             }.then { api in
                 api.RenderTemplate(templateStr: template, variables: variablesDict)
             }.done { rendered in
-                success(["rendered": rendered])
+                success(["rendered": String(describing: rendered)])
             }.catch { error in
                 Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
