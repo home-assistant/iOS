@@ -161,9 +161,7 @@ public class WatchComplication: Object, ImmutableMappable {
         return renders.mapKeys { $0.stringValue }
     }
 
-    #if os(watchOS)
-
-    private static func percentileNumber(from value: Any) -> Float? {
+    static public func percentileNumber(from value: Any) -> Float? {
         switch value {
         case let value as String:
             // a bit more forgiving than Float(_:)
@@ -182,13 +180,15 @@ public class WatchComplication: Object, ImmutableMappable {
         }
     }
 
+    #if os(watchOS)
+
     public var textDataProviders: [String: CLKTextProvider] {
         var providers: [String: CLKTextProvider] = [String: CLKTextProvider]()
 
         if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
             let rendered = renderedValues()
             for (key, textArea) in textAreas {
-                let renderedText = rendered[.textArea(key)].flatMap(String(describing:))
+                let renderedText = rendered[.textArea(key)].flatMap(String.init(describing:))
 
                 guard let text = renderedText ?? textArea["text"] as? String else {
                     Current.Log.warning("TextArea \(key) doesn't have any text!")

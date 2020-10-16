@@ -358,7 +358,7 @@ public class HomeAssistantAPI {
         case unknownError
         case error(String)
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .error(let error): return error
             case .unknownError: return "unknown error"
