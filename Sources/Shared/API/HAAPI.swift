@@ -361,7 +361,7 @@ public class HomeAssistantAPI {
         public var errorDescription: String? {
             switch self {
             case .error(let error): return error
-            case .unknownError: return "unknown error"
+            case .unknownError: return L10n.HaApi.ApiError.unknown
             }
         }
     }
