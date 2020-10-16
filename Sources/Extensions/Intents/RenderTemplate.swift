@@ -53,7 +53,7 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
             Current.Log.verbose("Successfully renderedTemplate")
 
             let resp = RenderTemplateIntentResponse(code: .success, userActivity: nil)
-            resp.renderedTemplate = rendered
+            resp.renderedTemplate = String(describing: rendered)
 
             completion(resp)
         }.catch { error in

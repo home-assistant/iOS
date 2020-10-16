@@ -892,3 +892,5 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.configurator.rows.column_2_alignment.title" = "Column 2 Alignment";
 "watch.configurator.rows.column_2_alignment.options.leading" = "Leading";
 "watch.configurator.rows.column_2_alignment.options.trailing" = "Trailing";
+"watch.configurator.preview_error.not_number" = "Expected a number but got %1$@: '%2$@'";
+"watch.configurator.preview_error.out_of_range" = "Expected a number between 0.0 and 1.0 but got %1$f";
