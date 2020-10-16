@@ -25,10 +25,10 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     }
 
     static func request(for complications: Set<WatchComplication>) -> WebhookRequest? {
-        Current.Log.verbose("complications \(complications.map { $0.Template.rawValue })")
+        Current.Log.verbose("complications \(complications.map { $0.identifier })")
 
         let templates = complications.reduce(into: [String: [String: String]]()) { payload, complication in
-            let keyPrefix = "\(complication.Template.rawValue)|"
+            let keyPrefix = "\(complication.identifier)|"
 
             payload.merge(
                 complication.rawRendered()
@@ -54,7 +54,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         }.compactMap { result in
             result as? [String: Any]
         }.map { result in
-            // turn the ["template|key": "value"] into ["template": ["key": "value"]]
+            // turn the ["identifier|key": "value"] into ["identifier": ["key": "value"]]
             result.reduce(into: [String: [String: Any]]()) { accumulator, value in
                 let components = value.key.components(separatedBy: "|")
                 guard components.count >= 2 else {
@@ -65,15 +65,14 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             }
         }.then { paired -> Promise<Void> in
             let realm = Current.realm()
-            let base = realm.objects(watchComplicationClass)
 
             try realm.write {
-                for (template, rendered) in paired {
-                    if let complication = base.filter("rawTemplate == %@", template).first {
-                        Current.Log.verbose("updating \(template) with \(rendered)")
+                for (identifier, rendered) in paired {
+                    if let complication = realm.object(ofType: watchComplicationClass, forPrimaryKey: identifier) {
+                        Current.Log.verbose("updating \(identifier) with \(rendered)")
                         complication.updateRawRendered(from: rendered)
                     } else {
-                        Current.Log.error("couldn't find complication for \(template)")
+                        Current.Log.error("couldn't find complication for \(identifier)")
                     }
                 }
             }
@@ -85,6 +84,10 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
 
             server.activeComplications?.forEach {
                 server.reloadTimeline(for: $0)
+            }
+
+            if #available(watchOS 7, *) {
+                server.reloadComplicationDescriptors()
             }
             #else
             _ = HomeAssistantAPI.SyncWatchContext()
