@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Opnieuw beginnen";
 "7iT-bd-cdY.text" = "Handmatige configuratie";
 "PIW-dY-j0P.text" = "Voer je Home Assistant URL in om door te gaan. Het moet een volledig gevormde URL zijn van het formaat \"http://homeassistant.local:8123\" (dat een schema / protocol, hostnaam en poort bevat).";
-"xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "bijv. http: //homeassistant.local:8123/";

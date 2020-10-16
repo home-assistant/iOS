@@ -305,6 +305,18 @@ public class WatchComplication: Object, ImmutableMappable {
         return (fraction: fraction, style: style, color: color)
     }
 
+    public var column2Alignment: CLKComplicationColumnAlignment {
+        let alignment: CLKComplicationColumnAlignment
+
+        if let info = Data["column2alignment"] as? [String: String], let value = info["column2alignment"] {
+            alignment = value.lowercased() == "leading" ? .leading : .trailing
+        } else {
+            alignment = .leading
+        }
+
+        return alignment
+    }
+
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func CLKComplicationTemplate(family: CLKComplicationFamily) -> CLKComplicationTemplate? {
         if self.Template.groupMember != ComplicationGroupMember(family: family) {
@@ -401,6 +413,7 @@ public class WatchComplication: Object, ImmutableMappable {
             if let textProvider = self.textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             }
+            template.column2Alignment = column2Alignment
             return template
         case .ExtraLargeRingText:
             let template = CLKComplicationTemplateExtraLargeRingText()
@@ -466,6 +479,7 @@ public class WatchComplication: Object, ImmutableMappable {
             if let textProvider = self.textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             }
+            template.column2Alignment = column2Alignment
             return template
         case .ModularSmallRingText:
             let template = CLKComplicationTemplateModularSmallRingText()
@@ -527,6 +541,7 @@ public class WatchComplication: Object, ImmutableMappable {
             if let textProvider = self.textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             }
+            template.column2Alignment = column2Alignment
             return template
         case .ModularLargeTable:
             let template = CLKComplicationTemplateModularLargeTable()
@@ -545,6 +560,7 @@ public class WatchComplication: Object, ImmutableMappable {
             if let textProvider = self.textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             }
+            template.column2Alignment = column2Alignment
             return template
         case .UtilitarianSmallFlat:
             let template = CLKComplicationTemplateUtilitarianSmallFlat()

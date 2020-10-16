@@ -9,7 +9,7 @@
 "7NpJ76-0cl84c" = "Sijainti päivitetty leikepöydän sisällöltä, joka jäsennettiin Tallennetuksi arvoksi";
 "7NpJ76-50P1YJ" = "Sijainti päivitetty leikepöydän sisällöltä, joka jäsennettiin osoitteeksi";
 "7NpJ76-dC8g33" = "Sijainti päivitetty leikepöydän sisällöltä, joka jäsennettiin koordinaatteiksi";
-"8BMgur" = "${EventName} lähetettiin onnistuneesti Home Assistanttiin";
+"8BMgur" = "${eventName} lähetettiin onnistuneesti Home Assistanttiin";
 "B4bXyc" = "Mallin hahmottuminen onnistui";
 "CiB3s6" = "Pyydä palvelua ${serviceDomain}.${service} leikepöydän tiedoilla";
 "FBQiVD" = "Pyydä palvelua kotiavustajailmentymältä";
@@ -27,7 +27,7 @@
 "QFNpIx" = "Lähetä ${location} Kotiavustajalle";
 "RMQY3r" = "Lähetä sijaintia Kotiavustajalle";
 "SGxPSB" = "${serviceDescription}";
-"VEQtEQ" = "Hae kuvaa kameralta $ {cameraID}";
+"VEQtEQ" = "Hae kuvaa kameralta ${cameraID}";
 "VGzL7U" = "Sijaintia ei voitu päivittää, leikepöydän sisältöä ei voitu jäsentää";
 "WXKbGy" = "Lähetä sijainti Kotiavustajalle. Leikepöydän sisältöä yritetään käyttää sijainniksi, muuten käytetään nykyistä sijaintia.";
 "ZwJ0Xx" = "Hahmota tekstiä mikä löytyi leikepöydältä";

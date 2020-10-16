@@ -9,3 +9,4 @@
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
 "NSCameraUsageDescription" = "Nimm Fotos auf und sende sie an deinen Home Assistant Server.";
+"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";

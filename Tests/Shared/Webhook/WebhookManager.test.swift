@@ -577,6 +577,30 @@ class WebhookManagerTests: XCTestCase {
         }
     }
 
+    func testSendPersistentPassively() throws {
+        let request = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        let networkExpectation = expectation(description: "network was invoked")
+        let networkSemaphore = DispatchSemaphore(value: 0)
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { _ in
+            networkSemaphore.wait()
+            networkExpectation.fulfill()
+            return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
+        })
+
+        let promise = manager.sendPassive(identifier: .unhandled, request: request)
+
+        // it should be complete before the network call completes, so wait for its signal before finishing the network
+        XCTAssertNoThrow(try hang(promise))
+
+        // clean up the semaphore we're using to block the network
+        networkSemaphore.signal()
+
+        // but we do want to make sure the network call actually took place
+        wait(for: [networkExpectation], timeout: 10.0)
+    }
+
     private func sendDidFinishEvents(for sessionInfo: WebhookSessionInfo) {
         sessionInfo.session.delegateQueue.addOperation {
             sessionInfo.session.delegate?.urlSessionDidFinishEvents?(forBackgroundURLSession: sessionInfo.session)

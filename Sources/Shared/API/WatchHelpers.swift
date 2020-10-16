@@ -76,7 +76,7 @@ extension HomeAssistantAPI {
         return nil
     }
 
-    public func updateComplications() -> Promise<Void> {
+    public func updateComplications(passively: Bool) -> Promise<Void> {
         let complications = Set(Current.realm().objects(WatchComplication.self))
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
@@ -84,9 +84,10 @@ extension HomeAssistantAPI {
             return .value(())
         }
 
-        return Current.webhooks.send(
-            identifier: .updateComplications,
-            request: request
-        )
+        if passively {
+            return Current.webhooks.sendPassive(identifier: .updateComplications, request: request)
+        } else {
+            return Current.webhooks.send(identifier: .updateComplications, request: request)
+        }
     }
 }

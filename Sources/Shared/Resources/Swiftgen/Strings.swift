@@ -2229,6 +2229,16 @@ public enum L10n {
           /// Color
           public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.color.title") }
         }
+        public enum Column2Alignment {
+          /// Column 2 Alignment
+          public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.column_2_alignment.title") }
+          public enum Options {
+            /// Leading
+            public static var leading: String { return L10n.tr("Localizable", "watch.configurator.rows.column_2_alignment.options.leading") }
+            /// Trailing
+            public static var trailing: String { return L10n.tr("Localizable", "watch.configurator.rows.column_2_alignment.options.trailing") }
+          }
+        }
         public enum FractionalValue {
           /// Fractional value
           public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.fractional_value.title") }

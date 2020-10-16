@@ -95,7 +95,7 @@
 "about.documentation.title" = "Documentation";
 "about.home_assistant_on_twitter.title" = "Home Assistant on Twitter";
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
-"about.github.title" = "";
+"about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
 "url_handler.error.title" = "Error";
 "url_handler.no_service.message" = "%@ is not a valid route";

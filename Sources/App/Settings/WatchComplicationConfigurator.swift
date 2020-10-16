@@ -59,7 +59,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             Current.Log.error(error)
         }
 
-        HomeAssistantAPI.authenticatedAPI()?.updateComplications().cauterize()
+        HomeAssistantAPI.authenticatedAPI()?.updateComplications(passively: false).cauterize()
 
         onDismissCallback?(self)
     }
@@ -147,19 +147,29 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         self.form
 
         +++ Section {
-            $0.tag = "row2alignment"
+            $0.tag = "column2alignment"
             $0.hidden = .function([], { [weak self] _ in
-                return self?.displayTemplate.supportsRow2Alignment == false
+                return self?.displayTemplate.supportsColumn2Alignment == false
             })
         }
 
         <<< SegmentedRow<String> {
-            $0.tag = "row2alignment"
-            $0.title = L10n.Watch.Configurator.Rows.Row2Alignment.title
+            $0.tag = "column2alignment"
+            $0.title = L10n.Watch.Configurator.Rows.Column2Alignment.title
             $0.add(rule: RuleRequired())
-            $0.options = [L10n.Watch.Configurator.Rows.Row2Alignment.Options.leading,
-                          L10n.Watch.Configurator.Rows.Row2Alignment.Options.trailing]
+            $0.options = ["leading", "trailing"]
+            $0.displayValueFor = {
+                if $0?.lowercased() == "leading" {
+                    return L10n.Watch.Configurator.Rows.Column2Alignment.Options.leading
+                } else {
+                    return L10n.Watch.Configurator.Rows.Column2Alignment.Options.trailing
+                }
+            }
             $0.value = $0.options?.first
+            if let info = self.config.Data["column2alignment"] as? [String: Any],
+                let value = info[$0.tag!] as? String {
+                $0.value = value
+            }
         }
 
         +++ Section(header: L10n.Watch.Configurator.Sections.Gauge.header,
@@ -204,8 +214,14 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             $0.tag = "gauge_type"
             $0.title = L10n.Watch.Configurator.Rows.Gauge.GaugeType.title
             $0.add(rule: RuleRequired())
-            $0.options = [L10n.Watch.Configurator.Rows.Gauge.GaugeType.Options.open,
-                          L10n.Watch.Configurator.Rows.Gauge.GaugeType.Options.closed]
+            $0.options = ["open", "closed"]
+            $0.displayValueFor = {
+                if $0?.lowercased() == "open" {
+                    return L10n.Watch.Configurator.Rows.Gauge.GaugeType.Options.open
+                } else {
+                    return L10n.Watch.Configurator.Rows.Gauge.GaugeType.Options.closed
+                }
+            }
             $0.value = $0.options?.first
             if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
                 let value = gaugeDict[$0.tag!] as? String {
@@ -217,8 +233,14 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
             $0.tag = "gauge_style"
             $0.title = L10n.Watch.Configurator.Rows.Gauge.Style.title
             $0.add(rule: RuleRequired())
-            $0.options = [L10n.Watch.Configurator.Rows.Gauge.Style.Options.fill,
-                          L10n.Watch.Configurator.Rows.Gauge.Style.Options.ring]
+            $0.options = ["fill", "ring"]
+            $0.displayValueFor = {
+                if $0?.lowercased() == "fill" {
+                    return L10n.Watch.Configurator.Rows.Gauge.Style.Options.fill
+                } else {
+                    return L10n.Watch.Configurator.Rows.Gauge.Style.Options.ring
+                }
+            }
             $0.value = $0.options?.first
             if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
                 let value = gaugeDict[$0.tag!] as? String {

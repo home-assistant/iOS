@@ -9,3 +9,4 @@
 "NSLocalNetworkUsageDescription" = "Finn og kommuniser med Home Assistant-forekomsten.";
 "NFCReaderUsageDescription" = "Å lese og skrive NFC-tagger lar deg utløse hendelser.";
 "NSCameraUsageDescription" = "Ta bilder og send dem til Home Assistant-serveren.";
+"NSCrossWebsiteTrackingUsageDescription" = "Du kan eventuelt aktivere sporing på tvers av nettsteder hvis konfigurasjonen krever det.";
