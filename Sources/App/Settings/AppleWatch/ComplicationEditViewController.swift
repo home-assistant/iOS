@@ -142,7 +142,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
         }
 
         <<< TextRow("name") {
-            $0.title = "Display Name"
+            $0.title = L10n.Watch.Configurator.Rows.DisplayName.title
             $0.placeholder = self.config.Family.name
             $0.value = self.config.name
         }

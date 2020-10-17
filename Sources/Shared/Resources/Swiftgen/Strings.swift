@@ -2269,6 +2269,10 @@ public enum L10n {
             public static var trailing: String { return L10n.tr("Localizable", "watch.configurator.rows.column_2_alignment.options.trailing") }
           }
         }
+        public enum DisplayName {
+          /// Display Name
+          public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.display_name.title") }
+        }
         public enum FractionalValue {
           /// Fractional value
           public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.fractional_value.title") }
