@@ -343,7 +343,7 @@ public enum ComplicationGroupMember: String, Comparable {
     public var errorTemplate: CLKComplicationTemplate {
         let logoImage = UIImage(named: "RoundLogo")!
         let templateImage = UIImage(named: "TemplateLogo")!
-        let hassColor = UIColor(red: 0.25, green: 0.74, blue: 0.96, alpha: 1.0)
+        let hassColor = Constants.tintColor
 
         switch self {
         case .circularSmall:
@@ -997,7 +997,7 @@ public enum ComplicationTemplate: String {
 
     // https://gist.github.com/robbiet480/2a38d499323cb964d47b2f5d8004694a
     public var imageSize: CGSize? {
-        // Template: Device Size: Image Size @1x
+        // Template: Device Size: Image Size @2x in pixels -- odd format, but what Apple's docs use
         let imageSizes: [Self: [Int: CGSize]] = [
             .CircularSmallRingImage: [
                 38: CGSize(width: 40, height: 40),
@@ -1056,8 +1056,8 @@ public enum ComplicationTemplate: String {
             .UtilitarianSmallFlat: [
                 38: CGSize(width: 42, height: 18),
                 40: CGSize(width: 44, height: 20),
-                42: CGSize(width: 44, height: 20)
-                // 44: CGSize(width: 20, height: 20) -- 44mm is marked "N/A" in HIG
+                42: CGSize(width: 44, height: 20),
+                44: CGSize(width: 49, height: 22)
             ],
             .UtilitarianSmallRingImage: [
                 38: CGSize(width: 28, height: 28),
@@ -1074,8 +1074,8 @@ public enum ComplicationTemplate: String {
             .UtilitarianLargeFlat: [
                 38: CGSize(width: 42, height: 18),
                 40: CGSize(width: 44, height: 20),
-                42: CGSize(width: 44, height: 20)
-                // 44: CGSize(width: 20, height: 20) -- 44mm is marked "N/A" in HIG
+                42: CGSize(width: 44, height: 20),
+                44: CGSize(width: 49, height: 22)
             ],
             .ExtraLargeRingImage: [
                 38: CGSize(width: 126, height: 126),
@@ -1112,24 +1112,24 @@ public enum ComplicationTemplate: String {
                 44: CGSize(width: 94, height: 94)
             ],
             .GraphicCircularClosedGaugeImage: [
-                40: CGSize(width: 54, height: 54),
-                44: CGSize(width: 62, height: 62)
+                40: CGSize(width: 28, height: 28),
+                44: CGSize(width: 32, height: 32)
             ],
             .GraphicCircularOpenGaugeImage: [
-                40: CGSize(width: 22, height: 22),
-                44: CGSize(width: 24, height: 24)
+                40: CGSize(width: 44, height: 44),
+                44: CGSize(width: 48, height: 48)
             ],
             .GraphicBezelCircularText: [
-                40: CGSize(width: 42, height: 42),
-                44: CGSize(width: 47, height: 47)
+                40: CGSize(width: 84, height: 84),
+                44: CGSize(width: 94, height: 94)
             ],
             .GraphicRectangularLargeImage: [
                 40: CGSize(width: 300, height: 94),
                 44: CGSize(width: 342, height: 108)
             ],
             .GraphicRectangularStandardBody: [
-                40: CGSize(width: 24, height: 24),
-                44: CGSize(width: 27, height: 27)
+                40: CGSize(width: 48, height: 48),
+                44: CGSize(width: 54, height: 54)
             ],
             .GraphicRectangularTextGauge: [
                 40: CGSize(width: 24, height: 24),
@@ -1139,68 +1139,9 @@ public enum ComplicationTemplate: String {
 
         let deviceSize = WKInterfaceDevice.currentResolution().rawValue
 
-        if let sizeDict = imageSizes[self], let size = sizeDict[deviceSize] {
-            return size
-        }
-
-        return nil
-    }
-
-    public var placeholderImageSize: CGSize? {
-        // Template: Device Size: Image Size @1x
-        let imageSizes: [String: [Int: CGSize]] = [
-            "circularSmall": [
-                38: CGSize(width: 32, height: 32),
-                40: CGSize(width: 36, height: 36),
-                42: CGSize(width: 36, height: 36),
-                44: CGSize(width: 40, height: 40)
-            ],
-            "extraLarge": [
-                38: CGSize(width: 156, height: 156),
-                40: CGSize(width: 174, height: 174),
-                42: CGSize(width: 174, height: 174),
-                44: CGSize(width: 192, height: 192)
-            ],
-            "modular": [
-                38: CGSize(width: 52, height: 52),
-                40: CGSize(width: 58, height: 58),
-                42: CGSize(width: 58, height: 58),
-                44: CGSize(width: 64, height: 64)
-            ],
-            "utilitarian": [
-                38: CGSize(width: 40, height: 40),
-                40: CGSize(width: 44, height: 44),
-                42: CGSize(width: 44, height: 44),
-                44: CGSize(width: 50, height: 50)
-            ],
-            "graphicCorner": [
-                40: CGSize(width: 40, height: 40),
-                44: CGSize(width: 44, height: 44)
-            ],
-            "graphicCircular": [
-                40: CGSize(width: 84, height: 84),
-                44: CGSize(width: 94, height: 94)
-            ],
-            "graphicBezel": [
-                40: CGSize(width: 84, height: 84),
-                44: CGSize(width: 94, height: 94)
-            ],
-            "graphicRectangular": [
-                40: CGSize(width: 300, height: 94),
-                44: CGSize(width: 342, height: 108)
-            ]
-        ]
-
-        let deviceSize = WKInterfaceDevice.currentResolution().rawValue
-
-        var key: String = self.group.rawValue
-
-        if self.group == .graphic {
-            key = self.groupMember.rawValue
-        }
-
-        if let sizeDict = imageSizes[key], let size = sizeDict[deviceSize] {
-            return size
+        if let sizeDict = imageSizes[self], let size = sizeDict[deviceSize] ?? sizeDict[40] {
+            // image sizes are in pixels at 2x, so we need to downsize to points
+            return CGSize(width: size.width / 2.0, height: size.height / 2.0)
         }
 
         return nil
