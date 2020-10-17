@@ -54,6 +54,8 @@
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensors.swift */; };
+		1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F531253A1E7400F371BE /* ComplicationListViewController.swift */; };
+		1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */; };
 		11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
@@ -599,7 +601,7 @@
 		B6AAD7A81D827DD40090B220 /* Extensions-NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E69F216A940700D39A26 /* ActionRow.swift */; };
 		B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */; };
-		B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */; };
+		B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */; };
 		B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
 		B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
 		B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
@@ -915,6 +917,8 @@
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		112B705A2526B1C500FEAA76 /* UpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensors.swift; sourceTree = "<group>"; };
+		1130F531253A1E7400F371BE /* ComplicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationListViewController.swift; sourceTree = "<group>"; };
+		1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectViewController.swift; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
 		11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.swift; sourceTree = "<group>"; };
 		113D04E124D76CD3003CE877 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -1468,7 +1472,7 @@
 		B6B2E69F216A940700D39A26 /* ActionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRow.swift; sourceTree = "<group>"; };
 		B6B2E6A1216AC21400D39A26 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionConfigurator.swift; sourceTree = "<group>"; };
-		B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchComplicationConfigurator.swift; sourceTree = "<group>"; };
+		B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationEditViewController.swift; sourceTree = "<group>"; };
 		B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLKComplication+Strings.swift"; sourceTree = "<group>"; };
 		B6B6B14E215B6866003DE2DD /* WatchComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplication.swift; sourceTree = "<group>"; };
 		B6C0911E2151F90300A326DC /* LocationHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationHistory.swift; sourceTree = "<group>"; };
@@ -1800,6 +1804,16 @@
 				B657A90A1CA646EB00121384 /* UI */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		1130F530253A1E6400F371BE /* AppleWatch */ = {
+			isa = PBXGroup;
+			children = (
+				1130F531253A1E7400F371BE /* ComplicationListViewController.swift */,
+				1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */,
+				B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */,
+			);
+			path = AppleWatch;
 			sourceTree = "<group>";
 		};
 		1141182824AFA0F000E6525C /* Request&Response */ = {
@@ -2513,6 +2527,7 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				1130F530253A1E6400F371BE /* AppleWatch */,
 				11AD2E2B2528FDEB00FBC437 /* Observation */,
 				11AD2E1C2528FD6F00FBC437 /* Eureka */,
 				1161C01924D7633700A0E3C4 /* NFC */,
@@ -2520,7 +2535,6 @@
 				11AD2E392528FDF800FBC437 /* Connection */,
 				11AD2E542528FE1300FBC437 /* Notifications */,
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
-				B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */,
 				B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */,
 				B661FB69226BBDA900E541DD /* SettingsViewController.swift */,
 				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
@@ -4400,6 +4414,7 @@
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
+				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
@@ -4412,6 +4427,7 @@
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
+				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
@@ -4421,7 +4437,7 @@
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
 				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
-				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
+				B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */,
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,

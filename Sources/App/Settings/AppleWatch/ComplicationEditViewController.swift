@@ -1,5 +1,5 @@
 //
-//  WatchComplicationConfigurator.swift
+//  ComplicationEditViewController.swift
 //  HomeAssistant
 //
 //  Created by Robert Trencheny on 9/25/18.
@@ -15,7 +15,7 @@ import ObjectMapper
 import ColorPickerRow
 
 // swiftlint:disable:next type_body_length
-class WatchComplicationConfigurator: FormViewController, TypedRowControllerType {
+class ComplicationEditViewController: FormViewController, TypedRowControllerType {
 
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
@@ -48,12 +48,17 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         do {
             let realm = Current.realm()
             try realm.write {
-                self.config.Template = displayTemplate
-                self.config.Data = getValuesGroupedBySection()
+                if let name = (form.rowBy(tag: "name") as? TextRow)?.value, name.isEmpty == false {
+                    config.name = name
+                } else {
+                    config.name = nil
+                }
+                config.Template = displayTemplate
+                config.Data = getValuesGroupedBySection()
 
-                Current.Log.verbose("COMPLICATION \(self.config) \(self.config.Data)")
+                Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
 
-                realm.add(self.config, update: .all)
+                realm.add(config, update: .all)
             }
         } catch {
             Current.Log.error(error)
@@ -62,6 +67,37 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         HomeAssistantAPI.authenticatedAPI()?.updateComplications(passively: false).cauterize()
 
         onDismissCallback?(self)
+    }
+
+    @objc private func deleteComplication(_ sender: UIView) {
+        precondition(config.realm != nil)
+
+        let alert = UIAlertController(
+            title: L10n.Watch.Configurator.Delete.title,
+            message: L10n.Watch.Configurator.Delete.message,
+            preferredStyle: .actionSheet
+        )
+        with(alert.popoverPresentationController) {
+            $0?.sourceView = sender
+            $0?.sourceRect = sender.bounds
+        }
+        alert.addAction(UIAlertAction(
+                            title: L10n.Watch.Configurator.Delete.button, style: .destructive, handler: { [config] _ in
+            let realm = Current.realm()
+            do {
+                try realm.write {
+                    realm.delete(config)
+                }
+            } catch {
+                Current.Log.error(error)
+            }
+
+            HomeAssistantAPI.authenticatedAPI()?.updateComplications(passively: false).cauterize()
+
+            self.onDismissCallback?(self)
+        }))
+        alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
@@ -103,6 +139,12 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
 
         +++ Section {
             $0.tag = "template"
+        }
+
+        <<< TextRow("name") {
+            $0.title = L10n.Watch.Configurator.Rows.DisplayName.title
+            $0.placeholder = self.config.Family.name
+            $0.value = self.config.name
         }
 
         <<< PushRow<ComplicationTemplate> {
@@ -372,8 +414,29 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
                 }
             }
 
-        reloadForm()
+        +++ Section { [config] section in
+            section.tag = "delete"
 
+            if config.realm == nil {
+                // don't need to show a delete button for an unpersisted complication
+                section.hidden = true
+            }
+        }
+        <<< ButtonRow {
+            $0.title = L10n.Watch.Configurator.Delete.button
+            $0.onCellSelection { [weak self] cell, _ in
+                self?.deleteComplication(cell)
+            }
+            $0.cellUpdate { cell, _ in
+                if #available(iOS 13, *) {
+                    cell.textLabel?.textColor = .systemRed
+                } else {
+                    cell.textLabel?.textColor = .red
+                }
+            }
+        }
+
+        reloadForm()
     }
 
     @objc
@@ -528,7 +591,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         var textAreasDict: [String: [String: Any]] = [:]
 
         for row in self.form.allRows {
-            if row.section!.isHidden || row.section!.tag == "template" {
+            if row.section!.isHidden || row.section!.tag == "template" || row.section!.tag == "delete" {
                 continue
             }
 

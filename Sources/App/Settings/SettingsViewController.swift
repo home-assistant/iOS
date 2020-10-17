@@ -140,11 +140,9 @@ class SettingsViewController: FormViewController {
             $0.hidden = .isCatalyst
             $0.title = L10n.Settings.DetailsSection.WatchRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "watch"
-                return view
+                return ComplicationListViewController()
             }, onDismiss: { _ in
-                
+
             })
         }
 

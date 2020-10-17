@@ -47,6 +47,7 @@ extension HomeAssistantAPI {
 
         content["activeFamilies"] = activeFamilies
         content["watchModel"] = Current.device.systemModel()
+        content["watchVersion"] = Current.device.systemVersion()
 
         #endif
 
@@ -77,10 +78,23 @@ extension HomeAssistantAPI {
     }
 
     public func updateComplications(passively: Bool) -> Promise<Void> {
+        #if os(iOS)
+        guard Communicator.shared.currentWatchState.isPaired else {
+            Current.Log.verbose("skipping complication updates; no paired watch")
+            return .value(())
+        }
+        #endif
+
         let complications = Set(Current.realm().objects(WatchComplication.self))
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
+
+            #if os(iOS)
+            // in case the user deleted the last complication, sync that fact up to the watch
+            _ = HomeAssistantAPI.SyncWatchContext()
+            #endif
+
             return .value(())
         }
 

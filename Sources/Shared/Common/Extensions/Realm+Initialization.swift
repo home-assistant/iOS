@@ -77,7 +77,7 @@ extension Realm {
         // 12 - 2020-08-16 v2020.6 (mdi upgrade/migration to 5.x)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 12,
+            schemaVersion: 13,
             migrationBlock: { migration, oldVersion in
                 Current.Log.info("migrating from \(oldVersion)")
                 if oldVersion < 9 {
@@ -133,6 +133,16 @@ extension Realm {
                                 newObject?[dataKey] = newData
                             }
                         }
+                    }
+                }
+
+                if oldVersion < 13 {
+                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
+                        // initially creating these with their old family name
+                        // this is so we migrate them to have identical names on both watch and phone, independently
+                        // since future objects are created with a UUID-based identifier, this won't be an issue
+                        // we also need to reference them by family for complications configured prior to watchOS 7
+                        newObject!["identifier"] = newObject!["rawFamily"]
                     }
                 }
             },

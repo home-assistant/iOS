@@ -14,12 +14,16 @@ import ClockKit
 #endif
 
 // swiftlint:disable cyclomatic_complexity type_body_length file_length
-public enum ComplicationGroup: String {
+public enum ComplicationGroup: String, Comparable {
     case circularSmall
     case extraLarge
     case graphic
     case modular
     case utilitarian
+
+    public static func < (lhs: ComplicationGroup, rhs: ComplicationGroup) -> Bool {
+        lhs.name < rhs.name
+    }
 
     public var name: String {
         switch self {
@@ -71,7 +75,7 @@ public enum ComplicationGroup: String {
 
 extension ComplicationGroup: CaseIterable {}
 
-public enum ComplicationGroupMember: String {
+public enum ComplicationGroupMember: String, Comparable {
     case circularSmall
     case extraLarge
     case graphicBezel
@@ -83,6 +87,10 @@ public enum ComplicationGroupMember: String {
     case utilitarianLarge
     case utilitarianSmall
     case utilitarianSmallFlat
+
+    public static func < (lhs: ComplicationGroupMember, rhs: ComplicationGroupMember) -> Bool {
+        lhs.name < rhs.name
+    }
 
     public init(name: String) {
         switch name {
@@ -332,9 +340,7 @@ public enum ComplicationGroupMember: String {
     }
 
     #if os(watchOS)
-    public var errorTemplate: CLKComplicationTemplate? {
-        MaterialDesignIcons.register()
-
+    public var errorTemplate: CLKComplicationTemplate {
         let logoImage = UIImage(named: "RoundLogo")!
         let templateImage = UIImage(named: "TemplateLogo")!
         let hassColor = UIColor(red: 0.25, green: 0.74, blue: 0.96, alpha: 1.0)

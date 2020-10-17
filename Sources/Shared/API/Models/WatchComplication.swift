@@ -17,6 +17,8 @@ import ClockKit
 
 // swiftlint:disable:next type_body_length
 public class WatchComplication: Object, ImmutableMappable {
+    @objc public dynamic var identifier: String = UUID().uuidString
+
     @objc private dynamic var rawFamily: String = ""
     public var Family: ComplicationGroupMember {
         get {
@@ -68,8 +70,13 @@ public class WatchComplication: Object, ImmutableMappable {
     @objc fileprivate dynamic var complicationData: Data?
     @objc dynamic public var CreatedAt = Date()
 
+    @objc dynamic public var name: String?
+    public var displayName: String {
+        name ?? Template.style
+    }
+
     override public static func primaryKey() -> String? {
-        return "rawFamily"
+        return "identifier"
     }
 
     override public static func ignoredProperties() -> [String] {
@@ -84,16 +91,20 @@ public class WatchComplication: Object, ImmutableMappable {
         // this is used for watch<->app syncing
         self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         super.init()
-        self.Template  = try map.value("Template")
-        self.Data      = try map.value("Data")
-        self.Family    = try map.value("Family")
+        self.Template = try map.value("Template")
+        self.Data = try map.value("Data")
+        self.Family = try map.value("Family")
+        self.identifier = try map.value("identifier")
+        self.name = try map.value("name")
     }
 
     public func mapping(map: Map) {
-        Template  >>> map["Template"]
-        Data      >>> map["Data"]
+        Template >>> map["Template"]
+        Data >>> map["Data"]
         CreatedAt >>> (map["CreatedAt"], DateTransform())
-        Family    >>> map["Family"]
+        Family >>> map["Family"]
+        identifier >>> map["identifier"]
+        name >>> map["name"]
     }
 
     enum RenderedValueType: Hashable {
@@ -181,6 +192,17 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     #if os(watchOS)
+
+    @available(watchOS 7.0, *)
+    public var complicationDescriptor: CLKComplicationDescriptor {
+        CLKComplicationDescriptor(
+            identifier: identifier,
+            displayName: displayName,
+            supportedFamilies: [
+                Family.family
+            ]
+        )
+    }
 
     public var textDataProviders: [String: CLKTextProvider] {
         var providers: [String: CLKTextProvider] = [String: CLKTextProvider]()

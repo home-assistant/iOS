@@ -16,70 +16,76 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
-    // MARK: - Timeline Configuration
+    private func template(for complication: CLKComplication) -> CLKComplicationTemplate? {
+        let model: WatchComplication?
 
-    func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler
-        handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
-        handler([])
+        if #available(watchOS 7, *), complication.identifier != CLKDefaultComplicationIdentifier {
+            // existing complications that were configured pre-7 have no identifier set
+            // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
+            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: complication.identifier)
+        } else {
+            // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
+            // with the family as the identifier, so we can rely on this code path for older OS and older complications
+            let matchedFamily = ComplicationGroupMember(family: complication.family)
+            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: matchedFamily.rawValue)
+        }
+
+        return model?.CLKComplicationTemplate(family: complication.family)
     }
 
-    func getPrivacyBehavior(for complication: CLKComplication,
-                            withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void) {
+    // MARK: - Timeline Configuration
+
+    func getPrivacyBehavior(
+        for complication: CLKComplication,
+        withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void
+    ) {
         handler(.showOnLockScreen)
     }
 
     // MARK: - Timeline Population
 
-    func getCurrentTimelineEntry(for complication: CLKComplication,
-                                 withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
-        // Call the handler with the current timeline entry
-
+    func getCurrentTimelineEntry(
+        for complication: CLKComplication,
+        withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void
+    ) {
         Iconic.registerMaterialDesignIcons()
 
-        Current.Log.verbose("Providing template for \(complication.family.description)")
-
-        let matchedFamily = ComplicationGroupMember(family: complication.family)
-
-        guard let date = Date().encodedForComplication(family: complication.family) else {
-            Current.Log.warning("Unable to generate complication family specific date, returning family specific error")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
-            return
+        Current.Log.verbose {
+            if #available(watchOS 7, *) {
+                return "Providing template for \(complication.identifier) family \(complication.family.description)"
+            } else {
+                return "Providing template for \(complication.family.description)"
+            }
         }
 
-        let fallback = CLKComplicationTimelineEntry(date: date, complicationTemplate: matchedFamily.errorTemplate!)
+        let template: CLKComplicationTemplate
 
-        let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
-        guard let config = Realm.live().objects(WatchComplication.self).filter(pred).first else {
-            // swiftlint:disable:next line_length
-            Current.Log.warning("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
-            handler(fallback)
-            return
+        if let fromComplication = self.template(for: complication) {
+            template = fromComplication
+        } else {
+            Current.Log.error("failed to get template, providing error")
+            template = ComplicationGroupMember(family: complication.family).errorTemplate
         }
 
-        Current.Log.verbose("complicationObjects \(config)")
-
-        guard let template = config.CLKComplicationTemplate(family: complication.family) else {
-            // swiftlint:disable:next line_length
-            Current.Log.warning("Unable to generate template for \(matchedFamily.rawValue), returning family specific error")
-            handler(fallback)
-            return
-        }
-
-        Current.Log.verbose("Generated template for \(complication.family.rawValue), \(template)")
-
-        handler(CLKComplicationTimelineEntry(date: date, complicationTemplate: template))
+        let date = Date().encodedForComplication(family: complication.family) ?? Date()
+        handler(.init(date: date, complicationTemplate: template))
     }
 
     // MARK: - Placeholder Templates
 
-    func getLocalizableSampleTemplate(for complication: CLKComplication,
-                                      withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
-        // This method will be called once per supported complication, and the results will be cached
-
-        // Current.Log.verbose("Get sample template!", ComplicationGroupMember(family: complication.family))
-        handler(ComplicationGroupMember(family: complication.family).errorTemplate)
+    func getLocalizableSampleTemplate(
+        for complication: CLKComplication,
+        withHandler handler: @escaping (CLKComplicationTemplate?) -> Void
+    ) {
+        handler(template(for: complication))
     }
 
+    // MARK: - Complication Descriptors
+
+    @available(watchOS 7.0, *)
+    func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
+        handler(Current.realm().objects(WatchComplication.self).map(\.complicationDescriptor))
+    }
 }
 
 extension CLKComplicationFamily {

@@ -47,6 +47,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
     func testComplicationsWithPreRendered() {
         let complications = [
             with(FakeWatchComplication()) {
+                $0.identifier = "c1"
                 $0.Template = .ExtraLargeColumnsText
                 $0.resultRawRendered = [
                     "fwc1k1": "fwc1v1",
@@ -54,10 +55,12 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
                 ]
             },
             with(FakeWatchComplication()) {
+                $0.identifier = "c2"
                 $0.Template = .CircularSmallRingText
                 $0.resultRawRendered = [:]
             },
             with(FakeWatchComplication()) {
+                $0.identifier = "c3"
                 $0.Template = .GraphicBezelCircularText
                 $0.resultRawRendered = [
                     "fwc3k1": "fwc3v1"
@@ -69,13 +72,13 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         XCTAssertEqual(request?.type, "render_template")
 
         let expected: [String: [String: String]] = [
-            complications[0].Template.rawValue + "|fwc1k1": [
+            "c1|fwc1k1": [
                 "template": "fwc1v1"
             ],
-            complications[0].Template.rawValue + "|fwc1k2": [
+            "c1|fwc1k2": [
                 "template": "fwc1v2"
             ],
-            complications[2].Template.rawValue + "|fwc3k1": [
+            "c3|fwc3k1": [
                 "template": "fwc3v1"
             ]
         ]
@@ -86,6 +89,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
     func testResponseUpdatesComplication() throws {
         let complications = [
             with(FakeWatchComplication()) {
+                $0.identifier = "c1"
                 $0.Template = .ExtraLargeColumnsText
                 $0.Family = .extraLarge
                 $0.resultRawRendered = [
@@ -94,11 +98,13 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
                 ]
             },
             with(FakeWatchComplication()) {
+                $0.identifier = "c2"
                 $0.Template = .CircularSmallRingText
                 $0.Family = .circularSmall
                 $0.resultRawRendered = [:]
             },
             with(FakeWatchComplication()) {
+                $0.identifier = "c3"
                 $0.Template = .GraphicBezelCircularText
                 $0.Family = .graphicBezel
                 $0.resultRawRendered = [
@@ -115,9 +121,9 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
 
         let request = WebhookResponseUpdateComplications.request(for: Set(complications))!
         let result: [String: Any] = [
-            complications[0].Template.rawValue + "|fwc1k1": "rendered_fwc1v1",
-            complications[0].Template.rawValue + "|fwc1k2": "rendered_fwc1v2",
-            complications[2].Template.rawValue + "|fwc3k1": 3,
+            "c1|fwc1k1": "rendered_fwc1v1",
+            "c1|fwc1k2": "rendered_fwc1v2",
+            "c3|fwc3k1": 3,
         ]
 
         let expectation = self.expectation(description: "result")
@@ -127,8 +133,8 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 10)
 
-        let complication0Updates = FakeWatchComplication.rawRenderedUpdates[complications[0].Template.rawValue]
-        let complication2Updates = FakeWatchComplication.rawRenderedUpdates[complications[2].Template.rawValue]
+        let complication0Updates = FakeWatchComplication.rawRenderedUpdates["c1"]
+        let complication2Updates = FakeWatchComplication.rawRenderedUpdates["c3"]
 
         XCTAssertEqual(
             complication0Updates?["fwc1k1"] as? String,
@@ -161,6 +167,6 @@ class FakeWatchComplication: WatchComplication {
     static var rawRenderedUpdates: [String: [String: Any]] = [:]
 
     override func updateRawRendered(from response: [String : Any]) {
-        Self.rawRenderedUpdates[Template.rawValue] = response
+        Self.rawRenderedUpdates[identifier] = response
     }
 }

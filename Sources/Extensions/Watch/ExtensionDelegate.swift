@@ -114,12 +114,24 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     // Triggered when a complication is tapped
     func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
+        let complication: WatchComplication?
 
-        if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date {
+        if #available(watchOS 7, *),
+           let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
+           identifier != CLKDefaultComplicationIdentifier {
+            complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: identifier)
+        } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
+                  let clkFamily = date.complicationFamilyFromEncodedDate {
+            let family = ComplicationGroupMember(family: clkFamily)
+            complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: family.rawValue)
+        } else {
+            complication = nil
+        }
 
-            if let family = date.complicationFamilyFromEncodedDate {
-                Current.Log.verbose("\(family.description) complication opened app")
-            }
+        if let complication = complication {
+            Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
+        } else {
+            Current.Log.verbose("unknown or no complication launched the app")
         }
     }
 
