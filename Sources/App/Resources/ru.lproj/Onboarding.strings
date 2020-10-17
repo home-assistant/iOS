@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Перезапуск";
 "7iT-bd-cdY.text" = "Ручная настройка";
 "PIW-dY-j0P.text" = "Для продолжения введите адрес Home Assistant. Необходим полный URL в формате «http://homeassistant.local:8123», содержащий протокол, адрес сервера и порт.";
-"xO0-K1-GJX.placeholder" = "например http: //homeassistant.local: 8123";
+"xO0-K1-GJX.placeholder" = "Например http: //homeassistant.local: 8123";

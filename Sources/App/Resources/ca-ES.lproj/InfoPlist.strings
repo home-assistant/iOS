@@ -1,6 +1,6 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Us recomanem que seleccioneu \"Permet sempre\" per obtenir la millor experiència d'ubicació. Si seleccioneu \"Només mentre feu servir l'aplicació\", es desactivaran els iBeacons, les barres geogràfiques, les actualitzacions de la ubicació en segon pla i els informes precisos.";
 "NSLocationAlwaysUsageDescription" = "Sempre necessitem accés a la vostra ubicació per a funcions com ara iBeacons, geofences, actualitzacions de la ubicació en segon pla i informes precisos.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationWhenInUseUsageDescription" = "Només permetent l'accés a la ubicació mentre l'aplicació està en ús deshabilitarà iBeacons, geocercas, actualitzacions d'ubicació en segon pla i informes precisos.";
 "NSMotionUsageDescription" = "El moviment s’utilitza per millorar les actualitzacions d’ubicació amb el tipus de moviment actual, així com per proporcionar dades bàsiques del podòmetre.";
 "NSSiriUsageDescription" = "Utilitzem Siri per permetre que les dreceres creades interactuïn amb l’aplicació.";
 "NSPhotoLibraryAddUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";
