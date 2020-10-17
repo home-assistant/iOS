@@ -24,6 +24,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
             model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: complication.identifier)
         } else {
+            // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
+            // with the family as the identifier, so we can rely on this code path for older OS and older complications
             let matchedFamily = ComplicationGroupMember(family: complication.family)
             model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: matchedFamily.rawValue)
         }

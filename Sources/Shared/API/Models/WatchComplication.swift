@@ -17,7 +17,7 @@ import ClockKit
 
 // swiftlint:disable:next type_body_length
 public class WatchComplication: Object, ImmutableMappable {
-    @objc dynamic var identifier: String = UUID().uuidString
+    @objc public dynamic var identifier: String = UUID().uuidString
 
     @objc private dynamic var rawFamily: String = ""
     public var Family: ComplicationGroupMember {

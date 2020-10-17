@@ -43,6 +43,10 @@ class ComplicationFamilySelectViewController: FormViewController, RowControllerT
             }
         }
 
+        setupForm()
+    }
+
+    private func setupForm() {
         form.append(contentsOf: ComplicationGroup.allCases.sorted().map { group in
             let section = Section(header: group.name, footer: group.description)
             section.append(contentsOf: group.members.sorted().map { family in
@@ -73,15 +77,21 @@ class ComplicationFamilySelectViewController: FormViewController, RowControllerT
                         }
                     }
 
-                    let complication = WatchComplication()
-                    complication.Family = family
+                    $0.presentationMode = .show(controllerProvider: .callback { [allowMultiple] in
+                        let complication = WatchComplication()
+                        complication.Family = family
 
-                    $0.presentationMode = .show(controllerProvider: .callback {
-                        ComplicationEditViewController(config: complication)
+                        if !allowMultiple {
+                            // if the user hasn't upgraded to watchOS 7 yet, we want to preserve our migration behavior
+                            // so any watchOS 6-created complications have a predicable globally-unique identifier
+                            complication.identifier = family.rawValue
+                        }
+
+                        return ComplicationEditViewController(config: complication)
                     }, onDismiss: { [weak self] vc in
-                        guard let self = self else { return }
+                        guard let self = self, let vc = vc as? ComplicationEditViewController else { return }
 
-                        if complication.realm == nil {
+                        if vc.config.realm == nil {
                             // not saved
                             self.navigationController?.popViewController(animated: true)
                         } else {
