@@ -869,3 +869,16 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "share_extension.error.title" = "Verzenden niet gelukt";
 "settings_sensors.periodic_update.description_mac" = "Wanneer ingeschakeld, worden deze sensoren met deze frequentie bijgewerkt terwijl de app is geopend. Sommige sensoren worden vaker automatisch bijgewerkt.";
 "settings_details.notifications.sounds.import_mac_instructions" = "Voeg aangepaste geluiden toe aan de map Geluiden om ze te gebruiken in meldingen. Gebruik hun bestandsnaam als de geluidswaarde in de service call.";
+"watch.configurator.rows.column_2_alignment.title" = "Column 2 Alignment";
+"watch.configurator.rows.column_2_alignment.options.leading" = "Leading";
+"watch.configurator.rows.column_2_alignment.options.trailing" = "Trailing";
+"watch.configurator.preview_error.not_number" = "Expected a number but got %1$@: '%2$@'";
+"watch.configurator.preview_error.out_of_range" = "Expected a number between 0.0 and 1.0 but got %1$f";
+"watch.configurator.new.title" = "New Complication";
+"watch.configurator.new.multiple_complication_info" = "Adding another Complication for the same type as an existing one requires watchOS 7 or newer.";
+"watch.configurator.delete.button" = "Delete Complication";
+"watch.configurator.delete.title" = "Delete Complication?";
+"watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
+"watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";
+"watch.configurator.list.learn_more" = "Learn More";
+"watch.configurator.rows.display_name.title" = "Display Name";
