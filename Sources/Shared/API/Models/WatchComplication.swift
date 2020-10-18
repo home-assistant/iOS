@@ -178,7 +178,21 @@ public class WatchComplication: Object, ImmutableMappable {
             // a bit more forgiving than Float(_:)
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
-            return formatter.number(from: value)?.floatValue
+
+            for locale in [
+                // in HA prior to 0.117 (which returns floats), the return type of a float is a string in templates
+                // but it's a non-locale-aware string, so we need to parse `0.33` even if the locale expects `0,33`
+                Locale(identifier: "en_US_POSIX"),
+                // but since it's free-form text, the user may also have typed `0,33` expecting it to work
+                Locale.current
+            ] {
+                formatter.locale = locale
+                if let value = formatter.number(from: value)?.floatValue {
+                    return value
+                }
+            }
+
+            return nil
         case let value as Int:
             return Float(value)
         case let value as Double:
