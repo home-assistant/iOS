@@ -564,6 +564,7 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
     let session: URLSession
     let isBackground: Bool
     private var pendingDidFinishHandler: (() -> Void)?
+    private var didFinishWithoutPendingHandler = false
 
     var description: String {
         "sessionInfo(identifier: \(identifier))"
@@ -572,11 +573,22 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
     func setDidFinish(_ block: @escaping () -> Void) {
         pendingDidFinishHandler?()
         pendingDidFinishHandler = block
+
+        if didFinishWithoutPendingHandler {
+            // finish already occurred. this likely means we were already in memory when the system informed us.
+            // the app/extension delegate methods asking us to complete may have occurred _after_ since they jump queues
+            fireDidFinish()
+        }
     }
 
     func fireDidFinish() {
-        pendingDidFinishHandler?()
-        pendingDidFinishHandler = nil
+        if let existingHandler = pendingDidFinishHandler {
+            existingHandler()
+            pendingDidFinishHandler = nil
+            didFinishWithoutPendingHandler = false
+        } else {
+            didFinishWithoutPendingHandler = true
+        }
     }
 
     init(

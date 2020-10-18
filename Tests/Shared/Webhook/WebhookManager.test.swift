@@ -60,6 +60,18 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(didInvokePromise))
     }
 
+    func testBackgroundHandlingCallsCompletionHandlerWhenInvokedBefore() {
+        let (didInvokePromise, didInvokeSeal) = Promise<Void>.pending()
+
+        sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
+        
+        manager.handleBackground(for: manager.currentBackgroundSessionInfo.identifier, completionHandler: {
+            didInvokeSeal.fulfill(())
+        })
+
+        XCTAssertNoThrow(try hang(didInvokePromise))
+    }
+
     func testUnbalancedBackgroundHandlingDoesntCrash() {
         // not the best test: this will crash the test execution if it fails
         sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
