@@ -18,7 +18,9 @@ public class SettingsStore {
     let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
+    /// This will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
+    /// This may be posted on any thread
     public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
 
     public var tokenInfo: TokenInfo? {
@@ -268,6 +270,7 @@ public class SettingsStore {
             }
         }
         set {
+            precondition(Thread.isMainThread)
             prefs.set(newValue.zoom, forKey: "page_zoom")
             NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
         }
