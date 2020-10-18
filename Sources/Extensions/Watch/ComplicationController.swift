@@ -17,6 +17,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
     private func template(for complication: CLKComplication) -> CLKComplicationTemplate? {
+        Iconic.registerMaterialDesignIcons()
+        
         let model: WatchComplication?
 
         if #available(watchOS 7, *), complication.identifier != CLKDefaultComplicationIdentifier {
@@ -48,8 +50,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         for complication: CLKComplication,
         withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void
     ) {
-        Iconic.registerMaterialDesignIcons()
-
         Current.Log.verbose {
             if #available(watchOS 7, *) {
                 return "Providing template for \(complication.identifier) family \(complication.family.description)"
