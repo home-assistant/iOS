@@ -114,7 +114,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         ] {
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(loadActiveURLIfNeeded),
+                selector: #selector(connectionInfoDidChange),
                 name: name,
                 object: nil
             )
@@ -489,6 +489,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         alertController.popoverPresentationController?.sourceView = self.webView
         present(alertController, animated: true, completion: nil)
+    }
+
+    @objc private func connectionInfoDidChange() {
+        DispatchQueue.main.async { [self] in
+            loadActiveURLIfNeeded()
+        }
     }
 
     @objc private func loadActiveURLIfNeeded() {
