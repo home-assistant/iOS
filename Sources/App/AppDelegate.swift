@@ -452,6 +452,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupWatchCommunicator() {
+        _ = NotificationCenter.default.addObserver(
+            forName: SettingsStore.connectionInfoDidChange,
+            object: nil,
+            queue: nil
+        ) { _ in
+            _ = HomeAssistantAPI.SyncWatchContext()
+        }
+
         Communicator.shared.activationStateChangedObservers.add { state in
             Current.Log.verbose("Activation state changed: \(state)")
             _ = HomeAssistantAPI.SyncWatchContext()
