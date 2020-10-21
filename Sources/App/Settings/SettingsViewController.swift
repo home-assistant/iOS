@@ -405,7 +405,7 @@ class SettingsViewController: FormViewController {
                 ]
 
                 let error = NSError(domain: NSCocoaErrorDomain, code: -1001, userInfo: userInfo)
-                Current.logError?(error)
+                Current.crashReporter.logError(error)
             }))
 
             self.present(alert, animated: true, completion: nil)
