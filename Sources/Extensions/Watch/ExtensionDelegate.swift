@@ -18,10 +18,12 @@ import PromiseKit
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     // MARK: Fileprivate
 
-    fileprivate var watchConnectivityTask: WKWatchConnectivityRefreshBackgroundTask? {
-        didSet {
-            oldValue?.setTaskCompletedWithSnapshot(false)
-        }
+    fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
+    fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
+
+    override init() {
+        (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
+        super.init()
     }
 
     // MARK: - WKExtensionDelegate -
@@ -90,8 +92,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 snapshotTask.setTaskCompleted(restoredDefaultState: true,
                                               estimatedSnapshotExpiration: Date.distantFuture, userInfo: nil)
             case let connectivityTask as WKWatchConnectivityRefreshBackgroundTask:
-                // Be sure to complete the connectivity task once you’re done.
-                watchConnectivityTask = connectivityTask
+                enqueueForCompletion(connectivityTask)
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
                 Current.webhooks.handleBackground(for: urlSessionTask.sessionIdentifier) {
@@ -155,6 +156,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         Communicator.shared.guaranteedMessageReceivedObservers.add { message in
             Current.Log.verbose("Received guaranteed message! \(message)")
+
+            self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.blobReceivedObservers.add { blob in
@@ -212,25 +215,45 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                     realm.delete(realm.objects(WatchComplication.self))
                     realm.add(complications, update: .all)
                 }
-
-                self.updateComplications().cauterize()
             }
 
-            self.endWatchConnectivityBackgroundTaskIfNecessary()
+            self.updateComplications().done {
+                self.endWatchConnectivityBackgroundTaskIfNecessary()
+            }
         }
 
         Communicator.shared.complicationInfoReceivedObservers.add { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
-            self.endWatchConnectivityBackgroundTaskIfNecessary()
+            self.updateComplications().done {
+                self.endWatchConnectivityBackgroundTaskIfNecessary()
+            }
+        }
+    }
+
+    private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {
+        DispatchQueue.main.async { [self] in
+            if Communicator.shared.hasPendingDataToBeReceived {
+                // wait for it to send the next set of data
+                watchConnectivityBackgroundPromise.done {
+                    task.setTaskCompletedWithSnapshot(false)
+                }
+            } else {
+                // nothing else to be received
+                task.setTaskCompletedWithSnapshot(false)
+            }
         }
     }
 
     private func endWatchConnectivityBackgroundTaskIfNecessary() {
-        // First check we're not expecting more data
-        guard !Communicator.shared.hasPendingDataToBeReceived else { return }
-        // And then end the task (if there is one!)
-        self.watchConnectivityTask = nil
+        DispatchQueue.main.async { [self] in
+            guard !Communicator.shared.hasPendingDataToBeReceived else { return }
+
+            // complete the current one
+            watchConnectivityBackgroundSeal(())
+            // and set up a new one for the next chain of updates
+            (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
+        }
     }
 
     func updateComplications() -> Guarantee<Void> {
