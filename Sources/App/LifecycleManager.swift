@@ -40,7 +40,10 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
+        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(
+            eventType: "ios.finished_launching",
+            eventData: HomeAssistantAPI.sharedEventDeviceInfo
+        )
 
         #if !targetEnvironment(macCatalyst)
         Lokalise.shared.checkForUpdates { (updated, error) in
@@ -56,7 +59,10 @@ class LifecycleManager {
     }
 
     @objc private func didEnterBackground() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
+        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(
+            eventType: "ios.entered_background",
+            eventData: HomeAssistantAPI.sharedEventDeviceInfo
+        )
         invalidatePeriodicUpdateTimer()
     }
 
@@ -76,7 +82,10 @@ class LifecycleManager {
     }
 
     @objc private func didBecomeActive() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
+        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(
+            eventType: "ios.became_active",
+            eventData: HomeAssistantAPI.sharedEventDeviceInfo
+        )
     }
 
     private func invalidatePeriodicUpdateTimer() {
