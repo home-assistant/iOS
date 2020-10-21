@@ -18,7 +18,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
     private func template(for complication: CLKComplication) -> CLKComplicationTemplate? {
         Iconic.registerMaterialDesignIcons()
-        
+
         let model: WatchComplication?
 
         if #available(watchOS 7, *), complication.identifier != CLKDefaultComplicationIdentifier {
