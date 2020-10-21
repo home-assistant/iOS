@@ -82,8 +82,9 @@ class ComplicationListViewController: FormViewController {
                     ButtonRow {
                         $0.cellStyle = .value1
                         $0.title = complication.Family.shortName
-                        $0.cellUpdate { cell, _ in
-                            cell.detailTextLabel?.text = complication.displayName
+                        $0.value = complication.displayName
+                        $0.cellUpdate { cell, row in
+                            cell.detailTextLabel?.text = row.value
                         }
                         $0.presentationMode = .show(controllerProvider: .callback {
                             return ComplicationEditViewController(config: complication)
