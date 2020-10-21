@@ -13,6 +13,10 @@ public class CrashReporterImpl: CrashReporter {
             return
         }
 
+        guard Constants.BundleID.starts(with: "io.robbie.") else {
+            return
+        }
+
         environment.Log.add(destination: SentryLogDestination())
 
         SentrySDK.start { options in
