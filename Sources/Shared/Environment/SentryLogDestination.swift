@@ -1,7 +1,6 @@
 import Foundation
 import XCGLogger
 import Sentry
-import Shared
 
 open class SentryLogDestination: BaseQueuedDestination {
     open override func output(logDetails: LogDetails, message: String) {

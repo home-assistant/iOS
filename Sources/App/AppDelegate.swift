@@ -23,7 +23,6 @@ import UIKit
 import UserNotifications
 import FirebaseMessaging
 import FirebaseCore
-import Sentry
 import MBProgressHUD
 #if DEBUG
 import SimulatorStatusMagic
@@ -88,7 +87,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
-        self.setupSentry()
         self.setupFirebase()
         self.setupModels()
         self.setupLocalization()
@@ -262,7 +260,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
-        Current.setUserProperty?(apnsToken, "APNS Token")
+        Current.crashReporter.setUserProperty(value: apnsToken, name: "APNS Token")
 
         var tokenType: MessagingAPNSTokenType = .prod
 
@@ -505,7 +503,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
 
             if let modelIdentifier = context.content["watchModel"] as? String {
-                Current.setUserProperty?(modelIdentifier, "PairedAppleWatch")
+                Current.crashReporter.setUserProperty(value: modelIdentifier, name: "PairedAppleWatch")
             }
         }
     }
@@ -683,74 +681,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
 
-    func setupSentry() {
-        guard Current.settingsStore.privacy.crashes else {
-            return
-        }
-
-        Current.Log.add(destination: SentryLogDestination())
-
-        SentrySDK.start { options in
-            options.dsn = "https://762c198b86594fa2b6bedf87028db34d@o427061.ingest.sentry.io/5372775"
-            options.debug = Current.appConfiguration == .Debug
-            options.enableAutoSessionTracking = Current.settingsStore.privacy.analytics
-            options.maxBreadcrumbs = 1000
-
-            var integrations = type(of: options).defaultIntegrations()
-
-            let analyticsIntegrations = Set([
-                "SentryAutoBreadcrumbTrackingIntegration",
-                "SentryAutoSessionTrackingIntegration"
-            ])
-
-            let crashesIntegrations = Set([
-                "SentryCrashIntegration"
-            ])
-
-            if !Current.settingsStore.privacy.crashes {
-                integrations.removeAll(where: { crashesIntegrations.contains($0) })
-            }
-
-            if !Current.settingsStore.privacy.analytics {
-                integrations.removeAll(where: { analyticsIntegrations.contains($0) })
-            }
-
-            Current.Log.info("enabled integrations: \(integrations)")
-            options.integrations = integrations
-        }
-
-        Current.logError = { error in
-            // crash reporting is controlled by the crashes key, but this is more like analytics
-            guard Current.settingsStore.privacy.analytics else { return}
-
-            Current.Log.error("error: \(error.debugDescription)")
-            SentrySDK.capture(error: error)
-        }
-
-        Current.logEvent = { (eventName: String, params: [String: Any]) -> Void in
-            guard Current.settingsStore.privacy.analytics else { return}
-
-            Current.Log.verbose("event \(eventName): \(params)")
-            SentrySDK.capture(message: eventName) { scope in
-                scope.setTags(params.mapValues { String(describing: $0)})
-            }
-        }
-
-        Current.setUserProperty = { (value: String?, name: String) -> Void in
-            SentrySDK.configureScope { scope in
-                scope.setEnvironment(Current.appConfiguration.description)
-
-                if let value = value {
-                    Current.Log.verbose("setting tag \(name) to '\(value)'")
-                    scope.setTag(value: value, key: name)
-                } else {
-                    Current.Log.verbose("removing tag \(name)")
-                    scope.removeTag(key: name)
-                }
-            }
-        }
-    }
-
     func setupFirebase() {
         #if targetEnvironment(simulator) || DEBUG
         if FirebaseOptions.defaultOptions() == nil {
@@ -911,7 +841,7 @@ extension AppDelegate: MessagingDelegate {
             Current.Log.warning("FCM token has changed from \(existingToken) to \(fcmToken)")
         }
 
-        Current.setUserProperty?(fcmToken, "FCM Token")
+        Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")
         Current.settingsStore.pushID = fcmToken
 
         guard let api = HomeAssistantAPI.authenticatedAPI() else {

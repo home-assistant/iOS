@@ -22,7 +22,7 @@ public class ConnectionInfo: Codable {
             guard externalURL != oldValue else { return }
             Current.settingsStore.connectionInfo = self
             guard self.externalURL != nil else { return }
-            Current.setUserProperty?("externalURL", "RemoteConnectionMethod")
+            Current.crashReporter.setUserProperty(value: "externalURL", name: "RemoteConnectionMethod")
         }
     }
     public private(set) var internalURL: URL? {
@@ -36,7 +36,7 @@ public class ConnectionInfo: Codable {
             guard remoteUIURL != oldValue else { return }
             Current.settingsStore.connectionInfo = self
             guard self.remoteUIURL != nil else { return }
-            Current.setUserProperty?("remoteUI", "RemoteConnectionMethod")
+            Current.crashReporter.setUserProperty(value: "remoteUI", name: "RemoteConnectionMethod")
         }
     }
     public var webhookID: String {

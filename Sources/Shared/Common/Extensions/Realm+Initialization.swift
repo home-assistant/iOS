@@ -152,7 +152,7 @@ extension Realm {
         do {
             return try Realm(configuration: config)
         } catch let error {
-            Current.logError?(error as NSError)
+            Current.crashReporter.logError(error as NSError)
 
             Realm.handleError(
                 message: error.localizedDescription,
@@ -209,7 +209,7 @@ extension Realm {
         message: String,
         error: Swift.Error
     ) {
-        Current.logError?(error as NSError)
+        Current.crashReporter.logError(error as NSError)
         Current.Log.error([message, error])
 
         #if os(iOS)

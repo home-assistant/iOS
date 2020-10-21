@@ -315,7 +315,7 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.Version, forKey: "version")
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
-            Current.setUserProperty?(config.Version, "HA_Version")
+            Current.crashReporter.setUserProperty(value: config.Version, name: "HA_Version")
 
             return Promise.value(config)
         }
