@@ -49,7 +49,7 @@ abstract_target 'iOS' do
         pod 'lottie-ios'
         pod 'Sentry'
         pod 'SimulatorStatusMagic', :configurations => ['Debug']
-        pod 'SwiftGen', '~> 6.3.0'
+        pod 'SwiftGen', '~> 6.4.0'
         pod 'SwiftLint'
         pod 'SwiftMessages'
         pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
