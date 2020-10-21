@@ -13,7 +13,7 @@ struct WebhookResponseLocationLocalMetadata: ImmutableMappable {
 
     init(trigger: LocationUpdateTrigger, zone: RLMZone?) {
         self.trigger = trigger
-        self.zoneName = zone?.ID ?? "(unknown)"
+        self.zoneName = zone?.Name ?? "(unknown)"
     }
 
     init(map: Map) throws {
