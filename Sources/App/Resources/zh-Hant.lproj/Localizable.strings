@@ -894,11 +894,11 @@
 "watch.configurator.rows.column_2_alignment.options.trailing" = "靠右對齊";
 "watch.configurator.preview_error.not_number" = "預期為數字。但收到%1$@：'%2$@'";
 "watch.configurator.preview_error.out_of_range" = "預期為介於 0.0 至 1.0 間的數字。但收到 %1$f";
-"watch.configurator.new.title" = "New Complication";
-"watch.configurator.new.multiple_complication_info" = "Adding another Complication for the same type as an existing one requires watchOS 7 or newer.";
-"watch.configurator.delete.button" = "Delete Complication";
-"watch.configurator.delete.title" = "Delete Complication?";
-"watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
-"watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";
+"watch.configurator.new.title" = "新增複雜功能";
+"watch.configurator.new.multiple_complication_info" = "使用現有相同類型新增另一個複雜功能需要 watchOS 7 或更新版本。";
+"watch.configurator.delete.button" = "刪除複雜功能";
+"watch.configurator.delete.title" = "刪除複雜功能？";
+"watch.configurator.delete.message" = "確定要刪除複雜功能？無法還原。";
+"watch.configurator.list.description" = "使用新增按鈕新增複雜功能，可以於 Apple Watch 或 Watch App 中選擇。";
 "watch.configurator.list.learn_more" = "了解更多";
 "watch.configurator.rows.display_name.title" = "顯示名稱";

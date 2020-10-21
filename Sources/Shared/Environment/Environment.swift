@@ -42,6 +42,15 @@ public var Current = Environment()
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
 public class Environment {
+    internal init() {
+        let crashReporter = CrashReporterImpl()
+        self.crashReporter = crashReporter
+        crashReporter.setup(environment: self)
+    }
+
+    /// Crash reporting and related metadata gathering
+    public var crashReporter: CrashReporter
+
     /// Provides URLs usable for storing data.
     public var date: () -> Date = Date.init
     public var calendar: () -> Calendar = { Calendar.autoupdatingCurrent }
@@ -118,11 +127,7 @@ public class Environment {
 
     public var isPerformingSingleShotLocationQuery = false
 
-    public var logEvent: ((String, [String: Any]) -> Void)?
-    public var logError: ((NSError) -> Void)?
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
-
-    public var setUserProperty: ((String?, String) -> Void)?
 
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
         self.tokenManager = authenticatedAPI.tokenManager
