@@ -56,7 +56,7 @@ class SettingsViewController: FormViewController {
             self.navigationItem.setLeftBarButton(aboutButton, animated: true)
         }
 
-        if !Current.sceneManager.supportsMultipleScenes {
+        if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
             let closeSelector = #selector(SettingsViewController.closeSettings(_:))
             let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                              action: closeSelector)
