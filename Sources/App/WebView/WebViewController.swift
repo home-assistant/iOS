@@ -453,7 +453,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             completionHandler(false)
         }))
 
-        present(alertController, animated: true, completion: nil)
+        if presentedViewController != nil {
+            Current.Log.error("attempted to present an alert when already presenting, bailing")
+            completionHandler(false)
+        } else {
+            present(alertController, animated: true, completion: nil)
+        }
     }
 
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?,
@@ -476,7 +481,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             completionHandler(nil)
         }))
 
-        present(alertController, animated: true, completion: nil)
+        if presentedViewController != nil {
+            Current.Log.error("attempted to present an alert when already presenting, bailing")
+            completionHandler(nil)
+        } else {
+            present(alertController, animated: true, completion: nil)
+        }
     }
 
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
@@ -488,7 +498,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }))
 
         alertController.popoverPresentationController?.sourceView = self.webView
-        present(alertController, animated: true, completion: nil)
+
+        if presentedViewController != nil {
+            Current.Log.error("attempted to present an alert when already presenting, bailing")
+            completionHandler()
+        } else {
+            present(alertController, animated: true, completion: nil)
+        }
     }
 
     @objc private func connectionInfoDidChange() {
