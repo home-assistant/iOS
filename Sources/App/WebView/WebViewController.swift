@@ -239,7 +239,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     public func showSettingsViewController() {
-        if #available(iOS 13, *), Current.sceneManager.supportsMultipleScenes {
+        if #available(iOS 13, *), Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
             let settingsView = SettingsViewController()
