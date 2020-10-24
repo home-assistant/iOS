@@ -20,13 +20,10 @@ public enum NetworkType: Int, CaseIterable {
     case wwan2g
     case wwan3g
     case wwan4g
+    case wwan5g
     case unknownTechnology
 
     var description: String {
-        return self.trackingId
-    }
-
-    var trackingId: String {
         switch self {
         case .unknown:
             return "Unknown"
@@ -42,29 +39,10 @@ public enum NetworkType: Int, CaseIterable {
             return "3G"
         case .wwan4g:
             return "4G"
+        case .wwan5g:
+            return "5G"
         case .unknownTechnology:
             return "Unknown Technology"
-        }
-    }
-
-    var networkTypeInt: Int {
-        switch self {
-        case .unknown:
-            return 9
-        case .noConnection:
-            return 9
-        case .wifi:
-            return 1
-        case .cellular:
-            return 8
-        case .wwan2g:
-            return 2
-        case .wwan3g:
-            return 3
-        case .wwan4g:
-            return 4
-        case .unknownTechnology:
-            return 9
         }
     }
 
@@ -84,11 +62,18 @@ public enum NetworkType: Int, CaseIterable {
             return "mdi:signal-3g"
         case .wwan4g:
             return "mdi:signal-4g"
+        case .wwan5g:
+            return "mdi:signal-5g"
         }
     }
 
     #if !targetEnvironment(macCatalyst)
     init(_ radioTech: String) {
+        if #available(iOS 14, *), [CTRadioAccessTechnologyNR, CTRadioAccessTechnologyNRNSA].contains(radioTech) {
+            self = .wwan5g
+            return
+        }
+
         switch radioTech {
         case CTRadioAccessTechnologyGPRS,
              CTRadioAccessTechnologyEdge,
