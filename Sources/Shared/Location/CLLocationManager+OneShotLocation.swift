@@ -200,8 +200,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         if let clErr = error as? CLError {
             let realm = Current.realm()
-            // swiftlint:disable:next force_try
-            try! realm.write {
+            try? realm.write {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
