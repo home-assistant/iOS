@@ -49,7 +49,11 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
         attributes.append(String(describing: eventType))
 
         if let zone = associatedZone {
-            attributes.append(zone.ID)
+            if zone.isInvalidated {
+                attributes.append("zone deleted")
+            } else {
+                attributes.append(zone.ID)
+            }
         }
 
         return "ZoneManagerEvent(\(attributes.joined(separator: ", ")))"
