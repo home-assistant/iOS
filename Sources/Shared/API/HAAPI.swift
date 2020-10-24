@@ -529,10 +529,9 @@ public class HomeAssistantAPI {
             } else {
                 throw HomeAssistantAPI.APIError.updateNotPossible
             }
-        }.map { payload -> [String: Any] in
+        }.get { payload in
             let realm = Current.realm()
-            // swiftlint:disable:next force_try
-            try! realm.write {
+            try realm.write {
                 var jsonPayload = "{\"missing\": \"payload\"}"
                 if let p = payload.toJSONString(prettyPrint: false) {
                     jsonPayload = p
@@ -541,7 +540,7 @@ public class HomeAssistantAPI {
                 realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
                                                zone: zone, payload: jsonPayload))
             }
-
+        }.map { payload -> [String: Any] in
             let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
             Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict

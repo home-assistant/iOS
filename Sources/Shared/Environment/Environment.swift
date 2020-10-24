@@ -180,21 +180,23 @@ public class Environment {
         // Create a logger object with no destinations
         let log = XCGLogger(identifier: "advancedLogger", includeDefaultDestinations: false)
 
-        // Create a destination for the system console log (via NSLog)
-        let systemDestination = AppleSystemLogDestination(identifier: "advancedLogger.systemDestination")
+        #if DEBUG
+        log.dateFormatter = with(DateFormatter()) {
+            $0.dateFormat = "HH:mm:ss.SSS"
+            $0.locale = Locale.current
+        }
 
-        // Optionally set some configuration options
-        systemDestination.outputLevel = .verbose
-        systemDestination.showLogIdentifier = false
-        systemDestination.showFunctionName = true
-        systemDestination.showThreadName = true
-        systemDestination.showLevel = true
-        systemDestination.showFileName = true
-        systemDestination.showLineNumber = true
-        systemDestination.showDate = true
-
-        // Add the destination to the logger
-        log.add(destination: systemDestination)
+        log.add(destination: with(ConsoleDestination()) {
+            $0.outputLevel = .verbose
+            $0.showLogIdentifier = false
+            $0.showFunctionName = true
+            $0.showThreadName = true
+            $0.showLevel = true
+            $0.showFileName = true
+            $0.showLineNumber = true
+            $0.showDate = true
+        })
+        #endif
 
         let logPath = Constants.LogsDirectory.appendingPathComponent("log.txt", isDirectory: false)
 
