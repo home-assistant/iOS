@@ -178,6 +178,15 @@ public class ConnectivitySensor: SensorProvider {
         case CTRadioAccessTechnologyLTE:
             return "Long-Term Evolution (LTE)"
         default:
+            if #available(iOS 14, *) {
+                switch radioTech {
+                case CTRadioAccessTechnologyNR:
+                    return "5G"
+                case CTRadioAccessTechnologyNRNSA:
+                    return "5G Non-Standalone"
+                default: break
+                }
+            }
             return nil
         }
     }
