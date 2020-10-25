@@ -69,7 +69,8 @@ public enum NetworkType: Int, CaseIterable {
 
     #if !targetEnvironment(macCatalyst)
     init(_ radioTech: String) {
-        if #available(iOS 14, *), [CTRadioAccessTechnologyNR, CTRadioAccessTechnologyNRNSA].contains(radioTech) {
+        if #available(iOS 14.1, *), [CTRadioAccessTechnologyNR, CTRadioAccessTechnologyNRNSA].contains(radioTech) {
+            // although these are declared available in 14.0, they will crash on use before 14.1
             self = .wwan5g
             return
         }
