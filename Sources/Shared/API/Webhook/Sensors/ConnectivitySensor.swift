@@ -114,30 +114,21 @@ public class ConnectivitySensor: SensorProvider {
     private func carrierSensor(
         carrier: CTCarrier,
         radioTech: String?,
-        key: String?
+        key: String
     ) -> Guarantee<WebhookSensor> {
         let sensor: WebhookSensor
 
-        if let id = key?.last {
-            // the user has multiple, or could have multiple, so break them into numbered
-            sensor = WebhookSensor(
-                name: "SIM \(id)",
-                uniqueID: "connectivity_sim_\(id)",
-                icon: "mdi:sim",
-                state: "Unknown"
-            )
-        } else {
-            sensor = WebhookSensor(
-                name: "Cellular Provider",
-                uniqueID: "connectivity_cellular_provider",
-                icon: "mdi:sim",
-                state: "Unknown"
-            )
-        }
+        let id = key.last ?? "?"
+        sensor = WebhookSensor(
+            name: "SIM \(id)",
+            uniqueID: "connectivity_sim_\(id)",
+            icon: "mdi:sim",
+            state: "Unknown"
+        )
 
         sensor.State = carrier.carrierName ?? "N/A"
         sensor.Attributes = [
-            "Carrier ID": key ?? "N/A",
+            "Carrier ID": key,
             "Carrier Name": carrier.carrierName ?? "N/A",
             "Mobile Country Code": carrier.mobileCountryCode ?? "N/A",
             "Mobile Network Code": carrier.mobileNetworkCode ?? "N/A",

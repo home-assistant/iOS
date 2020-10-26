@@ -212,10 +212,8 @@ public class HomeAssistantAPI {
     }
 
     public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
-        if #available(iOS 12, *) {
-            let intent = FireEventIntent(eventName: eventType, payload: eventData)
-            INInteraction(intent: intent, response: nil).donate(completion: nil)
-        }
+        let intent = FireEventIntent(eventName: eventType, payload: eventData)
+        INInteraction(intent: intent, response: nil).donate(completion: nil)
 
         return Current.webhooks.send(
             identifier: .unhandled,
@@ -339,10 +337,8 @@ public class HomeAssistantAPI {
 
     public func CallService(domain: String, service: String, serviceData: [String: Any],
                             shouldLog: Bool = true) -> Promise<Void> {
-        if #available(iOS 12, *) {
-            let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
-            INInteraction(intent: intent, response: nil).donate(completion: nil)
-        }
+        let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
+        INInteraction(intent: intent, response: nil).donate(completion: nil)
 
         return Current.webhooks.send(
             identifier: .serviceCall,
@@ -747,10 +743,8 @@ public class HomeAssistantAPI {
                 throw HomeAssistantAPI.APIError.cantBuildURL
             }
 
-            if #available(iOS 12, *) {
-                let intent = PerformActionIntent(action: action)
-                INInteraction(intent: intent, response: nil).donate(completion: nil)
-            }
+            let intent = PerformActionIntent(action: action)
+            INInteraction(intent: intent, response: nil).donate(completion: nil)
 
             switch action.triggerType {
             case .event:

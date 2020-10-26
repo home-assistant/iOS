@@ -231,19 +231,17 @@ public enum PermissionType: Int {
 
 public extension UNAuthorizationOptions {
     static var defaultOptions: UNAuthorizationOptions {
-        var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
-        if #available(iOS 12.0, *) {
-            opts.formUnion([.providesAppNotificationSettings])
+        var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .providesAppNotificationSettings]
 
-            if Current.isCatalyst {
-                // we don't have provisioning for critical alerts in catalyst yet, and asking for permission errors
-            } else {
-                opts.insert(.criticalAlert)
-            }
+        if !Current.isCatalyst {
+            // we don't have provisioning for critical alerts in catalyst yet, and asking for permission errors
+            opts.insert(.criticalAlert)
         }
+
         if #available(iOS 13.0, *) {
             opts.insert(.announcement)
         }
+
         return opts
     }
 }

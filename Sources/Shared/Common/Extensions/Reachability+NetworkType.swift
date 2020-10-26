@@ -146,10 +146,12 @@ public extension Reachability {
 
     #if !targetEnvironment(macCatalyst)
     static func getWWANNetworkType() -> NetworkType {
-        guard let currentRadioAccessTechnology = CTTelephonyNetworkInfo().currentRadioAccessTechnology else {
-            return .unknown
-        }
-        return NetworkType(currentRadioAccessTechnology)
+        let networkTypes = (CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology ?? [:])
+            .sorted(by: { $0.key < $1.key })
+            .map(\.value)
+            .map(NetworkType.init(_:))
+
+        return networkTypes.first(where: { $0 != .unknownTechnology }) ?? .unknown
     }
     #endif
 }

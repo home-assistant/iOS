@@ -35,14 +35,10 @@ public struct ThemeColors: Codable {
         }
 
         init(traitCollection: UITraitCollection) {
-            if #available(iOS 12, *) {
-                switch traitCollection.userInterfaceStyle {
-                case .dark: self = .dark
-                case .light: self = .light
-                default: self = .light
-                }
-            } else {
-                self = .light
+            switch traitCollection.userInterfaceStyle {
+            case .dark: self = .dark
+            case .light: self = .light
+            default: self = .light
             }
         }
     }

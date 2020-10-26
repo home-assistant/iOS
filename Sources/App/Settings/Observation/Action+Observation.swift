@@ -9,7 +9,6 @@ import Intents
 import WidgetKit
 
 extension Action {
-    // swiftlint:disable:next function_body_length
     static func setupObserver() {
         let actions = Current.realm()
             .objects(Action.self)
@@ -56,12 +55,9 @@ extension Action {
             }
 
             let updateSuggestions = Promise<Void> { seal in
-                if #available(iOS 12, *) {
-                    // if we ever want to start donating more than actions, this needs to be pulled out to a helper
-                    let intents = collection.map { PerformActionIntent(action: $0) }
-                    INVoiceShortcutCenter.shared.setShortcutSuggestions(Array(intents.map { .intent($0) }))
-                }
-
+                // if we ever want to start donating more than actions, this needs to be pulled out to a helper
+                let intents = collection.map { PerformActionIntent(action: $0) }
+                INVoiceShortcutCenter.shared.setShortcutSuggestions(Array(intents.map { .intent($0) }))
                 seal.fulfill(())
             }
 
