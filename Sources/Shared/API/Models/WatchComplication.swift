@@ -83,8 +83,8 @@ public class WatchComplication: Object, ImmutableMappable {
         return ["Family", "Template"]
     }
 
-    public required init() {
-
+    public required override init() {
+        super.init()
     }
 
     public required init(map: Map) throws {

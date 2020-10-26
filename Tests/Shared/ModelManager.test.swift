@@ -365,8 +365,9 @@ class TestDeleteModel1: Object {
         self.createdAt = createdAt
     }
 
-    required init() {
+    required override init() {
         self.createdAt = Date()
+        super.init()
     }
 
     override class func primaryKey() -> String? {
@@ -382,8 +383,9 @@ class TestDeleteModel2: Object {
         self.createdAt = createdAt
     }
 
-    required init() {
+    override required init() {
         self.createdAt = Date()
+        super.init()
     }
 
     override class func primaryKey() -> String? {
@@ -397,10 +399,12 @@ class TestDeleteModel3: Object {
 
     init(_ createdAt: Date) {
         self.createdAt = createdAt
+        super.init()
     }
 
-    required init() {
+    required override init() {
         self.createdAt = Date()
+        super.init()
     }
 
     override class func primaryKey() -> String? {

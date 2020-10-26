@@ -34,7 +34,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         return "ID"
     }
 
-    public required init() {
+    public required override init() {
         let background = UIColor.randomBackgroundColor()
         BackgroundColor = background.hexString()
         if background.isLight {
@@ -44,6 +44,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
             TextColor = UIColor.white.hexString()
             IconColor = UIColor.white.hexString()
         }
+
+        super.init()
     }
 
     public func canConfigure(_ keyPath: PartialKeyPath<Action>) -> Bool {
