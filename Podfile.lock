@@ -100,10 +100,16 @@ PODS:
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
   - ReachabilitySwift (5.0.0)
+  - Realm (10.1.0):
+    - Realm/Headers (= 10.1.0)
+  - Realm/Headers (10.1.0)
+  - RealmSwift (10.1.0):
+    - Realm (= 10.1.0)
   - Sentry (6.0.4):
     - Sentry/Core (= 6.0.4)
   - Sentry/Core (6.0.4)
   - SimulatorStatusMagic (2.4.1)
+  - Sodium (0.9.0)
   - SwiftGen (6.4.0)
   - SwiftLint (0.40.3)
   - SwiftMessages (8.0.2):
@@ -137,8 +143,10 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
+  - RealmSwift
   - Sentry
   - SimulatorStatusMagic
+  - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
   - SwiftGen (~> 6.4.0)
   - SwiftLint
   - SwiftMessages
@@ -173,6 +181,8 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - ReachabilitySwift
+    - Realm
+    - RealmSwift
     - Sentry
     - SimulatorStatusMagic
     - SwiftGen
@@ -197,6 +207,9 @@ EXTERNAL SOURCES:
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  Sodium:
+    :branch: master
+    :git: https://github.com/jedisct1/swift-sodium.git
   ViewRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -214,6 +227,9 @@ CHECKOUT OPTIONS:
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  Sodium:
+    :commit: 1763670c2fff9739f180ff91dc4891c47146eaac
+    :git: https://github.com/jedisct1/swift-sodium.git
   ViewRow:
     :commit: cf9bfd2320a07de716476e8b1c194fe2845b46bd
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -246,8 +262,11 @@ SPEC CHECKSUMS:
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  Realm: 100df88a0faf5328f48477427e4b3e1a1598bae3
+  RealmSwift: 725d1c10df64964b04aaa0058c19ce0f4b4c3f5a
   Sentry: df82ff00c907257e62e8ad503ac7afd3a76d52ea
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
+  Sodium: 8106500200d1a80021cb9ea069ba0ea71fc26291
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
   SwiftLint: dfd554ff0dff17288ee574814ccdd5cea85d76f7
   SwiftMessages: 633304165351b8e3dcbb81a71f8efcd86f9c1669
@@ -258,6 +277,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 5a5a1863f793989a9e23ed1ce1d8412236b6a236
+PODFILE CHECKSUM: 75586de75fdb489757e40a3f9fa90549763343a8
 
 COCOAPODS: 1.10.0

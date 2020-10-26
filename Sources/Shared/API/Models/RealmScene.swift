@@ -55,8 +55,8 @@ public final class RLMScene: Object, UpdatableModel {
         self.scene = scene
     }
 
-    required init() {
-
+    required override init() {
+        super.init()
     }
 
     public override class func primaryKey() -> String? {

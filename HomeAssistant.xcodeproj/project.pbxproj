@@ -47,10 +47,6 @@
 		111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */; };
 		111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */; };
 		111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
-		111D294224F2F6AE00C8A7D1 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294124F2F6AE00C8A7D1 /* Realm */; };
-		111D294424F2F6AE00C8A7D1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294324F2F6AE00C8A7D1 /* RealmSwift */; };
-		111D294624F2F6B600C8A7D1 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294524F2F6B600C8A7D1 /* Realm */; };
-		111D294824F2F6B600C8A7D1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294724F2F6B600C8A7D1 /* RealmSwift */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensors.swift */; };
@@ -71,8 +67,6 @@
 		1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
 		1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
-		1147C6D325181200002BEB20 /* Clibsodium in Frameworks */ = {isa = PBXBuildFile; productRef = 1147C6D225181200002BEB20 /* Clibsodium */; };
-		1147C6D525181208002BEB20 /* Clibsodium in Frameworks */ = {isa = PBXBuildFile; productRef = 1147C6D425181208002BEB20 /* Clibsodium */; };
 		11482AD62505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
 		11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */; };
 		1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -138,8 +132,6 @@
 		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
 		118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		118F046A24CB895B00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
-		118F8733251806BD001E1AD7 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 118F8732251806BD001E1AD7 /* Sodium */; };
-		118F8737251806CA001E1AD7 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 118F8736251806CA001E1AD7 /* Sodium */; };
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
@@ -1700,10 +1692,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				118F8737251806CA001E1AD7 /* Sodium in Frameworks */,
-				111D294824F2F6B600C8A7D1 /* RealmSwift in Frameworks */,
-				1147C6D525181208002BEB20 /* Clibsodium in Frameworks */,
-				111D294624F2F6B600C8A7D1 /* Realm in Frameworks */,
 				CF58E969432B36CC112701AC /* Pods_watchOS_Shared_watchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1733,10 +1721,6 @@
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
-				111D294224F2F6AE00C8A7D1 /* Realm in Frameworks */,
-				111D294424F2F6AE00C8A7D1 /* RealmSwift in Frameworks */,
-				1147C6D325181200002BEB20 /* Clibsodium in Frameworks */,
-				118F8733251806BD001E1AD7 /* Sodium in Frameworks */,
 				539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3242,12 +3226,6 @@
 			dependencies = (
 			);
 			name = "Shared-watchOS";
-			packageProductDependencies = (
-				111D294524F2F6B600C8A7D1 /* Realm */,
-				111D294724F2F6B600C8A7D1 /* RealmSwift */,
-				118F8736251806CA001E1AD7 /* Sodium */,
-				1147C6D425181208002BEB20 /* Clibsodium */,
-			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
 			productType = "com.apple.product-type.framework";
@@ -3326,12 +3304,6 @@
 				11A31C93252128B900D50A78 /* PBXTargetDependency */,
 			);
 			name = "Shared-iOS";
-			packageProductDependencies = (
-				111D294124F2F6AE00C8A7D1 /* Realm */,
-				111D294324F2F6AE00C8A7D1 /* RealmSwift */,
-				118F8732251806BD001E1AD7 /* Sodium */,
-				1147C6D225181200002BEB20 /* Clibsodium */,
-			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
 			productType = "com.apple.product-type.framework";
@@ -3570,10 +3542,6 @@
 				el,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
-			packageReferences = (
-				111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
-				118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */,
-			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -6263,68 +6231,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.3.5;
-			};
-		};
-		118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jedisct1/swift-sodium";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		111D294124F2F6AE00C8A7D1 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = Realm;
-		};
-		111D294324F2F6AE00C8A7D1 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = RealmSwift;
-		};
-		111D294524F2F6B600C8A7D1 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = Realm;
-		};
-		111D294724F2F6B600C8A7D1 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 111D294024F2F6AE00C8A7D1 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = RealmSwift;
-		};
-		1147C6D225181200002BEB20 /* Clibsodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Clibsodium;
-		};
-		1147C6D425181208002BEB20 /* Clibsodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Clibsodium;
-		};
-		118F8732251806BD001E1AD7 /* Sodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Sodium;
-		};
-		118F8736251806CA001E1AD7 /* Sodium */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 118F872F251806BD001E1AD7 /* XCRemoteSwiftPackageReference "swift-sodium" */;
-			productName = Sodium;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B657A8DE1CA646EB00121384 /* Project object */;
 }

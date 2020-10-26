@@ -8,7 +8,7 @@ Home Assistant for Apple Platforms
 
 ## Getting Started
 
-Home Assistant uses Bundler, Cocoapods and Swift Package Manager to manage build dependencies. You'll need Xcode 12.0 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get this running using the following commands:
+Home Assistant uses Bundler, Cocoapods and Swift Package Manager to manage build dependencies. You'll need Xcode 12.1 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get this running using the following commands:
 
 ```bash
 git clone https://github.com/home-assistant/iOS.git
@@ -32,13 +32,6 @@ BUNDLE_ID_PREFIX = some.bundle.prefix
 ```
 
 Xcode should generate provisioning profiles in your Team ID and our configuration will disable features your team doesn't have like Critical Alerts. You can find your Team ID on Apple's [developer portal](https://developer.apple.com/account).
-
-## Xcode 12 Issues
-
-Apple shipped Xcode 12 with several regressions that impact Home Assistant and you will need to work around those that we cannot automatically fix in code:
-
-1. If you experience `Clibsodium` module errors, retrying the build should find it afterwards after a few attempts. Once it is able to build once, it should stop misbehaving.
-1. For Xcode 12 releases before 12.2 beta 2, you will need to copy `libnfshared.dylib` from an older version of the Xcode 12 betas to run on the iOS 14 simulator. You can replicate the steps the [CI does to get compatibility](https://github.com/home-assistant/iOS/blob/master/.github/workflows/ci.yml).
 
 ## Code style
 
