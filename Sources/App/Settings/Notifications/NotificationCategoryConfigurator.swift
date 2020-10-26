@@ -176,33 +176,31 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             }
         }
 
-        if #available(iOS 12.0, *) {
-            self.form
-                +++ Section(
-                    header: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.header,
-                    footer: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.footer
-                ) {
-                    if category.isServerControlled {
-                        $0.hidden = true
-                    }
+        self.form
+            +++ Section(
+                header: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.header,
+                footer: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.footer
+            ) {
+                if category.isServerControlled {
+                    $0.hidden = true
                 }
+            }
 
-                <<< TextAreaRow {
-                    $0.tag = "categorySummaryFormat"
-                    if !newCategory && self.category.CategorySummaryFormat != "" {
-                        $0.value = self.category.CategorySummaryFormat
-                    } else {
-                        $0.value = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default
-                    }
-                }.onChange { row in
-                    // swiftlint:disable:next force_try
-                    try! self.realm.write {
-                        if let value = row.value {
-                            self.category.CategorySummaryFormat = value
-                        }
+            <<< TextAreaRow {
+                $0.tag = "categorySummaryFormat"
+                if !newCategory && self.category.CategorySummaryFormat != "" {
+                    $0.value = self.category.CategorySummaryFormat
+                } else {
+                    $0.value = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default
+                }
+            }.onChange { row in
+                // swiftlint:disable:next force_try
+                try! self.realm.write {
+                    if let value = row.value {
+                        self.category.CategorySummaryFormat = value
                     }
                 }
-        }
+            }
 
         self.form
             +++ MultivaluedSection(

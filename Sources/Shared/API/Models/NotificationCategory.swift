@@ -54,19 +54,10 @@ final public class NotificationCategory: Object, UpdatableModel {
 
         // both lowercase and uppercase since this is a point of confusion
         return [ Identifier.uppercased(), Identifier.lowercased() ].map { anIdentifier in
-            if #available(iOS 12.0, *) {
-                return UNNotificationCategory(identifier: anIdentifier, actions: allActions, intentIdentifiers: [],
-                                              hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
-                                              categorySummaryFormat: self.CategorySummaryFormat,
-                                              options: self.options)
-            } else if let placeholder = self.HiddenPreviewsBodyPlaceholder {
-                return UNNotificationCategory(identifier: anIdentifier, actions: allActions, intentIdentifiers: [],
-                                              hiddenPreviewsBodyPlaceholder: placeholder,
-                                              options: self.options)
-            } else {
-                return UNNotificationCategory(identifier: anIdentifier, actions: allActions,
-                                              intentIdentifiers: [], options: self.options)
-            }
+            return UNNotificationCategory(identifier: anIdentifier, actions: allActions, intentIdentifiers: [],
+                                          hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
+                                          categorySummaryFormat: self.CategorySummaryFormat,
+                                          options: self.options)
         }
     }
     #endif

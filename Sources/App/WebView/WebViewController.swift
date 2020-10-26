@@ -618,14 +618,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func updateWebViewSettings() {
         // iOS 14's `pageZoom` property is almost this, but not quite - it breaks the layout as well
-        if #available(iOS 12, *) {
-            // This is quasi-private API that has existed since pre-iOS 10, but the implementation
-            // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
-            // resizing the scrolling viewport.
-            let viewScale = Current.settingsStore.pageZoom.viewScaleValue
-            Current.Log.info("setting view scale to \(viewScale)")
-            webView.setValue(viewScale, forKey: "viewScale")
-        }
+        // This is quasi-private API that has existed since pre-iOS 10, but the implementation
+        // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
+        // resizing the scrolling viewport.
+        let viewScale = Current.settingsStore.pageZoom.viewScaleValue
+        Current.Log.info("setting view scale to \(viewScale)")
+        webView.setValue(viewScale, forKey: "viewScale")
     }
 }
 

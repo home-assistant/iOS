@@ -138,13 +138,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     row.title = L10n.SettingsDetails.General.PageZoom.title
                     row.options = SettingsStore.PageZoom.allCases
 
-                    if #available(iOS 12, *) {
-                        row.value = Current.settingsStore.pageZoom
-                        row.onChange { row in
-                            Current.settingsStore.pageZoom = row.value ?? .default
-                        }
-                    } else {
-                        row.hidden = true
+                    row.value = Current.settingsStore.pageZoom
+                    row.onChange { row in
+                        Current.settingsStore.pageZoom = row.value ?? .default
                     }
                 }
 
