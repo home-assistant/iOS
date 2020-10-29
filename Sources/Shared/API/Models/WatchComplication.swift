@@ -75,6 +75,8 @@ public class WatchComplication: Object, ImmutableMappable {
         name ?? Template.style
     }
 
+    @objc dynamic public var IsPrivate: Bool = false
+
     override public static func primaryKey() -> String? {
         return "identifier"
     }
@@ -96,6 +98,7 @@ public class WatchComplication: Object, ImmutableMappable {
         self.Family = try map.value("Family")
         self.identifier = try map.value("identifier")
         self.name = try map.value("name")
+        self.IsPrivate = try map.value("IsPrivate")
     }
 
     public func mapping(map: Map) {
@@ -105,6 +108,7 @@ public class WatchComplication: Object, ImmutableMappable {
         Family >>> map["Family"]
         identifier >>> map["identifier"]
         name >>> map["name"]
+        IsPrivate >>> map["IsPrivate"]
     }
 
     enum RenderedValueType: Hashable {

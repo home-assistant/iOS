@@ -41,7 +41,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         for complication: CLKComplication,
         withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void
     ) {
-        handler(.showOnLockScreen)
+        if template.IsPrivate {
+            handler(.hideOnLockScreen)
+        } else {
+            handler(.showOnLockScreen)
+        }
     }
 
     // MARK: - Timeline Population

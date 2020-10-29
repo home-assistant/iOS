@@ -147,6 +147,11 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
             $0.value = self.config.name
         }
 
+        <<< SwitchRow {
+            $0.title = L10n.Watch.Configurator.Rows.IsPrivate.title
+            $0.value = self.config.IsPrivate
+        }
+
         <<< PushRow<ComplicationTemplate> {
             $0.tag = "template"
             $0.title = L10n.Watch.Configurator.Rows.Template.title
