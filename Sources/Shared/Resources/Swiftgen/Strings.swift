@@ -2273,10 +2273,6 @@ public enum L10n {
           /// Display Name
           public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.display_name.title") }
         }
-        public enum IsPrivate {
-          /// Display Name
-          public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.is_private.title") }
-        }
         public enum FractionalValue {
           /// Fractional value
           public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.fractional_value.title") }
@@ -2318,6 +2314,10 @@ public enum L10n {
             /// Color
             public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.icon.color.title") }
           }
+        }
+        public enum IsPrivate {
+          /// Hide When Locked
+          public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.is_private.title") }
         }
         public enum Ring {
           /// Ring
