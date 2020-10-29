@@ -79,7 +79,7 @@ extension Realm {
         // 14 - 2020-10-29 v2020.8 (complication privacy)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 13,
+            schemaVersion: 14,
             migrationBlock: { migration, oldVersion in
                 Current.Log.info("migrating from \(oldVersion)")
                 if oldVersion < 9 {
