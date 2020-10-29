@@ -150,7 +150,7 @@ extension Realm {
 
                 if oldVersion < 14 {
                     migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                         newObject!["IsPrivate"] = false
+                         newObject?["IsPrivate"] = false
                     }
                 }
             },
