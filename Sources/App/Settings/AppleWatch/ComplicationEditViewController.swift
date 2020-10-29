@@ -53,6 +53,11 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 } else {
                     config.name = nil
                 }
+                if let IsPrivate = (form.rowBy(tag: "IsPrivate") as? SwitchRow)?.value {
+                    config.IsPrivate = IsPrivate
+                } else {
+                    config.IsPrivate = false
+                }
                 config.Template = displayTemplate
                 config.Data = getValuesGroupedBySection()
 
