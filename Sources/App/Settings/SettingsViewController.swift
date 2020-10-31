@@ -64,38 +64,23 @@ class SettingsViewController: FormViewController {
             self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
-        form +++ Section(L10n.Settings.StatusSection.header) {
-            $0.tag = "status"
-        }
-        <<< LabelRow("locationName") {
-            $0.title = L10n.Settings.StatusSection.LocationNameRow.title
-            $0.value = L10n.Settings.StatusSection.LocationNameRow.placeholder
-            if let locationName = prefs.string(forKey: "location_name") {
-                $0.value = locationName
-            }
-        }
-        <<< LabelRow("version") {
-            $0.title = L10n.Settings.StatusSection.VersionRow.title
-            $0.value = L10n.Settings.StatusSection.VersionRow.placeholder
-            if let version = prefs.string(forKey: "version") {
-                $0.value = version
-            }
+        form +++ HomeAssistantAccountRow {
+            $0.value = .init(
+                user: Current.settingsStore.authenticatedUser,
+                locationName: prefs.string(forKey: "location_name")
+            )
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                return ConnectionSettingsViewController()
+            }, onDismiss: nil)
         }
 
-        +++ Section(L10n.Settings.NavigationBar.title)
+        form +++ Section()
         <<< ButtonRow("generalSettings") {
             $0.title = L10n.Settings.GeneralSettingsButton.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "general"
                 return view
-            }, onDismiss: nil)
-        }
-
-        <<< ButtonRow {
-            $0.title = L10n.Settings.ConnectionSection.header
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                return ConnectionSettingsViewController()
             }, onDismiss: nil)
         }
 

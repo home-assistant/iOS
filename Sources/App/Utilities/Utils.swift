@@ -110,10 +110,13 @@ func setDefaults() {
 
 extension UIImage {
     func scaledToSize(_ size: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return newImage
+        UIGraphicsImageRenderer(
+            size: size,
+            format: with(UIGraphicsImageRendererFormat.preferred()) {
+                $0.opaque = imageRendererFormat.opaque
+            }
+        ).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
     }
 }

@@ -84,6 +84,7 @@
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
+		115EF6A72549152F0048597B /* AccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115EF6A62549152F0048597B /* AccountRow.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
@@ -198,6 +199,7 @@
 		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
 		11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */; };
 		11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */; };
+		11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C05F2C254919210031D038 /* AccountInitialsImage.swift */; };
 		11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
 		11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
 		11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628124B053A800031902 /* WebhookResponseUpdateSensors.swift */; };
@@ -934,6 +936,7 @@
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ManualPodLicenses.plist; sourceTree = "<group>"; };
 		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
+		115EF6A62549152F0048597B /* AccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRow.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1032,6 +1035,7 @@
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
 		11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.test.swift; sourceTree = "<group>"; };
 		11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
+		11C05F2C254919210031D038 /* AccountInitialsImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInitialsImage.swift; sourceTree = "<group>"; };
 		11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+RetryNetworking.swift"; sourceTree = "<group>"; };
 		11C4628124B053A800031902 /* WebhookResponseUpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateSensors.swift; sourceTree = "<group>"; };
 		11C4628724B109C000031902 /* WebhookResponseLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.swift; sourceTree = "<group>"; };
@@ -1958,6 +1962,8 @@
 				11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */,
 				11948E8824DA5D50006F5657 /* InfoLabelRow.swift */,
 				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
+				115EF6A62549152F0048597B /* AccountRow.swift */,
+				11C05F2C254919210031D038 /* AccountInitialsImage.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -4411,6 +4417,7 @@
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */,
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
+				115EF6A72549152F0048597B /* AccountRow.swift in Sources */,
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
@@ -4435,6 +4442,7 @@
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				B60221F8226D9AEE00E8DBFE /* PermissionButton.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
+				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				B616B29B227ED69500828165 /* DNSResolver.swift in Sources */,
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
