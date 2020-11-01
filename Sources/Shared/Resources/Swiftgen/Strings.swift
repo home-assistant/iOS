@@ -2315,9 +2315,9 @@ public enum L10n {
             public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.icon.color.title") }
           }
         }
-        public enum IsPrivate {
-          /// Hide When Locked
-          public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.is_private.title") }
+        public enum IsPublic {
+          /// Show When Locked
+          public static var title: String { return L10n.tr("Localizable", "watch.configurator.rows.is_public.title") }
         }
         public enum Ring {
           /// Ring

@@ -55,7 +55,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: matchedFamily.rawValue)
         }
 
-        if model?.IsPrivate == true {
+        if model?.IsPublic == false {
             handler(.hideOnLockScreen)
         } else {
             handler(.showOnLockScreen)

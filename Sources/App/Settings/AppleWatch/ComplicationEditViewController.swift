@@ -53,10 +53,10 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 } else {
                     config.name = nil
                 }
-                if let IsPrivate = (form.rowBy(tag: "IsPrivate") as? SwitchRow)?.value {
-                    config.IsPrivate = IsPrivate
+                if let IsPublic = (form.rowBy(tag: "IsPublic") as? SwitchRow)?.value {
+                    config.IsPublic = IsPublic
                 } else {
-                    config.IsPrivate = false
+                    config.IsPublic = true
                 }
                 config.Template = displayTemplate
                 config.Data = getValuesGroupedBySection()
@@ -189,9 +189,9 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
             cell.detailTextLabel?.text = row.value?.style
         }
 
-        <<< SwitchRow("IsPrivate") {
-            $0.title = L10n.Watch.Configurator.Rows.IsPrivate.title
-            $0.value = self.config.IsPrivate
+        <<< SwitchRow("IsPublic") {
+            $0.title = L10n.Watch.Configurator.Rows.IsPublic.title
+            $0.value = self.config.IsPublic
         }
 
         self.form.append(contentsOf: textSections)
