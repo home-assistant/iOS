@@ -16,6 +16,25 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
+    private func complication(for complication: CLKComplication) -> WatchComplication? {
+        // Helper function to get a complication using the correct ID depending on watchOS version
+
+        let model: WatchComplication?
+
+        if #available(watchOS 7, *), complication.identifier != CLKDefaultComplicationIdentifier {
+            // existing complications that were configured pre-7 have no identifier set
+            // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
+            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: complication.identifier)
+        } else {
+            // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
+            // with the family as the identifier, so we can rely on this code path for older OS and older complications
+            let matchedFamily = ComplicationGroupMember(family: complication.family)
+            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: matchedFamily.rawValue)
+        }
+
+        return model
+    } 
+
     private func template(for complication: CLKComplication) -> CLKComplicationTemplate? {
         Iconic.registerMaterialDesignIcons()
 
@@ -44,16 +63,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let model: WatchComplication?
 
-        if #available(watchOS 7, *), complication.identifier != CLKDefaultComplicationIdentifier {
-            // existing complications that were configured pre-7 have no identifier set
-            // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
-            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: complication.identifier)
-        } else {
-            // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
-            // with the family as the identifier, so we can rely on this code path for older OS and older complications
-            let matchedFamily = ComplicationGroupMember(family: complication.family)
-            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: matchedFamily.rawValue)
-        }
+        model = complication()
 
         if model?.IsPublic == false {
             handler(.hideOnLockScreen)
