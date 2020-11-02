@@ -902,3 +902,4 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";
 "watch.configurator.list.learn_more" = "Learn More";
 "watch.configurator.rows.display_name.title" = "Display Name";
+"watch.configurator.rows.is_public.title" = "Show When Locked";
