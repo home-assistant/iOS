@@ -16,7 +16,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
-    private func getComplicationModel(for complication: CLKComplication) -> WatchComplication? {
+    private func complicationModel(for complication: CLKComplication) -> WatchComplication? {
         // Helper function to get a complication using the correct ID depending on watchOS version
 
         let model: WatchComplication?
@@ -40,7 +40,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let model: WatchComplication?
 
-        model = getComplicationModel(for: complication)
+        model = complicationModel(for: complication)
 
         return model?.CLKComplicationTemplate(family: complication.family)
     }
@@ -54,7 +54,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let model: WatchComplication?
 
-        model = getComplicationModel(for: complication)
+        model = complicationModel(for: complication)
 
         if model?.IsPublic == false {
             handler(.hideOnLockScreen)
