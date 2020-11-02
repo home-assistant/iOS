@@ -5,6 +5,7 @@
 
 ## Screenshots
 <!-- If this is a user-facing change not in the frontend, please include screenshots in light and dark mode. -->
+
 ## Link to pull request in Documentation repository
 <!-- Pull requests that add, change or remove functionality must have a corresponding pull request in the Companion App Documentation repository (https://github.com/home-assistant/companion.home-assistant). Please add the number of this pull request after the "#" -->
 Documentation: home-assistant/companion.home-assistant#
