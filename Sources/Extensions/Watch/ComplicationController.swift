@@ -38,9 +38,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     private func template(for complication: CLKComplication) -> CLKComplicationTemplate? {
         Iconic.registerMaterialDesignIcons()
 
-        let model: WatchComplication?
-
-        model = complicationModel(for: complication)
+        let model = complicationModel(for: complication)
 
         return model?.CLKComplicationTemplate(family: complication.family)
     }
@@ -52,9 +50,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void
     ) {
 
-        let model: WatchComplication?
-
-        model = complicationModel(for: complication)
+        let model = complicationModel(for: complication)
 
         if model?.IsPublic == false {
             handler(.hideOnLockScreen)
