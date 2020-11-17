@@ -66,16 +66,6 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    func confirm(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
-        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Current.Log.error("Can't get a authenticated API \(error)")
-            completion(CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
-        completion(CallServiceIntentResponse(code: .ready, userActivity: nil))
-    }
-
     // swiftlint:disable:next function_body_length
     func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {

@@ -23,16 +23,6 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
         }
     }
 
-    func confirm(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
-        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Current.Log.error("Can't get a authenticated API \(error)")
-            completion(RenderTemplateIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
-        completion(RenderTemplateIntentResponse(code: .ready, userActivity: nil))
-    }
-
     func handle(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completion(RenderTemplateIntentResponse(code: .failureConnectivity, userActivity: nil))

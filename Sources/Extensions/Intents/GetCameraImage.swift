@@ -53,16 +53,6 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         }
     }
 
-    func confirm(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
-        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Current.Log.error("Can't get a authenticated API \(error)")
-            completion(GetCameraImageIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
-        completion(GetCameraImageIntentResponse(code: .ready, userActivity: nil))
-    }
-
     func handle(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completion(GetCameraImageIntentResponse(code: .failureConnectivity, userActivity: nil))
