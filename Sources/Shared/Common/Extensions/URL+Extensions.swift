@@ -17,4 +17,21 @@ extension URL {
         && user == otherURL.user
         && password == otherURL.password
     }
+
+    func adapting(url: URL) -> URL {
+        guard
+            let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
+            var futureComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            return url
+        }
+
+        futureComponents.host = components.host
+        futureComponents.port = components.port
+        futureComponents.scheme = components.scheme
+        futureComponents.user = components.user
+        futureComponents.password = components.password
+
+        return futureComponents.url ?? url
+    }
 }
