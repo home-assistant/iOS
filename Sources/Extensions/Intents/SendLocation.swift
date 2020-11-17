@@ -24,24 +24,6 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
         }
     }
 
-    func confirm(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
-
-        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Current.Log.error("Can't get a authenticated API \(error)")
-            completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
-        guard intent.location != nil else {
-            let resp = SendLocationIntentResponse(code: .failure, userActivity: nil)
-            resp.error = "Location is not set"
-            completion(resp)
-            return
-        }
-
-        completion(SendLocationIntentResponse(code: .ready, userActivity: nil))
-    }
-
     func handle(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
         Current.Log.verbose("Handling send location")
 
