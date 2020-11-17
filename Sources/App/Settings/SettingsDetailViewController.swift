@@ -266,7 +266,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 section.multivaluedRowToInsertAt = { [unowned self] _ -> ButtonRowWithPresent<ActionConfigurator> in
                     return self.getActionRow(nil)
                 }
-                section.addButtonProvider = { section in
+                section.addButtonProvider = { _ in
                     return ButtonRow {
                         $0.title = L10n.addButtonLabel
                         $0.cellStyle = .value1

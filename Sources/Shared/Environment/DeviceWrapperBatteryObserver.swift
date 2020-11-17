@@ -81,7 +81,7 @@ public class DeviceWrapperBatteryNotificationCenter {
 
     #if canImport(IOKit)
     private func addIOKitObserver(for notificationName: CFString) {
-        let callback: CFNotificationCallback = { center, observer, name, /* ignored */ _, /* ignored */ _ in
+        let callback: CFNotificationCallback = { _, observer, name, /* ignored */ _, /* ignored */ _ in
             // this block is a C block, which cannot weakly capture self, so we do the dance
             guard let observer = observer else {
                 Current.Log.error("unexpected nil observer for battery sensor")

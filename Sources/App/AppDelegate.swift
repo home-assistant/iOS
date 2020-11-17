@@ -834,11 +834,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 extension AppDelegate: MessagingDelegate {
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        Current.Log.info("Firebase registration token refreshed, new token: \(fcmToken)")
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        let loggableCurrent = Current.settingsStore.pushID ?? "(null)"
+        let loggableNew = fcmToken ?? "(null)"
 
-        if let existingToken = Current.settingsStore.pushID, existingToken != fcmToken {
-            Current.Log.warning("FCM token has changed from \(existingToken) to \(fcmToken)")
+        Current.Log.info("Firebase registration token refreshed, new token: \(loggableNew)")
+
+        if loggableCurrent != loggableNew {
+            Current.Log.warning("FCM token has changed from \(loggableCurrent) to \(loggableNew)")
         }
 
         Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")

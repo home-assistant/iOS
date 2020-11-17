@@ -144,7 +144,7 @@ class AuthenticationViewController: UIViewController {
         return Promise { seal in
             let sessionManager = HomeAssistantAPI.unauthenticatedManager
             let delegate: Alamofire.SessionDelegate = sessionManager.delegate
-            delegate.taskDidReceiveChallengeWithCompletion = { session, task, challenge, completion in
+            delegate.taskDidReceiveChallengeWithCompletion = { _, _, challenge, completion in
                 let method = challenge.protectionSpace.authenticationMethod
                 Current.Log.verbose("Handling challenge \(method)")
                 if method == NSURLAuthenticationMethodServerTrust {

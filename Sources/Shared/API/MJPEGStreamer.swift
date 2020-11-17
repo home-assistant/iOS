@@ -10,7 +10,7 @@ public class MJPEGStreamer {
 
     init(manager: Alamofire.SessionManager) {
         self.manager = manager
-        manager.delegate.dataTaskDidReceiveResponse = { [weak self] session, task, response ->
+        manager.delegate.dataTaskDidReceiveResponse = { [weak self] _, _, response ->
             URLSession.ResponseDisposition in
             guard let this = self else {
                 return .cancel

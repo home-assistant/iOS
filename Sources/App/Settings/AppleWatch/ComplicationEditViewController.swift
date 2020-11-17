@@ -135,7 +135,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
 
         let textSections = ComplicationTextAreas.allCases.map({ addComplicationTextAreaFormSection(location: $0) })
 
-        TextAreaRow.defaultCellSetup = { cell, row in
+        TextAreaRow.defaultCellSetup = { cell, _ in
             cell.textView.smartQuotesType = .no
             cell.textView.smartDashesType = .no
         }
