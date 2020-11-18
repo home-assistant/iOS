@@ -191,7 +191,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 return
             }
 
-            guard scheme.hasPrefix("http") else {
+            guard ["http", "https"].contains(scheme) else {
                 Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(currentURL)")
                 return
             }
