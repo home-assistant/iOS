@@ -123,10 +123,10 @@ class NotificationSettingsViewController: FormViewController {
                 footer: nil
             ) { section in
                 section.tag = "notification_categories"
-                section.multivaluedRowToInsertAt = { index in
+                section.multivaluedRowToInsertAt = { _ in
                     return self.getNotificationCategoryRow(nil)
                 }
-                section.addButtonProvider = { section in
+                section.addButtonProvider = { _ in
                     return ButtonRow {
                         $0.title = L10n.addButtonLabel
                         $0.cellStyle = .value1

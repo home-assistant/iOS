@@ -227,7 +227,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                     return self.getActionRow(nil)
                 }
 
-                section.addButtonProvider = { section in
+                section.addButtonProvider = { _ in
                     self.addButtonRow = ButtonRow {
                         $0.title = L10n.addButtonLabel
                         $0.cellStyle = .value1
