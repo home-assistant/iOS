@@ -407,22 +407,7 @@ public class ConnectionInfo: Codable {
 
     /// Rewrites the given URL to ensure that it points to the active API URL.
     public func adaptAPIURL(_ existingURL: URL) -> URL? {
-        guard var components = URLComponents(url: existingURL, resolvingAgainstBaseURL: false) else { return nil }
-
-        components.scheme = self.activeURL.scheme
-        components.host = self.activeURL.host
-        components.port = self.activeURL.port
-
-        return components.url
-    }
-
-    /// Check if the provided URL uses the active URL.
-    public func ensureURL(_ url: URL, _ apiURL: Bool = false) -> Bool {
-        if apiURL {
-            return url.scheme == self.activeAPIURL.scheme && url.host == self.activeAPIURL.host &&
-                url.port == self.activeAPIURL.port
-        }
-        return url == self.webhookURL
+        activeURL.adapting(url: existingURL)
     }
 
     // MARK: - RequestAdapter
