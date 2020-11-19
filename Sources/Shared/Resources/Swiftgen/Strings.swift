@@ -2223,6 +2223,8 @@ public enum L10n {
   }
 
   public enum Watch {
+    /// Placeholder
+    public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }
     public enum Configurator {
       public enum Delete {
         /// Delete Complication

@@ -78,8 +78,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         if let fromComplication = self.template(for: complication) {
             template = fromComplication
         } else {
-            Current.Log.error("failed to get template, providing error")
-            template = ComplicationGroupMember(family: complication.family).errorTemplate
+            Current.Log.info("no configured template, providing placeholder")
+
+            if #available(watchOS 7, *) {
+                template = ComplicationGroupMember(family: complication.family)
+                    .fallbackTemplate(for: complication.identifier)
+            } else {
+                template = ComplicationGroupMember(family: complication.family)
+                    .fallbackTemplate(for: nil)
+            }
         }
 
         let date = Date().encodedForComplication(family: complication.family) ?? Date()
@@ -99,7 +106,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
     @available(watchOS 7.0, *)
     func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
-        handler(Current.realm().objects(WatchComplication.self).map(\.complicationDescriptor))
+        let configured = Current.realm().objects(WatchComplication.self)
+            .map(\.complicationDescriptor)
+
+        let placeholders = ComplicationGroupMember.allCases
+            .map(\.placeholderComplicationDescriptor)
+
+        handler(configured + placeholders)
     }
 }
 

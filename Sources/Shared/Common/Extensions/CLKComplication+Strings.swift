@@ -179,6 +179,16 @@ public enum ComplicationGroupMember: String, Comparable {
             return .utilitarianSmallFlat
         }
     }
+
+    @available(watchOS 7.0, *)
+    public var placeholderComplicationDescriptor: CLKComplicationDescriptor {
+        CLKComplicationDescriptor(
+            identifier: "placeholder-" + rawValue,
+            displayName: L10n.Watch.placeholderComplicationName,
+            supportedFamilies: [ family ]
+        )
+    }
+
     #endif
 
 //    #if os(iOS)
@@ -340,10 +350,12 @@ public enum ComplicationGroupMember: String, Comparable {
     }
 
     #if os(watchOS)
-    public var errorTemplate: CLKComplicationTemplate {
+    // swiftlint:disable:next function_body_length
+    public func fallbackTemplate(for identifier: String?) -> CLKComplicationTemplate {
         let logoImage = UIImage(named: "RoundLogo")!
         let templateImage = UIImage(named: "TemplateLogo")!
         let hassColor = Constants.tintColor
+        let isPlaceholder = identifier?.starts(with: "placeholder") == true
 
         switch self {
         case .circularSmall:
@@ -361,7 +373,7 @@ public enum ComplicationGroupMember: String, Comparable {
             let imageTemplate = CLKComplicationTemplateGraphicCircularImage()
             imageTemplate.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
             template.circularTemplate = imageTemplate
-            template.textProvider = CLKSimpleTextProvider(text: "??")
+            template.textProvider = CLKSimpleTextProvider(text: isPlaceholder ? "HA" : "??")
             return template
         case .graphicCircular:
             let template = CLKComplicationTemplateGraphicCircularImage()
@@ -372,46 +384,90 @@ public enum ComplicationGroupMember: String, Comparable {
             template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
             return template
         case .graphicRectangular:
-            let template = CLKComplicationTemplateGraphicRectangularStandardBody()
-            template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-            template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
-            let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
-            template.body1TextProvider = CLKSimpleTextProvider(text: desc)
-            template.body2TextProvider = CLKSimpleTextProvider(text: "has not been configured")
-            return template
+            if isPlaceholder {
+                if #available(watchOS 7, *) {
+                    let template = CLKComplicationTemplateGraphicRectangularFullImage()
+                    template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
+                    return template
+                } else {
+                    let template = CLKComplicationTemplateGraphicRectangularLargeImage()
+                    template.textProvider = CLKSimpleTextProvider(text: "Home Assistant")
+                    template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
+                    return template
+                }
+            } else {
+                let template = CLKComplicationTemplateGraphicRectangularStandardBody()
+                template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
+                template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
+                let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
+                template.body1TextProvider = CLKSimpleTextProvider(text: desc)
+                template.body2TextProvider = CLKSimpleTextProvider(text: "has not been configured")
+                return template
+            }
         case .modularLarge:
-            let template = CLKComplicationTemplateModularLargeTallBody()
-            template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
-            let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
-            template.bodyTextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = hassColor
-            return template
+            if isPlaceholder {
+                let template = CLKComplicationTemplateModularLargeStandardBody()
+                template.headerTextProvider = CLKSimpleTextProvider(text: "Home Assistant")
+                template.body1TextProvider = CLKSimpleTextProvider(text: "Home Assistant")
+                template.tintColor = hassColor
+                return template
+            } else {
+                let template = CLKComplicationTemplateModularLargeTallBody()
+                template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
+                let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
+                template.bodyTextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                template.tintColor = hassColor
+                return template
+            }
         case .modularSmall:
-            let template = CLKComplicationTemplateModularSmallStackImage()
-            template.line1ImageProvider = CLKImageProvider(onePieceImage: templateImage)
-            let desc = ComplicationTemplate.ModularSmallStackImage.description
-            template.line2TextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = hassColor
-            return template
+            if isPlaceholder {
+                let template = CLKComplicationTemplateModularSmallSimpleImage()
+                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+                template.tintColor = hassColor
+                return template
+            } else {
+                let template = CLKComplicationTemplateModularSmallStackImage()
+                template.line1ImageProvider = CLKImageProvider(onePieceImage: templateImage)
+                let desc = ComplicationTemplate.ModularSmallStackImage.description
+                template.line2TextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                template.tintColor = hassColor
+                return template
+            }
         case .utilitarianLarge:
-            let template = CLKComplicationTemplateUtilitarianLargeFlat()
-            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
-            let desc = ComplicationTemplate.UtilitarianLargeFlat.description
-            template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = hassColor
-            return template
+            if isPlaceholder {
+                let template = CLKComplicationTemplateUtilitarianLargeFlat()
+                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+                template.textProvider = CLKSimpleTextProvider(text: "Home Assistant")
+                template.tintColor = hassColor
+                return template
+            } else {
+                let template = CLKComplicationTemplateUtilitarianLargeFlat()
+                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+                let desc = ComplicationTemplate.UtilitarianLargeFlat.description
+                template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                template.tintColor = hassColor
+                return template
+            }
         case .utilitarianSmall:
             let template = CLKComplicationTemplateUtilitarianSmallSquare()
             template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
             template.tintColor = hassColor
             return template
         case .utilitarianSmallFlat:
-            let template = CLKComplicationTemplateUtilitarianSmallFlat()
-            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
-            let desc = ComplicationTemplate.UtilitarianSmallFlat.description
-            template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = hassColor
-            return template
+            if isPlaceholder {
+                let template = CLKComplicationTemplateUtilitarianSmallFlat()
+                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+                template.textProvider = CLKSimpleTextProvider(text: "HA")
+                template.tintColor = hassColor
+                return template
+            } else {
+                let template = CLKComplicationTemplateUtilitarianSmallFlat()
+                template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+                let desc = ComplicationTemplate.UtilitarianSmallFlat.description
+                template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+                template.tintColor = hassColor
+                return template
+            }
         }
     }
     #endif
