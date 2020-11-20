@@ -162,7 +162,20 @@ class ZoneManagerCollectorTests: XCTestCase {
 
         XCTAssertEqual(event.eventType, .locationChange(locations))
         XCTAssertNil(event.associatedZone)
+    }
 
+    func testIgnoredRegions() {
+        let region1 = CLCircularRegion(center: .init(latitude: 1, longitude: 2), radius: 30, identifier: "1")
+        let region2 = CLCircularRegion(center: .init(latitude: 2, longitude: 1), radius: 30, identifier: "2")
+        collector.ignoreNextState(for: region1)
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region1)
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region2)
+        XCTAssertEqual(delegate.events, [.init(eventType: .region(region2, .inside), associatedZone: nil)])
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region1)
+        XCTAssertEqual(delegate.events, [
+            .init(eventType: .region(region2, .inside), associatedZone: nil),
+            .init(eventType: .region(region1, .outside), associatedZone: nil)
+        ])
     }
 }
 

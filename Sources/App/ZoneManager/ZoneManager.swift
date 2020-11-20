@@ -139,6 +139,8 @@ class ZoneManager {
                     "region": String(describing: region)
                 ]
             ))
+
+            collector.ignoreNextState(for: region)
             locationManager.startMonitoring(for: region)
         }
 
