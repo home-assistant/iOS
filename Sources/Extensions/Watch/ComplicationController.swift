@@ -35,12 +35,32 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         return model
     }
 
-    private func template(for complication: CLKComplication) -> CLKComplicationTemplate? {
+    private func template(for complication: CLKComplication) -> CLKComplicationTemplate {
         Iconic.registerMaterialDesignIcons()
 
-        let model = complicationModel(for: complication)
+        let template: CLKComplicationTemplate
 
-        return model?.CLKComplicationTemplate(family: complication.family)
+        if let generated = complicationModel(for: complication)?.CLKComplicationTemplate(family: complication.family) {
+            template = generated
+        } else {
+            Current.Log.info {
+                if #available(watchOS 7, *) {
+                    return "no configured template for \(complication.identifier), providing placeholder"
+                } else {
+                    return "no configured template for \(complication.family.rawValue), providing placeholder"
+                }
+            }
+
+            if #available(watchOS 7, *) {
+                template = ComplicationGroupMember(family: complication.family)
+                    .fallbackTemplate(for: complication.identifier)
+            } else {
+                template = ComplicationGroupMember(family: complication.family)
+                    .fallbackTemplate(for: nil)
+            }
+        }
+
+        return template
     }
 
     // MARK: - Timeline Configuration
@@ -73,24 +93,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             }
         }
 
-        let template: CLKComplicationTemplate
-
-        if let fromComplication = self.template(for: complication) {
-            template = fromComplication
-        } else {
-            Current.Log.info("no configured template, providing placeholder")
-
-            if #available(watchOS 7, *) {
-                template = ComplicationGroupMember(family: complication.family)
-                    .fallbackTemplate(for: complication.identifier)
-            } else {
-                template = ComplicationGroupMember(family: complication.family)
-                    .fallbackTemplate(for: nil)
-            }
-        }
-
         let date = Date().encodedForComplication(family: complication.family) ?? Date()
-        handler(.init(date: date, complicationTemplate: template))
+        handler(.init(date: date, complicationTemplate: template(for: complication)))
     }
 
     // MARK: - Placeholder Templates
