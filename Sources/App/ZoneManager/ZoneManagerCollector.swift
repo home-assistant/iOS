@@ -9,10 +9,17 @@ protocol ZoneManagerCollectorDelegate: AnyObject {
 
 protocol ZoneManagerCollector: CLLocationManagerDelegate {
     var delegate: ZoneManagerCollectorDelegate? { get set }
+    func ignoreNextState(for region: CLRegion)
 }
 
 class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     weak var delegate: ZoneManagerCollectorDelegate?
+
+    private var ignoredNextRegions = Set<CLRegion>()
+
+    func ignoreNextState(for region: CLRegion) {
+        ignoredNextRegions.insert(region)
+    }
 
     func locationManager(
         _ manager: CLLocationManager,
@@ -41,6 +48,11 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         didDetermineState state: CLRegionState,
         for region: CLRegion
     ) {
+        guard !ignoredNextRegions.contains(region) else {
+            ignoredNextRegions.remove(region)
+            return
+        }
+
         let zone = Current.realm()
             .objects(RLMZone.self)
             .first(where: {
