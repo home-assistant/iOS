@@ -109,6 +109,7 @@
 		117EB0CE2569AA6600049541 /* PushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB0CD2569AA6600049541 /* PushProvider.swift */; };
 		117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB15B2569AD4600049541 /* NotificationManager.swift */; };
 		117EB2462569C79800049541 /* NotificationAppPushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB2452569C79800049541 /* NotificationAppPushHandler.swift */; };
+		117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB15B2569AD4600049541 /* NotificationManager.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
 		11810D4B249EAF8D00E741A4 /* trans@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D41249EAF8C00E741A4 /* trans@3x.png */; };
 		11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D42249EAF8C00E741A4 /* trans@2x.png */; };
@@ -978,6 +979,7 @@
 		117EB0CD2569AA6600049541 /* PushProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushProvider.swift; sourceTree = "<group>"; };
 		117EB15B2569AD4600049541 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		117EB2452569C79800049541 /* NotificationAppPushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAppPushHandler.swift; sourceTree = "<group>"; };
+		117EB15B2569AD4600049541 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
 		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
 		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };

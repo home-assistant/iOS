@@ -119,6 +119,7 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(locationManager.monitoredRegions, currentRegions)
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
         XCTAssertEqual(locationManager.startMonitoringRegions.hackilySorted(), addedRegions.hackilySorted())
+        XCTAssertEqual(collector.ignoringNextStates, Set(addedRegions))
 
         // remove a zone
         try realm.write {
@@ -132,6 +133,7 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(locationManager.monitoredRegions, currentRegions)
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
         XCTAssertEqual(locationManager.startMonitoringRegions.hackilySorted(), addedRegions.hackilySorted())
+        XCTAssertEqual(collector.ignoringNextStates, Set(addedRegions))
 
         withExtendedLifetime(manager) { /* silences unused variable */ }
     }
@@ -409,7 +411,11 @@ private extension Array where Element: CLRegion {
 private class FakeCollector: NSObject, ZoneManagerCollector {
     var delegate: ZoneManagerCollectorDelegate?
 
+    var ignoringNextStates = Set<CLRegion>()
 
+    func ignoreNextState(for region: CLRegion) {
+        ignoringNextStates.insert(region)
+    }
 }
 
 private class FakeProcessor: ZoneManagerProcessor {
