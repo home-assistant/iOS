@@ -104,6 +104,7 @@
 		1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
+		117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB15B2569AD4600049541 /* NotificationManager.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
 		11810D4B249EAF8D00E741A4 /* trans@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D41249EAF8C00E741A4 /* trans@3x.png */; };
 		11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D42249EAF8C00E741A4 /* trans@2x.png */; };
@@ -956,6 +957,7 @@
 		1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProviderDependencies.test.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
+		117EB15B2569AD4600049541 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
 		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
 		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };
@@ -1887,6 +1889,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		117EB13E2569AD3000049541 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				117EB15B2569AD4600049541 /* NotificationManager.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2485,6 +2495,7 @@
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
+				117EB13E2569AD3000049541 /* Notifications */,
 				11AF1ED82528FBAA00AAE364 /* Onboarding */,
 				B69933961E232AF50054453D /* Resources */,
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
@@ -4397,6 +4408,7 @@
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
+				117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */,
 				1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
