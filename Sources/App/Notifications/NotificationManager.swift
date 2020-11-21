@@ -7,8 +7,15 @@ import XCGLogger
 import CallbackURLKit
 
 class NotificationManager: NSObject {
+    // Any because iOS 14+ requirement
+    private var appPushHandlers = [Any]()
+
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
+
+        if #available(iOS 14, *) {
+            appPushHandlers.append(NotificationAppPushHandler())
+        }
     }
 
     func setupFirebase() {
@@ -164,7 +171,6 @@ class NotificationManager: NSObject {
             }
         }
     }
-
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {

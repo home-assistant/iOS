@@ -108,6 +108,7 @@
 		117EB0702569A8B000049541 /* Extensions-PushProvider.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 117EB0662569A8B000049541 /* Extensions-PushProvider.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		117EB0CE2569AA6600049541 /* PushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB0CD2569AA6600049541 /* PushProvider.swift */; };
 		117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB15B2569AD4600049541 /* NotificationManager.swift */; };
+		117EB2462569C79800049541 /* NotificationAppPushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117EB2452569C79800049541 /* NotificationAppPushHandler.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
 		11810D4B249EAF8D00E741A4 /* trans@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D41249EAF8C00E741A4 /* trans@3x.png */; };
 		11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D42249EAF8C00E741A4 /* trans@2x.png */; };
@@ -976,6 +977,7 @@
 		117EB0CC2569AA5300049541 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		117EB0CD2569AA6600049541 /* PushProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushProvider.swift; sourceTree = "<group>"; };
 		117EB15B2569AD4600049541 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		117EB2452569C79800049541 /* NotificationAppPushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAppPushHandler.swift; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
 		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
 		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };
@@ -1943,6 +1945,7 @@
 			isa = PBXGroup;
 			children = (
 				117EB15B2569AD4600049541 /* NotificationManager.swift */,
+				117EB2452569C79800049541 /* NotificationAppPushHandler.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -3468,7 +3471,6 @@
 					B657A8E51CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -4520,6 +4522,7 @@
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
+				117EB2462569C79800049541 /* NotificationAppPushHandler.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
@@ -5428,6 +5431,9 @@
 			baseConfigurationReference = D8478C2569C2DF4B8286F1A3 /* Pods-iOS-Extensions-PushProvider.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushProvider.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = QMQYCKL255;
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5436,6 +5442,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Local Developer: Push Provider";
 				PROVISIONING_SUFFIX = .PushProvider;
 				SKIP_INSTALL = YES;
 			};
@@ -5753,6 +5760,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = QMQYCKL255;
 				ENV_URL_HANDLER = "homeassistant-dev";
 				INFOPLIST_FILE = Sources/App/Resources/Info.plist;
 				LAUNCHSCREEN_STORYBOARD = "Debug LaunchScreen";
@@ -5783,6 +5793,8 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
+				PROVISIONING_PROFILE_SPECIFIER = "Local Developer: Main App";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
