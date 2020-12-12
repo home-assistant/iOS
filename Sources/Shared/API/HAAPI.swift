@@ -269,7 +269,7 @@ public class HomeAssistantAPI {
                 return (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
             }
 
-            dataManager.download(finalURL, to: destination).responseData { downloadResponse in
+            dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
                 switch downloadResponse.result {
                 case .success:
                     seal.fulfill(downloadResponse.destinationURL!)
