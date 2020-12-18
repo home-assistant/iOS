@@ -7,6 +7,6 @@
 "NSPhotoLibraryUsageDescription" = "Přístup do knihovny fotografií je nutný k tomu, aby bylo možné ukládat fotografie z webového zobrazení.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Odeslat polohu";
 "NSLocalNetworkUsageDescription" = "Vyhledat a komunikovat s vaší instanci Home Assistant";
-"NFCReaderUsageDescription" = "Čtení a zápis NFC tagů umožňuje spouštět události.";
+"NFCReaderUsageDescription" = "Čtení a zápis NFC štítků umožňuje spouštět události.";
 "NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";

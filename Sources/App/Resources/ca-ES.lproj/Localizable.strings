@@ -902,3 +902,10 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "watch.configurator.list.description" = "Configureu una nova complicació mitjançant el botó Afegeix. Un cop desat, podeu triar-lo al vostre Apple Watch o a l'aplicació Watch.";
 "watch.configurator.list.learn_more" = "Més informació";
 "watch.configurator.rows.display_name.title" = "Nom de visualització";
+"watch.configurator.rows.is_public.title" = "Show When Locked";
+"watch.placeholder_complication_name" = "Placeholder";
+"notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.parser.url.no_url" = "No URL was provided.";
+"notification_service.parser.url.invalid_url" = "The given URL was invalid.";
+"notification_service.parser.camera.no_entity" = "No entity_id was provided.";
+"notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
