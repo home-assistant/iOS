@@ -224,11 +224,16 @@ public class HomeAssistantAPI {
         )
     }
 
-    private func getTemporaryDownloadDataPath(_ downloadingURL: URL) -> URL? {
-        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+    public func temporaryDownloadFileURL(appropriateFor downloadingURL: URL? = nil) -> URL? {
+        let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             // using a random file name so we always have one, see https://github.com/home-assistant/iOS/issues/1068
             .appendingPathComponent(UUID().uuidString, isDirectory: false)
-            .appendingPathExtension(downloadingURL.pathExtension)
+
+        if let downloadingURL = downloadingURL {
+            return url.appendingPathExtension(downloadingURL.pathExtension)
+        } else {
+            return url
+        }
     }
 
     private func removeOldDownloadDirectory() {
@@ -259,7 +264,7 @@ public class HomeAssistantAPI {
                 Current.Log.verbose("Data download needs auth!")
             }
 
-            guard let downloadPath = self.getTemporaryDownloadDataPath(finalURL) else {
+            guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
                 Current.Log.error("Unable to get download path!")
                 seal.reject(APIError.cantBuildURL)
                 return

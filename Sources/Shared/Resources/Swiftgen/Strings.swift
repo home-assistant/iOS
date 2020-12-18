@@ -607,6 +607,25 @@ public enum L10n {
     }
   }
 
+  public enum NotificationService {
+    /// Failed to load attachment
+    public static var failedToLoad: String { return L10n.tr("Localizable", "notification_service.failed_to_load") }
+    public enum Parser {
+      public enum Camera {
+        /// entity_id provided was invalid.
+        public static var invalidEntity: String { return L10n.tr("Localizable", "notification_service.parser.camera.invalid_entity") }
+        /// No entity_id was provided.
+        public static var noEntity: String { return L10n.tr("Localizable", "notification_service.parser.camera.no_entity") }
+      }
+      public enum Url {
+        /// The given URL was invalid.
+        public static var invalidUrl: String { return L10n.tr("Localizable", "notification_service.parser.url.invalid_url") }
+        /// No URL was provided.
+        public static var noUrl: String { return L10n.tr("Localizable", "notification_service.parser.url.no_url") }
+      }
+    }
+  }
+
   public enum NotificationsConfigurator {
     /// Identifier
     public static var identifier: String { return L10n.tr("Localizable", "notifications_configurator.identifier") }
