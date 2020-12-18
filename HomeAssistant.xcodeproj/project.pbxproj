@@ -258,6 +258,19 @@
 		11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD924F5FE0600314D85 /* SceneActivity.swift */; };
 		11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */; };
 		11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */; };
+		11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
+		11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
+		11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */; };
+		11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */; };
+		11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */; };
+		11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F25D25871D6000F61F7C /* NotificationAttachmentParserCamera.swift */; };
+		11F2F25F25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F25D25871D6000F61F7C /* NotificationAttachmentParserCamera.swift */; };
+		11F2F26E25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F26D25871D8200F61F7C /* NotificationAttachmentParserURL.swift */; };
+		11F2F26F25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F26D25871D8200F61F7C /* NotificationAttachmentParserURL.swift */; };
+		11F2F27E258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F27D258725D300F61F7C /* NotificationAttachmentErrorImage.swift */; };
+		11F2F27F258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F27D258725D300F61F7C /* NotificationAttachmentErrorImage.swift */; };
+		11F2F2A92587288200F61F7C /* NotificationAttachmentParserCamera.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2A82587288200F61F7C /* NotificationAttachmentParserCamera.test.swift */; };
+		11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */; };
 		11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
 		11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
 		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
@@ -1077,6 +1090,14 @@
 		11EFCDD924F5FE0600314D85 /* SceneActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneActivity.swift; sourceTree = "<group>"; };
 		11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSceneDelegate.swift; sourceTree = "<group>"; };
+		11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.swift; sourceTree = "<group>"; };
+		11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.test.swift; sourceTree = "<group>"; };
+		11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParser.swift; sourceTree = "<group>"; };
+		11F2F25D25871D6000F61F7C /* NotificationAttachmentParserCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserCamera.swift; sourceTree = "<group>"; };
+		11F2F26D25871D8200F61F7C /* NotificationAttachmentParserURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserURL.swift; sourceTree = "<group>"; };
+		11F2F27D258725D300F61F7C /* NotificationAttachmentErrorImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentErrorImage.swift; sourceTree = "<group>"; };
+		11F2F2A82587288200F61F7C /* NotificationAttachmentParserCamera.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserCamera.test.swift; sourceTree = "<group>"; };
+		11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserURL.test.swift; sourceTree = "<group>"; };
 		11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapperBatteryObserver.swift; sourceTree = "<group>"; };
 		11F3B85524C4279700642676 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		11F3B85624C4279700642676 /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
@@ -2158,6 +2179,28 @@
 			path = Scenes;
 			sourceTree = "<group>";
 		};
+		11F2F21725871C1700F61F7C /* NotificationAttachments */ = {
+			isa = PBXGroup;
+			children = (
+				11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */,
+				11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */,
+				11F2F25D25871D6000F61F7C /* NotificationAttachmentParserCamera.swift */,
+				11F2F26D25871D8200F61F7C /* NotificationAttachmentParserURL.swift */,
+				11F2F27D258725D300F61F7C /* NotificationAttachmentErrorImage.swift */,
+			);
+			path = NotificationAttachments;
+			sourceTree = "<group>";
+		};
+		11F2F28D2587285300F61F7C /* NotificationAttachment */ = {
+			isa = PBXGroup;
+			children = (
+				11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */,
+				11F2F2A82587288200F61F7C /* NotificationAttachmentParserCamera.test.swift */,
+				11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */,
+			);
+			path = NotificationAttachment;
+			sourceTree = "<group>";
+		};
 		11F3D74F2495433800C05BBA /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
@@ -2870,6 +2913,7 @@
 				11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */,
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
 				1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */,
+				11F2F28D2587285300F61F7C /* NotificationAttachment */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2989,6 +3033,7 @@
 			isa = PBXGroup;
 			children = (
 				D0EEF326214DF31D00D1D360 /* Notifications.swift */,
+				11F2F21725871C1700F61F7C /* NotificationAttachments */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -4541,6 +4586,7 @@
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
+				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
@@ -4551,6 +4597,7 @@
 				11AF4D1A249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				11F855DB24DF6C7A0018013E /* IconDrawable.swift in Sources */,
+				11F2F25F25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */,
 				B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				11AF4D23249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
@@ -4618,7 +4665,9 @@
 				B672334E225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				11C4628F24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
+				11F2F26F25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
 				11F3B85A24C4279700642676 /* Zone.swift in Sources */,
+				11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
 				119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */,
@@ -4647,6 +4696,7 @@
 				11F855D924DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */,
 				11AF4D20249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
+				11F2F27F258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
 				B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */,
 				1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
@@ -4720,6 +4770,7 @@
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
 				B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
+				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
@@ -4782,9 +4833,11 @@
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,
+				11F2F27E258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
 				B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */,
 				116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */,
+				11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
 				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
@@ -4792,10 +4845,12 @@
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,
 				D0EEF316214DD7A400D1D360 /* Config.swift in Sources */,
+				11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11F3B85724C4279700642676 /* Entity.swift in Sources */,
 				11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */,
 				11EE9B5424C62EB300404AF8 /* RealmScene.swift in Sources */,
+				11F2F26E25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
 				D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */,
 				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,
 				118261F724F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */,
@@ -4815,6 +4870,7 @@
 				11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */,
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
+				11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
 				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
@@ -4831,9 +4887,11 @@
 				1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */,
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
 				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
+				11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */,
 				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
 				11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */,
+				11F2F2A92587288200F61F7C /* NotificationAttachmentParserCamera.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				1104FD07253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
