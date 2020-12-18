@@ -112,8 +112,8 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
-            //if annotation is not an MKPointAnnotation (eg. MKUserLocation),
-            //return nil so map draws default view for it (eg. blue dot)...
+            // if annotation is not an MKPointAnnotation (eg. MKUserLocation),
+            // return nil so map draws default view for it (eg. blue dot)...
             return nil
         }
 

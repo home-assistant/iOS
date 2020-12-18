@@ -8,41 +8,45 @@ module Fastlane
         project_identifier = params[:project_identifier]
         destination = params[:destination]
         clean_destination = params[:clean_destination]
-        include_comments = params[:include_comments] ? 1 : 0
-        use_original = params[:use_original] ? 1 : 0
+        include_comments = params[:include_comments]
+        original_filenames = params[:use_original]
 
-        request_data = {
-          api_token: token,
-          id: project_identifier,
-          type: "strings",
-          use_original: use_original,
+        body = {
+          format: "ios_sdk",
+          original_filenames: original_filenames,
           bundle_filename: "Localization.zip",
           bundle_structure: "%LANG_ISO%.lproj/Localizable.%FORMAT%",
-          ota_plugin_bundle: 0,
-          export_empty: "base",
-          include_comments: include_comments
+          export_empty_as: "base",
+          export_sort: "first_added",
+          include_comments: include_comments,
+          replace_breaks: false
         }
 
-        languages = params[:languages]
-        if languages.kind_of? Array then
-          request_data["langs"] = languages.to_json
+        filter_langs = params[:languages]
+        if filter_langs.kind_of? Array then
+          body["filter_langs"] = filter_langs
         end
 
-        uri = URI("https://api.lokalise.co/api/project/export")
+        tags = params[:tags]
+        if tags.kind_of? Array then
+          body["include_tags"] = tags
+        end
+
+        uri = URI("https://api.lokalise.com/api2/projects/#{project_identifier}/files/download")
         request = Net::HTTP::Post.new(uri)
-        request.set_form_data(request_data)
+        request.body = body.to_json
+        request.add_field("x-api-token", token)
 
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         response = http.request(request)
 
-
         jsonResponse = JSON.parse(response.body)
         UI.error "Bad response 🉐\n#{response.body}" unless jsonResponse.kind_of? Hash
-        if jsonResponse["response"]["status"] == "success" && jsonResponse["bundle"]["file"].kind_of?(String)  then
+        if response.code == "200" && jsonResponse["bundle_url"].kind_of?(String)  then
           UI.message "Downloading localizations archive 📦"
           FileUtils.mkdir_p("lokalisetmp")
-          fileURL = jsonResponse["bundle"]["full_file"]
+          fileURL = jsonResponse["bundle_url"]
           uri = URI(fileURL)
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = true
@@ -59,9 +63,9 @@ module Fastlane
           else
             UI.error "Response did not include ZIP"
           end
-        elsif jsonResponse["response"]["status"] == "error"
-          code = jsonResponse["response"]["code"]
-          message = jsonResponse["response"]["message"]
+        elsif jsonResponse["error"].kind_of? Hash
+          code = jsonResponse["error"]["code"]
+          message = jsonResponse["error"]["message"]
           UI.error "Response error code #{code} (#{message}) 📟"
         else
           UI.error "Bad response 🉐\n#{jsonResponse}"
@@ -147,7 +151,15 @@ module Fastlane
                                        default_value: false,
                                        verify_block: proc do |value|
                                          UI.user_error! "Use original should be true of false." unless [true, false].include?(value)
-                                        end)
+                                        end),
+            FastlaneCore::ConfigItem.new(key: :tags,
+                                        description: "Include only the keys tagged with a given set of tags",
+                                        optional: true,
+                                        is_string: false,
+                                        verify_block: proc do |value|
+                                          UI.user_error! "Tags should be passed as array" unless value.kind_of? Array
+                                        end),
+
         ]
       end
 

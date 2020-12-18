@@ -23,7 +23,7 @@ module Fastlane
           metadata = get_metadata_itunes_connect()
           add_languages = params[:add_languages]
           override_translation = params[:override_translation]
-          if add_languages == true 
+          if add_languages == true
             create_languages(metadata.keys, true)
           end
           if override_translation == true
@@ -37,7 +37,7 @@ module Fastlane
           metadata = get_metadata_google_play()
           add_languages = params[:add_languages]
           override_translation = params[:override_translation]
-          if add_languages == true 
+          if add_languages == true
             create_languages(metadata.keys, false)
           end
           if override_translation == true
@@ -62,13 +62,13 @@ module Fastlane
         metadata.each { |language, translations|
           other_translations = other_metadata[language]
           filtered_translations = {}
-          
+
           if other_translations != nil && other_translations.empty? == false
             translations.each { |key, value|
               other_value = other_translations[key]
               filtered_translations[key] = value unless other_value != nil && other_value.empty? == false
             }
-          else 
+          else
             filtered_translations = translations
           end
 
@@ -96,7 +96,7 @@ module Fastlane
             if translations.empty? == false
               translation = translations[key]
               final_translations[lang] = translation if translation != nil && translation.empty? == false
-            end 
+            end
           }
 
           config[parameter.to_sym] = final_translations
@@ -127,7 +127,7 @@ module Fastlane
             if translations.empty? == false
               translation = translations[key]
               final_translations[lang] = translation if translation != nil && translation.empty? == false
-            end 
+            end
           }
 
           translations[parameter.to_sym] = final_translations
@@ -159,10 +159,10 @@ module Fastlane
           id: @params[:project_identifier]
         }.merge(data)
 
-        uri = URI("https://api.lokalise.co/api/#{path}")
+        uri = URI("https://api.lokalise.com/api/#{path}")
         request = Net::HTTP::Post.new(uri)
         request.set_form_data(request_data)
-  
+
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         response = http.request(request)
@@ -181,13 +181,13 @@ module Fastlane
         return jsonResponse
       end
 
-      def self.upload_metadata(metadata_keys, metadata)
-        
+      def self.upload_metadata(metadata_keys, for_itunes, metadata)
+
         keys = []
 
         metadata_keys.each do |key, value|
-          key = make_key_object_from_metadata(key, metadata)
-          if key 
+          key = make_key_object_from_metadata(key, metadata, for_itunes)
+          if key
             keys << key
           end
         end
@@ -219,7 +219,7 @@ module Fastlane
             key_data["translations"][fix_language_name(iso_code, for_itunes, true)] = translation
           end
         }
-        unless key_data["translations"].empty? 
+        unless key_data["translations"].empty?
           return key_data
         else
           return nil
@@ -247,7 +247,7 @@ module Fastlane
               metadata_key_file_itunes().each { |key, file|
                 populate_hash_key_from_file(language_metadata, key, language_directory + "/#{file}.txt")
               }
-            else 
+            else
               metadata_key_file_googleplay().each { |key, file|
                 if file == "changelogs"
                   changelog_directory = "#{folder}#{iso_code}/changelogs"
@@ -255,7 +255,7 @@ module Fastlane
                   collectedFiles = files.collect { |s| s.partition(".").first.to_i }
                   sortedFiles = collectedFiles.sort
                   populate_hash_key_from_file(language_metadata, key, language_directory + "/changelogs/#{sortedFiles.last}.txt")
-                else 
+                else
                   populate_hash_key_from_file(language_metadata, key, language_directory + "/#{file}.txt")
                 end
               }
@@ -277,9 +277,9 @@ module Fastlane
         response = make_request("string/list", data)
 
         if for_itunes
-          valid_languages = itunes_connect_languages_in_lokalise() 
+          valid_languages = itunes_connect_languages_in_lokalise()
         else
-          valid_languages = google_play_languages_in_lokalise()        
+          valid_languages = google_play_languages_in_lokalise()
         end
         metadata = {}
 
@@ -289,7 +289,7 @@ module Fastlane
             translation_objects.each { |object|
               key = object["key"]
               translation = object["translation"]
-              if valid_keys.include?(key) && translation != nil && translation.empty? == false 
+              if valid_keys.include?(key) && translation != nil && translation.empty? == false
                 translations[key] = translation
               end
             }
@@ -323,7 +323,7 @@ module Fastlane
           hash[key] = text unless text.empty?
         rescue => exception
           raise exception
-        end        
+        end
       end
 
       def self.metadata_keys_itunes()
@@ -355,14 +355,14 @@ module Fastlane
       end
 
       def self.itunes_connect_languages_in_lokalise()
-        return itunes_connect_languages().map { |lang| 
-          fix_language_name(lang, true, true) 
+        return itunes_connect_languages().map { |lang|
+          fix_language_name(lang, true, true)
         }
       end
 
       def self.google_play_languages_in_lokalise()
-        return google_play_languages().map { |lang| 
-          fix_language_name(lang, false, true) 
+        return google_play_languages().map { |lang|
+          fix_language_name(lang, false, true)
         }
       end
 
@@ -456,6 +456,7 @@ module Fastlane
           'mn-MN',
           'ne-NP',
           'no',
+          'no-NO',
           'fa',
           'pl',
           'pt-BR',
@@ -489,7 +490,7 @@ module Fastlane
             name = "de" if name == "de_DE"
             name = "es" if name == "es_ES"
             name = "fr" if name == "fr_FR"
-          else 
+          else
             name = name.gsub("_","-")
             name = "en-US" if name == "en"
             name = "de-DE" if name == "de"
@@ -520,7 +521,7 @@ module Fastlane
             name = "pl" if name == "pl_PL"
             name = "si" if name == "si_LK"
             name = "sl_SI" if name == "sl"
-          else 
+          else
             name = name.gsub("_","-")
             name = "tr-TR" if name == "tr"
             name = "hy-AM" if name == "hy"
@@ -557,7 +558,7 @@ module Fastlane
       end
 
       def self.details
-        "This action scans fastlane/metadata folder and uploads metadata to lokalise.co"
+        "This action scans fastlane/metadata folder and uploads metadata to lokalise.com"
       end
 
       def self.available_options

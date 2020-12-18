@@ -224,7 +224,6 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
     }
 
     private func locationPermissionSection() -> Section {
-        // swiftlint:disable:next nesting
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
             let section: Section
 

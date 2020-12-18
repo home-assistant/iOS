@@ -1,8 +1,7 @@
 import Foundation
 
 // swiftlint:disable type_body_length
-
-//via https://github.com/home-assistant/frontend/blob/92d30a889663008317f7a28faa65beea025f0bfd/src/components/ha-icon.ts
+// https://github.com/home-assistant/frontend/blob/92d30a889663008317f7a28faa65beea025f0bfd/src/components/ha-icon.ts
 struct MDIMigration {
     func migrate(icon old: String) -> String {
         if let updated = renamed[old] {
