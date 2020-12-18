@@ -25,7 +25,7 @@ module Fastlane
           data: keysObjects.to_json
         }
 
-        uri = URI("https://api.lokalise.co/api/string/set")
+        uri = URI("https://api.lokalise.com/api/string/set")
         request = Net::HTTP::Post.new(uri)
         request.set_form_data(request_data)
 

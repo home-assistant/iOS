@@ -604,7 +604,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     private func locationPermissionRow() -> BaseRow {
-        // swiftlint:disable:next nesting
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
             let row: LocationPermissionRow
 
