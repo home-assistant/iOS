@@ -1,5 +1,5 @@
 "4qQ-ND-WGB.text" = "Prohledávání vaší sítě pro Home Assistant";
-"5td-Yc-nnx.text" = "Nejpokročilejší aplikace Home Automation pro iOS";
+"5td-Yc-nnx.text" = "Nejpokročilejší aplikace pro domácí automatizaci pro iOS";
 "87t-Ca-ZJb.normalTitle" = "Chyba";
 "8JC-7Y-FvP.text" = "http://homeassistant.local:8123";
 "CIS-8C-niN.text" = "Uh Oh!";
@@ -25,10 +25,10 @@
 "gld-QQ-oTD.normalTitle" = "Připojit";
 "jrL-9x-fFX.normalTitle" = "Pokračovat";
 "lM3-aA-jqO.text" = "Ověřování";
-"mse-YA-DiV.text" = "Vítejte v Home Assistant společnosti!";
+"mse-YA-DiV.text" = "Vítejte v Home Assistant Companion!";
 "nJr-sw-A9l.text" = "Ověřeno";
 "wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. ";
 "suf-pJ-Nle.normalTitle" = "Start Over";
-"7iT-bd-cdY.text" = "Ruční konfigurace";
+"7iT-bd-cdY.text" = "Ruční nastavení";
 "PIW-dY-j0P.text" = "Chcete-li pokračovat, zadejte URL adresu Home Assistent. Musí se jednat o plně vytvořenou URL adresu formátu \"http://homeassistant.local:8123\" (to znamená, že obsahuje schéma/protokol, název hostitele a port).";
 "xO0-K1-GJX.placeholder" = "např. http://homeassistant.local:8123";

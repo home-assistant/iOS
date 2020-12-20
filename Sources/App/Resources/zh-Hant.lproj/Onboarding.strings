@@ -15,7 +15,7 @@
 "SnL-y3-0HP.text" = "我的 Home Assistant";
 "TEX-zW-Byk.text" = "為了取得 Home Assistant Companion 最佳的使用經驗，請授予以下權限：";
 "Tqw-iY-A2S.normalTitle" = "更多資訊";
-"UKm-Ju-0Yr.text" = "連線至設備時發生錯誤，SSL 認證無效。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
+"UKm-Ju-0Yr.text" = "連線至裝置時發生錯誤，SSL 認證無效。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
 "XyQ-gy-yHY.text" = "已連接";
 "bP1-C8-fgs.text" = "整合已設定";
 "d97-7H-RBe.text" = "加密連線已建立";

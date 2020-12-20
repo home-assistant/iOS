@@ -902,3 +902,10 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "watch.configurator.list.description" = "Konfigurer en ny komplikasjon ved hjelp av Legg til-knappen. Når den er lagret, kan du velge den på Apple Watch eller i Watch-appen.";
 "watch.configurator.list.learn_more" = "Lære mer";
 "watch.configurator.rows.display_name.title" = "Visningsnavn";
+"watch.configurator.rows.is_public.title" = "Vis når den er låst";
+"watch.placeholder_complication_name" = "Plassholder";
+"notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.parser.url.no_url" = "No URL was provided.";
+"notification_service.parser.url.invalid_url" = "The given URL was invalid.";
+"notification_service.parser.camera.no_entity" = "No entity_id was provided.";
+"notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";

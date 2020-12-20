@@ -31,10 +31,10 @@
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.connected_to_sse_row.title" = "已連接";
 "settings.status_section.ios_component_loaded_row.title" = "iOS 元件已載入";
-"settings.status_section.device_tracker_component_loaded_row.title" = "追蹤設備元件已載入";
+"settings.status_section.device_tracker_component_loaded_row.title" = "追蹤裝置元件已載入";
 "settings.status_section.notify_platform_loaded_row.title" = "iOS 通知平台已載入";
-"settings.device_id_section.footer" = "設備 ID 為傳送座標更新至 Home Assistant 時的識別之用，同時可作為推播訊息的傳送目標。";
-"settings.device_id_section.device_id_row.title" = "設備 ID";
+"settings.device_id_section.footer" = "裝置 ID 為傳送座標更新至 Home Assistant 時的識別之用，同時可作為推播訊息的傳送目標。";
+"settings.device_id_section.device_id_row.title" = "裝置 ID";
 "settings.general_settings_button.title" = "一般設定";
 "settings.details_section.enable_location_row.title" = "啟用座標追蹤";
 "settings.details_section.location_settings_row.title" = "座標設定";
@@ -42,7 +42,7 @@
 "settings.details_section.notification_settings_row.title" = "通知訊息設定";
 "settings.reset_section.reset_row.title" = "重置";
 "settings.reset_section.reset_alert.title" = "重置";
-"settings.reset_section.reset_alert.message" = "你的設定將被重置，且此設備將從推播通知及 Home Assistant 設定中被移除。";
+"settings.reset_section.reset_alert.message" = "你的設定將被重置，且此裝置將從推播通知及 Home Assistant 設定中被移除。";
 "settings_details.general.title" = "一般設定";
 "settings_details.general.chrome.title" = "使用 Chrome 開啟連結";
 "settings_details.location.title" = "座標設定";
@@ -53,7 +53,7 @@
 "settings_details.location.notifications.beacon_exit.title" = "透過 iBeacon 通知已離開區域";
 "settings_details.location.notifications.location_change.title" = "顯著座標變化通知";
 "settings_details.location.notifications.background_fetch.title" = "背景獲取推播提示";
-"settings_details.location.zones.enter_exit_tracked.title" = "進入或離開 追蹤設備功能";
+"settings_details.location.zones.enter_exit_tracked.title" = "進入或離開 追蹤裝置功能";
 "settings_details.location.zones.location.title" = "座標";
 "settings_details.location.zones.radius.title" = "半徑";
 "settings_details.location.zones.beacon.prop_not_set.value" = "未設定";
@@ -77,9 +77,9 @@
 "settings_details.notifications.badge_section.button.title" = "重置標記";
 "settings_details.notifications.badge_section.reset_alert.title" = "標記重置";
 "settings_details.notifications.badge_section.reset_alert.message" = "標記數字已重置為 0。";
-"permissions.location.message" = "我們使用此功能以通知\nHome Assistant 你的設備位置與狀態。";
-"permissions.notification.message" = "我們使用此功能\r以便傳送通知至你的設備。";
-"devices_map.title" = "設備與區域";
+"permissions.location.message" = "我們使用此功能以通知\nHome Assistant 你的裝置位置與狀態。";
+"permissions.notification.message" = "我們使用此功能\r以便傳送通知至你的裝置。";
+"devices_map.title" = "裝置與區域";
 "devices_map.map_types.standard" = "標準圖";
 "devices_map.map_types.hybrid" = "綜合圖層";
 "devices_map.map_types.satellite" = "衛星圖";
@@ -194,7 +194,7 @@
 "notifications_configurator.action.rows.destructive.title" = "Desctructive";
 "notifications_configurator.action.rows.destructive.footer" = "開啟後、觸發動作按鈕將會以特殊標明顯示，以表示正在執行 Destructive 任務。";
 "notifications_configurator.action.rows.authentication_required.title" = "需要驗證";
-"notifications_configurator.action.rows.authentication_required.footer" = "當使用者選擇此選項操作，系統將會提示使用者解鎖設備。解鎖後，Home Assistant 將會通知所選擇的觸發動作。";
+"notifications_configurator.action.rows.authentication_required.footer" = "當使用者選擇此選項操作，系統將會提示使用者解鎖裝置。解鎖後，Home Assistant 將會通知所選擇的觸發動作。";
 "notifications_configurator.category.navigation_bar.title" = "類別編輯器";
 "notifications_configurator.category.rows.name.title" = "名稱";
 "notifications_configurator.category.rows.actions.header" = "Actions";
@@ -412,7 +412,7 @@
 "watch.configurator.sections.ring.header" = "圓環";
 "watch.configurator.sections.ring.footer" = "文字周圍的圓環顯示進度。";
 "permissions.location.initial.title" = "允許座標存取？";
-"permissions.location.initial.message" = "需要獲得您的允許\r\以供 Home Assistant 使用您的設備座標與狀態。";
+"permissions.location.initial.message" = "需要獲得您的允許\r\以供 Home Assistant 使用您的裝置座標與狀態。";
 "permissions.location.initial.button.allow" = "允許";
 "permissions.location.initial.button.deny" = "拒絕";
 "permissions.location.reenable.title" = "重啟座標存取？";
@@ -428,7 +428,7 @@
 "permissions.motion.reenable.button.allow" = "重啟";
 "permissions.motion.reenable.button.deny" = "保持關閉";
 "permissions.notification.initial.title" = "允許訊息通知？";
-"permissions.notification.initial.message" = "需要獲得您的允許\r\方能傳送通知至指定的設備。";
+"permissions.notification.initial.message" = "需要獲得您的允許\r\方能傳送通知至指定的裝置。";
 "permissions.notification.initial.button.allow" = "允許";
 "permissions.notification.initial.button.deny" = "拒絕";
 "permissions.notification.reenable.title" = "重啟訊息通知？";
@@ -518,11 +518,11 @@
 "settings.status_section.mobile_app_component_loaded_row.title" = "Mobile App 元件已載入";
 "settings_details.privacy.title" = "隱私權";
 "settings_details.privacy.analytics.title" = "Google Analytics";
-"settings_details.privacy.analytics.description" = "允許收集關於設備與 App 整合的基本資訊。將不會與 Google 分享任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.analytics.description" = "允許收集關於裝置與 App 整合的基本資訊。將不會與 Google 分享任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.messaging.title" = "Firebase 雲端訊息";
 "settings_details.privacy.messaging.description" = "必須啟用 Firebase 雲端訊息方能使用推播訊息。";
 "settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
-"settings_details.privacy.crashlytics.description" = "Crashlytics 允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本設備資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.crashlytics.description" = "Crashlytics 允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本裝置資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.performance_monitoring.title" = "Firebase 效能監視器";
 "settings_details.privacy.performance_monitoring.description" = "Firebase 效能監視器允許遠端監控應用程式效能，讓效能改善更為方便。必須重新啟動應用程式，變更的設定方能作用。";
 "settings.developer.sync_watch_context.title" = "同步手錶內容";
@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "加入新 SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "加入目前 SSID %@";
-"onboarding.connection_test_result.ssl_container.description" = "連線至設備時發生錯誤，%@。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
+"onboarding.connection_test_result.ssl_container.description" = "連線至裝置時發生錯誤，%@。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.authentication_unsupported.description" = "不支援認證類型%@。";
 "onboarding.connection_test_result.ssl_untrusted.description" = "SSL 認證未信任。%@。";
@@ -756,7 +756,7 @@
 "settings_sensors.detail.unique_id" = "單一 ID";
 "settings_sensors.detail.state" = "狀態";
 "settings_sensors.detail.attributes" = "屬性";
-"settings_sensors.detail.device_class" = "設備類別";
+"settings_sensors.detail.device_class" = "裝置類別";
 "settings_sensors.detail.icon" = "圖示";
 "settings_sensors.periodic_update.title" = "週期更新";
 "settings_sensors.periodic_update.description" = "開啟後、傳感器將會依設定於 App 於背景開啟時持續更新。";
@@ -764,7 +764,7 @@
 "location_change_notification.launch.body" = "已透過 App 啟動更新座標";
 "location_change_notification.periodic.body" = "已透過週期更新更新座標";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 串流不可用";
-"settings_details.general.device_name.title" = "設備名稱";
+"settings_details.general.device_name.title" = "裝置名稱";
 "settings_details.general.app_icon.enum.pride_bi" = "Pride：Bi";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride：8 色";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride：彩虹";
@@ -793,7 +793,7 @@
 "app_transfer_warning_notification.title" = "⚠️ 即將推出的重大 App 更新";
 "app_transfer_warning_notification.body" = "請開啟此通知以獲得 Home Assistant Companion 即將推出的重大更新通知";
 "settings_details.notifications.categories_synced.header" = "已同步類別";
-"settings_details.notifications.categories_synced.footer" = "於 .yaml 中定義的類別無法於設備上編輯。";
+"settings_details.notifications.categories_synced.footer" = "於 .yaml 中定義的類別無法於裝置上編輯。";
 "actions_configurator.visual_section.scene_defined" = "此動作由場景設定所控制。";
 "actions_configurator.visual_section.scene_hint_footer" = "同時也可藉由自訂變更以下場景屬性：%@";
 "settings_details.actions.scenes.customize_action" = "自訂";
@@ -808,13 +808,13 @@
 "onboarding.logged_out_from_move.duplicate_warning" = "為了避免產生重複的實體，於重新登入前、必須於此裝置的瀏覽器內移除現有的 mobile_app 整合。登入後重新啟動  HA 以更新服務。";
 "onboarding.logged_out_from_move.continue" = "繼續";
 "settings_details.privacy.analytics.generic_title" = "分析資料";
-"settings_details.privacy.analytics.generic_description" = "允許收集關於設備與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.analytics.generic_description" = "允許收集關於裝置與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.crash_reporting.title" = "當機回報";
-"settings_details.privacy.crash_reporting.description" = "允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本設備資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.crash_reporting.description" = "允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本裝置資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.crash_reporting.sentry" = "此功能使用 Sentry 作為回報目標。";
 "actions_configurator.visual_section.server_defined" = "此觸發由伺服器設定所控制。";
 "settings_details.actions.actions_synced.header" = "同步觸發";
-"settings_details.actions.actions_synced.footer" = "於 .yaml 中定義的觸發無法於設備上編輯。";
+"settings_details.actions.actions_synced.footer" = "於 .yaml 中定義的觸發無法於裝置上編輯。";
 "copy_label" = "複製";
 "done_label" = "完成";
 "settings.connection_section.errors.cannot_remove_last_url" = "你無法移除唯一可用的網址";
@@ -822,11 +822,11 @@
 "settings.connection_section.validate_error.use_anyway" = "依舊使用";
 "settings.connection_section.validate_error.edit_url" = "編輯網址";
 "settings.connection_section.ssid_permission_message" = "於背景存取 SSID 需要「總是允許」權限。點選以進行設定變更。";
-"device.generic_name" = "設備";
+"device.generic_name" = "裝置";
 "nfc.list.title" = "NFC 標籤";
-"nfc.list.description" = "由 App 寫入的 NFC 標籤將會於於靠近設備時顯示通知，啟用通知將啟動 App 並觸發事件。\
+"nfc.list.description" = "由 App 寫入的 NFC 標籤將會於於靠近裝置時顯示通知，啟用通知將啟動 App 並觸發事件。\
 \
-標籤與任何安裝 Home Assistant 的設備、並具備硬體支援的設備上進行讀取。";
+標籤與任何安裝 Home Assistant 的裝置、並具備硬體支援的設備上進行讀取。";
 "nfc.list.learn_more" = "了解更多";
 "nfc.list.read_tag" = "讀取標籤";
 "nfc.list.write_tag" = "寫入標籤";
@@ -838,7 +838,7 @@
 "nfc.detail.copy" = "複製到剪貼簿";
 "nfc.detail.share" = "分享識別";
 "nfc.tag_read" = "NFC 標籤讀取";
-"nfc.not_available" = "無法於此設備使用 NFC";
+"nfc.not_available" = "無法於此裝置使用 NFC";
 "nfc.read.start_message" = "%@";
 "nfc.read.error.tag_invalid" = "NFC 標籤無效";
 "nfc.read.error.generic_failure" = "讀取標籤失敗";
@@ -902,3 +902,10 @@
 "watch.configurator.list.description" = "使用新增按鈕新增複雜功能，可以於 Apple Watch 或 Watch App 中選擇。";
 "watch.configurator.list.learn_more" = "了解更多";
 "watch.configurator.rows.display_name.title" = "顯示名稱";
+"watch.configurator.rows.is_public.title" = "當鎖定時顯示";
+"watch.placeholder_complication_name" = "Placeholder";
+"notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.parser.url.no_url" = "No URL was provided.";
+"notification_service.parser.url.invalid_url" = "The given URL was invalid.";
+"notification_service.parser.camera.no_entity" = "No entity_id was provided.";
+"notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";

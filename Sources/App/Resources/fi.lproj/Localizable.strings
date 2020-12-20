@@ -877,3 +877,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";
 "watch.configurator.list.learn_more" = "Learn More";
 "watch.configurator.rows.display_name.title" = "Display Name";
+"watch.configurator.rows.is_public.title" = "Show When Locked";
+"watch.placeholder_complication_name" = "Placeholder";
+"notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.parser.url.no_url" = "No URL was provided.";
+"notification_service.parser.url.invalid_url" = "The given URL was invalid.";
+"notification_service.parser.camera.no_entity" = "No entity_id was provided.";
+"notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
