@@ -41,3 +41,17 @@ extension CLLocationCoordinate2D {
         )
     }
 }
+
+extension CLLocationDegrees {
+    public init?(templateValue value: Any?) {
+        if let value = value as? String {
+            self.init(value)
+        } else if let value = value as? Double {
+            self.init(value)
+        } else if let value = value as? Int {
+            self.init(value)
+        } else {
+            return nil
+        }
+    }
+}
