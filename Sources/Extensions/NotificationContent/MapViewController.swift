@@ -33,18 +33,6 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         }
     }
 
-    private class func degrees(from value: Any?) -> CLLocationDegrees? {
-        if let value = value as? String {
-            return CLLocationDegrees(value)
-        } else if let value = value as? Double {
-            return CLLocationDegrees(value)
-        } else if let value = value as? Int {
-            return CLLocationDegrees(value)
-        } else {
-            return nil
-        }
-    }
-
     // swiftlint:disable:next function_body_length
     func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
         let userInfo = notification.request.content.userInfo
@@ -52,10 +40,10 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         guard let haDict = userInfo["homeassistant"] as? [String: Any] else {
             return .init(error: MapError.missingPayload)
         }
-        guard let latitude = Self.degrees(from: haDict["latitude"]) else {
+        guard let latitude = CLLocationDegrees(templateValue: haDict["latitude"]) else {
             return .init(error: MapError.missingLatitude)
         }
-        guard let longitude = Self.degrees(from: haDict["longitude"]) else {
+        guard let longitude = CLLocationDegrees(templateValue: haDict["longitude"]) else {
             return .init(error: MapError.missingLongitude)
         }
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -81,8 +69,8 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         let dropPin = MKPointAnnotation()
         dropPin.coordinate = location
 
-        if let secondLatitude = Self.degrees(from: haDict["second_latitude"]),
-           let secondLongitude = Self.degrees(from: haDict["second_longitude"]) {
+        if let secondLatitude = CLLocationDegrees(templateValue: haDict["second_latitude"]),
+           let secondLongitude = CLLocationDegrees(templateValue: haDict["second_longitude"]) {
             let secondDropPin = MKPointAnnotation()
             secondDropPin.coordinate = CLLocationCoordinate2D(latitude: secondLatitude, longitude: secondLongitude)
             secondDropPin.title = L10n.Extensions.Map.Location.new

@@ -33,26 +33,22 @@ class MapNotificationController: WKUserNotificationInterfaceController {
             Current.Log.error(L10n.Extensions.Map.PayloadMissingHomeassistant.message)
             return
         }
-        guard let latitudeString = haDict["latitude"] as? String else {
+        guard let latitude = CLLocationDegrees(templateValue: haDict["latitude"]) else {
             Current.Log.error(L10n.Extensions.Map.ValueMissingOrUncastable.Latitude.message)
             return
         }
-        guard let longitudeString = haDict["longitude"] as? String else {
+        guard let longitude = CLLocationDegrees(templateValue: haDict["longitude"]) else {
             Current.Log.error(L10n.Extensions.Map.ValueMissingOrUncastable.Longitude.message)
             return
         }
-        let latitude = Double.init(latitudeString)! as CLLocationDegrees
-        let longitude = Double.init(longitudeString)! as CLLocationDegrees
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 
         var pinLocations: [CLLocationCoordinate2D] = [location]
 
         self.mapView.addAnnotation(location, with: .red)
 
-        if let secondLatitudeString = haDict["second_latitude"] as? String,
-            let secondLongitudeString = haDict["second_longitude"] as? String {
-            let secondLatitude = Double.init(secondLatitudeString)! as CLLocationDegrees
-            let secondLongitude = Double.init(secondLongitudeString)! as CLLocationDegrees
+        if let secondLatitude = CLLocationDegrees(templateValue: haDict["second_latitude"]),
+           let secondLongitude = CLLocationDegrees(templateValue: haDict["second_longitude"]) {
             let secondCoords = CLLocationCoordinate2D(latitude: secondLatitude, longitude: secondLongitude)
 
             pinLocations.append(secondCoords)
