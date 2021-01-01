@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -19,15 +19,6 @@
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
                                 <rect key="frame" x="83.5" y="8" width="208.5" height="54.5"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The most advanced Home Automation app on iOS" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5td-Yc-nnx">
-                                <rect key="frame" x="50" y="62.5" width="275" height="100"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="BGn-Ud-dKC"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -52,10 +43,7 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To continue with automatic setup, please connect to your home Wi-Fi network" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="djx-xj-AwF" userLabel="Wifi Disconnected">
-                                <rect key="frame" x="50" y="136" width="275" height="100"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="azK-p9-4gx"/>
-                                </constraints>
+                                <rect key="frame" x="8" y="70.5" width="375" height="82.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -65,18 +53,15 @@
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="djx-xj-AwF" firstAttribute="firstBaseline" secondItem="5td-Yc-nnx" secondAttribute="baseline" id="682-ol-Moz"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" constant="8" symbolic="YES" id="78h-rI-z1F"/>
                             <constraint firstItem="N4h-WC-wIw" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="7jc-nn-Bf0"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" constant="20" id="Hbo-CP-wA6"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="S7j-SS-3r5"/>
-                            <constraint firstItem="5td-Yc-nnx" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="50" id="SFm-HS-moK"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="YJn-5u-0ZE"/>
-                            <constraint firstItem="djx-xj-AwF" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" id="bY3-fM-MgO"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="8" id="bIf-vg-MkI"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="dyS-lr-6jI"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="trailing" secondItem="Dgm-KS-yJa" secondAttribute="trailing" constant="8" id="eHl-rr-Jm9"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
-                            <constraint firstItem="djx-xj-AwF" firstAttribute="leading" secondItem="5td-Yc-nnx" secondAttribute="leading" id="uli-5n-vOS"/>
-                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" constant="50" id="w4B-oX-Tlp"/>
-                            <constraint firstItem="5td-Yc-nnx" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" id="xjd-Mr-N2j"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" constant="8" id="yDL-8w-3OP"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FZO-9W-RiW" secondAttribute="leadingMargin" id="yWr-Dc-c25"/>
                         </constraints>
