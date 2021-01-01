@@ -602,6 +602,8 @@
 	<string>Reading and writing NFC tags allows you to trigger events.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos and send them to your Home Assistant server.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record audio using your Home Assistant frontend.</string>
 	<key>com.apple.developer.nfc.readersession.felica.systemcodes</key>
 	<array>
 		<string>12FC</string>
