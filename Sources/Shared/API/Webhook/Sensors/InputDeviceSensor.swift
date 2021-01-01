@@ -121,10 +121,7 @@ public class InputDeviceSensor: SensorProvider {
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
             microphones.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
         }.map(on: queue) { cameras, microphones -> [WebhookSensor] in
-            let nameSet = NSCountedSet(array: cameras.compactMap(\.name) + microphones.compactMap(\.name))
-
-            return cameras.compactMap { Self.sensor(camera: $0, nameSet: nameSet) }
-                + microphones.compactMap { Self.sensor(microphone: $0, nameSet: nameSet) }
+            Self.sensors(cameras: cameras, microphones: microphones)
         }
         #else
         sensors = .init(error: InputDeviceError.noInputs)
@@ -133,72 +130,59 @@ public class InputDeviceSensor: SensorProvider {
         return sensors
     }
 
-    private static func name(given: String?, multiSuffix: String, fallback: String, nameSet: NSCountedSet) -> String {
-        if let given = given {
-            if nameSet.count(for: given) > 1 {
-                // More than 1 item has the same name, add suffix
-                return given + multiSuffix
-            } else {
-                return given
+    #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
+    private static func sensors(
+        cameras: [HACoreMediaObjectCamera],
+        microphones: [HACoreAudioObjectDevice]
+    ) -> [WebhookSensor] {
+        let cameraFallback = "Unknown Camera"
+        let microphoneFallback = "Unknown Microphone"
+
+        return Self.sensors(
+            name: "Camera",
+            iconOn: "mdi:camera",
+            iconOff: "mdi:camera-off",
+            all: cameras.map { $0.name ?? cameraFallback },
+            active: cameras.filter(\.isOn).map { $0.name ?? cameraFallback }
+        ) + Self.sensors(
+            name: "Microphone",
+            iconOn: "mdi:microphone",
+            iconOff: "mdi:microphone-off",
+            all: microphones.map { $0.name ?? microphoneFallback },
+            active: microphones.filter(\.isOn).map { $0.name ?? microphoneFallback }
+        )
+    }
+
+    private static func sensors(
+        name: String,
+        iconOn: String,
+        iconOff: String,
+        all: [String],
+        active: [String]
+    ) -> [WebhookSensor] {
+        let anyActive = active.isEmpty == false
+
+        return [
+            with(WebhookSensor(
+                name: "\(name) In Use",
+                uniqueID: "\(name.lowercased())_in_use",
+                icon: anyActive ? iconOn : iconOff,
+                state: anyActive
+            )) {
+                $0.Type = "binary_sensor"
+            },
+            with(WebhookSensor(
+                name: "Active \(name)",
+                uniqueID: "active_\(name.lowercased())",
+                icon: anyActive ? iconOn : iconOff,
+                state: active.first ?? "Inactive"
+            )) {
+                $0.Attributes = [
+                    "All \(name)": all,
+                    "Active \(name)": active
+                ]
             }
-        } else {
-            return fallback
-        }
-    }
-
-    #if canImport(CoreMediaIO)
-    private static func sensor(camera: HACoreMediaObjectCamera, nameSet: NSCountedSet) -> WebhookSensor? {
-        guard let deviceUID = camera.deviceUID else {
-            Current.Log.error("ignoring camera with id \(camera.id) due to not unique ID")
-            return nil
-        }
-
-        let sensor = WebhookSensor(
-            name: Self.name(
-                given: camera.name,
-                multiSuffix: " (Camera)",
-                fallback: "Unknown Camera",
-                nameSet: nameSet
-            ),
-            uniqueID: "camera_\(deviceUID)",
-            icon: camera.isOn ? "mdi:camera" : "mdi:camera-off",
-            state: camera.isOn
-        )
-
-        sensor.Type = "binary_sensor"
-        sensor.Attributes = [
-            "Manufacturer": camera.manufacturer ?? "Unknown"
         ]
-
-        return sensor
-    }
-    #endif
-
-    #if targetEnvironment(macCatalyst)
-    private static func sensor(microphone: HACoreAudioObjectDevice, nameSet: NSCountedSet) -> WebhookSensor? {
-        guard let deviceUID = microphone.deviceUID else {
-            Current.Log.error("ignoring input with id \(microphone.id) due to not unique ID")
-            return nil
-        }
-
-        let sensor = WebhookSensor(
-            name: Self.name(
-                given: microphone.name,
-                multiSuffix: " (Microphone)",
-                fallback: "Unknown Microphone",
-                nameSet: nameSet
-            ),
-            uniqueID: "microphone_\(deviceUID)",
-            icon: microphone.isOn ? "mdi:microphone" : "mdi:microphone-off",
-            state: microphone.isOn
-        )
-
-        sensor.Type = "binary_sensor"
-        sensor.Attributes = [
-            "Manufacturer": microphone.manufacturer ?? "Unknown"
-        ]
-
-        return sensor
     }
     #endif
 }
