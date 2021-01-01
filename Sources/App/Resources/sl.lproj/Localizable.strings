@@ -875,8 +875,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.configurator.delete.title" = "Delete Complication?";
 "watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
 "watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";
-"watch.configurator.list.learn_more" = "Nauči se več";
-"watch.configurator.rows.display_name.title" = "Prikazno ime";
+"watch.configurator.list.learn_more" = "Več o tem";
+"watch.configurator.rows.display_name.title" = "Ime prikaza";
 "watch.configurator.rows.is_public.title" = "Show When Locked";
 "watch.placeholder_complication_name" = "Placeholder";
 "notification_service.failed_to_load" = "Failed to load attachment";

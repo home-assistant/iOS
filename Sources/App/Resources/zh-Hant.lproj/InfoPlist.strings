@@ -10,3 +10,4 @@
 "NFCReaderUsageDescription" = "讀寫NFC標籤可觸發事件";
 "NSCameraUsageDescription" = "拍照並上傳至 Home Assistant 伺服器。";
 "NSCrossWebsiteTrackingUsageDescription" = "假如設定需要，可選項開啟跨網站追蹤。";
+"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";

@@ -10,3 +10,4 @@
 "NFCReaderUsageDescription" = "Odczytywanie i zapisywanie tagów NFC umożliwia wyzwalanie zdarzeń.";
 "NSCameraUsageDescription" = "Zrób zdjęcia i wyślij je do serwera Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
+"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";

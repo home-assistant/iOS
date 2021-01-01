@@ -10,3 +10,4 @@
 "NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
 "NSCameraUsageDescription" = "Fotoğraf çekin ve bunları Home Assistant sunucunuza gönderin.";
 "NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
+"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";

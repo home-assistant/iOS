@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Přidat nový SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "Add current SSID %@";
-"onboarding.connection_test_result.ssl_container.description" = "We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
+"onboarding.connection_test_result.ssl_container.description" = "We encountered an error while connecting to your instance. %@ Due to OS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic Authentication is unsupported.";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Authentication type is unsupported%@.";
 "onboarding.connection_test_result.ssl_untrusted.description" = "Váš SSL certifikát je nedůvěryhodný. %@.";
@@ -898,7 +898,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.configurator.new.multiple_complication_info" = "Adding another Complication for the same type as an existing one requires watchOS 7 or newer.";
 "watch.configurator.delete.button" = "Delete Complication";
 "watch.configurator.delete.title" = "Delete Complication?";
-"watch.configurator.delete.message" = "Are you sure you want to delete this Complication? This cannot be undone.";
+"watch.configurator.delete.message" = "Opravdu chcete odstranit tuto Komplikaci? Toto nelze vzít zpět.";
 "watch.configurator.list.description" = "Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.";
 "watch.configurator.list.learn_more" = "Zjistit více";
 "watch.configurator.rows.display_name.title" = "Zobrazované jméno";

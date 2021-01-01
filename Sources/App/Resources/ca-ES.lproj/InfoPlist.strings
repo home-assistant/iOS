@@ -10,3 +10,4 @@
 "NFCReaderUsageDescription" = "Llegir i escriure etiquetes NFC us permet activar esdeveniments.";
 "NSCameraUsageDescription" = "Feu fotos i envieu-les al servidor de Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionalment, activeu el seguiment entre llocs web si la vostra configuració ho requereix.";
+"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
