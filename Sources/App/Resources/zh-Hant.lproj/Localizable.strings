@@ -904,8 +904,8 @@
 "watch.configurator.rows.display_name.title" = "顯示名稱";
 "watch.configurator.rows.is_public.title" = "當鎖定時顯示";
 "watch.placeholder_complication_name" = "Placeholder";
-"notification_service.failed_to_load" = "Failed to load attachment";
-"notification_service.parser.url.no_url" = "No URL was provided.";
-"notification_service.parser.url.invalid_url" = "The given URL was invalid.";
-"notification_service.parser.camera.no_entity" = "No entity_id was provided.";
-"notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
+"notification_service.failed_to_load" = "載入附帶檔案失敗";
+"notification_service.parser.url.no_url" = "未提供 URL。";
+"notification_service.parser.url.invalid_url" = "所提供的 URL 無效。";
+"notification_service.parser.camera.no_entity" = "未提供 entity_id。";
+"notification_service.parser.camera.invalid_entity" = "所提供的 entity_id 無效。";

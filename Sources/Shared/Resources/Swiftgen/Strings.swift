@@ -768,7 +768,7 @@ public enum L10n {
         }
       }
       public enum SslContainer {
-        /// We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.
+        /// We encountered an error while connecting to your instance. %@ Due to OS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.
         public static func description(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_container.description", String(describing: p1))
         }

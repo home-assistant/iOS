@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Yeni SSID ekle";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "Mevcut SSID'yi ekle %@";
-"onboarding.connection_test_result.ssl_container.description" = "We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
+"onboarding.connection_test_result.ssl_container.description" = "We encountered an error while connecting to your instance. %@ Due to OS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Temel Kimlik Doğrulaması desteklenmiyor.";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Kimlik doğrulama türü desteklenmiyor %@ .";
 "onboarding.connection_test_result.ssl_untrusted.description" = "SSL sertifikanız güvenilmez. %@.";
