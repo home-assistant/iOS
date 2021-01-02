@@ -3,6 +3,6 @@
 # Ensure this file is checked in to source control!
 
 gem 'fastlane-plugin-synx'
-gem 'fastlane-plugin-appicon', git: 'https://github.com/zacwest/fastlane-plugin-appicon', ref: '1079f5d833e21efe4313b76a1cce55f6786e3eab'
+gem 'fastlane-plugin-appicon'
 gem 'fastlane-plugin-xcconfig'
 gem 'fastlane-plugin-clean_testflight_testers'
