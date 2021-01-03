@@ -72,12 +72,20 @@ class MenuManager {
             propertyList: nil
         )
 
+        var children: [UICommand] = [
+            about
+        ]
+
+        if Current.updater.isSupported {
+            children.append(checkForUpdates)
+        }
+
         return UIMenu(
             title: title,
             image: nil,
             identifier: .about,
             options: .displayInline,
-            children: [about, checkForUpdates]
+            children: children
         )
     }
 

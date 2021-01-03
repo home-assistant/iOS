@@ -51,8 +51,12 @@ public class Updater {
         }
     }
 
+    public var isSupported: Bool {
+        Current.isCatalyst && !Current.isAppStore
+    }
+
     public func check() -> Promise<AvailableUpdate> {
-        guard Current.isCatalyst && !Current.isAppStore else {
+        guard isSupported else {
             return .init(error: UpdateError.unsupportedPlatform)
         }
 
