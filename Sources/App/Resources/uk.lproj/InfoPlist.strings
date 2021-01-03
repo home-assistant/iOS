@@ -7,7 +7,8 @@
 "NSPhotoLibraryUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Надіслати розташування";
 "NSLocalNetworkUsageDescription" = "Визначіть та взаємодійте з вашим екземпляром Home Assistant.";
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
+"NFCReaderUsageDescription" = "Читання та запис тегів NFC дозволяє запускати події.";
+"NSCameraUsageDescription" = "Зробіть фотографії та надішліть їх на сервер Home Assistant.";
+"NSCrossWebsiteTrackingUsageDescription" = "За бажанням увімкніть відстеження між веб-сайтами, якщо цього вимагає ваша конфігурація.";
+"NSMicrophoneUsageDescription" = "Записуйте звук за допомогою інтерфейсу Home Assistant.";
+"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";

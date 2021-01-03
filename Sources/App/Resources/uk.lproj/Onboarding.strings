@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Почати заново";
 "7iT-bd-cdY.text" = "Налаштування вручну";
 "PIW-dY-j0P.text" = "Введіть URL-адресу Home Assistant, щоб продовжити. Це має бути повністю сформована URL-адреса такого формату: \"http://homeassistant.local:8123\" — (тобто, повинна містити схему або протокол, ім'я хоста та порт).";
-"xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "наприклад http://homeassistant.local:8123";
