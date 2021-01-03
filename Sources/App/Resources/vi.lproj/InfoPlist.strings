@@ -11,3 +11,4 @@
 "NSCameraUsageDescription" = "Chụp ảnh và gửi chúng đến máy chủ Trợ lý gia đình của bạn.";
 "NSCrossWebsiteTrackingUsageDescription" = "Tùy chọn cho phép theo dõi trang web chéo nếu cấu hình của bạn yêu cầu.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
+"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";

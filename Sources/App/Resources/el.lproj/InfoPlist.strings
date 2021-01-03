@@ -11,3 +11,4 @@
 "NSCameraUsageDescription" = "Τραβήξτε φωτογραφίες και στείλτε τις στο διακομιστή του Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Προαιρετικά, ενεργοποιήστε την παρακολούθηση μεταξύ ιστότοπων εάν το απαιτεί η διαμόρφωση.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
+"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";

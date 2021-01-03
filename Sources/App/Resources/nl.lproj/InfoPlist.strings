@@ -11,3 +11,4 @@
 "NSCameraUsageDescription" = "Maak foto's en stuur ze naar je Home Assistant-server.";
 "NSCrossWebsiteTrackingUsageDescription" = "Schakel optioneel cross-website tracking in als uw configuratie dit vereist.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
+"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
