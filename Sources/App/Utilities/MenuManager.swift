@@ -76,7 +76,7 @@ class MenuManager {
             about
         ]
 
-        if !Current.isAppStore {
+        if Current.updater.isSupported {
             children.append(checkForUpdates)
         }
 
