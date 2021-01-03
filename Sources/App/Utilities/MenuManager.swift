@@ -72,12 +72,20 @@ class MenuManager {
             propertyList: nil
         )
 
+        var children: [UICommand] = [
+            about
+        ]
+
+        if !Current.isAppStore {
+            children.append(checkForUpdates)
+        }
+
         return UIMenu(
             title: title,
             image: nil,
             identifier: .about,
             options: .displayInline,
-            children: [about, checkForUpdates]
+            children: children
         )
     }
 
