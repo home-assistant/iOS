@@ -231,18 +231,29 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
                 self.section = section
             }
 
+            func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+                section.evaluateHidden()
+            }
+
             func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
                 section.evaluateHidden()
             }
         }
 
-        let section = Section {
-            $0.hidden = .function([], { _ in CLLocationManager.authorizationStatus() == .authorizedAlways })
-        }
-        section.evaluateHidden()
+        let section = Section()
         var locationManager: CLLocationManager? = CLLocationManager()
         var permissionDelegate: PermissionWatchingDelegate? = PermissionWatchingDelegate(section: section)
         locationManager?.delegate = permissionDelegate
+
+        section.hidden = .function([], { _ in
+            if #available(iOS 14, *), let locationManager = locationManager {
+                return locationManager.authorizationStatus == .authorizedAlways &&
+                    locationManager.accuracyAuthorization == .fullAccuracy
+            } else {
+                return CLLocationManager.authorizationStatus() == .authorizedAlways
+            }
+        })
+        section.evaluateHidden()
 
         after(life: self).done {
             // we're keeping these lifetimes around longer so they update
@@ -251,7 +262,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         }
 
         section <<< InfoLabelRow {
-            $0.title = L10n.Settings.ConnectionSection.ssidPermissionMessage
+            $0.title = L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage
 
             $0.cellUpdate { cell, _ in
                 cell.accessibilityTraits.insert(.button)
