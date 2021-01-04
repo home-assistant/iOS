@@ -261,6 +261,15 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
         super.init()
     }
 
+    @available(iOS 14, *)
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == .notDetermined {
+            return
+        }
+
+        completionHandler?(manager.authorizationStatus.genericStatus)
+    }
+
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .notDetermined {
             return
