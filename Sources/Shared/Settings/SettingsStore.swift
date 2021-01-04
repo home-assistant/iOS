@@ -180,7 +180,23 @@ public class SettingsStore {
 
     #if os(iOS)
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
-        switch CLLocationManager.authorizationStatus() {
+        let authorizationStatus: CLAuthorizationStatus
+        let hasFullAccuracy: Bool
+
+        if #available(iOS 14, *) {
+            let locationManager = CLLocationManager()
+            authorizationStatus = locationManager.authorizationStatus
+            hasFullAccuracy = locationManager.accuracyAuthorization == .fullAccuracy
+        } else {
+            authorizationStatus = CLLocationManager.authorizationStatus()
+            hasFullAccuracy = true
+        }
+
+        if !hasFullAccuracy {
+            return false
+        }
+
+        switch authorizationStatus {
         case .authorizedAlways:
             return true
         case .authorizedWhenInUse:
