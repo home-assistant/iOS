@@ -345,6 +345,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         webView.load(URLRequest(url: url))
     }
 
+    private var lastNavigationWasServerError = false
+
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
@@ -391,6 +393,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         decidePolicyFor navigationResponse: WKNavigationResponse,
         decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
     ) {
+        lastNavigationWasServerError = false
+
         guard navigationResponse.isForMainFrame else {
             // we don't need to modify the response if it's for a sub-frame
             decisionHandler(.allow)
@@ -402,6 +406,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             decisionHandler(.allow)
             return
         }
+
+        lastNavigationWasServerError = true
 
         // error response, let's inspect if it's restoring a page or normal navigation
         if navigationResponse.response.url != initialURL {
@@ -532,7 +538,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     @objc private func refresh() {
         // called via menu/keyboard shortcut too
         if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
-            if webView.url?.baseIsEqual(to: webviewURL) == true {
+            if webView.url?.baseIsEqual(to: webviewURL) == true && !lastNavigationWasServerError {
                 webView.reload()
             } else {
                 webView.load(URLRequest(url: webviewURL))
