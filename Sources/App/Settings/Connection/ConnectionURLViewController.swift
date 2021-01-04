@@ -262,7 +262,11 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         }
 
         section <<< InfoLabelRow {
-            $0.title = L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage
+            if #available(iOS 14, *) {
+                $0.title = L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage
+            } else {
+                $0.title = L10n.Settings.ConnectionSection.ssidPermissionMessage
+            }
 
             $0.cellUpdate { cell, _ in
                 cell.accessibilityTraits.insert(.button)
