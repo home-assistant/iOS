@@ -1171,7 +1171,7 @@ public enum L10n {
       public static var nabuCasaCloud: String { return L10n.tr("Localizable", "settings.connection_section.nabu_casa_cloud") }
       /// Remote UI Available
       public static var remoteUiAvailable: String { return L10n.tr("Localizable", "settings.connection_section.remote_ui_available") }
-      /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location precision. Tap here to change your settings.
+      /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       /// Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.
       public static var ssidPermissionMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_message") }
