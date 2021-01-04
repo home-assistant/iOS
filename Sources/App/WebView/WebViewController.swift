@@ -544,6 +544,30 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         // called via menu/keyboard shortcut too
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api -> Promise<HomeAssistantAPI> in
+            guard #available(iOS 14, *) else {
+                return .value(api)
+            }
+
+            return Promise { seal in
+                let locationManager = CLLocationManager()
+
+                guard locationManager.accuracyAuthorization != .fullAccuracy else {
+                    seal.fulfill(api)
+                    return
+                }
+
+                Current.Log.info("requesting full accuracy for manual update")
+                locationManager.requestTemporaryFullAccuracyAuthorization(
+                    withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                ) { error in
+                    Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
+
+                    withExtendedLifetime(locationManager) {
+                        seal.fulfill(api)
+                    }
+                }
+            }
         }.then { api -> Promise<Void> in
             func updateWithoutLocation() -> Promise<Void> {
                 api.UpdateSensors(trigger: .Manual)

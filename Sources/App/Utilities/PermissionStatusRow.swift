@@ -28,6 +28,24 @@ public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>
     }
 }
 
+@available(iOS 14, *)
+public final class LocationAccuracyRow: Row<LabelCellOf<CLAccuracyAuthorization>>, RowType {
+    required public init(tag: String?) {
+        super.init(tag: tag)
+
+        displayValueFor = { value in
+            guard let value = value else { return nil }
+
+            switch value {
+            case .fullAccuracy: return L10n.SettingsDetails.Location.LocationAccuracy.full
+            case .reducedAccuracy: return L10n.SettingsDetails.Location.LocationAccuracy.reduced
+            @unknown default:
+                return L10n.SettingsDetails.Location.LocationAccuracy.reduced
+            }
+        }
+    }
+}
+
 public final class MotionPermissionRow: Row<LabelCellOf<CMAuthorizationStatus>>, RowType {
     required public init(tag: String?) {
         super.init(tag: tag)
@@ -69,36 +87,70 @@ public final class BackgroundRefreshStatusRow: Row<LabelCellOf<UIBackgroundRefre
 }
 
 extension Condition {
-    static var locationPermissionNotAlways: Condition {
-        .function(["locationPermission"], { form in
-            guard let row = form.rowBy(tag: "locationPermission") as? LocationPermissionRow else {
-                return true
-            }
+    private static func locationPermissionAlways(from form: Form) -> Bool? {
+        guard let row = form.rowBy(tag: "locationPermission") as? LocationPermissionRow else {
+            return nil
+        }
 
-            switch row.value {
-            case .some(.authorizedAlways):
-                return false
-            default:
-                return true
-            }
-        })
+        switch row.value {
+        case .some(.authorizedAlways):
+            return true
+        default:
+            return false
+        }
     }
 
-    static var locationNotAlwaysOrBackgroundRefreshNotAvailable: Condition {
-        return .function(["locationPermission", "backgroundRefresh"], { form in
-            guard
-                let locationPermissionRow = form.rowBy(tag: "locationPermission") as? LocationPermissionRow,
-                let backgroundRefreshRow = form.rowBy(tag: "backgroundRefresh") as? BackgroundRefreshStatusRow
-            else {
+    private static func locationAccuracyFull(from form: Form) -> Bool? {
+        guard #available(iOS 14, *), let row = form.rowBy(tag: "locationAccuracy") as? LocationAccuracyRow else {
+            return nil
+        }
+
+        switch row.value {
+        case .some(.fullAccuracy):
+            return true
+        default:
+            return false
+        }
+    }
+
+    private static func backgroundRefreshAvailable(from form: Form) -> Bool? {
+        guard let backgroundRefreshRow = form.rowBy(tag: "backgroundRefresh") as? BackgroundRefreshStatusRow else {
+            return nil
+        }
+
+        switch backgroundRefreshRow.value {
+        case .some(.available):
+            return true
+        default:
+            return false
+        }
+    }
+
+    struct LocationCondition: OptionSet {
+        let rawValue: Int
+        init(rawValue: Int) { self.rawValue = rawValue }
+        static let permissionNotAlways = LocationCondition(rawValue: 0b1)
+        static let accuracyNotFull = LocationCondition(rawValue: 0b10)
+        static let backgroundRefreshNotAvailable = LocationCondition(rawValue: 0b100)
+    }
+
+    static func location(
+        conditions: LocationCondition
+    ) -> Condition {
+        .function(["locationPermission", "locationAccuracy", "backgroundRefresh"], { form in
+            if conditions.contains(.permissionNotAlways) && locationPermissionAlways(from: form) == false {
                 return true
             }
 
-            switch (locationPermissionRow.value, backgroundRefreshRow.value) {
-            case (.some(.authorizedAlways), .some(.available)):
-                return false
-            default:
+            if conditions.contains(.accuracyNotFull) && locationAccuracyFull(from: form) == false {
                 return true
             }
+
+            if conditions.contains(.backgroundRefreshNotAvailable) && backgroundRefreshAvailable(from: form) == false {
+                return true
+            }
+
+            return false
         })
     }
 }

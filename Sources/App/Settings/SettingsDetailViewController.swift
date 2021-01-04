@@ -154,7 +154,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnZone")
-                        $0.disabled = .locationPermissionNotAlways
+                        $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnZone")
@@ -163,7 +163,11 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Background.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
-                        $0.disabled = .locationNotAlwaysOrBackgroundRefreshNotAvailable
+                        $0.disabled = .location(conditions: [
+                            .permissionNotAlways,
+                            .accuracyNotFull,
+                            .backgroundRefreshNotAvailable
+                        ])
                         $0.hidden = .isCatalyst
                     }.onChange({ (row) in
                         if let val = row.value {
@@ -173,7 +177,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnSignificant")
-                        $0.disabled = .locationPermissionNotAlways
+                        $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnSignificant")
@@ -182,7 +186,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnNotification")
-                        $0.disabled = .locationPermissionNotAlways
+                        $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnNotification")
@@ -596,6 +600,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
         section <<< locationPermissionRow()
 
+        if #available(iOS 14, *) {
+            section <<< locationAccuracyRow()
+        }
+
         section <<< motionPermissionRow()
 
         section <<< backgroundRefreshRow()
@@ -609,6 +617,12 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
             init(row: LocationPermissionRow) {
                 self.row = row
+            }
+
+            @available(iOS 14, *)
+            func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+                row.value = manager.authorizationStatus
+                row.updateCell()
             }
 
             func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -637,6 +651,41 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     UIApplication.shared.openSettings(destination: .location)
                 }
 
+                row.deselect(animated: true)
+            }
+        }
+    }
+
+    @available(iOS 14, *)
+    private func locationAccuracyRow() -> BaseRow {
+        class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
+            let row: LocationAccuracyRow
+
+            init(row: LocationAccuracyRow) {
+                self.row = row
+            }
+
+            func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+                row.value = manager.accuracyAuthorization
+                row.updateCell()
+            }
+        }
+
+        return LocationAccuracyRow("locationAccuracy") {
+            let locationManager = CLLocationManager()
+            let permissionDelegate = PermissionWatchingDelegate(row: $0)
+
+            $0.title = L10n.SettingsDetails.Location.LocationAccuracy.title
+
+            $0.cellUpdate { cell, _ in
+                // setting the delegate also has the side effect of triggering a status update, which sets the value
+                locationManager.delegate = permissionDelegate
+
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+            $0.onCellSelection { _, row in
+                UIApplication.shared.openSettings(destination: .location)
                 row.deselect(animated: true)
             }
         }

@@ -676,5 +676,10 @@
 	</array>
 	<key>NSCrossWebsiteTrackingUsageDescription</key>
 	<string>Optionally enable cross-website tracking if your configuration requires it.</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>TemporaryFullAccuracyReasonManualUpdate</key>
+		<string>[localized in strings file]</string>
+	</dict>
 </dict>
 </plist>
