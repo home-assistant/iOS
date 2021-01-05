@@ -8,6 +8,8 @@ import Foundation
     var workspaceNotificationCenter: NotificationCenter { get }
 
     var wifiConnectivity: MacBridgeWiFiConnectivity? { get }
+
+    var terminationWillBeginNotification: Notification.Name { get }
 }
 
 @objc(MacBridgeWiFiConnectivity) public protocol MacBridgeWiFiConnectivity: NSObjectProtocol {

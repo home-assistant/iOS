@@ -124,6 +124,14 @@ class ActiveStateManagerTests: XCTestCase {
         XCTAssertEqual(manager.idleTimer?.isValid, true)
     }
 
+    func testTerminate() {
+        notificationCenter.post(name: .init("NonMac_terminationWillBeginNotification"), object: nil)
+        XCTAssertTrue(observer.didUpdate)
+        XCTAssertFalse(manager.isActive)
+        XCTAssertTrue(manager.states.isTerminating)
+        XCTAssertNil(manager.idleTimer)
+    }
+
     func testIdleTimeWithoutAnythingElse() {
         Current.device.idleTime = { .init(value: 99, unit: .seconds) }
         manager.minimumIdleTime = .init(value: 100, unit: .seconds)
