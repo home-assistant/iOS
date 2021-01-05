@@ -21,6 +21,7 @@ public class ActiveStateManager {
             && !states.isSleeping
             && !states.isScreenOff
             && !states.isFastUserSwitched
+            && !states.isTerminating
     }
 
     public struct States: Equatable {
@@ -30,6 +31,7 @@ public class ActiveStateManager {
         public var isScreenOff = false
         public var isFastUserSwitched = false
         public var isIdle = false
+        public var isTerminating = false
 
         public var attributes: [String: Any] { [
             "Idle": isIdle,
@@ -37,7 +39,8 @@ public class ActiveStateManager {
             "Locked": isLocked,
             "Screen Off": isScreenOff,
             "Fast User Switched": isFastUserSwitched,
-            "Sleeping": isSleeping
+            "Sleeping": isSleeping,
+            "Terminating": isTerminating
         ] }
     }
     public private(set) var states: States = States()
@@ -112,6 +115,7 @@ public class ActiveStateManager {
     private func setup() {
         let distributedNotificationCenter = Self.distributedNotificationCenter()
         let workspaceNotificationCenter = Self.workspaceNotificationCenter()
+        let defaultNotificationCenter = NotificationCenter.default
 
         for name in UpdateType.allCases {
             switch name.notification {
@@ -124,6 +128,13 @@ public class ActiveStateManager {
                 )
             case .workspace(let name):
                 workspaceNotificationCenter?.addObserver(
+                    self,
+                    selector: #selector(notificationDidPost(_:)),
+                    name: name,
+                    object: nil
+                )
+            case .default(let name):
+                defaultNotificationCenter.addObserver(
                     self,
                     selector: #selector(notificationDidPost(_:)),
                     name: name,
@@ -218,6 +229,8 @@ public class ActiveStateManager {
                 return \.isFastUserSwitched
             case .idleStart, .idleEnd:
                 return \.isIdle
+            case .terminateStart:
+                return \.isTerminating
             }
         }()
 
@@ -253,11 +266,12 @@ private enum UpdateType: CaseIterable {
     case fastUserSwitchEnd
     case idleStart
     case idleEnd
+    case terminateStart
 
     init?(notificationName name: Notification.Name) {
         let found = Self.allCases.first(where: {
             switch $0.notification {
-            case .distributed(let caseName), .workspace(let caseName):
+            case .distributed(let caseName), .workspace(let caseName), .default(let caseName):
                 return caseName == name
             case .none:
                 return false
@@ -274,6 +288,7 @@ private enum UpdateType: CaseIterable {
     enum UpdateNotification {
         case distributed(Notification.Name)
         case workspace(Notification.Name)
+        case `default`(Notification.Name)
     }
 
     var notification: UpdateNotification? {
@@ -290,6 +305,13 @@ private enum UpdateType: CaseIterable {
         case .screenOffEnd: return .workspace(.init("NSWorkspaceScreensDidWakeNotification"))
         case .fastUserSwitchStart: return .workspace(.init("NSWorkspaceSessionDidResignActiveNotification"))
         case .fastUserSwitchEnd: return .workspace(.init("NSWorkspaceSessionDidBecomeActiveNotification"))
+        // default notification center; likely some shim we post internally
+        case .terminateStart:
+            #if targetEnvironment(macCatalyst)
+            return .default(Current.macBridge.terminationWillBeginNotification)
+            #else
+            return .default(.init("NonMac_terminationWillBeginNotification"))
+            #endif
         // not notifications
         case .idleStart, .idleEnd: return nil
         }
@@ -309,6 +331,7 @@ private enum UpdateType: CaseIterable {
         case .fastUserSwitchEnd: return false
         case .idleStart: return true
         case .idleEnd: return false
+        case .terminateStart: return true
         }
     }
 }

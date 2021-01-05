@@ -24,6 +24,7 @@
 		1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
 		1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
 		1104FD07253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */; };
+		1108BC4325A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
@@ -909,6 +910,7 @@
 		1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
 		1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBackgroundRefreshScheduler.test.swift; sourceTree = "<group>"; };
 		1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guarantee+Additions.swift"; sourceTree = "<group>"; };
+		1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeAppDelegateHandler.swift; sourceTree = "<group>"; };
 		1109B6BA25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Intents.strings; sourceTree = "<group>"; };
 		1109B6BB25263EEE005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		1109B6BC25263EEF005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1886,6 +1888,7 @@
 				1194B3EB2519B48500AA01C3 /* Resources */,
 				1167408D251990D500F51626 /* MacBridgeImpl.swift */,
 				1194B4152519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift */,
+				1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */,
 			);
 			path = MacBridge;
 			sourceTree = "<group>";
@@ -4394,6 +4397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */,
+				1108BC4325A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift in Sources */,
 				1194B4162519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift in Sources */,
 				1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */,
 			);

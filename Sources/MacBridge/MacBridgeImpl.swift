@@ -9,6 +9,12 @@ import CoreWLAN
         self.wifiClient = CWWiFiClient.shared()
 
         super.init()
+
+        MacBridgeAppDelegateHandler.swizzleAppDelegate()
+    }
+
+    var terminationWillBeginNotification: Notification.Name {
+        MacBridgeAppDelegateHandler.terminationWillBeginNotification
     }
 
     var distributedNotificationCenter: NotificationCenter {
