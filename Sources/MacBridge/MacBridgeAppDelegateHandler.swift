@@ -6,6 +6,11 @@ enum MacBridgeAppDelegateHandler {
     static let terminationWillBeginNotification: Notification.Name = .init("ha_terminationWillBegin")
 
     static func swizzleAppDelegate() {
+        guard !Bundle.main.bundlePath.contains("PlugIns") else {
+            // Don't try and swizzle the App Delegate in an extension; there won't be one.
+            return
+        }
+
         guard let delegate = NSApplication.shared.delegate else {
             // this likely only happens one time; the delegate is set after initial setup but before the runloop starts
             DispatchQueue.main.async {
