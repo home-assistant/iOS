@@ -32,4 +32,12 @@ import CoreWLAN
             return nil
         }
     }
+
+    var screens: [MacBridgeScreen] {
+        NSScreen.screens.map(MacBridgeScreenImpl.init(screen:))
+    }
+
+    var screensWillChangeNotification: Notification.Name {
+        NSApplication.didChangeScreenParametersNotification
+    }
 }

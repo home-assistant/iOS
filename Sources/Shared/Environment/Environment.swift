@@ -86,9 +86,10 @@ public class Environment {
         $0.register(provider: StorageSensor.self)
         $0.register(provider: ConnectivitySensor.self)
         $0.register(provider: GeocoderSensor.self)
-        $0.register(provider: LastUpdateSensor.self)
         $0.register(provider: InputDeviceSensor.self)
+        $0.register(provider: DisplaySensor.self)
         $0.register(provider: ActiveSensor.self)
+        $0.register(provider: LastUpdateSensor.self)
     }
 
     public var localized = LocalizedManager()

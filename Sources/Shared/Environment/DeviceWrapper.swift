@@ -9,6 +9,11 @@ import UIKit
 import WatchKit
 #endif
 
+public struct DeviceScreen {
+    var identifier: String
+    var name: String
+}
+
 /// Wrapper around UIDevice/WKInterfaceDevice
 public class DeviceWrapper {
     public lazy var batteryNotificationCenter = DeviceWrapperBatteryNotificationCenter()
@@ -154,6 +159,14 @@ public class DeviceWrapper {
             }()
         )
         return .init(value: seconds, unit: .seconds)
+        #else
+        return nil
+        #endif
+    }
+
+    public var screens: () -> [DeviceScreen]? = {
+        #if targetEnvironment(macCatalyst)
+        return Current.macBridge.screens.map { .init(identifier: $0.identifier, name: $0.name) }
         #else
         return nil
         #endif

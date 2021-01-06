@@ -10,9 +10,17 @@ import Foundation
     var wifiConnectivity: MacBridgeWiFiConnectivity? { get }
 
     var terminationWillBeginNotification: Notification.Name { get }
+
+    var screens: [MacBridgeScreen] { get }
+    var screensWillChangeNotification: Notification.Name { get }
 }
 
 @objc(MacBridgeWiFiConnectivity) public protocol MacBridgeWiFiConnectivity: NSObjectProtocol {
     var ssid: String? { get }
     var bssid: String? { get }
+}
+
+@objc(MacBridgeScreen) public protocol MacBridgeScreen: NSObjectProtocol {
+    var identifier: String { get }
+    var name: String { get }
 }
