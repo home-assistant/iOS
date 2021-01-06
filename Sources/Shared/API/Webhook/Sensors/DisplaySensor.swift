@@ -56,16 +56,19 @@ final class DisplaySensor: SensorProvider {
             ]
         })
 
-        sensors.append(with(WebhookSensor(
-            name: "Primary Display",
-            uniqueID: "primary_display",
+        sensors.append(WebhookSensor(
+            name: "Primary Display Name",
+            uniqueID: "primary_display_name",
             icon: "mdi:monitor-star",
             state: screens.first.map(\.name) ?? "None"
-        )) {
-            $0.Attributes = [
-                "Display ID": screens.first.map(\.identifier) ?? "None"
-            ]
-        })
+        ))
+
+        sensors.append(WebhookSensor(
+            name: "Primary Display ID",
+            uniqueID: "primary_display_id",
+            icon: "mdi:monitor-star",
+            state: screens.first.map(\.identifier) ?? "None"
+        ))
 
         // Set up our observer
         let _: DisplaySensorUpdateSignaler = request.dependencies.updateSignaler(for: self)

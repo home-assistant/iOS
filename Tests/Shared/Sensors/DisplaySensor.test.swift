@@ -9,12 +9,16 @@ class DeviceSensorTests: XCTestCase {
         location: nil
     )
 
-    private func sensors(for screens: [DeviceScreen]) throws -> (displays: WebhookSensor, primary: WebhookSensor) {
+    private func sensors(for screens: [DeviceScreen]) throws -> (
+        displays: WebhookSensor,
+        primaryName: WebhookSensor,
+        primaryID: WebhookSensor
+    ) {
         Current.device.screens = { screens }
         let promise = DisplaySensor(request: request).sensors()
         let sensors = try hang(promise)
-        XCTAssertEqual(sensors.count, 2)
-        return (displays: sensors[0], primary: sensors[1])
+        XCTAssertEqual(sensors.count, 3)
+        return (displays: sensors[0], primaryName: sensors[1], primaryID: sensors[2])
     }
 
     func testNotAvailable() {
@@ -55,7 +59,7 @@ class DeviceSensorTests: XCTestCase {
     }
 
     func testNoDisplay() throws {
-        let (displays, primary) = try sensors(for: [])
+        let (displays, primaryName, primaryID) = try sensors(for: [])
 
         XCTAssertEqual(displays.UniqueID, "displays_count")
         XCTAssertEqual(displays.Icon, "mdi:monitor-multiple")
@@ -64,15 +68,19 @@ class DeviceSensorTests: XCTestCase {
         XCTAssertEqual(displays.Attributes?["Display IDs"] as? [String], [])
         XCTAssertEqual(displays.Attributes?["Display Names"] as? [String], [])
 
-        XCTAssertEqual(primary.UniqueID, "primary_display")
-        XCTAssertEqual(primary.Icon, "mdi:monitor-star")
-        XCTAssertEqual(primary.Name, "Primary Display")
-        XCTAssertEqual(primary.State as? String, "None")
-        XCTAssertEqual(primary.Attributes?["Display ID"] as? String, "None")
+        XCTAssertEqual(primaryName.UniqueID, "primary_display_name")
+        XCTAssertEqual(primaryName.Icon, "mdi:monitor-star")
+        XCTAssertEqual(primaryName.Name, "Primary Display Name")
+        XCTAssertEqual(primaryName.State as? String, "None")
+
+        XCTAssertEqual(primaryID.UniqueID, "primary_display_id")
+        XCTAssertEqual(primaryID.Icon, "mdi:monitor-star")
+        XCTAssertEqual(primaryID.Name, "Primary Display ID")
+        XCTAssertEqual(primaryID.State as? String, "None")
     }
 
     func testOneDisplay() throws {
-        let (displays, primary) = try sensors(for: [.init(identifier: "identifier", name: "name")])
+        let (displays, primaryName, primaryID) = try sensors(for: [.init(identifier: "identifier", name: "name")])
 
         XCTAssertEqual(displays.UniqueID, "displays_count")
         XCTAssertEqual(displays.Icon, "mdi:monitor-multiple")
@@ -81,15 +89,19 @@ class DeviceSensorTests: XCTestCase {
         XCTAssertEqual(displays.Attributes?["Display IDs"] as? [String], ["identifier"])
         XCTAssertEqual(displays.Attributes?["Display Names"] as? [String], ["name"])
 
-        XCTAssertEqual(primary.UniqueID, "primary_display")
-        XCTAssertEqual(primary.Icon, "mdi:monitor-star")
-        XCTAssertEqual(primary.Name, "Primary Display")
-        XCTAssertEqual(primary.State as? String, "name")
-        XCTAssertEqual(primary.Attributes?["Display ID"] as? String, "identifier")
+        XCTAssertEqual(primaryName.UniqueID, "primary_display_name")
+        XCTAssertEqual(primaryName.Icon, "mdi:monitor-star")
+        XCTAssertEqual(primaryName.Name, "Primary Display Name")
+        XCTAssertEqual(primaryName.State as? String, "name")
+
+        XCTAssertEqual(primaryID.UniqueID, "primary_display_id")
+        XCTAssertEqual(primaryID.Icon, "mdi:monitor-star")
+        XCTAssertEqual(primaryID.Name, "Primary Display ID")
+        XCTAssertEqual(primaryID.State as? String, "identifier")
     }
 
     func testTwoDisplay() throws {
-        let (displays, primary) = try sensors(for: [
+        let (displays, primaryName, primaryID) = try sensors(for: [
             .init(identifier: "identifier1", name: "name1"),
             .init(identifier: "identifier2", name: "name2")
         ])
@@ -101,10 +113,14 @@ class DeviceSensorTests: XCTestCase {
         XCTAssertEqual(displays.Attributes?["Display IDs"] as? [String], ["identifier1", "identifier2"])
         XCTAssertEqual(displays.Attributes?["Display Names"] as? [String], ["name1", "name2"])
 
-        XCTAssertEqual(primary.UniqueID, "primary_display")
-        XCTAssertEqual(primary.Icon, "mdi:monitor-star")
-        XCTAssertEqual(primary.Name, "Primary Display")
-        XCTAssertEqual(primary.State as? String, "name1")
-        XCTAssertEqual(primary.Attributes?["Display ID"] as? String, "identifier1")
+        XCTAssertEqual(primaryName.UniqueID, "primary_display_name")
+        XCTAssertEqual(primaryName.Icon, "mdi:monitor-star")
+        XCTAssertEqual(primaryName.Name, "Primary Display Name")
+        XCTAssertEqual(primaryName.State as? String, "name1")
+
+        XCTAssertEqual(primaryID.UniqueID, "primary_display_id")
+        XCTAssertEqual(primaryID.Icon, "mdi:monitor-star")
+        XCTAssertEqual(primaryID.Name, "Primary Display ID")
+        XCTAssertEqual(primaryID.State as? String, "identifier1")
     }
 }
