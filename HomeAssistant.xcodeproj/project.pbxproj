@@ -33,6 +33,10 @@
 		110E694624E771AB004AA96D /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
 		110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		110ED55425A5604F00489AF7 /* MacBridgeScreenImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */; };
+		110ED56325A563D600489AF7 /* DisplaySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED56225A563D600489AF7 /* DisplaySensor.swift */; };
+		110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED56225A563D600489AF7 /* DisplaySensor.swift */; };
+		110ED58025A570F100489AF7 /* DisplaySensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */; };
 		110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */; };
 		110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */; };
 		110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */; };
@@ -920,6 +924,9 @@
 		110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsContainerView.swift; sourceTree = "<group>"; };
 		110E694324E77125004AA96D /* WidgetActionsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsProvider.swift; sourceTree = "<group>"; };
 		110E694524E771AB004AA96D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeScreenImpl.swift; sourceTree = "<group>"; };
+		110ED56225A563D600489AF7 /* DisplaySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySensor.swift; sourceTree = "<group>"; };
+		110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySensor.test.swift; sourceTree = "<group>"; };
 		110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHandler.swift; sourceTree = "<group>"; };
 		110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSViewController.swift; sourceTree = "<group>"; };
 		110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamMJPEGViewController.swift; sourceTree = "<group>"; };
@@ -1889,6 +1896,7 @@
 				1167408D251990D500F51626 /* MacBridgeImpl.swift */,
 				1194B4152519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift */,
 				1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */,
+				110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */,
 			);
 			path = MacBridge;
 			sourceTree = "<group>";
@@ -2146,6 +2154,7 @@
 				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
 				B613936824F728F8002B8C5D /* InputDeviceSensor.swift */,
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
+				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
 				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
 			);
@@ -2165,6 +2174,7 @@
 				1109F82324A25A41002590F2 /* SensorContainer.test.swift */,
 				1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */,
 				11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */,
+				110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -4399,6 +4409,7 @@
 				1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */,
 				1108BC4325A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift in Sources */,
 				1194B4162519BEE900AA01C3 /* MacBridgeWiFiConnectivityImpl.swift in Sources */,
+				110ED55425A5604F00489AF7 /* MacBridgeScreenImpl.swift in Sources */,
 				1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4641,6 +4652,7 @@
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
+				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
@@ -4754,6 +4766,7 @@
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
 				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
+				110ED56325A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
 				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
 				1182620124F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
@@ -4899,6 +4912,7 @@
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				1104FD07253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
+				110ED58025A570F100489AF7 /* DisplaySensor.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
