@@ -37,13 +37,6 @@ final class FrontmostAppSensor: SensorProvider {
 
         let frontmost = Current.macBridge.frontmostApplication
 
-        /*
-         var localizedName: String? { get }
-         var bundleIdentifier: String? { get }
-         var launchDate: Date? { get }
-         var isHidden: Bool { get }
-         var ownsMenuBar: Bool { get }
-         */
         sensors.append(with(WebhookSensor(
             name: "Frontmost App",
             uniqueID: "frontmost_app",
