@@ -1,13 +1,10 @@
 import Foundation
 import AppKit
-import CoreWLAN
 
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
-    let wifiClient: CWWiFiClient
+    let networkMonitor = MacBridgeNetworkMonitor()
 
     override init() {
-        self.wifiClient = CWWiFiClient.shared()
-
         super.init()
 
         MacBridgeAppDelegateHandler.swizzleAppDelegate()
@@ -25,12 +22,12 @@ import CoreWLAN
         NSWorkspace.shared.notificationCenter
     }
 
-    var wifiConnectivity: MacBridgeWiFiConnectivity? {
-        if let interface = wifiClient.interfaces()?.first {
-            return MacBridgeWiFiConnectivityImpl(ssid: interface.ssid(), bssid: interface.bssid())
-        } else {
-            return nil
-        }
+    var networkConnectivity: MacBridgeNetworkConnectivity {
+        networkMonitor.networkConnectivity
+    }
+
+    var networkConnectivityDidChangeNotification: Notification.Name {
+        MacBridgeNetworkMonitor.connectivityDidChangeNotification
     }
 
     var screens: [MacBridgeScreen] {

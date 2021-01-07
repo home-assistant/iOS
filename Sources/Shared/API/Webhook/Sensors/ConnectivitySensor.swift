@@ -5,6 +5,24 @@ import CoreTelephony
 import Reachability
 #endif
 
+final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler {
+    let signal: () -> Void
+    init(signal: @escaping () -> Void) {
+        self.signal = signal
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(connectivityDidChange(_:)),
+            name: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+    }
+
+    @objc private func connectivityDidChange(_ note: Notification) {
+        signal()
+    }
+}
+
 public class ConnectivitySensor: SensorProvider {
     public enum ConnectivityError: Error {
         case unsupportedPlatform
@@ -18,12 +36,12 @@ public class ConnectivitySensor: SensorProvider {
 
     public func sensors() -> Promise<[WebhookSensor]> {
         #if os(iOS)
-        return firstly { () -> Guarantee<[Result<[WebhookSensor]>]> in
+        let sensors: Promise<[WebhookSensor]> = firstly { () -> Guarantee<[Result<[WebhookSensor]>]> in
             var sensors = [Promise<[WebhookSensor]>]()
 
             sensors.append(ssid())
-            #if !targetEnvironment(macCatalyst)
             sensors.append(connectionType())
+            #if !targetEnvironment(macCatalyst)
             sensors.append(cellularProviders())
             #endif
 
@@ -37,6 +55,11 @@ public class ConnectivitySensor: SensorProvider {
                 }
             }.flatMap { $0 }
         }
+
+        // Set up our observer
+        let _: ConnectivitySensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
+
+        return sensors
         #else
         return .init(error: ConnectivityError.unsupportedPlatform)
         #endif
@@ -73,7 +96,7 @@ public class ConnectivitySensor: SensorProvider {
 
     #endif
 
-    #if os(iOS) && !targetEnvironment(macCatalyst)
+    #if os(iOS)
 
     private func connectionType() -> Promise<[WebhookSensor]> {
         let simple = Current.connectivity.simpleNetworkType()
@@ -83,17 +106,19 @@ public class ConnectivitySensor: SensorProvider {
                 sensor.State = simple.description
                 sensor.Icon = simple.icon
 
+                var attributes = Current.connectivity.networkAttributes()
+
                 if case .cellular = simple {
                     let cellular = Current.connectivity.cellularNetworkType()
-
-                    sensor.Attributes = [
-                        "Cellular Technology": cellular.description
-                    ]
+                    attributes["Cellular Technology"] = cellular.description
                 }
+
+                sensor.Attributes = attributes
             }
         ])
     }
 
+    #if !targetEnvironment(macCatalyst)
     private func cellularProviders() -> Promise<[WebhookSensor]> {
         let networkInfo = Current.connectivity.telephonyCarriers()
         let radioTech = Current.connectivity.telephonyRadioAccessTechnology()
@@ -182,5 +207,6 @@ public class ConnectivitySensor: SensorProvider {
             return nil
         }
     }
+    #endif
     #endif
 }
