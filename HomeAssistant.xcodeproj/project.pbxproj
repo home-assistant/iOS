@@ -139,6 +139,8 @@
 		1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */; };
 		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
 		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
+		118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */; };
+		118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */; };
 		118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		118F046A24CB895B00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
@@ -1008,6 +1010,7 @@
 		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
 		11883CC624C131EE0036A6C6 /* RealmZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmZone.test.swift; sourceTree = "<group>"; };
 		118A93322520411100227076 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontmostAppSensor.swift; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
 		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
 		11948E8824DA5D50006F5657 /* InfoLabelRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLabelRow.swift; sourceTree = "<group>"; };
@@ -2161,6 +2164,7 @@
 				B613936824F728F8002B8C5D /* InputDeviceSensor.swift */,
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
+				118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
 				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
 			);
@@ -4605,6 +4609,7 @@
 				118F046A24CB895B00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				11C4628324B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
+				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
@@ -4760,6 +4765,7 @@
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
 				1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
+				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,

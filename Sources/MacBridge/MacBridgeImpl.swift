@@ -37,4 +37,14 @@ import AppKit
     var screensWillChangeNotification: Notification.Name {
         NSApplication.didChangeScreenParametersNotification
     }
+
+    var frontmostApplication: MacBridgeRunningApplication? {
+        NSWorkspace.shared.frontmostApplication
+    }
+
+    var frontmostApplicationDidChangeNotification: Notification.Name {
+        NSWorkspace.didActivateApplicationNotification
+    }
 }
+
+extension NSRunningApplication: MacBridgeRunningApplication {}
