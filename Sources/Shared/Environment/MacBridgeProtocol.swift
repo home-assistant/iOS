@@ -7,7 +7,8 @@ import Foundation
     var distributedNotificationCenter: NotificationCenter { get }
     var workspaceNotificationCenter: NotificationCenter { get }
 
-    var wifiConnectivity: MacBridgeWiFiConnectivity? { get }
+    var networkConnectivity: MacBridgeNetworkConnectivity { get }
+    var networkConnectivityDidChangeNotification: Notification.Name { get }
 
     var terminationWillBeginNotification: Notification.Name { get }
 
@@ -15,9 +16,28 @@ import Foundation
     var screensWillChangeNotification: Notification.Name { get }
 }
 
-@objc(MacBridgeWiFiConnectivity) public protocol MacBridgeWiFiConnectivity: NSObjectProtocol {
-    var ssid: String? { get }
-    var bssid: String? { get }
+@objc(MacBridgeNetworkType) public enum MacBridgeNetworkType: Int {
+    case ethernet
+    case wifi
+    case noNetwork
+    case unknown
+}
+
+@objc(MacBridgeNetworkConnectivity) public protocol MacBridgeNetworkConnectivity: NSObjectProtocol {
+    var networkType: MacBridgeNetworkType { get }
+    var hasWiFi: Bool { get }
+    var wifi: MacBridgeWiFi? { get }
+    var interface: MacBridgeNetworkInterface? { get }
+}
+
+@objc(MacBridgeNetworkInterface) public protocol MacBridgeNetworkInterface: NSObjectProtocol {
+    var name: String { get }
+    var hardwareAddress: String { get }
+}
+
+@objc(MacBridgeWiFiConnectivity) public protocol MacBridgeWiFi: NSObjectProtocol {
+    var ssid: String { get }
+    var bssid: String { get }
 }
 
 @objc(MacBridgeScreen) public protocol MacBridgeScreen: NSObjectProtocol {

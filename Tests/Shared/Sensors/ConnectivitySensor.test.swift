@@ -13,7 +13,8 @@ class ConnectivitySensorTests: XCTestCase {
         cellularNetworkType: NetworkType?,
         cellular: [String: CTCarrier]? = nil,
         radioTech: [String: String]? = nil,
-        hasWiFi: Bool = true
+        hasWiFi: Bool = true,
+        networkAttributes: [String: Any] = [:]
     ) throws -> (ssid: WebhookSensor?, bssid: WebhookSensor?, connection: WebhookSensor?, sims: [WebhookSensor]) {
         Current.connectivity.hasWiFi = { hasWiFi }
         Current.connectivity.currentWiFiSSID = { ssid }
@@ -22,6 +23,7 @@ class ConnectivitySensorTests: XCTestCase {
         Current.connectivity.cellularNetworkType = { cellularNetworkType ?? networkType }
         Current.connectivity.telephonyCarriers = { cellular }
         Current.connectivity.telephonyRadioAccessTechnology = { radioTech }
+        Current.connectivity.networkAttributes = { networkAttributes }
 
         let promise = ConnectivitySensor(request: .init(
             reason: .trigger("unit-test"),
@@ -39,6 +41,44 @@ class ConnectivitySensorTests: XCTestCase {
             }.sorted(by: { lhs, rhs in (lhs.UniqueID ?? "") < (rhs.UniqueID ?? "") })
         )
     }
+
+    func testSignaler() {
+        let name: Notification.Name = .init(rawValue: "testSignalerNotification")
+        Current.connectivity.connectivityDidChangeNotification = { name }
+
+        var didSignal = false
+        let signaler = ConnectivitySensorUpdateSignaler(signal: {
+            didSignal = true
+        })
+
+        withExtendedLifetime(signaler) {
+            NotificationCenter.default.post(name: name, object: nil)
+            XCTAssertTrue(didSignal)
+        }
+    }
+
+    func testUpdateSignalerCreated() throws {
+        _ = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .noConnection,
+            cellularNetworkType: nil,
+            hasWiFi: false
+        )
+
+        let dependencies = SensorProviderDependencies()
+        let provider = ConnectivitySensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: dependencies,
+            location: nil
+        ))
+        let promise = provider.sensors()
+        _ = try hang(promise)
+
+        let signaler: ConnectivitySensorUpdateSignaler? = dependencies.existingSignaler(for: provider)
+        XCTAssertNotNil(signaler)
+    }
+
 
     func testNoWifiAtAll() throws {
         let s = try setUp(
@@ -239,6 +279,90 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.sims[0].Name, "SIM 1")
         XCTAssertEqual(s.sims[0].State as? String, "Dinosaurs")
         XCTAssertEqual(s.sims[0].Icon, "mdi:sim")
+    }
+
+    func testEthernetWithoutWiFiHardware() throws {
+        let s = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .ethernet,
+            cellularNetworkType: nil,
+            hasWiFi: false,
+            networkAttributes: [
+                "key": "value"
+            ]
+        )
+
+        XCTAssertNil(s.ssid)
+        XCTAssertNil(s.bssid)
+
+        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection?.Name, "Connection Type")
+        XCTAssertEqual(s.connection?.State as? String, "Ethernet")
+        XCTAssertEqual(s.connection?.Icon, "mdi:ethernet")
+        XCTAssertEqual(s.connection?.Attributes?["key"] as? String, "value")
+
+        XCTAssertTrue(s.sims.isEmpty)
+    }
+
+    func testEthernetWithoutWiFiConnected() throws {
+        let s = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .ethernet,
+            cellularNetworkType: nil,
+            networkAttributes: [
+                "key": "value"
+            ]
+        )
+
+        XCTAssertEqual(s.ssid?.UniqueID, "connectivity_ssid")
+        XCTAssertEqual(s.ssid?.Name, "SSID")
+        XCTAssertEqual(s.ssid?.State as? String, "Not Connected")
+        XCTAssertEqual(s.ssid?.Icon, "mdi:wifi-off")
+
+        XCTAssertEqual(s.bssid?.UniqueID, "connectivity_bssid")
+        XCTAssertEqual(s.bssid?.Name, "BSSID")
+        XCTAssertEqual(s.bssid?.State as? String, "Not Connected")
+        XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-off")
+
+        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection?.Name, "Connection Type")
+        XCTAssertEqual(s.connection?.State as? String, "Ethernet")
+        XCTAssertEqual(s.connection?.Icon, "mdi:ethernet")
+        XCTAssertEqual(s.connection?.Attributes?["key"] as? String, "value")
+
+        XCTAssertTrue(s.sims.isEmpty)
+    }
+
+    func testEthernetWithWiFiConnected() throws {
+        let s = try setUp(
+            ssid: "Bob's Burgers Guest Wi-Fi",
+            bssid: "ff:ee:dd:cc:bb:aa",
+            networkType: .ethernet,
+            cellularNetworkType: nil,
+            networkAttributes: [
+                "key": "value"
+            ]
+        )
+
+        XCTAssertEqual(s.ssid?.UniqueID, "connectivity_ssid")
+        XCTAssertEqual(s.ssid?.Name, "SSID")
+        XCTAssertEqual(s.ssid?.State as? String, "Bob's Burgers Guest Wi-Fi")
+        XCTAssertEqual(s.ssid?.Icon, "mdi:wifi")
+
+        XCTAssertEqual(s.bssid?.UniqueID, "connectivity_bssid")
+        XCTAssertEqual(s.bssid?.Name, "BSSID")
+        XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
+        XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
+
+        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection?.Name, "Connection Type")
+        XCTAssertEqual(s.connection?.State as? String, "Ethernet")
+        XCTAssertEqual(s.connection?.Icon, "mdi:ethernet")
+        XCTAssertEqual(s.connection?.Attributes?["key"] as? String, "value")
+
+        XCTAssertTrue(s.sims.isEmpty)
     }
 }
 

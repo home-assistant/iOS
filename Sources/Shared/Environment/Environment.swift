@@ -13,10 +13,6 @@ import XCGLogger
 import CoreMotion
 import CoreLocation
 import Version
-#if os(iOS)
-import CoreTelephony
-import Reachability
-#endif
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     case FastlaneSnapshot
@@ -294,22 +290,5 @@ public class Environment {
     }
     public var location = Location()
 
-    /// Wrapper around CoreTelephony, Reachability
-    public struct Connectivity {
-        public var hasWiFi: () -> Bool = { ConnectionInfo.hasWiFi }
-        public var currentWiFiSSID: () -> String? = { ConnectionInfo.CurrentWiFiSSID }
-        public var currentWiFiBSSID: () -> String? = { ConnectionInfo.CurrentWiFiBSSID }
-        #if os(iOS) && !targetEnvironment(macCatalyst)
-        public var simpleNetworkType: () -> NetworkType = Reachability.getSimpleNetworkType
-        public var cellularNetworkType: () -> NetworkType = Reachability.getNetworkType
-
-        public var telephonyCarriers: () -> [String: CTCarrier]? = {
-            CTTelephonyNetworkInfo().serviceSubscriberCellularProviders
-        }
-        public var telephonyRadioAccessTechnology: () -> [String: String]? = {
-            CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology
-        }
-        #endif
-    }
-    public var connectivity = Connectivity()
+    public var connectivity = ConnectivityWrapper()
 }

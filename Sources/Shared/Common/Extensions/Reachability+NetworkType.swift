@@ -9,14 +9,17 @@
 // From https://gist.github.com/speedoholic/1746ac93be8e26723ce4023f0f4d211a
 
 import Foundation
+#if os(iOS)
 import Reachability
 import CoreTelephony
+#endif
 
 public enum NetworkType: Int, CaseIterable {
     case unknown
     case noConnection
     case wifi
     case cellular
+    case ethernet
     case wwan2g
     case wwan3g
     case wwan4g
@@ -33,6 +36,8 @@ public enum NetworkType: Int, CaseIterable {
             return "Wi-Fi"
         case .cellular:
             return "Cellular"
+        case .ethernet:
+            return "Ethernet"
         case .wwan2g:
             return "2G"
         case .wwan3g:
@@ -56,6 +61,8 @@ public enum NetworkType: Int, CaseIterable {
             return "mdi:wifi"
         case .cellular:
             return "mdi:signal"
+        case .ethernet:
+            return "mdi:ethernet"
         case .wwan2g:
             return "mdi:signal-2g"
         case .wwan3g:
@@ -67,7 +74,7 @@ public enum NetworkType: Int, CaseIterable {
         }
     }
 
-    #if !targetEnvironment(macCatalyst)
+    #if os(iOS) && !targetEnvironment(macCatalyst)
     init(_ radioTech: String) {
         if #available(iOS 14.1, *), [CTRadioAccessTechnologyNR, CTRadioAccessTechnologyNRNSA].contains(radioTech) {
             // although these are declared available in 14.0, they will crash on use before 14.1
@@ -98,49 +105,40 @@ public enum NetworkType: Int, CaseIterable {
     #endif
 }
 
+#if os(iOS)
 public extension Reachability {
 
-    static func getSimpleNetworkType() -> NetworkType {
-        guard let reachability: Reachability = try? Reachability() else { return .unknown }
-        do {
-            try reachability.startNotifier()
+    func getSimpleNetworkType() -> NetworkType {
+        try? startNotifier()
 
-            switch reachability.connection {
-            case .none:
-                return .noConnection
-            case .wifi:
-                return .wifi
-            case .cellular:
-                return .cellular
-            case .unavailable:
-                return .noConnection
-            }
-        } catch {
-            return .unknown
+        switch connection {
+        case .none:
+            return .noConnection
+        case .wifi:
+            return .wifi
+        case .cellular:
+            return .cellular
+        case .unavailable:
+            return .noConnection
         }
     }
 
-    static func getNetworkType() -> NetworkType {
-        guard let reachability: Reachability = try? Reachability() else { return .unknown }
-        do {
-            try reachability.startNotifier()
+    func getNetworkType() -> NetworkType {
+        try? startNotifier()
 
-            switch reachability.connection {
-            case .none:
-                return .noConnection
-            case .wifi:
-                return .wifi
-            case .cellular:
-                #if !targetEnvironment(macCatalyst)
-                    return Reachability.getWWANNetworkType()
-                #else
-                    return .cellular
-                #endif
-            case .unavailable:
-                return .noConnection
-            }
-        } catch {
-            return .unknown
+        switch connection {
+        case .none:
+            return .noConnection
+        case .wifi:
+            return .wifi
+        case .cellular:
+            #if !targetEnvironment(macCatalyst)
+                return Reachability.getWWANNetworkType()
+            #else
+                return .cellular
+            #endif
+        case .unavailable:
+            return .noConnection
         }
     }
 
@@ -155,3 +153,4 @@ public extension Reachability {
     }
     #endif
 }
+#endif
