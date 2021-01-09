@@ -3,7 +3,7 @@
 BUNDLE_ID_SUFFIX = .dev
 VALIDATE_PRODUCT = NO
 DEBUG_INFORMATION_FORMAT = dwarf
-OTHER_SWIFT_FLAGS = $(inherited) -DDEBUG
+OTHER_SWIFT_FLAGS = $(inherited) -DDEBUG -Xfrontend -warn-long-expression-type-checking=500 -Xfrontend  -warn-long-function-bodies=500
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1 $(inherited)
 ONLY_ACTIVE_ARCH = YES
