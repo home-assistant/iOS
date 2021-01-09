@@ -52,10 +52,7 @@ public class BatterySensor: SensorProvider {
             deviceClass: .battery,
             state: battery.level
         )) {
-            $0.Attributes = [
-                "Battery State": battery.state.description,
-                "Low Power Mode": isLowPowerMode
-            ].merging(battery.attributes, uniquingKeysWith: { a, _ in a })
+            $0.Attributes = battery.attributes
             $0.UnitOfMeasurement = "%"
         }
 
@@ -63,11 +60,9 @@ public class BatterySensor: SensorProvider {
             name: "\(sensorNamePrefix) State",
             uniqueID: "\(sensorIDPrefix)_state",
             icon: icon,
-            deviceClass: .battery,
             state: battery.state.description
         )) {
             $0.Attributes = [
-                "Battery Level": battery.level,
                 "Low Power Mode": isLowPowerMode
             ].merging(battery.attributes, uniquingKeysWith: { a, _ in a })
         }

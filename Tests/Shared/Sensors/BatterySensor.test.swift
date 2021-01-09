@@ -262,7 +262,6 @@ class BatterySensorTests: XCTestCase {
     ) {
         XCTAssertEqual(sensor.Name, "\(name ?? "Battery") State", file: file, line: line)
         XCTAssertEqual(sensor.UniqueID, "\(uniqueId ?? "battery")_state", file: file, line: line)
-        XCTAssertEqual(sensor.DeviceClass, .battery, file: file, line: line)
     }
 
     func sensors(
@@ -328,11 +327,9 @@ class BatterySensorTests: XCTestCase {
             let uState = uSensors[idx + 1]
 
             XCTAssertLevel(uLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
-            XCTAssertEqual(uLevel.Attributes?["Battery State"] as? String, uState.State as? String, file: file, line: line)
             XCTAssertEqual(uLevel.Attributes?["Low Power Mode"] as? Bool, true)
 
             XCTAssertState(uState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
-            XCTAssertEqual(uState.Attributes?["Battery Level"] as? Int, uLevel.State as? Int, file: file, line: line)
             XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
 
             uReturn.append((level: uLevel, state: uState))
@@ -375,11 +372,8 @@ class BatterySensorTests: XCTestCase {
             let cState = cSensors[idx + 1]
 
             XCTAssertLevel(cLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2],file: file, line: line)
-            XCTAssertEqual(cLevel.Attributes?["Battery State"] as? String, cState.State as? String, file: file, line: line)
-            XCTAssertEqual(cLevel.Attributes?["Low Power Mode"] as? Bool, true)
 
             XCTAssertState(cState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2],file: file, line: line)
-            XCTAssertEqual(cState.Attributes?["Battery Level"] as? Int, cLevel.State as? Int, file: file, line: line)
             XCTAssertEqual(cState.Attributes?["Low Power Mode"] as? Bool, true)
 
             cReturn.append((level: cLevel, state: cState))
