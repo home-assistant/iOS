@@ -263,6 +263,17 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
             // swiftlint:disable:next force_try
             try! self.realm.write {
+                // if the category isn't persisted yet, we need to remove the actions manually
+                category.Actions.remove(
+                    atOffsets: category.Actions
+                        .enumerated()
+                        .reduce(into: IndexSet()) { indexSet, val in
+                            if deletedIDs.contains(val.element.Identifier) {
+                                indexSet.insert(val.offset)
+                            }
+                        }
+                )
+
                 self.realm.delete(realm.objects(NotificationAction.self).filter("Identifier IN %@", deletedIDs))
             }
 
@@ -322,7 +333,9 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
-                        self.realm.add(vc.action, update: .all)
+                        // only add into realm if the category is also persisted
+                        self.category.realm?.add(vc.action, update: .all)
+
                         if self.category.Actions.contains(vc.action) == false {
                             self.category.Actions.append(vc.action)
                         }
