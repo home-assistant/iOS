@@ -98,7 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
-        Iconic.registerMaterialDesignIcons()
+        MaterialDesignIcons.register()
 
         setupWatchCommunicator()
         setupiOS12Features()

@@ -68,8 +68,12 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         infoBarButtonItem.action = #selector(getInfoAction)
         infoBarButtonItem.target = self
 
-        let previewButton = UIBarButtonItem(withIcon: .eyeIcon, size: CGSize(width: 25, height: 25), target: self,
-                                            action: #selector(NotificationCategoryConfigurator.preview))
+        let previewButton = UIBarButtonItem(
+            image: MaterialDesignIcons.eyeIcon.image(ofSize: CGSize(width: 25, height: 25), color: .black),
+            style: .plain,
+            target: self,
+            action: #selector(NotificationCategoryConfigurator.preview)
+        )
 
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 

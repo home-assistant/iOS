@@ -1,0 +1,51 @@
+// swiftlint:disable all
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
+
+import Foundation
+
+{% macro caseName name %}{{name|swiftIdentifier|snakeToCamelCase|lowerFirstWord}}Icon{% endmacro %}
+{% macro unicodeValue codepoint %}"{{ "\u{" }}{{ codepoint }}{{ "}" }}"{%endmacro %}
+{% if files %}
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% for file in files %}
+{% set icons file.document.data %}
+{% set enumName %}{{param.enumName|default:file.name}}{% endset %}
+{{ accessModifier }} enum {{ enumName }}: String, CaseIterable, IconDrawable {
+    {{ accessModifier }} static var familyName: String { "{{ enumName }}" }
+    {{ accessModifier }} static var count: Int { {{ icons.count }} }
+    {{ accessModifier }} var name: String { rawValue }
+
+    {{ accessModifier }} init(named iconName: String) {
+        self.init(named: iconName, fallback: nil)
+    }
+
+    {{ accessModifier }} init(named iconName: String, fallbackIconName fallback: String) {
+        self.init(named: iconName, fallback: Self(rawValue: fallback.lowercased()))
+    }
+
+    {{ accessModifier }} init(named iconName: String, fallback: Self?) {
+        if let value = Self(rawValue: iconName.lowercased()) {
+            self = value
+        } else if let fallback = fallback {
+            self = fallback
+        } else {
+            self = Self.allCases.first!
+        }
+    }
+
+    {% for icon in icons %}
+    case {% call caseName icon.name %} = "{{icon.name|swiftIdentifier|lowercase}}"
+    {% endfor %}
+
+    {{ accessModifier }} var unicode: String {
+        switch self {
+        {% for icon in icons %}
+        case .{% call caseName icon.name %}: return {% call unicodeValue icon.codepoint %}
+        {% endfor %}
+        // because too many cases causes the swift compiler to have problems
+        default: return ""
+        }
+    }
+}
+{% endfor %}
+{% endif %}
