@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Intern URL-adresse vil bli brukt når du er koblet til oppførte SSID-er";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Legg til ny SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "Legge til gjeldende SSID %@";
-"onboarding.connection_test_result.ssl_container.description" = "Vi oppdaget en feil under tilkobling til forekomsten din. %@ På grunn av iOS-begrensninger vil du ikke kunne fortsette med installasjonen før et gyldig SSL-sertifikat er installert. Vi anbefaler at Lets Kryptere eller Nabu Casa Remote UI.";
+"onboarding.connection_test_result.ssl_container.description" = "Det oppstod en feil da vi koblet til forekomsten din. %@ På grunn av OS-begrensninger, vil du ikke kunne fortsette med oppsettet før et gyldig SSL-sertifikat er installert. Vi anbefaler Lets Encrypt eller Nabu Casa Remote UI.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic-godkjenning støttes ikke.";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Godkjenningstypen støttes ikke%@.";
 "onboarding.connection_test_result.ssl_untrusted.description" = "SSL-sertifikatet ditt er ikke klarert. %@.";
@@ -909,3 +909,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "notification_service.parser.url.invalid_url" = "Den angitte URL-adressen var ugyldig.";
 "notification_service.parser.camera.no_entity" = "Ingen enhets_id ble gitt.";
 "notification_service.parser.camera.invalid_entity" = "enhets_id oppgitt var ugyldig.";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
+"settings_details.location.location_accuracy.title" = "Location Accuracy";
+"settings_details.location.location_accuracy.full" = "Full";
+"settings_details.location.location_accuracy.reduced" = "Reduced";

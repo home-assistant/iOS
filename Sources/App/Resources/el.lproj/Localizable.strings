@@ -910,3 +910,7 @@ Home Assistant Companion %@";
 "notification_service.parser.url.invalid_url" = "Η διεύθυνση URL που δόθηκε δεν ήταν έγκυρη.";
 "notification_service.parser.camera.no_entity" = "Δεν παρασχέθηκε entity_id.";
 "notification_service.parser.camera.invalid_entity" = "Το  entity_id που δόθηκε δεν ήταν έγκυρο.";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
+"settings_details.location.location_accuracy.title" = "Location Accuracy";
+"settings_details.location.location_accuracy.full" = "Full";
+"settings_details.location.location_accuracy.reduced" = "Reduced";

@@ -11,4 +11,5 @@
 "NSCameraUsageDescription" = "Зробіть фотографії та надішліть їх на сервер Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "За бажанням увімкніть відстеження між веб-сайтами, якщо цього вимагає ваша конфігурація.";
 "NSMicrophoneUsageDescription" = "Записуйте звук за допомогою інтерфейсу Home Assistant.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSLocationUsageDescription" = "Якщо цю функцію ввімкнено, місцезнаходження пристрою надсилатиметься на сервер Home Assistant як трекер пристрою.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
