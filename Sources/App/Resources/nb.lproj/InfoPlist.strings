@@ -10,5 +10,6 @@
 "NFCReaderUsageDescription" = "Å lese og skrive NFC-tagger lar deg utløse hendelser.";
 "NSCameraUsageDescription" = "Ta bilder og send dem til Home Assistant-serveren.";
 "NSCrossWebsiteTrackingUsageDescription" = "Du kan eventuelt aktivere sporing på tvers av nettsteder hvis konfigurasjonen krever det.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSMicrophoneUsageDescription" = "Ta opp lyd ved hjelp av Home Assistant-frontend.";
+"NSLocationUsageDescription" = "Når den er aktivert, sendes enhetsplasseringen til Home Assistant-serveren din som en enhetssporing.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

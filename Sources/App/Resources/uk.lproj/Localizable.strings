@@ -909,3 +909,7 @@ Home Assistant Companion %@";
 "notification_service.parser.url.invalid_url" = "Вказана URL-адреса недійсна.";
 "notification_service.parser.camera.no_entity" = "Вказаний entity_id недійсний.";
 "notification_service.parser.camera.invalid_entity" = "Вказаний entity_id недійсний.";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
+"settings_details.location.location_accuracy.title" = "Location Accuracy";
+"settings_details.location.location_accuracy.full" = "Full";
+"settings_details.location.location_accuracy.reduced" = "Reduced";

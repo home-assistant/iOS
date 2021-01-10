@@ -10,5 +10,6 @@
 "NFCReaderUsageDescription" = "讀寫NFC標籤可觸發事件";
 "NSCameraUsageDescription" = "拍照並上傳至 Home Assistant 伺服器。";
 "NSCrossWebsiteTrackingUsageDescription" = "假如設定需要，可選項開啟跨網站追蹤。";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSMicrophoneUsageDescription" = "使用 Home Assistant frontend 進行錄音。";
+"NSLocationUsageDescription" = "開啟後，將會以 Device Tracker 傳送裝置位置至 Home Assistant 伺服器。";
+"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
