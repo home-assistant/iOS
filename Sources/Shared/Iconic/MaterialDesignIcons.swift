@@ -5,11 +5,15 @@
 
 import Foundation
 
-public final class MaterialDesignIcons: CaseIterable, Equatable, IconDrawable {
+public final class MaterialDesignIcons: CaseIterable, Equatable, CustomStringConvertible, IconDrawable {
     public static let familyName: String = "MaterialDesignIcons"
     public static let count: Int = 5855
     public let name: String
     public let unicode: String
+
+    public var description: String {
+        "<MaterialDesignIcons: \(name)>"
+    }
 
     public convenience init(named iconName: String) {
         let existing: MaterialDesignIcons

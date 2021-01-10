@@ -13,11 +13,15 @@ import Foundation
 {% for file in files %}
 {% set icons file.document.data %}
 {% set typeName %}{{param.typeName|default:file.name}}{% endset %}
-{{ accessModifier }} final class {{ typeName }}: CaseIterable, Equatable, IconDrawable {
+{{ accessModifier }} final class {{ typeName }}: CaseIterable, Equatable, CustomStringConvertible, IconDrawable {
     {{ accessModifier }} static let familyName: String = "{{ typeName }}"
     {{ accessModifier }} static let count: Int = {{ icons.count }}
     {{ accessModifier }} let name: String
     {{ accessModifier }} let unicode: String
+
+    {{ accessModifier }} var description: String {
+        "<MaterialDesignIcons: \(name)>"
+    }
 
     {{ accessModifier }} convenience init(named iconName: String) {
         let existing: {{ typeName }}

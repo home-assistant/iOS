@@ -369,37 +369,37 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
             })
         }
 
-        <<< SearchPushRow<String> {
-                $0.options = MaterialDesignIcons.allCases.map({ $0.name })
+        <<< SearchPushRow<MaterialDesignIcons> {
+                $0.options = MaterialDesignIcons.allCases
                 $0.value = $0.options?.first
+                $0.displayValueFor = { icon in
+                    icon?.name
+                }
                 $0.selectorTitle = L10n.Watch.Configurator.Rows.Icon.Choose.title
                 $0.tag = "icon"
                 if let dict = self.config.Data["icon"] as? [String: Any],
                     let value = dict[$0.tag!] as? String {
-                    $0.value = value
+                    $0.value = MaterialDesignIcons(named: value)
                 }
             }.cellUpdate({ (cell, row) in
                 if let value = row.value {
-                    let theIcon = MaterialDesignIcons(named: value)
                     if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
-                        cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
-                                                                             height: CGFloat(30)),
-                                                              color: iconColorRow.value)
+                        cell.imageView?.image = value.image(ofSize: CGSize(width: CGFloat(30),
+                                                                           height: CGFloat(30)),
+                                                            color: iconColorRow.value)
                     }
                 }
             }).onPresent { _, to in
-                to.selectableRowCellSetup = {cell, row in
-                    if let value = row.selectableValue {
-                        let theIcon = MaterialDesignIcons(named: value)
-                        if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
-                            cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
-                                                                                 height: CGFloat(30)),
-                                                                  color: iconColorRow.value)
-                        }
-                    }
-                }
                 to.selectableRowCellUpdate = { cell, row in
-                    cell.textLabel?.text = row.selectableValue!
+                    if let value = row.selectableValue {
+                        if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
+                            cell.imageView?.image = value.image(ofSize: CGSize(width: CGFloat(30),
+                                                                               height: CGFloat(30)),
+                                                                color: iconColorRow.value)
+                        }
+
+                        cell.textLabel?.text = value.name
+                    }
                 }
             }
 
@@ -414,12 +414,11 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 }
             }.onChange { (picker) in
                 Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
-                if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
+                if let iconRow = self.form.rowBy(tag: "icon") as? SearchPushRow<MaterialDesignIcons> {
                     if let value = iconRow.value {
-                        let theIcon = MaterialDesignIcons(named: value)
-                        iconRow.cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
-                                                                                     height: CGFloat(30)),
-                                                                      color: picker.value)
+                        iconRow.cell.imageView?.image = value.image(ofSize: CGSize(width: CGFloat(30),
+                                                                                   height: CGFloat(30)),
+                                                                    color: picker.value)
                     }
                 }
             }
