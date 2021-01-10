@@ -54,7 +54,7 @@ public class HomeAssistantAPI {
         return HomeAssistantAPI.LoadedComponents.contains("mobile_app")
     }
 
-    var tokenManager: TokenManager?
+    let tokenManager: TokenManager
 
     public func connectionInfo() throws -> ConnectionInfo {
         if let connectionInfo = Current.settingsStore.connectionInfo {
@@ -88,11 +88,10 @@ public class HomeAssistantAPI {
 
     /// Initialize an API object with an authenticated tokenManager.
     public init(tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
-        let tokenManager = TokenManager(tokenInfo: tokenInfo)
-        self.tokenManager = tokenManager
+        self.tokenManager = TokenManager(tokenInfo: tokenInfo)
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
-            interceptor: Interceptor(adapter: tokenManager, retrier: tokenManager)
+            interceptor: newInterceptor()
         )
         self.manager = manager
 
@@ -114,17 +113,38 @@ public class HomeAssistantAPI {
         return Alamofire.Session(configuration: configuration, interceptor: interceptor)
     }
 
+    private func newInterceptor() -> Interceptor {
+        .init(
+            adapters: [
+                Adapter { [weak self] request, session, completion in
+                    guard let self = self else {
+                        completion(.success(request))
+                        return
+                    }
+
+                    do {
+                        let connectionInfo = try self.connectionInfo()
+                        connectionInfo.adapt(request, for: session, completion: completion)
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
+            ], retriers: [
+
+            ], interceptors: [
+                tokenManager.authenticationInterceptor,
+                RetryPolicy()
+            ]
+        )
+    }
+
     func authenticatedSessionManager() -> Alamofire.Session? {
         guard Current.settingsStore.connectionInfo != nil && Current.settingsStore.tokenInfo != nil else {
             return nil
         }
 
-        guard let tokenManager = tokenManager else {
-            return nil
-        }
-
         return HomeAssistantAPI.configureSessionManager(
-            interceptor: Interceptor(adapter: tokenManager, retrier: tokenManager)
+            interceptor: newInterceptor()
         )
     }
 

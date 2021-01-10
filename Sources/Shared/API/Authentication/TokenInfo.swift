@@ -8,6 +8,7 @@
 
 import Foundation
 import ObjectMapper
+import Alamofire
 
 public struct TokenInfo: ImmutableMappable, Codable {
     struct TokenInfoContext: MapContext {
@@ -35,9 +36,10 @@ public struct TokenInfo: ImmutableMappable, Codable {
         let ttlInSeconds: Int = try map.value("expires_in")
         self.expiration = Date(timeIntervalSinceNow: TimeInterval(ttlInSeconds))
     }
+}
 
-    /// Returns true if the current access token needs refreshing.
-    public var needsRefresh: Bool {
-        return expiration < Current.date()
+extension TokenInfo: AuthenticationCredential {
+    public var requiresRefresh: Bool {
+        expiration.addingTimeInterval(-60) < Current.date()
     }
 }

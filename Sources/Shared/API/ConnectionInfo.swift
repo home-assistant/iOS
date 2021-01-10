@@ -6,6 +6,8 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
+// swiftlint:disable file_length
+
 import Foundation
 import Alamofire
 #if os(iOS)
@@ -405,85 +407,6 @@ public class ConnectionInfo: Codable {
         #endif
     }
 
-    /// Rewrites the given URL to ensure that it points to the active API URL.
-    public func adaptAPIURL(_ existingURL: URL) -> URL? {
-        activeURL.adapting(url: existingURL)
-    }
-
-    // MARK: - RequestAdapter
-    public func adapt(_ urlRequest: URLRequest, _ apiURL: Bool = false) throws -> URLRequest {
-        guard let currentURL = urlRequest.url else { return urlRequest }
-
-        guard let expectedURL: URL = apiURL ? self.adaptAPIURL(currentURL) : self.webhookURL else { return urlRequest }
-
-        guard currentURL != expectedURL else {
-            // Current.Log.verbose("No need to change request URL from \(currentURL) to \(expectedURL)")
-            return urlRequest
-        }
-
-        Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
-
-        var urlRequest = urlRequest
-        urlRequest.url = expectedURL
-        return urlRequest
-    }
-
-    // MARK: - RequestRetrier
-    public func should(_ manager: Session, retry request: Request, with error: Error) -> Bool {
-        // There's only two situations in which we should attempt to change the URL to a point where we may
-        // be able to get working again:
-        // 1. If remote UI is active and failure is low level (NSURLErrorDomain) which means snitun is down
-        // 2. If internal URL is active but SSID doesn't match
-        guard let url = request.request?.url else {
-            Current.Log.error("Couldn't get URL from request!")
-            return false
-        }
-
-        let isRemoteUIFailure = self.activeURLType == .remoteUI && url == self.remoteUIURL &&
-            (error as NSError).domain == NSURLErrorDomain
-
-        Current.Log.verbose("isRemoteUIFailure \(isRemoteUIFailure)")
-
-        let isInternalURLFailure = self.activeURLType == .internal && url == self.internalURL
-
-        Current.Log.verbose("isInternalURLFailure \(isInternalURLFailure)")
-
-        if isRemoteUIFailure {
-            if self.internalURL != nil && self.isOnInternalNetwork {
-                self.activeURLType = .internal
-            } else if self.externalURL != nil {
-                self.activeURLType = .external
-            } else {
-                return false
-            }
-            return true
-        } else if isInternalURLFailure {
-            if self.useCloud && self.remoteUIURL != nil {
-                self.activeURLType = .remoteUI
-            } else if self.externalURL != nil {
-                self.activeURLType = .external
-            } else {
-                return false
-            }
-            return true
-        }
-
-        Current.Log.warning("Not retrying a failure other than remote UI down or internal URL no longer valid")
-        return false
-    }
-
-    /// Returns if the given URL contains any known URL.
-    public func checkURLMatches(_ url: URL) -> Bool {
-        let isInternalURL = url.scheme == self.internalURL?.scheme && url.host == self.internalURL?.host &&
-            url.port == self.internalURL?.port
-        let isExternalURL = url.scheme == self.externalURL?.scheme && url.host == self.externalURL?.host &&
-            url.port == self.externalURL?.port
-        let isRemoteUIURL = url.scheme == self.remoteUIURL?.scheme && url.host == self.remoteUIURL?.host &&
-            url.port == self.remoteUIURL?.port
-
-        return isInternalURL || isExternalURL || isRemoteUIURL
-    }
-
     /// Returns the URLType of the given URL, if it is known.
     public func getURLType(_ url: URL) -> URLType? {
         if url.scheme == self.internalURL?.scheme && url.host == self.internalURL?.host &&
@@ -499,5 +422,24 @@ public class ConnectionInfo: Codable {
 
         return nil
     }
-// swiftlint:disable:next file_length
+}
+
+extension ConnectionInfo: RequestAdapter {
+    public func adapt(
+        _ urlRequest: URLRequest,
+        for session: Session,
+        completion: @escaping (Result<URLRequest, Error>) -> Void
+    ) {
+        var updatedRequest: URLRequest = urlRequest
+
+        if let currentURL = urlRequest.url {
+            let expectedURL = activeURL.adapting(url: currentURL)
+            if currentURL != expectedURL {
+                Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                updatedRequest.url = expectedURL
+            }
+        }
+
+        completion(.success(updatedRequest))
+    }
 }

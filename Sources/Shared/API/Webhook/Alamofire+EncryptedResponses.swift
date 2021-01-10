@@ -301,12 +301,7 @@ public final class MappableArrayResponseSerializer<T: BaseMappable>: ResponseSer
                 throw AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength)
             }
 
-            // TODO / FIX - Empty Response JSON Decodable Array Fix - "Cast from empty always fails..."
-            guard let emptyValue = Empty.value as? [T] else {
-                throw AFError.responseSerializationFailed(reason: .invalidEmptyResponse(type: "\(T.self)"))
-            }
-
-            return emptyValue
+            return []
         }
         return try self.serializeCallback(request, response, data, error)
     }
