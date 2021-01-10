@@ -429,7 +429,7 @@ public class ConnectionInfo: Codable {
     }
 
     // MARK: - RequestRetrier
-    public func should(_ manager: SessionManager, retry request: Request, with error: Error) -> Bool {
+    public func should(_ manager: Session, retry request: Request, with error: Error) -> Bool {
         // There's only two situations in which we should attempt to change the URL to a point where we may
         // be able to get working again:
         // 1. If remote UI is active and failure is low level (NSURLErrorDomain) which means snitun is down

@@ -45,8 +45,8 @@ public class HomeAssistantAPI {
 
     public static var LoadedComponents = [String]()
 
-    public private(set) var manager: Alamofire.SessionManager!
-    public static var unauthenticatedManager: Alamofire.SessionManager = {
+    public private(set) var manager: Alamofire.Session!
+    public static var unauthenticatedManager: Alamofire.Session = {
         return configureSessionManager()
     }()
 
@@ -88,10 +88,12 @@ public class HomeAssistantAPI {
 
     /// Initialize an API object with an authenticated tokenManager.
     public init(tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
-        self.tokenManager = TokenManager(tokenInfo: tokenInfo)
-        let manager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
-        manager.retrier = self.tokenManager
-        manager.adapter = self.tokenManager
+        let tokenManager = TokenManager(tokenInfo: tokenInfo)
+        self.tokenManager = tokenManager
+        let manager = HomeAssistantAPI.configureSessionManager(
+            urlConfig: urlConfig,
+            interceptor: Interceptor(adapter: tokenManager, retrier: tokenManager)
+        )
         self.manager = manager
 
         removeOldDownloadDirectory()
@@ -99,25 +101,31 @@ public class HomeAssistantAPI {
         Current.sensors.register(observer: self)
     }
 
-    private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
+    private static func configureSessionManager(
+        urlConfig: URLSessionConfiguration = .default,
+        interceptor: Interceptor = .init()
+    ) -> Session {
         let configuration = urlConfig
 
         var headers = configuration.httpAdditionalHeaders ?? [:]
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
-        return Alamofire.SessionManager(configuration: configuration)
+        return Alamofire.Session(configuration: configuration, interceptor: interceptor)
     }
 
-    func authenticatedSessionManager() -> Alamofire.SessionManager? {
+    func authenticatedSessionManager() -> Alamofire.Session? {
         guard Current.settingsStore.connectionInfo != nil && Current.settingsStore.tokenInfo != nil else {
             return nil
         }
 
-        let manager = HomeAssistantAPI.configureSessionManager()
-        manager.retrier = self.tokenManager
-        manager.adapter = self.tokenManager
-        return manager
+        guard let tokenManager = tokenManager else {
+            return nil
+        }
+
+        return HomeAssistantAPI.configureSessionManager(
+            interceptor: Interceptor(adapter: tokenManager, retrier: tokenManager)
+        )
     }
 
     private static var sharedAPI: HomeAssistantAPI?
@@ -251,7 +259,7 @@ public class HomeAssistantAPI {
 
             var finalURL = url
 
-            let dataManager: Alamofire.SessionManager = needsAuth ? self.manager : Self.unauthenticatedManager
+            let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
 
             if needsAuth {
                 let activeURL = try connectionInfo().activeURL
@@ -270,14 +278,14 @@ public class HomeAssistantAPI {
                 return
             }
 
-            let destination: DownloadRequest.DownloadFileDestination = { _, _ in
+            let destination: DownloadRequest.Destination = { _, _ in
                 return (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
             }
 
             dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
                 switch downloadResponse.result {
                 case .success:
-                    seal.fulfill(downloadResponse.destinationURL!)
+                    seal.fulfill(downloadResponse.fileURL!)
                 case .failure(let error):
                     seal.reject(error)
                 }
@@ -400,8 +408,8 @@ public class HomeAssistantAPI {
                 .validate()
                 .responseData { response in
                     switch response.result {
-                    case .success:
-                        if let data = response.result.value, let image = UIImage(data: data) {
+                    case .success(let data):
+                        if let image = UIImage(data: data) {
                             seal.fulfill(image)
                         }
                     case .failure(let error):

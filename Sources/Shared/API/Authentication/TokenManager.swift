@@ -119,10 +119,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     // MARK: - RequestRetrier
 
-    public func should(_ manager: SessionManager, retry request: Request, with error: Error,
-                       completion: @escaping RequestRetryCompletion) {
+    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         guard let connectionInfo = connectionInfo, let requestURL = request.request?.url else {
-            completion(false, 0)
+            completion(.doNotRetry)
             return
         }
 
@@ -131,7 +130,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             let message = "Failed to make request: \(self.loggableString(for: requestURL)) after 3 tries"
             let event = ClientEvent(text: message, type: .networkRequest)
             Current.clientEventStore.addEvent(event)
-            completion(false, 0)
+            completion(.doNotRetry)
             return
         }
 
@@ -140,18 +139,18 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             _ = self.refreshToken.done { _ in
                 guard self.tokenInfo != nil else {
                     Current.Log.warning("Token Info not avaialble after refresh")
-                    completion(false, 0)
+                    completion(.doNotRetry)
                     return
                 }
 
                 // If we get a token, retry.
-                completion(true, 0)
+                completion(.retry)
             }.catch { _ in
                 // If not, ahh well.
-                completion(false, 0)
+                completion(.doNotRetry)
             }
-        } else if connectionInfo.should(manager, retry: request, with: error) {
-            completion(true, 0)
+        } else if connectionInfo.should(session, retry: request, with: error) {
+            completion(.retry)
         } else {
             let urlError = error as NSError
             if urlError.domain == NSURLErrorDomain, urlError.code == NSURLErrorTimedOut {
@@ -159,27 +158,28 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
                 let event = ClientEvent(text: message, type: .networkRequest)
                 Current.clientEventStore.addEvent(event)
-                completion(true, TimeInterval(2 * request.retryCount))
+                completion(.retryWithDelay(TimeInterval(2 * request.retryCount)))
             } else if let error = error as? AFError, error.responseCode == 401 {
                 let event = ClientEvent(text: "Server indicated token is invalid, onboarding", type: .networkRequest)
                 Current.clientEventStore.addEvent(event)
 
-                completion(false, 0)
+                completion(.doNotRetry)
 
                 DispatchQueue.main.async {
                     Current.onboardingObservation.needed(.error)
                 }
             } else {
-                completion(false, 0)
+                completion(.doNotRetry)
             }
         }
     }
 
     // MARK: - RequestAdapter
 
-    public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
         guard let url = urlRequest.url else {
-            return urlRequest
+            completion(.success(urlRequest))
+            return
         }
 
         var newRequest = urlRequest
@@ -192,21 +192,24 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
         let isTokenRequest = url.path == "/auth/token"
         guard !isTokenRequest else {
-            return urlRequest
+            completion(.success(urlRequest))
+            return
         }
 
         guard let tokenInfo = self.tokenInfo else {
             Current.Log.error("Token is unavailable")
-            throw TokenError.tokenUnavailable
+            completion(.failure(TokenError.tokenUnavailable))
+            return
         }
 
         guard tokenInfo.needsRefresh == false else {
             Current.Log.error("Token is expired")
-            throw TokenError.expired
+            completion(.failure(TokenError.expired))
+            return
         }
 
         newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
-        return newRequest
+        completion(.success(newRequest))
     }
 
     // MARK: - Private helpers

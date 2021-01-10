@@ -14,7 +14,7 @@ import ObjectMapper
 extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.
 
-    func handleResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
+    func handleResponse<T>(response: AFDataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
         // Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
         switch response.result {
         case .success(let value):
@@ -33,7 +33,7 @@ extension HomeAssistantAPI {
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding,
                                 headers: headers)
                 .validate()
-                .responseString { (response: DataResponse<String>) in
+                .responseString { (response: AFDataResponse<String>) in
                     self.handleResponse(response: response, seal: seal,
                                         callingFunctionName: callingFunctionName)
             }
@@ -49,7 +49,7 @@ extension HomeAssistantAPI {
             let url = try connectionInfo().activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
-                .responseObject { (response: DataResponse<T>) in
+                .responseObject { (response: AFDataResponse<T>) in
                     self.handleResponse(response: response, seal: seal,
                                         callingFunctionName: callingFunctionName)
             }
@@ -65,7 +65,7 @@ extension HomeAssistantAPI {
             let url = try connectionInfo().activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
-                .responseArray { (response: DataResponse<[T]>) in
+                .responseArray { (response: AFDataResponse<[T]>) in
                     self.handleResponse(response: response, seal: seal,
                                         callingFunctionName: callingFunctionName)
             }
@@ -81,7 +81,7 @@ extension HomeAssistantAPI {
             let url = try connectionInfo().activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
-                .responseArray { (response: DataResponse<[T]>) in
+                .responseArray { (response: AFDataResponse<[T]>) in
                     self.handleResponse(response: response, seal: seal,
                                         callingFunctionName: callingFunctionName)
             }
@@ -97,7 +97,7 @@ extension HomeAssistantAPI {
             let url = try connectionInfo().activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
-                .responseObject { (response: DataResponse<T>) in
+                .responseObject { (response: AFDataResponse<T>) in
                     self.handleResponse(response: response, seal: seal,
                                         callingFunctionName: callingFunctionName)
             }
@@ -113,7 +113,7 @@ extension HomeAssistantAPI {
             let url = try connectionInfo().activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
-                .responseObject { (response: DataResponse<T>) in
+                .responseObject { (response: AFDataResponse<T>) in
                     self.handleResponse(response: response, seal: seal,
                                         callingFunctionName: callingFunctionName)
             }

@@ -2,52 +2,39 @@ import Foundation
 import UIKit
 import Alamofire
 
+class ImageStreamSerializer: DataStreamSerializer {
+    func serialize(_ data: Data) throws -> UIImage? {
+        if let image = UIImage(data: data) {
+            return image
+        } else {
+            return nil
+        }
+    }
+}
+
 public class MJPEGStreamer {
-    let manager: Alamofire.SessionManager
+    let manager: Alamofire.Session
     var data: Data = Data()
-    var request: DataRequest?
+    var request: DataStreamRequest?
     var callback: ((UIImage?, Error?) -> Void)?
 
-    init(manager: Alamofire.SessionManager) {
+    init(manager: Alamofire.Session) {
         self.manager = manager
-        manager.delegate.dataTaskDidReceiveResponse = { [weak self] _, _, response ->
-            URLSession.ResponseDisposition in
-            guard let this = self else {
-                return .cancel
-            }
-
-            if let requestURL = this.request?.request?.url, response.url == requestURL {
-                let image = UIImage(data: this.data)
-                this.data = Data()
-                if let unwrappedImage = image {
-                    DispatchQueue.main.async {
-                        this.callback?(unwrappedImage, nil)
-                    }
-                }
-
-                return .allow
-            }
-
-            return .cancel
-        }
     }
 
     public func streamImages(fromURL url: URL, callback: @escaping (UIImage?, Error?) -> Void) {
         self.callback = callback
+
         self.request?.cancel()
-        self.request = self.manager.request(url).validate()
-            .response(completionHandler: { (response) in
-                if let error = response.error {
-                    callback(nil, error)
+        self.request = self.manager.streamRequest(url).responseStream(using: ImageStreamSerializer()) { result in
+            switch result.result ?? .success(nil) {
+            case .success(let image):
+                if let image = image {
+                    callback(image, nil)
                 }
-            })
-
-        request?.stream { [weak self] buffer in
-            guard let this = self else {
-                return
+            case .failure(let error):
+                callback(nil, error)
             }
-
-            this.data.append(buffer)
         }
     }
 
