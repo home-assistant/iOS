@@ -6,7 +6,7 @@ plugin 'cocoapods-acknowledgements'
 
 system("./Tools/BuildMaterialDesignIconsFont.sh")
 
-pod 'Alamofire', '~> 4.0'
+pod 'Alamofire', '~> 5.0'
 pod 'Communicator', '~> 3.3.0'
 pod 'KeychainAccess'
 pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'

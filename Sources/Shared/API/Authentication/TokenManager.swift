@@ -10,7 +10,7 @@ import Alamofire
 import Foundation
 import PromiseKit
 
-public class TokenManager: RequestAdapter, RequestRetrier {
+public class TokenManager {
     public enum TokenError: Error {
         case tokenUnavailable
         case expired
@@ -32,9 +32,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             queue.setSpecific(key: queueSpecific, value: true)
         }
 
-        private var underlyingPromise: Promise<String>?
+        private var underlyingPromise: Promise<TokenInfo>?
 
-        var promise: Promise<String>? {
+        var promise: Promise<TokenInfo>? {
             get {
                 assert(DispatchQueue.getSpecific(key: queueSpecific) == true)
                 return underlyingPromise
@@ -46,10 +46,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
     private let refreshPromiseCache = RefreshPromiseCache()
-
-    public var isAuthenticated: Bool {
-        return self.tokenInfo != nil
-    }
 
     public init(tokenInfo: TokenInfo? = nil, forcedConnectionInfo: ConnectionInfo? = nil) {
         self.authenticationAPI = AuthenticationAPI(forcedConnectionInfo: forcedConnectionInfo)
@@ -84,14 +80,14 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     public var bearerToken: Promise<String> {
         return firstly {
             self.currentToken
-        }.recover { error -> Promise<String> in
+        }.recover { [self] error -> Promise<String> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired,
                 self.tokenInfo != nil else {
                 Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
 
-            return self.refreshToken
+            return refreshToken().map(\.accessToken)
         }
     }
 
@@ -99,7 +95,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return firstly { () -> Promise<String> in
             if forceRefresh {
                 Current.Log.info("forcing a refresh of token")
-                return refreshToken
+                return refreshToken().map(\.accessToken)
             } else {
                 Current.Log.info("using existing token")
                 return bearerToken
@@ -115,98 +111,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             dictionary["expires_in"] = Int(info.expiration.timeIntervalSince(Current.date()))
             return dictionary
         }
-    }
-
-    // MARK: - RequestRetrier
-
-    public func should(_ manager: SessionManager, retry request: Request, with error: Error,
-                       completion: @escaping RequestRetryCompletion) {
-        guard let connectionInfo = connectionInfo, let requestURL = request.request?.url else {
-            completion(false, 0)
-            return
-        }
-
-        if request.retryCount > 5 {
-            Current.Log.warning("Reached maximum retries for request: \(self.loggableString(for: requestURL))")
-            let message = "Failed to make request: \(self.loggableString(for: requestURL)) after 3 tries"
-            let event = ClientEvent(text: message, type: .networkRequest)
-            Current.clientEventStore.addEvent(event)
-            completion(false, 0)
-            return
-        }
-
-        if case TokenError.expired = error, self.isURLValid(requestURL, for: connectionInfo) {
-            // If this is a call to our server, and we failed with not authorized, try to refresh the token.
-            _ = self.refreshToken.done { _ in
-                guard self.tokenInfo != nil else {
-                    Current.Log.warning("Token Info not avaialble after refresh")
-                    completion(false, 0)
-                    return
-                }
-
-                // If we get a token, retry.
-                completion(true, 0)
-            }.catch { _ in
-                // If not, ahh well.
-                completion(false, 0)
-            }
-        } else if connectionInfo.should(manager, retry: request, with: error) {
-            completion(true, 0)
-        } else {
-            let urlError = error as NSError
-            if urlError.domain == NSURLErrorDomain, urlError.code == NSURLErrorTimedOut {
-                // Retry timeouts.
-                let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
-                let event = ClientEvent(text: message, type: .networkRequest)
-                Current.clientEventStore.addEvent(event)
-                completion(true, TimeInterval(2 * request.retryCount))
-            } else if let error = error as? AFError, error.responseCode == 401 {
-                let event = ClientEvent(text: "Server indicated token is invalid, onboarding", type: .networkRequest)
-                Current.clientEventStore.addEvent(event)
-
-                completion(false, 0)
-
-                DispatchQueue.main.async {
-                    Current.onboardingObservation.needed(.error)
-                }
-            } else {
-                completion(false, 0)
-            }
-        }
-    }
-
-    // MARK: - RequestAdapter
-
-    public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard let url = urlRequest.url else {
-            return urlRequest
-        }
-
-        var newRequest = urlRequest
-
-        let adaptedURL = connectionInfo?.adaptAPIURL(url)
-
-        if newRequest.url != adaptedURL {
-            newRequest.url = adaptedURL
-        }
-
-        let isTokenRequest = url.path == "/auth/token"
-        guard !isTokenRequest else {
-            return urlRequest
-        }
-
-        guard let tokenInfo = self.tokenInfo else {
-            Current.Log.error("Token is unavailable")
-            throw TokenError.tokenUnavailable
-        }
-
-        guard tokenInfo.needsRefresh == false else {
-            Current.Log.error("Token is expired")
-            throw TokenError.expired
-        }
-
-        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
-        return newRequest
     }
 
     // MARK: - Private helpers
@@ -242,16 +146,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
-    private func isURLValid(_ url: URL, for connectionInfo: ConnectionInfo) -> Bool {
-        return connectionInfo.checkURLMatches(url)
-    }
-
-    private func url(_ url: URL, matchesPrefixOf referenceURL: URL) -> Bool {
-        guard let connectionInfo = connectionInfo else { return false }
-        return connectionInfo.checkURLMatches(url)
-    }
-
-    private var refreshToken: Promise<String> {
+    private func refreshToken() -> Promise<TokenInfo> {
         refreshPromiseCache.queue.sync {
             guard let tokenInfo = self.tokenInfo else {
                 Current.Log.error("no token info, can't refresh")
@@ -263,13 +158,12 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 return refreshPromise
             }
 
-            let promise: Promise<String> = firstly {
+            let promise: Promise<TokenInfo> = firstly {
                 self.authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
-            }.map { tokenInfo in
+            }.get { tokenInfo in
                 Current.Log.info("storing refresh token")
                 Current.settingsStore.tokenInfo = tokenInfo
                 self.tokenInfo = tokenInfo
-                return tokenInfo.accessToken
             }.ensure(on: refreshPromiseCache.queue) {
                 Current.Log.info("reset cached refreshToken promise")
                 self.refreshPromiseCache.promise = nil
@@ -313,5 +207,47 @@ extension TokenManager.TokenError: LocalizedError {
         case .connectionFailed:
             return L10n.TokenError.connectionFailed
         }
+    }
+}
+
+extension TokenManager: Authenticator {
+    public var authenticationInterceptor: AuthenticationInterceptor<TokenManager> {
+        AuthenticationInterceptor(authenticator: self, credential: tokenInfo, refreshWindow: nil)
+    }
+
+    public func apply(_ credential: TokenInfo, to urlRequest: inout URLRequest) {
+        urlRequest.headers.add(.authorization(bearerToken: credential.accessToken))
+    }
+
+    public func refresh(
+        _ credential: TokenInfo,
+        for session: Session,
+        completion: @escaping (Swift.Result<TokenInfo, Error>) -> Void
+    ) {
+        firstly {
+            refreshToken()
+        }.done { token in
+            completion(.success(token))
+        }.catch { error in
+            completion(.failure(error))
+        }
+    }
+
+    public func didRequest(
+        _ urlRequest: URLRequest,
+        with response: HTTPURLResponse,
+        failDueToAuthenticationError error: Error
+    ) -> Bool {
+        switch response.statusCode {
+        case 401:
+            return true
+        default:
+            return false
+        }
+    }
+
+    public func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: TokenInfo) -> Bool {
+         let bearerToken = HTTPHeader.authorization(bearerToken: credential.accessToken).value
+         return urlRequest.headers["Authorization"] == bearerToken
     }
 }

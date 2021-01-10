@@ -42,10 +42,10 @@ public class AuthenticationAPI {
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
                                       baseURL: try activeURL())
-            let request = Alamofire.request(routeInfo)
+            let request = Session.default.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
-            request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo>) in
+            request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo, AFError>) in
                 switch dataresponse.result {
                 case .failure(let error):
                     seal.reject(error)
@@ -62,7 +62,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.accessToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
                                       baseURL: try activeURL())
-            let request = Alamofire.request(routeInfo)
+            let request = Session.default.request(routeInfo)
 
             request.validate().response { _ in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
@@ -79,9 +79,9 @@ public class AuthenticationAPI {
         return Promise { seal in
             let routeInfo = RouteInfo(route: AuthenticationRoute.token(authorizationCode: authorizationCode),
                                       baseURL: try activeURL())
-            let request = Alamofire.request(routeInfo)
+            let request = Session.default.request(routeInfo)
 
-            request.validate().responseObject { (dataresponse: DataResponse<TokenInfo>) in
+            request.validate().responseObject { (dataresponse: DataResponse<TokenInfo, AFError>) in
                 switch dataresponse.result {
                 case .failure(let networkError):
 

@@ -138,32 +138,34 @@ class AuthenticationViewController: UIViewController {
 
     fileprivate typealias ErrorReason = AFError.ResponseValidationFailureReason
 
+    private var lastTestSession: Session?
+
     // swiftlint:disable:next function_body_length
     private func testConnection(_ baseURL: URL) -> Promise<DiscoveredHomeAssistant> {
         let discoveryURL = baseURL.appendingPathComponent("api/discovery_info")
         return Promise { seal in
-            let sessionManager = HomeAssistantAPI.unauthenticatedManager
-            let delegate: Alamofire.SessionDelegate = sessionManager.delegate
-            delegate.taskDidReceiveChallengeWithCompletion = { _, _, challenge, completion in
+            let eventMonitor = ClosureEventMonitor()
+            eventMonitor.taskDidReceiveChallenge = { _, task, challenge in
                 let method = challenge.protectionSpace.authenticationMethod
                 Current.Log.verbose("Handling challenge \(method)")
                 if method == NSURLAuthenticationMethodServerTrust {
                     Current.Log.verbose("Allowing challenge \(method)")
-                    completion(.performDefaultHandling, nil)
                 } else if method == NSURLAuthenticationMethodHTTPBasic {
                     seal.reject(ConnectionTestResult(kind: .basicAuth, underlying: nil))
-                    completion(.cancelAuthenticationChallenge, nil)
+                    task.cancel()
                 } else if method == NSURLAuthenticationMethodClientCertificate {
                     Current.Log.warning("HTTP client certificate encountered")
                     seal.reject(ConnectionTestResult(kind: .clientCertificateRequired, underlying: nil))
-                    completion(.cancelAuthenticationChallenge, nil)
+                    task.cancel()
                 } else {
                     Current.Log.warning("Refusing to handle challenge \(challenge)")
                     seal.reject(ConnectionTestResult(kind: .authenticationUnsupported, underlying: nil))
-                    completion(.cancelAuthenticationChallenge, nil)
+                    task.cancel()
                 }
             }
-            sessionManager.request(discoveryURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant>) in
+            let session = Session(eventMonitors: [ eventMonitor ])
+            lastTestSession = session
+            session.request(discoveryURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant, AFError>) in
                 Current.Log.verbose("Request: \(String(describing: response.request))")
                 Current.Log.verbose("Response: \(String(describing: response.response))")
                 Current.Log.verbose("Result: \(response.result)")
@@ -192,7 +194,12 @@ class AuthenticationViewController: UIViewController {
                     return
                 }
 
-                seal.resolve(response.result.value, nil)
+                switch response.result {
+                case .success(let value):
+                    seal.fulfill(value)
+                case .failure(let error):
+                    seal.reject(error)
+                }
             }
         }
     }
