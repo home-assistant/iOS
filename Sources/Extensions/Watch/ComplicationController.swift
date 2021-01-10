@@ -36,7 +36,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     }
 
     private func template(for complication: CLKComplication) -> CLKComplicationTemplate {
-        Iconic.registerMaterialDesignIcons()
+        MaterialDesignIcons.register()
 
         let template: CLKComplicationTemplate
 

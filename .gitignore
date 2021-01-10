@@ -72,6 +72,7 @@ env.sh
 push_certs/*
 Tools/*.py
 Tools/*.ttf
+Tools/*.json
 dSYMs/
 
 # Local configuration overrides

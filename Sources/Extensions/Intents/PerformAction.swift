@@ -47,8 +47,8 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         let actions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
         let performActions = Array(actions.map { IntentAction(action: $0) })
         Current.Log.info { () -> String in
-            return "providing " + performActions.map {
-                ($0.identifier ?? "?") + " (" + $0.displayString + ")"
+            return "providing " + performActions.map { action -> String in
+                (action.identifier ?? "?") + " (" + action.displayString + ")"
             }.joined(separator: ", ")
         }
         completion(Array(performActions), nil)

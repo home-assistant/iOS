@@ -885,3 +885,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notification_service.parser.url.invalid_url" = "L'URL indiquée n'était pas valide.";
 "notification_service.parser.camera.no_entity" = "No entity_id was provided.";
 "notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
+"settings_details.location.location_accuracy.title" = "Location Accuracy";
+"settings_details.location.location_accuracy.full" = "Full";
+"settings_details.location.location_accuracy.reduced" = "Reduced";

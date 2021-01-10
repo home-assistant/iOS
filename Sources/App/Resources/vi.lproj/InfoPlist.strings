@@ -12,3 +12,4 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Tùy chọn cho phép theo dõi trang web chéo nếu cấu hình của bạn yêu cầu.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

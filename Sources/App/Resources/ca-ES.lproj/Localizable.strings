@@ -909,3 +909,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "notification_service.parser.url.invalid_url" = "L'adreça URL donada no era vàlida.";
 "notification_service.parser.camera.no_entity" = "No s'ha proporcionat cap entity_id.";
 "notification_service.parser.camera.invalid_entity" = "entity_id proporcionat no era vàlid.";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
+"settings_details.location.location_accuracy.title" = "Location Accuracy";
+"settings_details.location.location_accuracy.full" = "Full";
+"settings_details.location.location_accuracy.reduced" = "Reduced";

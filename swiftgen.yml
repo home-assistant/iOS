@@ -32,3 +32,11 @@ plist:
     params: 
       enumName: SharedPlistFiles
       forceFileNameEnum: true
+json:
+  inputs:
+  - Tools/MaterialDesignIcons.json
+  outputs:
+    templatePath: Tools/icons.stencil
+    output: Sources/Shared/Iconic/MaterialDesignIcons.swift
+    params:
+      publicAccess: true

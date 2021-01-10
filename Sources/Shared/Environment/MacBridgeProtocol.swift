@@ -14,6 +14,9 @@ import Foundation
 
     var screens: [MacBridgeScreen] { get }
     var screensWillChangeNotification: Notification.Name { get }
+
+    var frontmostApplication: MacBridgeRunningApplication? { get }
+    var frontmostApplicationDidChangeNotification: Notification.Name { get }
 }
 
 @objc(MacBridgeNetworkType) public enum MacBridgeNetworkType: Int {
@@ -43,4 +46,12 @@ import Foundation
 @objc(MacBridgeScreen) public protocol MacBridgeScreen: NSObjectProtocol {
     var identifier: String { get }
     var name: String { get }
+}
+
+@objc(MacBridgeRunningApplication) public protocol MacBridgeRunningApplication: NSObjectProtocol {
+    var localizedName: String? { get }
+    var bundleIdentifier: String? { get }
+    var launchDate: Date? { get }
+    var isHidden: Bool { get }
+    var ownsMenuBar: Bool { get }
 }

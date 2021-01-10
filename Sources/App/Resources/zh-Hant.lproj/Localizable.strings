@@ -621,7 +621,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "加入新 SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "加入目前 SSID %@";
-"onboarding.connection_test_result.ssl_container.description" = "連線至裝置時發生錯誤，%@。由於 iOS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
+"onboarding.connection_test_result.ssl_container.description" = "連線至裝置時發生錯誤，%@。由於 OS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.authentication_unsupported.description" = "不支援認證類型%@。";
 "onboarding.connection_test_result.ssl_untrusted.description" = "SSL 認證未信任。%@。";
@@ -909,3 +909,7 @@
 "notification_service.parser.url.invalid_url" = "所提供的 URL 無效。";
 "notification_service.parser.camera.no_entity" = "未提供 entity_id。";
 "notification_service.parser.camera.invalid_entity" = "所提供的 entity_id 無效。";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
+"settings_details.location.location_accuracy.title" = "Location Accuracy";
+"settings_details.location.location_accuracy.full" = "Full";
+"settings_details.location.location_accuracy.reduced" = "Reduced";

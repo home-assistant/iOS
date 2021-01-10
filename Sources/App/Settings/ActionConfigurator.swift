@@ -143,35 +143,35 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         }
 
         if action.canConfigure(\Action.IconName) {
-            visuals <<< SearchPushRow<String> {
-                $0.options = MaterialDesignIcons.allCases.map({ $0.name })
+            visuals <<< SearchPushRow<MaterialDesignIcons> {
+                $0.options = MaterialDesignIcons.allCases
                 $0.selectorTitle = L10n.ActionsConfigurator.Rows.Icon.title
                 $0.tag = "icon"
                 $0.title = L10n.ActionsConfigurator.Rows.Icon.title
-                $0.value = self.action.IconName
+                $0.value = MaterialDesignIcons(named: self.action.IconName)
+                $0.displayValueFor = { icon in
+                    icon?.name
+                }
             }.cellUpdate({ (cell, row) in
                 if let value = row.value {
-                    cell.imageView?.image = MaterialDesignIcons(named: value).image(
+                    cell.imageView?.image = value.image(
                         ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
                         color: .black
                     ).withRenderingMode(.alwaysTemplate)
                 }
             }).onPresent { _, to in
-                to.selectableRowCellSetup = {cell, row in
+                to.selectableRowCellUpdate = { cell, row in
                     if let value = row.selectableValue {
-                        let theIcon = MaterialDesignIcons(named: value)
-                        cell.imageView?.image = theIcon.image(
+                        cell.imageView?.image = value.image(
                             ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
                             color: .systemGray
                         ).withRenderingMode(.alwaysTemplate)
+                        cell.textLabel?.text = value.name
                     }
-                }
-                to.selectableRowCellUpdate = { cell, row in
-                    cell.textLabel?.text = row.selectableValue!
                 }
             }.onChange { row in
                 if let value = row.value {
-                    self.action.IconName = value
+                    self.action.IconName = value.name
                     self.updatePreviews()
                 }
             }
@@ -189,15 +189,6 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 self.action.IconColor = picker.value!.hexString()
 
                 self.updatePreviews()
-                if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
-                    if let value = iconRow.value {
-                        let theIcon = MaterialDesignIcons(named: value)
-                        iconRow.cell.imageView?.image = theIcon.image(
-                            ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
-                            color: picker.value
-                        )
-                    }
-                }
             }
         }
 

@@ -23,25 +23,11 @@ extension UIImage {
 
         self.init(cgImage: image.cgImage!, scale: image.scale, orientation: image.imageOrientation)
     }
-
-    public static func iconForIdentifier(_ iconIdentifier: String, iconWidth: Double,
-                                         iconHeight: Double, color: UIColor) -> UIImage {
-
-        MaterialDesignIcons.register()
-
-        let mdi = MaterialDesignIcons(named: iconIdentifier.normalizingIconString, fallbackIconName: "help")
-
-        return mdi.image(ofSize: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)), color: color)
-    }
 }
 
 public extension MaterialDesignIcons {
-    init(serversideValueNamed value: String, fallbackIcon: String? = nil) {
-        if let fallbackIcon = fallbackIcon {
-            self.init(named: value.normalizingIconString, fallbackIconName: fallbackIcon)
-        } else {
-            self.init(named: value.normalizingIconString)
-        }
+    convenience init(serversideValueNamed value: String) {
+        self.init(named: value.normalizingIconString)
     }
 }
 

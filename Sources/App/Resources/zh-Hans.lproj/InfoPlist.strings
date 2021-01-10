@@ -12,3 +12,4 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
