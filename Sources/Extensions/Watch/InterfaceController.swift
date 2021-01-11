@@ -111,30 +111,23 @@ class InterfaceController: WKInterfaceController {
         row.indicator?.prepareImagesForWait()
         row.indicator?.showWait()
 
-        if Communicator.shared.currentReachability == .immediateMessaging {
+        if Communicator.shared.currentReachability == .immediatelyReachable {
             Current.Log.verbose("Signaling action pressed via phone")
-            let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
-                                                 content: ["ActionID": selectedAction.ID],
-                                                 replyHandler: { replyDict in
-                                                    Current.Log.verbose("Received reply dictionary \(replyDict)")
-
-                                                    self.handleActionSuccess(row, rowIndex)
-            }, errorHandler: { err in
-                Current.Log.error("Received error when sending immediate message \(err)")
-
-                self.handleActionFailure(row, rowIndex)
-            })
+            let actionMessage = InteractiveImmediateMessage(
+                identifier: "ActionRowPressed",
+                content: ["ActionID": selectedAction.ID],
+                reply: { message in
+                    Current.Log.verbose("Received reply dictionary \(message)")
+                    self.handleActionSuccess(row, rowIndex)
+                }
+            )
 
             Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
 
-            do {
-                try Communicator.shared.send(immediateMessage: actionMessage)
-                self.handleActionSuccess(row, rowIndex)
-            } catch let error {
-                Current.Log.error("Action notification send failed: \(error)")
-
+            Communicator.shared.send(actionMessage, errorHandler: { error in
+                Current.Log.error("Received error when sending immediate message \(error)")
                 self.handleActionFailure(row, rowIndex)
-            }
+            })
         } else { // Phone isn't connected
             Current.Log.verbose("Signaling action pressed via watch")
             HomeAssistantAPI.authenticatedAPIPromise.then { api in
