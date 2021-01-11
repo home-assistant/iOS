@@ -93,6 +93,9 @@ extension HomeAssistantAPI {
             #if os(iOS)
             // in case the user deleted the last complication, sync that fact up to the watch
             _ = HomeAssistantAPI.SyncWatchContext()
+            #else
+            // in case the user updated just the complication's metadata, force a refresh
+            WebhookResponseUpdateComplications.updateComplications()
             #endif
 
             return .value(())

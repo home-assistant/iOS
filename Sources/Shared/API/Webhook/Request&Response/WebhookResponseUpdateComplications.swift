@@ -80,15 +80,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             return .value(())
         }.done {
             #if os(watchOS)
-            let server = CLKComplicationServer.sharedInstance()
-
-            server.activeComplications?.forEach {
-                server.reloadTimeline(for: $0)
-            }
-
-            if #available(watchOS 7, *) {
-                server.reloadComplicationDescriptors()
-            }
+            Self.updateComplications()
             #else
             _ = HomeAssistantAPI.SyncWatchContext()
             #endif
@@ -99,4 +91,18 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             return Guarantee.value(WebhookResponseHandlerResult.default)
         }
     }
+
+    #if os(watchOS)
+    internal static func updateComplications() {
+        let server = CLKComplicationServer.sharedInstance()
+
+        server.activeComplications?.forEach {
+            server.reloadTimeline(for: $0)
+        }
+
+        if #available(watchOS 7, *) {
+            server.reloadComplicationDescriptors()
+        }
+    }
+    #endif
 }
