@@ -138,35 +138,41 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     // swiftlint:disable:next function_body_length
     func setupWatchCommunicator() {
-        Communicator.shared.activationStateChangedObservers.add { state in
+        Communicator.State.observe { state in
             Current.Log.verbose("Activation state changed: \(state)")
 
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        Communicator.shared.reachabilityChangedObservers.add { reachability in
+        Reachability.observe { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
-        Communicator.shared.immediateMessageReceivedObservers.add { message in
+        InteractiveImmediateMessage.observe { message in
             Current.Log.verbose("Received message: \(message.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.guaranteedMessageReceivedObservers.add { message in
+        ImmediateMessage.observe { message in
+            Current.Log.verbose("Received message: \(message.identifier)")
+
+            self.endWatchConnectivityBackgroundTaskIfNecessary()
+        }
+
+        GuaranteedMessage.observe { message in
             Current.Log.verbose("Received guaranteed message! \(message)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.blobReceivedObservers.add { blob in
+        Blob.observe { blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.contextUpdatedObservers.add { context in
+        Context.observe { context in
             Current.Log.verbose("Received context: \(context)")
 
             _ = HomeAssistantAPI.SyncWatchContext()
@@ -222,7 +228,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             }
         }
 
-        Communicator.shared.complicationInfoReceivedObservers.add { complicationInfo in
+        ComplicationInfo.observe { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
             self.updateComplications().done {

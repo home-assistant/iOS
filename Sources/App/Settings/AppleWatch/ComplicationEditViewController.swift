@@ -611,6 +611,10 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     rowValue = color.hexString(true)
                 }
 
+                if let mdi = rowValue as? MaterialDesignIcons {
+                    rowValue = mdi.name
+                }
+
                 let rowTagPrefix = "textarea_" + sectionTag + "_"
                 if rowTag.hasPrefix(rowTagPrefix) {
                     rowTag = rowTag.replacingOccurrences(of: rowTagPrefix, with: "")

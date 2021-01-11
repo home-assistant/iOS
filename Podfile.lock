@@ -6,8 +6,7 @@ PODS:
   - ColorPickerRow (1.3.3):
     - Eureka (>= 5.0.0)
     - UIColor_Hex_Swift (>= 3.0.0)
-  - Communicator (3.3.0):
-    - TABObserverSet (~> 2)
+  - Communicator (4.0.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.2)
@@ -62,7 +61,7 @@ PODS:
   - GoogleUtilities/UserDefaults (7.1.1):
     - GoogleUtilities/Logger
   - KeychainAccess (4.2.1)
-  - Lokalise (0.10.0)
+  - Lokalise (0.10.2)
   - lottie-ios (3.1.9)
   - MBProgressHUD (1.2.0)
   - nanopb (2.30906.0):
@@ -96,7 +95,7 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.13.1):
     - PromiseKit/CorePromise
-  - PromisesObjC (1.2.11)
+  - PromisesObjC (1.2.12)
   - ReachabilitySwift (5.0.0)
   - Realm (10.5.0):
     - Realm/Headers (= 10.5.0)
@@ -110,10 +109,9 @@ PODS:
   - Sodium (0.9.1)
   - SwiftGen (6.4.0)
   - SwiftLint (0.42.0)
-  - SwiftMessages (8.0.4):
-    - SwiftMessages/App (= 8.0.4)
-  - SwiftMessages/App (8.0.4)
-  - TABObserverSet (2.1.0)
+  - SwiftMessages (8.0.5):
+    - SwiftMessages/App (= 8.0.5)
+  - SwiftMessages/App (8.0.5)
   - UIColor_Hex_Swift (5.1.0)
   - Version (0.8.0)
   - ViewRow (0.8):
@@ -128,7 +126,7 @@ DEPENDENCIES:
   - Alamofire (~> 5.0)
   - CallbackURLKit
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
-  - Communicator (~> 3.3.0)
+  - Communicator (~> 4.0)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka
@@ -185,7 +183,6 @@ SPEC REPOS:
     - SwiftGen
     - SwiftLint
     - SwiftMessages
-    - TABObserverSet
     - UIColor_Hex_Swift
     - Version
     - XCGLogger
@@ -235,7 +232,7 @@ SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
-  Communicator: d870b95ca54965412790334620e2f188c68f2462
+  Communicator: d3412680ef84f3aa8a728eed69027b9671e736bf
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: 1c2b8b5892bfb0e972d0fe05f8c09fd89f8625ec
@@ -248,7 +245,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 116c84c4bdeb76be2a7a46de51244368f9794eab
   GoogleUtilities: 3dc4ff0d5e4840e2fa8eef0889620e8c33d4218c
   KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
-  Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
+  Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
@@ -256,7 +253,7 @@ SPEC CHECKSUMS:
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
-  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
+  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Realm: e1c22c3d83b229afb70ebc10e1771c91e9542d12
   RealmSwift: 6fc078d9d3fd7e58c71bfdbb694e252462f112a5
@@ -265,14 +262,13 @@ SPEC CHECKSUMS:
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
   SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
-  SwiftMessages: 178c4491fb0452d2e3cf3377ce2439d580859754
-  TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
+  SwiftMessages: 539fd54a766bf08ec667e90aa141c44b8b8aaa55
   UIColor_Hex_Swift: 8be7432edacb7fa91c78aa05ef3c30b66e4f9415
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 618f922ff7c8e6c630cfd8e7bd238d89142646c3
+PODFILE CHECKSUM: 23981c80024145818295732af66695def2d4d6c7
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

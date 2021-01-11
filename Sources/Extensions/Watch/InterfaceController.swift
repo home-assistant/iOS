@@ -12,6 +12,7 @@ import EMTLoadingIndicator
 import RealmSwift
 import Communicator
 import Shared
+import PromiseKit
 
 class InterfaceController: WKInterfaceController {
     @IBOutlet weak var tableView: WKInterfaceTable!
@@ -111,40 +112,50 @@ class InterfaceController: WKInterfaceController {
         row.indicator?.prepareImagesForWait()
         row.indicator?.showWait()
 
-        if Communicator.shared.currentReachability == .immediateMessaging {
-            Current.Log.verbose("Signaling action pressed via phone")
-            let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
-                                                 content: ["ActionID": selectedAction.ID],
-                                                 replyHandler: { replyDict in
-                                                    Current.Log.verbose("Received reply dictionary \(replyDict)")
+        enum SendError: Error {
+            case notImmediate
+            case phoneFailed
+        }
 
-                                                    self.handleActionSuccess(row, rowIndex)
-            }, errorHandler: { err in
-                Current.Log.error("Received error when sending immediate message \(err)")
+        firstly { () -> Promise<Void> in
+            Promise { seal in
+                guard Communicator.shared.currentReachability == .immediatelyReachable else {
+                    seal.reject(SendError.notImmediate)
+                    return
+                }
 
-                self.handleActionFailure(row, rowIndex)
-            })
+                Current.Log.verbose("Signaling action pressed via phone")
+                let actionMessage = InteractiveImmediateMessage(
+                    identifier: "ActionRowPressed",
+                    content: ["ActionID": selectedAction.ID],
+                    reply: { message in
+                        Current.Log.verbose("Received reply dictionary \(message)")
+                        if message.content["fired"] as? Bool == true {
+                            seal.fulfill(())
+                        } else {
+                            seal.reject(SendError.phoneFailed)
+                        }
+                    }
+                )
 
-            Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
-
-            do {
-                try Communicator.shared.send(immediateMessage: actionMessage)
-                self.handleActionSuccess(row, rowIndex)
-            } catch let error {
-                Current.Log.error("Action notification send failed: \(error)")
-
-                self.handleActionFailure(row, rowIndex)
+                Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
+                Communicator.shared.send(actionMessage, errorHandler: { error in
+                    Current.Log.error("Received error when sending immediate message \(error)")
+                    seal.reject(error)
+                })
             }
-        } else { // Phone isn't connected
-            Current.Log.verbose("Signaling action pressed via watch")
-            HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                api.HandleAction(actionID: selectedAction.ID, source: .Watch)
-            }.done { _ in
-                self.handleActionSuccess(row, rowIndex)
-            }.catch { err -> Void in
-                Current.Log.error("Error during action event fire: \(err)")
-                self.handleActionFailure(row, rowIndex)
+        }.recover { error -> Promise<Void> in
+            Current.Log.error("recovering error \(error) by trying locally")
+            return firstly {
+                return HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api -> Promise<Void> in
+                return api.HandleAction(actionID: selectedAction.ID, source: .Watch)
             }
+        }.done {
+            self.handleActionSuccess(row, rowIndex)
+        }.catch { err -> Void in
+            Current.Log.error("Error during action event fire: \(err)")
+            self.handleActionFailure(row, rowIndex)
         }
     }
 

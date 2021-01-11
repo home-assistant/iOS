@@ -17,8 +17,8 @@ import ClockKit
 
 extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
-    private static var watchContext: JSONDictionary {
-        var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
+    private static var watchContext: Content {
+        var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
         if content["iphone_permanent_id"] != nil {
             content = [:]
@@ -57,8 +57,7 @@ extension HomeAssistantAPI {
     public static func SyncWatchContext() -> NSError? {
 
         #if os(iOS)
-        guard Communicator.shared.currentWatchState.isPaired &&
-            Communicator.shared.currentWatchState.isWatchAppInstalled else {
+        guard case .paired(.installed) = Communicator.shared.currentWatchState else {
                 Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
                 return nil
         }
@@ -67,7 +66,7 @@ extension HomeAssistantAPI {
         let context = Context(content: HomeAssistantAPI.watchContext)
 
         do {
-            try Communicator.shared.sync(context: context)
+            try Communicator.shared.sync(context)
         } catch let error as NSError {
             Current.Log.error("Updating the context failed: \(error)")
             return error
@@ -79,7 +78,7 @@ extension HomeAssistantAPI {
 
     public func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
-        guard Communicator.shared.currentWatchState.isPaired else {
+        guard case .paired = Communicator.shared.currentWatchState else {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
         }
@@ -93,6 +92,9 @@ extension HomeAssistantAPI {
             #if os(iOS)
             // in case the user deleted the last complication, sync that fact up to the watch
             _ = HomeAssistantAPI.SyncWatchContext()
+            #else
+            // in case the user updated just the complication's metadata, force a refresh
+            WebhookResponseUpdateComplications.updateComplications()
             #endif
 
             return .value(())
