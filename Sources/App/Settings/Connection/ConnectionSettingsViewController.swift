@@ -23,10 +23,12 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
         self.title = L10n.Settings.ConnectionSection.header
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ActiveURLTypeChanged(_:)),
-                                               // swiftlint:disable:next line_length
-                                               name: NSNotification.Name(rawValue: "connectioninfo.activeurltype_changed"),
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(connectionInfoDidChange(_:)),
+            name: SettingsStore.connectionInfoDidChange,
+            object: nil
+        )
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -140,7 +142,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
         }
     }
 
-    @objc func ActiveURLTypeChanged(_ notification: Notification) {
+    @objc func connectionInfoDidChange(_ notification: Notification) {
         guard let pathRow = self.form.rowBy(tag: "connectionPath") as? LabelRow else { return }
         pathRow.value = Current.settingsStore.connectionInfo?.activeURLType.description
         pathRow.updateCell()
