@@ -4,6 +4,8 @@ import Shared
 import PromiseKit
 import CoreLocation
 
+// swiftlint:disable function_body_length
+
 final class ConnectionURLViewController: FormViewController, TypedRowControllerType {
     typealias RowValue = ConnectionURLViewController
     var row: RowOf<RowValue>!
@@ -51,14 +53,15 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         }
     }
 
-    private func check(url: URL?) throws {
+    private func check(url: URL?, useCloud: Bool?) throws {
         if url?.host?.contains("nabu.casa") == true {
             throw SaveError.nabuCasa
         }
 
         if url == nil, let existingInfo = Current.settingsStore.connectionInfo {
             let other: ConnectionInfo.URLType = urlType == .internal ? .external : .internal
-            if !existingInfo.useCloud, existingInfo.address(for: other) == nil {
+            if existingInfo.address(for: other) == nil,
+               useCloud == false || (useCloud == nil && !existingInfo.useCloud) {
                 throw SaveError.lastURL
             }
         }
@@ -70,9 +73,14 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
     @objc private func save() {
         let givenURL = (form.rowBy(tag: RowTag.url.rawValue) as? URLRow)?.value
+        let useCloud = (form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow)?.value
 
         func commit() {
             Current.settingsStore.connectionInfo?.setAddress(givenURL, urlType)
+
+            if let useCloud = useCloud {
+                Current.settingsStore.connectionInfo?.useCloud = useCloud
+            }
 
             if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
                 Current.settingsStore.connectionInfo?.internalSSIDs = section.allRows
@@ -86,9 +94,9 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         updateNavigationItems(isChecking: true)
 
         firstly { () -> Promise<Void> in
-            try check(url: givenURL)
+            try check(url: givenURL, useCloud: useCloud)
 
-            if let givenURL = givenURL {
+            if let givenURL = givenURL, useCloud != true {
                 return Current.webhooks.sendTest(baseURL: givenURL)
             }
 
@@ -132,6 +140,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
     private enum RowTag: String {
         case url
         case ssids
+        case useCloud
     }
 
     private func updateNavigationItems(isChecking: Bool) {
@@ -165,9 +174,26 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
         updateNavigationItems(isChecking: false)
 
+        if urlType.isAffectedByCloud, Current.settingsStore.connectionInfo?.remoteUIURL != nil {
+            form +++ SwitchRow {
+                $0.title = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
+                $0.tag = RowTag.useCloud.rawValue
+                $0.value = Current.settingsStore.connectionInfo?.useCloud
+            }
+        }
+
         form +++ Section()
         <<< URLRow(RowTag.url.rawValue) {
             $0.value = Current.settingsStore.connectionInfo?.address(for: urlType)
+            $0.hidden = .function([RowTag.useCloud.rawValue], { form in
+                if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
+                    // if cloud's around, hide when it's turned on
+                    return row.value == true
+                } else {
+                    // never hide if cloud isn't around
+                    return false
+                }
+            })
             $0.placeholder = { () -> String? in
                 switch urlType {
                 case .internal: return L10n.Settings.ConnectionSection.InternalBaseUrl.placeholder
@@ -177,10 +203,17 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             }()
         }
 
-        if urlType.isAffectedByCloud, Current.settingsStore.connectionInfo?.useCloud == true {
-            form +++ InfoLabelRow {
-                $0.title = L10n.Settings.ConnectionSection.cloudOverridesExternal
-            }
+        <<< InfoLabelRow {
+            $0.title = L10n.Settings.ConnectionSection.cloudOverridesExternal
+            $0.hidden = .function([RowTag.useCloud.rawValue], { form in
+                if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
+                    // this is effectively the visual replacement for the external url, so show when cloud is on
+                    return row.value == false
+                } else {
+                    // always hide if we're not offering the cloud option
+                    return true
+                }
+            })
         }
 
         if urlType.isAffectedBySSID {
