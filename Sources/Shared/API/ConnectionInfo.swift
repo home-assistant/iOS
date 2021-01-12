@@ -233,15 +233,15 @@ public class ConnectionInfo: Codable {
                 return self.activeURL
             }
         case .external:
-            if let url = self.externalURL {
+            if self.useCloud, self.remoteUIURL != nil {
+                self.activeURLType = .remoteUI
+                return self.activeURL
+            } else if let url = self.externalURL {
                 if let internalURL = self.internalURL, self.isOnInternalNetwork {
                     self.activeURLType = .internal
                     return sanitize(internalURL)
                 }
                 return sanitize(url)
-            } else if self.useCloud, self.remoteUIURL != nil {
-                self.activeURLType = .remoteUI
-                return self.activeURL
             }
         }
 
