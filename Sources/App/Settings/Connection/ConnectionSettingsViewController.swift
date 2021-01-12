@@ -62,46 +62,6 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 $0.value = Current.settingsStore.connectionInfo?.activeURLType.description
             }
 
-            <<< LabelRow("cloudAvailable") {
-                $0.title = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
-                $0.value = Current.settingsStore.connectionInfo?.remoteUIURL != nil ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL == nil)
-            }.onCellSelection { cell, _ in
-                guard let url = Current.settingsStore.connectionInfo?.remoteUIURL else { return }
-                let alert = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: L10n.copyLabel, style: .default, handler: { _ in
-                    UIPasteboard.general.url = url
-                }))
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = cell.contentView
-            }
-
-            <<< SwitchRow("useCloud") {
-                $0.title = "Connect via Cloud"
-                $0.value = Current.settingsStore.connectionInfo?.useCloud
-                $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL == nil)
-            }.onChange { row in
-                guard let value = row.value else { return }
-                if value == false {
-                    if Current.settingsStore.connectionInfo?.externalURL == nil,
-                        Current.settingsStore.connectionInfo?.internalURL == nil {
-                        // no other url is available, can't allow turning it off
-                        row.value = true
-                        row.updateCell()
-
-                        let alert = UIAlertController(title: L10n.errorLabel,
-                                                      message: L10n.Settings.ConnectionSection.Errors.cantDisableCloud,
-                                                      preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                        alert.popoverPresentationController?.sourceView = row.cell.contentView
-                        return
-                    }
-                }
-                Current.settingsStore.connectionInfo?.useCloud = value
-            }
-
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.hidden = .function([], { _ in
                     ConnectionInfo.hasWiFi == false
@@ -123,7 +83,17 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
-                row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.externalURL?.absoluteString }
+                row.displayValueFor = { _ in
+                    if let connectionInfo = Current.settingsStore.connectionInfo {
+                        if connectionInfo.useCloud {
+                            return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
+                        } else {
+                            return Current.settingsStore.connectionInfo?.externalURL?.absoluteString
+                        }
+                    } else {
+                        return nil
+                    }
+                }
                 row.presentationMode = .show(controllerProvider: .callback(builder: {
                     ConnectionURLViewController(urlType: .external, row: row)
                 }), onDismiss: { [navigationController] _ in
