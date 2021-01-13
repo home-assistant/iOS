@@ -65,6 +65,9 @@ public class ConnectionInfo: Codable {
             Current.settingsStore.connectionInfo = self
         }
     }
+    public var canUseCloud: Bool {
+        remoteUIURL != nil
+    }
     public var useCloud: Bool = false {
         didSet {
             guard useCloud != oldValue else { return }
@@ -116,7 +119,7 @@ public class ConnectionInfo: Codable {
         if self.internalURL != nil && self.internalSSIDs != nil && self.isOnInternalNetwork {
             self.activeURLType = .internal
         } else {
-            if self.useCloud && self.remoteUIURL != nil {
+            if self.useCloud && self.canUseCloud {
                 self.activeURLType = .remoteUI
             } else {
                 self.activeURLType = .external
@@ -201,7 +204,7 @@ public class ConnectionInfo: Codable {
         case .internal:
             if let url = self.internalURL {
                 guard self.isOnInternalNetwork else {
-                    if self.useCloud && self.remoteUIURL != nil {
+                    if self.useCloud && self.canUseCloud {
                         self.activeURLType = .remoteUI
                     } else if self.externalURL != nil {
                         self.activeURLType = .external
@@ -214,7 +217,7 @@ public class ConnectionInfo: Codable {
                 return sanitize(url)
             } else {
                 // No internal URL available, so fallback to an external URL
-                if self.useCloud && self.remoteUIURL != nil {
+                if self.useCloud && self.canUseCloud {
                     self.activeURLType = .remoteUI
                 } else {
                     self.activeURLType = .external
@@ -233,15 +236,15 @@ public class ConnectionInfo: Codable {
                 return self.activeURL
             }
         case .external:
-            if let url = self.externalURL {
+            if self.useCloud, self.canUseCloud {
+                self.activeURLType = .remoteUI
+                return self.activeURL
+            } else if let url = self.externalURL {
                 if let internalURL = self.internalURL, self.isOnInternalNetwork {
                     self.activeURLType = .internal
                     return sanitize(internalURL)
                 }
                 return sanitize(url)
-            } else if self.useCloud, self.remoteUIURL != nil {
-                self.activeURLType = .remoteUI
-                return self.activeURL
             }
         }
 
@@ -317,7 +320,7 @@ public class ConnectionInfo: Codable {
         case .internal:
             self.internalURL = address
             if self.internalURL == nil {
-                if self.useCloud && self.remoteUIURL != nil {
+                if self.useCloud && self.canUseCloud {
                     self.activeURLType = .remoteUI
                 } else {
                     self.activeURLType = .external
@@ -330,7 +333,7 @@ public class ConnectionInfo: Codable {
             if self.externalURL == nil {
                 if self.internalURL != nil && self.isOnInternalNetwork {
                     self.activeURLType = .internal
-                } else if self.useCloud && self.remoteUIURL != nil {
+                } else if self.useCloud && self.canUseCloud {
                     self.activeURLType = .remoteUI
                 }
             } else if self.activeURLType != .internal {

@@ -23,10 +23,12 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
         self.title = L10n.Settings.ConnectionSection.header
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ActiveURLTypeChanged(_:)),
-                                               // swiftlint:disable:next line_length
-                                               name: NSNotification.Name(rawValue: "connectioninfo.activeurltype_changed"),
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(connectionInfoDidChange(_:)),
+            name: SettingsStore.connectionInfoDidChange,
+            object: nil
+        )
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -57,47 +59,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             +++ Section(L10n.Settings.ConnectionSection.details)
             <<< LabelRow("connectionPath") {
                 $0.title = L10n.Settings.ConnectionSection.connectingVia
-                $0.value = Current.settingsStore.connectionInfo?.activeURLType.description
-            }
-
-            <<< LabelRow("cloudAvailable") {
-                $0.title = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
-                $0.value = Current.settingsStore.connectionInfo?.remoteUIURL != nil ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL == nil)
-            }.onCellSelection { cell, _ in
-                guard let url = Current.settingsStore.connectionInfo?.remoteUIURL else { return }
-                let alert = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: L10n.copyLabel, style: .default, handler: { _ in
-                    UIPasteboard.general.url = url
-                }))
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = cell.contentView
-            }
-
-            <<< SwitchRow("useCloud") {
-                $0.title = "Connect via Cloud"
-                $0.value = Current.settingsStore.connectionInfo?.useCloud
-                $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL == nil)
-            }.onChange { row in
-                guard let value = row.value else { return }
-                if value == false {
-                    if Current.settingsStore.connectionInfo?.externalURL == nil,
-                        Current.settingsStore.connectionInfo?.internalURL == nil {
-                        // no other url is available, can't allow turning it off
-                        row.value = true
-                        row.updateCell()
-
-                        let alert = UIAlertController(title: L10n.errorLabel,
-                                                      message: L10n.Settings.ConnectionSection.Errors.cantDisableCloud,
-                                                      preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                        alert.popoverPresentationController?.sourceView = row.cell.contentView
-                        return
-                    }
-                }
-                Current.settingsStore.connectionInfo?.useCloud = value
+                $0.displayValueFor = { _ in Current.settingsStore.connectionInfo?.activeURLType.description }
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
@@ -111,7 +73,6 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 row.presentationMode = .show(controllerProvider: .callback(builder: {
                     ConnectionURLViewController(urlType: .internal, row: row)
                 }), onDismiss: { [navigationController] _ in
-                    row.updateCell()
                     navigationController?.popViewController(animated: true)
                 })
 
@@ -121,11 +82,20 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
-                row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.externalURL?.absoluteString }
+                row.displayValueFor = { _ in
+                    if let connectionInfo = Current.settingsStore.connectionInfo {
+                        if connectionInfo.useCloud && connectionInfo.canUseCloud {
+                            return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
+                        } else {
+                            return Current.settingsStore.connectionInfo?.externalURL?.absoluteString
+                        }
+                    } else {
+                        return nil
+                    }
+                }
                 row.presentationMode = .show(controllerProvider: .callback(builder: {
                     ConnectionURLViewController(urlType: .external, row: row)
                 }), onDismiss: { [navigationController] _ in
-                    row.updateCell()
                     navigationController?.popViewController(animated: true)
                 })
             }
@@ -140,9 +110,9 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
         }
     }
 
-    @objc func ActiveURLTypeChanged(_ notification: Notification) {
-        guard let pathRow = self.form.rowBy(tag: "connectionPath") as? LabelRow else { return }
-        pathRow.value = Current.settingsStore.connectionInfo?.activeURLType.description
-        pathRow.updateCell()
+    @objc func connectionInfoDidChange(_ notification: Notification) {
+        DispatchQueue.main.async { [self] in
+            form.allRows.forEach { $0.updateCell() }
+        }
     }
 }
