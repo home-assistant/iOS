@@ -58,13 +58,8 @@ class AuthenticationViewController: UIViewController {
             self.instance = foundInstance
         }.done { _ in
             let connInfo = ConnectionInfo(
-                externalURL: baseURL,
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: "",
-                webhookSecret: nil,
-                internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
+                externalURL: baseURL, internalURL: nil, cloudhookURL: nil, remoteUIURL: nil, webhookID: "",
+                webhookSecret: nil, internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
                 internalHardwareAddresses: Current.connectivity.currentNetworkHardwareAddress().map { [$0] }
             )
 

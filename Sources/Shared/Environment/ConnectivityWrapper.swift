@@ -56,7 +56,9 @@ public class ConnectivityWrapper {
         currentWiFiSSID = {
             guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
             for interface in interfaces {
-                guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
+                guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {
+                    continue
+                }
                 return interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
             }
             return nil
@@ -64,7 +66,9 @@ public class ConnectivityWrapper {
         currentWiFiBSSID = {
             guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
             for interface in interfaces {
-                guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
+                guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {
+                    continue
+                }
                 return interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
             }
             return nil

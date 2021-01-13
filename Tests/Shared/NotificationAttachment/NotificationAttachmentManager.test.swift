@@ -25,7 +25,8 @@ class NotificationAttachmentManagerTests: XCTestCase {
             remoteUIURL: nil,
             webhookID: "webhookid",
             webhookSecret: "webhooksecret",
-            internalSSIDs: nil
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil
         )
 
         image1 = .init()

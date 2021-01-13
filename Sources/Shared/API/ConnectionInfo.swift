@@ -142,7 +142,8 @@ public class ConnectionInfo: Codable {
         self.webhookSecret = try container.decodeIfPresent(String.self, forKey: .webhookSecret)
         self.cloudhookURL = try container.decodeIfPresent(URL.self, forKey: .cloudhookURL)
         self.internalSSIDs = try container.decodeIfPresent(Array<String>.self, forKey: .internalSSIDs)
-        self.internalHardwareAddresses = try container.decodeIfPresent(Array<String>.self, forKey: .internalHardwareAddresses)
+        self.internalHardwareAddresses =
+            try container.decodeIfPresent(Array<String>.self, forKey: .internalHardwareAddresses)
         self.activeURLType = try container.decode(URLType.self, forKey: .activeURLType)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
     }

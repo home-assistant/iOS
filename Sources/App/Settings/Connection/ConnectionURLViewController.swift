@@ -4,7 +4,7 @@ import Shared
 import PromiseKit
 import CoreLocation
 
-// swiftlint:disable function_body_length
+// swiftlint:disable function_body_length type_body_length
 
 final class ConnectionURLViewController: FormViewController, TypedRowControllerType {
     typealias RowValue = ConnectionURLViewController
@@ -336,7 +336,6 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
         return section
     }
-
 }
 
 private extension MultivaluedSection {
