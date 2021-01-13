@@ -10,9 +10,6 @@
 
 import Foundation
 import Alamofire
-#if os(iOS)
-import SystemConfiguration.CaptiveNetwork
-#endif
 #if os(watchOS)
 import Communicator
 #endif
@@ -65,6 +62,12 @@ public class ConnectionInfo: Codable {
             Current.settingsStore.connectionInfo = self
         }
     }
+    public var internalHardwareAddresses: [String]? {
+        didSet {
+            guard internalHardwareAddresses != oldValue else { return }
+            Current.settingsStore.connectionInfo = self
+        }
+    }
     public var canUseCloud: Bool {
         remoteUIURL != nil
     }
@@ -107,7 +110,8 @@ public class ConnectionInfo: Codable {
     }
 
     public init(externalURL: URL?, internalURL: URL?, cloudhookURL: URL?, remoteUIURL: URL?,
-                webhookID: String, webhookSecret: String?, internalSSIDs: [String]?) {
+                webhookID: String, webhookSecret: String?, internalSSIDs: [String]?,
+                internalHardwareAddresses: [String]?) {
         self.externalURL = externalURL
         self.internalURL = internalURL
         self.cloudhookURL = cloudhookURL
@@ -115,6 +119,7 @@ public class ConnectionInfo: Codable {
         self.webhookID = webhookID
         self.webhookSecret = webhookSecret
         self.internalSSIDs = internalSSIDs
+        self.internalHardwareAddresses = internalHardwareAddresses
 
         if self.internalURL != nil && self.internalSSIDs != nil && self.isOnInternalNetwork {
             self.activeURLType = .internal
@@ -137,6 +142,8 @@ public class ConnectionInfo: Codable {
         self.webhookSecret = try container.decodeIfPresent(String.self, forKey: .webhookSecret)
         self.cloudhookURL = try container.decodeIfPresent(URL.self, forKey: .cloudhookURL)
         self.internalSSIDs = try container.decodeIfPresent(Array<String>.self, forKey: .internalSSIDs)
+        self.internalHardwareAddresses =
+            try container.decodeIfPresent(Array<String>.self, forKey: .internalHardwareAddresses)
         self.activeURLType = try container.decode(URLType.self, forKey: .activeURLType)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
     }
@@ -179,6 +186,13 @@ public class ConnectionInfo: Codable {
             switch self {
             case .internal: return false
             case .remoteUI, .external: return true
+            }
+        }
+
+        public var isAffectedByHardwareAddress: Bool {
+            switch self {
+            case .internal: return Current.isCatalyst
+            case .remoteUI, .external: return false
             }
         }
     }
@@ -363,50 +377,17 @@ public class ConnectionInfo: Codable {
         }
         return false
         #else
-        guard let internalSSIDs = self.internalSSIDs, let currentSSID = ConnectionInfo.CurrentWiFiSSID else {
-            return false
+        if let current = Current.connectivity.currentWiFiSSID(),
+           internalSSIDs?.contains(current) == true {
+            return true
         }
-        return internalSSIDs.contains(currentSSID)
-        #endif
-    }
 
-    public static var hasWiFi: Bool {
-        #if targetEnvironment(macCatalyst)
-        return Current.macBridge.networkConnectivity.hasWiFi
-        #else
-        return true
-        #endif
-    }
-
-    /// Returns the current SSID if it exists and the platform supports it.
-    public static var CurrentWiFiSSID: String? {
-        #if targetEnvironment(macCatalyst)
-        return Current.macBridge.networkConnectivity.wifi?.ssid
-        #elseif os(iOS)
-        guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
-        for interface in interfaces {
-            guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
-            return interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+        if let current = Current.connectivity.currentNetworkHardwareAddress(),
+           internalHardwareAddresses?.contains(current) == true {
+            return true
         }
-        return nil
-        #else
-        return nil
-        #endif
-    }
 
-    /// Returns the current BSSID if it exists and the platform supports it.
-    public static var CurrentWiFiBSSID: String? {
-        #if targetEnvironment(macCatalyst)
-        return Current.macBridge.networkConnectivity.wifi?.bssid
-        #elseif os(iOS)
-        guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
-        for interface in interfaces {
-            guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
-            return interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
-        }
-        return nil
-        #else
-        return nil
+        return false
         #endif
     }
 

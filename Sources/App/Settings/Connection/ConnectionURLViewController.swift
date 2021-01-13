@@ -4,7 +4,7 @@ import Shared
 import PromiseKit
 import CoreLocation
 
-// swiftlint:disable function_body_length
+// swiftlint:disable function_body_length type_body_length
 
 final class ConnectionURLViewController: FormViewController, TypedRowControllerType {
     typealias RowValue = ConnectionURLViewController
@@ -37,11 +37,13 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
     enum SaveError: LocalizedError {
         case nabuCasa
         case lastURL
+        case validation([ValidationError])
 
         var errorDescription: String? {
             switch self {
             case .nabuCasa: return L10n.Errors.noRemoteUiUrl
             case .lastURL: return L10n.Settings.ConnectionSection.Errors.cannotRemoveLastUrl
+            case .validation(let errors): return errors.map(\.msg).joined(separator: "\n")
             }
         }
 
@@ -49,11 +51,16 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             switch self {
             case .nabuCasa: return true
             case .lastURL: return true
+            case .validation: return true
             }
         }
     }
 
-    private func check(url: URL?, useCloud: Bool?) throws {
+    private func check(url: URL?, useCloud: Bool?, validationErrors: [ValidationError]) throws {
+        if !validationErrors.isEmpty {
+            throw SaveError.validation(validationErrors)
+        }
+
         if url?.host?.contains("nabu.casa") == true {
             throw SaveError.nabuCasa
         }
@@ -86,6 +93,15 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
                 Current.settingsStore.connectionInfo?.internalSSIDs = section.allRows
                     .compactMap { $0 as? TextRow }
                     .compactMap { $0.value }
+                    .filter { !$0.isEmpty }
+            }
+
+            if let section = form.sectionBy(tag: RowTag.hardwareAddresses.rawValue) as? MultivaluedSection {
+                Current.settingsStore.connectionInfo?.internalHardwareAddresses = section.allRows
+                    .compactMap { $0 as? TextRow }
+                    .compactMap { $0.value }
+                    .map { $0.lowercased() }
+                    .filter { !$0.isEmpty }
             }
 
             onDismissCallback?(self)
@@ -94,7 +110,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         updateNavigationItems(isChecking: true)
 
         firstly { () -> Promise<Void> in
-            try check(url: givenURL, useCloud: useCloud)
+            try check(url: givenURL, useCloud: useCloud, validationErrors: form.validate())
 
             if useCloud == true, let url = Current.settingsStore.connectionInfo?.remoteUIURL {
                 return Current.webhooks.sendTest(baseURL: url)
@@ -141,9 +157,10 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         }
     }
 
-    private enum RowTag: String {
+    fileprivate enum RowTag: String {
         case url
         case ssids
+        case hardwareAddresses
         case useCloud
     }
 
@@ -224,39 +241,37 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             form +++ locationPermissionSection()
 
             form +++ MultivaluedSection(
-                multivaluedOptions: [.Insert, .Delete],
+                tag: .ssids,
                 header: L10n.Settings.ConnectionSection.InternalUrlSsids.header,
-                footer: L10n.Settings.ConnectionSection.InternalUrlSsids.footer
-            ) { section in
-                section.tag = RowTag.ssids.rawValue
-                section.addButtonProvider = { _ in
-                    return ButtonRow {
-                        $0.title = L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid
-                    }.cellUpdate { cell, _ in
-                        cell.textLabel?.textAlignment = .natural
-                    }
-                }
+                footer: L10n.Settings.ConnectionSection.InternalUrlSsids.footer,
+                addNewLabel: L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid,
+                placeholder: L10n.Settings.ConnectionSection.InternalUrlSsids.placeholder,
+                currentValue: Current.connectivity.currentWiFiSSID,
+                existingValues: Current.settingsStore.connectionInfo?.internalSSIDs ?? [],
+                valueRules: RuleSet<String>()
+            )
+        }
 
-                func row(for value: String?) -> TextRow {
-                    TextRow {
-                        $0.placeholder = L10n.Settings.ConnectionSection.InternalUrlSsids.placeholder
-                        $0.value = value
-                    }
-                }
+        if urlType.isAffectedByHardwareAddress {
+            var rules = RuleSet<String>()
+            rules.add(rule: RuleRegExp(
+                // swiftlint:disable:next line_length
+                regExpr: "^[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}$",
+                allowsEmpty: true,
+                msg: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.invalid,
+                id: nil
+            ))
 
-                section.multivaluedRowToInsertAt = { _ in
-                    let current = ConnectionInfo.CurrentWiFiSSID
-
-                    if section.allRows.contains(where: { ($0 as? TextRow)?.value == current }) {
-                        return row(for: nil)
-                    } else {
-                        return row(for: current)
-                    }
-                }
-
-                let existing = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
-                section.append(contentsOf: existing.map { row(for: $0) })
-            }
+            form +++ MultivaluedSection(
+                tag: .hardwareAddresses,
+                header: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.header,
+                footer: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.footer,
+                addNewLabel: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.addNewSsid,
+                placeholder: "aa:bb:cc:dd:ee:ff",
+                currentValue: Current.connectivity.currentNetworkHardwareAddress,
+                existingValues: Current.settingsStore.connectionInfo?.internalHardwareAddresses ?? [],
+                valueRules: rules
+            )
         }
     }
 
@@ -321,5 +336,53 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
         return section
     }
+}
 
+private extension MultivaluedSection {
+    convenience init(
+        tag: ConnectionURLViewController.RowTag,
+        header: String,
+        footer: String,
+        addNewLabel: String,
+        placeholder: String,
+        currentValue: @escaping () -> String?,
+        existingValues: [String],
+        valueRules: RuleSet<String>
+    ) {
+        self.init(
+            multivaluedOptions: [.Insert, .Delete],
+            header: header,
+            footer: footer
+        ) { section in
+            section.tag = tag.rawValue
+            section.addButtonProvider = { _ in
+                return ButtonRow {
+                    $0.title = addNewLabel
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .natural
+                    cell.selectionStyle = .default
+                }
+            }
+
+            func row(for value: String?) -> TextRow {
+                TextRow {
+                    $0.placeholder = placeholder
+                    $0.value = value
+                    $0.add(ruleSet: valueRules)
+                }
+            }
+
+            section.multivaluedRowToInsertAt = { _ in
+                let current = currentValue()
+
+                if section.allRows.contains(where: { ($0 as? TextRow)?.value == current }) {
+                    return row(for: nil)
+                } else {
+                    return row(for: current)
+                }
+            }
+
+            section.append(contentsOf: existingValues.map { row(for: $0) })
+        }
+    }
 }

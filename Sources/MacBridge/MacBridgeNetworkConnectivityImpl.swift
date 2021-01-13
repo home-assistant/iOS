@@ -35,6 +35,6 @@ import Foundation
 
     init(name: String, hardwareAddress: String) {
         self.name = name
-        self.hardwareAddress = hardwareAddress
+        self.hardwareAddress = hardwareAddress.lowercased()
     }
 }

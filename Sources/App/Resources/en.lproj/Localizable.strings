@@ -913,3 +913,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.location.location_accuracy.title" = "Location Accuracy";
 "settings_details.location.location_accuracy.full" = "Full";
 "settings_details.location.location_accuracy.reduced" = "Reduced";
+"settings.connection_section.internal_url_hardware_addresses.header" = "Hardware Addresses";
+"settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
+"settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Add New Hardware Address";
+"settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardware addresses much look like aa:bb:cc:dd:ee:ff";

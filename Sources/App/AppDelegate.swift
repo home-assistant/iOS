@@ -493,7 +493,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let connectionInfo = ConnectionInfo(externalURL: url, internalURL: nil, cloudhookURL: nil, remoteUIURL: nil,
                                             webhookID: webhookID,
                                             webhookSecret: prefs.string(forKey: "webhookSecret"),
-                                            internalSSIDs: nil)
+                                            internalSSIDs: nil,
+                                            internalHardwareAddresses: nil)
 
         let tokenInfo = TokenInfo(accessToken: token, refreshToken: "", expiration: Date.distantFuture)
 

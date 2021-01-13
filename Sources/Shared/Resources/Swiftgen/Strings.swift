@@ -1241,6 +1241,16 @@ public enum L10n {
         /// Internal URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.title") }
       }
+      public enum InternalUrlHardwareAddresses {
+        /// Add New Hardware Address
+        public static var addNewSsid: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.add_new_ssid") }
+        /// Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.footer") }
+        /// Hardware Addresses
+        public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.header") }
+        /// Hardware addresses much look like aa:bb:cc:dd:ee:ff
+        public static var invalid: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.invalid") }
+      }
       public enum InternalUrlSsids {
         /// Add current SSID %@
         public static func addCurrentSsid(_ p1: Any) -> String {
