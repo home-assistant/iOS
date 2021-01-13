@@ -63,10 +63,6 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
-                row.hidden = .function([], { _ in
-                    ConnectionInfo.hasWiFi == false
-                })
-
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.internalURL?.absoluteString }

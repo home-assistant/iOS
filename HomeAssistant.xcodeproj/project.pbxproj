@@ -463,7 +463,6 @@
 		B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
 		B616B299227ED68E00828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
 		B616B29A227ED69300828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
-		B616B29B227ED69500828165 /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B291227EB00D00828165 /* DNSResolver.swift */; };
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */; };
@@ -1334,7 +1333,6 @@
 		B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationContent-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationContent-metadata.plist"; sourceTree = "<group>"; };
 		B613936824F728F8002B8C5D /* InputDeviceSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDeviceSensor.swift; sourceTree = "<group>"; };
 		B616B28F227EAFFB00828165 /* InternetAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetAddress.swift; sourceTree = "<group>"; };
-		B616B291227EB00D00828165 /* DNSResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSResolver.swift; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
@@ -2751,7 +2749,6 @@
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
 				B616B28F227EAFFB00828165 /* InternetAddress.swift */,
-				B616B291227EB00D00828165 /* DNSResolver.swift */,
 				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
@@ -4532,7 +4529,6 @@
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
-				B616B29B227ED69500828165 /* DNSResolver.swift in Sources */,
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,

@@ -54,23 +54,19 @@ class AuthenticationViewController: UIViewController {
 
         firstly {
             return self.testConnection(baseURL)
-        }.then { foundInstance -> Promise<Bool> in
+        }.get { foundInstance in
             self.instance = foundInstance
-
-            return foundInstance.checkIfBaseURLIsInternal()
-        }.done { baseURLIsInternal in
-            var ssids: [String] = []
-            if let currentSSID = ConnectionInfo.CurrentWiFiSSID {
-                ssids.append(currentSSID)
-            }
-            Current.Log.verbose("URL \(baseURL) resolves to internal? \(baseURLIsInternal)")
-            let connInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
-                                          remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
-
-//            if baseURLIsInternal {
-//                connInfo = ConnectionInfo(externalURL: nil, internalURL: baseURL, cloudhookURL: nil,
-//                                          remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
-//            }
+        }.done { _ in
+            let connInfo = ConnectionInfo(
+                externalURL: baseURL,
+                internalURL: nil,
+                cloudhookURL: nil,
+                remoteUIURL: nil,
+                webhookID: "",
+                webhookSecret: nil,
+                internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
+                internalHardwareAddresses: Current.connectivity.currentNetworkHardwareAddress().map { [$0] }
+            )
 
             self.connectionInfo = connInfo
 
@@ -258,19 +254,4 @@ public struct ConnectionTestResult: LocalizedError {
     public var DocumentationURL: URL {
         return URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors#\(self.kind.rawValue)")!
     }
-}
-
-extension DiscoveredHomeAssistant {
-    /// Returns true if host of baseURL matches one of the AnnouncedFrom addresses.
-    public func checkIfBaseURLIsInternal() -> Promise<Bool> {
-        guard let host = self.BaseURL?.host else { return Promise.value(false) }
-        if self.AnnouncedFrom.contains(host) == true { return Promise.value(true) }
-
-        return Promise { seal in
-            DNSResolver.resolve(host: host, completion: { (addresses) in
-                seal.fulfill(addresses.contains(where: { $0.isPrivateNetwork }))
-            })
-        }
-    }
-
 }
