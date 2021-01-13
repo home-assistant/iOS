@@ -59,7 +59,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             +++ Section(L10n.Settings.ConnectionSection.details)
             <<< LabelRow("connectionPath") {
                 $0.title = L10n.Settings.ConnectionSection.connectingVia
-                $0.value = Current.settingsStore.connectionInfo?.activeURLType.description
+                $0.displayValueFor = { _ in Current.settingsStore.connectionInfo?.activeURLType.description }
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
@@ -73,7 +73,6 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 row.presentationMode = .show(controllerProvider: .callback(builder: {
                     ConnectionURLViewController(urlType: .internal, row: row)
                 }), onDismiss: { [navigationController] _ in
-                    row.updateCell()
                     navigationController?.popViewController(animated: true)
                 })
 
@@ -85,7 +84,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 row.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
                 row.displayValueFor = { _ in
                     if let connectionInfo = Current.settingsStore.connectionInfo {
-                        if connectionInfo.useCloud {
+                        if connectionInfo.useCloud && connectionInfo.canUseCloud {
                             return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                         } else {
                             return Current.settingsStore.connectionInfo?.externalURL?.absoluteString
@@ -97,7 +96,6 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 row.presentationMode = .show(controllerProvider: .callback(builder: {
                     ConnectionURLViewController(urlType: .external, row: row)
                 }), onDismiss: { [navigationController] _ in
-                    row.updateCell()
                     navigationController?.popViewController(animated: true)
                 })
             }
@@ -113,8 +111,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
     }
 
     @objc func connectionInfoDidChange(_ notification: Notification) {
-        guard let pathRow = self.form.rowBy(tag: "connectionPath") as? LabelRow else { return }
-        pathRow.value = Current.settingsStore.connectionInfo?.activeURLType.description
-        pathRow.updateCell()
+        DispatchQueue.main.async { [self] in
+            form.allRows.forEach { $0.updateCell() }
+        }
     }
 }

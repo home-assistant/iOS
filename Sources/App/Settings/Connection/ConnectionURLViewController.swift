@@ -96,6 +96,10 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         firstly { () -> Promise<Void> in
             try check(url: givenURL, useCloud: useCloud)
 
+            if useCloud == true, let url = Current.settingsStore.connectionInfo?.remoteUIURL {
+                return Current.webhooks.sendTest(baseURL: url)
+            }
+
             if let givenURL = givenURL, useCloud != true {
                 return Current.webhooks.sendTest(baseURL: givenURL)
             }
@@ -174,7 +178,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
         updateNavigationItems(isChecking: false)
 
-        if urlType.isAffectedByCloud, Current.settingsStore.connectionInfo?.remoteUIURL != nil {
+        if urlType.isAffectedByCloud, Current.settingsStore.connectionInfo?.canUseCloud == true {
             form +++ SwitchRow {
                 $0.title = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                 $0.tag = RowTag.useCloud.rawValue
