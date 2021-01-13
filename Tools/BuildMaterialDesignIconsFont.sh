@@ -16,12 +16,21 @@ MDI_COMMIT=ca547d7878316031d24a1dbe5a9078693bb17517
 SVG_COMMIT=0e6dfae7e406fe3000cf05360d7d6a2975c62d61
 MDI_VERSION=5.8.55
 
+echo "Checking for latest..."
+
+LATEST=$(curl --silent https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags | sed -n -e 's/.*"name": "v\([^"]*\)".*/\1/p' | head -1)
+echo "Latest available: $LATEST; latest supported: $MDI_VERSION"
+
 if [[ 
 		-f MaterialDesignIcons.ttf && \
 		-f MaterialDesignIcons-$MDI_VERSION.ttf && \
 		-f MaterialDesignIcons.json && \
 		-f MaterialDesignIcons-$MDI_VERSION.json ]]; then
-	echo "MaterialDesignIcons up to date at version $MDI_VERSION"
+	if [ $LATEST != $MDI_VERSION ]; then
+		echo "Out of date, but latest supported installed"
+	else
+		echo "Up-to-date"
+	fi
 	exit
 fi
 
@@ -53,5 +62,10 @@ ln -f MaterialDesignIcons-$MDI_VERSION.ttf MaterialDesignIcons.ttf
 ln -f MaterialDesignIcons-$MDI_VERSION.json MaterialDesignIcons.json
 
 echo "Successfully built MaterialDesignIcons at version $MDI_VERSION"
+echo "Running Swiftgen..."
+
+pushd ..
+Pods/SwiftGen/bin/swiftgen
+popd
 
 popd
