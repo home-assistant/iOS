@@ -327,7 +327,6 @@ class BatterySensorTests: XCTestCase {
             let uState = uSensors[idx + 1]
 
             XCTAssertLevel(uLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
-            XCTAssertEqual(uLevel.Attributes?["Low Power Mode"] as? Bool, true)
 
             XCTAssertState(uState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
             XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
