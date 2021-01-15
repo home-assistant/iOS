@@ -380,6 +380,14 @@ public enum L10n {
       }
       /// HA API not configured
       public static var notConfigured: String { return L10n.tr("Localizable", "ha_api.api_error.not_configured") }
+      /// Unacceptable status code %1$i.
+      public static func unacceptableStatusCode(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "ha_api.api_error.unacceptable_status_code", p1)
+      }
+      /// Received response with result of type %1$@ but expected type %2$@.
+      public static func unexpectedType(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "ha_api.api_error.unexpected_type", String(describing: p1), String(describing: p2))
+      }
       /// An unknown error occurred.
       public static var unknown: String { return L10n.tr("Localizable", "ha_api.api_error.unknown") }
       /// Operation could not be performed.

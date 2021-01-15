@@ -3,12 +3,27 @@ import PromiseKit
 import UserNotifications
 import ObjectMapper
 
-internal enum WebhookError: Error, Equatable {
+internal enum WebhookError: LocalizedError, Equatable {
     case noApi
-    case unregisteredIdentifier
+    case unregisteredIdentifier(handler: String)
     case unexpectedType(given: String, desire: String)
     case unacceptableStatusCode(Int)
     case unmappableValue
+
+    var errorDescription: String? {
+        switch self {
+        case .noApi:
+            return L10n.HaApi.ApiError.notConfigured
+        case .unregisteredIdentifier:
+            return L10n.HaApi.ApiError.unknown
+        case .unexpectedType(let given, let desire):
+            return L10n.HaApi.ApiError.unexpectedType(given, desire)
+        case .unacceptableStatusCode(let statusCode):
+            return L10n.HaApi.ApiError.unacceptableStatusCode(statusCode)
+        case .unmappableValue:
+            return L10n.HaApi.ApiError.invalidResponse
+        }
+    }
 }
 
 // swiftlint:disable file_length
@@ -274,7 +289,7 @@ public class WebhookManager: NSObject {
     ) -> Promise<Void> {
         guard let handlerType = responseHandlers[identifier] else {
             Current.Log.error("no existing handler for \(identifier), not sending request")
-            return .init(error: WebhookError.unregisteredIdentifier)
+            return .init(error: WebhookError.unregisteredIdentifier(handler: identifier.rawValue))
         }
 
         let (promise, seal) = Promise<Void>.pending()
