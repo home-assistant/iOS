@@ -27,10 +27,6 @@ class SensorDetailViewController: FormViewController {
 
         let baseSection = Section()
         baseSection <<< LabelRow {
-            $0.title = L10n.SettingsSensors.Detail.uniqueId
-            $0.value = sensor.UniqueID
-        }
-        baseSection <<< LabelRow {
             $0.title = L10n.SettingsSensors.Detail.state
             $0.value = sensor.StateDescription
         }
@@ -55,7 +51,7 @@ class SensorDetailViewController: FormViewController {
             form.append(Self.settingsSection(from: sensor.Settings))
         }
 
-        if let attributes = sensor.Attributes {
+        if let attributes = sensor.Attributes, !attributes.isEmpty {
             let attributesSection = Section(header: L10n.SettingsSensors.Detail.attributes, footer: nil)
             let attributeRows = attributes
                 .sorted(by: { lhs, rhs in lhs.0 < rhs.0 })
