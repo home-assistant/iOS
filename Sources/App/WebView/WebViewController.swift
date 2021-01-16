@@ -601,6 +601,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             buttonTitle: L10n.openLabel,
             buttonTapHandler: { _ in
                 UIApplication.shared.open(alert.url, options: [:], completionHandler: nil)
+                SwiftMessages.hide()
             }
         )
 
