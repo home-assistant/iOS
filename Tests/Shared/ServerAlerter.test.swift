@@ -258,4 +258,12 @@ class ServerAlerterTests: XCTestCase {
         alerter.markHandled(alert: alerts[0])
         XCTAssertEqual(try hang(alerter.check()), alerts[1])
     }
+
+    func testErroredRequestsDoesntAlert() {
+        let expectedError = URLError(.timedOut)
+        setUp(response: .failure(expectedError))
+        XCTAssertThrowsError(try hang(alerter.check())) { error in
+            XCTAssertEqual((error as? URLError)?.code, expectedError.code)
+        }
+    }
 }
