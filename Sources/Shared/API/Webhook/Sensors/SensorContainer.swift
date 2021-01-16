@@ -60,6 +60,10 @@ public class SensorContainer {
         }
     }
 
+    // TODO: this is last 'returned' not last 'sent' - if we cancel a previous request, this will be wrong
+    // this needs to update only when network requests complete successfully
+    private var lastSentSensors: [String: WebhookSensor] = [:]
+
     internal func sensors(
         reason: SensorProviderRequest.Reason,
         location: CLLocation? = nil
@@ -70,7 +74,7 @@ public class SensorContainer {
             location: location
         )
 
-        let sensors = firstly {
+        let generatedSensors = firstly {
             let promises = providers
                 .map { providerType in providerType.init(request: request) }
                 .map { provider in provider.sensors().map { ($0, provider) } }
@@ -87,15 +91,37 @@ public class SensorContainer {
             }.flatMap { $0 }
         }
 
+        let filteredSensors = generatedSensors.filterValues(on: .main) { [self] sensor in
+            if let uniqueID = sensor.UniqueID {
+                return lastSentSensors[uniqueID] != sensor
+            } else {
+                return false
+            }
+        }
+
         switch request.reason {
         case .trigger:
             // only store when we know we're sending the maximum kind of data
-            lastUpdate = .init(sensors: sensors)
+            // we start with the only-updated set, because we want to replace on them but keep the rest
+            // so that we continue to use e.g. not-generated-this-round sensors from the array
+            lastUpdate = .init(sensors: filteredSensors.map(on: .main) { [self] new -> [WebhookSensor] in
+                lastSentSensors = new.reduce(into: lastSentSensors) { result, sensor in
+                    if let uniqueID = sensor.UniqueID {
+                        result[uniqueID] = sensor
+                    }
+                }
+                return lastSentSensors.values.sorted()
+            }
+        )
         case .registration:
             break
         }
 
-        return sensors
+        if request.reason.shouldSkipChangeFilter {
+            return generatedSensors
+        } else {
+            return filteredSensors
+        }
     }
 
     private func updateSignaled(from type: SensorProvider.Type) {

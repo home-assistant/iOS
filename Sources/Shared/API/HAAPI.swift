@@ -820,14 +820,19 @@ public class HomeAssistantAPI {
                 reason: .trigger(trigger.rawValue),
                 location: location
             )
-        }.map { sensors in
+        }.map { sensors -> [[String: Any]] in
             Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
 
             let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
                                                shouldIncludeNilValues: false)
             return mapper.toJSONArray(sensors)
         }.then { (payload) -> Promise<Void> in
-            Current.webhooks.send(
+            guard !payload.isEmpty else {
+                Current.Log.info("skipping network request for unchanged sensor update")
+                return .value(())
+            }
+
+            return Current.webhooks.send(
                 identifier: .updateSensors,
                 request: .init(type: "update_sensor_states", data: payload)
             )
