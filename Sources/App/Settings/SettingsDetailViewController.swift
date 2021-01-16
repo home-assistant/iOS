@@ -858,7 +858,11 @@ enum OpenInBrowser: String, CaseIterable {
         case .Firefox:
             return L10n.SettingsDetails.General.OpenInBrowser.firefox
         case .Safari:
-            return L10n.SettingsDetails.General.OpenInBrowser.safari
+            if #available(iOS 14, *) {
+                return L10n.SettingsDetails.General.OpenInBrowser.default
+            } else {
+                return L10n.SettingsDetails.General.OpenInBrowser.safari
+            }
         case .SafariInApp:
             return L10n.SettingsDetails.General.OpenInBrowser.safariInApp
         }

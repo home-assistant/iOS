@@ -919,3 +919,4 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardware addresses much look like aa:bb:cc:dd:ee:ff";
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unacceptable_status_code" = "Unacceptable status code %1$i.";
+"settings_details.general.open_in_browser.default" = "System Default";
