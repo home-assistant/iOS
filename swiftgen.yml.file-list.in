@@ -1,0 +1,15 @@
+# ib
+$(SRCROOT)/Sources/App/ClientEvents/ClientEvents.storyboard
+$(SRCROOT)/Sources/App/Resources/Base.lproj/Onboarding.storyboard
+
+# json
+$(SRCROOT)/Tools/MaterialDesignIcons.json
+
+# plist
+$(SRCROOT)/Sources/Shared/Resources/Info.plist
+
+# strings
+$(SRCROOT)/Sources/App/Resources/en.lproj/Localizable.strings
+
+# xcassets
+$(SRCROOT)/Sources/App/Resources/Assets.xcassets

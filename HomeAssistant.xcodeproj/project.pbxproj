@@ -3,8 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
+
+/* Begin PBXAggregateTarget section */
+		111711E425B29ACB003C149E /* Codegen */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 111711E825B29ACB003C149E /* Build configuration list for PBXAggregateTarget "Codegen" */;
+			buildPhases = (
+				111711F725B29AFC003C149E /* Run SwiftGen */,
+				115CF89325B29B64001DAECE /* Run SwiftLint */,
+			);
+			dependencies = (
+			);
+			name = Codegen;
+			productName = Codegen;
+		};
+/* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
 		1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */; };
@@ -709,6 +724,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		111711F825B29B1E003C149E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 111711E425B29ACB003C149E;
+			remoteInfo = Codegen;
+		};
+		111711FA25B29B24003C149E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 111711E425B29ACB003C149E;
+			remoteInfo = Codegen;
+		};
 		1155DD0E250F4101003405C0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -3194,8 +3223,6 @@
 			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "App" */;
 			buildPhases = (
 				120054CCBDBFE9476AF3222E /* [CP] Check Pods Manifest.lock */,
-				B65B150722731CE300635D5C /* SwiftGen */,
-				B641BC261E20BAF3002CCBC1 /* Swiftlint */,
 				B657A8E21CA646EB00121384 /* Sources */,
 				B657A8E31CA646EB00121384 /* Frameworks */,
 				B657A8E41CA646EB00121384 /* Resources */,
@@ -3310,6 +3337,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				111711FB25B29B24003C149E /* PBXTargetDependency */,
 			);
 			name = "Shared-watchOS";
 			productName = "Shared-watchOS";
@@ -3387,6 +3415,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				111711F925B29B1E003C149E /* PBXTargetDependency */,
 				11A31C93252128B900D50A78 /* PBXTargetDependency */,
 			);
 			name = "Shared-iOS";
@@ -3425,6 +3454,9 @@
 				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Home Assistant";
 				TargetAttributes = {
+					111711E425B29ACB003C149E = {
+						CreatedOnToolsVersion = 12.3;
+					};
 					1155DD05250F4100003405C0 = {
 						CreatedOnToolsVersion = 12.0;
 					};
@@ -3632,6 +3664,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				111711E425B29ACB003C149E /* Codegen */,
 				B657A8E51CA646EB00121384 /* App */,
 				B6CC5D812159D10D00833E5D /* WatchApp */,
 				D03D891620E0A85200D4F28D /* Shared-iOS */,
@@ -3983,6 +4016,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		111711F725B29AFC003C149E /* Run SwiftGen */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"$(SRCROOT)/swiftgen.yml.file-list.in",
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftGen";
+			outputFileListPaths = (
+				"$(SRCROOT)/swiftgen.yml.file-list.out",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/SwiftGen/bin/swiftgen\"\n";
+		};
+		115CF89325B29B64001DAECE /* Run SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    ${SRCROOT}/Pods/SwiftLint/swiftlint --config ${SRCROOT}/.swiftlint.yml --quiet ${SRCROOT}\nfi\n";
+		};
 		11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4252,55 +4324,6 @@
 			shellPath = "/bin/sh -e";
 			shellScript = "if [[ $CI ]]; then\n    echo \"warning: Critical alerts disabled for CI\"\nelif [[ ${ENABLE_CRITICAL_ALERTS} -eq 1 ]]; then\n    entitlements_file=\"${TARGET_TEMP_DIR}/${FULL_PRODUCT_NAME}.xcent\"\n    /usr/libexec/PlistBuddy -c \"add com.apple.developer.usernotifications.critical-alerts bool true\" \"$entitlements_file\"\nelse\n    echo \"warning: Critical alerts disabled\"\nfi\n";
 			showEnvVarsInLog = 0;
-		};
-		B641BC261E20BAF3002CCBC1 /* Swiftlint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
-				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
-				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
-				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/PMAlertController/PMAlertController.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/arek/arek.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
-			);
-			name = Swiftlint;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    ${PODS_ROOT}/SwiftLint/swiftlint\nfi\n";
-		};
-		B65B150722731CE300635D5C /* SwiftGen */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftGen;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$PODS_ROOT/SwiftGen/bin/swiftgen\"\n";
 		};
 		B8028AFF323FD2C0483872EB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -4935,6 +4958,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		111711F925B29B1E003C149E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 111711E425B29ACB003C149E /* Codegen */;
+			targetProxy = 111711F825B29B1E003C149E /* PBXContainerItemProxy */;
+		};
+		111711FB25B29B24003C149E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 111711E425B29ACB003C149E /* Codegen */;
+			targetProxy = 111711FA25B29B24003C149E /* PBXContainerItemProxy */;
+		};
 		1155DD0F250F4101003405C0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1155DD05250F4100003405C0 /* Extensions-Share */;
@@ -5207,6 +5240,30 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		111711E525B29ACB003C149E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_MODULE_NAME = HomeAssistant;
+				PRODUCT_NAME = HomeAssistant;
+			};
+			name = Debug;
+		};
+		111711E625B29ACB003C149E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_MODULE_NAME = HomeAssistant;
+				PRODUCT_NAME = HomeAssistant;
+			};
+			name = Release;
+		};
+		111711E725B29ACB003C149E /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_MODULE_NAME = HomeAssistant;
+				PRODUCT_NAME = HomeAssistant;
+			};
+			name = Beta;
+		};
 		1155DD13250F4101003405C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0AC45831AE5C9F83C5B6269D /* Pods-iOS-Extensions-Share.debug.xcconfig */;
@@ -6185,6 +6242,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		111711E825B29ACB003C149E /* Build configuration list for PBXAggregateTarget "Codegen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				111711E525B29ACB003C149E /* Debug */,
+				111711E625B29ACB003C149E /* Release */,
+				111711E725B29ACB003C149E /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1155DD12250F4101003405C0 /* Build configuration list for PBXNativeTarget "Extensions-Share" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

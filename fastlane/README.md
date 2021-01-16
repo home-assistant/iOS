@@ -46,6 +46,11 @@ Fetches the push notification certificates and saves them as p12 files in push_c
 fastlane ios icons
 ```
 Generate proper icons for all build trains
+### ios update_swiftgen_config
+```
+fastlane ios update_swiftgen_config
+```
+Update switftgen input/output files
 ### ios update_strings
 ```
 fastlane ios update_strings

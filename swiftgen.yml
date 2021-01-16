@@ -1,3 +1,7 @@
+# Updating this file to have new inputs or outputs? 
+# Make sure to re-run: `fastlane update_swiftgen_config`
+# or it won't be executed when it changes in Xcode
+
 strings:
   inputs:
     - Sources/App/Resources/en.lproj/Localizable.strings

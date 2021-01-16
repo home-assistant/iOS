@@ -1,0 +1,15 @@
+# ib
+$(SRCROOT)/Sources/App/Resources/Scenes.swift
+$(SRCROOT)/Sources/App/Resources/Segues.swift
+
+# json
+$(SRCROOT)/Sources/Shared/Iconic/MaterialDesignIcons.swift
+
+# plist
+$(SRCROOT)/Sources/Shared/Resources/SwiftGen/SharedPlist.swift
+
+# strings
+$(SRCROOT)/Sources/Shared/Resources/SwiftGen/Strings.swift
+
+# xcassets
+$(SRCROOT)/Sources/App/Resources/Assets.swift
