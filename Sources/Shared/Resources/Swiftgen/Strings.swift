@@ -1625,6 +1625,8 @@ public enum L10n {
       public enum OpenInBrowser {
         /// Google Chrome
         public static var chrome: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.chrome") }
+        /// System Default
+        public static var `default`: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.default") }
         /// Mozilla Firefox
         public static var firefox: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefox") }
         /// Apple Safari
