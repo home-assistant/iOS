@@ -2852,7 +2852,6 @@
 				116740722519907400F51626 /* MacBridgeProtocol.swift */,
 				111D295424F30D2C00C8A7D1 /* Updater.swift */,
 				11521BBB25400284009C5C72 /* CrashReporter.swift */,
-				110ED58E25A6743900489AF7 /* ConnectivityWrapper.swift */,
 				110AA55B25B36630005061A0 /* ServerAlerter.swift */,
 			);
 			path = Environment;
