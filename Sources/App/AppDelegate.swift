@@ -130,6 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lifecycleManager.didFinishLaunching()
 
         checkForUpdate()
+        checkForAlerts()
 
         return true
     }
@@ -395,6 +396,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     $0.present(alert, animated: true, completion: nil)
                 }
             }
+        }
+    }
+
+    func checkForAlerts() {
+        firstly {
+            when(fulfilled: Current.serverAlerter.check(), sceneManager.webViewWindowControllerPromise)
+        }.done { alert, controller in
+            controller.show(alert: alert)
+        }.catch { error in
+            Current.Log.error("check error: \(error)")
         }
     }
 

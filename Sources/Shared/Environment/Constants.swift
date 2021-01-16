@@ -125,6 +125,13 @@ public struct Constants {
     static public var version: String {
         SharedPlistFiles.Info.cfBundleShortVersionString
     }
+
+    static internal var clientVersion: Version {
+        // swiftlint:disable:next force_try
+        var clientVersion = try! Version(version)
+        clientVersion.build = build
+        return clientVersion
+    }
 }
 
 public extension Version {
