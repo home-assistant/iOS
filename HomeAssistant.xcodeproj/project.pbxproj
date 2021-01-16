@@ -42,6 +42,9 @@
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
+		110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA55B25B36630005061A0 /* ServerAlerter.swift */; };
+		110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA55B25B36630005061A0 /* ServerAlerter.swift */; };
+		110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */; };
 		110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */; };
 		110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694324E77125004AA96D /* WidgetActionsProvider.swift */; };
 		110E694624E771AB004AA96D /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
@@ -955,6 +958,8 @@
 		1109B6BD25263F1D005D51C2 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1109F81E24A1C011002590F2 /* SensorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProvider.swift; sourceTree = "<group>"; };
 		1109F82324A25A41002590F2 /* SensorContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.test.swift; sourceTree = "<group>"; };
+		110AA55B25B36630005061A0 /* ServerAlerter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.swift; sourceTree = "<group>"; };
+		110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.test.swift; sourceTree = "<group>"; };
 		110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsContainerView.swift; sourceTree = "<group>"; };
 		110E694324E77125004AA96D /* WidgetActionsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsProvider.swift; sourceTree = "<group>"; };
 		110E694524E771AB004AA96D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
@@ -2900,6 +2905,7 @@
 				111D295424F30D2C00C8A7D1 /* Updater.swift */,
 				11521BBB25400284009C5C72 /* CrashReporter.swift */,
 				110ED58E25A6743900489AF7 /* ConnectivityWrapper.swift */,
+				110AA55B25B36630005061A0 /* ServerAlerter.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -2967,6 +2973,7 @@
 				11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */,
 				1104FCCE253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift */,
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
+				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4684,6 +4691,7 @@
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
+				110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
@@ -4840,6 +4848,7 @@
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveryInfo.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
+				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
@@ -4950,6 +4959,7 @@
 				11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */,
 				11F2F2A92587288200F61F7C /* NotificationAttachmentParserCamera.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
+				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 				110ED58025A570F100489AF7 /* DisplaySensor.test.swift in Sources */,
 			);
