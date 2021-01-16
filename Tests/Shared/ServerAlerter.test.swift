@@ -18,11 +18,12 @@ class ServerAlerterTests: XCTestCase {
     }
 
     private func setUp(response: Swift.Result<[ServerAlert], Error>) {
-        let url = URL(string: "https://companion.home-assistant.io/alerts.json")!
+        let url = URL(string: "https://alerts.home-assistant.io/mobile.json")!
         stubDescriptors.append(stub(condition: { $0.url == url }, response: { request in
             switch response {
             case .success(let value):
                 let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
                 encoder.outputFormatting = .prettyPrinted
                 return HTTPStubsResponse(
                     data: try! encoder.encode(value),
@@ -44,6 +45,8 @@ class ServerAlerterTests: XCTestCase {
 
     func testEncoderSinceTestsRelyOnItsFormat() throws {
         let alert = ServerAlert(
+            id: "id",
+            date: Date(timeIntervalSince1970: 1610837683),
             url: URL(string: "http://example.com")!,
             message: "Some message",
             ios: .init(min: .init(major: 100, minor: 1, patch: 0), max: nil),
@@ -51,8 +54,9 @@ class ServerAlerterTests: XCTestCase {
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
         let result = String(data: try encoder.encode(alert), encoding: .utf8)
-        XCTAssertEqual(result, "{\"core\":{\"max\":\"20.0\",\"min\":null},\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}")
+        XCTAssertEqual(result, "{\"core\":{\"max\":\"20.0\",\"min\":null},\"date\":\"2021-01-16T22:54:43Z\",\"id\":\"id\",\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}")
     }
 
     func testNoAlerts() {
@@ -65,6 +69,8 @@ class ServerAlerterTests: XCTestCase {
         
         setUp(response: .success([
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
                 ios: .init(min: nil, max: nil),
@@ -79,6 +85,8 @@ class ServerAlerterTests: XCTestCase {
 
         setUp(response: .success([
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
                 ios: .init(min: .init(major: 50), max: .init(major: 99)),
@@ -93,6 +101,8 @@ class ServerAlerterTests: XCTestCase {
 
         setUp(response: .success([
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
                 ios: .init(min: .init(major: 101), max: .init(major: 150)),
@@ -106,6 +116,8 @@ class ServerAlerterTests: XCTestCase {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
             ios: .init(min: .init(major: 75), max: .init(major: 125)),
@@ -125,6 +137,8 @@ class ServerAlerterTests: XCTestCase {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
             ios: .init(min: .init(major: 75), max: nil),
@@ -144,6 +158,8 @@ class ServerAlerterTests: XCTestCase {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
             ios: .init(min: .init(major: 125), max: nil),
@@ -158,6 +174,8 @@ class ServerAlerterTests: XCTestCase {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
             ios: .init(min: nil, max: .init(major: 150)),
@@ -177,6 +195,8 @@ class ServerAlerterTests: XCTestCase {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
             ios: .init(min: nil, max: .init(major: 99)),
@@ -192,6 +212,8 @@ class ServerAlerterTests: XCTestCase {
 
         setUp(response: .success([
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
                 ios: .init(min: nil, max: nil),
@@ -206,6 +228,8 @@ class ServerAlerterTests: XCTestCase {
 
         setUp(response: .success([
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
                 ios: .init(min: nil, max: nil),
@@ -219,6 +243,8 @@ class ServerAlerterTests: XCTestCase {
         Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
             ios: .init(min: nil, max: nil),
@@ -240,12 +266,16 @@ class ServerAlerterTests: XCTestCase {
 
         let alerts = [
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg1",
                 ios: .init(min: .init(major: 75), max: .init(major: 125)),
                 core: .init(min: nil, max: nil)
             ),
             ServerAlert(
+                id: UUID().uuidString,
+                date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg2",
                 ios: .init(min: nil, max: nil),

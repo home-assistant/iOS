@@ -53,14 +53,25 @@ public struct ServerAlert: Codable, Equatable {
         }
     }
 
+    public var id: String
+    public var date: Date
     public var url: URL
     public var message: String
     public var ios: VersionRequirement
     public var core: VersionRequirement
+
+    public static func == (lhs: ServerAlert, rhs: ServerAlert) -> Bool {
+        return lhs.id == rhs.id
+            && abs(lhs.date.timeIntervalSince(rhs.date)) < 1
+            && lhs.url == rhs.url
+            && lhs.message == rhs.message
+            && lhs.ios == rhs.ios
+            && lhs.core == rhs.core
+    }
 }
 
 public class ServerAlerter {
-    private var apiUrl: URL { URL(string: "https://companion.home-assistant.io/alerts.json")! }
+    private var apiUrl: URL { URL(string: "https://alerts.home-assistant.io/mobile.json")! }
 
     public func check() -> Promise<ServerAlert> {
         return firstly {
@@ -73,9 +84,11 @@ public class ServerAlerter {
                     alert = try? ServerAlert(from: decoder)
                 }
             }
-            return try JSONDecoder()
-                .decode([FailableServerAlert].self, from: data)
-                .compactMap(\.alert)
+            return try with(JSONDecoder()) {
+                $0.dateDecodingStrategy = .iso8601
+            }
+            .decode([FailableServerAlert].self, from: data)
+            .compactMap(\.alert)
         }.get { updates in
             Current.Log.info("found alerts: \(updates)")
         }.filterValues {
@@ -89,17 +102,11 @@ public class ServerAlerter {
 
     public func markHandled(alert: ServerAlert) {
         var viewed = Current.settingsStore.prefs.stringArray(forKey: allHandledKeys) ?? []
-        viewed.append(alert.handledKey)
+        viewed.append(alert.id)
         Current.settingsStore.prefs.set(viewed, forKey: allHandledKeys)
     }
 
     private func isHandled(alert: ServerAlert) -> Bool {
-        Current.settingsStore.prefs.stringArray(forKey: allHandledKeys)?.contains(alert.handledKey) == true
-    }
-}
-
-private extension ServerAlert {
-    var handledKey: String {
-        "alert-viewed-\(url.absoluteString)"
+        Current.settingsStore.prefs.stringArray(forKey: allHandledKeys)?.contains(alert.id) == true
     }
 }
