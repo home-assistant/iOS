@@ -121,6 +121,72 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check()))
     }
 
+    func testLowerBoundOnlyiOSShouldApply() {
+        Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
+
+        let alert = ServerAlert(
+            url: randomURL(),
+            message: "msg",
+            ios: .init(min: .init(major: 75), max: nil),
+            core: .init(min: nil, max: nil)
+        )
+
+        setUp(response: .success([ alert ]))
+        XCTAssertEqual(try hang(alerter.check()), alert)
+        // trying again should still work
+        XCTAssertEqual(try hang(alerter.check()), alert)
+
+        alerter.markHandled(alert: alert)
+        XCTAssertThrowsError(try hang(alerter.check()))
+    }
+
+    func testLowerBoundOnlyiOSShouldntApply() {
+        Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
+
+        let alert = ServerAlert(
+            url: randomURL(),
+            message: "msg",
+            ios: .init(min: .init(major: 125), max: nil),
+            core: .init(min: nil, max: nil)
+        )
+
+        setUp(response: .success([ alert ]))
+        XCTAssertThrowsError(try hang(alerter.check()))
+    }
+
+    func testUpperBoundOnlyiOSShouldApply() {
+        Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
+
+        let alert = ServerAlert(
+            url: randomURL(),
+            message: "msg",
+            ios: .init(min: nil, max: .init(major: 150)),
+            core: .init(min: nil, max: nil)
+        )
+
+        setUp(response: .success([ alert ]))
+        XCTAssertEqual(try hang(alerter.check()), alert)
+        // trying again should still work
+        XCTAssertEqual(try hang(alerter.check()), alert)
+
+        alerter.markHandled(alert: alert)
+        XCTAssertThrowsError(try hang(alerter.check()))
+    }
+
+    func testUpperBoundOnlyiOSShouldntApply() {
+        Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
+
+        let alert = ServerAlert(
+            url: randomURL(),
+            message: "msg",
+            ios: .init(min: nil, max: .init(major: 99)),
+            core: .init(min: nil, max: nil)
+        )
+
+        setUp(response: .success([ alert ]))
+        XCTAssertThrowsError(try hang(alerter.check()))
+    }
+
     func testEarlierCoreDoesntApply() {
         Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
 
