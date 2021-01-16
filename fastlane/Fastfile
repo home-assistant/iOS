@@ -171,6 +171,11 @@ platform :ios do
     appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_name: "WatchIcon.appiconset", appicon_devices: [:watch, :watch_marketing])
   end
 
+  desc "Update switftgen input/output files"
+  lane :update_swiftgen_config do
+    sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen config generate-xcfilelists --inputs swiftgen.yml.file-list.in --outputs swiftgen.yml.file-list.out")
+  end
+
   desc "Download latest localization files from Lokalize"
   lane :update_strings do
     lokalise(destination: "Sources/App/Resources/", use_original: true)
