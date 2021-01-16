@@ -101,6 +101,12 @@ class WebViewWindowController {
         window.rootViewController?.present(viewController, animated: animated, completion: completion)
     }
 
+    func show(alert: ServerAlert) {
+        webViewControllerPromise.done { webViewController in
+            webViewController.show(alert: alert)
+        }
+    }
+
     var presentingViewController: UIViewController? {
         var currentController = window.rootViewController
         while let controller = currentController?.presentedViewController {

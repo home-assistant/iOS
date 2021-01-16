@@ -574,6 +574,39 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         updateSensors()
     }
 
+    func show(alert: ServerAlert) {
+        Current.Log.info("showing alert \(alert)")
+
+        var config = SwiftMessages.Config()
+
+        config.presentationContext = .viewController(self)
+        config.duration = .forever
+        config.presentationStyle = .bottom
+        config.dimMode = .gray(interactive: true)
+        config.dimModeAccessibilityLabel = L10n.cancelLabel
+        config.eventListeners.append({ event in
+            if event == .didHide {
+                Current.serverAlerter.markHandled(alert: alert)
+            }
+        })
+
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureTheme(.error)
+        view.configureContent(
+            title: nil,
+            body: alert.message,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: L10n.openLabel,
+            buttonTapHandler: { _ in
+                UIApplication.shared.open(alert.url, options: [:], completionHandler: nil)
+            }
+        )
+
+        SwiftMessages.show(config: config, view: view)
+    }
+
     func showSwiftMessageError(_ body: String, duration: SwiftMessages.Duration = .automatic) {
         var config = SwiftMessages.Config()
 
