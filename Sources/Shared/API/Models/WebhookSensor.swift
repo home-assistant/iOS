@@ -102,7 +102,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     }
 
     public static func < (lhs: WebhookSensor, rhs: WebhookSensor) -> Bool {
-        lhs.Name ?? "" < rhs.Name ?? ""
+        (lhs.Name ?? "").localizedCompare(rhs.Name ?? "") == .orderedAscending
     }
 }
 
