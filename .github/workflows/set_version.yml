@@ -7,7 +7,7 @@ on:
         description: "New Version Number"
       build:
         required: true
-        description: "New Build Number"
+        description: "Bump Build Amount"
         default: 1
 jobs:
   bump:

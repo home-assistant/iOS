@@ -98,6 +98,7 @@ post_install do |installer|
 
             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
+            config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
         end
 
         # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
