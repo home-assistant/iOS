@@ -803,7 +803,7 @@ public class HomeAssistantAPI {
 
     public func RegisterSensors() -> Promise<Void> {
         return firstly {
-            Current.sensors.sensors(reason: .registration)
+            Current.sensors.sensors(reason: .registration).map(\.sensors)
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map { $0.UniqueID  })")
         }.thenMap { sensor in
@@ -820,22 +820,26 @@ public class HomeAssistantAPI {
                 reason: .trigger(trigger.rawValue),
                 location: location
             )
-        }.map { sensors -> [[String: Any]] in
-            Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
-
-            let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
-                                               shouldIncludeNilValues: false)
-            return mapper.toJSONArray(sensors)
-        }.then { (payload) -> Promise<Void> in
+        }.map { sensorResponse -> (SensorResponse, [[String: Any]]) in
+            Current.Log.info("updating sensors \(sensorResponse.sensors.map { $0.UniqueID ?? "unknown" })")
+            let mapper = Mapper<WebhookSensor>(
+                context: WebhookSensorContext(update: true),
+                shouldIncludeNilValues: false
+            )
+            return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
+        }.then { (sensorResponse, payload) -> Promise<Void> in
             guard !payload.isEmpty else {
                 Current.Log.info("skipping network request for unchanged sensor update")
+                sensorResponse.didPersist()
                 return .value(())
             }
 
             return Current.webhooks.send(
                 identifier: .updateSensors,
                 request: .init(type: "update_sensor_states", data: payload)
-            )
+            ).done {
+                sensorResponse.didPersist()
+            }
         }
     }
 }
