@@ -230,7 +230,7 @@ platform :ios do
 
     set_version_info(
       version: version,
-      build: build
+      build: get_xcconfig_build_number() + build.to_i
     )
   end
 
