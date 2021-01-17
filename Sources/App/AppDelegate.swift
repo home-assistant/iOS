@@ -401,9 +401,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func checkForAlerts() {
         firstly {
-            when(fulfilled: Current.serverAlerter.check(), sceneManager.webViewWindowControllerPromise)
-        }.done { alert, controller in
-            controller.show(alert: alert)
+            Current.serverAlerter.check()
+        }.done { [sceneManager] alert in
+            sceneManager.webViewWindowControllerPromise.done { controller in
+                controller.show(alert: alert)
+            }
         }.catch { error in
             Current.Log.error("check error: \(error)")
         }
