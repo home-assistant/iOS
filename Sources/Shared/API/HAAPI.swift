@@ -803,7 +803,7 @@ public class HomeAssistantAPI {
 
     public func RegisterSensors() -> Promise<Void> {
         return firstly {
-            Current.sensors.sensors(reason: .registration)
+            Current.sensors.sensors(reason: .registration).map(\.sensors)
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map { $0.UniqueID  })")
         }.thenMap { sensor in
@@ -820,17 +820,27 @@ public class HomeAssistantAPI {
                 reason: .trigger(trigger.rawValue),
                 location: location
             )
-        }.map { sensors in
-            Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
-
-            let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
-                                               shouldIncludeNilValues: false)
-            return mapper.toJSONArray(sensors)
-        }.then { (payload) -> Promise<Void> in
-            Current.webhooks.send(
-                identifier: .updateSensors,
-                request: .init(type: "update_sensor_states", data: payload)
+        }.map { sensorResponse -> (SensorResponse, [[String: Any]]) in
+            Current.Log.info("updating sensors \(sensorResponse.sensors.map { $0.UniqueID ?? "unknown" })")
+            let mapper = Mapper<WebhookSensor>(
+                context: WebhookSensorContext(update: true),
+                shouldIncludeNilValues: false
             )
+            return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
+        }.then { (sensorResponse, payload) -> Promise<Void> in
+            firstly { () -> Promise<Void> in
+                if payload.isEmpty {
+                    Current.Log.info("skipping network request for unchanged sensor update")
+                    return .value(())
+                } else {
+                    return Current.webhooks.send(
+                        identifier: .updateSensors,
+                        request: .init(type: "update_sensor_states", data: payload)
+                    )
+                }
+            }.done {
+                sensorResponse.didPersist()
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ public struct WebhookSensorSetting {
     public let title: String
 }
 
-public class WebhookSensor: Mappable {
+public class WebhookSensor: Mappable, Equatable, Comparable {
     public var Attributes: [String: Any]?
     public var DeviceClass: DeviceClass?
     public var Icon: String?
@@ -92,6 +92,17 @@ public class WebhookSensor: Mappable {
         } else {
             return nil
         }
+    }
+
+    public static func == (lhs: WebhookSensor, rhs: WebhookSensor) -> Bool {
+         let mapper = Mapper<WebhookSensor>()
+         let lhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(lhs), options: [.sortedKeys])
+         let rhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(rhs), options: [.sortedKeys])
+         return lhsData == rhsData
+    }
+
+    public static func < (lhs: WebhookSensor, rhs: WebhookSensor) -> Bool {
+        (lhs.Name ?? "").localizedCompare(rhs.Name ?? "") == .orderedAscending
     }
 }
 
