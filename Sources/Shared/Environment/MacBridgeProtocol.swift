@@ -20,6 +20,9 @@ import Foundation
 
     var activationPolicy: MacBridgeActivationPolicy { get set }
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration)
+
+    func setLoginItem(forBundleIdentifier: String, enabled: Bool) -> Bool
+    func isLoginItemEnabled(forBundleIdentifier identifier: String) -> Bool
 }
 
 @objc(MacBridgeStatusItemCallbackInfo) public protocol MacBridgeStatusItemCallbackInfo {
