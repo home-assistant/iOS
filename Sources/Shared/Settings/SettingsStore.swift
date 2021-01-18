@@ -13,7 +13,8 @@ import CoreMotion
 import Version
 import UIKit
 
-// swiftlint:disable:next type_body_length
+// swiftlint:disable type_body_length file_length
+
 public class SettingsStore {
     let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!

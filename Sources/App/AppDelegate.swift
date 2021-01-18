@@ -600,7 +600,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
-        UIMenuSystem.main.setNeedsRebuild()
+        if #available(iOS 13, *) {
+            UIMenuSystem.main.setNeedsRebuild()
+        }
     }
 
     // swiftlint:disable:next file_length
