@@ -53,6 +53,8 @@ class MenuManager {
         builder.insertSibling(actionsMenu(), beforeMenu: .window)
         builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
         builder.insertChild(fileMenu(), atStartOfMenu: .file)
+
+        configureStatusItem()
     }
 
     private func aboutMenu() -> UIMenu {
@@ -208,6 +210,31 @@ class MenuManager {
                 )
             ]
         )
+    }
+
+    private func configureStatusItem() {
+        #if targetEnvironment(macCatalyst)
+        if Current.settingsStore.locationVisibility.isDockVisible {
+            Current.macBridge.activationPolicy = .regular
+        } else {
+            Current.macBridge.activationPolicy = .accessory
+        }
+
+        Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
+            isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
+            image: Asset.statusItemIcon.image.cgImage!,
+            imageSize: Asset.statusItemIcon.image.size,
+            accessibilityLabel: appName,
+            primaryActionHandler: { callbackInfo in
+                if callbackInfo.isActive {
+                    callbackInfo.deactivate()
+                } else {
+                    Current.sceneManager.activateAnyScene(for: .webView)
+                    callbackInfo.activate()
+                }
+            }
+        ))
+        #endif
     }
 
     // selectors that use responder chain

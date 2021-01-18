@@ -1648,6 +1648,18 @@ public enum L10n {
         /// Remember Last Page
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.restoration.title") }
       }
+      public enum Visibility {
+        /// Show App In…
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.visibility.title") }
+        public enum Options {
+          /// Dock
+          public static var dock: String { return L10n.tr("Localizable", "settings_details.general.visibility.options.dock") }
+          /// Dock and Menu Bar
+          public static var dockAndMenuBar: String { return L10n.tr("Localizable", "settings_details.general.visibility.options.dock_and_menu_bar") }
+          /// Menu Bar
+          public static var menuBar: String { return L10n.tr("Localizable", "settings_details.general.visibility.options.menu_bar") }
+        }
+      }
     }
     public enum Location {
       /// Location

@@ -3,6 +3,7 @@ import AppKit
 
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
     let networkMonitor = MacBridgeNetworkMonitor()
+    let statusItem = MacBridgeStatusItem()
 
     override init() {
         super.init()
@@ -44,6 +45,33 @@ import AppKit
 
     var frontmostApplicationDidChangeNotification: Notification.Name {
         NSWorkspace.didActivateApplicationNotification
+    }
+
+    var activationPolicy: MacBridgeActivationPolicy {
+        get {
+            switch NSApplication.shared.activationPolicy() {
+            case .regular: return .regular
+            case .accessory: return .accessory
+            case .prohibited: return .prohibited
+            @unknown default: return .regular
+            }
+        }
+        set {
+            if newValue != activationPolicy {
+                NSApplication.shared.setActivationPolicy({
+                    switch newValue {
+                    case .regular: return .regular
+                    case .accessory: return .accessory
+                    case .prohibited: return .prohibited
+                    }
+                }())
+                NSApplication.shared.activate(ignoringOtherApps: true)
+            }
+        }
+    }
+
+    func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
+        statusItem.configure(using: configuration)
     }
 }
 

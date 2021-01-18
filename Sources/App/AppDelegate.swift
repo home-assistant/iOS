@@ -88,6 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.setupFirebase()
         self.setupModels()
         self.setupLocalization()
+        self.setupMenus()
 
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -587,6 +588,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.modelManager.cleanup().cauterize()
         Action.setupObserver()
         NotificationCategory.setupObserver()
+    }
+
+    func setupMenus() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(menuRelatedSettingDidChange(_:)),
+            name: SettingsStore.menuRelatedSettingDidChange,
+            object: nil
+        )
+    }
+
+    @objc private func menuRelatedSettingDidChange(_ note: Notification) {
+        if #available(iOS 13, *) {
+            UIMenuSystem.main.setNeedsRebuild()
+        }
     }
 
     // swiftlint:disable:next file_length

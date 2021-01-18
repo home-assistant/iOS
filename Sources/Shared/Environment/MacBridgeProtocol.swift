@@ -17,6 +17,29 @@ import Foundation
 
     var frontmostApplication: MacBridgeRunningApplication? { get }
     var frontmostApplicationDidChangeNotification: Notification.Name { get }
+
+    var activationPolicy: MacBridgeActivationPolicy { get set }
+    func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration)
+}
+
+@objc(MacBridgeStatusItemCallbackInfo) public protocol MacBridgeStatusItemCallbackInfo {
+    var isActive: Bool { get }
+    func activate()
+    func deactivate()
+}
+
+@objc(MacBridgeStatusItemConfiguration) public protocol MacBridgeStatusItemConfiguration {
+    var isVisible: Bool { get }
+    var image: CGImage { get }
+    var imageSize: CGSize { get }
+    var accessibilityLabel: String { get }
+    var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void { get }
+}
+
+@objc(MacBridgeActivationPolicy) public enum MacBridgeActivationPolicy: Int {
+    case regular
+    case accessory
+    case prohibited
 }
 
 @objc(MacBridgeNetworkType) public enum MacBridgeNetworkType: Int {
