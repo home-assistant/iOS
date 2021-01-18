@@ -896,13 +896,3 @@ enum OpenInBrowser: String, CaseIterable {
         }
     }
 }
-
-extension MacBridgeActivationPolicy: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .regular: return "regular"
-        case .accessory: return "accessory"
-        case .prohibited: return "prohibited"
-        }
-    }
-}
