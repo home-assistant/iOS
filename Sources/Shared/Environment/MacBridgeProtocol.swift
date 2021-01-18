@@ -17,6 +17,14 @@ import Foundation
 
     var frontmostApplication: MacBridgeRunningApplication? { get }
     var frontmostApplicationDidChangeNotification: Notification.Name { get }
+
+    var activationPolicy: MacBridgeActivationPolicy { get set }
+}
+
+@objc(MacBridgeActivationPolicy) public enum MacBridgeActivationPolicy: Int {
+    case regular
+    case accessory
+    case prohibited
 }
 
 @objc(MacBridgeNetworkType) public enum MacBridgeNetworkType: Int {

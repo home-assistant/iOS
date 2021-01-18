@@ -45,6 +45,26 @@ import AppKit
     var frontmostApplicationDidChangeNotification: Notification.Name {
         NSWorkspace.didActivateApplicationNotification
     }
+
+    var activationPolicy: MacBridgeActivationPolicy {
+        get {
+            switch NSApplication.shared.activationPolicy() {
+            case .regular: return .regular
+            case .accessory: return .accessory
+            case .prohibited: return .prohibited
+            @unknown default: return .regular
+            }
+        }
+        set {
+            NSApplication.shared.setActivationPolicy({
+                switch newValue {
+                case .regular: return .regular
+                case .accessory: return .accessory
+                case .prohibited: return .prohibited
+                }
+            }())
+        }
+    }
 }
 
 extension NSRunningApplication: MacBridgeRunningApplication {}
