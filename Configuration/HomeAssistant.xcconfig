@@ -34,6 +34,8 @@ CLANG_ENABLE_OBJC_WEAK = YES
 GCC_C_LANGUAGE_STANDARD = gnu11
 CLANG_CXX_LANGUAGE_STANDARD = gnu++14
 COPY_PHASE_STRIP = NO
+// overridden on just the main .app target, since it's the only thing we want in archives
+SKIP_INSTALL = YES
 
 // Catalyst-specific
 ENABLE_HARDENED_RUNTIME[sdk=macosx*] = YES

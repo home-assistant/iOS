@@ -5389,7 +5389,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -5408,7 +5407,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -5427,7 +5425,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5446,7 +5443,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -5465,7 +5461,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -5484,7 +5479,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Beta;
@@ -5506,7 +5500,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5529,7 +5522,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5552,7 +5544,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5605,7 +5596,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Debug;
@@ -5624,7 +5614,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
@@ -5673,6 +5662,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
+				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5718,7 +5708,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5737,7 +5726,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Beta;
@@ -5761,7 +5749,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Beta;
@@ -5804,7 +5791,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5823,7 +5809,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -5898,6 +5883,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
+				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -5939,6 +5925,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";
+				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -6020,7 +6007,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -6048,7 +6034,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -6068,7 +6053,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6089,7 +6073,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6110,7 +6093,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6136,7 +6118,6 @@
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -6161,7 +6142,6 @@
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -6186,7 +6166,6 @@
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -6205,7 +6184,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -6224,7 +6202,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -6243,7 +6220,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -6262,7 +6238,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -6324,7 +6299,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -6348,7 +6322,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
