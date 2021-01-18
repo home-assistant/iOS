@@ -23,6 +23,7 @@ internal enum Asset {
   internal static let betaLaunchScreen = ImageAsset(name: "Beta-LaunchScreen")
   internal static let debugLaunchScreen = ImageAsset(name: "Debug-LaunchScreen")
   internal static let logo = ImageAsset(name: "Logo")
+  internal static let statusItemIcon = ImageAsset(name: "statusItemIcon")
   internal static let whitelogoTrimmed = ImageAsset(name: "whitelogo_trimmed")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

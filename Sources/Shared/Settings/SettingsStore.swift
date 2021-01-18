@@ -18,8 +18,9 @@ public class SettingsStore {
     let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
-    /// This will only be posted on the main thread
+    /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
+    public static let menuRelatedSettingDidChange: Notification.Name = .init("menuRelatedSettingDidChange")
     /// This may be posted on any thread
     public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
 
@@ -361,6 +362,39 @@ public class SettingsStore {
             prefs.set(newValue.crashes, forKey: Privacy.key(for: \.crashes))
             prefs.set(newValue.analytics, forKey: Privacy.key(for: \.analytics))
             Current.Log.info("privacy updated to \(newValue)")
+        }
+    }
+
+    public enum LocationVisibility: String, CaseIterable {
+        case dock
+        case dockAndMenuBar
+        case menuBar
+
+        public var isStatusItemVisible: Bool {
+            switch self {
+            case .dockAndMenuBar, .menuBar: return true
+            case .dock: return false
+            }
+        }
+
+        public var isDockVisible: Bool {
+            switch self {
+            case .dockAndMenuBar, .dock: return true
+            case .menuBar: return false
+            }
+        }
+    }
+    public var locationVisibility: LocationVisibility {
+        get {
+            prefs.string(forKey: "locationVisibility").flatMap(LocationVisibility.init(rawValue:)) ?? .dock
+        }
+        set {
+            prefs.set(newValue.rawValue, forKey: "locationVisibility")
+            NotificationCenter.default.post(
+                name: Self.menuRelatedSettingDidChange,
+                object: nil,
+                userInfo: nil
+            )
         }
     }
 

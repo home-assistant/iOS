@@ -227,6 +227,8 @@
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
 		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
 		11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */; };
+		11BD7B2D25B52E8D001826F0 /* MacBridgeStatusItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */; };
+		11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */; };
 		11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */; };
 		11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C05F2C254919210031D038 /* AccountInitialsImage.swift */; };
 		11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
@@ -1101,6 +1103,8 @@
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
 		11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.test.swift; sourceTree = "<group>"; };
+		11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeStatusItem.swift; sourceTree = "<group>"; };
+		11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMacBridgeStatusItemConfiguration.swift; sourceTree = "<group>"; };
 		11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
 		11C05F2C254919210031D038 /* AccountInitialsImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInitialsImage.swift; sourceTree = "<group>"; };
 		11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+RetryNetworking.swift"; sourceTree = "<group>"; };
@@ -1940,6 +1944,7 @@
 				1108BC4225A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift */,
 				110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */,
 				110ED5AC25A6826300489AF7 /* MacBridgeNetworkMonitor.swift */,
+				11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */,
 			);
 			path = MacBridge;
 			sourceTree = "<group>";
@@ -2773,6 +2778,7 @@
 			isa = PBXGroup;
 			children = (
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
+				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
@@ -4450,6 +4456,7 @@
 				110ED5CA25A6826800489AF7 /* MacBridgeNetworkMonitor.swift in Sources */,
 				1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */,
 				1108BC4325A2FB5A006B3C83 /* MacBridgeAppDelegateHandler.swift in Sources */,
+				11BD7B2D25B52E8D001826F0 /* MacBridgeStatusItem.swift in Sources */,
 				1194B4162519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift in Sources */,
 				110ED55425A5604F00489AF7 /* MacBridgeScreenImpl.swift in Sources */,
 				1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */,
@@ -4506,6 +4513,7 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
+				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,

@@ -134,6 +134,23 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                 }
 
+                <<< PushRow<SettingsStore.LocationVisibility> {
+                    $0.hidden = .isNotCatalyst
+                    $0.title = L10n.SettingsDetails.General.Visibility.title
+                    $0.options = SettingsStore.LocationVisibility.allCases
+                    $0.value = Current.settingsStore.locationVisibility
+                    $0.displayValueFor = {
+                        switch $0 ?? .dock {
+                        case .dock: return L10n.SettingsDetails.General.Visibility.Options.dock
+                        case .dockAndMenuBar: return L10n.SettingsDetails.General.Visibility.Options.dockAndMenuBar
+                        case .menuBar: return L10n.SettingsDetails.General.Visibility.Options.menuBar
+                        }
+                    }
+                    $0.onChange { row in
+                        Current.settingsStore.locationVisibility = row.value ?? .dock
+                    }
+                }
+
                 <<< PushRow<SettingsStore.PageZoom> { row in
                     row.title = L10n.SettingsDetails.General.PageZoom.title
                     row.options = SettingsStore.PageZoom.allCases

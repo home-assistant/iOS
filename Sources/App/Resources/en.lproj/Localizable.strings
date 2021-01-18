@@ -920,3 +920,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unacceptable_status_code" = "Unacceptable status code %1$i.";
 "settings_details.general.open_in_browser.default" = "System Default";
+"settings_details.general.visibility.title" = "Show App In…";
+"settings_details.general.visibility.options.dock" = "Dock";
+"settings_details.general.visibility.options.menu_bar" = "Menu Bar";
+"settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
