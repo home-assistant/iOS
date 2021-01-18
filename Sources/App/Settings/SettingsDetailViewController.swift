@@ -134,6 +134,26 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                 }
 
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.General.LaunchOnLogin.title
+                    $0.hidden = .isNotCatalyst
+
+                    #if targetEnvironment(macCatalyst)
+                    let launcherIdentifier = Constants.BundleID.appending(".Launcher")
+                    $0.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
+                    $0.onChange { row in
+                        let success = Current.macBridge.setLoginItem(
+                            forBundleIdentifier: launcherIdentifier,
+                            enabled: row.value ?? false
+                        )
+                        if !success {
+                            row.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
+                            row.updateCell()
+                        }
+                    }
+                    #endif
+                }
+
                 <<< PushRow<SettingsStore.LocationVisibility> {
                     $0.hidden = .isNotCatalyst
                     $0.title = L10n.SettingsDetails.General.Visibility.title

@@ -1622,6 +1622,10 @@ public enum L10n {
         /// Device Name
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.device_name.title") }
       }
+      public enum LaunchOnLogin {
+        /// Launch App on Login
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.launch_on_login.title") }
+      }
       public enum OpenInBrowser {
         /// Google Chrome
         public static var chrome: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.chrome") }

@@ -924,3 +924,4 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.general.visibility.options.dock" = "Dock";
 "settings_details.general.visibility.options.menu_bar" = "Menu Bar";
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
+"settings_details.general.launch_on_login.title" = "Launch App on Login";
