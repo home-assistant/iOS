@@ -266,6 +266,10 @@
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
+		11DE9D8625B6103C0081C0ED /* LauncherAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE9D8525B6103C0081C0ED /* LauncherAppDelegate.swift */; };
+		11DE9F3A25B614EB0081C0ED /* Application.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11DE9F3925B614EB0081C0ED /* Application.xib */; };
+		11DE9F9625B6173D0081C0ED /* Home Assistant Launcher.app in Resources */ = {isa = PBXBuildFile; fileRef = 11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */; platformFilter = maccatalyst; };
+		11DE9FBE25B6186E0081C0ED /* Home Assistant Launcher.app in Embed Mac Launcher */ = {isa = PBXBuildFile; fileRef = 11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11E1639A250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
 		11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
@@ -785,6 +789,13 @@
 			remoteGlobalIDString = 1167402125198F9A00F51626;
 			remoteInfo = MacBridge;
 		};
+		11DE9F9725B6173D0081C0ED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 11DE9D8225B6103C0081C0ED;
+			remoteInfo = Launcher;
+		};
 		B627CB131D83C87B0057173E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -896,6 +907,17 @@
 				11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */,
 			);
 			name = "Embed Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11DE9FBD25B6184E0081C0ED /* Embed Mac Launcher */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				11DE9FBE25B6186E0081C0ED /* Home Assistant Launcher.app in Embed Mac Launcher */,
+			);
+			name = "Embed Mac Launcher";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B61DA2A7221E8D8F00AADEDD /* Embed Frameworks */ = {
@@ -1130,6 +1152,11 @@
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
+		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		11DE9D8525B6103C0081C0ED /* LauncherAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherAppDelegate.swift; sourceTree = "<group>"; };
+		11DE9D8E25B6103D0081C0ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11DE9DDF25B610BD0081C0ED /* Launcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Launcher.entitlements; sourceTree = "<group>"; };
+		11DE9F3925B614EB0081C0ED /* Application.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Application.xib; sourceTree = "<group>"; };
 		11E16399250B1B760076D612 /* OnboardingStateObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservation.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
@@ -1705,6 +1732,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		11DE9D8025B6103C0081C0ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		93C44648FF2FAE89B2ED8FC9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1845,6 +1879,7 @@
 			children = (
 				B657A8E81CA646EB00121384 /* App */,
 				111501A72528412C00DCFA94 /* Extensions */,
+				11DE9D8425B6103C0081C0ED /* Launcher */,
 				1167402325198F9A00F51626 /* MacBridge */,
 				D03D891820E0A85300D4F28D /* Shared */,
 				B6CC5D832159D10D00833E5D /* WatchApp */,
@@ -2165,6 +2200,7 @@
 				11AF1EC82528FB2300AAE364 /* WatchApp.entitlements */,
 				11AF1EC92528FB2300AAE364 /* App-catalyst.entitlements */,
 				11AF1ECA2528FB2300AAE364 /* App-ios.entitlements */,
+				11DE9DDF25B610BD0081C0ED /* Launcher.entitlements */,
 			);
 			path = Entitlements;
 			sourceTree = "<group>";
@@ -2226,6 +2262,16 @@
 				110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */,
 			);
 			path = Sensors;
+			sourceTree = "<group>";
+		};
+		11DE9D8425B6103C0081C0ED /* Launcher */ = {
+			isa = PBXGroup;
+			children = (
+				11DE9D8525B6103C0081C0ED /* LauncherAppDelegate.swift */,
+				11DE9D8E25B6103D0081C0ED /* Info.plist */,
+				11DE9F3925B614EB0081C0ED /* Application.xib */,
+			);
+			path = Launcher;
 			sourceTree = "<group>";
 		};
 		11EFCDD424F5FA7E00314D85 /* Scenes */ = {
@@ -2590,6 +2636,7 @@
 				1171506924DFCDE60065E874 /* Extensions-Widgets.appex */,
 				1155DD06250F4100003405C0 /* Extensions-Share.appex */,
 				1167402225198F9A00F51626 /* MacBridge.bundle */,
+				11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3212,6 +3259,23 @@
 			productReference = 1171506924DFCDE60065E874 /* Extensions-Widgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		11DE9D8225B6103C0081C0ED /* Launcher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11DE9D9325B6103D0081C0ED /* Build configuration list for PBXNativeTarget "Launcher" */;
+			buildPhases = (
+				11DE9D7F25B6103C0081C0ED /* Sources */,
+				11DE9D8025B6103C0081C0ED /* Frameworks */,
+				11DE9D8125B6103C0081C0ED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Launcher;
+			productName = Launcher;
+			productReference = 11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */;
+			productType = "com.apple.product-type.application";
+		};
 		B627CB061D83C87B0057173E /* Extensions-NotificationContent */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "Extensions-NotificationContent" */;
@@ -3241,6 +3305,7 @@
 				B657A8E41CA646EB00121384 /* Resources */,
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
+				11DE9FBD25B6184E0081C0ED /* Embed Mac Launcher */,
 				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
 				110EC9FF251708D5009C9A1B /* Embed Frameworks */,
@@ -3257,6 +3322,7 @@
 				B66F9F2D216B1E61000CAA0F /* PBXTargetDependency */,
 				1171507524DFCDEE0065E874 /* PBXTargetDependency */,
 				B6CC5D9D2159D10F00833E5D /* PBXTargetDependency */,
+				11DE9F9825B6173D0081C0ED /* PBXTargetDependency */,
 			);
 			name = App;
 			productName = HomeAssistant;
@@ -3463,7 +3529,7 @@
 			isa = PBXProject;
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Original;
-				LastSwiftUpdateCheck = 1200;
+				LastSwiftUpdateCheck = 1230;
 				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Home Assistant";
 				TargetAttributes = {
@@ -3480,6 +3546,9 @@
 					1171506824DFCDE60065E874 = {
 						CreatedOnToolsVersion = 12.0;
 						DevelopmentTeam = QMQYCKL255;
+					};
+					11DE9D8225B6103C0081C0ED = {
+						CreatedOnToolsVersion = 12.3;
 					};
 					B627CB061D83C87B0057173E = {
 						CreatedOnToolsVersion = 8.0;
@@ -3680,6 +3749,7 @@
 				111711E425B29ACB003C149E /* Codegen */,
 				B657A8E51CA646EB00121384 /* App */,
 				B6CC5D812159D10D00833E5D /* WatchApp */,
+				11DE9D8225B6103C0081C0ED /* Launcher */,
 				D03D891620E0A85200D4F28D /* Shared-iOS */,
 				B67CE82322200D420034C1D0 /* Shared-watchOS */,
 				1167402125198F9A00F51626 /* MacBridge */,
@@ -3719,6 +3789,14 @@
 			files = (
 				1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */,
 				177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11DE9D8125B6103C0081C0ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11DE9F3A25B614EB0081C0ED /* Application.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3910,6 +3988,7 @@
 				B64E755523F3BFF200472C04 /* orange@3x.png in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
+				11DE9F9625B6173D0081C0ED /* Home Assistant Launcher.app in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
 				B661FC7E226C87BB00E541DD /* home.json in Resources */,
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
@@ -4477,6 +4556,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		11DE9D7F25B6103C0081C0ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11DE9D8625B6103C0081C0ED /* LauncherAppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B627CB031D83C87B0057173E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5017,6 +5104,12 @@
 			target = 1167402125198F9A00F51626 /* MacBridge */;
 			targetProxy = 11A31C92252128B900D50A78 /* PBXContainerItemProxy */;
 		};
+		11DE9F9825B6173D0081C0ED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = maccatalyst;
+			target = 11DE9D8225B6103C0081C0ED /* Launcher */;
+			targetProxy = 11DE9F9725B6173D0081C0ED /* PBXContainerItemProxy */;
+		};
 		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
@@ -5296,7 +5389,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -5315,7 +5407,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -5334,7 +5425,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5353,7 +5443,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -5372,7 +5461,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -5391,7 +5479,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Beta;
@@ -5413,7 +5500,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5436,7 +5522,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5459,9 +5544,41 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Beta;
+		};
+		11DE9D9025B6103D0081C0ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
+				INFOPLIST_FILE = Sources/Launcher/Info.plist;
+				PRODUCT_NAME = "Home Assistant Launcher";
+				PROVISIONING_SUFFIX = .Launcher;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		11DE9D9125B6103D0081C0ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
+				INFOPLIST_FILE = Sources/Launcher/Info.plist;
+				PRODUCT_NAME = "Home Assistant Launcher";
+				PROVISIONING_SUFFIX = .Launcher;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		11DE9D9225B6103D0081C0ED /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
+				INFOPLIST_FILE = Sources/Launcher/Info.plist;
+				PRODUCT_NAME = "Home Assistant Launcher";
+				PROVISIONING_SUFFIX = .Launcher;
+				SDKROOT = macosx;
 			};
 			name = Beta;
 		};
@@ -5479,7 +5596,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Debug;
@@ -5498,7 +5614,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
@@ -5547,6 +5662,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
+				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5592,7 +5708,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5611,7 +5726,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Beta;
@@ -5635,7 +5749,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Beta;
@@ -5678,7 +5791,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Beta;
@@ -5697,7 +5809,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -5772,6 +5883,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
+				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -5813,6 +5925,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";
+				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -5894,7 +6007,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -5922,7 +6034,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -5942,7 +6053,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5963,7 +6073,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5984,7 +6093,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6010,7 +6118,6 @@
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -6035,7 +6142,6 @@
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -6060,7 +6166,6 @@
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -6079,7 +6184,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -6098,7 +6202,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
-				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
@@ -6117,7 +6220,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -6136,7 +6238,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -6198,7 +6299,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -6222,7 +6322,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
 				PROVISIONING_SUFFIX = .Shared;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -6296,6 +6395,16 @@
 				1171507724DFCDEE0065E874 /* Debug */,
 				1171507824DFCDEE0065E874 /* Release */,
 				1171507924DFCDEE0065E874 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		11DE9D9325B6103D0081C0ED /* Build configuration list for PBXNativeTarget "Launcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11DE9D9025B6103D0081C0ED /* Debug */,
+				11DE9D9125B6103D0081C0ED /* Release */,
+				11DE9D9225B6103D0081C0ED /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

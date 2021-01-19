@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import ServiceManagement
 
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
     let networkMonitor = MacBridgeNetworkMonitor()
@@ -72,6 +73,23 @@ import AppKit
 
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
         statusItem.configure(using: configuration)
+    }
+
+    private static func userDefaultsKey(forLoginItemBundleIdentifier identifier: String) -> String {
+        return "LoginItemEnabled-\(identifier)"
+    }
+
+    func setLoginItem(forBundleIdentifier identifier: String, enabled: Bool) -> Bool {
+        let success = SMLoginItemSetEnabled(identifier as CFString, enabled)
+        if success {
+            UserDefaults.standard.set(enabled, forKey: Self.userDefaultsKey(forLoginItemBundleIdentifier: identifier))
+        }
+        return success
+    }
+
+    func isLoginItemEnabled(forBundleIdentifier identifier: String) -> Bool {
+        // TODO: SMJobIsEnabled is the Apple-suggested method of getting this info, and it's also private API. lol.
+        UserDefaults.standard.bool(forKey: Self.userDefaultsKey(forLoginItemBundleIdentifier: identifier))
     }
 }
 
