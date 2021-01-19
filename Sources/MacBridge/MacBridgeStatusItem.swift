@@ -1,7 +1,7 @@
 import AppKit
 
 class MacBridgeStatusItem {
-    private let statusItem = NSStatusBar.system.statusItem(withLength: 24)
+    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var lastConfiguration: MacBridgeStatusItemConfiguration?
 
     init() {
