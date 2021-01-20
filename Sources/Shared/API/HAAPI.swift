@@ -27,7 +27,7 @@ private let keychain = Constants.Keychain
 
 // swiftlint:disable:next type_body_length
 public class HomeAssistantAPI {
-    public enum APIError: Error {
+    public enum APIError: Error, Equatable {
         case managerNotAvailable
         case invalidResponse
         case cantBuildURL

@@ -13,10 +13,6 @@ protocol ZoneManagerProcessor: AnyObject {
     func perform(event: ZoneManagerEvent) -> Promise<Void>
 }
 
-enum ZoneManagerProcessorPerformError: Error {
-    case noAPI
-}
-
 class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 

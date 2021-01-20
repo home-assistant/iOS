@@ -25,7 +25,7 @@ class ModelManagerTests: XCTestCase {
             )
         )
 
-        Current.api = api
+        Current.api = .value(api)
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {
@@ -37,6 +37,7 @@ class ModelManagerTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
+        Current.resetAPI()
         Current.realm = Realm.live
         TestStoreModel1.lastDidUpdate = []
         TestStoreModel1.lastWillDeleteIds = []

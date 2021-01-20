@@ -66,6 +66,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        guard !Current.isRunningTests else {
+            return true
+        }
+
         setDefaults()
 
         Current.backgroundTask = ApplicationBackgroundTaskRunner()

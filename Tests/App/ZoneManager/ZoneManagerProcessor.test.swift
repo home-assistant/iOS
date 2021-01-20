@@ -56,11 +56,16 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         api.submitLocationPromise = submitLocationPromise
 
-        Current.api = api
+        Current.api = .value(api)
         Current.location.oneShotLocation = { _ in self.oneShotLocationPromise }
         delegate = FakeZoneManagerProcessorDelegate()
         processor = ZoneManagerProcessorImpl()
         processor.delegate = delegate
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        Current.resetAPI()
     }
 
     func setUpZones(
@@ -81,12 +86,13 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testNoAPIFails() throws {
-        Current.api = nil
+        Current.api = .init(error: HomeAssistantAPI.APIError.notConfigured)
+        
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange([])))
 
         let expectation = self.expectation(description: "promise")
         _ = promise.catch { error in
-            XCTAssertEqual(error as? ZoneManagerProcessorPerformError, ZoneManagerProcessorPerformError.noAPI)
+            XCTAssertEqual(error as? HomeAssistantAPI.APIError, HomeAssistantAPI.APIError.notConfigured)
             expectation.fulfill()
         }
 
@@ -96,9 +102,8 @@ class ZoneManagerProcessorTests: XCTestCase {
     func testPerformingOneShotErrors() throws {
         Current.isPerformingSingleShotLocationQuery = true
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange([])))
-        Current.isPerformingSingleShotLocationQuery = false
-
         XCTAssertEqual(try hangForIgnoreReason(promise), .duringOneShot)
+        Current.isPerformingSingleShotLocationQuery = false
     }
 
     func testPerformingEmptyLocations() throws {
