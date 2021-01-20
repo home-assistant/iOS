@@ -56,7 +56,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         api.submitLocationPromise = submitLocationPromise
 
-        Current.api = { self.api }
+        Current.api = api
         Current.location.oneShotLocation = { _ in self.oneShotLocationPromise }
         delegate = FakeZoneManagerProcessorDelegate()
         processor = ZoneManagerProcessorImpl()
@@ -81,7 +81,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testNoAPIFails() throws {
-        Current.api = { nil }
+        Current.api = nil
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange([])))
 
         let expectation = self.expectation(description: "promise")

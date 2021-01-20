@@ -11,6 +11,7 @@ import UIKit
 import CoreLocation
 import Shared
 import Intents
+import PromiseKit
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func resolveLocation(for intent: SendLocationIntent,
@@ -27,13 +28,11 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func handle(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
         Current.Log.verbose("Handling send location")
 
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.error("Failed to get Home Assistant API during handle of sendLocation")
-            completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
-        api.SubmitLocation(updateType: .Siri, location: intent.location?.location, zone: nil).done { _ in
+        firstly {
+            Current.api
+        }.then { api in
+            api.SubmitLocation(updateType: .Siri, location: intent.location?.location, zone: nil)
+        }.done { _ in
             Current.Log.verbose("Successfully submitted location")
 
             let resp = SendLocationIntentResponse(code: .success, userActivity: nil)

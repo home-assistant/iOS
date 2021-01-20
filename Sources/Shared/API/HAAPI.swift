@@ -148,34 +148,16 @@ public class HomeAssistantAPI {
         )
     }
 
-    private static var sharedAPI: HomeAssistantAPI?
-
-    public static func authenticatedAPI(urlConfig: URLSessionConfiguration = .default,
-                                        forceInit: Bool = false) -> HomeAssistantAPI? {
-        if let api = sharedAPI, forceInit == false {
-            return api
-        }
-
+    convenience init?() {
         guard Current.settingsStore.connectionInfo != nil else {
             return nil
         }
 
-        if let tokenInfo = Current.settingsStore.tokenInfo {
-            let api = HomeAssistantAPI(tokenInfo: tokenInfo, urlConfig: urlConfig)
-            self.sharedAPI = api
+        guard let tokenInfo = Current.settingsStore.tokenInfo else {
+            return nil
         }
 
-        return self.sharedAPI
-    }
-
-    public static var authenticatedAPIPromise: Promise<HomeAssistantAPI> {
-        return Promise { seal in
-            if let api = self.authenticatedAPI() {
-                seal.fulfill(api)
-                return
-            }
-            seal.reject(APIError.notConfigured)
-        }
+        self.init(tokenInfo: tokenInfo, urlConfig: .default)
     }
 
     public func VideoStreamer() -> MJPEGStreamer? {
@@ -743,60 +725,56 @@ public class HomeAssistantAPI {
         userInfo: [AnyHashable: Any],
         userInput: String?
     ) -> Promise<Void> {
-        return Promise { seal in
-            guard let api = HomeAssistantAPI.authenticatedAPI() else {
-                throw APIError.notConfigured
-            }
+        let action = Self.notificationActionEvent(
+            identifier: identifier,
+            category: category,
+            actionData: userInfo["homeassistant"],
+            textInput: userInput
+        )
 
-            let action = Self.notificationActionEvent(
-                identifier: identifier,
-                category: category,
-                actionData: userInfo["homeassistant"],
-                textInput: userInput
-            )
+        Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
 
-            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
-
-            api.CreateEvent(eventType: action.eventType, eventData: action.eventData).done { _ -> Void in
-                seal.fulfill(())
-            }.catch {error in
-                seal.reject(error)
-            }
+        return firstly {
+            Current.api
+        }.then { api in
+            api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
         }
     }
 
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
-        return Promise { seal in
-            guard let api = HomeAssistantAPI.authenticatedAPI() else {
-                throw APIError.notConfigured
-            }
+        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
+            Current.Log.error("couldn't find action with id \(actionID)")
+            return .init(error: HomeAssistantAPI.APIError.cantBuildURL)
+        }
 
-            guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-                Current.Log.error("couldn't find action with id \(actionID)")
-                throw HomeAssistantAPI.APIError.cantBuildURL
-            }
+        let intent = PerformActionIntent(action: action)
+        INInteraction(intent: intent, response: nil).donate(completion: nil)
 
-            let intent = PerformActionIntent(action: action)
-            INInteraction(intent: intent, response: nil).donate(completion: nil)
+        switch action.triggerType {
+        case .event:
+            let actionInfo = Self.actionEvent(actionID: action.ID, actionName: action.Name, source: source)
+            Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
 
-            switch action.triggerType {
-            case .event:
-                let actionInfo = Self.actionEvent(actionID: action.ID, actionName: action.Name, source: source)
-                Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
-
+            return firstly {
+                Current.api
+            }.then { api in
                 api.CreateEvent(
                     eventType: actionInfo.eventType,
                     eventData: actionInfo.eventData
-                ).pipe(to: { seal.resolve($0) })
-            case .scene:
-                let serviceInfo = Self.actionScene(actionID: action.ID, source: source)
-                Current.Log.verbose("activating scene: \(action.ID)")
+                )
+            }
+        case .scene:
+            let serviceInfo = Self.actionScene(actionID: action.ID, source: source)
+            Current.Log.verbose("activating scene: \(action.ID)")
 
+            return firstly {
+                Current.api
+            }.then { api in
                 api.CallService(
                     domain: serviceInfo.serviceDomain,
                     service: serviceInfo.serviceName,
                     serviceData: serviceInfo.serviceData
-                ).pipe(to: { seal.resolve($0) })
+                )
             }
         }
     }

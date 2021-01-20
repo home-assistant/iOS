@@ -45,12 +45,6 @@ class NotificationManager: NSObject {
 
         Messaging.messaging().appDidReceiveMessage(userInfo)
 
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.warning("Remote notification handler failed because api was not authenticated")
-            completionHandler(.failed)
-            return
-        }
-
         if let userInfoDict = userInfo as? [String: Any],
             let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
                 switch command {
@@ -62,8 +56,12 @@ class NotificationManager: NSObject {
 
                     Current.Log.verbose("Received remote request to provide a location update")
 
-                    Current.backgroundTask(withName: "push-location-request") { remaining in
-                        api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
+                    firstly {
+                        Current.api
+                    }.then { api in
+                        Current.backgroundTask(withName: "push-location-request") { remaining in
+                            api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
+                        }
                     }.done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
                         completionHandler(.newData)
@@ -111,11 +109,11 @@ class NotificationManager: NSObject {
                 Current.Log.verbose("Success, sending data \(eventData)")
 
                 _ = firstly {
-                    HomeAssistantAPI.authenticatedAPIPromise
-                    }.then { api in
-                        api.CreateEvent(eventType: eventName, eventData: eventData)
-                    }.catch { error -> Void in
-                        Current.Log.error("Received error from createEvent during shortcut run \(error)")
+                    Current.api
+                }.then { api in
+                    api.CreateEvent(eventType: eventName, eventData: eventData)
+                }.catch { error -> Void in
+                    Current.Log.error("Received error from createEvent during shortcut run \(error)")
                 }
             }
         }
@@ -125,7 +123,7 @@ class NotificationManager: NSObject {
             eventData["error"] = error.XCUErrorParameters
 
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
@@ -137,7 +135,7 @@ class NotificationManager: NSObject {
             eventData["status"] = "cancelled"
 
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
@@ -156,7 +154,7 @@ class NotificationManager: NSObject {
             eventData["error"] = error.localizedDescription
 
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
@@ -230,7 +228,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then { api in
             Current.backgroundTask(withName: "handle-push-action") { _ in
                 api.handlePushAction(
@@ -310,11 +308,10 @@ extension NotificationManager: MessagingDelegate {
         Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")
         Current.settingsStore.pushID = fcmToken
 
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.warning("Could not get authenticated API")
-            return
-        }
-
-        _ = api.UpdateRegistration()
+        firstly {
+            Current.api
+        }.then { api in
+            api.UpdateRegistration()
+        }.cauterize()
     }
 }

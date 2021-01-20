@@ -67,7 +67,7 @@ class IncomingURLHandler {
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
         return firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then { api in
             Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
                 if shortcutItem.type == "sendLocation" {
@@ -141,7 +141,7 @@ extension IncomingURLHandler {
             let eventData = cleanParamters
 
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.done { _ in
@@ -167,7 +167,7 @@ extension IncomingURLHandler {
             let serviceData = cleanParamters
 
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
             }.done { _ in
@@ -180,7 +180,7 @@ extension IncomingURLHandler {
 
         Manager.shared["send_location"] = { _, success, failure, _ in
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.GetAndSendLocation(trigger: .XCallbackURL)
             }.done { _ in
@@ -202,7 +202,7 @@ extension IncomingURLHandler {
             let variablesDict = cleanParamters
 
             _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
+                Current.api
             }.then { api in
                 api.RenderTemplate(templateStr: template, variables: variablesDict)
             }.done { rendered in
@@ -218,7 +218,7 @@ extension IncomingURLHandler {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
         _ = firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
             }.then { api in
                 api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
             }.done { _ in
@@ -237,7 +237,7 @@ extension IncomingURLHandler {
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
         _ = firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
             }.then { api in
                 api.CallService(domain: domain, service: service, serviceData: serviceData)
             }.done { _ in
@@ -253,7 +253,7 @@ extension IncomingURLHandler {
     private func sendLocationURLHandler() {
         // homeassistant://send_location/
         _ = firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
             }.then { api in
                 api.GetAndSendLocation(trigger: .URLScheme)
             }.done { _ in
@@ -292,8 +292,10 @@ extension IncomingURLHandler {
         Current.sceneManager
             .showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
 
-        HomeAssistantAPI.authenticatedAPI()?
-            .HandleAction(actionID: actionID, source: source)
-            .cauterize()
+        firstly {
+            Current.api
+        }.then { api in
+            api.HandleAction(actionID: actionID, source: source)
+        }.cauterize()
     }
 }

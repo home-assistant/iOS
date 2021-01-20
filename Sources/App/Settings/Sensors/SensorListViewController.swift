@@ -67,7 +67,7 @@ class SensorListViewController: FormViewController, SensorObserver {
         refreshControl.beginRefreshing()
 
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then { api -> Promise<Void> in
             return Current.backgroundTask(withName: "manual-location-update-settings") { _ in
                 if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {

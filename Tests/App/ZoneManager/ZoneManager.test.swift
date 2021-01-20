@@ -41,7 +41,7 @@ class ZoneManagerTests: XCTestCase {
         Current.connectivity.currentWiFiSSID = { "wifi_name" }
         Current.realm = { self.realm }
         Current.clientEventStore.addEvent = { self.loggedEvents.append($0) }
-        Current.api = { [api] in api }
+        Current.api = api
         Current.location.oneShotLocation = { _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
         processor = FakeProcessor()
@@ -54,7 +54,7 @@ class ZoneManagerTests: XCTestCase {
 
         Current.realm = Realm.live
         Current.clientEventStore.addEvent = { _ in }
-        Current.api = { HomeAssistantAPI.authenticatedAPI() }
+        Current.api = nil
     }
 
     private func newZoneManager() -> ZoneManager {

@@ -12,6 +12,7 @@ import UserNotifications
 import Shared
 import Alamofire
 import EMTLoadingIndicator
+import PromiseKit
 
 class CameraNotificationController: WKUserNotificationInterfaceController {
 
@@ -67,21 +68,27 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
             return
         }
 
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.error(HomeAssistantAPI.APIError.notConfigured.localizedDescription)
-            return
-        }
+        firstly {
+            Current.api
+        }.compactMap { api in
+            if let streamer = api.VideoStreamer() {
+                return (streamer, api)
+            } else {
+                return nil
+            }
+        }.done { [self] streamer, api in
+            setup(streamer: streamer, api: api, entityId: entityId)
+        }.cauterize()
+    }
 
-        guard let streamer = api.VideoStreamer() else {
-            return
-        }
-
+    private func setup(streamer: MJPEGStreamer, api: HomeAssistantAPI, entityId: String) {
         guard let connectionInfo = try? api.connectionInfo() else {
             Current.Log.error("no connection info available")
             return
         }
 
         self.streamer = streamer
+
         let apiURL = connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
@@ -111,8 +118,6 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
 
                 self.imageView.setImage(image)
             }
-
         }
     }
-
 }

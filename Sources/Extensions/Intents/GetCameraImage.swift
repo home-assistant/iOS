@@ -11,6 +11,7 @@ import MobileCoreServices
 import UIKit
 import Shared
 import Intents
+import PromiseKit
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     func resolveCameraID(for intent: GetCameraImageIntent,
@@ -26,12 +27,11 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
 
     func provideCameraIDOptions(for intent: GetCameraImageIntent,
                                 with completion: @escaping ([String]?, Error?) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(nil, HomeAssistantAPI.APIError.managerNotAvailable)
-            return
-        }
-
-        api.GetStates().compactMapValues { entity -> String? in
+        firstly {
+            Current.api
+        }.then { api in
+            api.GetStates()
+        }.compactMapValues { entity -> String? in
             if entity.Domain == "camera" {
                 return entity.ID
             }
@@ -54,15 +54,14 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     }
 
     func handle(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(GetCameraImageIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
         if let cameraID = intent.cameraID {
             Current.Log.verbose("Getting camera frame for \(cameraID)")
 
-            api.GetCameraImage(cameraEntityID: cameraID).done { frame in
+            firstly {
+                Current.api
+            }.then { api in
+                api.GetCameraImage(cameraEntityID: cameraID)
+            }.done { frame in
                 Current.Log.verbose("Successfully got camera image during shortcut")
 
                 guard let pngData = frame.pngData() else {

@@ -21,12 +21,10 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
-        guard let api = Current.api() else {
-            return .init(error: ZoneManagerProcessorPerformError.noAPI)
-        }
-
-        return firstly {
-            evaluate(event: event)
+        firstly {
+            Current.api
+        }.then { [self] api in
+            evaluate(event: event).map { api }
         }.tap { result in
             switch result {
             case .fulfilled:
@@ -34,7 +32,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             case .rejected(let error):
                 self.delegate?.processor(self, didLog: .didIgnore(event, error))
             }
-        }.then {
+        }.then { api in
             Current.backgroundTask(withName: event.backgroundTaskDescription) { remaining in
                 let trigger = event.asTrigger()
                 return firstly { () -> Promise<CLLocation?> in

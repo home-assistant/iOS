@@ -40,10 +40,14 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(
-            eventType: "ios.finished_launching",
-            eventData: HomeAssistantAPI.sharedEventDeviceInfo
-        )
+        firstly {
+            Current.api
+        }.then { api in
+            api.CreateEvent(
+                eventType: "ios.finished_launching",
+                eventData: HomeAssistantAPI.sharedEventDeviceInfo
+            )
+        }.cauterize()
 
         #if !targetEnvironment(macCatalyst)
         Lokalise.shared.checkForUpdates { (updated, error) in
@@ -59,10 +63,15 @@ class LifecycleManager {
     }
 
     @objc private func didEnterBackground() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(
-            eventType: "ios.entered_background",
-            eventData: HomeAssistantAPI.sharedEventDeviceInfo
-        )
+        firstly {
+            Current.api
+        }.then { api in
+            api.CreateEvent(
+                eventType: "ios.entered_background",
+                eventData: HomeAssistantAPI.sharedEventDeviceInfo
+            )
+        }.cauterize()
+
         invalidatePeriodicUpdateTimer()
     }
 
@@ -82,10 +91,14 @@ class LifecycleManager {
     }
 
     @objc private func didBecomeActive() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(
-            eventType: "ios.became_active",
-            eventData: HomeAssistantAPI.sharedEventDeviceInfo
-        )
+        firstly {
+            Current.api
+        }.then { api in
+            api.CreateEvent(
+                eventType: "ios.became_active",
+                eventData: HomeAssistantAPI.sharedEventDeviceInfo
+            )
+        }.cauterize()
     }
 
     private func invalidatePeriodicUpdateTimer() {
@@ -117,7 +130,7 @@ class LifecycleManager {
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then { api in
             return Current.backgroundTask(withName: "connect-api") { _ in
                 api.Connect(reason: reason)

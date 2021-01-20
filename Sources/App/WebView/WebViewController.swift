@@ -549,7 +549,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     @objc private func updateSensors() {
         // called via menu/keyboard shortcut too
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then { api -> Promise<HomeAssistantAPI> in
             guard #available(iOS 14, *) else {
                 return .value(api)
@@ -757,6 +757,7 @@ extension WebViewController: WKScriptMessageHandler {
             Current.Log.warning("Revoking access token")
 
             tokenManager.revokeToken().done { _ in
+                Current.resetAPI()
                 Current.tokenManager = nil
                 Current.settingsStore.connectionInfo = nil
                 Current.settingsStore.tokenInfo = nil

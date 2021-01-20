@@ -182,23 +182,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             if let connInfoData = context.content["connection_info"] as? Data {
                 let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoData)
                 Current.settingsStore.connectionInfo = connInfo
-
-                if let api = HomeAssistantAPI.authenticatedAPI() {
-                    Current.updateWith(authenticatedAPI: api)
-                } else {
-                    Current.Log.error("Failed to get authed API after context sync!")
-                }
             }
 
             if let tokenInfoData = context.content["token_info"] as? Data {
                 let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoData)
                 Current.settingsStore.tokenInfo = tokenInfo
-
-                if let api = HomeAssistantAPI.authenticatedAPI() {
-                    Current.updateWith(authenticatedAPI: api)
-                } else {
-                    Current.Log.error("Failed to get authed API after context sync!")
-                }
+                Current.resetAPI()
             }
 
             if let actionsDictionary = context.content["actions"] as? [[String: Any]] {
@@ -264,7 +253,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     func updateComplications() -> Guarantee<Void> {
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then {
             $0.updateComplications(passively: true)
         }.recover { _ in

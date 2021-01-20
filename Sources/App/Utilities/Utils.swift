@@ -68,7 +68,7 @@ func setDefaults() {
     if let previous = prefs.string(forKey: "lastInstalledShortVersion"),
         let version = try? Version(hassVersion: previous),
         version <= Version(major: 2020, minor: 4, patch: 1),
-        HomeAssistantAPI.authenticatedAPI() == nil {
+        Current.settingsStore.connectionInfo == nil {
         Current.Log.info("going to show migration message")
         prefs.set(true, forKey: "onboardingShouldShowMigrationMessage")
     }

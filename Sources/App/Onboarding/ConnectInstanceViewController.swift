@@ -135,14 +135,13 @@ class ConnectInstanceViewController: UIViewController {
     }
 
     public func Connect() -> Promise<Void> {
-        guard let api = HomeAssistantAPI.authenticatedAPI(urlConfig: .default, forceInit: true) else {
-            Current.Log.error("Couldn't get authenticated API!")
-            return Promise(error: ConnectionError.noAuthenticatedAPI)
-        }
+        Current.resetAPI()
 
         return firstly {
-            api.Register()
-        }.then { regResponse -> Promise<MobileAppRegistrationResponse> in
+            Current.api
+        }.then { api in
+            api.Register().map { (api, $0) }
+        }.map { api, regResponse -> HomeAssistantAPI in
             self.setAnimationStatus(self.integrationCreated, state: .success)
 
             let cloudAvailable = (regResponse.CloudhookURL != nil || regResponse.RemoteUIURL != nil)
@@ -156,8 +155,8 @@ class ConnectInstanceViewController: UIViewController {
             let encryptState: AnimationState = regResponse.WebhookSecret != nil ? .success : .failed
             self.setAnimationStatus(self.encrypted, state: encryptState)
 
-            return Promise.value(regResponse)
-        }.then { _ in
+            return api
+        }.then { api in
             return when(fulfilled: [
                 api.GetConfig().asVoid(),
                 Current.modelManager.fetch(),

@@ -7,7 +7,7 @@ class UpdateSensorsIntentHandler: NSObject, UpdateSensorsIntentHandling {
         Current.Log.info("starting")
 
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then {
             $0.UpdateSensors(trigger: .Siri)
         }.done {

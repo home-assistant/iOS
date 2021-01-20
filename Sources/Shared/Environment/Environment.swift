@@ -61,7 +61,22 @@ public class Environment {
     public var realmFatalPresentation: ((UIViewController) -> Void)?
     #endif
 
-    public var api: () -> HomeAssistantAPI? = { HomeAssistantAPI.authenticatedAPI() }
+    private var underlyingAPI: HomeAssistantAPI?
+
+    public var api: Promise<HomeAssistantAPI> {
+        if let value = underlyingAPI {
+            return .value(value)
+        } else if !isRunningTests, let value = HomeAssistantAPI() {
+            underlyingAPI = value
+            return .value(value)
+        } else {
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+    }
+    public func resetAPI() {
+        underlyingAPI = nil
+    }
+
     public var modelManager = ModelManager()
     public var tokenManager: TokenManager?
 

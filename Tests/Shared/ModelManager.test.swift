@@ -25,7 +25,7 @@ class ModelManagerTests: XCTestCase {
             )
         )
 
-        Current.api = { self.api }
+        Current.api = api
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {

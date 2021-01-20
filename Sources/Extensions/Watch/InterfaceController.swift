@@ -147,7 +147,7 @@ class InterfaceController: WKInterfaceController {
         }.recover { error -> Promise<Void> in
             Current.Log.error("recovering error \(error) by trying locally")
             return firstly {
-                return HomeAssistantAPI.authenticatedAPIPromise
+                return Current.api
             }.then { api -> Promise<Void> in
                 return api.HandleAction(actionID: selectedAction.ID, source: .Watch)
             }

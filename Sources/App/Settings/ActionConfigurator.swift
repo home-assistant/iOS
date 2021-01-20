@@ -359,7 +359,7 @@ class ActionPreview: UIView {
         self.imageView.showActivityIndicator()
 
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
             }.then { api in
                 api.HandleAction(actionID: action.ID, source: .Preview)
             }.done { _ in

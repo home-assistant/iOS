@@ -9,15 +9,16 @@ final class NotificationService: UNNotificationServiceExtension {
     ) {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
-        guard let api = Current.api() else {
-            Current.Log.error("no available api, not attaching")
-            contentHandler(request.content)
-            return
+        firstly {
+            Current.api
+        }.then { api in
+            NotificationAttachmentManager().content(from: request.content, api: api)
+        }.recover { error in
+            Current.Log.error("failed to get content, giving default: \(error)")
+            return .value(request.content)
+        }.done {
+            contentHandler($0)
         }
-
-        NotificationAttachmentManager()
-            .content(from: request.content, api: api)
-            .done { contentHandler($0) }
     }
 
     override func serviceExtensionTimeWillExpire() {

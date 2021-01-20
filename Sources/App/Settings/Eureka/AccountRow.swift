@@ -109,7 +109,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
         }
 
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then {
             $0.GetStates()
         }.firstValue {

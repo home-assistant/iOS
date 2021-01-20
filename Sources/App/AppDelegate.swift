@@ -268,29 +268,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.warning("Background fetch failed because api was not authenticated")
-            completionHandler(.failed)
-            return
-        }
-
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
-        Current.backgroundTask(withName: "background-fetch") { remaining in
-            let updatePromise: Promise<Void>
+        firstly {
+            Current.api
+        }.then { api in
+            Current.backgroundTask(withName: "background-fetch") { remaining in
+                let updatePromise: Promise<Void>
 
-            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-                prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-                updatePromise = api.GetAndSendLocation(
-                    trigger: .BackgroundFetch,
-                    maximumBackgroundTime: remaining
-                ).asVoid()
-            } else {
-                updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
+                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+                    prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+                    updatePromise = api.GetAndSendLocation(
+                        trigger: .BackgroundFetch,
+                        maximumBackgroundTime: remaining
+                    ).asVoid()
+                } else {
+                    updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
+                }
+
+                return updatePromise
             }
-
-            return updatePromise
         }.done {
             completionHandler(.newData)
         }.catch { error in
@@ -448,7 +446,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return
                 }
 
-                HomeAssistantAPI.authenticatedAPIPromise.then { api in
+                Current.api.then { api in
                     api.HandleAction(actionID: actionID, source: .Watch)
                 }.done { _ in
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
@@ -512,11 +510,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let tokenInfo = TokenInfo(accessToken: token, refreshToken: "", expiration: Date.distantFuture)
 
-        let api = HomeAssistantAPI(tokenInfo: tokenInfo)
-
         Current.settingsStore.tokenInfo = tokenInfo
         Current.settingsStore.connectionInfo = connectionInfo
-        Current.updateWith(authenticatedAPI: api)
+        Current.resetAPI()
 
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
             Current.Log.verbose("Requested notifications \(granted), \(String(describing: error))")

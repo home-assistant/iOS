@@ -34,7 +34,7 @@ class WebhookManagerTests: XCTestCase {
         webhookURL = connectionInfo.webhookURL
 
         Current.settingsStore.connectionInfo = connectionInfo
-        Current.api = { [weak self] in self?.api }
+        Current.api = api
 
         manager = WebhookManager()
     }

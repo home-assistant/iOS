@@ -151,7 +151,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
         let action = self.actions[indexPath.row]
 
         firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
+            Current.api
         }.then { api in
             api.HandleAction(actionID: action.ID, source: .Widget)
         }.done { _ in
