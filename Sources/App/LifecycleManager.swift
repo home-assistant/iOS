@@ -129,10 +129,8 @@ class LifecycleManager {
     }
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
-        firstly {
-            Current.api
-        }.then { api in
-            return Current.backgroundTask(withName: "connect-api") { _ in
+        return Current.backgroundTask(withName: "connect-api") { _ in
+            Current.api.then { api in
                 api.Connect(reason: reason)
             }
         }.done {

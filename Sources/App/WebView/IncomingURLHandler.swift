@@ -66,10 +66,8 @@ class IncomingURLHandler {
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
-        return firstly {
-            Current.api
-        }.then { api in
-            Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+        return Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+            Current.api.then { api in
                 if shortcutItem.type == "sendLocation" {
                     return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
                 } else {

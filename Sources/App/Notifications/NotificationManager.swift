@@ -56,10 +56,8 @@ class NotificationManager: NSObject {
 
                     Current.Log.verbose("Received remote request to provide a location update")
 
-                    firstly {
-                        Current.api
-                    }.then { api in
-                        Current.backgroundTask(withName: "push-location-request") { remaining in
+                    Current.backgroundTask(withName: "push-location-request") { remaining in
+                        Current.api.then { api in
                             api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                         }
                     }.done { success in
@@ -227,10 +225,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             )
         }
 
-        firstly {
-            Current.api
-        }.then { api in
-            Current.backgroundTask(withName: "handle-push-action") { _ in
+        Current.backgroundTask(withName: "handle-push-action") { _ in
+            Current.api.then { api in
                 api.handlePushAction(
                     identifier: response.actionIdentifier,
                     category: response.notification.request.content.categoryIdentifier,

@@ -275,10 +275,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
-        firstly {
-            Current.api
-        }.then { api in
-            Current.backgroundTask(withName: "background-fetch") { remaining in
+        Current.backgroundTask(withName: "background-fetch") { remaining in
+            Current.api.then { api -> Promise<Void> in
                 let updatePromise: Promise<Void>
 
                 if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
