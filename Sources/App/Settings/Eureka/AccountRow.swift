@@ -108,9 +108,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        firstly {
-            Current.api
-        }.then {
+        Current.api.then {
             $0.GetStates()
         }.firstValue {
             $0.Attributes["user_id"] as? String == user.ID

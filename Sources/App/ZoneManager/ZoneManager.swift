@@ -99,9 +99,7 @@ class ZoneManager {
             return
         }
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
         }.cauterize()
     }

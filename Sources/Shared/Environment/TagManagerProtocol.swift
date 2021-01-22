@@ -40,9 +40,7 @@ public extension TagManager {
 
     func fireEvent(tag: String) -> Promise<Void> {
         if Current.serverVersion() < .tagWebhookAvailable {
-            return firstly { () -> Promise<HomeAssistantAPI> in
-                Current.api
-            }.then { api -> Promise<Void> in
+            return Current.api.then { api -> Promise<Void> in
                 let event = HomeAssistantAPI.tagEvent(tagPath: tag)
                 return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
             }

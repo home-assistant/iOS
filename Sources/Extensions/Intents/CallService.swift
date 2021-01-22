@@ -34,9 +34,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.GetServices()
         }.done { serviceResp in
             var allServices: [String] = []
@@ -111,9 +109,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
         Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true)
         }.done { _ in
             Current.Log.verbose("Successfully called service during shortcut")

@@ -67,7 +67,7 @@ class IncomingURLHandler {
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
         return Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
-            Current.api.then { api in
+            Current.api.then { api -> Promise<Void> in
                 if shortcutItem.type == "sendLocation" {
                     return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
                 } else {
@@ -138,9 +138,7 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "eventName")
             let eventData = cleanParamters
 
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.done { _ in
                 success(nil)
@@ -164,9 +162,7 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "service")
             let serviceData = cleanParamters
 
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
             }.done { _ in
                 success(nil)
@@ -177,9 +173,7 @@ extension IncomingURLHandler {
         }
 
         Manager.shared["send_location"] = { _, success, failure, _ in
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.GetAndSendLocation(trigger: .XCallbackURL)
             }.done { _ in
                 success(nil)
@@ -199,9 +193,7 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "template")
             let variablesDict = cleanParamters
 
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.RenderTemplate(templateStr: template, variables: variablesDict)
             }.done { rendered in
                 success(["rendered": String(describing: rendered)])
@@ -215,17 +207,15 @@ extension IncomingURLHandler {
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
-        _ = firstly {
-            Current.api
-            }.then { api in
-                api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
-            }.done { _ in
-                self.showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
-                          message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
-            }.catch { error -> Void in
-                self.showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
-                                                                           error.localizedDescription))
+        Current.api.then { api in
+            api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
+        }.done { _ in
+            self.showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
+                           message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
+        }.catch { error -> Void in
+            self.showAlert(title: L10n.errorLabel,
+                           message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
+                                                                            error.localizedDescription))
         }
     }
 
@@ -234,32 +224,28 @@ extension IncomingURLHandler {
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
-        _ = firstly {
-            Current.api
-            }.then { api in
-                api.CallService(domain: domain, service: service, serviceData: serviceData)
-            }.done { _ in
-                self.showAlert(title: L10n.UrlHandler.CallService.Success.title,
-                          message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
-            }.catch { error in
-                self.showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
-                                                                             error.localizedDescription))
+        Current.api.then { api in
+            api.CallService(domain: domain, service: service, serviceData: serviceData)
+        }.done { _ in
+            self.showAlert(title: L10n.UrlHandler.CallService.Success.title,
+                           message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
+        }.catch { error in
+            self.showAlert(title: L10n.errorLabel,
+                           message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
+                                                                              error.localizedDescription))
         }
     }
 
     private func sendLocationURLHandler() {
         // homeassistant://send_location/
-        _ = firstly {
-            Current.api
-            }.then { api in
-                api.GetAndSendLocation(trigger: .URLScheme)
-            }.done { _ in
-                self.showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
-                          message: L10n.UrlHandler.SendLocation.Success.message)
-            }.catch { error in
-                self.showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
+        Current.api.then { api in
+            api.GetAndSendLocation(trigger: .URLScheme)
+        }.done { _ in
+            self.showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
+                           message: L10n.UrlHandler.SendLocation.Success.message)
+        }.catch { error in
+            self.showAlert(title: L10n.errorLabel,
+                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
         }
     }
 
@@ -290,9 +276,7 @@ extension IncomingURLHandler {
         Current.sceneManager
             .showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.HandleAction(actionID: actionID, source: source)
         }.cauterize()
     }

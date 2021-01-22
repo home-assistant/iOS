@@ -547,9 +547,7 @@ extension WebhookManager: URLSessionDataDelegate {
         Current.Log.notify("starting \(request.type) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        firstly { () -> Promise<HomeAssistantAPI> in
-            Current.api
-        }.then { (api: HomeAssistantAPI) -> Promise<Void> in
+        Current.api.then { (api: HomeAssistantAPI) -> Promise<Void> in
             let handler = handlerType.init(api: api)
             let handlerPromise = firstly {
                 handler.handle(request: .value(request), result: result)

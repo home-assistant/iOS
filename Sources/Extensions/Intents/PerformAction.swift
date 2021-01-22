@@ -13,9 +13,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
             return
         }
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.HandleAction(actionID: result.action.ID, source: .SiriShortcut)
         }.done {
             completion(.success(action: result.updated))

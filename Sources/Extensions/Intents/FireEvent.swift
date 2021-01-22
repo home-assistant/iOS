@@ -43,7 +43,6 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         completion(FireEventIntentResponse(code: .ready, userActivity: nil))
     }
 
-    // swiftlint:disable:next function_body_length
     func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
         Current.Log.verbose("Handling fire event shortcut \(intent)")
 
@@ -86,9 +85,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             }
         }
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
         }.done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")

@@ -27,9 +27,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
 
     func provideCameraIDOptions(for intent: GetCameraImageIntent,
                                 with completion: @escaping ([String]?, Error?) -> Void) {
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.GetStates()
         }.compactMapValues { entity -> String? in
             if entity.Domain == "camera" {
@@ -57,9 +55,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         if let cameraID = intent.cameraID {
             Current.Log.verbose("Getting camera frame for \(cameraID)")
 
-            firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.GetCameraImage(cameraEntityID: cameraID)
             }.done { frame in
                 Current.Log.verbose("Successfully got camera image during shortcut")

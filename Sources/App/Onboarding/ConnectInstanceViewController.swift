@@ -137,9 +137,7 @@ class ConnectInstanceViewController: UIViewController {
     public func Connect() -> Promise<Void> {
         Current.resetAPI()
 
-        return firstly {
-            Current.api
-        }.then { api in
+        return Current.api.then { api in
             api.Register().map { (api, $0) }
         }.map { api, regResponse -> HomeAssistantAPI in
             self.setAnimationStatus(self.integrationCreated, state: .success)

@@ -35,9 +35,7 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
         Current.Log.verbose("Rendering template \(templateStr)")
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.RenderTemplate(templateStr: templateStr)
         }.done { rendered in
             Current.Log.verbose("Successfully renderedTemplate")

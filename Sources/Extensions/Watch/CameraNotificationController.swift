@@ -68,9 +68,7 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
             return
         }
 
-        firstly {
-            Current.api
-        }.compactMap { api in
+        Current.api.compactMap { api in
             if let streamer = api.VideoStreamer() {
                 return (streamer, api)
             } else {

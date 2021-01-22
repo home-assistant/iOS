@@ -87,16 +87,28 @@ class ZoneManagerProcessorTests: XCTestCase {
 
     func testNoAPIFails() throws {
         Current.api = .init(error: HomeAssistantAPI.APIError.notConfigured)
-        
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange([])))
+        let now = Date()
+        Current.date = { now }
 
-        let expectation = self.expectation(description: "promise")
-        _ = promise.catch { error in
+        let locations = [
+            CLLocation(
+                coordinate: .init(latitude: 123, longitude: 1.23),
+                altitude: 3.45,
+                horizontalAccuracy: 1.25,
+                verticalAccuracy: 0.36,
+                timestamp: now.addingTimeInterval(-5.0)
+            ),
+        ]
+        let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange(locations)))
+
+        // we don't care which this flow wants
+        let oneShotLocation = CLLocation(latitude: 1, longitude: 1)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? HomeAssistantAPI.APIError, HomeAssistantAPI.APIError.notConfigured)
-            expectation.fulfill()
         }
-
-        wait(for: [expectation], timeout: 10.0)
     }
 
     func testPerformingOneShotErrors() throws {

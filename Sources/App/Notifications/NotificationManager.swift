@@ -106,9 +106,7 @@ class NotificationManager: NSObject {
 
                 Current.Log.verbose("Success, sending data \(eventData)")
 
-                _ = firstly {
-                    Current.api
-                }.then { api in
+                Current.api.then { api in
                     api.CreateEvent(eventType: eventName, eventData: eventData)
                 }.catch { error -> Void in
                     Current.Log.error("Received error from createEvent during shortcut run \(error)")
@@ -120,9 +118,7 @@ class NotificationManager: NSObject {
             eventData["status"] = "failure"
             eventData["error"] = error.XCUErrorParameters
 
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
@@ -132,9 +128,7 @@ class NotificationManager: NSObject {
         let cancelHandler: CallbackURLKit.CancelCallback = {
             eventData["status"] = "cancelled"
 
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
@@ -151,9 +145,7 @@ class NotificationManager: NSObject {
             eventData["status"] = "error"
             eventData["error"] = error.localizedDescription
 
-            _ = firstly {
-                Current.api
-            }.then { api in
+            Current.api.then { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
@@ -304,9 +296,7 @@ extension NotificationManager: MessagingDelegate {
         Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")
         Current.settingsStore.pushID = fcmToken
 
-        firstly {
-            Current.api
-        }.then { api in
+        Current.api.then { api in
             api.UpdateRegistration()
         }.cauterize()
     }
