@@ -56,11 +56,16 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         api.submitLocationPromise = submitLocationPromise
 
-        Current.api = { self.api }
+        Current.api = .value(api)
         Current.location.oneShotLocation = { _ in self.oneShotLocationPromise }
         delegate = FakeZoneManagerProcessorDelegate()
         processor = ZoneManagerProcessorImpl()
         processor.delegate = delegate
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        Current.resetAPI()
     }
 
     func setUpZones(
@@ -81,24 +86,36 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testNoAPIFails() throws {
-        Current.api = { nil }
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange([])))
+        Current.api = .init(error: HomeAssistantAPI.APIError.notConfigured)
+        let now = Date()
+        Current.date = { now }
 
-        let expectation = self.expectation(description: "promise")
-        _ = promise.catch { error in
-            XCTAssertEqual(error as? ZoneManagerProcessorPerformError, ZoneManagerProcessorPerformError.noAPI)
-            expectation.fulfill()
+        let locations = [
+            CLLocation(
+                coordinate: .init(latitude: 123, longitude: 1.23),
+                altitude: 3.45,
+                horizontalAccuracy: 1.25,
+                verticalAccuracy: 0.36,
+                timestamp: now.addingTimeInterval(-5.0)
+            ),
+        ]
+        let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange(locations)))
+
+        // we don't care which this flow wants
+        let oneShotLocation = CLLocation(latitude: 1, longitude: 1)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? HomeAssistantAPI.APIError, HomeAssistantAPI.APIError.notConfigured)
         }
-
-        wait(for: [expectation], timeout: 10.0)
     }
 
     func testPerformingOneShotErrors() throws {
         Current.isPerformingSingleShotLocationQuery = true
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange([])))
-        Current.isPerformingSingleShotLocationQuery = false
-
         XCTAssertEqual(try hangForIgnoreReason(promise), .duringOneShot)
+        Current.isPerformingSingleShotLocationQuery = false
     }
 
     func testPerformingEmptyLocations() throws {

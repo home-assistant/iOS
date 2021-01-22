@@ -544,26 +544,21 @@ extension WebhookManager: URLSessionDataDelegate {
         result: Promise<Any>,
         resolver: Resolver<Void>?
     ) {
-        guard let api = Current.api() else {
-            Current.Log.error("no api")
-            return
-        }
-
         Current.Log.notify("starting \(request.type) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        let handler = handlerType.init(api: api)
-        let handlerPromise = firstly {
-            handler.handle(request: .value(request), result: result)
-        }.done { [weak self] result in
-            // keep the handler around until it finishes
-            withExtendedLifetime(handler) {
-                self?.handle(result: result)
+        Current.api.then { (api: HomeAssistantAPI) -> Promise<Void> in
+            let handler = handlerType.init(api: api)
+            let handlerPromise = firstly {
+                handler.handle(request: .value(request), result: result)
+            }.done { [weak self] result in
+                // keep the handler around until it finishes
+                withExtendedLifetime(handler) {
+                    self?.handle(result: result)
+                }
             }
-        }
 
-        firstly {
-            when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+            return when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
         }.tap {
             resolver?.resolve($0)
         }.ensure {

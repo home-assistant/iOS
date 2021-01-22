@@ -69,7 +69,9 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
             Current.Log.error(error)
         }
 
-        HomeAssistantAPI.authenticatedAPI()?.updateComplications(passively: false).cauterize()
+        Current.api.then { api in
+            api.updateComplications(passively: false)
+        }.cauterize()
 
         onDismissCallback?(self)
     }
@@ -97,7 +99,9 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 Current.Log.error(error)
             }
 
-            HomeAssistantAPI.authenticatedAPI()?.updateComplications(passively: false).cauterize()
+            Current.api.then { api in
+                api.updateComplications(passively: false)
+            }.cauterize()
 
             self.onDismissCallback?(self)
         }))
@@ -484,9 +488,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
     }
 
     func renderTemplateValue(_ value: String, _ row: BaseRow, expectingPercentile: Bool) {
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.then {
+        Current.api.then {
             $0.RenderTemplate(templateStr: value)
         }.get { result in
             if expectingPercentile {

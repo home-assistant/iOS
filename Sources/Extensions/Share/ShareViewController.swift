@@ -57,7 +57,7 @@ class ShareViewController: SLComposeServiceViewController {
         Current.Log.info("starting to post")
 
         firstly {
-            when(fulfilled: HomeAssistantAPI.authenticatedAPIPromise, event())
+            when(fulfilled: Current.api, event())
         }.then { api, event -> Promise<Void> in
             Current.Log.verbose("starting request")
             return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)

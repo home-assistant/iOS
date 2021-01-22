@@ -126,11 +126,9 @@ public final class ModelManager {
         definitions: [FetchDefinition] = FetchDefinition.defaults,
         on queue: DispatchQueue = .global(qos: .utility)
     ) -> Promise<Void> {
-        guard let api = Current.api() else {
-            return .value(())
+        Current.api.then { api in
+            when(fulfilled: definitions.map { $0.update(api, queue, self) })
         }
-
-        return when(fulfilled: definitions.map { $0.update(api, queue, self) })
     }
 
     internal enum StoreError: Error {

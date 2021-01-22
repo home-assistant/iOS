@@ -41,7 +41,7 @@ class ZoneManagerTests: XCTestCase {
         Current.connectivity.currentWiFiSSID = { "wifi_name" }
         Current.realm = { self.realm }
         Current.clientEventStore.addEvent = { self.loggedEvents.append($0) }
-        Current.api = { [api] in api }
+        Current.api = .value(api)
         Current.location.oneShotLocation = { _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
         processor = FakeProcessor()
@@ -54,7 +54,7 @@ class ZoneManagerTests: XCTestCase {
 
         Current.realm = Realm.live
         Current.clientEventStore.addEvent = { _ in }
-        Current.api = { HomeAssistantAPI.authenticatedAPI() }
+        Current.resetAPI()
     }
 
     private func newZoneManager() -> ZoneManager {
@@ -283,19 +283,26 @@ class ZoneManagerTests: XCTestCase {
         ])[0]
         processor.promiseToReturn = .value(())
 
+        api.resetCreatedEventInfo()
+
         manager.collector(collector, didCollect: ZoneManagerEvent(
             eventType: .region(region, .inside),
             associatedZone: zone
         ))
-        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_entered")
-        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
 
+        let createdEvent1 = try hang(api.createdEventPromise)
+        XCTAssertEqual(createdEvent1.eventType, "ios.zone_entered")
+        XCTAssertEqual(createdEvent1.eventData["zone"] as? String, "zone.zid")
+
+        api.resetCreatedEventInfo()
         manager.collector(collector, didCollect: ZoneManagerEvent(
             eventType: .region(region, .outside),
             associatedZone: zone
         ))
-        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_exited")
-        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
+
+        let createdEvent2 = try hang(api.createdEventPromise)
+        XCTAssertEqual(createdEvent2.eventType, "ios.zone_exited")
+        XCTAssertEqual(createdEvent2.eventData["zone"] as? String, "zone.zid")
     }
 
     func testCollectorCollectsMultipleRegionZoneAndEventFires() throws {
@@ -316,21 +323,26 @@ class ZoneManagerTests: XCTestCase {
         ])[0]
         processor.promiseToReturn = .value(())
 
+        api.resetCreatedEventInfo()
         manager.collector(collector, didCollect: ZoneManagerEvent(
             eventType: .region(region, .inside),
             associatedZone: zone
         ))
-        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_entered")
-        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
-        XCTAssertEqual(api.createdEvent?.eventData["multi_region_zone_id"] as? String, "868")
 
+        let createdEvent1 = try hang(api.createdEventPromise)
+        XCTAssertEqual(createdEvent1.eventType, "ios.zone_entered")
+        XCTAssertEqual(createdEvent1.eventData["zone"] as? String, "zone.zid")
+        XCTAssertEqual(createdEvent1.eventData["multi_region_zone_id"] as? String, "868")
+
+        api.resetCreatedEventInfo()
         manager.collector(collector, didCollect: ZoneManagerEvent(
             eventType: .region(region, .outside),
             associatedZone: zone
         ))
-        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_exited")
-        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
-        XCTAssertEqual(api.createdEvent?.eventData["multi_region_zone_id"] as? String, "868")
+        let createdEvent2 = try hang(api.createdEventPromise)
+        XCTAssertEqual(createdEvent2.eventType, "ios.zone_exited")
+        XCTAssertEqual(createdEvent2.eventData["zone"] as? String, "zone.zid")
+        XCTAssertEqual(createdEvent2.eventData["multi_region_zone_id"] as? String, "868")
     }
 
     func testCollectorCollectsEventAndProcessorErrors() {
@@ -445,10 +457,17 @@ private class FakeRegionFilter: ZoneManagerRegionFilter {
 }
 
 private class FakeHassAPI: HomeAssistantAPI {
-    var createdEvent: (eventType: String, eventData: [String : Any])?
+    typealias CreatedEventInfo = (eventType: String, eventData: [String : Any])
+
+    func resetCreatedEventInfo() {
+        (createdEventPromise, createdEventSeal) = Promise<CreatedEventInfo>.pending()
+    }
+
+    var createdEventPromise: Promise<CreatedEventInfo>!
+    var createdEventSeal: Resolver<CreatedEventInfo>?
 
     override func CreateEvent(eventType: String, eventData: [String : Any]) -> Promise<Void> {
-        createdEvent = (eventType: eventType, eventData: eventData)
+        createdEventSeal?.fulfill((eventType: eventType, eventData: eventData))
         return .value(())
     }
 }

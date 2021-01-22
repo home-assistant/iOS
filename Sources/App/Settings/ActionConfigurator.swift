@@ -358,17 +358,15 @@ class ActionPreview: UIView {
 
         self.imageView.showActivityIndicator()
 
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.HandleAction(actionID: action.ID, source: .Preview)
-            }.done { _ in
-                feedbackGenerator.notificationOccurred(.success)
-            }.ensure {
-                self.imageView.hideActivityIndicator()
-            }.catch { err -> Void in
-                Current.Log.error("Error during action event fire: \(err)")
-                feedbackGenerator.notificationOccurred(.error)
+        Current.api.then { api in
+            api.HandleAction(actionID: action.ID, source: .Preview)
+        }.done { _ in
+            feedbackGenerator.notificationOccurred(.success)
+        }.ensure {
+            self.imageView.hideActivityIndicator()
+        }.catch { err -> Void in
+            Current.Log.error("Error during action event fire: \(err)")
+            feedbackGenerator.notificationOccurred(.error)
         }
     }
 }

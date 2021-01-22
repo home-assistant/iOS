@@ -13,19 +13,11 @@ protocol ZoneManagerProcessor: AnyObject {
     func perform(event: ZoneManagerEvent) -> Promise<Void>
 }
 
-enum ZoneManagerProcessorPerformError: Error {
-    case noAPI
-}
-
 class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
-        guard let api = Current.api() else {
-            return .init(error: ZoneManagerProcessorPerformError.noAPI)
-        }
-
-        return firstly {
+        firstly {
             evaluate(event: event)
         }.tap { result in
             switch result {
@@ -52,11 +44,13 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                         return nil
                     }
                 }.then { location in
-                    api.SubmitLocation(
-                        updateType: trigger,
-                        location: location,
-                        zone: event.associatedZone
-                    )
+                    Current.api.then { api in
+                        api.SubmitLocation(
+                            updateType: trigger,
+                            location: location,
+                            zone: event.associatedZone
+                        )
+                    }
                 }
             }
         }

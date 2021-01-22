@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Shared
 import Intents
+import PromiseKit
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     func resolveEventName(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
@@ -33,7 +34,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     }
 
     func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
+        Current.api.catch { (error) in
             Current.Log.error("Can't get a authenticated API \(error)")
             completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
@@ -42,13 +43,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         completion(FireEventIntentResponse(code: .ready, userActivity: nil))
     }
 
-    // swiftlint:disable:next function_body_length
     func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
         Current.Log.verbose("Handling fire event shortcut \(intent)")
 
         var eventDataDict: [String: Any] = [:]
@@ -90,7 +85,9 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             }
         }
 
-        api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict).done { _ in
+        Current.api.then { api in
+            api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
+        }.done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")
             let resp = FireEventIntentResponse(code: .success, userActivity: nil)
             resp.eventName = intent.eventName

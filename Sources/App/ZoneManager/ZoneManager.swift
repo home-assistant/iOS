@@ -99,9 +99,9 @@ class ZoneManager {
             return
         }
 
-        Current.api()?
-            .CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
-            .cauterize()
+        Current.api.then { api in
+            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
+        }.cauterize()
     }
 
     private func sync(zones: AnyCollection<RLMZone>) {

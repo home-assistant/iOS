@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Shared
 import Intents
+import PromiseKit
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
     func resolveTemplate(for intent: RenderTemplateIntent,
@@ -24,11 +25,6 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
     }
 
     func handle(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(RenderTemplateIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
         guard let templateStr = intent.template else {
             Current.Log.error("Unable to unwrap intent.template")
             let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
@@ -39,7 +35,9 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
         Current.Log.verbose("Rendering template \(templateStr)")
 
-        api.RenderTemplate(templateStr: templateStr).done { rendered in
+        Current.api.then { api in
+            api.RenderTemplate(templateStr: templateStr)
+        }.done { rendered in
             Current.Log.verbose("Successfully renderedTemplate")
 
             let resp = RenderTemplateIntentResponse(code: .success, userActivity: nil)

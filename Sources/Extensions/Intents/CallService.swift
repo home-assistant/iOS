@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Shared
 import Intents
+import PromiseKit
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
@@ -33,12 +34,9 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(nil, HomeAssistantAPI.APIError.managerNotAvailable)
-            return
-        }
-
-        api.GetServices().done { serviceResp in
+        Current.api.then { api in
+            api.GetServices()
+        }.done { serviceResp in
             var allServices: [String] = []
 
             for domainContainer in serviceResp.sorted(by: { (a, b) -> Bool in
@@ -68,11 +66,6 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
     // swiftlint:disable:next function_body_length
     func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
-        }
-
         var payloadDict: [String: Any] = [:]
 
         if let payload = intent.payload, payload.isEmpty == false {
@@ -116,7 +109,9 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
         Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
-        api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true).done { _ in
+        Current.api.then { api in
+            api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true)
+        }.done { _ in
             Current.Log.verbose("Successfully called service during shortcut")
             let resp = CallServiceIntentResponse(code: .success, userActivity: nil)
             resp.domain = domain

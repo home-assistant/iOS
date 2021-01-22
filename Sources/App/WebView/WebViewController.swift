@@ -548,39 +548,37 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func updateSensors() {
         // called via menu/keyboard shortcut too
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.then { api -> Promise<HomeAssistantAPI> in
-            guard #available(iOS 14, *) else {
-                return .value(api)
-            }
-
-            return Promise { seal in
-                let locationManager = CLLocationManager()
-
-                guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                    seal.fulfill(api)
-                    return
+        Current.backgroundTask(withName: "manual-location-update") { remaining in
+            Current.api.then { api -> Promise<HomeAssistantAPI> in
+                guard #available(iOS 14, *) else {
+                    return .value(api)
                 }
 
-                Current.Log.info("requesting full accuracy for manual update")
-                locationManager.requestTemporaryFullAccuracyAuthorization(
-                    withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                ) { error in
-                    Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
+                return Promise { seal in
+                    let locationManager = CLLocationManager()
 
-                    withExtendedLifetime(locationManager) {
+                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
                         seal.fulfill(api)
+                        return
+                    }
+
+                    Current.Log.info("requesting full accuracy for manual update")
+                    locationManager.requestTemporaryFullAccuracyAuthorization(
+                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                    ) { error in
+                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
+
+                        withExtendedLifetime(locationManager) {
+                            seal.fulfill(api)
+                        }
                     }
                 }
-            }
-        }.then { api -> Promise<Void> in
-            func updateWithoutLocation() -> Promise<Void> {
-                api.UpdateSensors(trigger: .Manual)
-            }
+            }.then { api -> Promise<Void> in
+                func updateWithoutLocation() -> Promise<Void> {
+                    api.UpdateSensors(trigger: .Manual)
+                }
 
-            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                return Current.backgroundTask(withName: "manual-location-update") { remaining in
+                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
                     return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
                         .recover { error -> Promise<Void> in
                             if error is CLError {
@@ -590,9 +588,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                                 throw error
                             }
                     }
+                } else {
+                    return updateWithoutLocation()
                 }
-            } else {
-                return updateWithoutLocation()
             }
         }.catch { error in
             self.showSwiftMessageError((error as NSError).localizedDescription)
@@ -757,6 +755,7 @@ extension WebViewController: WKScriptMessageHandler {
             Current.Log.warning("Revoking access token")
 
             tokenManager.revokeToken().done { _ in
+                Current.resetAPI()
                 Current.tokenManager = nil
                 Current.settingsStore.connectionInfo = nil
                 Current.settingsStore.tokenInfo = nil

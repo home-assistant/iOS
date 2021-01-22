@@ -50,8 +50,8 @@ class WebViewWindowController {
     }
 
     var requiresOnboarding: Bool {
-        if HomeAssistantAPI.authenticatedAPI() == nil {
-            Current.Log.info("requiring onboarding due to no auth token")
+        if Current.settingsStore.tokenInfo == nil || Current.settingsStore.connectionInfo == nil {
+            Current.Log.info("requiring onboarding due to auth token or connection info")
             return true
         }
 

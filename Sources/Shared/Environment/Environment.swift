@@ -61,7 +61,27 @@ public class Environment {
     public var realmFatalPresentation: ((UIViewController) -> Void)?
     #endif
 
-    public var api: () -> HomeAssistantAPI? = { HomeAssistantAPI.authenticatedAPI() }
+    private var underlyingAPI: Promise<HomeAssistantAPI>?
+
+    public var api: Promise<HomeAssistantAPI> {
+        get {
+            if let value = underlyingAPI {
+                return value
+            } else if !isRunningTests, let value = HomeAssistantAPI() {
+                underlyingAPI = .value(value)
+                return .value(value)
+            } else {
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+        }
+        set {
+            underlyingAPI = newValue
+        }
+    }
+    public func resetAPI() {
+        underlyingAPI = nil
+    }
+
     public var modelManager = ModelManager()
     public var tokenManager: TokenManager?
 
@@ -128,10 +148,6 @@ public class Environment {
     public var isPerformingSingleShotLocationQuery = false
 
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
-
-    public func updateWith(authenticatedAPI: HomeAssistantAPI) {
-        self.tokenManager = authenticatedAPI.tokenManager
-    }
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
