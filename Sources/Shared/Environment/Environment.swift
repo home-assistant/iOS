@@ -149,10 +149,6 @@ public class Environment {
 
     public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
 
-    public func updateWith(authenticatedAPI: HomeAssistantAPI) {
-        self.tokenManager = authenticatedAPI.tokenManager
-    }
-
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
     public var isAppStore: Bool = {

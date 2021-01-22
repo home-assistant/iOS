@@ -40,11 +40,13 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
-        Current.api.then { api in
-            api.CreateEvent(
-                eventType: "ios.finished_launching",
-                eventData: HomeAssistantAPI.sharedEventDeviceInfo
-            )
+        Current.backgroundTask(withName: "lifecycle-manager-didFinishLaunching") { _ in
+            Current.api.then { api in
+                api.CreateEvent(
+                    eventType: "ios.finished_launching",
+                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                )
+            }
         }.cauterize()
 
         #if !targetEnvironment(macCatalyst)
@@ -61,11 +63,13 @@ class LifecycleManager {
     }
 
     @objc private func didEnterBackground() {
-        Current.api.then { api in
-            api.CreateEvent(
-                eventType: "ios.entered_background",
-                eventData: HomeAssistantAPI.sharedEventDeviceInfo
-            )
+        Current.backgroundTask(withName: "lifecycle-manager-didEnterBackground") { _ in
+            Current.api.then { api in
+                api.CreateEvent(
+                    eventType: "ios.entered_background",
+                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                )
+            }
         }.cauterize()
 
         invalidatePeriodicUpdateTimer()
@@ -87,11 +91,13 @@ class LifecycleManager {
     }
 
     @objc private func didBecomeActive() {
-        Current.api.then { api in
-            api.CreateEvent(
-                eventType: "ios.became_active",
-                eventData: HomeAssistantAPI.sharedEventDeviceInfo
-            )
+        Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
+            Current.api.then { api in
+                api.CreateEvent(
+                    eventType: "ios.became_active",
+                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                )
+            }
         }.cauterize()
     }
 

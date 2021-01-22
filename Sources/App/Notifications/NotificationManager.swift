@@ -296,8 +296,10 @@ extension NotificationManager: MessagingDelegate {
         Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")
         Current.settingsStore.pushID = fcmToken
 
-        Current.api.then { api in
-            api.UpdateRegistration()
+        Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
+            Current.api.then { api in
+                api.UpdateRegistration()
+            }
         }.cauterize()
     }
 }
