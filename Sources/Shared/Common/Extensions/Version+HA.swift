@@ -22,4 +22,20 @@ extension Version {
         let parser = VersionParser(strict: false)
         self = try parser.parse(string: sanitized)
     }
+
+    public func compare(buildOf other: Version) -> ComparisonResult {
+        // Build can effectively be a sub-version
+        guard let buildVersion = build.flatMap({ try? Version.init(hassVersion: $0) }),
+              let otherBuildVersion = other.build.flatMap({ try? Version.init(hassVersion: $0) }) else {
+            return .orderedAscending
+        }
+
+        if buildVersion < otherBuildVersion {
+            return .orderedAscending
+        } else if buildVersion == otherBuildVersion {
+            return .orderedSame
+        } else {
+            return .orderedDescending
+        }
+    }
 }

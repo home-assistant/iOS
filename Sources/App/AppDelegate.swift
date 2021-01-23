@@ -363,7 +363,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Private helpers
 
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
-        Current.updater.check().done { [sceneManager] update in
+        let dueToUserInteraction = sender != nil
+
+        Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
                 message: update.body,
@@ -384,8 +386,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.catch { [sceneManager] error in
             Current.Log.error("check error: \(error)")
 
-            if sender != nil {
-                // sender means it's from a ui element, so give a result
+            if dueToUserInteraction {
                 let alert = UIAlertController(
                     title: L10n.Updater.NoUpdatesAvailable.title,
                     message: error.localizedDescription,
@@ -402,7 +403,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func checkForAlerts() {
         firstly {
-            Current.serverAlerter.check()
+            Current.serverAlerter.check(dueToUserInteraction: false)
         }.done { [sceneManager] alert in
             sceneManager.webViewWindowControllerPromise.done { controller in
                 controller.show(alert: alert)

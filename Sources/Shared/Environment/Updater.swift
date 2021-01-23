@@ -2,18 +2,22 @@ import Foundation
 import PromiseKit
 import Version
 
-public struct AvailableUpdate: Codable {
+public struct AvailableUpdate: Codable, Comparable {
     public var id: Int
     public var htmlUrl: URL
     public var tagName: String
     public var name: String
     public var body: String
+    public var prerelease: Bool
 
-    static func joinedVersionString(version: String, build: String) -> String {
-        String(format: "%@/%@", version, build)
+    var version: Version {
+        let parts = versionParts
+        var version = (try? Version(hassVersion: parts.version)) ?? Version()
+        version.build = parts.build
+        return version
     }
 
-    var versionString: String {
+    private var versionParts: (version: String, build: String) {
         let values = Array(
             tagName
                 .split(separator: "/")
@@ -21,9 +25,9 @@ public struct AvailableUpdate: Codable {
                 .map { String($0) }
         )
         if values.count >= 2 {
-            return Self.joinedVersionString(version: values[0], build: values[1])
+            return (version: values[0], build: values[1])
         } else {
-            return values.joined()
+            return (version: values.joined(), build: "-1")
         }
     }
 
@@ -32,19 +36,38 @@ public struct AvailableUpdate: Codable {
         var name: String
     }
     public var assets: [Asset]
+
+    public static func < (lhs: AvailableUpdate, rhs: AvailableUpdate) -> Bool {
+        let lhsVersion = lhs.version
+        let rhsVersion = rhs.version
+        if lhsVersion < rhsVersion {
+            return true
+        } else if lhsVersion == rhsVersion {
+            return lhsVersion.compare(buildOf: rhsVersion) == .orderedAscending
+        } else {
+            return false
+        }
+    }
+
+    public static func == (lhs: AvailableUpdate, rhs: AvailableUpdate) -> Bool {
+        lhs.version === rhs.version
+    }
 }
 
 public class Updater {
-    private var apiUrl: URL { URL(string: "https://api.github.com/repos/home-assistant/ios/releases?per_page=5")! }
+    private var apiUrl: URL { URL(string: "https://api.github.com/repos/home-assistant/ios/releases?per_page=25")! }
 
-    private enum UpdateError: LocalizedError {
+    internal enum UpdateError: LocalizedError {
         case unsupportedPlatform
         case onLatestVersion
+        case privacyDisabled
 
         var errorDescription: String? {
             switch self {
             case .unsupportedPlatform:
                 return "<unsupported platform>"
+            case .privacyDisabled:
+                return "<privacy disabled>"
             case .onLatestVersion:
                 return L10n.Updater.NoUpdatesAvailable.onLatestVersion
             }
@@ -55,9 +78,13 @@ public class Updater {
         Current.isCatalyst && !Current.isAppStore
     }
 
-    public func check() -> Promise<AvailableUpdate> {
+    public func check(dueToUserInteraction: Bool) -> Promise<AvailableUpdate> {
         guard isSupported else {
             return .init(error: UpdateError.unsupportedPlatform)
+        }
+
+        guard Current.settingsStore.privacy.updates || dueToUserInteraction else {
+            return .init(error: UpdateError.privacyDisabled)
         }
 
         return firstly {
@@ -68,19 +95,33 @@ public class Updater {
             }.decode([AvailableUpdate].self, from: data)
         }.get { updates in
             Current.Log.info("found releases: \(updates)")
-        }.map { updates in
-            let current = AvailableUpdate.joinedVersionString(version: Constants.version, build: Constants.build)
-            if let first = updates.first(where: { !$0.assets.isEmpty }) {
-                // skip over any without assets, but then only check the version numbrer of the first one
-                if first.versionString == current {
-                    // the same version number, so no update is available
-                    throw UpdateError.onLatestVersion
+        }.filterValues { release in
+            let hasAssets = release.assets.isEmpty == false
+            let isCorrectReleaseType: Bool = {
+                if Current.settingsStore.privacy.updatesIncludeBetas {
+                    return true
                 } else {
-                    // not the same version number, so an update is available
-                    return first
+                    return !release.prerelease
                 }
-            } else {
+            }()
+            return isCorrectReleaseType && hasAssets
+        }.map { updates in
+            // grab the 'newest' one
+            guard let first = updates.sorted(by: { $1 < $0 }).first else {
                 // Response included updates, but none had assets, assume transient API issue and don't share
+                throw UpdateError.onLatestVersion
+            }
+
+            let currentVersion = Current.clientVersion()
+            let firstVersion = first.version
+
+            if currentVersion < firstVersion {
+                return first
+            } else if currentVersion == firstVersion,
+                      currentVersion.compare(buildOf: firstVersion) == .orderedAscending {
+                return first
+            } else {
+                // the same version number, so no update is available
                 throw UpdateError.onLatestVersion
             }
         }

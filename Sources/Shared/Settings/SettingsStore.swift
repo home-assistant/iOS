@@ -330,12 +330,18 @@ public class SettingsStore {
         public var messaging: Bool
         public var crashes: Bool
         public var analytics: Bool
+        public var alerts: Bool
+        public var updates: Bool
+        public var updatesIncludeBetas: Bool
 
         internal static func key(for keyPath: KeyPath<Privacy, Bool>) -> String {
             switch keyPath {
             case \.messaging: return "messagingEnabled"
             case \.crashes: return "crashesEnabled"
             case \.analytics: return "analyticsEnabled"
+            case \.alerts: return "alertsEnabled"
+            case \.updates: return "updateCheckingEnabled"
+            case \.updatesIncludeBetas: return "updatesIncludeBetas"
             default: return ""
             }
         }
@@ -355,13 +361,19 @@ public class SettingsStore {
             return .init(
                 messaging: boolValue(for: \.messaging),
                 crashes: boolValue(for: \.crashes),
-                analytics: boolValue(for: \.analytics)
+                analytics: boolValue(for: \.analytics),
+                alerts: boolValue(for: \.alerts),
+                updates: boolValue(for: \.updates),
+                updatesIncludeBetas: boolValue(for: \.updatesIncludeBetas)
             )
         }
         set {
             prefs.set(newValue.messaging, forKey: Privacy.key(for: \.messaging))
             prefs.set(newValue.crashes, forKey: Privacy.key(for: \.crashes))
             prefs.set(newValue.analytics, forKey: Privacy.key(for: \.analytics))
+            prefs.set(newValue.alerts, forKey: Privacy.key(for: \.alerts))
+            prefs.set(newValue.updates, forKey: Privacy.key(for: \.updates))
+            prefs.set(newValue.updatesIncludeBetas, forKey: Privacy.key(for: \.updatesIncludeBetas))
             Current.Log.info("privacy updated to \(newValue)")
         }
     }
