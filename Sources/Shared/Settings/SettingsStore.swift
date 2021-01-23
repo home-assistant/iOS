@@ -99,20 +99,18 @@ public class SettingsStore {
         }
     }
 
-    internal var serverVersion: Version {
+    internal var serverVersion: Version? {
         // access this publicly using Environment
-        let fallback = HomeAssistantAPI.minimumRequiredVersion
-
         guard let string = prefs.string(forKey: "version") else {
             Current.Log.info("couldn't find version string, falling back")
-            return fallback
+            return nil
         }
 
         do {
             return try Version(hassVersion: string)
         } catch {
             Current.Log.error("couldn't parse version '\(string)': \(error)")
-            return fallback
+            return nil
         }
     }
 

@@ -140,7 +140,7 @@ public class Environment {
 
     public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
 
-    public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
+    public lazy var serverVersion: () -> Version? = { [settingsStore] in settingsStore.serverVersion }
     public lazy var clientVersion: () -> Version = { Constants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()

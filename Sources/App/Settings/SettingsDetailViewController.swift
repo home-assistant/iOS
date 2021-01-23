@@ -341,7 +341,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
             }
 
-            if Current.serverVersion() >= .actionSyncing {
+            if let version = Current.serverVersion(), version >= .actionSyncing {
                 form +++ RealmSection(
                     header: L10n.SettingsDetails.Actions.ActionsSynced.header,
                     footer: nil,

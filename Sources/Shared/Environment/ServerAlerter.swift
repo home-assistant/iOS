@@ -138,8 +138,16 @@ public class ServerAlerter {
             .compactMap(\.alert)
         }.get { alerts in
             Current.Log.info("found alerts: \(alerts)")
-        }.filterValues {
-            $0.ios.shouldTrigger(for: Current.clientVersion()) || $0.core.shouldTrigger(for: Current.serverVersion())
+        }.filterValues { alert in
+            if case let version = Current.clientVersion(), alert.ios.shouldTrigger(for: version) {
+                return true
+            }
+
+            if let version = Current.serverVersion(), alert.core.shouldTrigger(for: version) {
+                return true
+            }
+
+            return false
         }.filterValues {
             if $0.adminOnly {
                 return Current.settingsStore.authenticatedUser?.IsAdmin == true
