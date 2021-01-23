@@ -73,7 +73,22 @@ public struct ServerAlert: Codable, Equatable {
 public class ServerAlerter {
     private var apiUrl: URL { URL(string: "https://alerts.home-assistant.io/mobile.json")! }
 
-    public func check() -> Promise<ServerAlert> {
+    private enum AlerterError: LocalizedError {
+        case privacyDisabled
+
+        var errorDescription: String? {
+            switch self {
+            case .privacyDisabled:
+                return "<privacy disabled>"
+            }
+        }
+    }
+
+    public func check(dueToUserInteraction: Bool) -> Promise<ServerAlert> {
+        guard Current.settingsStore.privacy.alerts || dueToUserInteraction else {
+            return .init(error: AlerterError.privacyDisabled)
+        }
+
         return firstly {
             URLSession.shared.dataTask(.promise, with: apiUrl)
         }.map { data, _ -> [ServerAlert] in

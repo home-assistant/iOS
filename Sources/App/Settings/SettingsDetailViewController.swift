@@ -104,6 +104,69 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
                     }
 
+                +++ Section {
+                    $0.hidden = .isNotCatalyst
+                }
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.General.LaunchOnLogin.title
+
+                    #if targetEnvironment(macCatalyst)
+                    let launcherIdentifier = Constants.BundleID.appending(".Launcher")
+                    $0.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
+                    $0.onChange { row in
+                        let success = Current.macBridge.setLoginItem(
+                            forBundleIdentifier: launcherIdentifier,
+                            enabled: row.value ?? false
+                        )
+                        if !success {
+                            row.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
+                            row.updateCell()
+                        }
+                    }
+                    #endif
+                }
+
+                <<< PushRow<SettingsStore.LocationVisibility> {
+                    $0.title = L10n.SettingsDetails.General.Visibility.title
+                    $0.options = SettingsStore.LocationVisibility.allCases
+                    $0.value = Current.settingsStore.locationVisibility
+                    $0.displayValueFor = {
+                        switch $0 ?? .dock {
+                        case .dock: return L10n.SettingsDetails.General.Visibility.Options.dock
+                        case .dockAndMenuBar: return L10n.SettingsDetails.General.Visibility.Options.dockAndMenuBar
+                        case .menuBar: return L10n.SettingsDetails.General.Visibility.Options.menuBar
+                        }
+                    }
+                    $0.onChange { row in
+                        Current.settingsStore.locationVisibility = row.value ?? .dock
+                    }
+                }
+
+                +++ Section {
+                    $0.hidden = .isNotCatalyst
+                }
+                <<< SwitchRow("checkForUpdates") {
+                    $0.title = L10n.SettingsDetails.Updates.CheckForUpdates.title
+                    $0.value = Current.settingsStore.privacy.updates
+                    $0.onChange { row in
+                        Current.settingsStore.privacy.updates = row.value ?? true
+                    }
+                }
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Updates.CheckForUpdates.includeBetas
+                    $0.value = Current.settingsStore.privacy.updatesIncludeBetas
+                    $0.hidden = .function(["checkForUpdates"], { form in
+                        if let row = form.rowBy(tag: "checkForUpdates") as? SwitchRow, let value = row.value {
+                            return value == false
+                        } else {
+                            return true
+                        }
+                    })
+                    $0.onChange { row in
+                        Current.settingsStore.privacy.updatesIncludeBetas = row.value ?? true
+                    }
+                }
+
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
                     $0.hidden = .isCatalyst
                     $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
@@ -131,43 +194,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     $0.value = Current.settingsStore.restoreLastURL
                     $0.onChange { row in
                         Current.settingsStore.restoreLastURL = row.value ?? false
-                    }
-                }
-
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.General.LaunchOnLogin.title
-                    $0.hidden = .isNotCatalyst
-
-                    #if targetEnvironment(macCatalyst)
-                    let launcherIdentifier = Constants.BundleID.appending(".Launcher")
-                    $0.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
-                    $0.onChange { row in
-                        let success = Current.macBridge.setLoginItem(
-                            forBundleIdentifier: launcherIdentifier,
-                            enabled: row.value ?? false
-                        )
-                        if !success {
-                            row.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
-                            row.updateCell()
-                        }
-                    }
-                    #endif
-                }
-
-                <<< PushRow<SettingsStore.LocationVisibility> {
-                    $0.hidden = .isNotCatalyst
-                    $0.title = L10n.SettingsDetails.General.Visibility.title
-                    $0.options = SettingsStore.LocationVisibility.allCases
-                    $0.value = Current.settingsStore.locationVisibility
-                    $0.displayValueFor = {
-                        switch $0 ?? .dock {
-                        case .dock: return L10n.SettingsDetails.General.Visibility.Options.dock
-                        case .dockAndMenuBar: return L10n.SettingsDetails.General.Visibility.Options.dockAndMenuBar
-                        case .menuBar: return L10n.SettingsDetails.General.Visibility.Options.menuBar
-                        }
-                    }
-                    $0.onChange { row in
-                        Current.settingsStore.locationVisibility = row.value ?? .dock
                     }
                 }
 
@@ -398,6 +424,13 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     $0.value = Current.settingsStore.privacy.analytics
                 }.onChange { row in
                     Current.settingsStore.privacy.analytics = row.value ?? true
+                }
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Alerts.description)
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Privacy.Alerts.title
+                    $0.value = Current.settingsStore.privacy.alerts
+                }.onChange { row in
+                    Current.settingsStore.privacy.alerts = row.value ?? true
                 }
 
         default:

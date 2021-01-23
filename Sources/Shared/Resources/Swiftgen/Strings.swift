@@ -1994,6 +1994,12 @@ public enum L10n {
     public enum Privacy {
       /// Privacy
       public static var title: String { return L10n.tr("Localizable", "settings_details.privacy.title") }
+      public enum Alerts {
+        /// Allows checking for important alerts like security vulnerabilities.
+        public static var description: String { return L10n.tr("Localizable", "settings_details.privacy.alerts.description") }
+        /// Alerts
+        public static var title: String { return L10n.tr("Localizable", "settings_details.privacy.alerts.title") }
+      }
       public enum Analytics {
         /// Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared with Google, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.
         public static var description: String { return L10n.tr("Localizable", "settings_details.privacy.analytics.description") }
@@ -2049,6 +2055,14 @@ public enum L10n {
           /// Services
           public static var title: String { return L10n.tr("Localizable", "settings_details.siri.section.services.title") }
         }
+      }
+    }
+    public enum Updates {
+      public enum CheckForUpdates {
+        /// Include Beta Releases
+        public static var includeBetas: String { return L10n.tr("Localizable", "settings_details.updates.check_for_updates.include_betas") }
+        /// Check for Updates
+        public static var title: String { return L10n.tr("Localizable", "settings_details.updates.check_for_updates.title") }
       }
     }
     public enum Watch {
