@@ -57,14 +57,45 @@ public struct ServerAlert: Codable, Equatable {
     public var date: Date
     public var url: URL
     public var message: String
+    public var adminOnly: Bool
     public var ios: VersionRequirement
     public var core: VersionRequirement
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        date = try container.decode(Date.self, forKey: .date)
+        url = try container.decode(URL.self, forKey: .url)
+        message = try container.decode(String.self, forKey: .message)
+        adminOnly = try container.decodeIfPresent(Bool.self, forKey: .adminOnly) ?? false
+        ios = try container.decodeIfPresent(VersionRequirement.self, forKey: .ios) ?? .init(min: nil, max: nil)
+        core = try container.decodeIfPresent(VersionRequirement.self, forKey: .core) ?? .init(min: nil, max: nil)
+    }
+
+    internal init(
+        id: String,
+        date: Date,
+        url: URL,
+        message: String,
+        adminOnly: Bool,
+        ios: VersionRequirement,
+        core: VersionRequirement
+    ) {
+        self.id = id
+        self.date = date
+        self.url = url
+        self.message = message
+        self.adminOnly = adminOnly
+        self.ios = ios
+        self.core = core
+    }
 
     public static func == (lhs: ServerAlert, rhs: ServerAlert) -> Bool {
         return lhs.id == rhs.id
             && abs(lhs.date.timeIntervalSince(rhs.date)) < 1
             && lhs.url == rhs.url
             && lhs.message == rhs.message
+            && lhs.adminOnly == rhs.adminOnly
             && lhs.ios == rhs.ios
             && lhs.core == rhs.core
     }
@@ -101,13 +132,20 @@ public class ServerAlerter {
             }
             return try with(JSONDecoder()) {
                 $0.dateDecodingStrategy = .iso8601
+                $0.keyDecodingStrategy = .convertFromSnakeCase
             }
             .decode([FailableServerAlert].self, from: data)
             .compactMap(\.alert)
-        }.get { updates in
-            Current.Log.info("found alerts: \(updates)")
+        }.get { alerts in
+            Current.Log.info("found alerts: \(alerts)")
         }.filterValues {
             $0.ios.shouldTrigger(for: Current.clientVersion()) || $0.core.shouldTrigger(for: Current.serverVersion())
+        }.filterValues {
+            if $0.adminOnly {
+                return Current.settingsStore.authenticatedUser?.IsAdmin == true
+            } else {
+                return true
+            }
         }.filterValues { [self] alert in
             !isHandled(alert: alert)
         }.firstValue

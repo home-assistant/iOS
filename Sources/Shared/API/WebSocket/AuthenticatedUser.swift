@@ -21,6 +21,13 @@ public class AuthenticatedUser: Codable, CustomStringConvertible {
         case IsAdmin = "is_admin"
     }
 
+    internal init(id: String, name: String, isOwner: Bool, isAdmin: Bool) {
+        self.ID = id
+        self.Name = name
+        self.IsOwner = isOwner
+        self.IsAdmin = isAdmin
+    }
+
     public init?(_ dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String, let name = dictionary["name"] as? String else {
             return nil

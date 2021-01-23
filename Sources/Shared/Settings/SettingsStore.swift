@@ -116,8 +116,14 @@ public class SettingsStore {
         }
     }
 
+    private var testAuthenticatedUser: AuthenticatedUser?
+
     public var authenticatedUser: AuthenticatedUser? {
         get {
+            if Current.isRunningTests {
+                return testAuthenticatedUser
+            }
+
             guard let userData = ((try? keychain.getData("authenticatedUser")) as Data??),
                 let unwrappedData = userData else {
                     return nil
@@ -126,6 +132,11 @@ public class SettingsStore {
             return try? JSONDecoder().decode(AuthenticatedUser.self, from: unwrappedData)
         }
         set {
+            if Current.isRunningTests {
+                testAuthenticatedUser = newValue
+                return
+            }
+
             guard let info = newValue else {
                 keychain["authenticatedUser"] = nil
                 return

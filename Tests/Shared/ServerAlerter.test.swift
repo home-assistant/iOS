@@ -51,14 +51,16 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSince1970: 1610837683),
             url: URL(string: "http://example.com")!,
             message: "Some message",
+            adminOnly: false,
             ios: .init(min: .init(major: 100, minor: 1, patch: 0), max: nil),
             core: .init(min: nil, max: .init(major: 20, minor: 0, patch: nil))
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         encoder.dateEncodingStrategy = .iso8601
+        encoder.keyEncodingStrategy = .convertToSnakeCase
         let result = String(data: try encoder.encode(alert), encoding: .utf8)
-        XCTAssertEqual(result, "{\"core\":{\"max\":\"20.0\",\"min\":null},\"date\":\"2021-01-16T22:54:43Z\",\"id\":\"id\",\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}")
+        XCTAssertEqual(result, "{\"admin_only\":false,\"core\":{\"max\":\"20.0\",\"min\":null},\"date\":\"2021-01-16T22:54:43Z\",\"id\":\"id\",\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}")
     }
 
     func testNoAlerts() {
@@ -89,6 +91,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
+                adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: nil, max: nil)
             )
@@ -105,6 +108,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
+                adminOnly: false,
                 ios: .init(min: .init(major: 50), max: .init(major: 99)),
                 core: .init(min: nil, max: nil)
             )
@@ -121,6 +125,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
+                adminOnly: false,
                 ios: .init(min: .init(major: 101), max: .init(major: 150)),
                 core: .init(min: nil, max: nil)
             )
@@ -136,6 +141,7 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
+            adminOnly: false,
             ios: .init(min: .init(major: 75), max: .init(major: 125)),
             core: .init(min: nil, max: nil)
         )
@@ -149,6 +155,32 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
+    func testMiddleiOSShouldApplyButNotAdmin() {
+        Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
+
+        let alert = ServerAlert(
+            id: UUID().uuidString,
+            date: Date(timeIntervalSinceNow: -100),
+            url: randomURL(),
+            message: "msg",
+            adminOnly: true,
+            ios: .init(min: .init(major: 75), max: .init(major: 125)),
+            core: .init(min: nil, max: nil)
+        )
+
+        Current.settingsStore.authenticatedUser = AuthenticatedUser(
+            id: "123",
+            name: "name",
+            isOwner: false,
+            isAdmin: false
+        )
+
+        setUp(response: .success([ alert ]))
+        XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
+
+        Current.settingsStore.authenticatedUser = nil
+    }
+
     func testLowerBoundOnlyiOSShouldApply() {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
@@ -157,6 +189,7 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
+            adminOnly: false,
             ios: .init(min: .init(major: 75), max: nil),
             core: .init(min: nil, max: nil)
         )
@@ -178,6 +211,7 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
+            adminOnly: false,
             ios: .init(min: .init(major: 125), max: nil),
             core: .init(min: nil, max: nil)
         )
@@ -194,6 +228,7 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
+            adminOnly: false,
             ios: .init(min: nil, max: .init(major: 150)),
             core: .init(min: nil, max: nil)
         )
@@ -215,6 +250,7 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
+            adminOnly: false,
             ios: .init(min: nil, max: .init(major: 99)),
             core: .init(min: nil, max: nil)
         )
@@ -232,6 +268,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
+                adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: .init(major: 50), max: .init(major: 99))
             )
@@ -248,6 +285,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg",
+                adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: .init(major: 101), max: .init(major: 150))
             )
@@ -263,6 +301,7 @@ class ServerAlerterTests: XCTestCase {
             date: Date(timeIntervalSinceNow: -100),
             url: randomURL(),
             message: "msg",
+            adminOnly: false,
             ios: .init(min: nil, max: nil),
             core: .init(min: .init(major: 75), max: .init(major: 125))
         )
@@ -286,6 +325,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg1",
+                adminOnly: false,
                 ios: .init(min: .init(major: 75), max: .init(major: 125)),
                 core: .init(min: nil, max: nil)
             ),
@@ -294,6 +334,7 @@ class ServerAlerterTests: XCTestCase {
                 date: Date(timeIntervalSinceNow: -100),
                 url: randomURL(),
                 message: "msg2",
+                adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: .init(major: 75), max: .init(major: 125))
             )
