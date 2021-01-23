@@ -2061,7 +2061,7 @@ public enum L10n {
       public enum CheckForUpdates {
         /// Include Beta Releases
         public static var includeBetas: String { return L10n.tr("Localizable", "settings_details.updates.check_for_updates.include_betas") }
-        /// Check for Updates
+        /// Automatically Check for Updates
         public static var title: String { return L10n.tr("Localizable", "settings_details.updates.check_for_updates.title") }
       }
     }

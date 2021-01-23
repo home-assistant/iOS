@@ -155,13 +155,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Updates.CheckForUpdates.includeBetas
                     $0.value = Current.settingsStore.privacy.updatesIncludeBetas
-                    $0.hidden = .function(["checkForUpdates"], { form in
-                        if let row = form.rowBy(tag: "checkForUpdates") as? SwitchRow, let value = row.value {
-                            return value == false
-                        } else {
-                            return true
-                        }
-                    })
                     $0.onChange { row in
                         Current.settingsStore.privacy.updatesIncludeBetas = row.value ?? true
                     }
