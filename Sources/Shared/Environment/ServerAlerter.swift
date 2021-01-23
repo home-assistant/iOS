@@ -118,8 +118,8 @@ public class ServerAlerter {
             }
             .decode([FailableServerAlert].self, from: data)
             .compactMap(\.alert)
-        }.get { updates in
-            Current.Log.info("found alerts: \(updates)")
+        }.get { alerts in
+            Current.Log.info("found alerts: \(alerts)")
         }.filterValues {
             $0.ios.shouldTrigger(for: Current.clientVersion()) || $0.core.shouldTrigger(for: Current.serverVersion())
         }.filterValues {
