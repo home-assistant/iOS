@@ -12,4 +12,4 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Du kan eventuelt aktivere sporing på tvers av nettsteder hvis konfigurasjonen krever det.";
 "NSMicrophoneUsageDescription" = "Ta opp lyd ved hjelp av Home Assistant-frontend.";
 "NSLocationUsageDescription" = "Når den er aktivert, sendes enhetsplasseringen til Home Assistant-serveren din som en enhetssporing.";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Gi full nøyaktighet for å bruke din nåværende posisjon for trackeren din.";

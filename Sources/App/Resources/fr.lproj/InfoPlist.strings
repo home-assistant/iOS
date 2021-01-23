@@ -6,10 +6,10 @@
 "NSPhotoLibraryAddUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
 "NSPhotoLibraryUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Envoyer l'emplacement";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
+"NSLocalNetworkUsageDescription" = "Localisez et communiquez avec votre instance Home Assistant.";
+"NFCReaderUsageDescription" = "La lecture et l'écriture des balises NFC vous permettent de déclencher des événements.";
 "NSCameraUsageDescription" = "Prenez des photos et envoyez-les à votre serveur Home Assistant.";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
+"NSCrossWebsiteTrackingUsageDescription" = "Activez en option le suivi inter-sites si votre configuration le nécessite.";
+"NSMicrophoneUsageDescription" = "Enregistrez de l'audio à l'aide de votre interface Home Assistant.";
+"NSLocationUsageDescription" = "Lorsqu'il est activé, l'emplacement de votre appareil est envoyé à votre serveur Home Assistant en tant que suivi de l'appareil.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Garantissez une précision totale dans l'utilisation de votre position actuelle pour le suivi de votre appareil.";
