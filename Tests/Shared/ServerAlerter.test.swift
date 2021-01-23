@@ -18,6 +18,8 @@ class ServerAlerterTests: XCTestCase {
     }
 
     private func setUp(response: Swift.Result<[ServerAlert], Error>) {
+        Current.settingsStore.privacy.alerts = true
+
         let url = URL(string: "https://alerts.home-assistant.io/mobile.json")!
         stubDescriptors.append(stub(condition: { $0.url == url }, response: { request in
             switch response {
@@ -62,6 +64,20 @@ class ServerAlerterTests: XCTestCase {
     func testNoAlerts() {
         setUp(response: .success([]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
+    }
+
+    func testAlertsDisabled() {
+        setUp(response: .success([]))
+
+        Current.settingsStore.privacy.alerts = false
+
+        XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false))) { error in
+            XCTAssertEqual(error as? ServerAlerter.AlerterError, .privacyDisabled)
+        }
+
+        XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: true))) { error in
+            XCTAssertNotEqual(error as? ServerAlerter.AlerterError, .privacyDisabled)
+        }
     }
 
     func testNoVersionedAlerts() {
