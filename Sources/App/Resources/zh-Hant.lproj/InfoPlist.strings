@@ -12,4 +12,4 @@
 "NSCrossWebsiteTrackingUsageDescription" = "假如設定需要，可選項開啟跨網站追蹤。";
 "NSMicrophoneUsageDescription" = "使用 Home Assistant frontend 進行錄音。";
 "NSLocationUsageDescription" = "開啟後，將會以 Device Tracker 傳送裝置位置至 Home Assistant 伺服器。";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
+"TemporaryFullAccuracyReasonManualUpdate" = "取得完整精確度以用於裝置位置追蹤。";

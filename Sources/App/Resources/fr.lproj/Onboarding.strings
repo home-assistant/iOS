@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Recommencer";
 "7iT-bd-cdY.text" = "Configuration manuelle";
 "PIW-dY-j0P.text" = "S'il vous plaît, entrez votre URL Home Assistant pour continuer. Il doit s'agir d'une URL complètement formée au format http://homeassistant.local:8123\" (c'est-à-dire contenant un protocole, un nom d'hôte et un port).";
-"xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "par exemple : http://homeassistant.local:8123";

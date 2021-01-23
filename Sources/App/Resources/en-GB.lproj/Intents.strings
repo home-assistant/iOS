@@ -67,7 +67,7 @@
 "tHPm96" = "Location updated to your current location";
 "0aqrcy" = "Failed to render template with error: ${error}";
 "2b0Uo4" = "Service";
-"3jKamg" = "";
+"3jKamg" = "{{ now() }}";
 "4d1VvB" = "Event Data";
 "5ZzwZD" = "Failed to update location, Home Assistant is not currently reachable";
 "5bVvn0" = "Failed to update location with error: ${error}";

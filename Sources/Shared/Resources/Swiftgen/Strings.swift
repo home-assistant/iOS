@@ -380,7 +380,7 @@ public enum L10n {
       }
       /// HA API not configured
       public static var notConfigured: String { return L10n.tr("Localizable", "ha_api.api_error.not_configured") }
-      /// Unacceptable status code %1$i.
+      /// Unacceptable status code %1$li.
       public static func unacceptableStatusCode(_ p1: Int) -> String {
         return L10n.tr("Localizable", "ha_api.api_error.unacceptable_status_code", p1)
       }
@@ -1256,7 +1256,7 @@ public enum L10n {
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.footer") }
         /// Hardware Addresses
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.header") }
-        /// Hardware addresses much look like aa:bb:cc:dd:ee:ff
+        /// Hardware addresses must look like aa:bb:cc:dd:ee:ff
         public static var invalid: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_hardware_addresses.invalid") }
       }
       public enum InternalUrlSsids {
