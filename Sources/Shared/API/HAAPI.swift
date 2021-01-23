@@ -451,7 +451,7 @@ public class HomeAssistantAPI {
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
         return firstly { () -> Promise<MobileAppConfig> in
-            if Current.serverVersion() < .actionSyncing {
+            if let version = Current.serverVersion(), version < .actionSyncing {
                 let old: Promise<MobileAppConfigPush> = requestImmutable(
                     path: "ios/push",
                     callingFunctionName: "\(#function)"
@@ -481,7 +481,7 @@ public class HomeAssistantAPI {
         let ident = mobileAppRegistrationRequestModel()
         var json = Mapper().toJSON(ident)
 
-        if Current.serverVersion() < .canSendDeviceID {
+        if let version = Current.serverVersion(), version < .canSendDeviceID {
             // device_id was added in 0.104, but prior it would error for unknown keys
             json.removeValue(forKey: "device_id")
         }
@@ -679,7 +679,7 @@ public class HomeAssistantAPI {
     ) -> (eventType: String, eventData: [String: String]) {
         var eventData = [String: String]()
         eventData["tag_id"] = tagPath
-        if Current.serverVersion() < .tagWebhookAvailable {
+        if let version = Current.serverVersion(), version < .tagWebhookAvailable {
             eventData["device_id"] = Current.settingsStore.integrationDeviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)

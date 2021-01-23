@@ -107,16 +107,16 @@ public class PedometerSensor: SensorProvider {
             switch self {
             case .distance: return "mdi:hiking"
             case .floorsAscended:
-                if Current.serverVersion() >= .pedometerIconsAvailable {
-                    return "mdi:stairs-up"
-                } else {
+                if let version = Current.serverVersion(), version < .pedometerIconsAvailable {
                     return "mdi:slope-uphill"
+                } else {
+                    return "mdi:stairs-up"
                 }
             case .floorsDescended:
-                if Current.serverVersion() >= .pedometerIconsAvailable {
-                    return "mdi:stairs-down"
-                } else {
+                if let version = Current.serverVersion(), version < .pedometerIconsAvailable {
                     return "mdi:slope-downhill"
+                } else {
+                    return "mdi:stairs-down"
                 }
             case .steps: return "mdi:walk"
             case .averageActivePace: return "mdi:speedometer"
