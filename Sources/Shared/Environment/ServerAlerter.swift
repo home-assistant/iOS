@@ -72,6 +72,24 @@ public struct ServerAlert: Codable, Equatable {
         core = try container.decodeIfPresent(VersionRequirement.self, forKey: .core) ?? .init(min: nil, max: nil)
     }
 
+    internal init(
+        id: String,
+        date: Date,
+        url: URL,
+        message: String,
+        adminOnly: Bool,
+        ios: VersionRequirement,
+        core: VersionRequirement
+    ) {
+        self.id = id
+        self.date = date
+        self.url = url
+        self.message = message
+        self.adminOnly = adminOnly
+        self.ios = ios
+        self.core = core
+    }
+
     public static func == (lhs: ServerAlert, rhs: ServerAlert) -> Bool {
         return lhs.id == rhs.id
             && abs(lhs.date.timeIntervalSince(rhs.date)) < 1
