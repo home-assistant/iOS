@@ -64,6 +64,11 @@ extension Promise where T == Data {
                 return .value(())
             case 400...:
                 // some other error occurred that we don't want to parse as success
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Webhook failed with status code \(statusCode)",
+                    type: .networkRequest,
+                    payload: nil
+                ))
                 return .init(error: WebhookError.unacceptableStatusCode(statusCode))
             default:
                 break
