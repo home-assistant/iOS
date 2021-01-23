@@ -143,7 +143,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 +++ Section {
-                    $0.hidden = .isNotCatalyst
+                    $0.hidden = .function([], { _ in !Current.updater.isSupported })
                 }
                 <<< SwitchRow("checkForUpdates") {
                     $0.title = L10n.SettingsDetails.Updates.CheckForUpdates.title
