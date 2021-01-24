@@ -9,6 +9,8 @@ coverage:
         paths:
         - Sources/App
         informational: true
+    patch:
+      informational: true
 ignore:
 - Sources/Shared/Resources
 - Sources/App/Resources
