@@ -1,0 +1,14 @@
+coverage:
+  status:
+    project:
+      shared:
+        paths:
+        - Sources/Shared
+      app:
+        paths:
+        - Sources/App
+ignore:
+- Sources/Shared/Resources
+- Sources/App/Resources
+- Tests
+- Pods

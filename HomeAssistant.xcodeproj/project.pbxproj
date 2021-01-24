@@ -1923,7 +1923,7 @@
 			path = AppleWatch;
 			sourceTree = "<group>";
 		};
-		1141182824AFA0F000E6525C /* Request&Response */ = {
+		1141182824AFA0F000E6525C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
 				1141182524AF9A0500E6525C /* WebhookManager.swift */,
@@ -1938,7 +1938,7 @@
 				117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */,
 				11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */,
 			);
-			path = "Request&Response";
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		1155DD07250F4100003405C0 /* Share */ = {
@@ -2924,7 +2924,7 @@
 			children = (
 				11AF4D0F249C7DD8006C74C0 /* Sensors */,
 				B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */,
-				1141182824AFA0F000E6525C /* Request&Response */,
+				1141182824AFA0F000E6525C /* Networking */,
 			);
 			path = Webhook;
 			sourceTree = "<group>";
