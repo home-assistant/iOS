@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
-"extensions.notification_content.hud.loading" = "Loading %@...";
+"extensions.notification_content.hud.loading" = "Loading %@…";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
 "notifications_configurator.action.rows.title.title" = "Title";
 "notifications_configurator.action.text_input.title" = "Text Input";
@@ -663,7 +663,7 @@
 "whats_new.title" = "Kaj je novega v Home Asistant companion-u %@";
 "whats_new.buttons.read_more.title" = "Preberi Več";
 "whats_new.buttons.completion.title" = "Pojdimo";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Še ena stvar ...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Še ena stvar …";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Ni za kaj!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Hvala vam. \n \n Zahvaljujemo se vam za uporabo programa Home Assistant Companion. \n \n Zahvaljujemo se vam za uporabo programa Home Assistant. \n \n Zahvaljujem se vam, da ste me prenašali zadnja 3 leta dela. \n \n Zahvaljujem se vam, da ste me prenašali zadnjih 10 mesecev razvoja 2.0. \n \n Hvala, ker ste poslali poročila o napakah na GitHub. \n \n Zahvaljujem se vam za pomoč drugim uporabnikom, ko so jp potrebovali in nisem bil na voljo. \n \n Hvala, ker ste mi ob 2. uri poslali e-poštno sporočilo, v katerem sem zelo podrobno opisal, kako je ta gumb 2 piksla postrani. \n \n Hvala, ker ste me podpirali. \n \n Vaše vztrajno pozitivne povratne informacije in spoštovanje so mi v prid. \n \n Resnično upam, da vam je všeč Home Asistant Companion 2.0. \n \n Hvala. \n \n Robi";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Donacije";
@@ -671,7 +671,7 @@
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Podpora za Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Nativna podpora za Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Izboljšana integracija";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Zahvaljujoč novi komponenti mobile_app je Home Assistant Companion boljši ... spremljevalec kot kdajkoli prej!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Zahvaljujoč novi komponenti mobile_app je Home Assistant Companion boljši … spremljevalec kot kdajkoli prej!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritična opozorila";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Ko obvestilo pošljete obvestilo kot kritično opozorilo, bo le to obšlo nastavitve \"ne moti\" in nastavitve glasnosti.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Urejevalnik obvestil je zdaj v aplikaciji";
@@ -847,10 +847,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "updater.update_available.title" = "Na voljo je posodobitev";
 "updater.update_available.open" = "View '%@'";
 "menu.application.about" = "O %@";
-"menu.application.preferences" = "Nastavitve...";
+"menu.application.preferences" = "Nastavitve…";
 "menu.help.help" = "%@ Pomoč";
 "location_change_notification.signaled.body" = "Location updated via update signal";
-"updater.check_for_updates_menu.title" = "Preverite, ali so na voljo posodobitve...";
+"updater.check_for_updates_menu.title" = "Preverite, ali so na voljo posodobitve…";
 "updater.no_updates_available.title" = "Preverite, ali so na voljo posodobitve";
 "updater.no_updates_available.on_latest_version" = "Uporabljate najnovejšo različico!";
 "menu.view.reload_page" = "Ponovno naloži stran";

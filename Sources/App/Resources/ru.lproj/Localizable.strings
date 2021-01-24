@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Объект «%@» не найден.";
 "extensions.notification_content.error.request.other" = "Получен неожиданный (не 200) код состояния (%li)";
 "extensions.notification_content.error.request.unknown" = "Неизвестная ошибка.";
-"extensions.notification_content.hud.loading" = "Загрузка %@...";
+"extensions.notification_content.hud.loading" = "Загрузка %@…";
 "location_change_notification.siri.body" = "Обновление геопозиции вызвано Siri";
 "notifications_configurator.action.rows.title.title" = "Название";
 "notifications_configurator.action.text_input.title" = "Ввести текст";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Подробнее";
 "whats_new.buttons.completion.title" = "Пошли";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Еще кое-что...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Еще кое-что…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Пожалуйста!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Спасибо. \
 \
@@ -696,7 +696,7 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Поддержка Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Встроенная поддержка Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Улучшенная интеграция";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better... companion than ever before!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better… companion than ever before!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Критические предупреждения";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "When you send a notification as a Critical Alert, it will bypass Do Not Disturb and volume settings.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "In App Notification Category Editor";
@@ -741,7 +741,7 @@ Home Assistant Companion %@";
 "onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
-"settings.reset_section.reset_alert.progress_message" = "Сброс ...";
+"settings.reset_section.reset_alert.progress_message" = "Сброс …";
 "settings_details.general.page_zoom.title" = "Масштаб страницы";
 "settings_details.general.page_zoom.default" = "%@ (По умолчанию)";
 "retry_label" = "Повторить";

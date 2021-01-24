@@ -356,7 +356,7 @@ public enum L10n {
         }
       }
       public enum Hud {
-        /// Loading %@...
+        /// Loading %@…
         public static func loading(_ p1: Any) -> String {
           return L10n.tr("Localizable", "extensions.notification_content.hud.loading", String(describing: p1))
         }
@@ -2970,7 +2970,7 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title") }
         }
         public enum ImprovedIntegration {
-          /// Thanks to the new mobile_app component, Home Assistant Companion is a better... companion than ever before!
+          /// Thanks to the new mobile_app component, Home Assistant Companion is a better… companion than ever before!
           public static var subtitle: String { return L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.improved_integration.subtitle") }
           /// Improved integration
           public static var title: String { return L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.improved_integration.title") }
@@ -3017,7 +3017,7 @@ public enum L10n {
         public static var message: String { return L10n.tr("Localizable", "whats_new.Two_Dot_Zero.thank_you.message") }
         /// You're welcome!
         public static var okButton: String { return L10n.tr("Localizable", "whats_new.Two_Dot_Zero.thank_you.ok_button") }
-        /// One more thing...
+        /// One more thing…
         public static var title: String { return L10n.tr("Localizable", "whats_new.Two_Dot_Zero.thank_you.title") }
       }
     }

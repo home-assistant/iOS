@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Olemusta '%@ ' ei löydy!";
 "extensions.notification_content.error.request.other" = "Saatiin non-200 tilakoodia (%d)";
 "extensions.notification_content.error.request.unknown" = "Tuntematon virhe!";
-"extensions.notification_content.hud.loading" = "Ladataan %@...";
+"extensions.notification_content.hud.loading" = "Ladataan %@…";
 "location_change_notification.siri.body" = "Sijaintipäivitys laukaistu Siirin kautta";
 "notifications_configurator.action.rows.title.title" = "Otsikko";
 "notifications_configurator.action.text_input.title" = "Tekstinsyöttö";
@@ -663,7 +663,7 @@
 "whats_new.title" = "Mitä on uutta Kotiavustajakumppanissa %@";
 "whats_new.buttons.read_more.title" = "Lue lisää";
 "whats_new.buttons.completion.title" = "Mennään";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Vielä yksi asia...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Vielä yksi asia…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Ole hyvä!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Kiitos.\n\nKiitos, että käytät Kotiavustajakumppania.\n\nKiitos, että käytät Kotiavustajaa.\n\nKiitos, että olet jaksanut minua viimeisten kolmen vuoden aikana.\n\nKiitos että olet jaksanut minua viimeiset 10 kuukautta, 2.0 kehityksen aikana.\n\nKiitos että olet raportoinut bugeja GitHub:iin.\n\nKiitos, että olet auttanut muita käyttäjiä, kun he tarvitsivat, ja minä en ollut saatavilla.\n\nKiitos, että lähetät minulle sähköposteja klo 2 aamulla, missä kuvaat äärimmäisen yksityiskohtaisesti, miten tämä painike on 2 pikseliä pois.\n\nKiitos, että olet sinä ja että tuet minua.\n\nSinun johdonmukaisen positiivinen palaute ja arvostus on mitä pitää minut pystyssa.\n\nToivottavasta tykkäät Kotiavustajakumppani 2.0:sta!\n\nKiitos.\n\n--Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Lahjoitukset";
@@ -671,7 +671,7 @@
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Kotiavustaja Cloud -tuki";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Sisäänrakennettu tuki Kotiavustaja Cloud:iin";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Parannettu integrointi";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Uuden mobile_app-komponentin ansiosta Kotiavustajakumppani on parempi... kumppani kuin koskaan ennen!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Uuden mobile_app-komponentin ansiosta Kotiavustajakumppani on parempi… kumppani kuin koskaan ennen!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kriittiset hälytykset";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Kun lähetät ilmoituksen kriittisenä hälytyksenä, se ohittaa Älä häiritse -asetuksen sekä asetettu äänenvoimakkuus.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Ilmoitusluokkien muokkaaminen sovelluksen sisällä";

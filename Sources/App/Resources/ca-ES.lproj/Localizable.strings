@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitat '%@' no trobada!";
 "extensions.notification_content.error.request.other" = "S'ha rebut codi d'estat no-200 (%li)";
 "extensions.notification_content.error.request.unknown" = "Error desconegut!";
-"extensions.notification_content.hud.loading" = "Carregant %@...";
+"extensions.notification_content.hud.loading" = "Carregant %@…";
 "location_change_notification.siri.body" = "Ubicació actualitzada per la Siri";
 "notifications_configurator.action.rows.title.title" = "Títol";
 "notifications_configurator.action.text_input.title" = "Entrada de text";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Llegir Més";
 "whats_new.buttons.completion.title" = "Som-hi";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Una cosa més...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Una cosa més…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Ets Benvingut!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Gràcies. \
 \
@@ -696,7 +696,7 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Assistència de Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Suport natiu per a Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Integració millorada";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Gràcies al nou component mobile_app, Home Assistant Companion és un millor ... company que mai!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Gràcies al nou component mobile_app, Home Assistant Companion és un millor … company que mai!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Alertes crítiques";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Quan envieu una notificació com a alerta crítica, s'ignorarà la configuració No Molestar i les opcions de volum.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "A l'editor de categories de notificacions de l'aplicació";
@@ -741,7 +741,7 @@ Home Assistant Companion %@";
 "onboarding.manual_setup.no_scheme.message" = "Hauríem d'intentar connectar-nos utilitzant http:// o https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "No s'ha pogut crear una URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "El valor \" %@ \" no és una URL vàlida.";
-"settings.reset_section.reset_alert.progress_message" = "S'està restablint ...";
+"settings.reset_section.reset_alert.progress_message" = "S'està restablint …";
 "settings_details.general.page_zoom.title" = "Zoom de la pàgina";
 "settings_details.general.page_zoom.default" = "%@ (Per defecte)";
 "retry_label" = "Reintentar";
@@ -872,10 +872,10 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "updater.update_available.title" = "Actualització disponible";
 "updater.update_available.open" = "Veure '%@'";
 "menu.application.about" = "Quant a %@";
-"menu.application.preferences" = "Preferències ...";
+"menu.application.preferences" = "Preferències …";
 "menu.help.help" = "%@ Ajuda";
 "location_change_notification.signaled.body" = "Ubicació actualitzada mitjançant senyal d’actualització";
-"updater.check_for_updates_menu.title" = "Comprova si hi ha actualitzacions...";
+"updater.check_for_updates_menu.title" = "Comprova si hi ha actualitzacions…";
 "updater.no_updates_available.title" = "Comprova si hi ha actualitzacions";
 "updater.no_updates_available.on_latest_version" = "Estàs en l'última versió!";
 "menu.view.reload_page" = "Recarregar la pàgina";
@@ -884,7 +884,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "sensors.active.setting.time_until_idle" = "Temps fins que estigui inactiu";
 "widgets.actions.description" = "Realitza accions del Home Assistant.";
 "menu.actions.title" = "Accions";
-"menu.actions.configure" = "Configurar...";
+"menu.actions.configure" = "Configurar…";
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "No s'ha pogut enviar";
 "settings_sensors.periodic_update.description_mac" = "Quan estigui habilitat, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta. Alguns sensors s'actualitzaran automàticament amb més freqüència.";

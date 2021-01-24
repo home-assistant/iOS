@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Endid ' %@ ' heb ei ddarganfod!";
 "extensions.notification_content.error.request.other" = "Wedi derbyn côd statws di-200 %li";
 "extensions.notification_content.error.request.unknown" = "Gwall anhysbys!";
-"extensions.notification_content.hud.loading" = "Llwytho %@ ...";
+"extensions.notification_content.hud.loading" = "Llwytho %@ …";
 "location_change_notification.siri.body" = "Diweddariad lleoliad wedi'i sbarduno gan Siri";
 "notifications_configurator.action.rows.title.title" = "Teitl";
 "notifications_configurator.action.text_input.title" = "Mewnbwn Testun";
@@ -663,7 +663,7 @@
 "whats_new.title" = "Beth sy'n newydd yn Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Darllen Mwy";
 "whats_new.buttons.completion.title" = "Awn ni";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Un peth arall...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Un peth arall…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Croeso!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Thank you.\
 \
@@ -695,7 +695,7 @@ Thank you.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Cymorth Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Native support for Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Improved integration";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better... companion than ever before!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better… companion than ever before!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Rhybuddion Allweddol";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "When you send a notification as a Critical Alert, it will bypass Do Not Disturb and volume settings.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "In App Notification Category Editor";

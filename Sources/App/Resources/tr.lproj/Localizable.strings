@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
-"extensions.notification_content.hud.loading" = "Yükleniyor %@...";
+"extensions.notification_content.hud.loading" = "Yükleniyor %@…";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
 "notifications_configurator.action.rows.title.title" = "Title";
 "notifications_configurator.action.text_input.title" = "Text Input";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Daha fazla oku";
 "whats_new.buttons.completion.title" = "Hadi gidelim";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Bir şey daha...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Bir şey daha…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Rica ederim!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Thank you.\
 \
@@ -872,10 +872,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "updater.update_available.title" = "Kullanılabilir Güncelleştirme";
 "updater.update_available.open" = "\" %@ \" öğesini görüntüleyin";
 "menu.application.about" = "Hakkında %@";
-"menu.application.preferences" = "Tercihler...";
+"menu.application.preferences" = "Tercihler…";
 "menu.help.help" = "%@ Yardım";
 "location_change_notification.signaled.body" = "Güncelleme sinyali ile güncellenen konum";
-"updater.check_for_updates_menu.title" = "Güncellemeleri kontrol edin...";
+"updater.check_for_updates_menu.title" = "Güncellemeleri kontrol edin…";
 "updater.no_updates_available.title" = "Güncelleştirmeleri Denetle";
 "updater.no_updates_available.on_latest_version" = "En son sürümü kullanıyorsunuz!";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";

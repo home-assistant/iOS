@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
-"extensions.notification_content.hud.loading" = "Loading %@...";
+"extensions.notification_content.hud.loading" = "Loading %@…";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
 "notifications_configurator.action.rows.title.title" = "Title";
 "notifications_configurator.action.text_input.title" = "Text Input";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Read More";
 "whats_new.buttons.completion.title" = "Let's Go";
-"whats_new.Two_Dot_Zero.thank_you.title" = "One more thing...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "One more thing…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "You're welcome!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Thank you.\
 \
@@ -696,7 +696,7 @@ Thank you.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud Support";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Native support for Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Improved integration";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better... companion than ever before!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better… companion than ever before!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Critical Alerts";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "When you send a notification as a Critical Alert, it will bypass Do Not Disturb and volume settings.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "In App Notification Category Editor";
