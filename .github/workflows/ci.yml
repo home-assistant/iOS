@@ -68,9 +68,7 @@ jobs:
       run: bundle exec fastlane ios test
 
     - uses: codecov/codecov-action@v1
-      name: "Upload code coverage"
-      with:
-        xcode_package: 'Home\ Assistant|Shared'
+      name: "Upload Code Coverage"
 
     - uses: actions/upload-artifact@v2
       name: "Upload Test Logs"
