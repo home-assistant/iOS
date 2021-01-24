@@ -1,6 +1,9 @@
 name: Download Localized Strings
 on:
   workflow_dispatch:
+  schedule:
+  # If there are no changes, this does nothing. If there are changes, it either creates or updates an existing PR.
+  - cron: '0 6 * * *'
 
 jobs:
   update_strings:
