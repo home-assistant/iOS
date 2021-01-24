@@ -12,11 +12,10 @@ import Shared
 import Intents
 import IntentsUI
 import PromiseKit
-import RealmSwift
-import Firebase
 import CoreMotion
 import FirebaseMessaging
 import Version
+import RealmSwift
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length

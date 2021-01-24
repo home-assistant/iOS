@@ -10,7 +10,6 @@ import UIKit
 import Eureka
 import Shared
 import RealmSwift
-import Firebase
 import PromiseKit
 import FirebaseMessaging
 import FirebaseInstallations
