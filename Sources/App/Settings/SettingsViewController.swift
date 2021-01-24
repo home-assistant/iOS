@@ -16,7 +16,7 @@ import Lokalise
 #endif
 import ZIPFoundation
 import UserNotifications
-import Firebase
+import FirebaseMessaging
 import WebKit
 import MBProgressHUD
 import PromiseKit

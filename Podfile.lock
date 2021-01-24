@@ -10,65 +10,11 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.2)
-  - Firebase/CoreOnly (7.4.0):
-    - FirebaseCore (= 7.4.0)
-  - Firebase/Messaging (7.4.0):
-    - Firebase/CoreOnly
-    - FirebaseMessaging (~> 7.4.0)
-  - FirebaseCore (7.4.0):
-    - FirebaseCoreDiagnostics (~> 7.4)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/Logger (~> 7.0)
-  - FirebaseCoreDiagnostics (7.4.0):
-    - GoogleDataTransport (~> 8.0)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/Logger (~> 7.0)
-    - nanopb (~> 2.30907.0)
-  - FirebaseInstallations (7.4.0):
-    - FirebaseCore (~> 7.0)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/UserDefaults (~> 7.0)
-    - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (7.4.0):
-    - FirebaseCore (~> 7.0)
-    - FirebaseInstallations (~> 7.0)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/UserDefaults (~> 7.0)
-  - FirebaseMessaging (7.4.0):
-    - FirebaseCore (~> 7.0)
-    - FirebaseInstanceID (~> 7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/Reachability (~> 7.0)
-    - GoogleUtilities/UserDefaults (~> 7.0)
-  - GoogleDataTransport (8.2.0):
-    - nanopb (~> 2.30907.0)
-  - GoogleUtilities/AppDelegateSwizzler (7.2.0):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.2.0):
-    - PromisesObjC (~> 1.2)
-  - GoogleUtilities/Logger (7.2.0):
-    - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.2.0):
-    - GoogleUtilities/Logger
-    - "GoogleUtilities/NSData+zlib"
-    - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.2.0)"
-  - GoogleUtilities/Reachability (7.2.0):
-    - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.2.0):
-    - GoogleUtilities/Logger
+  - Firebase (7.4.0)
   - KeychainAccess (4.2.1)
   - Lokalise (0.10.2)
   - lottie-ios (3.1.9)
   - MBProgressHUD (1.2.0)
-  - nanopb (2.30907.0):
-    - nanopb/decode (= 2.30907.0)
-    - nanopb/encode (= 2.30907.0)
-  - nanopb/decode (2.30907.0)
-  - nanopb/encode (2.30907.0)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
@@ -95,13 +41,8 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.13.1):
     - PromiseKit/CorePromise
-  - PromisesObjC (1.2.12)
   - ReachabilitySwift (5.0.0)
-  - Realm (10.5.0):
-    - Realm/Headers (= 10.5.0)
-  - Realm/Headers (10.5.0)
-  - RealmSwift (10.5.0):
-    - Realm (= 10.5.0)
+  - RealmSwift (10.5.1)
   - Sentry (6.1.0):
     - Sentry/Core (= 6.1.0)
   - Sentry/Core (6.1.0)
@@ -130,7 +71,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka
-  - Firebase/Messaging
+  - Firebase (from `Configuration/Podspecs/Firebase.podspec.json`)
   - KeychainAccess
   - Lokalise (~> 0.10.0)
   - lottie-ios
@@ -139,7 +80,7 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift
+  - RealmSwift (from `Configuration/Podspecs/Realm.podspec.json`)
   - Sentry
   - SimulatorStatusMagic
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
@@ -158,26 +99,14 @@ SPEC REPOS:
     - CallbackURLKit
     - Communicator
     - Eureka
-    - Firebase
-    - FirebaseCore
-    - FirebaseCoreDiagnostics
-    - FirebaseInstallations
-    - FirebaseInstanceID
-    - FirebaseMessaging
-    - GoogleDataTransport
-    - GoogleUtilities
     - KeychainAccess
     - Lokalise
     - lottie-ios
     - MBProgressHUD
-    - nanopb
     - ObjcExceptionBridging
     - OHHTTPStubs
     - PromiseKit
-    - PromisesObjC
     - ReachabilitySwift
-    - Realm
-    - RealmSwift
     - Sentry
     - SimulatorStatusMagic
     - SwiftGen
@@ -198,9 +127,13 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
+  Firebase:
+    :podspec: Configuration/Podspecs/Firebase.podspec.json
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  RealmSwift:
+    :podspec: Configuration/Podspecs/Realm.podspec.json
   Sodium:
     :branch: master
     :git: https://github.com/jedisct1/swift-sodium.git
@@ -236,27 +169,17 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: 1c2b8b5892bfb0e972d0fe05f8c09fd89f8625ec
-  Firebase: 09fb40287b6dfc8ee65f726fa0b788719d3f2a07
-  FirebaseCore: 99c06e5a1e8d6952e75cb1f0a6d0b23c0f5ccdcf
-  FirebaseCoreDiagnostics: 3770093ac4f2be4590fa03cfa1d3a6e5602d4557
-  FirebaseInstallations: 30646fc9a61c6f4ee3cd7a8b7231721842b40c95
-  FirebaseInstanceID: 46d93d287108246fabbd85371ca27141d2c21ff9
-  FirebaseMessaging: 6112b5cd04e0ff58c4a9920e5e29cf193ea88439
-  GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
-  GoogleUtilities: d866834472f1324d080496bc67ab3ce5d0d46027
+  Firebase: 0b898049b2691473053d5de73e9725b134556ad2
   KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
-  nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
-  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: e1c22c3d83b229afb70ebc10e1771c91e9542d12
-  RealmSwift: 6fc078d9d3fd7e58c71bfdbb694e252462f112a5
+  RealmSwift: 61df06f3bb05565acbdbc12f4088d6047285038d
   Sentry: 367db11b23fc30944358dbd198fa35a96ad7f2a5
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
@@ -269,6 +192,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 568be465e5ec326fd8c6a88dacf558059bb6a927
+PODFILE CHECKSUM: e19eaee6c3d0c3b2621c74e69c1e2703098419f5
 
 COCOAPODS: 1.10.1

@@ -9,7 +9,7 @@
 import Alamofire
 import CallbackURLKit
 import Communicator
-import Firebase
+import FirebaseMessaging
 import KeychainAccess
 #if canImport(Lokalise) && !targetEnvironment(macCatalyst)
 import Lokalise
