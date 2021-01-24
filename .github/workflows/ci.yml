@@ -69,6 +69,8 @@ jobs:
 
     - uses: codecov/codecov-action@v1
       name: "Upload code coverage"
+      with:
+        xcode_package: 'Home\ Assistant|Shared'
 
     - uses: actions/upload-artifact@v2
       name: "Upload Test Logs"
