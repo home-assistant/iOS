@@ -1,0 +1,3 @@
+ignore:
+- Sources/Shared/Resources
+- Sources/App/Resources
