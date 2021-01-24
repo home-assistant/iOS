@@ -272,7 +272,7 @@ platform :ios do
   lane :test do
     run_tests(
       workspace: 'HomeAssistant.xcworkspace', 
-      scheme: 'App-Debug', 
+      scheme: 'Tests-Unit', 
       result_bundle: true
     )
   end
