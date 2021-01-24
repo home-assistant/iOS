@@ -35,6 +35,7 @@ jobs:
         path: |
           Pods
           Tools/MaterialDesignIcons.ttf
+          Tools/MaterialDesignIcons.json
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
         restore-keys: |
           ${{ runner.os }}-pods-
