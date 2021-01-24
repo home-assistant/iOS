@@ -555,10 +555,8 @@ class OneShotLocationTests: XCTestCase {
                 locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: locations)
 
                 if testCase.hasPerfect {
-                    XCTAssertTrue(promise.isFulfilled, file: testCase.file, line: testCase.line)
-
                     XCTAssertEqual(
-                        promise.value,
+                        try hang(promise),
                         testCase.winnerLocation,
                         testCase.reason,
                         file: testCase.file,
