@@ -273,8 +273,8 @@ platform :ios do
     run_tests(
       workspace: 'HomeAssistant.xcworkspace', 
       scheme: 'App-Debug', 
-      prelaunch_simulator: true,
-      result_bundle: true
+      result_bundle: true,
+      code_coverage: true
     )
   end
 
