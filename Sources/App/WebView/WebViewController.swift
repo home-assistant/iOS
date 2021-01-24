@@ -619,7 +619,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         })
 
         let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureTheme(.error)
+        view.configureTheme(
+            backgroundColor: UIColor(red: 1.000, green: 0.596, blue: 0.000, alpha: 1.0),
+            foregroundColor: .white
+        )
         view.configureContent(
             title: nil,
             body: alert.message,
