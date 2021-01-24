@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitet '%@' hittades inte!";
 "extensions.notification_content.error.request.other" = "Fick icke-200 statusskoden (%d)";
 "extensions.notification_content.error.request.unknown" = "Okänt fel!";
-"extensions.notification_content.hud.loading" = "Läser in %@...";
+"extensions.notification_content.hud.loading" = "Läser in %@…";
 "location_change_notification.siri.body" = "Platsuppdatering utlöst av Siri";
 "notifications_configurator.action.rows.title.title" = "Rubrik";
 "notifications_configurator.action.text_input.title" = "Textinmatning";
@@ -665,7 +665,7 @@
  Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Läs mer";
 "whats_new.buttons.completion.title" = "Då kör vi";
-"whats_new.Two_Dot_Zero.thank_you.title" = "En sak till...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "En sak till…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Varsågod!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Tack!\n\nTack för att du använder Home Assistant Companion\n\nTack för att du orkat med mig, under de senaste tre åren av arbete.\n\nTack för att du stått ut med mig under de senaste 10 månaderna av utveckling utav 2.0\n\nTack för att du anmält fel på Github.\n\nTack för att du hjälpt med-användare när de behövt det, och jag inte var tillgänglig.\n\nTack för att du skickat mig e-post kl. 2 på natten, var du i extrem detalj beskriver hur den där knappen är två pixlar off.\n\nTack för att du är du, och stöder mig.\n\nDin konsekvent positiva feedback och uppskattning är vad som håller mig upp!\n\nJag hoppas verkligen att du kommer gilla Home Assistant Companion 2.0.\n\nTack!\n\n--Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Donationer";
@@ -673,7 +673,7 @@
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud -stöd";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Inbyggt stöd för Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Förbättrad integration";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Tack vare den nya mobile_app komponenten, är Home Assistant Companion nu en bättre ... kompanjon än någonsin tidigare!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Tack vare den nya mobile_app komponenten, är Home Assistant Companion nu en bättre … kompanjon än någonsin tidigare!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritiska varningar";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "När du skickar en avisering som en Kritisk varning, släpps notifikationen igenom trots Stör ej och förbiser volyminställningar.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Redigering av aviseringskategorier inuti appen";

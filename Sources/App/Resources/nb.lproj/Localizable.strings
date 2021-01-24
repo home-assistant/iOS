@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Enheten %@ ble ikke funnet!";
 "extensions.notification_content.error.request.other" = "Mottok non-200 statuskode (%d)";
 "extensions.notification_content.error.request.unknown" = "Ukjent feil!";
-"extensions.notification_content.hud.loading" = "Laster inn %@ ...";
+"extensions.notification_content.hud.loading" = "Laster inn %@ …";
 "location_change_notification.siri.body" = "Plasseringsoppdatering utløst av Siri";
 "notifications_configurator.action.rows.title.title" = "Tittel";
 "notifications_configurator.action.text_input.title" = "Tekstinput";
@@ -664,7 +664,7 @@
 Assistent for Home Assistant %@";
 "whats_new.buttons.read_more.title" = "Les mer";
 "whats_new.buttons.completion.title" = "Start her";
-"whats_new.Two_Dot_Zero.thank_you.title" = "En ting til...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "En ting til…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Værsågod!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "takk.\
 \
@@ -696,7 +696,7 @@ takk.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud-støtte";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Innebygd støtte for Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Forbedret integrering";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app komponenten, er Home Assistant Companion en bedre... ledsager enn noen gang før!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app komponenten, er Home Assistant Companion en bedre… ledsager enn noen gang før!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritiske varsler";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Når du sender et varsel som en kritisk advarsel, vil den omgå ikke forstyrr og voluminnstillinger.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "In App Notification Category Editor";
@@ -741,7 +741,7 @@ takk.\
 "onboarding.manual_setup.no_scheme.message" = "Skal vi prøve å koble til ved hjelp av http:// eller https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan ikke opprette en URL-adresse";
 "onboarding.manual_setup.couldnt_make_url.message" = "Verdien %@ var ikke en gyldig URL-adresse.";
-"settings.reset_section.reset_alert.progress_message" = "Tilbakestiller...";
+"settings.reset_section.reset_alert.progress_message" = "Tilbakestiller…";
 "settings_details.general.page_zoom.title" = "Sidezoom";
 "settings_details.general.page_zoom.default" = "%@ (standard)";
 "retry_label" = "Prøv på nytt";
@@ -872,7 +872,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "updater.update_available.title" = "Oppdatering tilgjengelig";
 "updater.update_available.open" = "Vis %@.";
 "menu.application.about" = "Om %@";
-"menu.application.preferences" = "Innstillinger...";
+"menu.application.preferences" = "Innstillinger…";
 "menu.help.help" = "%@ Hjelp";
 "location_change_notification.signaled.body" = "Sted oppdatert via oppdateringssignal";
 "updater.check_for_updates_menu.title" = "Se etter oppdateringer…";
@@ -884,7 +884,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
 "widgets.actions.description" = "Utfør Home Assistant handlinger.";
 "menu.actions.title" = "Handlinger";
-"menu.actions.configure" = "Konfigurere...";
+"menu.actions.configure" = "Konfigurere…";
 "share_extension.entered_placeholder" = "'angitt' i tilfelle";
 "share_extension.error.title" = "Kunne ikke sende";
 "settings_sensors.periodic_update.description_mac" = "Når dette er aktivert, oppdateres disse sensorene med denne frekvensen mens appen er åpen. Noen sensorer oppdateres oftere automatisk.";
@@ -920,7 +920,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "ha_api.api_error.unexpected_type" = "Mottatt svar med resultat av type %1$@ men forventet type %2$@ .";
 "ha_api.api_error.unacceptable_status_code" = "Uakseptabel statuskode %1$li .";
 "settings_details.general.open_in_browser.default" = "System standard";
-"settings_details.general.visibility.title" = "Vis app i...";
+"settings_details.general.visibility.title" = "Vis app i…";
 "settings_details.general.visibility.options.dock" = "Dock";
 "settings_details.general.visibility.options.menu_bar" = "Menylinje";
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock og menylinje";

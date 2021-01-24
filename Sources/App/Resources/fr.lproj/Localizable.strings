@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entité'%@' introuvable !";
 "extensions.notification_content.error.request.other" = "Code de statut non-200 (%d)";
 "extensions.notification_content.error.request.unknown" = "Erreur inconnue !";
-"extensions.notification_content.hud.loading" = "Chargement %@.....";
+"extensions.notification_content.hud.loading" = "Chargement %@…";
 "location_change_notification.siri.body" = "Mise à jour de la position déclenchée par Siri";
 "notifications_configurator.action.rows.title.title" = "Titre";
 "notifications_configurator.action.text_input.title" = "Zone de saisie";
@@ -664,7 +664,7 @@
  Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Lire la suite";
 "whats_new.buttons.completion.title" = "Allons-y";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Encore une chose ...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Encore une chose …";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "De rien !";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Je vous remercie. \n \n Merci d’utilisé Home Assistant Companion. \n \n Merci d’avoir utilisé Home Assistant. \n \n Merci de m'avoir soutenu au cours des 3 dernières années de travail. \n \n Merci du soutient pour les 10 derniers mois de développement de la version 2.0. \n \n Merci d’avoir écrit des rapports de bogues sur GitHub. \n \n Merci d'avoir aidé d'autres utilisateurs lorsqu'ils en avaient besoin et je n'étais pas disponible. \n \n Merci de m'envoyer des courriels à 2 heures du matin décrivant de manière extrêmement détaillée le décalage d'un bouton de 2 pixels. \n \n Merci d’être toi et de me soutenir. \n \n Vos commentaires et votre appréciation toujours positifs sont ce qui me permet de continuer. \n \n J'espère vraiment que vous aimez Home Assistant Companion 2.0. \n \n Merci. \n \n --Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Dons";
@@ -672,7 +672,7 @@
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Support de Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Prise en charge native de Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Intégration améliorée";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Grâce au nouveau composant mobile_app, Home Assistant Companion est un meilleur ... compagnon pllus que jamais !";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Grâce au nouveau composant mobile_app, Home Assistant Companion est un meilleur … compagnon pllus que jamais !";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Alertes critiques";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Lorsque vous envoyez une notification en tant qu'alerte critique, elle contourne les paramètres Ne pas déranger et le volume.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Éditeur de catégorie de notification dans l'application";

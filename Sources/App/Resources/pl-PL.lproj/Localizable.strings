@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Nie znaleziono encji \"%@\"!";
 "extensions.notification_content.error.request.other" = "Otrzymano kod inny niż 200 (%li)";
 "extensions.notification_content.error.request.unknown" = "Nieznany błąd!";
-"extensions.notification_content.hud.loading" = "Ładowanie %@...";
+"extensions.notification_content.hud.loading" = "Ładowanie %@…";
 "location_change_notification.siri.body" = "Aktualizacja lokalizacji uruchomiona przez Siri";
 "notifications_configurator.action.rows.title.title" = "Tytuł";
 "notifications_configurator.action.text_input.title" = "Wpisz tekst";
@@ -663,7 +663,7 @@
 "whats_new.title" = "Co nowego w aplikacji Home Assistant %@";
 "whats_new.buttons.read_more.title" = "Czytaj więcej";
 "whats_new.buttons.completion.title" = "Dalej";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Jeszcze jedno....";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Jeszcze jedno…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Witamy!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Dziękuję Ci.\
 \
@@ -695,7 +695,7 @@ Dziękuję.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Wsparcie dla chmury Home Assistant'a";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Natywne wsparcie dla Chmury Home Assistant.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Lepsza integracja";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Dzięki nowemu komponentowi mobile_app Home Assistant Companion jest lepszym... towarzyszem niż kiedykolwiek wcześniej!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Dzięki nowemu komponentowi mobile_app Home Assistant Companion jest lepszym… towarzyszem niż kiedykolwiek wcześniej!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Krytyczne alerty";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Gdy wyślesz powiadomienie jako alert krytyczny, pominie ono ustawienia Nie przeszkadzać i ustawienia głośności.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Edytor kategorii powiadomień";

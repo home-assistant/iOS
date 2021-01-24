@@ -184,7 +184,7 @@ Home Assistant. Πατήστε για αντιγραφή ή κοινή χρήσ�
 "extensions.notification_content.error.request.entity_not_found" = "Η οντότητα '%@' δεν βρέθηκε!";
 "extensions.notification_content.error.request.other" = "Λήφθηκε κωδικός κατάστασης που δεν είναι 200 (%li)";
 "extensions.notification_content.error.request.unknown" = "Αγνωστο σφάλμα!";
-"extensions.notification_content.hud.loading" = "Φόρτωση %@ ...";
+"extensions.notification_content.hud.loading" = "Φόρτωση %@ …";
 "location_change_notification.siri.body" = "Η ενημέρωση τοποθεσίας ενεργοποιήθηκε από το Siri";
 "notifications_configurator.action.rows.title.title" = "Τίτλος";
 "notifications_configurator.action.text_input.title" = "Εισαγωγή κειμένου";
@@ -665,7 +665,7 @@ Home Assistant. Πατήστε για αντιγραφή ή κοινή χρήσ�
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Διαβάστε περισσότερα";
 "whats_new.buttons.completion.title" = "Πάμε";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Ακόμη ένα πράγμα...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Ακόμη ένα πράγμα…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Παρακαλώ!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Σας ευχαριστώ.\
 \
@@ -697,7 +697,7 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Υποστήριξη Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Εγγενής υποστήριξη για το Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Βελτιωμένη ενσωμάτωση";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Χάρη στο νέο στοιχείο mobile_app, το Home Assistant Companion είναι ένας καλύτερος ... σύντροφος από ποτέ!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Χάρη στο νέο στοιχείο mobile_app, το Home Assistant Companion είναι ένας καλύτερος … σύντροφος από ποτέ!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Κρίσιμες ειδοποιήσεις";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Όταν στέλνετε μια ειδοποίηση ως κρίσιμη ειδοποίηση, θα γίνεται παράκαμψη των ρυθμίσεων \"Μην ενοχλείτε\" και έντασης.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Πρόγραμμα επεξεργασίας κατηγοριών ενημερώσεων εντός εφαρμογής";
@@ -742,7 +742,7 @@ Home Assistant Companion %@";
 "onboarding.manual_setup.no_scheme.message" = "Θα πρέπει να προσπαθήσουμε να συνδεθούμε χρησιμοποιώντας http:// ή https://;";
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "Η τιμή '%@' δεν ήταν έγκυρη διεύθυνση URL.";
-"settings.reset_section.reset_alert.progress_message" = "Επαναφορά...";
+"settings.reset_section.reset_alert.progress_message" = "Επαναφορά…";
 "settings_details.general.page_zoom.title" = "Ζουμ σελίδας";
 "settings_details.general.page_zoom.default" = "%@ (Προεπιλογή)";
 "retry_label" = "Επανάληψη";
@@ -873,10 +873,10 @@ Home Assistant Companion %@";
 "updater.update_available.title" = "Διαθέσιμη ενημέρωση";
 "updater.update_available.open" = "Προβολή '%@'";
 "menu.application.about" = "Σχετικά με %@";
-"menu.application.preferences" = "Προτιμήσεις...";
+"menu.application.preferences" = "Προτιμήσεις…";
 "menu.help.help" = "%@ Βοήθεια";
 "location_change_notification.signaled.body" = "Η τοποθεσία ενημερώθηκε μέσω σήματος ενημέρωσης";
-"updater.check_for_updates_menu.title" = "Έλεγχος για ενημερώσεις...";
+"updater.check_for_updates_menu.title" = "Έλεγχος για ενημερώσεις…";
 "updater.no_updates_available.title" = "Έλεγχος για ενημερώσεις";
 "updater.no_updates_available.on_latest_version" = "Βρίσκεστε στην πιο πρόσφατη έκδοση!";
 "menu.view.reload_page" = "Επαναφόρτωση σελίδας";

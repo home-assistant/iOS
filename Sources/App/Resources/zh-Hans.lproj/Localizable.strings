@@ -670,7 +670,7 @@
 家庭助理%@";
 "whats_new.buttons.read_more.title" = "更多";
 "whats_new.buttons.completion.title" = "出发";
-"whats_new.Two_Dot_Zero.thank_you.title" = "还有一件事...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "还有一件事…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "不客气！";
 "whats_new.Two_Dot_Zero.thank_you.message" = "谢谢。 \n \n感谢您使用家庭助理伴侣。 \n \n感谢您使用家庭助理。 \n \n感谢您在过去三年中对我的支持。 \n \n感谢您在2.0的最后10个月中支持我。 \n \n感谢您在GitHub上提交错误报告。 \n \n感谢您在有需要时帮助我的同伴，但我没有空。 \n \n感谢您在凌晨2点向我发送电子邮件，详细说明了此按钮的像素间距为2像素。 \n \n感谢您成为我的支持者。 \n \n一贯的积极反馈和赞赏是我前进的动力。 \n \n我真的希望您喜欢Home Assistant Companion 2.0。 \n \n谢谢。 \n \n罗比";
 "whats_new.Two_Dot_Zero.items.donations.title" = "捐赠";

@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Сутність '%@' не знайдено!";
 "extensions.notification_content.error.request.other" = "Отримано статус-код помилки (%li)";
 "extensions.notification_content.error.request.unknown" = "Невідома помилка!";
-"extensions.notification_content.hud.loading" = "Завантаження %@ ...";
+"extensions.notification_content.hud.loading" = "Завантаження %@ …";
 "location_change_notification.siri.body" = "Оновлення розташування, ініційоване Siri";
 "notifications_configurator.action.rows.title.title" = "Заголовок";
 "notifications_configurator.action.text_input.title" = "Текстове поле введення";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Читати далі";
 "whats_new.buttons.completion.title" = "Почнімо";
-"whats_new.Two_Dot_Zero.thank_you.title" = "І ще одна річ...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "І ще одна річ…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Ласкаво просимо!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Дякую. \
 \
@@ -696,7 +696,7 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Підтримка Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Вбудована підтримка Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Поліпшена інтеграція";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Завдяки новому компоненту mobile_app, Home Assistant Companion став кращим ...компаньйоном, ніж будь-коли раніше!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Завдяки новому компоненту mobile_app, Home Assistant Companion став кращим …компаньйоном, ніж будь-коли раніше!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Критичні оповіщення";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Надсилання критичних сповіщень ігноруватиме режим \"Не турбувати\" та налаштування гучності.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Вбудований редактор категорій для сповіщень";
@@ -741,7 +741,7 @@ Home Assistant Companion %@";
 "onboarding.manual_setup.no_scheme.message" = "Чи варто спробувати підключитися за допомогою http: // або https: //?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не вдалося створити URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значення \"%@\" не є допустимою URL-адресою.";
-"settings.reset_section.reset_alert.progress_message" = "Скидання...";
+"settings.reset_section.reset_alert.progress_message" = "Скидання…";
 "settings_details.general.page_zoom.title" = "Масштабування сторінки";
 "settings_details.general.page_zoom.default" = "%@ (за замовчуванням)";
 "retry_label" = "Повторити";

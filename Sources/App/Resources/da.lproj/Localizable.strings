@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entiteten '%@' blev ikke fundet!";
 "extensions.notification_content.error.request.other" = "Modtog en ikke-200 statuskode (%li)";
 "extensions.notification_content.error.request.unknown" = "Ukendt fejl!";
-"extensions.notification_content.hud.loading" = "Indlæser %@...";
+"extensions.notification_content.hud.loading" = "Indlæser %@…";
 "location_change_notification.siri.body" = "Lokalitetsopdatering udløst af Siri";
 "notifications_configurator.action.rows.title.title" = "Titel";
 "notifications_configurator.action.text_input.title" = "Tekstinput";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Læs mere";
 "whats_new.buttons.completion.title" = "Lad os gå i gang";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Lige en ekstra ting...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Lige en ekstra ting…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Selv tak!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Tak skal du have.\
 \
@@ -696,7 +696,7 @@ Tak.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Understøttelse af Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Indbygget understøttelse af Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Forbedret integration";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app-komponent er Home Assistant Companion en bedre...ledsager end nogensinde før!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app-komponent er Home Assistant Companion en bedre…ledsager end nogensinde før!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritiske advarsler";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Når du sender en notifikation som en kritisk advarsel, vil den omgå Forstyr ikke og lydstyrkeindstillinger.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Redigering af notifikationskategori i appen";
@@ -741,7 +741,7 @@ Tak.\
 "onboarding.manual_setup.no_scheme.message" = "Skal vi prøve at forbinde ved hjælp af http:// eller https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kunne ikke oprette en webadresse";
 "onboarding.manual_setup.couldnt_make_url.message" = "Værdien '%@' var ikke en gyldig webadresse.";
-"settings.reset_section.reset_alert.progress_message" = "Nulstiller...";
+"settings.reset_section.reset_alert.progress_message" = "Nulstiller…";
 "settings_details.general.page_zoom.title" = "Sidezoom";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
 "retry_label" = "Prøv igen";
@@ -872,7 +872,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "updater.update_available.title" = "Opdatering tilgængelig";
 "updater.update_available.open" = "Vis '%@'";
 "menu.application.about" = "Om %@";
-"menu.application.preferences" = "Indstillinger...";
+"menu.application.preferences" = "Indstillinger…";
 "menu.help.help" = "%@ Hjælp";
 "location_change_notification.signaled.body" = "Lokalitet opdateret via opdateringssignal";
 "updater.check_for_updates_menu.title" = "Søg efter opdateringer…";
@@ -884,7 +884,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
 "widgets.actions.description" = "Udfør Home Assistant-handlinger.";
 "menu.actions.title" = "Handlinger";
-"menu.actions.configure" = "Konfigurer...";
+"menu.actions.configure" = "Konfigurer…";
 "share_extension.entered_placeholder" = "'indtastet' i hændelse";
 "share_extension.error.title" = "Kunne ikke sende";
 "settings_sensors.periodic_update.description_mac" = "Når dette er aktiveret, opdateres sensorer med den angivne frekvens, mens appen er åben. Nogle sensorer opdateres automatisk hyppigere.";

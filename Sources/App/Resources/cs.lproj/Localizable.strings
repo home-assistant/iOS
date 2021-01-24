@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Neznámá chyba!";
-"extensions.notification_content.hud.loading" = "Loading %@...";
+"extensions.notification_content.hud.loading" = "Loading %@…";
 "location_change_notification.siri.body" = "Aktualizace polohy spuštěná prostřednictvím Siri";
 "notifications_configurator.action.rows.title.title" = "Název";
 "notifications_configurator.action.text_input.title" = "Text";
@@ -664,7 +664,7 @@
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Přečtěte si více";
 "whats_new.buttons.completion.title" = "Let's Go";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Ještě jedna věc...";
+"whats_new.Two_Dot_Zero.thank_you.title" = "Ještě jedna věc…";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "You're welcome!";
 "whats_new.Two_Dot_Zero.thank_you.message" = "Thank you.\
 \
@@ -696,7 +696,7 @@ Thank you.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Podpora Home Assistant Cloud";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Nativní podpora pro Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Vylepšená integrace";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better... companion than ever before!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Thanks to the new mobile_app component, Home Assistant Companion is a better… companion than ever before!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritická upozornění";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Když odešlete oznámení jako kritické upozornění, obejde se nastavení Nerušit a nastavení hlasitosti.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "In App Notification Category Editor";
@@ -741,7 +741,7 @@ Thank you.\
 "onboarding.manual_setup.no_scheme.message" = "Zkusit se připojit přes http:// nebo https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nelze vytvořit adresu URL.";
 "onboarding.manual_setup.couldnt_make_url.message" = "Hodnota „ %@ “ není platná adresa URL.";
-"settings.reset_section.reset_alert.progress_message" = "Obnovení...";
+"settings.reset_section.reset_alert.progress_message" = "Obnovení…";
 "settings_details.general.page_zoom.title" = "Zvětšení stránky";
 "settings_details.general.page_zoom.default" = "%@ (výchozí)";
 "retry_label" = "Opakovat";
@@ -872,10 +872,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "updater.update_available.title" = "Je k dispozici aktualizace";
 "updater.update_available.open" = "Zobrazit ' %@ '";
 "menu.application.about" = "O %@";
-"menu.application.preferences" = "Možnosti...";
+"menu.application.preferences" = "Možnosti…";
 "menu.help.help" = "%@ Nápověda";
 "location_change_notification.signaled.body" = "Poloha aktualizována přes aktualizační signál";
-"updater.check_for_updates_menu.title" = "Vyhledávání aktualizací...";
+"updater.check_for_updates_menu.title" = "Vyhledávání aktualizací…";
 "updater.no_updates_available.title" = "Vyhledat aktualizace";
 "updater.no_updates_available.on_latest_version" = "Máte již nejnovější verzi";
 "menu.view.reload_page" = "Aktualizovat stránku";
