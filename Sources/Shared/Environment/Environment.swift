@@ -39,6 +39,22 @@ public var Current = Environment()
 /// unit tests.
 public class Environment {
     internal init() {
+        PromiseKit.conf.Q = (map: nil, return: .main)
+        PromiseKit.conf.logHandler = { event in
+            Current.Log.info {
+                switch event {
+                case .waitOnMainThread:
+                    return "PromiseKit: warning: `wait()` called on main thread!"
+                case .pendingPromiseDeallocated:
+                    return "PromiseKit: warning: pending promise deallocated"
+                case .pendingGuaranteeDeallocated:
+                    return "PromiseKit: warning: pending guarantee deallocated"
+                case .cauterized (let error):
+                    return "PromiseKit:cauterized-error: \(error)"
+                }
+            }
+        }
+
         let crashReporter = CrashReporterImpl()
         self.crashReporter = crashReporter
         crashReporter.setup(environment: self)
