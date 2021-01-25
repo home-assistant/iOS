@@ -102,6 +102,7 @@ public class HomeAssistantAPI {
 
     private static func configureSessionManager(
         urlConfig: URLSessionConfiguration = .default,
+        delegate: SessionDelegate = SessionDelegate(),
         interceptor: Interceptor = .init()
     ) -> Session {
         let configuration = urlConfig
@@ -110,7 +111,7 @@ public class HomeAssistantAPI {
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
-        return Alamofire.Session(configuration: configuration, interceptor: interceptor)
+        return Alamofire.Session(configuration: configuration, delegate: delegate, interceptor: interceptor)
     }
 
     private func newInterceptor() -> Interceptor {
@@ -138,16 +139,6 @@ public class HomeAssistantAPI {
         )
     }
 
-    func authenticatedSessionManager() -> Alamofire.Session? {
-        guard Current.settingsStore.connectionInfo != nil && Current.settingsStore.tokenInfo != nil else {
-            return nil
-        }
-
-        return HomeAssistantAPI.configureSessionManager(
-            interceptor: newInterceptor()
-        )
-    }
-
     convenience init?() {
         guard Current.settingsStore.connectionInfo != nil else {
             return nil
@@ -160,12 +151,11 @@ public class HomeAssistantAPI {
         self.init(tokenInfo: tokenInfo, urlConfig: .default)
     }
 
-    public func VideoStreamer() -> MJPEGStreamer? {
-        guard let newManager = self.authenticatedSessionManager() else {
-            return nil
-        }
-
-        return MJPEGStreamer(manager: newManager)
+    public func VideoStreamer() -> MJPEGStreamer {
+        return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
+            delegate: MJPEGStreamerSessionDelegate(),
+            interceptor: newInterceptor()
+        ))
     }
 
     public enum ConnectReason {
