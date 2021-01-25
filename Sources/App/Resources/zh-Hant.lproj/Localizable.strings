@@ -925,7 +925,9 @@
 "settings_details.general.visibility.options.menu_bar" = "選單列";
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock 與選單列";
 "settings_details.general.launch_on_login.title" = "登入時啟動 App";
-"settings_details.updates.check_for_updates.title" = "Automatically Check for Updates";
-"settings_details.updates.check_for_updates.include_betas" = "Include Beta Releases";
-"settings_details.privacy.alerts.title" = "Alerts";
-"settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
+"settings_details.updates.check_for_updates.title" = "自動檢查更新";
+"settings_details.updates.check_for_updates.include_betas" = "包含測試版本";
+"settings_details.privacy.alerts.title" = "警告";
+"settings_details.privacy.alerts.description" = "允許檢查重要警告，例如安全漏洞通報。";
+"menu.status_item.toggle" = "切換 %1$@";
+"menu.status_item.quit" = "退出";
