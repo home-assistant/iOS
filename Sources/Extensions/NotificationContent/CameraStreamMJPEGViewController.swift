@@ -16,14 +16,11 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
 
     enum MJPEGError: LocalizedError {
         case noPath
-        case noStreamer
         case networkError(path: String, error: Error?)
 
         var errorDescription: String? {
             switch self {
             case .noPath:
-                return L10n.Extensions.NotificationContent.Error.Request.authFailed
-            case .noStreamer:
                 return L10n.Extensions.NotificationContent.Error.Request.authFailed
             case .networkError(let path, let error):
                 if let error = error as? AFError, let responseCode = error.responseCode {
@@ -47,14 +44,10 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
             throw MJPEGError.noPath
         }
 
-        guard let streamer = api.VideoStreamer() else {
-            throw MJPEGError.noStreamer
-        }
-
         self.api = api
         self.connectionInfo = try api.connectionInfo()
         self.response = response
-        self.streamer = streamer
+        self.streamer = api.VideoStreamer()
         self.imageView = UIImageView()
         (self.promise, self.seal) = Promise<Void>.pending()
         super.init(nibName: nil, bundle: nil)
