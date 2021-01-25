@@ -526,6 +526,14 @@ public enum L10n {
         return L10n.tr("Localizable", "menu.help.help", String(describing: p1))
       }
     }
+    public enum StatusItem {
+      /// Quit
+      public static var quit: String { return L10n.tr("Localizable", "menu.status_item.quit") }
+      /// Toggle %1$@
+      public static func toggle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "menu.status_item.toggle", String(describing: p1))
+      }
+    }
     public enum View {
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }

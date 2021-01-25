@@ -29,6 +29,30 @@ import Foundation
     var isActive: Bool { get }
     func activate()
     func deactivate()
+    func terminate()
+}
+
+// not actually possible to represent, via swift into objc and back into swift, the OptionSet import of this
+@objc(MacBridgeStatusModifierMask) public enum MacBridgeStatusModifierMask: Int {
+    case capsLock = 0b1 // Set if Caps Lock key is pressed.
+    case shift = 0b10 // Set if Shift key is pressed.
+    case control = 0b100 // Set if Control key is pressed.
+    case option = 0b1000 // Set if Option or Alternate key is pressed.
+    case command = 0b10000 // Set if Command key is pressed.
+    case numericPad = 0b100000 // Set if any key in the numeric keypad is pressed.
+    case help = 0b1000000 // Set if the Help key is pressed.
+    case function = 0b10000000 // Set if any function key is pressed.
+}
+
+@objc(MacBridgeStatusItemActionInfo) public protocol MacBridgeStatusItemMenuItem {
+    var name: String { get }
+    var image: CGImage? { get }
+    var imageSize: CGSize { get }
+    var isSeparator: Bool { get }
+    var keyEquivalentModifierMask: Int { get }
+    var keyEquivalent: String { get }
+    var subitems: [MacBridgeStatusItemMenuItem] { get }
+    var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void { get }
 }
 
 @objc(MacBridgeStatusItemConfiguration) public protocol MacBridgeStatusItemConfiguration {
@@ -36,7 +60,7 @@ import Foundation
     var image: CGImage { get }
     var imageSize: CGSize { get }
     var accessibilityLabel: String { get }
-    var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void { get }
+    var items: [MacBridgeStatusItemMenuItem] { get }
 }
 
 @objc(MacBridgeActivationPolicy) public enum MacBridgeActivationPolicy: Int {

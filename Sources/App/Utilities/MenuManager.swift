@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import RealmSwift
 import Shared
+import PromiseKit
 
 @available(iOS 13, *)
 private extension UIMenu.Identifier {
@@ -15,12 +16,13 @@ private extension UIMenu.Identifier {
 @available(iOS 13, *)
 class MenuManager {
     let builder: UIMenuBuilder
+    let actionsWithImages: [(Action, UIImage)]
 
-    private var realmTokens = [NotificationToken]()
-
+    // remember: this class is short-lived. it only exists for the duration of creating the menu.
     @available(iOS 13, *)
     init(builder: UIMenuBuilder) {
         self.builder = builder
+        self.actionsWithImages = Self.actionsWithImages()
         update()
     }
 
@@ -91,6 +93,26 @@ class MenuManager {
         )
     }
 
+    private func aboutMenu() -> [AppMacBridgeStatusItemMenuItem] {
+        return [
+            .init(name: L10n.About.title) { callbackInfo in
+                Current.sceneManager.activateAnyScene(for: .about)
+                callbackInfo.activate()
+            },
+            .init(name: L10n.Updater.CheckForUpdatesMenu.title) { callbackInfo in
+                Current.sceneManager.activateAnyScene(for: .webView)
+                callbackInfo.activate()
+
+                UIApplication.shared.sendAction(
+                    #selector(AppDelegate.checkForUpdate(_:)),
+                    to: UIApplication.shared.delegate,
+                    from: callbackInfo,
+                    for: nil
+                )
+            }
+        ]
+    }
+
     private func preferencesMenu() -> UIMenu {
         let command = UIKeyCommand(
             title: L10n.Menu.Application.preferences,
@@ -108,6 +130,17 @@ class MenuManager {
             options: .displayInline,
             children: [command]
         )
+    }
+
+    private func preferencesMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(
+            name: L10n.Menu.Application.preferences,
+            keyEquivalentModifier: [.command],
+            keyEquivalent: ","
+        ) { callbackInfo in
+            Current.sceneManager.activateAnyScene(for: .settings)
+            callbackInfo.activate()
+        }
     }
 
     private func helpMenus() -> [UIMenu] {
@@ -131,12 +164,12 @@ class MenuManager {
         ]
     }
 
-    private func actionsMenu() -> UIMenu {
+    private static func actionsWithImages() -> [(Action, UIImage)] {
         // Action+Observation calls reload, so when they change this all gets run again
-        let children = Current.realm()
+        return Current.realm()
             .objects(Action.self)
             .sorted(byKeyPath: #keyPath(Action.Position))
-            .map { action -> UICommand in
+            .map { action -> (Action, UIImage) in
                 let iconRect = CGRect(x: 0, y: 0, width: 28, height: 28)
 
                 let image = UIKit.UIGraphicsImageRenderer(size: iconRect.size).image { _ in
@@ -150,6 +183,12 @@ class MenuManager {
                         .draw(in: imageRect)
                 }
 
+                return (action, image)
+            }
+    }
+
+    private func actionsMenu() -> UIMenu {
+        let children = actionsWithImages.map { action, image in
                 return UICommand(
                     title: action.Text,
                     image: image,
@@ -174,6 +213,42 @@ class MenuManager {
             options: [],
             children: Array(children)
         )
+    }
+
+    private func actionsMenu() -> AppMacBridgeStatusItemMenuItem {
+        var items = [AppMacBridgeStatusItemMenuItem]()
+        items.append(contentsOf: actionsWithImages.compactMap { action, image in
+            let url = action.widgetLinkURL
+
+            return .init(
+                name: action.Name,
+                image: image
+            ) { callbackInfo in
+                callbackInfo.activate()
+
+                let delegate: Guarantee<WebViewSceneDelegate> = Current.sceneManager.scene(
+                    for: .init(activity: .webView)
+                )
+                delegate.done {
+                    $0.urlHandler?.handle(url: url)
+                }
+            }
+        })
+        if !items.isEmpty {
+            items.append(.separator())
+        }
+        items.append(.init(name: L10n.Menu.Actions.configure) { callbackInfo in
+            callbackInfo.activate()
+
+            UIApplication.shared.sendAction(
+                #selector(AppDelegate.openActionsPreferences),
+                to: UIApplication.shared.delegate,
+                from: nil,
+                for: nil
+            )
+        })
+
+        return AppMacBridgeStatusItemMenuItem(name: L10n.Menu.Actions.title, subitems: items)
     }
 
     private func webViewActionsMenu() -> UIMenu {
@@ -212,6 +287,27 @@ class MenuManager {
         )
     }
 
+    private func toggleMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(name: L10n.Menu.StatusItem.toggle(appName)) { callbackInfo in
+            if callbackInfo.isActive {
+                callbackInfo.deactivate()
+            } else {
+                Current.sceneManager.activateAnyScene(for: .webView)
+                callbackInfo.activate()
+            }
+        }
+    }
+
+    private func quitMenu() -> AppMacBridgeStatusItemMenuItem {
+        .init(
+            name: L10n.Menu.StatusItem.quit,
+            keyEquivalentModifier: [.command],
+            keyEquivalent: "q"
+        ) { callbackInfo in
+            callbackInfo.terminate()
+        }
+    }
+
     private func configureStatusItem() {
         #if targetEnvironment(macCatalyst)
         if Current.settingsStore.locationVisibility.isDockVisible {
@@ -220,19 +316,21 @@ class MenuManager {
             Current.macBridge.activationPolicy = .accessory
         }
 
+        var menuItems = [AppMacBridgeStatusItemMenuItem]()
+        menuItems.append(toggleMenu())
+        menuItems.append(.separator())
+        menuItems.append(actionsMenu())
+        menuItems.append(.separator())
+        menuItems.append(contentsOf: aboutMenu())
+        menuItems.append(preferencesMenu())
+        menuItems.append(quitMenu())
+
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
             isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
             image: Asset.statusItemIcon.image.cgImage!,
             imageSize: Asset.statusItemIcon.image.size,
             accessibilityLabel: appName,
-            primaryActionHandler: { callbackInfo in
-                if callbackInfo.isActive {
-                    callbackInfo.deactivate()
-                } else {
-                    Current.sceneManager.activateAnyScene(for: .webView)
-                    callbackInfo.activate()
-                }
-            }
+            items: menuItems
         ))
         #endif
     }
