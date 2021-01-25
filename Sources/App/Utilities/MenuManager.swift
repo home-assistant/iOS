@@ -330,7 +330,15 @@ class MenuManager {
             image: Asset.statusItemIcon.image.cgImage!,
             imageSize: Asset.statusItemIcon.image.size,
             accessibilityLabel: appName,
-            items: menuItems
+            items: menuItems,
+            primaryActionHandler: { callbackInfo in
+                if callbackInfo.isActive {
+                    callbackInfo.deactivate()
+                } else {
+                    Current.sceneManager.activateAnyScene(for: .webView)
+                    callbackInfo.activate()
+                }
+            }
         ))
         #endif
     }

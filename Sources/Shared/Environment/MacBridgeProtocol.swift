@@ -61,6 +61,7 @@ import Foundation
     var imageSize: CGSize { get }
     var accessibilityLabel: String { get }
     var items: [MacBridgeStatusItemMenuItem] { get }
+    var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void { get }
 }
 
 @objc(MacBridgeActivationPolicy) public enum MacBridgeActivationPolicy: Int {

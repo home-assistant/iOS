@@ -7,13 +7,15 @@ class AppMacBridgeStatusItemConfiguration: MacBridgeStatusItemConfiguration {
         image: CGImage,
         imageSize: CGSize,
         accessibilityLabel: String,
-        items: [MacBridgeStatusItemMenuItem]
+        items: [MacBridgeStatusItemMenuItem],
+        primaryActionHandler: @escaping (MacBridgeStatusItemCallbackInfo) -> Void
     ) {
         self.isVisible = isVisible
         self.image = image
         self.imageSize = imageSize
         self.accessibilityLabel = accessibilityLabel
         self.items = items
+        self.primaryActionHandler = primaryActionHandler
     }
 
     var isVisible: Bool
@@ -21,6 +23,7 @@ class AppMacBridgeStatusItemConfiguration: MacBridgeStatusItemConfiguration {
     var imageSize: CGSize
     var accessibilityLabel: String
     var items: [MacBridgeStatusItemMenuItem]
+    var primaryActionHandler: (MacBridgeStatusItemCallbackInfo) -> Void
 }
 
 final class AppMacBridgeStatusItemMenuItem: MacBridgeStatusItemMenuItem {

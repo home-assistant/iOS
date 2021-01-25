@@ -1,11 +1,14 @@
 import AppKit
 
-class MacBridgeStatusItem {
+class MacBridgeStatusItem: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var lastConfiguration: MacBridgeStatusItemConfiguration?
 
-    init() {
-
+    override init() {
+        super.init()
+        statusItem.button?.target = self
+        statusItem.button?.action = #selector(statusItemTapped(_:))
+        statusItem.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
     }
 
     func configure(using configuration: MacBridgeStatusItemConfiguration) {
@@ -17,8 +20,23 @@ class MacBridgeStatusItem {
         let image = NSImage(cgImage: configuration.image, size: configuration.imageSize)
         image.isTemplate = true
         statusItem.button?.image = image
+    }
 
-        statusItem.menu = menu(for: configuration.items)
+    @objc private func statusItemTapped(_ sender: NSStatusBarButton) {
+        guard let configuration = lastConfiguration, let event = NSApp.currentEvent else { return }
+
+        if event.isRightClickEquivalentEvent {
+            let mainMenu = menu(for: configuration.items)
+            mainMenu.delegate = self
+            statusItem.menu = mainMenu
+            sender.performClick(sender)
+        } else {
+            configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
+        }
+    }
+
+    func menuDidClose(_ menu: NSMenu) {
+        statusItem.menu = nil
     }
 
     private func modifierKeys(for uglyMask: Int) -> NSEvent.ModifierFlags {
