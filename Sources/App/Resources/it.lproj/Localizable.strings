@@ -905,3 +905,5 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.updates.check_for_updates.include_betas" = "Include Beta Releases";
 "settings_details.privacy.alerts.title" = "Alerts";
 "settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
+"menu.status_item.toggle" = "Toggle %1$@";
+"menu.status_item.quit" = "Quit";

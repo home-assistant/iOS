@@ -913,3 +913,5 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.updates.check_for_updates.include_betas" = "Include Beta Releases";
 "settings_details.privacy.alerts.title" = "Alerts";
 "settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
+"menu.status_item.toggle" = "Toggle %1$@";
+"menu.status_item.quit" = "Quit";
