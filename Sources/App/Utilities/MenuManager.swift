@@ -13,6 +13,8 @@ private extension UIMenu.Identifier {
     static var haFile: Self { .init(rawValue: "ha.file") }
 }
 
+// swiftlint:disable type_body_length
+
 @available(iOS 13, *)
 class MenuManager {
     let builder: UIMenuBuilder
