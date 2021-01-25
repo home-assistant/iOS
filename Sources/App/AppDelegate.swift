@@ -180,7 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @available(iOS 13, *)
-    @objc internal func openActionsPreferences(_ command: UICommand) {
+    @objc internal func openActionsPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
         delegate.done { $0.pushDetail(group: "actions", animated: true) }

@@ -10,7 +10,8 @@ coverage:
         - Sources/App
         informational: true
     patch:
-      informational: true
+      default:
+        informational: true
 ignore:
 - Sources/Shared/Resources
 - Sources/App/Resources

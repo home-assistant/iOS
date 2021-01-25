@@ -159,6 +159,7 @@
 		1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */; };
 		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
 		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
+		1188793F25BF8006003F4291 /* NSEvent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1188793E25BF8006003F4291 /* NSEvent+Additions.swift */; };
 		118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */; };
 		118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */; };
 		118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
@@ -1070,6 +1071,7 @@
 		1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorNFCManager.swift; sourceTree = "<group>"; };
 		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
 		11883CC624C131EE0036A6C6 /* RealmZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmZone.test.swift; sourceTree = "<group>"; };
+		1188793E25BF8006003F4291 /* NSEvent+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSEvent+Additions.swift"; sourceTree = "<group>"; };
 		118A93322520411100227076 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontmostAppSensor.swift; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
@@ -1982,6 +1984,7 @@
 				110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */,
 				110ED5AC25A6826300489AF7 /* MacBridgeNetworkMonitor.swift */,
 				11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */,
+				1188793E25BF8006003F4291 /* NSEvent+Additions.swift */,
 			);
 			path = MacBridge;
 			sourceTree = "<group>";
@@ -4542,6 +4545,7 @@
 				1194B4162519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift in Sources */,
 				110ED55425A5604F00489AF7 /* MacBridgeScreenImpl.swift in Sources */,
 				1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */,
+				1188793F25BF8006003F4291 /* NSEvent+Additions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
