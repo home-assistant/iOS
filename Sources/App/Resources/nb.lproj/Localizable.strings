@@ -183,7 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Enheten %@ ble ikke funnet!";
 "extensions.notification_content.error.request.other" = "Mottok non-200 statuskode (%d)";
 "extensions.notification_content.error.request.unknown" = "Ukjent feil!";
-"extensions.notification_content.hud.loading" = "Laster inn %@ …";
+"extensions.notification_content.hud.loading" = "Laster inn %@...";
 "location_change_notification.siri.body" = "Plasseringsoppdatering utløst av Siri";
 "notifications_configurator.action.rows.title.title" = "Tittel";
 "notifications_configurator.action.text_input.title" = "Tekstinput";
@@ -696,7 +696,7 @@ takk.\
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud-støtte";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Innebygd støtte for Home Assistant Cloud.";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Forbedret integrering";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app komponenten, er Home Assistant Companion en bedre… ledsager enn noen gang før!";
+"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app komponenten er Home Assistant Companion en bedre ... følgesvenn enn noen gang før!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritiske varsler";
 "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Når du sender et varsel som en kritisk advarsel, vil den omgå ikke forstyrr og voluminnstillinger.";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "In App Notification Category Editor";
@@ -925,7 +925,9 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.general.visibility.options.menu_bar" = "Menylinje";
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock og menylinje";
 "settings_details.general.launch_on_login.title" = "Start appen ved pålogging";
-"settings_details.updates.check_for_updates.title" = "Automatically Check for Updates";
-"settings_details.updates.check_for_updates.include_betas" = "Include Beta Releases";
-"settings_details.privacy.alerts.title" = "Alerts";
-"settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
+"settings_details.updates.check_for_updates.title" = "Se etter oppdateringer automatisk";
+"settings_details.updates.check_for_updates.include_betas" = "Inkluder betaversjoner";
+"settings_details.privacy.alerts.title" = "Varsler";
+"settings_details.privacy.alerts.description" = "Tillater å se etter viktige varsler som sikkerhetsproblemer.";
+"menu.status_item.toggle" = "Veksle %1$@";
+"menu.status_item.quit" = "Avslutte";
