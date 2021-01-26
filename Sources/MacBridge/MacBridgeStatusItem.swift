@@ -30,7 +30,8 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
             mainMenu.delegate = self
             statusItem.menu = mainMenu
             sender.performClick(sender)
-        } else {
+        } else if event.type == .leftMouseUp {
+            // leftMouseDown also fires, but we only want to do that for ctrl-clicks
             configuration.primaryActionHandler(MacBridgeStatusItemCallbackInfoImpl(sender: sender))
         }
     }
