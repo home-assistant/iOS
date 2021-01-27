@@ -60,7 +60,7 @@ class CameraViewController: UIViewController, NotificationCategory {
             return .init(error: CameraError.missingEntityId)
         }
 
-        return Current.api.then { (api: HomeAssistantAPI) -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
+        return Current.api.then(on: nil) { api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
             return firstly {
                 api.StreamCamera(entityId: entityId)
             }.recover { error -> Promise<StreamCameraResponse> in

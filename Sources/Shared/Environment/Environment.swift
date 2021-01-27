@@ -39,7 +39,6 @@ public var Current = Environment()
 /// unit tests.
 public class Environment {
     internal init() {
-        PromiseKit.conf.Q = (map: nil, return: .main)
         PromiseKit.conf.logHandler = { event in
             Current.Log.info {
                 switch event {

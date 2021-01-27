@@ -276,7 +276,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
         Current.backgroundTask(withName: "background-fetch") { remaining in
-            Current.api.then { api -> Promise<Void> in
+            Current.api.then(on: nil) { api -> Promise<Void> in
                 let updatePromise: Promise<Void>
 
                 if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
@@ -449,7 +449,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return
                 }
 
-                Current.api.then { api in
+                Current.api.then(on: nil) { api in
                     api.HandleAction(actionID: actionID, source: .Watch)
                 }.done { _ in
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))

@@ -358,7 +358,7 @@ class ActionPreview: UIView {
 
         self.imageView.showActivityIndicator()
 
-        Current.api.then { api in
+        Current.api.then(on: nil) { api in
             api.HandleAction(actionID: action.ID, source: .Preview)
         }.done { _ in
             feedbackGenerator.notificationOccurred(.success)

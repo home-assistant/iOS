@@ -252,7 +252,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     func updateComplications() -> Guarantee<Void> {
-        Current.api.then {
+        Current.api.then(on: nil) {
             $0.updateComplications(passively: true)
         }.recover { _ in
             ()

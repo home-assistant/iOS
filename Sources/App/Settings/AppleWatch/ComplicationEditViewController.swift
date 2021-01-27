@@ -69,7 +69,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
             Current.Log.error(error)
         }
 
-        Current.api.then { api in
+        Current.api.then(on: nil) { api in
             api.updateComplications(passively: false)
         }.cauterize()
 
@@ -99,7 +99,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 Current.Log.error(error)
             }
 
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.updateComplications(passively: false)
             }.cauterize()
 
@@ -488,7 +488,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
     }
 
     func renderTemplateValue(_ value: String, _ row: BaseRow, expectingPercentile: Bool) {
-        Current.api.then {
+        Current.api.then(on: nil) {
             $0.RenderTemplate(templateStr: value)
         }.get { result in
             if expectingPercentile {
