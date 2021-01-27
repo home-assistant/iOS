@@ -191,7 +191,7 @@ platform :ios do
     )
 
     sh(
-      options[:lokalise2_path] || "lokalise2",
+      "lokalise2",
       "--token", token,
       "--project-id", project_id,
       "file", "download",
@@ -232,7 +232,7 @@ platform :ios do
       Dir.each_child(directory) do |file|
         puts "Uploading file #{file}"
         sh(
-          options[:lokalise2_path] || "lokalise2",
+          "lokalise2",
           "--token", token,
           "--project-id", project_id,
           "file", "upload",

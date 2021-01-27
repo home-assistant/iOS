@@ -10,6 +10,12 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install Lokalise2
+        run: |
+          brew tap lokalise/cli-2
+          brew install lokalise2
+
       - name: Install Gems
         run: |
           bundle config path vendor/bundle
@@ -18,20 +24,14 @@ jobs:
       - name: Install Pods
         run: bundle exec pod install --repo-update
 
-      - name: Install Lokalise2
-        run: |
-          BINDIR=/tmp/lokalise2
-          mkdir -p $BINDIR
-          curl -sfL https://raw.githubusercontent.com/lokalise/lokalise-cli-2-go/master/install.sh | sh
-
       - name: Upload to Lokalise
-        run: bundle exec fastlane push_strings lokalise2_path:/tmp/lokalise2/lokalise2
+        run: bundle exec fastlane push_strings
         env:
           HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
           HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
 
       - name: Download from Lokalise
-        run: bundle exec fastlane update_strings lokalise2_path:/tmp/lokalise2/lokalise2
+        run: bundle exec fastlane update_strings
         env:
           HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
           HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
