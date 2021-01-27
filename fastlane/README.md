@@ -56,6 +56,11 @@ Update switftgen input/output files
 fastlane ios update_strings
 ```
 Download latest localization files from Lokalize
+### ios push_strings
+```
+fastlane ios push_strings
+```
+Upload localized strings to Lokalise
 ### ios update_lokalise_metadata
 ```
 fastlane ios update_lokalise_metadata
