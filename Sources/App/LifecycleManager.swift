@@ -25,12 +25,24 @@ class LifecycleManager {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(willEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
+        if Current.isCatalyst {
+            // on macOS, background/foreground is less of a concept
+            // on catalina, the app will 'background' and 'foreground' when hidden
+            // on big sur and beyond, the background/foreground lifecycle never seems to happen
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(willEnterForeground),
+                name: .init(rawValue: "NSApplicationDidBecomeActiveNotification"),
+                object: nil
+            )
+        } else {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(willEnterForeground),
+                name: UIApplication.willEnterForegroundNotification,
+                object: nil
+            )
+        }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didEnterBackground),
