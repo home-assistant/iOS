@@ -10,6 +10,12 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install Lokalise2
+        run: |
+          brew tap lokalise/cli-2
+          HOMEBREW_NO_INSTALL_CLEANUP=TRUE brew install lokalise2
+
       - name: Install Gems
         run: |
           bundle config path vendor/bundle
@@ -18,11 +24,18 @@ jobs:
       - name: Install Pods
         run: bundle exec pod install --repo-update
 
+      - name: Upload to Lokalise
+        run: bundle exec fastlane push_strings
+        env:
+          HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
+          HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
+
       - name: Download from Lokalise
         run: bundle exec fastlane update_strings
         env:
           HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
           HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.HOMEASSISTANT_LOKALIZE_TOKEN }}
+
       - name: Commit changes
         id: commit
         run: |

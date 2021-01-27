@@ -177,9 +177,71 @@ platform :ios do
   end
 
   desc "Download latest localization files from Lokalize"
-  lane :update_strings do
-    lokalise(destination: "Sources/App/Resources/", use_original: true)
+  lane :update_strings do |options|
+    token = prompt(
+      text: "API token",
+      ci_input: ENV["LOKALISE_API_TOKEN"],
+      secure_text: true
+    )
+
+    project_id = prompt(
+      text: "Project ID",
+      ci_input: ENV["LOKALISE_PROJECT_ID"],
+      secure_text: true
+    )
+
+    sh(
+      "lokalise2",
+      "--token", token,
+      "--project-id", project_id,
+      "file", "download",
+      "--format", "ios_sdk",
+      "--bundle-structure", '%LANG_ISO%.lproj/Localizable.%FORMAT%',
+      "--export-empty-as", "base",
+      "--export-sort", "a_z",
+      "--replace-breaks=false",
+      "--include-comments=false",
+      "--include-description=false",
+      "--unzip-to", "../Sources/App/Resources",
+      log: false
+    )
+
     sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen")
+  end
+
+  desc "Upload localized strings to Lokalise"
+  lane :push_strings do |options|
+    source_directories = [
+      '../Sources/App/Resources/en.lproj',
+    ]
+
+    token = prompt(
+      text: "API token",
+      ci_input: ENV["LOKALISE_API_TOKEN"],
+      secure_text: true
+    )
+
+    project_id = prompt(
+      text: "Project ID",
+      ci_input: ENV["LOKALISE_PROJECT_ID"],
+      secure_text: true
+    )
+
+    source_directories.each do |directory|
+      puts "Enumerating #{directory}..."
+      Dir.each_child(directory) do |file|
+        puts "Uploading file #{file}"
+        sh(
+          "lokalise2",
+          "--token", token,
+          "--project-id", project_id,
+          "file", "upload",
+          "--file", "#{directory}/#{file}",
+          "--lang-iso", "en",
+          log: false
+        )
+      end
+    end
   end
 
   desc "Upload App Store Connect metadata to Lokalise"
