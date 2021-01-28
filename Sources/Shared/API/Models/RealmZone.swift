@@ -50,6 +50,7 @@ public final class RLMZone: Object, UpdatableModel {
         } else {
             precondition(zone.ID == ID)
         }
+        self.FriendlyName = zone.FriendlyName
         self.Latitude = zone.Latitude
         self.Longitude = zone.Longitude
         self.Radius = zone.Radius
