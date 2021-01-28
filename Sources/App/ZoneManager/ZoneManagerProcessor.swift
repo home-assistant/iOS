@@ -44,7 +44,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                         return nil
                     }
                 }.then { location in
-                    Current.api.then { api in
+                    Current.api.then(on: nil) { api in
                         api.SubmitLocation(
                             updateType: trigger,
                             location: location,

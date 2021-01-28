@@ -67,7 +67,7 @@ class SensorListViewController: FormViewController, SensorObserver {
         refreshControl.beginRefreshing()
 
         Current.backgroundTask(withName: "manual-location-update-settings") { _ in
-            Current.api.then { api -> Promise<Void> in
+            Current.api.then(on: nil) { api -> Promise<Void> in
                 if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
                     return api.GetAndSendLocation(trigger: .Manual).asVoid()
                 } else {

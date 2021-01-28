@@ -68,7 +68,7 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
             return
         }
 
-        Current.api.done { [self] api in
+        Current.api.done(on: nil) { [self] api in
             setup(streamer: api.VideoStreamer(), api: api, entityId: entityId)
         }.cauterize()
     }

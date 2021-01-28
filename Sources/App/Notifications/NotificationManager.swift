@@ -57,7 +57,7 @@ class NotificationManager: NSObject {
                     Current.Log.verbose("Received remote request to provide a location update")
 
                     Current.backgroundTask(withName: "push-location-request") { remaining in
-                        Current.api.then { api in
+                        Current.api.then(on: nil) { api in
                             api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                         }
                     }.done { success in
@@ -106,7 +106,7 @@ class NotificationManager: NSObject {
 
                 Current.Log.verbose("Success, sending data \(eventData)")
 
-                Current.api.then { api in
+                Current.api.then(on: nil) { api in
                     api.CreateEvent(eventType: eventName, eventData: eventData)
                 }.catch { error -> Void in
                     Current.Log.error("Received error from createEvent during shortcut run \(error)")
@@ -118,7 +118,7 @@ class NotificationManager: NSObject {
             eventData["status"] = "failure"
             eventData["error"] = error.XCUErrorParameters
 
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
@@ -128,7 +128,7 @@ class NotificationManager: NSObject {
         let cancelHandler: CallbackURLKit.CancelCallback = {
             eventData["status"] = "cancelled"
 
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
@@ -145,7 +145,7 @@ class NotificationManager: NSObject {
             eventData["status"] = "error"
             eventData["error"] = error.localizedDescription
 
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
@@ -218,7 +218,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         Current.backgroundTask(withName: "handle-push-action") { _ in
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.handlePushAction(
                     identifier: response.actionIdentifier,
                     category: response.notification.request.content.categoryIdentifier,
@@ -297,7 +297,7 @@ extension NotificationManager: MessagingDelegate {
         Current.settingsStore.pushID = fcmToken
 
         Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.UpdateRegistration()
             }
         }.cauterize()

@@ -53,7 +53,7 @@ class LifecycleManager {
 
     func didFinishLaunching() {
         Current.backgroundTask(withName: "lifecycle-manager-didFinishLaunching") { _ in
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: "ios.finished_launching",
                     eventData: HomeAssistantAPI.sharedEventDeviceInfo
@@ -76,7 +76,7 @@ class LifecycleManager {
 
     @objc private func didEnterBackground() {
         Current.backgroundTask(withName: "lifecycle-manager-didEnterBackground") { _ in
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: "ios.entered_background",
                     eventData: HomeAssistantAPI.sharedEventDeviceInfo
@@ -104,7 +104,7 @@ class LifecycleManager {
 
     @objc private func didBecomeActive() {
         Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: "ios.became_active",
                     eventData: HomeAssistantAPI.sharedEventDeviceInfo
@@ -142,7 +142,7 @@ class LifecycleManager {
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         return Current.backgroundTask(withName: "connect-api") { _ in
-            Current.api.then { api in
+            Current.api.then(on: nil) { api in
                 api.Connect(reason: reason)
             }
         }.done {

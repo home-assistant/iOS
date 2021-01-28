@@ -150,7 +150,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
 
         let action = self.actions[indexPath.row]
 
-        Current.api.then { api in
+        Current.api.then(on: nil) { api in
             api.HandleAction(actionID: action.ID, source: .Widget)
         }.done { _ in
             feedbackGenerator.notificationOccurred(.success)

@@ -126,7 +126,7 @@ public final class ModelManager {
         definitions: [FetchDefinition] = FetchDefinition.defaults,
         on queue: DispatchQueue = .global(qos: .utility)
     ) -> Promise<Void> {
-        Current.api.then { api in
+        Current.api.then(on: nil) { api in
             when(fulfilled: definitions.map { $0.update(api, queue, self) })
         }
     }

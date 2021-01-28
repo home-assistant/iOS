@@ -85,7 +85,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             }
         }
 
-        Current.api.then { api in
+        Current.api.then(on: nil) { api in
             api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
         }.done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")

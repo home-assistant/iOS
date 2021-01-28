@@ -549,7 +549,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     @objc private func updateSensors() {
         // called via menu/keyboard shortcut too
         Current.backgroundTask(withName: "manual-location-update") { remaining in
-            Current.api.then { api -> Promise<HomeAssistantAPI> in
+            Current.api.then(on: nil) { api -> Promise<HomeAssistantAPI> in
                 guard #available(iOS 14, *) else {
                     return .value(api)
                 }

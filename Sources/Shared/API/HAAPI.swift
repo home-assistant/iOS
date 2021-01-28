@@ -724,7 +724,7 @@ public class HomeAssistantAPI {
 
         Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
 
-        return Current.api.then { api in
+        return Current.api.then(on: nil) { api in
             api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
         }
     }
@@ -743,7 +743,7 @@ public class HomeAssistantAPI {
             let actionInfo = Self.actionEvent(actionID: action.ID, actionName: action.Name, source: source)
             Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
 
-            return Current.api.then { api in
+            return Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: actionInfo.eventType,
                     eventData: actionInfo.eventData
@@ -753,7 +753,7 @@ public class HomeAssistantAPI {
             let serviceInfo = Self.actionScene(actionID: action.ID, source: source)
             Current.Log.verbose("activating scene: \(action.ID)")
 
-            return Current.api.then { api in
+            return Current.api.then(on: nil) { api in
                 api.CallService(
                     domain: serviceInfo.serviceDomain,
                     service: serviceInfo.serviceName,
