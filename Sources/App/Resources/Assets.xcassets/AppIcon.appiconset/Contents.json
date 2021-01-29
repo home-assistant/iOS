@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "release-40x40.png",
+      "filename" : "release-40x40-small-logo.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
@@ -55,7 +55,7 @@
       "size" : "20x20"
     },
     {
-      "filename" : "release-40x40.png",
+      "filename" : "release-40x40-small-logo.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "20x20"
