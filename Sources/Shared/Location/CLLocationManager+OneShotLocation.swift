@@ -116,17 +116,22 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
 }
 
 internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
-    let promise: Promise<CLLocation>
+    private(set) var promise: Promise<CLLocation>
     private let seal: Resolver<CLLocation>
     private let locationManager: CLLocationManager
     private var selfRetain: OneShotLocationProxy?
-    private var potentialLocations: [PotentialLocation] = []
+    private var potentialLocations: [PotentialLocation] = [] {
+        didSet {
+            precondition(Thread.isMainThread)
+        }
+    }
 
     init(
         locationManager: CLLocationManager,
-        timeout: Guarantee<Void>,
-        workQueue: DispatchQueue? = nil
+        timeout: Guarantee<Void>
     ) {
+        precondition(Thread.isMainThread)
+
         (self.promise, self.seal) = Promise<CLLocation>.pending()
         self.locationManager = locationManager
 
@@ -140,7 +145,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         selfRetain = self
         locationManager.startUpdatingLocation()
-        _ = promise.ensure(on: workQueue) {
+        self.promise = promise.ensure {
             locationManager.stopUpdatingLocation()
             locationManager.delegate = nil
             self.selfRetain = nil
@@ -148,7 +153,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
             Current.isPerformingSingleShotLocationQuery = false
         }
 
-        timeout.done(on: workQueue) { [weak self] in
+        timeout.done { [weak self] in
             // we can be weak here because the alternative is that we're already resolved
             self?.checkPotentialLocations(outOfTime: true)
         }
@@ -160,6 +165,8 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
     }
 
     private func checkPotentialLocations(outOfTime: Bool) {
+        precondition(Thread.isMainThread)
+
         guard !promise.isResolved else {
             return
         }
@@ -171,24 +178,26 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
             case .perfect:
                 Current.Log.info("Got a perfect location!")
                 seal.fulfill(bestLocation.location)
-            case .invalid where outOfTime:
-                Current.Log.error("Out of time with only invalid location!")
-                seal.reject(OneShotError.outOfTime)
-            case .meh where outOfTime:
-                Current.Log.info("Out of time with a meh location")
-                seal.fulfill(bestLocation.location)
-            default:
-                // keep looking
-                break
+            case .invalid:
+                if outOfTime {
+                    Current.Log.error("Out of time with only invalid location!")
+                    seal.reject(OneShotError.outOfTime)
+                }
+            case .meh:
+                if outOfTime {
+                    Current.Log.info("Out of time with a meh location")
+                    seal.fulfill(bestLocation.location)
+                }
             }
         } else if outOfTime {
             Current.Log.info("Out of time without any location!")
             seal.reject(OneShotError.outOfTime)
-            return
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        precondition(Thread.isMainThread)
+
         let updatedPotentialLocations = locations.map(PotentialLocation.init(location:))
         Current.Log.verbose("got potential locations: \(updatedPotentialLocations)")
         potentialLocations.append(contentsOf: updatedPotentialLocations)
@@ -196,6 +205,8 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        precondition(Thread.isMainThread)
+
         let failError: Error
 
         if let clErr = error as? CLError {
