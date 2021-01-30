@@ -219,7 +219,9 @@ public class Environment {
 
     public var Log: XCGLogger = {
         if NSClassFromString("XCTest") != nil {
-            return XCGLogger()
+            let logger = XCGLogger()
+            logger.outputLevel = .verbose
+            return logger
         }
 
         // Create a logger object with no destinations

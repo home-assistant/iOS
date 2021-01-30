@@ -8,18 +8,15 @@ import XCGLogger
 class OneShotLocationTests: XCTestCase {
     private var locationManager: FakeLocationManager!
     private var now: Date!
-    private var workQueue: DispatchQueue!
 
     override func setUp() {
         let now = Date()
         self.now = now
         Current.date = { now }
         locationManager = FakeLocationManager()
-        workQueue = DispatchQueue(label: "OneShotLocationTests")
     }
 
     override func tearDown() {
-        workQueue.sync { /* exercise queue */ }
         XCTAssertNil(locationManager.delegate)
         XCTAssertFalse(locationManager.isUpdatingLocation)
     }
@@ -28,8 +25,7 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         timeoutSeal(())
@@ -42,8 +38,7 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, _) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         let clError = CLError(.deferredAccuracyTooLow)
@@ -57,8 +52,7 @@ class OneShotLocationTests: XCTestCase {
         let (timeoutPromise, _) = Guarantee<Void>.pending()
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         enum SomeError: Error {
@@ -77,8 +71,7 @@ class OneShotLocationTests: XCTestCase {
         locationManager.cachedLocation = cachedLocation
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         timeoutSeal(())
@@ -91,8 +84,7 @@ class OneShotLocationTests: XCTestCase {
         locationManager.cachedLocation = cachedLocation
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didFailWithError: CLError(.deferredAccuracyTooLow))
@@ -118,8 +110,7 @@ class OneShotLocationTests: XCTestCase {
         locationManager.cachedLocation = cachedLocation
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [newLocation])
@@ -137,8 +128,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [newLocation])
@@ -156,8 +146,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [newLocation])
@@ -183,8 +172,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1, location2])
@@ -209,8 +197,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location2, location1])
@@ -242,8 +229,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -284,8 +270,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -329,8 +314,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -360,8 +344,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location1 ])
@@ -391,8 +374,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location1 ])
@@ -436,8 +418,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
@@ -482,8 +463,7 @@ class OneShotLocationTests: XCTestCase {
         )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
-            timeout: timeoutPromise,
-            workQueue: workQueue
+            timeout: timeoutPromise
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1, location2])
@@ -501,6 +481,7 @@ class OneShotLocationTests: XCTestCase {
         let file: StaticString
         let line: UInt
 
+        // second one always is the winner, order is done both ways to make sure logic is fine
         init(
             age1: TimeInterval, acc1: CLLocationAccuracy,
             age2: TimeInterval, acc2: CLLocationAccuracy,
@@ -534,47 +515,92 @@ class OneShotLocationTests: XCTestCase {
         }
     }
 
-    var testCases: [LocationTestCase] = [
-        // second one always is the winner, order is done both ways to make sure logic is fine
-        .init(age1:   5, acc1:   90, age2:  0, acc2:  100, "both perfect, more recent wins"),
-        .init(age1:   0, acc1: 2500, age2: 10, acc2:  100, "one perfect, always wins"),
-        .init(age1:  35, acc1:  500, age2: 40, acc2:  250, "close timing, more accurate wins"),
-        .init(age1: 120, acc1:  100, age2: 35, acc2: 1000, "much more recent wins, even over accuracy"),
-    ]
+    func testBothPerfectForward() {
+        perform(
+            testCase: .init(age1: 5, acc1: 90, age2: 0, acc2: 100, "both perfect, more recent wins"),
+            forward: true
+        )
+    }
 
-    func testSimpleTestCases() throws {
-        for testCase in testCases {
-            for locations in [[testCase.location1, testCase.location2], [testCase.location2, testCase.location1]] {
-                let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
-                let promise = OneShotLocationProxy(
-                    locationManager: locationManager,
-                    timeout: timeoutPromise,
-                    workQueue: workQueue
-                ).promise
+    func testBothPerfectBackward() {
+        perform(
+            testCase: .init(age1: 5, acc1: 90, age2: 0, acc2: 100, "both perfect, more recent wins"),
+            forward: false
+        )
+    }
 
-                locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: locations)
+    func testOnePerfectForward() {
+        perform(
+            testCase: .init(age1: 0, acc1: 2500, age2: 10, acc2: 100, "one perfect, always wins"),
+            forward: true
+        )
+    }
 
-                if testCase.hasPerfect {
-                    XCTAssertEqual(
-                        try hang(promise),
-                        testCase.winnerLocation,
-                        testCase.reason,
-                        file: testCase.file,
-                        line: testCase.line
-                    )
-                } else {
-                    XCTAssertFalse(promise.isFulfilled, file: testCase.file, line: testCase.line)
-                    timeoutSeal(())
+    func testOnePerfectBackward() {
+        perform(
+            testCase: .init(age1: 0, acc1: 2500, age2: 10, acc2: 100, "one perfect, always wins"),
+            forward: false
+        )
+    }
 
-                    XCTAssertEqual(
-                        try hang(promise),
-                        testCase.winnerLocation,
-                        testCase.reason,
-                        file: testCase.file,
-                        line: testCase.line
-                    )
-                }
-            }
+    func testCloseTimingForward() {
+        perform(
+            testCase: .init(age1: 35, acc1: 500, age2: 40, acc2: 250, "close timing, more accurate wins"),
+            forward: true
+        )
+    }
+
+    func testCloseTimingBackward() {
+        perform(
+            testCase: .init(age1: 35, acc1: 500, age2: 40, acc2: 250, "close timing, more accurate wins"),
+            forward: false
+        )
+    }
+
+    func testMoreRecentWinsForward() {
+        perform(
+            testCase: .init(age1: 120, acc1: 100, age2: 35, acc2: 1000, "much more recent wins, even over accuracy"),
+            forward: true
+        )
+    }
+
+    func testMoreRecentWinsBackward() {
+        perform(
+            testCase: .init(age1: 120, acc1: 100, age2: 35, acc2: 1000, "much more recent wins, even over accuracy"),
+            forward: false
+        )
+    }
+
+    func perform(testCase: LocationTestCase, forward: Bool) {
+        let locations = forward ? [testCase.location1, testCase.location2] : [testCase.location2, testCase.location1]
+
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: locations)
+
+        if testCase.hasPerfect {
+            XCTAssertEqual(
+                try hang(promise),
+                testCase.winnerLocation,
+                testCase.reason,
+                file: testCase.file,
+                line: testCase.line
+            )
+        } else {
+            XCTAssertFalse(promise.isFulfilled, file: testCase.file, line: testCase.line)
+            timeoutSeal(())
+
+            XCTAssertEqual(
+                try hang(promise),
+                testCase.winnerLocation,
+                testCase.reason,
+                file: testCase.file,
+                line: testCase.line
+            )
         }
     }
 }
