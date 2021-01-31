@@ -15,381 +15,406 @@ fastlane_version "2.137.0"
 REQUIRED_XCODE_VERSION = "11.2"
 default_platform :ios
 
-platform :ios do
-  def change_log_since_last_tag
-    # http://git-scm.com/docs/pretty-formats
-    # - <short hash> <commit title>
-    return changelog_from_git_commits(pretty: "- %s (%h)")
-  end
+before_all do
+  setup
+end
 
-  def version_string(version_number, build_number)
-    "#{version_number} (#{build_number})"
-  end
+private_lane :setup do
+  ENV["FASTLANE_USER"] = ENV["HOMEASSISTANT_APPLE_ID"]
+  ENV["DELIVER_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+  ENV["FASTLANE_TEAM_ID"] = ENV["HOMEASSISTANT_TEAM_ID"]
+  ENV["FL_NOTARIZE_ASC_PROVIDER"] = ENV["HOMEASSISTANT_TEAM_ID"]
+  ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
+  ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+  ENV["FL_NOTARIZE_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+  ENV["LOKALISE_API_TOKEN"] = ENV["HOMEASSISTANT_LOKALIZE_TOKEN"]
+  ENV["LOKALISE_PROJECT_ID"] = ENV["HOMEASSISTANT_LOKALIZE_PROJECT_ID"]
+  ENV["PILOT_ITC_PROVIDER"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID"]
+  ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+  ENV['SIGH_PROFILE_PATHS'] = "../Configuration/Provisioning"
+end
 
-  def tag_name(build_type, version_number, build_number)
-    "#{build_type}/#{version_number}/#{build_number}"
-  end
+lane :clean_all_testers do
+  clean_testflight_testers(days_of_inactivity: 1, app_identifier: "io.robbie.HomeAssistant")
+end
 
-  def complete_version_number
-    return version_string(get_version_number(target: "HomeAssistant"), get_build_number)
-  end
-
-  def bundle_id(suffix="")
-    prefix = get_xcconfig_value(name: "BUNDLE_ID_PREFIX", path: "Configuration/HomeAssistant.xcconfig")
-
-    "#{prefix}.HomeAssistant" + (suffix.empty? ? "" : ".#{suffix}")
-  end
-
-  def bundle_ids(environment="Release")
-    prefixed_bundle_id = bundle_id()
-
-    if environment == "Debug" || environment == "Development" || environment == "Dev"
-      prefixed_bundle_id = bundle_id("dev")
-    elsif environment == "Beta"
-      prefixed_bundle_id = bundle_id("beta")
-    end
-
-    ids = [
-      "APNSAttachmentService",
-      "Intents",
-      "NotificationContentExtension",
-      "TodayWidget",
-      "watchkitapp",
-      "watchkitapp.watchkitextension"
-    ].map { |id| "#{prefixed_bundle_id}.#{id}"}
-
-    ids.unshift("#{prefixed_bundle_id}")
-
-    return ids
-  end
-
-  def provisioning_profile_map(environment="")
-    id = bundle_id()
-    destination = "AppStore"
-    if environment == "Debug" || environment == "Development" || environment == "Dev"
-      id = bundle_id("dev")
-      destination = "Development"
-    elsif environment == "Beta"
-      id = bundle_id("beta")
-    end
-
-    return {
-      "#{id}" => "match #{destination} #{id}",
-      "#{id}.APNSAttachmentService" => "match #{destination} #{id}.APNSAttachmentService",
-      "#{id}.NotificationContentExtension" => "match #{destination} #{id}.NotificationContentExtension",
-      "#{id}.Intents" => "match #{destination} #{id}.Intents",
-      "#{id}.watchkitapp" => "match #{destination} #{id}.watchkitapp",
-      "#{id}.watchkitapp.watchkitextension" => "match #{destination} #{id}.watchkitapp.watchkitextension",
-    }
-  end
-
-  def provisioning_profile_template_name(environment="")
-    if !get_xcconfig_value(name: "ENABLE_CRITICAL_ALERTS", path: "Configuration/HomeAssistant.xcconfig").to_i.zero?
-      if environment == "Debug" || environment == "Development" || environment == "Dev"
-        return "Critical Alerts iOS (Dev)"
-      else
-        return "Critical Alerts iOS (Dist)"
-      end
-    end
-
-    return nil
-  end
-
-  before_all do
-    setup
-  end
-
-  private_lane :setup do
-    ENV["DELIVER_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
-    ENV["FASTLANE_TEAM_ID"] = ENV["HOMEASSISTANT_TEAM_ID"]
-    ENV["MATCH_GIT_URL"] = ENV["HOMEASSISTANT_CERTIFICATE_GIT"]
-    ENV["MATCH_PASSWORD"] = ENV["HOMEASSISTANT_CERTIFICATE_KEY"]
-    ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
-    ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
-    ENV["LOKALISE_API_TOKEN"] = ENV["HOMEASSISTANT_LOKALIZE_TOKEN"]
-    ENV["LOKALISE_PROJECT_ID"] = ENV["HOMEASSISTANT_LOKALIZE_PROJECT_ID"]
-    ENV["PILOT_ITC_PROVIDER"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID"]
-  end
-
-  lane :clean_all_testers do
-    clean_testflight_testers(days_of_inactivity: 1, app_identifier: "io.robbie.HomeAssistant")
-  end
-
-  desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
-  lane :certs do
-    match(app_identifier: [bundle_id(), bundle_id("beta")],
-          type: "appstore",
-          template_name: provisioning_profile_template_name())
-    match(app_identifier: bundle_id("dev"),
-          type: "development",
-          template_name: provisioning_profile_template_name("Dev"))
-
-    appstore_ids = bundle_ids("Release") + bundle_ids("Beta")
-
-    match(app_identifier: appstore_ids, type: "appstore")
-    match(app_identifier: bundle_ids("Dev"), type: "development")
-  end
-
-  lane :refresh_dsyms do
-    FileUtils.mkdir_p '../dSYMs'
-    download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id())
-    dir = "../dSYMS"
-    files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-    upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Release.plist",
-                                  dsym_paths: files, dsym_worker_threads: 6)
-    clean_build_artifacts
-  end
-
-  lane :refresh_beta_dsyms do
-    FileUtils.mkdir_p '../dSYMs'
-    download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id("beta"))
-    dir = "../dSYMS"
-    files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-    upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Beta.plist",
-                                  dsym_paths: files, dsym_worker_threads: 6)
-    clean_build_artifacts
-  end
-
-  desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
-  lane :push_certs do
-    pem(app_identifier: bundle_id(), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-    pem(app_identifier: bundle_id(), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-
-    pem(app_identifier: bundle_id("beta"), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-
-    pem(app_identifier: bundle_id("dev"), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-  end
-
-  desc "Generate proper icons for all build trains"
-  lane :icons do
-    appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing, :macos])
-    appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing, :macos])
-    appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing, :macos])
-
-    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "WatchIcon.dev.appiconset", appicon_devices: [:watch, :watch_marketing])
-    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "WatchIcon.beta.appiconset", appicon_devices: [:watch, :watch_marketing])
-    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_name: "WatchIcon.appiconset", appicon_devices: [:watch, :watch_marketing])
-  end
-
-  desc "Update switftgen input/output files"
-  lane :update_swiftgen_config do
-    sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen config generate-xcfilelists --inputs swiftgen.yml.file-list.in --outputs swiftgen.yml.file-list.out")
-  end
-
-  desc "Download latest localization files from Lokalize"
-  lane :update_strings do |options|
-    token = prompt(
-      text: "API token",
-      ci_input: ENV["LOKALISE_API_TOKEN"],
-      secure_text: true
-    )
-
-    project_id = prompt(
-      text: "Project ID",
-      ci_input: ENV["LOKALISE_PROJECT_ID"],
-      secure_text: true
-    )
-
+lane :download_provisioning_profiles do
+  ["ios", "catalyst", "macos"].each do |platform|
     sh(
-      "lokalise2",
-      "--token", token,
-      "--project-id", project_id,
-      "file", "download",
-      "--format", "ios_sdk",
-      "--bundle-structure", '%LANG_ISO%.lproj/Localizable.%FORMAT%',
-      "--export-empty-as", "base",
-      "--export-sort", "a_z",
-      "--replace-breaks=false",
-      "--include-comments=false",
-      "--include-description=false",
-      "--unzip-to", "../Sources/App/Resources",
-      log: false
+      "bundle", "exec", "fastlane", "sigh", "repair",
+      "-p", platform,
+      "-b", ENV["HOMEASSISTANT_TEAM_ID"],
+      "-u", ENV["SIGH_USERNAME"]
     )
-
-    sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen")
-  end
-
-  desc "Upload localized strings to Lokalise"
-  lane :push_strings do |options|
-    source_directories = [
-      '../Sources/App/Resources/en.lproj',
-    ]
-
-    token = prompt(
-      text: "API token",
-      ci_input: ENV["LOKALISE_API_TOKEN"],
-      secure_text: true
-    )
-
-    project_id = prompt(
-      text: "Project ID",
-      ci_input: ENV["LOKALISE_PROJECT_ID"],
-      secure_text: true
-    )
-
-    source_directories.each do |directory|
-      puts "Enumerating #{directory}..."
-      Dir.each_child(directory) do |file|
-        puts "Uploading file #{file}"
-        sh(
-          "lokalise2",
-          "--token", token,
-          "--project-id", project_id,
-          "file", "upload",
-          "--file", "#{directory}/#{file}",
-          "--lang-iso", "en",
-          log: false
-        )
-      end
-    end
-  end
-
-  desc "Upload App Store Connect metadata to Lokalise"
-  lane :update_lokalise_metadata do
-    lokalise_metadata(action: "update_lokalise", override_translation: true)
-  end
-
-  desc "Download App Store Connect metadata from Lokalise and upload to App Store Connect Connect"
-  lane :update_asc_metadata do
-    lokalise_metadata(action: "update_itunes")
-  end
-
-  private_lane :set_version_info do |options|
-    File.write(
-      '../Configuration/Version.xcconfig', 
-      "MARKETING_VERSION=#{options[:version]}\nCURRENT_PROJECT_VERSION=#{options[:build]}\n"
+    sh(
+      "bundle", "exec", "fastlane", "sigh", "download_all",
+      "-p", platform,
+      "-o", "../Configuration/Provisioning/",
+      "-b", ENV["HOMEASSISTANT_TEAM_ID"],
+      "-u", ENV["SIGH_USERNAME"]
     )
   end
+end
 
-  private_lane :get_xcconfig_marketing_version do
-    sh('cd .. ; . Configuration/Version.xcconfig ; echo $MARKETING_VERSION').strip!
+lane :import_provisioning_profiles do
+  directory = "../Configuration/Provisioning"
+
+  Dir.children(directory).each do |file|
+    next if file.start_with?('.')
+    install_provisioning_profile(path: File.expand_path(File.join(directory, file)))
   end
+end
 
-  private_lane :get_xcconfig_build_number do
-    sh('cd .. ; . Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION').to_i
-  end
+lane :refresh_dsyms do
+  FileUtils.mkdir_p '../dSYMs'
+  download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id())
+  dir = "../dSYMS"
+  files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
+  upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Release.plist",
+                                dsym_paths: files, dsym_worker_threads: 6)
+  clean_build_artifacts
+end
 
-  desc "Bump build number"
-  lane :bump_build do
-    set_version_info(
-      version: get_xcconfig_marketing_version(),
-      build: get_xcconfig_build_number() + 1
-    )
-  end
+lane :refresh_beta_dsyms do
+  FileUtils.mkdir_p '../dSYMs'
+  download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id("beta"))
+  dir = "../dSYMS"
+  files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
+  upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Beta.plist",
+                                dsym_paths: files, dsym_worker_threads: 6)
+  clean_build_artifacts
+end
 
-  desc "Set version number"
-  lane :set_version do |options|
-    version = options[:version]
-    build = options[:build] or 1
+desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
+lane :push_certs do
+  pem(app_identifier: bundle_id(), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+  pem(app_identifier: bundle_id(), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
 
-    if not version
-      if !is_ci
-        version = prompt(text: "Version number: ")
-      else
-        UI.error "no version provided"
-      end
-    end
+  pem(app_identifier: bundle_id("beta"), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
 
-    set_version_info(
-      version: version,
-      build: get_xcconfig_build_number() + build.to_i
-    )
-  end
+  pem(app_identifier: bundle_id("dev"), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+end
 
-  desc "Continous Integration"
-  lane :ci do
-    if is_ci && (git_branch == "master" || git_branch == "beta")
-      ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD"]
+desc "Generate proper icons for all build trains"
+lane :icons do
+  appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing, :macos])
+  appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing, :macos])
+  appicon(appicon_path: "Sources/App/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing, :macos])
 
-      slack(message: "Beginning CI build")
-      create_keychain(
-        name: ENV["MATCH_KEYCHAIN_NAME"],
-        password: ENV["MATCH_PASSWORD"],
-        timeout: 3600,
-        default_keychain: true,
+  appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "WatchIcon.dev.appiconset", appicon_devices: [:watch, :watch_marketing])
+  appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "WatchIcon.beta.appiconset", appicon_devices: [:watch, :watch_marketing])
+  appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_name: "WatchIcon.appiconset", appicon_devices: [:watch, :watch_marketing])
+end
+
+desc "Update switftgen input/output files"
+lane :update_swiftgen_config do
+  sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen config generate-xcfilelists --inputs swiftgen.yml.file-list.in --outputs swiftgen.yml.file-list.out")
+end
+
+desc "Download latest localization files from Lokalize"
+lane :update_strings do |options|
+  token = prompt(
+    text: "API token",
+    ci_input: ENV["LOKALISE_API_TOKEN"],
+    secure_text: true
+  )
+
+  project_id = prompt(
+    text: "Project ID",
+    ci_input: ENV["LOKALISE_PROJECT_ID"],
+    secure_text: true
+  )
+
+  sh(
+    "lokalise2",
+    "--token", token,
+    "--project-id", project_id,
+    "file", "download",
+    "--format", "ios_sdk",
+    "--bundle-structure", '%LANG_ISO%.lproj/Localizable.%FORMAT%',
+    "--export-empty-as", "base",
+    "--export-sort", "a_z",
+    "--replace-breaks=false",
+    "--include-comments=false",
+    "--include-description=false",
+    "--unzip-to", "../Sources/App/Resources",
+    log: false
+  )
+
+  sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen")
+end
+
+desc "Upload localized strings to Lokalise"
+lane :push_strings do |options|
+  source_directories = [
+    '../Sources/App/Resources/en.lproj',
+  ]
+
+  token = prompt(
+    text: "API token",
+    ci_input: ENV["LOKALISE_API_TOKEN"],
+    secure_text: true
+  )
+
+  project_id = prompt(
+    text: "Project ID",
+    ci_input: ENV["LOKALISE_PROJECT_ID"],
+    secure_text: true
+  )
+
+  source_directories.each do |directory|
+    puts "Enumerating #{directory}..."
+    Dir.each_child(directory) do |file|
+      puts "Uploading file #{file}"
+      sh(
+        "lokalise2",
+        "--token", token,
+        "--project-id", project_id,
+        "file", "upload",
+        "--file", "#{directory}/#{file}",
+        "--lang-iso", "en",
+        log: false
       )
+    end
+  end
+end
 
-      app_ids = []
+desc "Upload App Store Connect metadata to Lokalise"
+lane :update_lokalise_metadata do
+  lokalise_metadata(action: "update_lokalise", override_translation: true)
+end
 
-      if git_branch == "master"
-        app_ids = bundle_ids()
-      elsif git_branch == "beta"
-        app_ids = bundle_ids("Beta")
-      end
+desc "Download App Store Connect metadata from Lokalise and upload to App Store Connect Connect"
+lane :update_asc_metadata do
+  lokalise_metadata(action: "update_itunes")
+end
 
-      match(app_identifier: app_ids,
-            type: "appstore",
-            readonly: true,
-            template_name: provisioning_profile_template_name(),
-            keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
-            keychain_password: ENV["MATCH_PASSWORD"])
+private_lane :set_version_info do |options|
+  File.write(
+    '../Configuration/Version.xcconfig', 
+    "MARKETING_VERSION=#{options[:version]}\nCURRENT_PROJECT_VERSION=#{options[:build]}\n"
+  )
+end
 
-      sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
+private_lane :get_xcconfig_marketing_version do
+  sh('cd .. ; . Configuration/Version.xcconfig ; echo $MARKETING_VERSION').strip!
+end
 
-      asc
+private_lane :get_xcconfig_build_number do
+  sh('cd .. ; . Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION').to_i
+end
+
+desc "Bump build number"
+lane :bump_build do
+  set_version_info(
+    version: get_xcconfig_marketing_version(),
+    build: get_xcconfig_build_number() + 1
+  )
+end
+
+desc "Set version number"
+lane :set_version do |options|
+  version = options[:version]
+  build = options[:build] or 1
+
+  if not version
+    if !is_ci
+      version = prompt(text: "Version number: ")
+    else
+      UI.error "no version provided"
     end
   end
 
-  desc "Run tests"
-  lane :test do
-    run_tests(
-      workspace: 'HomeAssistant.xcworkspace', 
-      scheme: 'Tests-Unit', 
-      result_bundle: true
-    )
+  set_version_info(
+    version: version,
+    build: get_xcconfig_build_number() + build.to_i
+  )
+end
+
+desc "Setup Continous Integration"
+lane :setup_ha_ci do
+  raise "No github run number specified" unless ENV['GITHUB_RUN_NUMBER']
+
+  set_version_info(
+    version: get_xcconfig_marketing_version(),
+    build: 100 + ENV['GITHUB_RUN_NUMBER'].to_i
+  )
+
+  # we only expose these keys in ci when appropriate
+  ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
+  ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD"]
+  ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD"]  
+
+  keychain_name = "HomeAssistant-Keychain"
+  keychain_password = SecureRandom.hex
+
+  begin
+    delete_keychain(name: keychain_name)
+  rescue Exception
+    # we don't care if it didn't exist yet
   end
 
-  desc "Submit a new beta build to TestFlight"
-  lane :asc do |options|
+  create_keychain(
+    name: keychain_name,
+    password: keychain_password,
+    timeout: false,
+    unlock: true,
+    add_to_search_list: true
+  )
 
-    # Needed so that the changelog doesn"t include the version bump commit
-    change_log = change_log_since_last_tag
+  KeyAndValue = Struct.new(:key, :value)
 
-    if git_branch == "master"
-      bump_build
-    elsif git_branch == "beta"
-      set_beta_version
-    end
+  [
+    KeyAndValue.new(ENV['P12_KEY_IOS_APP_STORE'], ENV['P12_VALUE_IOS_APP_STORE']),
+    KeyAndValue.new(ENV['P12_KEY_MAC_APP_STORE'], ENV['P12_VALUE_MAC_APP_STORE']),
+    KeyAndValue.new(ENV['P12_KEY_MAC_DEVELOPER_ID'], ENV['P12_VALUE_MAC_DEVELOPER_ID']),
+  ].each do |info|
+    tmp_file = "/tmp/import.p12"
+    File.write(tmp_file, Base64.decode64(info.value))
 
-    clean_build_artifacts
-    clear_derived_data
-
-    cocoapods(repo_update: true)
-
-    if is_ci
-      slack(message: "Completed bump, clean and CocoaPods install, now beginning build")
-    end
-
-    scheme = nil
-    config = nil
-    app_id = nil
-    provisioningProfiles = {}
-
-    if git_branch == "master"
-      scheme = "App-Release"
-      config = "Release"
-      app_id = bundle_id()
-      provisioningProfiles = provisioning_profile_map()
-    elsif git_branch == "beta"
-      scheme = "App-Beta"
-      config = "Beta"
-      app_id = bundle_id("beta")
-      provisioningProfiles = provisioning_profile_map("Beta")
-    end
-
-    gym(scheme: scheme, configuration: config, export_options: { provisioningProfiles: provisioningProfiles }, xcconfig: "Configuration/HomeAssistant.#{config.downcase}.xcconfig")
-
-    if is_ci
-      slack(message: "Build complete, now uploading to TestFlight, this will take 15-60 minutes")
-    end
-
-    pilot(
-      app_identifier: app_id,
-      changelog: change_log,
-      distribute_external: true,
-      groups: ["App Store Connect Users", "Friendly Testers Link", "Public Signup Link", "Website redirect"]
+    import_certificate(
+      certificate_path: tmp_file,
+      certificate_password: info.key,
+      keychain_name: keychain_name,
+      keychain_password: keychain_password
     )
 
-    rocket
+    FileUtils.rm(tmp_file)
+  end
+
+  import_provisioning_profiles
+
+  sh("brew install getsentry/tools/sentry-cli")
+end
+
+desc "Run tests"
+lane :test do
+  run_tests(
+    workspace: 'HomeAssistant.xcworkspace', 
+    scheme: 'Tests-Unit', 
+    result_bundle: true,
+    skip_package_dependencies_resolution: true
+  )
+end
+
+private_lane :provisioning_profile_specifiers do |options|
+  # gym doesn't parse the provisioning profile specifier, so we need to do it ourselves
+  all_targets = JSON.parse(sh(
+    "xcodebuild",
+    "-json",
+    "-showBuildSettings",
+    "-sdk", options[:sdk],
+    "-project", "../HomeAssistant.xcodeproj",
+    "-scheme", "App-Release",
+    "-list",
+    log: false
+  ))["project"]["targets"]
+  settings = JSON.parse(sh([
+      "xcodebuild",
+      "-json",
+      "-showBuildSettings",
+      "-sdk", options[:sdk],
+      "-project", "../HomeAssistant.xcodeproj",
+    ] + all_targets.map { |t| "-target #{t}" },
+    log: false
+  ))
+
+  specifiers = {}
+  settings.each do |target_info|
+    target_name = target_info["target"]
+    specifier = target_info["buildSettings"]["PROVISIONING_PROFILE_SPECIFIER"]
+    bundle_identifier = target_info["buildSettings"]["PRODUCT_BUNDLE_IDENTIFIER"]
+    next unless specifier and bundle_identifier
+    specifiers[bundle_identifier] = specifier
+  end
+
+  specifiers
+end
+
+private_lane :upload_archive_to_sentry do
+  sh("sentry-cli", "upload-dif", lane_context[SharedValues::XCODEBUILD_ARCHIVE])
+end
+
+private_lane :upload_binary_to_apple do |options|
+sh(
+      "xcrun", "altool", "--upload-app", "--type", options[:type],
+      "--file", options[:path],
+      "--username", ENV["DELIVER_USERNAME"],
+      "--password", '@env:FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'
+    )
+end
+
+platform :ios do
+  lane :build do
+    setup_ha_ci if is_ci
+
+    specifiers = provisioning_profile_specifiers(sdk: "iphoneos")
+    ipa_path = build_ios_app(
+      export_method: "app-store",
+      skip_package_dependencies_resolution: true,
+      skip_profile_detection: true,
+      output_directory: "./build/ios",
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: specifiers
+      }
+    )
+    upload_archive_to_sentry
+    upload_binary_to_apple(
+      type: "ios",
+      path: ipa_path
+    )
+  end
+end
+
+platform :mac do
+  lane :build do
+    setup_ha_ci if is_ci
+    
+    specifiers = provisioning_profile_specifiers(sdk: "macosx")
+    developer_id_app_path = build_mac_app(
+      export_method: "developer-id",
+      skip_package_dependencies_resolution: true,
+      skip_profile_detection: true,
+      skip_package_pkg: true,
+      output_directory: "./build/macos",
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: specifiers
+      }
+    )
+    app_store_pkg_path = build_mac_app(
+      archive_path: lane_context[SharedValues::XCODEBUILD_ARCHIVE],
+      export_method: "app-store",
+      skip_package_dependencies_resolution: true,
+      skip_profile_detection: true,
+      skip_build_archive: true,
+      skip_package_pkg: false,
+      output_directory: "./build/macos",
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: specifiers.map { |k, v| [k, v.sub(/Mac Dev ID/, "Mac App Store")] }.to_h
+      }
+    )
+    upload_archive_to_sentry
+    notarize(
+      package: developer_id_app_path,
+      # not the _app_ bundle id, just an id that notarize uses for referencing
+      bundle_id: "io.home-assistant.fastlane.developer-id",
+      verbose: true
+    )
+    sh(
+      "ditto",
+      "-c",
+      "-k",
+      "--sequesterRsrc",
+      "--keepParent",
+      File.expand_path(developer_id_app_path),
+      "../build/macos/home-assistant-mac.zip"
+    )
+    upload_binary_to_apple(
+      type: "osx",
+      path: app_store_pkg_path
+    )
   end
 end
