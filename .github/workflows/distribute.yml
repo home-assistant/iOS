@@ -1,0 +1,4 @@
+name: Distribute
+
+on:
+  workflow_dispatch:
