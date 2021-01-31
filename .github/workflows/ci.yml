@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - master
-      - beta
 
 env:
   FASTLANE_SKIP_UPDATE_CHECK: true
