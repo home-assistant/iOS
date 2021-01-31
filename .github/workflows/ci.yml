@@ -44,9 +44,9 @@ jobs:
       name: "Cache: Gems"
       with:
         path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ hashFiles('**/Gemfile.lock') }}
+        key: ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
-          ${{ runner.os }}-gems-${{ env.ImageVersion }}
+          ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
     - name: Install Gems
       run: |
