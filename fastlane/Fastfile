@@ -65,6 +65,20 @@ lane :import_provisioning_profiles do
   end
 end
 
+lane :update_dsyms do
+  directory = File.expand_path("dSYMs")
+  FileUtils.mkdir_p directory
+
+  download_dsyms(
+    after_uploaded_date: Date.today.prev_day(7).iso8601,
+    app_identifier: "io.robbie.HomeAssistant",
+    output_directory: directory
+  )
+
+  upload_path_to_sentry(path: directory)
+  FileUtils.rm_r directory
+end
+
 lane :refresh_dsyms do
   FileUtils.mkdir_p '../dSYMs'
   download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id())
@@ -320,6 +334,10 @@ private_lane :provisioning_profile_specifiers do |options|
   end
 
   specifiers
+end
+
+private_lane :upload_path_to_sentry do |options|
+  sh("sentry-cli", "upload-dif", options[:path])
 end
 
 private_lane :upload_archive_to_sentry do

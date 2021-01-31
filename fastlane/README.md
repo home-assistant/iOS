@@ -30,6 +30,11 @@ fastlane download_provisioning_profiles
 fastlane import_provisioning_profiles
 ```
 
+### update_dsyms
+```
+fastlane update_dsyms
+```
+
 ### refresh_dsyms
 ```
 fastlane refresh_dsyms
