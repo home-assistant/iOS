@@ -56,7 +56,7 @@ jobs:
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     - name: Run tests
-      run: bundle exec fastlane ios test
+      run: bundle exec fastlane test
 
     - uses: codecov/codecov-action@v1
       name: "Upload Code Coverage"
