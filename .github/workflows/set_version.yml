@@ -5,10 +5,6 @@ on:
       version:
         required: true
         description: "New Version Number"
-      build:
-        required: true
-        description: "Bump Build Amount"
-        default: 1
 jobs:
   bump:
     runs-on: ubuntu-latest
@@ -18,7 +14,7 @@ jobs:
       with:
         ruby-version: '2.7'
         bundler-cache: true
-    - run: "bundle exec fastlane set_version version:${{ github.event.inputs.version }} build:${{ github.event.inputs.build }}"
+    - run: "bundle exec fastlane set_version version:${{ github.event.inputs.version }}"
     - name: Commit changes
       id: commit
       run: |

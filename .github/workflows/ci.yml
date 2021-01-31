@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - master
-      - beta
 
 env:
   FASTLANE_SKIP_UPDATE_CHECK: true
@@ -25,7 +24,7 @@ jobs:
   test:
     runs-on: macos-latest
     env:
-      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
 
@@ -44,17 +43,9 @@ jobs:
       name: "Cache: Gems"
       with:
         path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        key: ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
-          ${{ runner.os }}-gems-
-
-    - uses: actions/cache@v2
-      name: "Cache: Swift Package Manager"
-      with:
-        path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/SourcePackages/
-        key: ${{ runner.os }}-spm-${{ hashFiles('HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-        restore-keys: |
-          ${{ runner.os }}-spm-
+          ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
     - name: Install Gems
       run: |
@@ -65,7 +56,7 @@ jobs:
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     - name: Run tests
-      run: bundle exec fastlane ios test
+      run: bundle exec fastlane test
 
     - uses: codecov/codecov-action@v1
       name: "Upload Code Coverage"

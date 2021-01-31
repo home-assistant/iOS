@@ -15,87 +15,99 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
-## iOS
-### ios clean_all_testers
+### clean_all_testers
 ```
-fastlane ios clean_all_testers
-```
-
-### ios certs
-```
-fastlane ios certs
-```
-Fetches the provisioning profiles so you can build locally and deploy to your device
-### ios refresh_dsyms
-```
-fastlane ios refresh_dsyms
+fastlane clean_all_testers
 ```
 
-### ios refresh_beta_dsyms
+### download_provisioning_profiles
 ```
-fastlane ios refresh_beta_dsyms
+fastlane download_provisioning_profiles
 ```
 
-### ios push_certs
+### import_provisioning_profiles
 ```
-fastlane ios push_certs
+fastlane import_provisioning_profiles
+```
+
+### refresh_dsyms
+```
+fastlane refresh_dsyms
+```
+
+### refresh_beta_dsyms
+```
+fastlane refresh_beta_dsyms
+```
+
+### push_certs
+```
+fastlane push_certs
 ```
 Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password.
-### ios icons
+### icons
 ```
-fastlane ios icons
+fastlane icons
 ```
 Generate proper icons for all build trains
-### ios update_swiftgen_config
+### update_swiftgen_config
 ```
-fastlane ios update_swiftgen_config
+fastlane update_swiftgen_config
 ```
 Update switftgen input/output files
-### ios update_strings
+### update_strings
 ```
-fastlane ios update_strings
+fastlane update_strings
 ```
 Download latest localization files from Lokalize
-### ios push_strings
+### push_strings
 ```
-fastlane ios push_strings
+fastlane push_strings
 ```
 Upload localized strings to Lokalise
-### ios update_lokalise_metadata
+### update_lokalise_metadata
 ```
-fastlane ios update_lokalise_metadata
+fastlane update_lokalise_metadata
 ```
 Upload App Store Connect metadata to Lokalise
-### ios update_asc_metadata
+### update_asc_metadata
 ```
-fastlane ios update_asc_metadata
+fastlane update_asc_metadata
 ```
 Download App Store Connect metadata from Lokalise and upload to App Store Connect Connect
-### ios bump_build
+### set_version
 ```
-fastlane ios bump_build
-```
-Bump build number
-### ios set_version
-```
-fastlane ios set_version
+fastlane set_version
 ```
 Set version number
-### ios ci
+### setup_ha_ci
 ```
-fastlane ios ci
+fastlane setup_ha_ci
 ```
-Continous Integration
-### ios test
+Setup Continous Integration
+### test
 ```
-fastlane ios test
+fastlane test
 ```
 Run tests
-### ios asc
+
+----
+
+## iOS
+### ios build
 ```
-fastlane ios asc
+fastlane ios build
 ```
-Submit a new beta build to TestFlight
+
+
+----
+
+## Mac
+### mac build
+```
+fastlane mac build
+```
+
 
 ----
 

@@ -2,3 +2,53 @@ name: Distribute
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+  
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        kind: [mac, ios]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+      FASTLANE_SKIP_UPDATE_CHECK: true
+      FASTLANE_XCODE_LIST_TIMEOUT: 30
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Gems
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Install Pods
+      run: bundle exec pod install --repo-update
+
+    - name: Build ${{ matrix.kind }}
+      run: |
+        bundle exec fastlane ${{ matrix.kind }} build
+      env:
+        HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
+        HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
+        HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID }}
+        HOMEASSISTANT_TEAM_ID: ${{ secrets.HOMEASSISTANT_TEAM_ID }}
+        P12_KEY_IOS_APP_STORE: ${{ secrets.P12_KEY_IOS_APP_STORE }}
+        P12_KEY_MAC_APP_STORE: ${{ secrets.P12_KEY_MAC_APP_STORE }}
+        P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.P12_KEY_MAC_DEVELOPER_ID }}
+        P12_VALUE_IOS_APP_STORE: ${{ secrets.P12_VALUE_IOS_APP_STORE }}
+        P12_VALUE_MAC_APP_STORE: ${{ secrets.P12_VALUE_MAC_APP_STORE }}
+        P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        # hard-coded so it doesn't cause 'ios' to be *** everywhere in the logs
+        SENTRY_PROJECT: ios
+
+    - uses: actions/upload-artifact@v2
+      name: "Upload Builds"
+      with:
+        name: ${{ matrix.kind }} Builds
+        path: build

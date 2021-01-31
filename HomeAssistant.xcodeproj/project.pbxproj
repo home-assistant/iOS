@@ -324,6 +324,9 @@
 		11F855DB24DF6C7A0018013E /* IconDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D424DF6C7A0018013E /* IconDrawable.swift */; };
 		11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D524DF6C7A0018013E /* IconImageView.swift */; };
 		11F855DD24DF6C7A0018013E /* IconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D524DF6C7A0018013E /* IconImageView.swift */; };
+		11F893B025C5F56700820C61 /* GoogleService-Info-Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */; };
+		11F893B125C5F56700820C61 /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */; };
+		11F893B225C5F56700820C61 /* GoogleService-Info-Beta.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */; };
 		11F89CB224E79E5400C373D9 /* WidgetActionsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */; };
 		11F8A53F25A6ADA400BF1D97 /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
 		11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
@@ -3926,6 +3929,7 @@
 				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
 				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
 				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
+				11F893B025C5F56700820C61 /* GoogleService-Info-Debug.plist in Resources */,
 				B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */,
 				B606167F1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav in Resources */,
 				B60616461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav in Resources */,
@@ -3969,6 +3973,7 @@
 				B64E756423F3BFF200472C04 /* blue@2x.png in Resources */,
 				B60616451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav in Resources */,
 				B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */,
+				11F893B225C5F56700820C61 /* GoogleService-Info-Beta.plist in Resources */,
 				B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */,
 				B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
 				B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */,
@@ -4020,6 +4025,7 @@
 				B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */,
 				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
 				B64E754723F3BFF200472C04 /* old-beta@3x.png in Resources */,
+				11F893B125C5F56700820C61 /* GoogleService-Info-Release.plist in Resources */,
 				38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4420,7 +4426,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh -e";
-			shellScript = "if [[ $CI ]]; then\n    echo \"warning: Critical alerts disabled for CI\"\nelif [[ ${ENABLE_CRITICAL_ALERTS} -eq 1 ]]; then\n    entitlements_file=\"${TARGET_TEMP_DIR}/${FULL_PRODUCT_NAME}.xcent\"\n    /usr/libexec/PlistBuddy -c \"add com.apple.developer.usernotifications.critical-alerts bool true\" \"$entitlements_file\"\nelse\n    echo \"warning: Critical alerts disabled\"\nfi\n";
+			shellScript = "if [[ $CI && $CONFIGURATION != \"Release\" ]]; then\n  echo \"warning: Critical alerts disabled for CI\"\nelif [[ ${ENABLE_CRITICAL_ALERTS} -eq 1 ]]; then\n    entitlements_file=\"${TARGET_TEMP_DIR}/${FULL_PRODUCT_NAME}.xcent\"\n    /usr/libexec/PlistBuddy -c \"add com.apple.developer.usernotifications.critical-alerts bool true\" \"$entitlements_file\"\nelse\n    echo \"warning: Critical alerts disabled\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B8028AFF323FD2C0483872EB /* [CP] Check Pods Manifest.lock */ = {
@@ -5449,6 +5455,7 @@
 					"@loader_path/../Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = bundle;
@@ -5467,6 +5474,7 @@
 					"@loader_path/../Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = bundle;
@@ -5485,6 +5493,7 @@
 					"@loader_path/../Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .MacBridge;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = bundle;
@@ -5561,6 +5570,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				INFOPLIST_FILE = Sources/Launcher/Info.plist;
 				PRODUCT_NAME = "Home Assistant Launcher";
 				PROVISIONING_SUFFIX = .Launcher;
@@ -5572,6 +5582,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				INFOPLIST_FILE = Sources/Launcher/Info.plist;
 				PRODUCT_NAME = "Home Assistant Launcher";
 				PROVISIONING_SUFFIX = .Launcher;
@@ -5583,6 +5594,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				INFOPLIST_FILE = Sources/Launcher/Info.plist;
 				PRODUCT_NAME = "Home Assistant Launcher";
 				PROVISIONING_SUFFIX = .Launcher;
@@ -5756,6 +5768,7 @@
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5826,7 +5839,7 @@
 			baseConfigurationReference = 8E00CA53EFBB621A8470C22A /* Pods-watchOS-WatchExtension-Watch.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6124,6 +6137,7 @@
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6148,6 +6162,7 @@
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6172,6 +6187,7 @@
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6255,7 +6271,7 @@
 			baseConfigurationReference = 1C5C1EC99DF5FCB63422D279 /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6274,7 +6290,7 @@
 			baseConfigurationReference = 755DF7AFFAA21F6CE428E998 /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/WatchApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Watch/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6306,6 +6322,7 @@
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6329,6 +6346,7 @@
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

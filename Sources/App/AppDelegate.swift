@@ -567,15 +567,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
-        #if targetEnvironment(simulator) || DEBUG
-        if FirebaseOptions.defaultOptions() == nil {
-            Current.Log.error("*** Firebase options unavailable ***")
+        let optionsFile: String = {
+            switch Current.appConfiguration {
+            case .Beta: return "GoogleService-Info-Beta"
+            case .Debug, .FastlaneSnapshot: return "GoogleService-Info-Debug"
+            case .Release: return "GoogleService-Info-Release"
+            }
+        }()
+        if let optionsPath = Bundle.main.path(forResource: optionsFile, ofType: "plist"),
+           let options = FirebaseOptions(contentsOfFile: optionsPath) {
+            FirebaseApp.configure(options: options)
         } else {
-            FirebaseApp.configure()
+            fatalError("no firebase config found")
         }
-        #else
-            FirebaseApp.configure()
-        #endif
 
         notificationManager.setupFirebase()
     }
