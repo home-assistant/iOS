@@ -65,34 +65,18 @@ lane :import_provisioning_profiles do
   end
 end
 
-lane :refresh_dsyms do
-  FileUtils.mkdir_p '../dSYMs'
-  download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id())
-  dir = "../dSYMS"
-  files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-  upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Release.plist",
-                                dsym_paths: files, dsym_worker_threads: 6)
-  clean_build_artifacts
-end
+lane :update_dsyms do
+  directory = File.expand_path("dSYMs")
+  FileUtils.mkdir_p directory
 
-lane :refresh_beta_dsyms do
-  FileUtils.mkdir_p '../dSYMs'
-  download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id("beta"))
-  dir = "../dSYMS"
-  files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-  upload_symbols_to_crashlytics(gsp_path: "./Sources/App/Resources/GoogleService-Info-Beta.plist",
-                                dsym_paths: files, dsym_worker_threads: 6)
-  clean_build_artifacts
-end
+  download_dsyms(
+    after_uploaded_date: Date.today.prev_day(7).iso8601,
+    app_identifier: "io.robbie.HomeAssistant",
+    output_directory: directory
+  )
 
-desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
-lane :push_certs do
-  pem(app_identifier: bundle_id(), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-  pem(app_identifier: bundle_id(), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-
-  pem(app_identifier: bundle_id("beta"), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-
-  pem(app_identifier: bundle_id("dev"), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+  upload_path_to_sentry(path: directory)
+  FileUtils.rm_r directory
 end
 
 desc "Generate proper icons for all build trains"
@@ -320,6 +304,10 @@ private_lane :provisioning_profile_specifiers do |options|
   end
 
   specifiers
+end
+
+private_lane :upload_path_to_sentry do |options|
+  sh("sentry-cli", "upload-dif", options[:path])
 end
 
 private_lane :upload_archive_to_sentry do

@@ -30,21 +30,11 @@ fastlane download_provisioning_profiles
 fastlane import_provisioning_profiles
 ```
 
-### refresh_dsyms
+### update_dsyms
 ```
-fastlane refresh_dsyms
-```
-
-### refresh_beta_dsyms
-```
-fastlane refresh_beta_dsyms
+fastlane update_dsyms
 ```
 
-### push_certs
-```
-fastlane push_certs
-```
-Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password.
 ### icons
 ```
 fastlane icons

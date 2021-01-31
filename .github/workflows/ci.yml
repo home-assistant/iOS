@@ -23,6 +23,7 @@ jobs:
 
   test:
     runs-on: macos-latest
+    timeout-minutes: 60
     env:
       DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
     steps:
