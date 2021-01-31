@@ -201,21 +201,12 @@ private_lane :get_xcconfig_marketing_version do
 end
 
 private_lane :get_xcconfig_build_number do
-  sh('cd .. ; . Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION').to_i
-end
-
-desc "Bump build number"
-lane :bump_build do
-  set_version_info(
-    version: get_xcconfig_marketing_version(),
-    build: get_xcconfig_build_number() + 1
-  )
+  sh('cd .. ; . Configuration/Version.xcconfig; echo $CURRENT_PROJECT_VERSION').strip!
 end
 
 desc "Set version number"
 lane :set_version do |options|
   version = options[:version]
-  build = options[:build] or 1
 
   if not version
     if !is_ci
@@ -227,7 +218,7 @@ lane :set_version do |options|
 
   set_version_info(
     version: version,
-    build: get_xcconfig_build_number() + build.to_i
+    build: get_xcconfig_build_number()
   )
 end
 
@@ -237,7 +228,7 @@ lane :setup_ha_ci do
 
   set_version_info(
     version: get_xcconfig_marketing_version(),
-    build: 100 + ENV['GITHUB_RUN_NUMBER'].to_i
+    build: get_xcconfig_build_number() + "." + ENV['GITHUB_RUN_NUMBER']
   )
 
   # we only expose these keys in ci when appropriate

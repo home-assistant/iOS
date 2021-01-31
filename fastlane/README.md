@@ -75,11 +75,6 @@ Upload App Store Connect metadata to Lokalise
 fastlane update_asc_metadata
 ```
 Download App Store Connect metadata from Lokalise and upload to App Store Connect Connect
-### bump_build
-```
-fastlane bump_build
-```
-Bump build number
 ### set_version
 ```
 fastlane set_version
