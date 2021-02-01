@@ -48,7 +48,7 @@ jobs:
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
           git add Sources/\*.strings
-          git commit -m "Update Localized Strings"
+          git commit -m "Update Localized Strings" || true
           git clean -xfd
           echo ::set-output name=pr_title::"$(git log -1 --pretty='%s')"
       - name: Create Pull Request
