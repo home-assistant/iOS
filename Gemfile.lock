@@ -144,7 +144,6 @@ GEM
       json
       mini_magick (>= 4.9.4, < 5.0.0)
     fastlane-plugin-clean_testflight_testers (0.3.0)
-    fastlane-plugin-sentry (1.8.0)
     ffi (1.14.2)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -281,8 +280,7 @@ DEPENDENCIES
   fastlane
   fastlane-plugin-appicon
   fastlane-plugin-clean_testflight_testers
-  fastlane-plugin-sentry
   synx
 
 BUNDLED WITH
-   2.2.2
+   2.2.6
