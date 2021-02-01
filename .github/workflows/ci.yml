@@ -7,9 +7,11 @@ on:
       - master
 
 env:
+  DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 30
   MATCH_KEYCHAIN_NAME: "gh_actions"
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
 
 jobs:
   SwiftLint:
@@ -24,8 +26,6 @@ jobs:
   test:
     runs-on: macos-latest
     timeout-minutes: 60
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
 
