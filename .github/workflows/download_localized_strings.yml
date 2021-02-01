@@ -44,7 +44,6 @@ jobs:
       - name: Commit changes
         id: commit
         run: |
-          git checkout -- HomeAssistant.xcodeproj/project.pbxproj
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
           git add Sources/\*.strings
