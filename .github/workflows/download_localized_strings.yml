@@ -5,16 +5,21 @@ on:
   # If there are no changes, this does nothing. If there are changes, it either creates or updates an existing PR.
   - cron: '0 6 * * *'
 
+env:
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+
 jobs:
   update_strings:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
 
       - name: Install Lokalise2
         run: |
           brew tap lokalise/cli-2
-          HOMEBREW_NO_INSTALL_CLEANUP=TRUE brew install lokalise2
+          brew install lokalise2
 
       - name: Install Gems
         run: |
@@ -42,7 +47,8 @@ jobs:
           git checkout -- HomeAssistant.xcodeproj/project.pbxproj
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
-          git commit -am "Update Localized Strings"
+          git add Sources/\*.string
+          git commit -m "Update Localized Strings"
           git clean -xfd
           echo ::set-output name=pr_title::"$(git log -1 --pretty='%s')"
       - name: Create Pull Request
