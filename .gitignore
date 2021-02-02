@@ -80,3 +80,4 @@ dSYMs/
 Configuration/HomeAssistant.overrides.xcconfig
 
 *.profraw
+Brewfile.lock.json

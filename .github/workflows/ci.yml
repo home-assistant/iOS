@@ -48,6 +48,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
+    - name: Install Brews
+      run: brew bundle
+
     - name: Install Gems
       run: |
         bundle config path vendor/bundle

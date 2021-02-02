@@ -16,10 +16,8 @@ jobs:
         with:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
 
-      - name: Install Lokalise2
-        run: |
-          brew tap lokalise/cli-2
-          brew install lokalise2
+      - name: Install Brews
+        run: brew bundle
 
       - name: Install Gems
         run: |

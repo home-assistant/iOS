@@ -21,6 +21,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install Brews
+      run: brew bundle
+
     - name: Install Gems
       run: |
         bundle config path vendor/bundle
