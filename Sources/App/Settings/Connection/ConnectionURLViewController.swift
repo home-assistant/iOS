@@ -35,13 +35,11 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
     }
 
     enum SaveError: LocalizedError {
-        case nabuCasa
         case lastURL
         case validation([ValidationError])
 
         var errorDescription: String? {
             switch self {
-            case .nabuCasa: return L10n.Errors.noRemoteUiUrl
             case .lastURL: return L10n.Settings.ConnectionSection.Errors.cannotRemoveLastUrl
             case .validation(let errors): return errors.map(\.msg).joined(separator: "\n")
             }
@@ -49,7 +47,6 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
         var isFinal: Bool {
             switch self {
-            case .nabuCasa: return true
             case .lastURL: return true
             case .validation: return true
             }
@@ -59,10 +56,6 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
     private func check(url: URL?, useCloud: Bool?, validationErrors: [ValidationError]) throws {
         if !validationErrors.isEmpty {
             throw SaveError.validation(validationErrors)
-        }
-
-        if url?.host?.contains("nabu.casa") == true {
-            throw SaveError.nabuCasa
         }
 
         if url == nil, let existingInfo = Current.settingsStore.connectionInfo {
