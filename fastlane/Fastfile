@@ -98,15 +98,13 @@ end
 
 desc "Download latest localization files from Lokalize"
 lane :update_strings do |options|
-  token = prompt(
+  token = ENV["LOKALISE_API_TOKEN"] || prompt(
     text: "API token",
-    ci_input: ENV["LOKALISE_API_TOKEN"],
     secure_text: true
   )
 
-  project_id = prompt(
+  project_id = ENV["LOKALISE_PROJECT_ID"] || prompt(
     text: "Project ID",
-    ci_input: ENV["LOKALISE_PROJECT_ID"],
     secure_text: true
   )
 
@@ -135,15 +133,13 @@ lane :push_strings do |options|
     '../Sources/App/Resources/en.lproj',
   ]
 
-  token = prompt(
+  token = ENV["LOKALISE_API_TOKEN"] || prompt(
     text: "API token",
-    ci_input: ENV["LOKALISE_API_TOKEN"],
     secure_text: true
   )
 
-  project_id = prompt(
+  project_id = ENV["LOKALISE_PROJECT_ID"] || prompt(
     text: "Project ID",
-    ci_input: ENV["LOKALISE_PROJECT_ID"],
     secure_text: true
   )
 
@@ -259,8 +255,6 @@ lane :setup_ha_ci do
   end
 
   import_provisioning_profiles
-
-  sh("brew install getsentry/tools/sentry-cli")
 end
 
 desc "Run tests"
@@ -316,12 +310,12 @@ private_lane :upload_archive_to_sentry do
 end
 
 private_lane :upload_binary_to_apple do |options|
-sh(
-      "xcrun", "altool", "--upload-app", "--type", options[:type],
-      "--file", options[:path],
-      "--username", ENV["DELIVER_USERNAME"],
-      "--password", '@env:FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'
-    )
+  sh(
+    "xcrun", "altool", "--upload-app", "--type", options[:type],
+    "--file", options[:path],
+    "--username", ENV["DELIVER_USERNAME"],
+    "--password", '@env:FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'
+  )
 end
 
 platform :ios do
