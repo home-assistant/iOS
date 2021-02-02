@@ -8,17 +8,17 @@ Home Assistant for Apple Platforms
 
 ## Getting Started
 
-Home Assistant uses Bundler, Cocoapods and Swift Package Manager to manage build dependencies. You'll need Xcode 12.1 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get this running using the following commands:
+Home Assistant uses Bundler and Cocoapods to manage build dependencies. You'll need Xcode 12.3 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get the app running using the following commands:
 
 ```bash
 git clone https://github.com/home-assistant/iOS.git
 cd iOS
-[sudo] gem install bundler
+# if you don't have bundler already, [sudo] gem install bundler
 bundle install
 bundle exec pod install --repo-update
 ```
 
-Once this completes, you can launch  `HomeAssistant.xcworkspace` and run the `Debug` target onto your simulator or iOS device.
+Once this completes, you can launch  `HomeAssistant.xcworkspace` and run the `App-Debug` scheme onto your simulator or iOS device.
 
 ## Code Signing
 
@@ -31,7 +31,7 @@ DEVELOPMENT_TEAM = YourTeamID
 BUNDLE_ID_PREFIX = some.bundle.prefix
 ```
 
-Xcode should generate provisioning profiles in your Team ID and our configuration will disable features your team doesn't have like Critical Alerts. You can find your Team ID on Apple's [developer portal](https://developer.apple.com/account).
+Xcode should generate provisioning profiles in your Team ID and our configuration will disable features your team doesn't have like Critical Alerts. You can find your Team ID on Apple's [developer portal](https://developer.apple.com/account); it looks something like `ABCDEFG123`.
 
 ## Code style
 
@@ -39,26 +39,11 @@ SwiftLint runs as part of Pull Request checks and will run automatically when bu
 
 ## Continuous Integration
 
-We are using [Github Actions](https://github.com/home-assistant/iOS/actions) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [App Store Connect](https://appstoreconnect.apple.com) later on.
+We use [Github Actions](https://github.com/home-assistant/iOS/actions) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [App Store Connect](https://appstoreconnect.apple.com). Mac Developer ID builds are available as an artifact on every build of master.
 
 ### Environment variables
 
-To make sure Fabric and App Store Connect can deploy, make sure you have them set to something similar to the following environment variables. **The values are only examples!**.
-
-**Note:** For ENV variables to work in Xcode you to set `$ defaults write com.apple.dt.Xcode UseSanitizedBuildSystemEnvironment -bool NO` and launch Xcode from the terminal. [Apple Developer Forums](https://forums.developer.apple.com/thread/8451)
-
-#### Signing
-
-- `HOMEASSISTANT_CERTIFICATE_KEY`: The Certificate key used in [Match](https://github.com/fastlane/fastlane/tree/master/match)
-- `HOMEASSISTANT_CERTIFICATE_USER`: The username for the git being where Match is saving the Certificates.
-- `HOMEASSISTANT_CERTIFICATE_TOKEN`: The access token for the git being where Match is saving the Certificates.
-- `HOMEASSISTANT_CERTIFICATE_GIT`: The address or the git being where Match is saving the Certificates. (e.g. https://gitlab.com/username/Certificates)
-
-#### App Store Connect deployment
-
-- `HOMEASSISTANT_TEAM_ID`: Team ID from [App Store Connect Membership](https://developer.apple.com/account/#/membership)
-- `HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID`: Team ID from [App Store Connect](https://appstoreconnect.apple.com/). (`$ pilot list` to check the number)
-- `HOMEASSISTANT_APPLE_ID`: Your Apple ID (e.g. john@apple.com)
+Fastlane scripts read from the environment or `.env` file for configuration like team IDs. See [`.env.sample`](https://github.com/home-assistant/iOS/blob/master/.env.sample) for available values.
 
 ### Deployment
 
@@ -67,7 +52,10 @@ Although all the deployment is done through Github Actions, you can do it manual
 ### Deployment to App Store Connect
 
 ```bash
-bundle exec fastlane asc
+# creates the builds and uploads to the app store
+# each save their artifacts to build/
+bundle exec fastlane mac build
+bundle exec fastlane ios build
 ```
 
 ## Contributing
