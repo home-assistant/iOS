@@ -135,7 +135,7 @@
 "menu.application.preferences" = "Tercihler…";
 "menu.file.update_sensors" = "Sensörleri Güncelle";
 "menu.help.help" = "%@ Yardım";
-"menu.status_item.quit" = "Quit";
+"menu.status_item.quit" = "Çık";
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
 "nfc.detail.copy" = "Panoya kopyala";
