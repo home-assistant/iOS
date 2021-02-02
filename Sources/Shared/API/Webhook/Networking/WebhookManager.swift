@@ -547,23 +547,25 @@ extension WebhookManager: URLSessionDataDelegate {
         Current.Log.notify("starting \(request.type) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        Current.api.then(on: nil) { (api: HomeAssistantAPI) -> Promise<Void> in
-            let handler = handlerType.init(api: api)
-            let handlerPromise = firstly {
-                handler.handle(request: .value(request), result: result)
-            }.done { [weak self] result in
-                // keep the handler around until it finishes
-                withExtendedLifetime(handler) {
-                    self?.handle(result: result)
+        Current.backgroundTask(withName: "webhook-invoke") { _ in
+            Current.api.then(on: nil) { (api: HomeAssistantAPI) -> Promise<Void> in
+                let handler = handlerType.init(api: api)
+                let handlerPromise = firstly {
+                    handler.handle(request: .value(request), result: result)
+                }.done { [weak self] result in
+                    // keep the handler around until it finishes
+                    withExtendedLifetime(handler) {
+                        self?.handle(result: result)
+                    }
                 }
-            }
 
-            return when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
-        }.tap {
-            resolver?.resolve($0)
-        }.ensure {
-            Current.Log.notify("finished \(request.type) \(handlerType)")
-            sessionInfo.eventGroup.leave()
+                return when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+            }.tap {
+                resolver?.resolve($0)
+            }.ensure {
+                Current.Log.notify("finished \(request.type) \(handlerType)")
+                sessionInfo.eventGroup.leave()
+            }
         }.cauterize()
     }
 }
