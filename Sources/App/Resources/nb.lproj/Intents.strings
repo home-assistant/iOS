@@ -19,7 +19,7 @@
 "7NpJ76-50P1YJ" = "Plasseringen oppdatert til innholdet fra utklippstavlen som ble analysert som adresse";
 "7NpJ76-dC8g33" = "Plasseringen oppdatert til innholdet fra utklippstavlen som ble analysert som koordinater";
 "7NpJ76-F708zM" = "Plasseringen oppdatert til innholdet i utklippstavlen som ble analysert som gjeldende plassering";
-"8BMgur" = "Sendingen $ {eventName} til Home Assistant var vellykket";
+"8BMgur" = "Sendingen ${eventName} til Home Assistant var vellykket";
 "8skKro" = "Hvilke handlinger?";
 "AnaTY4" = "Hvilken?";
 "B4bXyc" = "Vellykket gjengitt mal";
@@ -70,7 +70,7 @@
 "KNyYFZ" = "Det er ${count} valg som samsvarer med '${service}'.";
 "KU19Ap" = "Mislyktes å utføre handlingen, innholdet i utklippstavlen ikke analyseres";
 "KzOHYA" = "Kan ikke hente kamerabilde, feil: ${error}";
-"le6NdS" = "Utfør tjeneste ${serviceDomain} . ${service} med data: ${payload}";
+"le6NdS" = "Utfør tjeneste ${serviceDomain}.${service} med data: ${payload}";
 "lGqSSG" = "Kunne ikke oppdatere sensorer.";
 "Lgymq2" = "Hvilken tjeneste?";
 "lNmaCR" = "Mal";
@@ -108,7 +108,7 @@
 "r6LXFe" = "Mislykket!";
 "RCQAlr" = "Hente kamerabilde fra ${cameraID}";
 "rFSNpu" = "Utfør ${serviceDomain}.${service} med data";
-"ri4H1h" = "Vellykket sendt ${domain} . ${service} med utklippstavleinnhold til Home Assistant";
+"ri4H1h" = "Vellykket sendt ${domain}.${service} med utklippstavleinnhold til Home Assistant";
 "rlOS6H" = "Vellykket gjengitt mal fra utklippstavlen";
 "RMQY3r" = "Sende plasseringen til Home Assistant";
 "rOlW1x" = "Hvilken plassering ønsker du å sende?";

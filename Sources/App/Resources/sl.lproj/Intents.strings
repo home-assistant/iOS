@@ -107,7 +107,7 @@
 "r32M7N" = "Failed: ${error}";
 "r6LXFe" = "Neuspešno!";
 "RCQAlr" = "Pridobite sliko kamere iz ${cameraID}";
-"rFSNpu" = "Klicana ${domain}. ${service}";
+"rFSNpu" = "Klicana ${domain}.${service}";
 "ri4H1h" = "Uspešno poslana ${domene}.${service} z vsebino odložišča na Home Assistant";
 "rlOS6H" = "Uspešno upodobljena predloga iz odložišča";
 "RMQY3r" = "Pošlji lokacijo na Home Assistant";
@@ -123,14 +123,14 @@
 "TRZLwT" = "Katera?";
 "tycImk" = "Performs an action defined in the app";
 "ULka1b" = "Dejanja";
-"uUk5RX" = "Pokličite ${serviceDomain}. ${service} s podatki";
+"uUk5RX" = "Pokličite ${serviceDomain}.${service} s podatki";
 "v7TSD5" = "Pošlji lokacijo";
 "vAIAF2" = "Pošlji posodobitev senzorja na Home Assistant";
 "VEQtEQ" = "Get Camera Image from ${cameraID}";
 "VGzL7U" = "Failed to update location, the clipboard contents could not be parsed";
 "VP2XpM" = "Podatki o dogodku";
 "wfPQQQ" = "Zaženite dogodek iz seznama dogodkov Home Assistant";
-"wKnW1P" = "Pokličite storitev ${serviceDomain} . ${service} s podatki iz odložišča";
+"wKnW1P" = "Pokličite storitev ${serviceDomain}.${service} s podatki iz odložišča";
 "WXKbGy" = "Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.";
 "X02YQ2" = "${action}";
 "X4A8Cc" = "Storitvena domena";

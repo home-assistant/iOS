@@ -123,14 +123,14 @@
 "TRZLwT" = "Which one?";
 "tycImk" = "Performs an action defined in the app";
 "ULka1b" = "Actions";
-"uUk5RX" = "Pyydä ${serviceDomain}.${Service} tiedoilla";
+"uUk5RX" = "Pyydä ${serviceDomain}.${service} tiedoilla";
 "v7TSD5" = "Lähetä sijaintia";
 "vAIAF2" = "Send a sensor update to Home Assistant";
 "VEQtEQ" = "Hae kuvaa kameralta ${cameraID}";
 "VGzL7U" = "Sijaintia ei voitu päivittää, leikepöydän sisältöä ei voitu jäsentää";
 "VP2XpM" = "Event Data";
 "wfPQQQ" = "Lähetä tapahtumaa Kotiavustajan tapahtumaväylään";
-"wKnW1P" = "Palvelupyyntö ${serviceDomain}.${Service} leikepöydän tiedoilla";
+"wKnW1P" = "Palvelupyyntö ${serviceDomain}.${service} leikepöydän tiedoilla";
 "WXKbGy" = "Lähetä sijainti Kotiavustajalle. Leikepöydän sisältöä yritetään käyttää sijainniksi, muuten käytetään nykyistä sijaintia.";
 "X02YQ2" = "${action}";
 "X4A8Cc" = "Service Domain";

@@ -26,7 +26,7 @@
 "boiLEw" = "È stato trovato del codice JSON negli appunti, ma non era valido.";
 "bqPSU7" = "Impossibile ottenere l'immagine della telecamera, Home Assistant non è attualmente raggiungibile";
 "c00c45" = "Lancia un evento";
-"CiB3s6" = "Chiama il servizio ${serviceDomain}.$ {service} con i dati degli appunti";
+"CiB3s6" = "Chiama il servizio ${serviceDomain}.${service} con i dati degli appunti";
 "cK9jdK" = "Impossibile eseguire il rendering del modello. Errore: ${error}";
 "cLmTme" = "Action";
 "CmlkE4" = "shortcut_event";
@@ -78,7 +78,7 @@
 "LVEY3e" = "ID fotocamera";
 "lxHlyQ" = "Lancia un evento";
 "mAibJP" = "Impossibile ottenere l'immagine della telecamera, Home Assistant non è attualmente raggiungibile";
-"MDmaRg" = "Chiama il servizio￼ ${serviceDomain}.$ {service}";
+"MDmaRg" = "Chiama il servizio￼ ${serviceDomain}.${service}";
 "mgspvx" = "Ultima foto dell'entità della telecamera ${cameraID} trovata negli appunti è stata copiata negli appunti.";
 "mi6B62" = "Quali dati vuoi inviare con l'evento?";
 "mJ6CrP" = "Impossibile inviare ${eventName} a Home Assistant con errore: ${error}";
@@ -123,14 +123,14 @@
 "TRZLwT" = "Quale?";
 "tycImk" = "Performs an action defined in the app";
 "ULka1b" = "Azioni";
-"uUk5RX" = "Chiamare ${serviceDomain}. ${service} con i dati";
+"uUk5RX" = "Chiamare ${serviceDomain}.${service} con i dati";
 "v7TSD5" = "Invia posizione";
 "vAIAF2" = "Invia un aggiornamento dei sensori ad Home Assistant";
 "VEQtEQ" = "Ottieni l'immagine della telecamera da ${cameraID}";
 "VGzL7U" = "Impossibile aggiornare la posizione, il contenuto degli appunti non può essere analizzato";
 "VP2XpM" = "Dati Evento";
 "wfPQQQ" = "Lancia un evento sul bus eventi Home Assistant";
-"wKnW1P" = "Chiama il servizio ${serviceDomain}.$ {service} con i dati degli appunti";
+"wKnW1P" = "Chiama il servizio ${serviceDomain}.${service} con i dati degli appunti";
 "WXKbGy" = "Invia una posizione a Home Assistant. Si tenterà di usare il contenuto degli appunti come posizione, altrimenti si utilizzerà la posizione corrente.";
 "X02YQ2" = "${action}";
 "X4A8Cc" = "Dominio di servizio";

@@ -19,7 +19,7 @@
 "7NpJ76-50P1YJ" = "Diweddarwyd y lleoliad i gynnwys y clipfwrdd a gafodd ei ddosrannu fel Address";
 "7NpJ76-dC8g33" = "Diweddarwyd y lleoliad i gynnwys y clipfwrdd a gafodd ei ddosrannu fel Coordinates";
 "7NpJ76-F708zM" = "Diweddarwyd y lleoliad i gynnwys y clipfwrdd a gafodd ei ddosrannu fel Lleoliad Cyfredol";
-"8BMgur" = "Wedi llwyddo i anfon $ {eventName} at Home Assistant";
+"8BMgur" = "Wedi llwyddo i anfon ${eventName} at Home Assistant";
 "8skKro" = "Which actions?";
 "AnaTY4" = "Which one?";
 "B4bXyc" = "Templed wedi'i drawsnewid yn llwyddiannus";
@@ -106,9 +106,9 @@
 "qzje4k" = "Wedi methu cysylltu gwasanaeth gyda gwall: ${error}";
 "r32M7N" = "Failed: ${error}";
 "r6LXFe" = "Unsuccessful!";
-"RCQAlr" = "Cyrchu Delwedd Camera o $ {cameraID}";
+"RCQAlr" = "Cyrchu Delwedd Camera o ${cameraID}";
 "rFSNpu" = "Wedi cysylltu ${domain}.${service}";
-"ri4H1h" = "Wedi llwyddo i anfon ${domain}. ${service} gyda chynnwys y clipfwrdd i Home Assistant";
+"ri4H1h" = "Wedi llwyddo i anfon ${domain}.${service} gyda chynnwys y clipfwrdd i Home Assistant";
 "rlOS6H" = "Templed wedi'i drawsnewid yn llwyddiannus o'r clipfwrdd";
 "RMQY3r" = "Anfon lleoliad at Home Assistant";
 "rOlW1x" = "Pa leoliad ydych chi am ei anfon?";

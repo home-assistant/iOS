@@ -130,7 +130,7 @@
 "VGzL7U" = "更新座標失敗，剪貼簿內容無法解析";
 "VP2XpM" = "事件資料";
 "wfPQQQ" = "於 Home Assistant 事件系統匯流排中執行事件";
-"wKnW1P" = "以剪貼簿資料執行 {serviceDomain}.${service}";
+"wKnW1P" = "以剪貼簿資料執行 ${serviceDomain}.${service}";
 "WXKbGy" = "傳送座標至Home Assistant。將會嘗試以剪貼簿內容作為座標，否則則以目前座標傳送。";
 "X02YQ2" = "${action}";
 "X4A8Cc" = "服務範圍";
