@@ -20,6 +20,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
     fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
+    fileprivate var watchConnectivityWatchdogTimer: Timer?
 
     override init() {
         (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
@@ -78,15 +79,15 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             switch task {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
-                Current.Log.verbose("WKWatchConnectivityRefreshBackgroundTask received")
+                Current.Log.verbose("WKApplicationRefreshBackgroundTask received")
 
-                firstly {
-                    updateComplications()
-                }.then {
+                Current.api.then(on: nil) {
+                    $0.updateComplications(passively: true)
+                }.ensureThen {
                     Current.backgroundRefreshScheduler.schedule()
-                }.done {
+                }.ensure {
                     backgroundTask.setTaskCompletedWithSnapshot(false)
-                }
+                }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
                 snapshotTask.setTaskCompleted(restoredDefaultState: true,
@@ -212,30 +213,54 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
-            self.updateComplications().done {
+            Current.api.then(on: nil) {
+                $0.updateComplications(passively: true)
+            }.ensure {
                 self.endWatchConnectivityBackgroundTaskIfNecessary()
-            }
+            }.cauterize()
         }
 
         ComplicationInfo.observe { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
-            self.updateComplications().done {
+            Current.api.then(on: nil) {
+                $0.updateComplications(passively: true)
+            }.ensure {
                 self.endWatchConnectivityBackgroundTaskIfNecessary()
-            }
+            }.cauterize()
         }
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {
         DispatchQueue.main.async { [self] in
-            if Communicator.shared.hasPendingDataToBeReceived {
-                // wait for it to send the next set of data
-                watchConnectivityBackgroundPromise.done {
-                    task.setTaskCompletedWithSnapshot(false)
-                }
-            } else {
+            guard Communicator.shared.hasPendingDataToBeReceived else {
                 // nothing else to be received
                 task.setTaskCompletedWithSnapshot(false)
+                return
+            }
+
+            // wait for it to send the next set of data
+            watchConnectivityBackgroundPromise.done {
+                task.setTaskCompletedWithSnapshot(false)
+            }
+
+            if watchConnectivityWatchdogTimer == nil || watchConnectivityWatchdogTimer?.isValid == false {
+                // 10s should be more than enough time, and the system timer's at 15s (last tested watchOS 7)
+                let timer = Timer.scheduledTimer(
+                    withTimeInterval: 10.0,
+                    repeats: true
+                ) { [weak self] _ in
+                    // we endeavor to not need this timer, but apple's api is so difficult to micromanage
+                    // that it's just safer to guess and check every few seconds
+                    Current.Log.info("ending background task due to our own watchdog timer")
+                    self?.endWatchConnectivityBackgroundTaskIfNecessary()
+                }
+
+                watchConnectivityBackgroundPromise.done {
+                    timer.invalidate()
+                }
+
+                watchConnectivityWatchdogTimer = timer
             }
         }
     }
@@ -248,14 +273,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             watchConnectivityBackgroundSeal(())
             // and set up a new one for the next chain of updates
             (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
-        }
-    }
-
-    func updateComplications() -> Guarantee<Void> {
-        Current.api.then(on: nil) {
-            $0.updateComplications(passively: true)
-        }.recover { _ in
-            ()
         }
     }
 
