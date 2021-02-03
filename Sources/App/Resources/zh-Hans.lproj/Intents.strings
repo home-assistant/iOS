@@ -78,7 +78,7 @@
 "LVEY3e" = "相机ID";
 "lxHlyQ" = "触发事件";
 "mAibJP" = "无法获取摄像头图像，Home Assistant目前无法访问。";
-"MDmaRg" = "调用服务${serviceDomain}.{service}";
+"MDmaRg" = "调用服务${serviceDomain}.${service}";
 "mgspvx" = "来自剪贴板中相机${cameraID}的静止帧已经发送到剪贴板。";
 "mi6B62" = "您想随事件发送什么数据？";
 "mJ6CrP" = "向Home Assistant发送${eventName}失败，错误信息：${error}";

@@ -55,11 +55,11 @@
 "gv7Gg6" = "Местоположение";
 "h1xQ53" = "Update Sensors";
 "HCM8Oe" = "Fire ${eventName} with data";
-"hLFNfv" = "Не удалось получить изображение с камеры с ошибкой: $ {error}";
+"hLFNfv" = "Не удалось получить изображение с камеры с ошибкой: ${error}";
 "HoH8wg" = "Actions";
 "HSLcG7" = "Event Name";
 "hsrlTY" = "Получите один неподвижный кадр с камеры";
-"iU3gao" = "Просто чтобы подтвердить, вы хотели \"$ {service} \"?";
+"iU3gao" = "Просто чтобы подтвердить, вы хотели \"${service} \"?";
 "j9Oxa5" = "Который из?";
 "jtqxOg" = "Просто чтобы подтвердить, вы хотели ‘${action}’?";
 "kGB23u" = "Выполнить действие";
@@ -69,7 +69,7 @@
 "KM7mXC" = "Действие";
 "KNyYFZ" = "There are ${count} options matching ‘${service}’.";
 "KU19Ap" = "Не удалось запустить событие, содержимое буфера обмена не может быть проанализировано";
-"KzOHYA" = "Не удалось получить изображение с камеры с ошибкой: $ {error}";
+"KzOHYA" = "Не удалось получить изображение с камеры с ошибкой: ${error}";
 "le6NdS" = "Call service ${serviceDomain}.${service} with data: ${payload}";
 "lGqSSG" = "Failed to update sensors.";
 "Lgymq2" = "Which service?";
@@ -104,7 +104,7 @@
 "QmGpOH" = "Ошибка";
 "QVD2lM" = "Service Data";
 "qzje4k" = "Вызов службы неуспешен: ${error}";
-"r32M7N" = "Ошибка: {error}";
+"r32M7N" = "Ошибка: ${error}";
 "r6LXFe" = "Unsuccessful!";
 "RCQAlr" = "Get Camera Image from ${cameraID}";
 "rFSNpu" = "Вызвана служба ${domain}.${service}";
@@ -116,7 +116,7 @@
 "rwj6u7" = "Отправить ${location} в качестве вашей геопозиции в Home Assistant";
 "sbkx4E" = "Не удалось расшифровать ${pasteboardContents} в данные геопозиции";
 "sfDGvk" = "Интерпретировать шаблон";
-"SGxPSB" = "$ {serviceDescription}";
+"SGxPSB" = "${serviceDescription}";
 "sNFoWe" = "Which camera?";
 "sQJAJS" = "Ошибка";
 "tHPm96" = "Ваша геопозиция отправлена";

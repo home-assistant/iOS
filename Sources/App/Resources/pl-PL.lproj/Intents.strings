@@ -36,7 +36,7 @@
 "dFHPYK" = "Pomyślnie wykonano ${action}.";
 "DKg2kH" = "Potwierdzając, chcesz wybrać ‘${cameraID}’?";
 "DsasVx" = "Błąd";
-"EWqRDj" = "Nie udało się wykonać akcji: ${błąd}";
+"EWqRDj" = "Nie udało się wykonać akcji: ${error}";
 "f1KX0Q" = "Wyświetl i uruchom akcje";
 "FBQiVD" = "Wywołaj usługę bezpośrednio w Home Assistant";
 "fkQXDn" = "Istnieje ${count} opcji pasujących do ‘${action}’.";
@@ -104,7 +104,7 @@
 "QmGpOH" = "Błąd";
 "QVD2lM" = "Dane usługi";
 "qzje4k" = "Nie udało się wywołać usługi, wystąpił błąd: ${error}";
-"r32M7N" = "Nie udało się: ${błąd}";
+"r32M7N" = "Nie udało się: ${error}";
 "r6LXFe" = "Nie powiodło się!";
 "RCQAlr" = "Pobierz obraz z kamery ${cameraID}";
 "rFSNpu" = "Wywołano ${domain}.${service}";

@@ -19,7 +19,7 @@
 "7NpJ76-50P1YJ" = "Ubicació actualitzada als continguts del porta-retalls analitzats com a Adreça";
 "7NpJ76-dC8g33" = "Ubicació actualitzada als continguts del porta-retalls analitzats com a Coordenades";
 "7NpJ76-F708zM" = "Ubicació actualitzada als continguts del porta-retalls analitzats com a Ubicació actual";
-"8BMgur" = "S'ha enviat $ {eventName} amb èxit al Home Assistant";
+"8BMgur" = "S'ha enviat ${eventName} amb èxit al Home Assistant";
 "8skKro" = "Quines accions?";
 "AnaTY4" = "Quin?";
 "B4bXyc" = "Plantilla renderitzada correctament";
@@ -107,7 +107,7 @@
 "r32M7N" = "No s'ha pogut: ${error}";
 "r6LXFe" = "Sense èxit";
 "RCQAlr" = "Obtenir la imatge de la càmera de ${cameraID}";
-"rFSNpu" = "Cridat $ {domain}.$ {service}";
+"rFSNpu" = "Cridat ${domain}.${service}";
 "ri4H1h" = "S'ha enviat correctament ${domini}.${service} amb el contingut del porta-retalls al Home Assistant";
 "rlOS6H" = "Plantilla renderitzada amb èxit des del porta-retalls";
 "RMQY3r" = "Envia la ubicació al Home Assistant";
