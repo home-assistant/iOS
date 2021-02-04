@@ -937,7 +937,7 @@ public class WatchComplication: Object, ImmutableMappable {
             if let textProvider = self.textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
-                return nil
+                // optional
             }
             return template
         case .GraphicRectangularStandardBody:
@@ -955,7 +955,7 @@ public class WatchComplication: Object, ImmutableMappable {
             if let textProvider = self.textDataProviders["Body2"] {
                 template.body2TextProvider = textProvider
             } else {
-                return nil
+                // optional
             }
             return template
         case .GraphicRectangularTextGauge:
