@@ -3,17 +3,17 @@ coverage:
     project:
       shared:
         paths:
-        - Sources/Shared
+          - Sources/Shared
         threshold: 5%
       app:
         paths:
-        - Sources/App
+          - Sources/App
         informational: true
     patch:
       default:
         informational: true
 ignore:
-- Sources/Shared/Resources
-- Sources/App/Resources
-- Tests
-- Pods
+  - Sources/Shared/Resources
+  - Sources/App/Resources
+  - Tests
+  - Pods
