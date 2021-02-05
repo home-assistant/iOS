@@ -31,7 +31,7 @@ jobs:
         run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
       - name: SwiftLint
-        run: Pods/SwiftLint/swiftlint lint --config .swiftlint.yml --reporter github-actions-logging
+        run: Pods/SwiftLint/swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
 
   test:
     runs-on: macos-latest
