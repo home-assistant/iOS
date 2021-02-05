@@ -6,3 +6,4 @@ excluded:
   - fastlane
   - Tests
   - Pods
+  - vendor
