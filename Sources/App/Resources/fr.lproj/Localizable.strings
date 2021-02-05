@@ -135,8 +135,8 @@
 "menu.application.preferences" = "Préférences…";
 "menu.file.update_sensors" = "Mettre à jour les capteurs";
 "menu.help.help" = "%@ Aide";
-"menu.status_item.quit" = "Quit";
-"menu.status_item.toggle" = "Toggle %1$@";
+"menu.status_item.quit" = "Quitter";
+"menu.status_item.toggle" = "Basculer %1$@";
 "menu.view.reload_page" = "Rafraîchir la page";
 "nfc.detail.copy" = "Copier dans le presse-papier";
 "nfc.detail.duplicate" = "Créer un doublon";
@@ -225,7 +225,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
  Vos actions et votre configuration locale seront toujours disponibles après la connexion.";
 "onboarding.logged_out_from_move.continue" = "Continuer";
 "onboarding.logged_out_from_move.duplicate_warning" = "Pour éviter les entités en double, vous devez supprimer l'intégration mobile_app existante pour cet appareil dans votre navigateur avant de vous connecter. Redémarrez HA une fois connecté afin que les services se mettent à jour.";
-"onboarding.logged_out_from_move.learn_more" = "Learn more about the move.";
+"onboarding.logged_out_from_move.learn_more" = "En savoir plus sur le déplacements.";
 "onboarding.logged_out_from_move.title" = "Vous avez été déconnecté :(";
 "onboarding.manual_setup.couldnt_make_url.message" = "La valeur '%@' n'était pas une URL valide.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossible de créer une URL";
@@ -333,7 +333,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.actions.footer_mac" = "Les actions sont utilisées dans le menu de l'application et des widgets.";
 "settings_details.actions.scenes.customize_action" = "Personnaliser";
 "settings_details.actions.scenes.empty" = "Aucune scène";
-"settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
+"settings_details.actions.scenes.footer" = "Lorsqu'elle est activée, les scènes s'affichent à côté des actions. Lorsqu'ils sont exécutés, ils déclenchent des changements de scène.";
 "settings_details.actions.scenes.title" = "Éditeur de scène";
 "settings_details.actions.title" = "Actions";
 "settings_details.general.app_icon.enum.beta" = "Bêta";
@@ -365,9 +365,9 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.autohide_toolbar.title" = "Masquer automatiquement la barre d'outils";
 "settings_details.general.chrome.title" = "Ouvrir les liens dans Chrome";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
-"settings_details.general.launch_on_login.title" = "Launch App on Login";
+"settings_details.general.launch_on_login.title" = "Lancer l'application lors de la connexion";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
-"settings_details.general.open_in_browser.default" = "System Default";
+"settings_details.general.open_in_browser.default" = "Défaut du système";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (dans l'application)";
@@ -377,9 +377,9 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.restoration.title" = "Rappelez la dernière page";
 "settings_details.general.title" = "Réglages généraux";
 "settings_details.general.visibility.options.dock" = "Dock";
-"settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
-"settings_details.general.visibility.options.menu_bar" = "Menu Bar";
-"settings_details.general.visibility.title" = "Show App In…";
+"settings_details.general.visibility.options.dock_and_menu_bar" = "Dock et barre de menus";
+"settings_details.general.visibility.options.menu_bar" = "Barre de menu";
+"settings_details.general.visibility.title" = "Afficher l'application dans…";
 "settings_details.location.background_refresh.disabled" = "Désactivé";
 "settings_details.location.background_refresh.enabled" = "Activé";
 "settings_details.location.background_refresh.title" = "Actualisation en arrière-plan";
@@ -479,8 +479,8 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.update_section.footer" = "La mise à jour des paramètres Push demandera les dernières actions Push et catégories à Home Assistant.";
 "settings_details.notifications.update_section.updated_alert.message" = "Paramètres Push importés depuis Home Assistant.";
 "settings_details.notifications.update_section.updated_alert.title" = "Paramètres importés";
-"settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
-"settings_details.privacy.alerts.title" = "Alerts";
+"settings_details.privacy.alerts.description" = "Permet de vérifier les alertes importantes telles que les vulnérabilités de sécurité.";
+"settings_details.privacy.alerts.title" = "Alertes";
 "settings_details.privacy.analytics.description" = "Permet la collecte d'informations de base sur votre appareil et les interactions avec l'application. Aucune donnée identifiable de l'utilisateur n'est partagée avec Google, y compris les URL et les jetons de votre Home Assistant. Vous devez redémarrer l'application  pour que les modifications apportées à ce paramètre prennent effet.";
 "settings_details.privacy.analytics.generic_description" = "Permet la collecte d'informations de base sur votre appareil et les interactions avec l'application. Aucune donnée identifiable par l'utilisateur n'est partagée, y compris vos URL et jetons Home Assistant. Vous devez redémarrer l'application pour que les modifications apportées à ce paramètre prennent effet.";
 "settings_details.privacy.analytics.generic_title" = "Analytique";
@@ -500,8 +500,8 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.siri.section.services.title" = "Services";
 "settings_details.siri.section.title" = "Raccourcis génériques";
 "settings_details.siri.title" = "Raccourcis Siri";
-"settings_details.updates.check_for_updates.include_betas" = "Include Beta Releases";
-"settings_details.updates.check_for_updates.title" = "Automatically Check for Updates";
+"settings_details.updates.check_for_updates.include_betas" = "Inclure les versions bêta";
+"settings_details.updates.check_for_updates.title" = "Rechercher automatiquement les mises à jour";
 "settings_details.watch.remaining_sends.title" = "Envois restants";
 "settings_details.watch.send_now.title" = "Envoyer maintenant";
 "settings_details.watch.title" = "Apple Watch";
