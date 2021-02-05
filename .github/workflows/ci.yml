@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-lint-pods-
 
       - name: Install Pods
-        run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
+        run: diff Pods/Manifest.lock Podfile.lock >/dev/null || (bundle install ; bundle exec pod install --repo-update)
 
       - name: SwiftLint
         run: Pods/SwiftLint/swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
