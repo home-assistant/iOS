@@ -21,14 +21,16 @@ jobs:
 
       - uses: actions/cache@v2
         name: "Cache: Pods"
+        id: pods_cache
         with:
           path: Pods
           key: ${{ runner.os }}-lint-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-lint-pods-
 
       - name: Install Pods
-        run: diff Pods/Manifest.lock Podfile.lock >/dev/null || (bundle install ; bundle exec pod install --repo-update)
+        if: steps.pods_cache.outputs.cache-hit != 'true'
+        run: |
+          bundle install
+          ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
 
       - name: SwiftLint
         run: Pods/SwiftLint/swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging

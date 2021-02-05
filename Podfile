@@ -2,9 +2,26 @@ use_frameworks!
 inhibit_all_warnings!
 
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
+
+def support_modules
+    pod 'SwiftGen', '~> 6.4.0'
+    pod 'SwiftLint'
+end
+
+if ENV["ONLY_SUPPORT_MODULES"]
+    # some of our CI scripts only need e.g. SwiftLint
+    # this allows us to skip a lot of installation when unnecessary
+    platform :ios, '12.0'
+    support_modules
+    workspace 'abstract.workspace'
+    return self
+end
+
 plugin 'cocoapods-acknowledgements'
 
 system("./Tools/BuildMaterialDesignIconsFont.sh")
+
+support_modules
 
 pod 'Alamofire', '~> 5.0'
 pod 'Communicator', '~> 4.0'
@@ -64,8 +81,6 @@ abstract_target 'iOS' do
         pod 'Lokalise', '~> 0.10.0'
         pod 'lottie-ios'
         pod 'SimulatorStatusMagic', :configurations => ['Debug']
-        pod 'SwiftGen', '~> 6.4.0'
-        pod 'SwiftLint'
         pod 'SwiftMessages'
         pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
         pod 'ZIPFoundation', '~> 0.9'
@@ -82,7 +97,7 @@ abstract_target 'iOS' do
     target 'Extensions-Share'
     target 'Extensions-Today'
     target 'Extensions-Widgets'
-end
+end 
 
 abstract_target 'watchOS' do
     platform :watchos, '5.0'
