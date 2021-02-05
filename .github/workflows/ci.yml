@@ -19,44 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      ## copied everywhere - dependencies restore
-
       - uses: actions/cache@v2
         name: "Cache: Pods"
         with:
-          path: |
-            Pods
-            Tools/MaterialDesignIcons.ttf
-            Tools/MaterialDesignIcons.json
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+          path: Pods
+          key: ${{ runner.os }}-lint-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pods-
-
-      - uses: actions/cache@v2
-        name: "Cache: Gems"
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
-
-      # not doing brew since swiftlint doesn't require it
-      # - name: Install Brews
-      #   run: brew bundle
-
-      - name: Install Gems
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+            ${{ runner.os }}-lint-pods-
 
       - name: Install Pods
         run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
-      ## end copied everywhere - dependencies restore
-
       - name: SwiftLint
-        run: |
-          Pods/SwiftLint/swiftlint lint --config .swiftlint.yml --reporter github-actions-logging --quiet
+        run: Pods/SwiftLint/swiftlint lint --config .swiftlint.yml --reporter github-actions-logging
 
   test:
     runs-on: macos-latest
