@@ -74,7 +74,7 @@ jobs:
 
     - name: Install Pods
       if: steps.cache_pods.outputs.cache-hit != 'true'
-      run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
+      run: bundle exec pod install --repo-update
 
     ## end copied everywhere - dependencies restore
 
