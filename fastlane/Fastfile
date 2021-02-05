@@ -105,7 +105,7 @@ lane :update_swiftgen_config do
 end
 
 desc 'Download latest localization files from Lokalize'
-lane :update_strings do |_options|
+lane :update_strings do
   token = ENV['LOKALISE_API_TOKEN'] || prompt(
     text: 'API token',
     secure_text: true
@@ -136,7 +136,7 @@ lane :update_strings do |_options|
 end
 
 desc 'Upload localized strings to Lokalise'
-lane :push_strings do |_options|
+lane :push_strings do
   source_directories = [
     '../Sources/App/Resources/en.lproj'
   ]
