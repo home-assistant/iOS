@@ -21,13 +21,13 @@ jobs:
 
       - uses: actions/cache@v2
         name: "Cache: Pods"
-        id: pods_cache
+        id: cache_pods
         with:
           path: Pods
           key: ${{ runner.os }}-lint-pods-${{ hashFiles('**/Podfile.lock') }}
 
       - name: Install Pods
-        if: steps.pods_cache.outputs.cache-hit != 'true'
+        if: steps.cache_pods.outputs.cache-hit != 'true'
         run: |
           bundle install
           ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
@@ -45,6 +45,7 @@ jobs:
 
     - uses: actions/cache@v2
       name: "Cache: Pods"
+      id: cache_pods
       with:
         path: |
           Pods
@@ -56,6 +57,7 @@ jobs:
 
     - uses: actions/cache@v2
       name: "Cache: Gems"
+      id: cache_gems
       with:
         path: vendor/bundle
         key: ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
@@ -66,11 +68,13 @@ jobs:
       run: brew bundle
 
     - name: Install Gems
+      if: steps.cache_gems.outputs.cache-hit != 'true'
       run: |
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
 
     - name: Install Pods
+      if: steps.cache_pods.outputs.cache-hit != 'true'
       run: diff Pods/Manifest.lock Podfile.lock >/dev/null || bundle exec pod install --repo-update
 
     ## end copied everywhere - dependencies restore
