@@ -2,11 +2,12 @@ name: Download Localized Strings
 on:
   workflow_dispatch:
   schedule:
-  # If there are no changes, this does nothing. If there are changes, it either creates or updates an existing PR.
-  - cron: '0 6 * * *'
+    # If there are no changes, this does nothing. If there are changes, it either creates or updates an existing PR.
+    - cron: '0 6 * * *'
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
 
 jobs:
   update_strings:
@@ -20,9 +21,7 @@ jobs:
         run: brew bundle
 
       - name: Install Gems
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+        run: bundle install --jobs 4 --retry 3
 
       - name: Install Pods
         run: bundle exec pod install --repo-update
