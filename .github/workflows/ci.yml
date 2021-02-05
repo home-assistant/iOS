@@ -15,6 +15,12 @@ env:
   BUNDLE_PATH: vendor/bundle
 
 jobs:
+  YamlLint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: YamlLint
+        run: yamllint --struct --format github .
   SwiftLint:
     runs-on: macos-latest
     steps:
@@ -40,54 +46,55 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - uses: actions/cache@v2
-      name: "Cache: Pods"
-      id: cache_pods
-      with:
-        path: |
-          Pods
-          Tools/MaterialDesignIcons.ttf
-          Tools/MaterialDesignIcons.json
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
+      - uses: actions/cache@v2
+        name: "Cache: Pods"
+        id: cache_pods
+        with:
+          path: |
+            Pods
+            Tools/MaterialDesignIcons.ttf
+            Tools/MaterialDesignIcons.json
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
 
-    - uses: actions/cache@v2
-      name: "Cache: Gems"
-      id: cache_gems
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
+      - uses: actions/cache@v2
+        name: "Cache: Gems"
+        id: cache_gems
+        with:
+          path: vendor/bundle
+          key: >-
+            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
-    - name: Install Brews
-      # right now, we don't need anything from brew for tests, so save some time
-      if: ${{ false }}
-      run: brew bundle
+      - name: Install Brews
+        # right now, we don't need anything from brew for tests, so save some time
+        if: ${{ false }}
+        run: brew bundle
 
-    - name: Install Gems
-      if: steps.cache_gems.outputs.cache-hit != 'true'
-      run: bundle install --jobs 4 --retry 3
+      - name: Install Gems
+        if: steps.cache_gems.outputs.cache-hit != 'true'
+        run: bundle install --jobs 4 --retry 3
 
-    - name: Install Pods
-      if: steps.cache_pods.outputs.cache-hit != 'true'
-      run: bundle exec pod install --repo-update
+      - name: Install Pods
+        if: steps.cache_pods.outputs.cache-hit != 'true'
+        run: bundle exec pod install --repo-update
 
-    - name: Run tests
-      run: bundle exec fastlane test
+      - name: Run tests
+        run: bundle exec fastlane test
 
-    - uses: codecov/codecov-action@v1
-      name: "Upload Code Coverage"
+      - uses: codecov/codecov-action@v1
+        name: "Upload Code Coverage"
 
-    - uses: actions/upload-artifact@v2
-      name: "Upload Test Logs"
-      if: ${{ always() }}
-      with:
-        name: test-logs
-        path: |
-          ~/Library/Logs/DiagnosticReports
-          ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
-          ~/Library/Logs/scan
+      - uses: actions/upload-artifact@v2
+        name: "Upload Test Logs"
+        if: ${{ always() }}
+        with:
+          name: test-logs
+          path: |
+            ~/Library/Logs/DiagnosticReports
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+            ~/Library/Logs/scan
