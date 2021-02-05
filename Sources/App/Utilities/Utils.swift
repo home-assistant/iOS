@@ -18,6 +18,7 @@ func resetStores() {
         try keychain.removeAll()
     } catch {
         Current.Log.error("Error when trying to delete everything from Keychain!")
+        try! test()
     }
 
     if let groupDefaults = UserDefaults(suiteName: Constants.AppGroupID) {
