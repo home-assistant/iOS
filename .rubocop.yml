@@ -1,8 +1,8 @@
 AllCops:
   NewCops: enable
   Exclude:
-    - Pods
-    - vendor
+    - 'Pods/**/*'
+    - 'vendor/**/*'
 
 Metrics/BlockLength:
   Enabled: false
