@@ -1,33 +1,37 @@
-devices([
-  "iPhone 8",
-  "iPhone 8 Plus",
-  "iPhone SE",
-  "iPhone Xs",
-  "iPhone Xs Max",
-  "iPad Pro (12.9-inch) (2nd generation)",
-  "iPad Pro (10.5-inch)",
-  "iPad Pro (12.9-inch) (3rd generation)",
-])
+devices(
+  [
+    'iPhone 8',
+    'iPhone 8 Plus',
+    'iPhone SE',
+    'iPhone Xs',
+    'iPhone Xs Max',
+    'iPad Pro (12.9-inch) (2nd generation)',
+    'iPad Pro (10.5-inch)',
+    'iPad Pro (12.9-inch) (3rd generation)'
+  ]
+)
 
-languages([
-  "de-DE",
-  "en-US",
-  # es-* doesn't have enough coverage as of 06/19.
-  # "es-ES",
-  # "es-MX",
-  "es",
-  "fi",
-  "fr",
-  "it",
-  "nb",
-  "nl",
-  "ru",
-  "sv",
-  "zh-Hans",
-  "zh-Hant"
-])
+languages(
+  [
+    'de-DE',
+    'en-US',
+    # es-* doesn't have enough coverage as of 06/19.
+    # "es-ES",
+    # "es-MX",
+    'es',
+    'fi',
+    'fr',
+    'it',
+    'nb',
+    'nl',
+    'ru',
+    'sv',
+    'zh-Hans',
+    'zh-Hant'
+  ]
+)
 
-scheme("HomeAssistantUITests")
+scheme('HomeAssistantUITests')
 
 clear_previous_screenshots(true)
 
@@ -38,8 +42,8 @@ namespace_log_files(true)
 
 result_bundle(true)
 
-base_args = "-useDemo YES -url #{ENV["HOMEASSISTANT_SNAPSHOT_URL"]} -token #{ENV["HOMEASSISTANT_SNAPSHOT_TOKEN"]} -webhookID #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID"]} -webhookSecret #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET"]} -cameraEntityID camera.staticshot"
+base_args = "-useDemo YES -url #{ENV['HOMEASSISTANT_SNAPSHOT_URL']} -token #{ENV['HOMEASSISTANT_SNAPSHOT_TOKEN']} -webhookID #{ENV['HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID']} -webhookSecret #{ENV['HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET']} -cameraEntityID camera.staticshot"
 launch_arguments([
-  # Lat/Long is NYC
-  "#{base_args} -mapPin1Latitude 40.785091 -mapPin1Longitude -73.968285 -mapPin2Latitude 40.758896 -mapPin2Latitude -73.985130"
-])
+                   # Lat/Long is NYC
+                   "#{base_args} -mapPin1Latitude 40.785091 -mapPin1Longitude -73.968285 -mapPin2Latitude 40.758896 -mapPin2Latitude -73.985130"
+                 ])
