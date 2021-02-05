@@ -119,10 +119,12 @@ post_install do |installer|
 
     # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
     # (catalyst fix)
-    next unless target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
-
-    target.build_configurations.each do |config|
-      config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+    # rubocop:disable Style/Next
+    if target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
+      target.build_configurations.each do |config|
+        config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+      end
     end
+    # rubocop:enable Style/Next
   end
 end
