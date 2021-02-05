@@ -20,7 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: YamlLint
-        run: yamllint --struct --format github .
+        run: yamllint --strict --format github .
+
   SwiftLint:
     runs-on: macos-latest
     steps:
