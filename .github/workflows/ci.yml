@@ -42,8 +42,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    ## copied everywhere - dependencies restore
-
     - uses: actions/cache@v2
       name: "Cache: Pods"
       id: cache_pods
@@ -77,8 +75,6 @@ jobs:
     - name: Install Pods
       if: steps.cache_pods.outputs.cache-hit != 'true'
       run: bundle exec pod install --repo-update
-
-    ## end copied everywhere - dependencies restore
 
     - name: Run tests
       run: bundle exec fastlane test

@@ -97,7 +97,7 @@ abstract_target 'iOS' do
     target 'Extensions-Share'
     target 'Extensions-Today'
     target 'Extensions-Widgets'
-end 
+end
 
 abstract_target 'watchOS' do
     platform :watchos, '5.0'
