@@ -67,7 +67,7 @@ jobs:
 
     - name: Install Brews
       # right now, we don't need anything from brew for tests, so save some time
-      if: ${{ never() }}
+      if: ${{ false }}
       run: brew bundle
 
     - name: Install Gems
