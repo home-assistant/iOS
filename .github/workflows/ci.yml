@@ -40,8 +40,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
-      - name: Install Brews
-        run: brew bundle
+      # not doing brew since swiftlint doesn't require it
+      # - name: Install Brews
+      #   run: brew bundle
 
       - name: Install Gems
         run: |
