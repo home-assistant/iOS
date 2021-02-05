@@ -66,6 +66,8 @@ jobs:
           ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
     - name: Install Brews
+      # right now, we don't need anything from brew for tests, so save some time
+      if: ${{ never() }}
       run: brew bundle
 
     - name: Install Gems
