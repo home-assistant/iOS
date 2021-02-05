@@ -12,6 +12,7 @@ env:
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
   HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
 
 jobs:
   SwiftLint:
@@ -69,9 +70,7 @@ jobs:
 
     - name: Install Gems
       if: steps.cache_gems.outputs.cache-hit != 'true'
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
+      run: bundle install --jobs 4 --retry 3
 
     - name: Install Pods
       if: steps.cache_pods.outputs.cache-hit != 'true'
