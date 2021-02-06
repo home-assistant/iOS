@@ -1,7 +1,53 @@
-disabled_rules:
-  - identifier_name
-  - todo
-  - large_tuple
+only_rules:
+  - block_based_kvo
+  - class_delegate_protocol
+  - compiler_protocol_init
+  - contains_over_filter_count
+  - cyclomatic_complexity
+  - deployment_target
+  - discarded_notification_center_observer
+  - discouraged_direct_init
+  - duplicate_enum_cases
+  - dynamic_inline
+  - fallthrough
+  - for_where
+  - force_cast
+  - force_try
+  - generic_type_name
+  - identical_operands
+  - inclusive_language
+  - is_disjoint
+  - legacy_cggeometry_functions
+  - legacy_constant
+  - legacy_constructor
+  - legacy_hashing
+  - legacy_multiple
+  - legacy_nsgeometry_functions
+  - legacy_random
+  - nsobject_prefer_isequal
+  - override_in_extension
+  - prefer_self_type_over_type_of_self
+  - private_unit_test
+  - prohibited_super_call
+  - reduce_boolean
+  - redundant_objc_attribute
+  - static_operator
+  - superfluous_disable_command
+  - test_case_accessibility
+  - unneeded_break_in_switch
+  - unowned_variable_capture
+  - unused_control_flow_label
+  - unused_declaration
+  - unused_enumerated
+  - unused_optional_binding
+  - unused_setter_value
+  - weak_delegate
+  - xct_specific_matcher
+  - xctfail_message
+
+cyclomatic_complexity:
+  ignores_case_statements: true
+
 excluded:
   - fastlane
   - Tests
