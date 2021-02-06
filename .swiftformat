@@ -1,6 +1,6 @@
 --swiftversion 5.3
 
---exclude vendor,Pods,**/SwiftGen/**
+--exclude vendor,Pods,**/Swiftgen/**,**/Resources/**,fastlane
 
 --wraparguments before-first
 --wrapparameters before-first
