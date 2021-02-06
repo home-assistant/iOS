@@ -6,7 +6,7 @@ enum MacBridgeAppDelegateHandler {
     static let terminationWillBeginNotification: Notification.Name = .init("ha_terminationWillBegin")
 
     static func swizzleAppDelegate() {
-        guard !Bundle.main.bundlePath.contains("PlugIns") else {
+        guard !Bundle.main.isRunningInExtension else {
             // Don't try and swizzle the App Delegate in an extension; there won't be one.
             return
         }

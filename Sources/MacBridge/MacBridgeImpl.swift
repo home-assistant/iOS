@@ -3,10 +3,19 @@ import AppKit
 import ServiceManagement
 
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
-    let networkMonitor = MacBridgeNetworkMonitor()
-    let statusItem = MacBridgeStatusItem()
+    let networkMonitor: MacBridgeNetworkMonitor
+    let statusItem: MacBridgeStatusItem?
 
     override init() {
+        if Bundle.main.isRunningInExtension {
+            // status item can't talk to the status bar in an extension or it will crash
+            self.statusItem = nil
+        } else {
+            self.statusItem = MacBridgeStatusItem()
+        }
+
+        self.networkMonitor = MacBridgeNetworkMonitor()
+
         super.init()
 
         MacBridgeAppDelegateHandler.swizzleAppDelegate()
@@ -72,7 +81,7 @@ import ServiceManagement
     }
 
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
-        statusItem.configure(using: configuration)
+        statusItem?.configure(using: configuration)
     }
 
     private static func userDefaultsKey(forLoginItemBundleIdentifier identifier: String) -> String {
