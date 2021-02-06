@@ -1,10 +1,10 @@
-import Foundation
-@testable import Shared
-import PromiseKit
-import XCTest
-import CoreLocation
 import Contacts
+import CoreLocation
+import Foundation
+import PromiseKit
 import RealmSwift
+@testable import Shared
+import XCTest
 
 // forgive me but something about CLPlacemark in this file is crashing in deinit
 // it is almost certainly a testing issue, and this... well, this solves it.
@@ -94,7 +94,7 @@ class GeocoderSensorTests: XCTestCase {
     }
 
     func testAddresslessPlacemark() throws {
-        setUp(placemarks: [ .addressless ])
+        setUp(placemarks: [.addressless])
         let promise = GeocoderSensor(
             request: .init(
                 reason: .trigger("unit-test"),
@@ -110,7 +110,7 @@ class GeocoderSensorTests: XCTestCase {
 
     func testOnePlacemark() throws {
         setUp(placemarks: [
-            .bobsBurgers
+            .bobsBurgers,
         ])
         let promise = GeocoderSensor(
             request: .init(
@@ -126,7 +126,7 @@ class GeocoderSensorTests: XCTestCase {
     }
 
     func testTwoPlacemarksFirstOneEmpty() throws {
-        setUp(placemarks: [ .empty, .bobsBurgers ])
+        setUp(placemarks: [.empty, .bobsBurgers])
         let promise = GeocoderSensor(
             request: .init(
                 reason: .trigger("unit-test"),
@@ -144,7 +144,7 @@ class GeocoderSensorTests: XCTestCase {
         setUp(placemarks: [
             with(.bobsBurgers) {
                 $0.hasPostalAddress = false
-            }
+            },
         ])
         let promise = GeocoderSensor(
             request: .init(
@@ -161,7 +161,7 @@ class GeocoderSensorTests: XCTestCase {
 
     func testZoneEnabledButNoZoneMatches() throws {
         setUp(placemarks: [
-            .bobsBurgers
+            .bobsBurgers,
         ])
 
         Current.settingsStore.prefs.set(
@@ -170,7 +170,7 @@ class GeocoderSensorTests: XCTestCase {
         )
 
         try realm.write {
-            _  = with(RLMZone()) {
+            _ = with(RLMZone()) {
                 $0.ID = "zone.outside"
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
@@ -192,7 +192,7 @@ class GeocoderSensorTests: XCTestCase {
 
     func testZoneEnabledAndMatches() throws {
         setUp(placemarks: [
-            .bobsBurgers
+            .bobsBurgers,
         ])
 
         Current.settingsStore.prefs.set(
@@ -217,7 +217,7 @@ class GeocoderSensorTests: XCTestCase {
                 realm.add($0, update: .all)
             }
 
-            _  = with(RLMZone()) {
+            _ = with(RLMZone()) {
                 $0.ID = "zone.outside"
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
@@ -240,7 +240,7 @@ class GeocoderSensorTests: XCTestCase {
 
     func testZoneEnabledAndMatchesButPassiveOrTrackingDisabled() throws {
         setUp(placemarks: [
-            .bobsBurgers
+            .bobsBurgers,
         ])
 
         Current.settingsStore.prefs.set(
@@ -267,7 +267,7 @@ class GeocoderSensorTests: XCTestCase {
                 realm.add($0, update: .all)
             }
 
-            _  = with(RLMZone()) {
+            _ = with(RLMZone()) {
                 $0.ID = "zone.outside"
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
@@ -290,7 +290,7 @@ class GeocoderSensorTests: XCTestCase {
 
     func testZoneDisabledWithMatches() throws {
         setUp(placemarks: [
-            .bobsBurgers
+            .bobsBurgers,
         ])
 
         Current.settingsStore.prefs.set(
@@ -315,7 +315,7 @@ class GeocoderSensorTests: XCTestCase {
                 realm.add($0, update: .all)
             }
 
-            _  = with(RLMZone()) {
+            _ = with(RLMZone()) {
                 $0.ID = "zone.outside"
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
@@ -340,7 +340,6 @@ class GeocoderSensorTests: XCTestCase {
 private final class FakePlacemark: CLPlacemark {
     static var empty: FakePlacemark {
         with(FakePlacemark()) { _ in
-
         }
     }
 
@@ -351,7 +350,7 @@ private final class FakePlacemark: CLPlacemark {
     }
 
     static var bobsBurgers: FakePlacemark {
-        return with(FakePlacemark()) {
+        with(FakePlacemark()) {
             $0.overrideName = "Bob's Burgers"
             $0.overrideThoroughfare = "Ocean Ave"
             $0.overrideSubThoroughfare = "100"
@@ -361,7 +360,7 @@ private final class FakePlacemark: CLPlacemark {
             $0.overridePostalCode = "11001"
             $0.overrideIsoCountryCode = "US"
             $0.overrideCountry = "United States"
-            $0.areasOfInterest = [ "Ocean Ave" ]
+            $0.areasOfInterest = ["Ocean Ave"]
             $0.location = CLLocation(latitude: 40.7549323, longitude: -73.741804)
             $0.timeZone = TimeZone(abbreviation: "EST")
         }
@@ -390,73 +389,87 @@ private final class FakePlacemark: CLPlacemark {
         get { overrideTimeZone }
         set { overrideTimeZone = newValue }
     }
+
     var overrideLocation: CLLocation?
     override var location: CLLocation? {
-        get { overrideLocation}
+        get { overrideLocation }
         set { overrideLocation = newValue }
     }
+
     var overrideName: String?
     override var name: String? {
         get { overrideName }
         set { overrideName = newValue }
     }
+
     var overrideThoroughfare: String?
     override var thoroughfare: String? {
         get { overrideThoroughfare }
         set { overrideThoroughfare = newValue }
     }
+
     var overrideSubThoroughfare: String?
     override var subThoroughfare: String? {
         get { overrideSubThoroughfare }
         set { overrideSubThoroughfare = newValue }
     }
+
     var overrideLocality: String?
     override var locality: String? {
         get { overrideLocality }
         set { overrideLocality = newValue }
     }
+
     var overrideSubLocality: String?
     override var subLocality: String? {
         get { overrideSubLocality }
         set { overrideSubLocality = newValue }
     }
+
     var overrideAdministrativeArea: String?
     override var administrativeArea: String? {
         get { overrideAdministrativeArea }
         set { overrideAdministrativeArea = newValue }
     }
+
     var overrideSubAdministrativeArea: String?
     override var subAdministrativeArea: String? {
         get { overrideSubAdministrativeArea }
         set { overrideSubAdministrativeArea = newValue }
     }
+
     var overridePostalCode: String?
     override var postalCode: String? {
         get { overridePostalCode }
         set { overridePostalCode = newValue }
     }
+
     var overrideIsoCountryCode: String?
     override var isoCountryCode: String? {
         get { overrideIsoCountryCode }
         set { overrideIsoCountryCode = newValue }
     }
+
     var overrideCountry: String?
     override var country: String? {
         get { overrideCountry }
         set { overrideCountry = newValue }
     }
+
     var overrideInlandWater: String?
     override var inlandWater: String? {
         get { overrideInlandWater }
         set { overrideInlandWater = newValue }
     }
+
     var overrideOcean: String?
     override var ocean: String? {
         get { overrideOcean }
         set { overrideOcean = newValue }
     }
+
     var overrideAreasOfInterest: [String]?
-    override  var areasOfInterest: [String]? {
+    override var areasOfInterest: [String]? {
         get { overrideAreasOfInterest }
         set { overrideAreasOfInterest = newValue }
     }

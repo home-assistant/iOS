@@ -1,7 +1,7 @@
 import Foundation
-import UserNotifications
 import PromiseKit
 import RealmSwift
+import UserNotifications
 #if os(watchOS)
 import ClockKit
 #endif
@@ -21,11 +21,11 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     }
 
     static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
-        return true
+        true
     }
 
     static func request(for complications: Set<WatchComplication>) -> WebhookRequest? {
-        Current.Log.verbose("complications \(complications.map { $0.identifier })")
+        Current.Log.verbose("complications \(complications.map(\.identifier))")
 
         let templates = complications.reduce(into: [String: [String: String]]()) { payload, complication in
             let keyPrefix = "\(complication.identifier)|"
@@ -49,7 +49,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         request: Promise<WebhookRequest>,
         result: Promise<Any>
     ) -> Guarantee<WebhookResponseHandlerResult> {
-        return firstly {
+        firstly {
             result
         }.compactMap { result in
             result as? [String: Any]

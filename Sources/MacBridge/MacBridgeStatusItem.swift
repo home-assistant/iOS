@@ -50,7 +50,7 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
             (.command, .command),
             (.numericPad, .numericPad),
             (.help, .help),
-            (.function, .function)
+            (.function, .function),
         ]
 
         for (ugly, good) in pairings where uglyMask & ugly.rawValue != 0 {

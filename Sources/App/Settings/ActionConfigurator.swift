@@ -1,30 +1,23 @@
-//
-//  ActionConfigurator.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/28/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import UIKit
+import ColorPickerRow
 import Eureka
+import Foundation
+import PromiseKit
 import RealmSwift
 import Shared
-import ColorPickerRow
+import UIKit
 import ViewRow
-import PromiseKit
 
 class ActionConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    var action: Action = Action() {
+    var action = Action() {
         didSet {
-            self.updatePreviews()
+            updatePreviews()
         }
     }
+
     var newAction: Bool = true
     var shouldSave: Bool = false
     var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 44))
@@ -42,7 +35,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -79,7 +72,6 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         }
 
         let visuals = Section(
-
         )
 
         if action.canConfigure(\Action.Text) || action.isServerControlled {
@@ -152,7 +144,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 $0.displayValueFor = { icon in
                     icon?.name
                 }
-            }.cellUpdate({ (cell, row) in
+            }.cellUpdate({ cell, row in
                 if let value = row.value {
                     cell.imageView?.image = value.image(
                         ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
@@ -183,7 +175,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor(hex: self.action.IconColor)
-            }.onChange { (picker) in
+            }.onChange { picker in
                 Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
 
                 self.action.IconColor = picker.value!.hexString()
@@ -208,7 +200,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                     barButtonSystemItem: .cancel,
                     target: self,
                     action: #selector(cancel)
-                )
+                ),
             ]
 
             navigationItem.rightBarButtonItems = [
@@ -216,7 +208,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                     barButtonSystemItem: .save,
                     target: self,
                     action: #selector(save)
-                )
+                ),
             ]
 
             if action.triggerType == .scene {
@@ -237,7 +229,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             form.append(visuals)
         }
 
-        form +++ ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
+        form +++ ViewRow<ActionPreview>("preview").cellSetup { cell, _ in
             cell.backgroundColor = UIColor.clear
             cell.preservesSuperviewLayoutMargins = false
             self.updatePreviews()
@@ -266,10 +258,10 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
     func save(_ sender: Any) {
         Current.Log.verbose("Go back hit, check for validation")
 
-        if self.form.validate().count == 0 {
+        if form.validate().count == 0 {
             Current.Log.verbose("Category form is valid, calling dismiss callback!")
 
-            self.shouldSave = true
+            shouldSave = true
 
             onDismissCallback?(self)
         }
@@ -279,13 +271,13 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
     func cancel(_ sender: Any) {
         Current.Log.verbose("Cancel hit, calling dismiss")
 
-        self.shouldSave = false
+        shouldSave = false
 
         onDismissCallback?(self)
     }
 
     private func updatePreviews() {
-        if action.Name.isEmpty && newAction {
+        if action.Name.isEmpty, newAction {
             title = L10n.ActionsConfigurator.title
         } else {
             title = action.Name
@@ -307,34 +299,34 @@ class ActionPreview: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        self.layer.cornerRadius = 5.0
+        layer.cornerRadius = 5.0
 
-        self.layer.cornerRadius = 2.0
-        self.layer.borderWidth = 1.0
-        self.layer.borderColor = UIColor.clear.cgColor
-        self.layer.masksToBounds = true
+        layer.cornerRadius = 2.0
+        layer.borderWidth = 1.0
+        layer.borderColor = UIColor.clear.cgColor
+        layer.masksToBounds = true
 
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        self.layer.shadowRadius = 2.0
-        self.layer.shadowOpacity = 0.5
-        self.layer.masksToBounds = false
-        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        layer.shadowRadius = 2.0
+        layer.shadowOpacity = 0.5
+        layer.masksToBounds = false
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
 
-        let centerY = (self.frame.size.height / 2) - 50
+        let centerY = (frame.size.height / 2) - 50
 
-        self.title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
+        title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
 
-        self.title.textAlignment = .natural
-        self.title.clipsToBounds = true
-        self.title.numberOfLines = 1
-        self.title.font = self.title.font.withSize(UIFont.smallSystemFontSize)
+        title.textAlignment = .natural
+        title.clipsToBounds = true
+        title.numberOfLines = 1
+        title.font = title.font.withSize(UIFont.smallSystemFontSize)
 
-        self.addSubview(self.title)
-        self.addSubview(self.imageView)
+        addSubview(title)
+        addSubview(imageView)
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleGesture))
-        self.addGestureRecognizer(tap)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleGesture))
+        addGestureRecognizer(tap)
     }
 
     public func setup(_ action: Action) {
@@ -342,9 +334,11 @@ class ActionPreview: UIView {
         DispatchQueue.main.async {
             self.backgroundColor = UIColor(hex: action.BackgroundColor)
 
-            let icon = MaterialDesignIcons.init(named: action.IconName)
-            self.imageView.image = icon.image(ofSize: self.imageView.bounds.size,
-                                              color: UIColor(hex: action.IconColor))
+            let icon = MaterialDesignIcons(named: action.IconName)
+            self.imageView.image = icon.image(
+                ofSize: self.imageView.bounds.size,
+                color: UIColor(hex: action.IconColor)
+            )
             self.title.text = action.Text
             self.title.textColor = UIColor(hex: action.TextColor)
         }
@@ -356,7 +350,7 @@ class ActionPreview: UIView {
         let feedbackGenerator = UINotificationFeedbackGenerator()
         feedbackGenerator.prepare()
 
-        self.imageView.showActivityIndicator()
+        imageView.showActivityIndicator()
 
         Current.api.then(on: nil) { api in
             api.HandleAction(actionID: action.ID, source: .Preview)

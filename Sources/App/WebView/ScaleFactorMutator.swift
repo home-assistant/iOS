@@ -8,8 +8,8 @@ class ScaleFactorMutator {
         sceneIdentifiers.insert(sceneIdentifier)
     }
 
-    static private var hasSwizzled = false
-    static private func swizzleIfNeeded() {
+    private static var hasSwizzled = false
+    private static func swizzleIfNeeded() {
         guard !hasSwizzled else { return }
         defer { hasSwizzled = true }
 
@@ -18,8 +18,7 @@ class ScaleFactorMutator {
             guard
                 let klass = objc_getClass(klassString) as? AnyClass,
                 let originalMethod = class_getInstanceMethod(klass, original),
-                let replacementMethod = class_getInstanceMethod(klass, replacement)
-            else {
+                let replacementMethod = class_getInstanceMethod(klass, replacement) else {
                 Current.Log.error("couldn't get \(klassString) method \(original) and \(replacement)")
                 return
             }

@@ -1,21 +1,13 @@
-//
-//  ActionRow.swift
-//  WatchAppExtension
-//
-//  Created by Robert Trencheny on 10/7/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import WatchKit
-import Shared
 import EMTLoadingIndicator
+import Foundation
+import Shared
+import WatchKit
 
 class ActionRowType: NSObject {
-    @IBOutlet weak var group: WKInterfaceGroup!
-    @IBOutlet weak var label: WKInterfaceLabel!
-    @IBOutlet weak var image: WKInterfaceImage!
+    @IBOutlet var group: WKInterfaceGroup!
+    @IBOutlet var label: WKInterfaceLabel!
+    @IBOutlet var image: WKInterfaceImage!
 
     var indicator: EMTLoadingIndicator?
-    var icon: MaterialDesignIcons = MaterialDesignIcons.fileQuestionIcon
+    var icon = MaterialDesignIcons.fileQuestionIcon
 }

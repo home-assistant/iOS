@@ -1,7 +1,7 @@
 import Foundation
-import UIKit
 import PromiseKit
 import Shared
+import UIKit
 
 class ApplicationBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
     public func callAsFunction<PromiseValue>(

@@ -1,11 +1,3 @@
-//
-//  IntentHandler.swift
-//  Intents
-//
-//  Created by Robert Trencheny on 9/17/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Intents
 import Shared
 
@@ -52,5 +44,4 @@ class IntentHandler: INExtension {
         Current.Log.info("for \(intent) found handler \(handler)")
         return handler
     }
-
 }

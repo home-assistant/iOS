@@ -1,10 +1,10 @@
 import CoreLocation
 import Foundation
-import XCTest
+@testable import HomeAssistant
 import PromiseKit
 import RealmSwift
 @testable import Shared
-@testable import HomeAssistant
+import XCTest
 
 class ZoneManagerRegionFilterTests: XCTestCase {
     private var filter: ZoneManagerRegionFilterImpl!
@@ -55,7 +55,7 @@ class ZoneManagerRegionFilterTests: XCTestCase {
                 $0.Latitude = 37.7739364
                 $0.Longitude = -122.4435184
                 $0.Radius = 4
-            }
+            },
         ]
 
         // sorted by distance
@@ -83,12 +83,12 @@ class ZoneManagerRegionFilterTests: XCTestCase {
                 $0.Latitude = 37.795571
                 $0.Longitude = -122.393572
                 $0.Radius = 120
-            }
+            },
         ]
     }
 
     private func monitoredRegions(for zones: AnyCollection<RLMZone>) -> Set<CLRegion> {
-        Set(zones.flatMap { $0.regionsForMonitoring })
+        Set(zones.flatMap(\.regionsForMonitoring))
     }
 
     func testNoZonesProducesNoRegions() {
@@ -97,7 +97,7 @@ class ZoneManagerRegionFilterTests: XCTestCase {
     }
 
     func testAtCountProducesSameRegardlessOfLocatio() {
-        let zones = AnyCollection(beaconZones[0..<3] + circularZones[0..<3])
+        let zones = AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3])
         let regions = monitoredRegions(for: zones)
 
         let resultNoLocation = filter.regions(
@@ -122,36 +122,36 @@ class ZoneManagerRegionFilterTests: XCTestCase {
     }
 
     func testBeaconExceeds() {
-        let zones = AnyCollection(beaconZones + circularZones[0..<3])
-        let regions = monitoredRegions(for: AnyCollection(beaconZones[0..<3] + circularZones[0..<3]))
+        let zones = AnyCollection(beaconZones + circularZones[0 ..< 3])
+        let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3]))
         let result = filter.regions(from: zones, currentRegions: AnyCollection([]), lastLocation: locationInStart)
         XCTAssertEqual(Set(result), regions)
     }
 
     func testCircularExceeds() {
-        let zones = AnyCollection(beaconZones[0..<3] + circularZones)
-        let regions = monitoredRegions(for: AnyCollection(beaconZones[0..<3] + circularZones[0..<3]))
+        let zones = AnyCollection(beaconZones[0 ..< 3] + circularZones)
+        let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3]))
         let result = filter.regions(from: zones, currentRegions: AnyCollection([]), lastLocation: locationInStart)
         XCTAssertEqual(Set(result), regions)
     }
 
     func testBothExceed() {
         let zones = AnyCollection(beaconZones + circularZones)
-        let regions = monitoredRegions(for: AnyCollection(beaconZones[0..<3] + circularZones[0..<3]))
+        let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3]))
         let result = filter.regions(from: zones, currentRegions: AnyCollection([]), lastLocation: locationInStart)
         XCTAssertEqual(regions, Set(result))
     }
-    
+
     func testBothExceedWithoutLocation() {
         let zones = AnyCollection(beaconZones + circularZones)
-        let regions = monitoredRegions(for: AnyCollection(beaconZones[0..<3] + circularZones[0..<3]))
+        let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3]))
         let result = filter.regions(from: zones, currentRegions: AnyCollection([]), lastLocation: nil)
         XCTAssertEqual(Set(result), regions)
     }
 
     func testBothExceedWithOutsideHomeLocation() {
         let zones = AnyCollection(beaconZones + circularZones)
-        let regions = monitoredRegions(for: AnyCollection(beaconZones[0..<3] + circularZones[0..<3]))
+        let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + circularZones[0 ..< 3]))
         let result = filter.regions(from: zones, currentRegions: AnyCollection([]), lastLocation: locationNearStart)
         XCTAssertEqual(Set(result), regions)
     }
@@ -160,10 +160,10 @@ class ZoneManagerRegionFilterTests: XCTestCase {
         circularZones[0].ID = "zone.not_home_lol"
 
         let zones = AnyCollection(beaconZones + circularZones)
-        let regions = monitoredRegions(for: AnyCollection(beaconZones[0..<3] + [
-            circularZones[0], circularZones[2], circularZones[3]
+        let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + [
+            circularZones[0], circularZones[2], circularZones[3],
         ]))
         let result = filter.regions(from: zones, currentRegions: AnyCollection([]), lastLocation: nil)
-        XCTAssertEqual(Set(regions.map { $0.identifier }), Set(result.map { $0.identifier }))
+        XCTAssertEqual(Set(regions.map(\.identifier)), Set(result.map(\.identifier)))
     }
 }

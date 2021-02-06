@@ -1,5 +1,5 @@
-import Foundation
 import CoreGraphics
+import Foundation
 
 public protocol ActiveStateObserver: AnyObject {
     func activeStateDidChange(for manager: ActiveStateManager)
@@ -7,16 +7,16 @@ public protocol ActiveStateObserver: AnyObject {
 
 public class ActiveStateManager {
     public var canTrackActiveStatus: Bool {
-        return Current.isCatalyst
+        Current.isCatalyst
     }
 
     public var isActive: Bool {
-        return isActiveExceptForIdle
+        isActiveExceptForIdle
             && !states.isIdle
     }
 
     private var isActiveExceptForIdle: Bool {
-        return !states.isScreensavering
+        !states.isScreensavering
             && !states.isLocked
             && !states.isSleeping
             && !states.isScreenOff
@@ -40,10 +40,11 @@ public class ActiveStateManager {
             "Screen Off": isScreenOff,
             "Fast User Switched": isFastUserSwitched,
             "Sleeping": isSleeping,
-            "Terminating": isTerminating
+            "Terminating": isTerminating,
         ] }
     }
-    public private(set) var states: States = States()
+
+    public private(set) var states = States()
 
     public var minimumIdleTime: Measurement<UnitDuration> {
         get {
@@ -74,6 +75,7 @@ public class ActiveStateManager {
             idleTimer?.invalidate()
         }
     }
+
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
 
     public func register(observer: ActiveStateObserver) {
@@ -119,21 +121,21 @@ public class ActiveStateManager {
 
         for name in UpdateType.allCases {
             switch name.notification {
-            case .distributed(let name):
+            case let .distributed(name):
                 distributedNotificationCenter?.addObserver(
                     self,
                     selector: #selector(notificationDidPost(_:)),
                     name: name,
                     object: nil
                 )
-            case .workspace(let name):
+            case let .workspace(name):
                 workspaceNotificationCenter?.addObserver(
                     self,
                     selector: #selector(notificationDidPost(_:)),
                     name: name,
                     object: nil
                 )
-            case .default(let name):
+            case let .default(name):
                 defaultNotificationCenter.addObserver(
                     self,
                     selector: #selector(notificationDidPost(_:)),
@@ -271,7 +273,7 @@ private enum UpdateType: CaseIterable {
     init?(notificationName name: Notification.Name) {
         let found = Self.allCases.first(where: {
             switch $0.notification {
-            case .distributed(let caseName), .workspace(let caseName), .default(let caseName):
+            case let .distributed(caseName), let .workspace(caseName), let .default(caseName):
                 return caseName == name
             case .none:
                 return false

@@ -1,6 +1,6 @@
 import Foundation
-import Shared
 import PromiseKit
+import Shared
 
 class UpdateSensorsIntentHandler: NSObject, UpdateSensorsIntentHandling {
     func handle(intent: UpdateSensorsIntent, completion: @escaping (UpdateSensorsIntentResponse) -> Void) {

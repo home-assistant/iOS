@@ -1,11 +1,3 @@
-//
-//  NotificationAction.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/28/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import RealmSwift
 import UserNotifications
@@ -23,34 +15,39 @@ public class NotificationAction: Object {
     @objc public dynamic var AuthenticationRequired: Bool = false
 
     // Text Input Options
-    // swiftlint:disable line_length
-    @objc public dynamic var TextInputButtonTitle: String = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
-    @objc public dynamic var TextInputPlaceholder: String = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
+    @objc public dynamic var TextInputButtonTitle: String = L10n.NotificationsConfigurator.Action.Rows
+        .TextInputButtonTitle.title
+    @objc public dynamic var TextInputPlaceholder: String = L10n.NotificationsConfigurator.Action.Rows
+        .TextInputPlaceholder.title
     // swiftlint:enable line_length
 
     override public static func primaryKey() -> String? {
-        return "uuid"
+        "uuid"
     }
 
     public let categories = LinkingObjects(fromType: NotificationCategory.self, property: "Actions")
 
     public var options: UNNotificationActionOptions {
         var actionOptions = UNNotificationActionOptions([])
-        if self.AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
-        if self.Destructive { actionOptions.insert(.destructive) }
-        if self.Foreground { actionOptions.insert(.foreground) }
+        if AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
+        if Destructive { actionOptions.insert(.destructive) }
+        if Foreground { actionOptions.insert(.foreground) }
 
         return actionOptions
     }
 
     public var action: UNNotificationAction {
-        if self.TextInput {
-            return UNTextInputNotificationAction(identifier: self.Identifier, title: self.Title, options: self.options,
-                                                 textInputButtonTitle: self.TextInputButtonTitle,
-                                                 textInputPlaceholder: self.TextInputPlaceholder)
+        if TextInput {
+            return UNTextInputNotificationAction(
+                identifier: Identifier,
+                title: Title,
+                options: options,
+                textInputButtonTitle: TextInputButtonTitle,
+                textInputPlaceholder: TextInputPlaceholder
+            )
         }
 
-        return UNNotificationAction(identifier: self.Identifier, title: self.Title, options: self.options)
+        return UNNotificationAction(identifier: Identifier, title: Title, options: options)
     }
 
     public class func exampleTrigger(

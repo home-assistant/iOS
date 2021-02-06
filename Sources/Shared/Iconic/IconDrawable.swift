@@ -1,4 +1,5 @@
 // swiftlint:disable all
+// swiftformat:disable all
 //
 //  IconDrawable.swift
 //  https://github.com/home-assistant/Iconic

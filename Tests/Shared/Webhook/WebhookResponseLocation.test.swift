@@ -1,5 +1,5 @@
-@testable import Shared
 import PromiseKit
+@testable import Shared
 import XCTest
 
 class WebhookResponseLocationTests: XCTestCase {

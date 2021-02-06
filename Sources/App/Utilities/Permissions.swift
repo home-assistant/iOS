@@ -1,17 +1,9 @@
-//
-//  Permissions.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/22/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
+import CoreLocation
+import CoreMotion
 import Foundation
 import Lottie
-import UserNotifications
-import CoreMotion
-import CoreLocation
 import Shared
+import UserNotifications
 
 public enum PermissionStatus {
     case notDetermined
@@ -144,7 +136,7 @@ public enum PermissionType: Int {
         case .motion:
             return CMMotionActivityManager.authorizationStatus().genericStatus
         case .notification:
-            guard let authorizationStatus = self.fetchNotificationsAuthorizationStatus() else { return .denied }
+            guard let authorizationStatus = fetchNotificationsAuthorizationStatus() else { return .denied }
             return authorizationStatus.genericStatus
         }
     }
@@ -194,7 +186,7 @@ public enum PermissionType: Int {
                 PermissionsLocationDelegate.shared = PermissionsLocationDelegate()
             }
 
-            PermissionsLocationDelegate.shared!.requestPermission { (status) in
+            PermissionsLocationDelegate.shared!.requestPermission { status in
                 DispatchQueue.main.async {
                     completionHandler(status == .authorized || status == .authorizedWhenInUse, status)
                     PermissionsLocationDelegate.shared = nil
@@ -206,8 +198,8 @@ public enum PermissionType: Int {
 
             manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { (_, error: Error?) -> Void in
                 if let error = error as NSError?,
-                    error.domain == CMErrorDomain,
-                    error.code == CMErrorMotionActivityNotAuthorized.rawValue {
+                   error.domain == CMErrorDomain,
+                   error.code == CMErrorMotionActivityNotAuthorized.rawValue {
                     completionHandler(false, .denied)
                     return
                 }
@@ -215,7 +207,7 @@ public enum PermissionType: Int {
                 return
             })
         case .notification:
-            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { (granted, error) in
+            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
                 }
@@ -247,11 +239,10 @@ public extension UNAuthorizationOptions {
 }
 
 private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
-
     static var shared: PermissionsLocationDelegate?
 
     lazy var locationManager: CLLocationManager = {
-        return CLLocationManager()
+        CLLocationManager()
     }()
 
     typealias LocationPermissionCompletionBlock = (PermissionStatus) -> Void

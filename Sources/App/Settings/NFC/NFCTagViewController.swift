@@ -1,5 +1,5 @@
-import Foundation
 import Eureka
+import Foundation
 import Shared
 
 @available(iOS 13, *)
@@ -47,48 +47,48 @@ class NFCTagViewController: FormViewController {
     }
 
     private func identifierSection() -> Section {
-        return Section(L10n.Nfc.Detail.tagValue)
-        <<< LabelRow {
-            $0.cellStyle = .default
-            $0.title = identifier
-            $0.cellSetup { cell, _ in
-                cell.textLabel?.font = UIFont.monospacedSystemFont(ofSize: 19.0, weight: .medium)
-                cell.textLabel?.numberOfLines = 0
-                cell.textLabel?.lineBreakMode = .byCharWrapping
+        Section(L10n.Nfc.Detail.tagValue)
+            <<< LabelRow {
+                $0.cellStyle = .default
+                $0.title = identifier
+                $0.cellSetup { cell, _ in
+                    cell.textLabel?.font = UIFont.monospacedSystemFont(ofSize: 19.0, weight: .medium)
+                    cell.textLabel?.numberOfLines = 0
+                    cell.textLabel?.lineBreakMode = .byCharWrapping
+                }
             }
-        }
-        <<< buttonRow(icon: .contentCopyIcon) {
-            $0.title = L10n.Nfc.Detail.copy
-            $0.onCellSelection { [identifier] _, _ in
-                UIPasteboard.general.string = identifier
+            <<< buttonRow(icon: .contentCopyIcon) {
+                $0.title = L10n.Nfc.Detail.copy
+                $0.onCellSelection { [identifier] _, _ in
+                    UIPasteboard.general.string = identifier
+                }
             }
-        }
-        <<< buttonRow(icon: .exportIcon) {
-            $0.title = L10n.Nfc.Detail.share
-            $0.onCellSelection { [weak self, identifier] cell, _ in
-                let controller = UIActivityViewController(activityItems: [ identifier ], applicationActivities: [])
-                controller.popoverPresentationController?.sourceView = cell
-                controller.popoverPresentationController?.sourceRect = cell.bounds
-                self?.present(controller, animated: true, completion: nil)
+            <<< buttonRow(icon: .exportIcon) {
+                $0.title = L10n.Nfc.Detail.share
+                $0.onCellSelection { [weak self, identifier] cell, _ in
+                    let controller = UIActivityViewController(activityItems: [identifier], applicationActivities: [])
+                    controller.popoverPresentationController?.sourceView = cell
+                    controller.popoverPresentationController?.sourceRect = cell.bounds
+                    self?.present(controller, animated: true, completion: nil)
+                }
             }
-        }
     }
 
     private func actionsSection() -> Section {
-        return Section()
-        <<< buttonRow(icon: .nfcTapIcon) {
-            $0.title = L10n.Nfc.Detail.duplicate
-            $0.onCellSelection { [identifier] _, _ in
-                Current.Log.info("duplicating \(identifier)")
-                Current.tags.writeNFC(value: identifier).cauterize()
+        Section()
+            <<< buttonRow(icon: .nfcTapIcon) {
+                $0.title = L10n.Nfc.Detail.duplicate
+                $0.onCellSelection { [identifier] _, _ in
+                    Current.Log.info("duplicating \(identifier)")
+                    Current.tags.writeNFC(value: identifier).cauterize()
+                }
             }
-        }
-        <<< buttonRow(icon: .bellRingOutlineIcon) {
-            $0.title = L10n.Nfc.Detail.fire
-            $0.onCellSelection { [identifier] _, _ in
-                Current.tags.fireEvent(tag: identifier).cauterize()
+            <<< buttonRow(icon: .bellRingOutlineIcon) {
+                $0.title = L10n.Nfc.Detail.fire
+                $0.onCellSelection { [identifier] _, _ in
+                    Current.tags.fireEvent(tag: identifier).cauterize()
+                }
             }
-        }
     }
 
     private func exampleTriggerSection() -> Section {

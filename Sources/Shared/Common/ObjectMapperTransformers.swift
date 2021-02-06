@@ -1,14 +1,6 @@
-//
-//  ObjectMapperTransformers.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 8/6/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
+import CoreLocation
 import Foundation
 import ObjectMapper
-import CoreLocation
 
 open class EntityIDToDomainTransform: TransformType {
     public typealias Object = String
@@ -24,12 +16,11 @@ open class EntityIDToDomainTransform: TransformType {
     }
 
     open func transformToJSON(_ value: String?) -> String? {
-        return nil
+        nil
     }
 }
 
 open class HomeAssistantTimestampTransform: DateFormatterTransform {
-
     public init() {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -45,7 +36,6 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
 }
 
 open class ComponentBoolTransform: TransformType {
-
     public typealias Object = Bool
     public typealias JSON = String
 
@@ -59,14 +49,14 @@ open class ComponentBoolTransform: TransformType {
 
     public func transformFromJSON(_ value: Any?) -> Bool? {
         if let valueString = value as? String {
-            return valueString == self.trueValue
+            return valueString == trueValue
         } else {
             return false
         }
     }
 
     open func transformToJSON(_ value: Bool?) -> String? {
-        return (value == true) ? self.trueValue : self.falseValue
+        (value == true) ? trueValue : falseValue
     }
 }
 
@@ -115,7 +105,7 @@ open class TimeIntervalToString: TransformType {
     public init() {}
 
     open func transformFromJSON(_ value: Any?) -> TimeInterval? {
-        return nil
+        nil
     }
 
     open func transformToJSON(_ value: TimeInterval?) -> String? {

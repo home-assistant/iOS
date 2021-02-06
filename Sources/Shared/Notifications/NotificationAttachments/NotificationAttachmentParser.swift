@@ -1,7 +1,7 @@
+import CoreServices
 import Foundation
 import PromiseKit
 import UserNotifications
-import CoreServices
 
 internal protocol NotificationAttachmentParser {
     init()
@@ -15,14 +15,14 @@ internal enum NotificationAttachmentParserResult: Equatable {
 
     var attachmentInfo: NotificationAttachmentInfo? {
         switch self {
-        case .fulfilled(let info): return info
+        case let .fulfilled(info): return info
         case .missing, .rejected: return nil
         }
     }
 
     var error: Error? {
         switch self {
-        case .rejected(let error): return error
+        case let .rejected(error): return error
         case .missing, .fulfilled: return nil
         }
     }
@@ -31,9 +31,9 @@ internal enum NotificationAttachmentParserResult: Equatable {
         switch (lhs, rhs) {
         case (.missing, .missing):
             return true
-        case (.fulfilled(let lhsValue), .fulfilled(let rhsValue)):
+        case let (.fulfilled(lhsValue), .fulfilled(rhsValue)):
             return lhsValue == rhsValue
-        case (.rejected(let lhsError as NSError), .rejected(let rhsError as NSError)):
+        case let (.rejected(lhsError as NSError), .rejected(rhsError as NSError)):
             return lhsError.domain == rhsError.domain &&
                 lhsError.code == rhsError.code
         default:
@@ -62,7 +62,6 @@ internal struct NotificationAttachmentInfo: Equatable {
         return options
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     static func contentType(for contentTypeString: String) -> CFString {
         let contentType: CFString
         switch contentTypeString.lowercased() {

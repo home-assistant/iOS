@@ -1,6 +1,6 @@
-import UserNotifications
-import Shared
 import PromiseKit
+import Shared
+import UserNotifications
 
 final class NotificationService: UNNotificationServiceExtension {
     override func didReceive(

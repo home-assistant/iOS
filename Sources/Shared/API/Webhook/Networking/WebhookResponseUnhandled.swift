@@ -6,11 +6,11 @@ public extension WebhookResponseIdentifier {
 }
 
 struct WebhookResponseUnhandled: WebhookResponseHandler {
-    init(api: HomeAssistantAPI) { }
+    init(api: HomeAssistantAPI) {}
 
     static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // the unhandled variant never replaces requests. to customize, create another implementation.
-        return false
+        false
     }
 
     func handle(

@@ -1,9 +1,9 @@
 import CoreLocation
 import Foundation
 import PromiseKit
-import XCTest
-import XCGLogger
 @testable import Shared
+import XCGLogger
+import XCTest
 
 class OneShotLocationTests: XCTestCase {
     private var locationManager: FakeLocationManager!
@@ -233,7 +233,7 @@ class OneShotLocationTests: XCTestCase {
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
-            location3, location1, location2
+            location3, location1, location2,
         ])
         XCTAssertEqual(try hang(promise), location3)
     }
@@ -274,7 +274,7 @@ class OneShotLocationTests: XCTestCase {
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
-            location1, location2, location3, location4
+            location1, location2, location3, location4,
         ])
         XCTAssertFalse(promise.isResolved, "it shouldn't end early just because it got some")
 
@@ -318,7 +318,7 @@ class OneShotLocationTests: XCTestCase {
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
-            location1, location2, location3, location4
+            location1, location2, location3, location4,
         ])
         XCTAssertFalse(promise.isResolved, "it shouldn't end early just because it got some")
 
@@ -347,8 +347,8 @@ class OneShotLocationTests: XCTestCase {
             timeout: timeoutPromise
         ).promise
 
-        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location1 ])
-        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location2 ])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location2])
         timeoutSeal(())
 
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -377,8 +377,8 @@ class OneShotLocationTests: XCTestCase {
             timeout: timeoutPromise
         ).promise
 
-        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location1 ])
-        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location2 ])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location2])
         timeoutSeal(())
 
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -422,7 +422,7 @@ class OneShotLocationTests: XCTestCase {
         ).promise
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
-            location1, location2, location3, location4
+            location1, location2, location3, location4,
         ])
         timeoutSeal(())
 
@@ -632,6 +632,6 @@ private class FakeLocationManager: CLLocationManager {
 
     override var allowsBackgroundLocationUpdates: Bool {
         get { false }
-        set { }
+        set {}
     }
 }

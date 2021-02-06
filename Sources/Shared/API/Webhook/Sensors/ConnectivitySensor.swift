@@ -30,7 +30,7 @@ public class ConnectivitySensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
@@ -48,7 +48,7 @@ public class ConnectivitySensor: SensorProvider {
             return when(resolved: sensors)
         }.map { sensors -> [WebhookSensor] in
             sensors.compactMap { (result: Result<[WebhookSensor]>) -> [WebhookSensor]? in
-                if case .fulfilled(let value) = result {
+                if case let .fulfilled(value) = result {
                     return value
                 } else {
                     return nil
@@ -90,7 +90,7 @@ public class ConnectivitySensor: SensorProvider {
                     sensor.State = "Not Connected"
                     sensor.Icon = "mdi:wifi-off"
                 }
-            }
+            },
         ])
     }
 
@@ -114,7 +114,7 @@ public class ConnectivitySensor: SensorProvider {
                 }
 
                 sensor.Attributes = attributes
-            }
+            },
         ])
     }
 
@@ -158,7 +158,7 @@ public class ConnectivitySensor: SensorProvider {
             "Mobile Country Code": carrier.mobileCountryCode ?? "N/A",
             "Mobile Network Code": carrier.mobileNetworkCode ?? "N/A",
             "ISO Country Code": carrier.isoCountryCode ?? "N/A",
-            "Allows VoIP": carrier.allowsVOIP
+            "Allows VoIP": carrier.allowsVOIP,
         ]
 
         if let radioTech = radioTech {
@@ -168,7 +168,6 @@ public class ConnectivitySensor: SensorProvider {
         return .value(sensor)
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     private static func getRadioTechName(_ radioTech: String) -> String? {
         switch radioTech {
         case CTRadioAccessTechnologyGPRS:

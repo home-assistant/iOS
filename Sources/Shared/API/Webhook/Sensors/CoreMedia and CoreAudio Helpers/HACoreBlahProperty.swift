@@ -27,7 +27,7 @@ public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
     }
 
     public func addListener(objectID: UInt32, handler: @escaping () -> Void) -> OSStatus {
-        return withUnsafePointer(to: address) { addressPtr in
+        withUnsafePointer(to: address) { addressPtr in
             CMIOObjectAddPropertyListenerBlock(objectID, addressPtr, .main) { _, _ in
                 handler()
             }
@@ -35,13 +35,13 @@ public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
     }
 
     public func getPropertyDataSize(objectID: UInt32, dataSize: UnsafeMutablePointer<UInt32>) -> OSStatus {
-        return withUnsafePointer(to: address) { addressPtr -> OSStatus in
+        withUnsafePointer(to: address) { addressPtr -> OSStatus in
             OSStatus(CMIOObjectGetPropertyDataSize(objectID, addressPtr, 0, nil, dataSize))
         }
     }
 
     public func getPropertyData(objectID: UInt32, dataSize: UInt32, output: UnsafeMutableRawPointer) -> OSStatus {
-        return withUnsafePointer(to: address) { addressPtr in
+        withUnsafePointer(to: address) { addressPtr in
             var dataUsed: UInt32 = 0
             return OSStatus(CMIOObjectGetPropertyData(objectID, addressPtr, 0, nil, dataSize, &dataUsed, output))
         }
@@ -62,7 +62,7 @@ public struct HACoreAudioProperty<Type>: HACoreBlahProperty {
     }
 
     public func addListener(objectID: UInt32, handler: @escaping () -> Void) -> OSStatus {
-        return withUnsafePointer(to: address) { addressPtr in
+        withUnsafePointer(to: address) { addressPtr in
             AudioObjectAddPropertyListenerBlock(objectID, addressPtr, .main) { _, _ in
                 handler()
             }
@@ -70,13 +70,13 @@ public struct HACoreAudioProperty<Type>: HACoreBlahProperty {
     }
 
     public func getPropertyDataSize(objectID: UInt32, dataSize: UnsafeMutablePointer<UInt32>) -> OSStatus {
-        return withUnsafePointer(to: address) { addressPtr -> OSStatus in
+        withUnsafePointer(to: address) { addressPtr -> OSStatus in
             OSStatus(AudioObjectGetPropertyDataSize(objectID, addressPtr, 0, nil, dataSize))
         }
     }
 
     public func getPropertyData(objectID: UInt32, dataSize: UInt32, output: UnsafeMutableRawPointer) -> OSStatus {
-        return withUnsafePointer(to: address) { addressPtr in
+        withUnsafePointer(to: address) { addressPtr in
             var dataSizePtr = dataSize
             return OSStatus(AudioObjectGetPropertyData(objectID, addressPtr, 0, nil, &dataSizePtr, output))
         }
@@ -111,6 +111,7 @@ extension HACoreMediaProperty {
             mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementMaster)
         )
     }
+
     static var name: HACoreMediaProperty<Unmanaged<CFString>> {
         /*
          A CFString that contains the human readable name of the object. The caller is responsible for releasing the

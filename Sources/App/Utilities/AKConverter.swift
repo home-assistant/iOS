@@ -9,6 +9,8 @@
 //  Only mods were adding imports, replacing AKLog with Current.Log.* and disabling SwiftLint
 //
 // swiftlint:disable all
+// swiftformat:disable all
+
 import Foundation
 import AVFoundation
 import CoreAudio

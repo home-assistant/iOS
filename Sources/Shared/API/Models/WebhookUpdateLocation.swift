@@ -1,15 +1,7 @@
-//
-//  WebhookUpdateLocation.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 3/7/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import ObjectMapper
 import CoreLocation
 import CoreMotion
+import Foundation
+import ObjectMapper
 
 public enum LocationNames: String {
     case Home = "home"
@@ -17,7 +9,6 @@ public enum LocationNames: String {
 }
 
 public class WebhookUpdateLocation: Mappable {
-
     public var HorizontalAccuracy: CLLocationAccuracy?
     public var Battery: Int?
     public var Location: CLLocationCoordinate2D?
@@ -54,43 +45,43 @@ public class WebhookUpdateLocation: Mappable {
         }
 
         if let location = location, useLocation {
-            self.SetLocation(location: location)
+            SetLocation(location: location)
         } else if let zone = zone {
-            self.SetZone(zone: zone)
+            SetZone(zone: zone)
         } else {
             return nil
         }
     }
 
     public func SetZone(zone: RLMZone) {
-        self.HorizontalAccuracy = zone.Radius
-        self.Location = zone.center
+        HorizontalAccuracy = zone.Radius
+        Location = zone.center
 
         #if os(iOS)
         // https://github.com/home-assistant/home-assistant-iOS/issues/32
         if let currentSSID = Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
-            self.LocationName = zone.Name
+            LocationName = zone.Name
             return
         }
         #endif
 
         if zone.isHome {
-            switch self.Trigger {
+            switch Trigger {
             case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
-                self.LocationName = LocationNames.Home.rawValue
+                LocationName = LocationNames.Home.rawValue
             case .RegionExit, .GPSRegionExit:
-                self.LocationName =  LocationNames.NotHome.rawValue
+                LocationName = LocationNames.NotHome.rawValue
             case .BeaconRegionExit:
-                self.ClearLocation()
+                ClearLocation()
             default:
                 break
             }
         } else {
-            switch self.Trigger {
+            switch Trigger {
             case .BeaconRegionEnter where !zone.isPassive:
-                self.LocationName = zone.Name
+                LocationName = zone.Name
             case .BeaconRegionExit:
-                self.ClearLocation()
+                ClearLocation()
             default:
                 break
             }
@@ -98,39 +89,44 @@ public class WebhookUpdateLocation: Mappable {
     }
 
     public func SetLocation(location: CLLocation) {
-        self.Location = location.coordinate
+        Location = location.coordinate
         if location.speed > -1 {
-            self.Speed = location.speed
+            Speed = location.speed
         }
         if location.course > -1 {
-            self.Course = location.course
+            Course = location.course
         }
         if location.altitude > -1 {
-            self.Altitude = location.altitude
+            Altitude = location.altitude
         }
         if location.verticalAccuracy > -1 {
-            self.VerticalAccuracy = location.verticalAccuracy
+            VerticalAccuracy = location.verticalAccuracy
         }
         if location.horizontalAccuracy > -1 {
-            self.HorizontalAccuracy = location.horizontalAccuracy
+            HorizontalAccuracy = location.horizontalAccuracy
         }
     }
 
     public func ClearLocation() {
-        self.HorizontalAccuracy = nil
-        self.Location = nil
-        self.Speed = nil
-        self.Altitude = nil
-        self.Course = nil
-        self.VerticalAccuracy = nil
+        HorizontalAccuracy = nil
+        Location = nil
+        Speed = nil
+        Altitude = nil
+        Course = nil
+        VerticalAccuracy = nil
     }
 
     public var cllocation: CLLocation? {
-        if let location = self.Location, let altitude = self.Altitude, let hAccuracy = self.HorizontalAccuracy,
-            let vAccuracy = self.VerticalAccuracy {
-            return CLLocation(coordinate: location, altitude: altitude, horizontalAccuracy: hAccuracy,
-                              verticalAccuracy: vAccuracy, timestamp: Date())
-        } else if let location = self.Location {
+        if let location = Location, let altitude = Altitude, let hAccuracy = HorizontalAccuracy,
+           let vAccuracy = VerticalAccuracy {
+            return CLLocation(
+                coordinate: location,
+                altitude: altitude,
+                horizontalAccuracy: hAccuracy,
+                verticalAccuracy: vAccuracy,
+                timestamp: Date()
+            )
+        } else if let location = Location {
             return CLLocation(latitude: location.latitude, longitude: location.longitude)
         }
         return nil
@@ -138,14 +134,14 @@ public class WebhookUpdateLocation: Mappable {
 
     // Mappable
     public func mapping(map: Map) {
-        Battery               <-    map["battery"]
-        Location              <-   (map["gps"], CLLocationCoordinate2DTransform())
-        HorizontalAccuracy    <-    map["gps_accuracy"]
-        LocationName          <-    map["location_name"]
+        Battery <- map["battery"]
+        Location <- (map["gps"], CLLocationCoordinate2DTransform())
+        HorizontalAccuracy <- map["gps_accuracy"]
+        LocationName <- map["location_name"]
 
-        Speed                 <-    map["speed"]
-        Altitude              <-    map["altitude"]
-        Course                <-    map["course"]
-        VerticalAccuracy      <-    map["vertical_accuracy"]
+        Speed <- map["speed"]
+        Altitude <- map["altitude"]
+        Course <- map["course"]
+        VerticalAccuracy <- map["vertical_accuracy"]
     }
 }

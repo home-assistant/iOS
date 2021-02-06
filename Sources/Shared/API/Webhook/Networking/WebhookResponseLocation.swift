@@ -1,7 +1,7 @@
 import Foundation
-import UserNotifications
-import PromiseKit
 import ObjectMapper
+import PromiseKit
+import UserNotifications
 
 extension WebhookResponseIdentifier {
     static var location: Self { .init(rawValue: "updateLocation") }
@@ -45,7 +45,7 @@ struct WebhookResponseLocation: WebhookResponseHandler {
 
     static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // recency should always win
-        return true
+        true
     }
 
     enum HandleError: Error {
@@ -88,7 +88,7 @@ struct WebhookResponseLocation: WebhookResponseHandler {
             )
         }.recover { _ -> Guarantee<UNNotificationRequest?> in
             // don't send a notification for failed
-            return .value(nil)
+            .value(nil)
         }.map { notification in
             var result = WebhookResponseHandlerResult.default
             result.notification = notification

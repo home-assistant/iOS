@@ -1,6 +1,5 @@
 import Foundation
 
-// swiftlint:disable type_body_length
 // https://github.com/home-assistant/frontend/blob/92d30a889663008317f7a28faa65beea025f0bfd/src/components/ha-icon.ts
 struct MDIMigration {
     func migrate(icon old: String) -> String {
@@ -143,7 +142,7 @@ struct MDIMigration {
         "xbox_controller_off": "microsoft_xbox_controller_off",
         "xbox_controller_view": "microsoft_xbox_controller_view",
         "yammer": "microsoft_yammer",
-        "youtube_creator_studio": "youtube_studio"
+        "youtube_creator_studio": "youtube_studio",
     ]
 
     private let removed = Set([
@@ -213,6 +212,6 @@ struct MDIMigration {
         "xda",
         "xing_box",
         "xing_circle",
-        "yelp"
+        "yelp",
     ])
 }

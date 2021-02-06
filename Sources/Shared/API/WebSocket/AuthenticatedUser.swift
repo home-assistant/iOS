@@ -1,11 +1,3 @@
-//
-//  AuthenticatedUser.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/9/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 
 public class AuthenticatedUser: Codable, CustomStringConvertible {
@@ -39,6 +31,6 @@ public class AuthenticatedUser: Codable, CustomStringConvertible {
     }
 
     public var description: String {
-        return "AuthenticatedUser(id: \(self.ID), name: \(self.Name), owner: \(self.IsOwner), admin: \(self.IsAdmin)"
+        "AuthenticatedUser(id: \(ID), name: \(Name), owner: \(IsOwner), admin: \(IsAdmin)"
     }
 }

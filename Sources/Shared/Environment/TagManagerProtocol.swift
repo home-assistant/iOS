@@ -46,7 +46,7 @@ public extension TagManager {
             }
         } else {
             return Current.webhooks.send(request: .init(type: "scan_tag", data: [
-                "tag_id": tag
+                "tag_id": tag,
             ]))
         }
     }
@@ -58,14 +58,14 @@ class EmptyTagManager: TagManager {
     }
 
     func readNFC() -> Promise<String> {
-        return .init(error: TagManagerError.nfcUnavailable)
+        .init(error: TagManagerError.nfcUnavailable)
     }
 
     func writeNFC(value: String) -> Promise<String> {
-        return .init(error: TagManagerError.nfcUnavailable)
+        .init(error: TagManagerError.nfcUnavailable)
     }
 
     func handle(userActivity: NSUserActivity) -> TagManagerHandleResult {
-        return .unhandled
+        .unhandled
     }
 }

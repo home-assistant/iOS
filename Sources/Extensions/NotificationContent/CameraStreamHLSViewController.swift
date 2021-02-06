@@ -1,8 +1,8 @@
-import Foundation
-import UIKit
-import Shared
-import PromiseKit
 import AVKit
+import Foundation
+import PromiseKit
+import Shared
+import UIKit
 
 class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     let api: HomeAssistantAPI
@@ -22,7 +22,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
             switch self {
             case .noPath:
                 return L10n.Extensions.NotificationContent.Error.Request.hlsUnavailable
-            case .avPlayer(let error):
+            case let .avPlayer(error):
                 return error?.localizedDescription ?? L10n.Extensions.NotificationContent.Error.Request.other(-1)
             }
         }
@@ -40,9 +40,10 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         (self.promise, self.seal) = Promise<Void>.pending()
         super.init(nibName: nil, bundle: nil)
 
-        addChild(self.playerViewController)
+        addChild(playerViewController)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -60,7 +61,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
             playerViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
             playerViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             playerViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            playerViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            playerViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
         playerViewController.didMove(toParent: self)

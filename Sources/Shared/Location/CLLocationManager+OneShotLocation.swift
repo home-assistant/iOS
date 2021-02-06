@@ -4,7 +4,7 @@ import PromiseKit
 
 public extension CLLocationManager {
     static func oneShotLocation(timeout: TimeInterval) -> Promise<CLLocation> {
-        return OneShotLocationProxy(
+        OneShotLocationProxy(
             locationManager: CLLocationManager(),
             timeout: after(seconds: timeout)
         ).promise
@@ -17,12 +17,12 @@ enum OneShotError: Error, Equatable {
 
     static func == (lhs: OneShotError, rhs: OneShotError) -> Bool {
         switch (lhs, rhs) {
-        case (.clError(let lhsClError), .clError(let rhsClError)):
+        case let (.clError(lhsClError), .clError(rhsClError)):
             return lhsClError.code == rhsClError.code
         case (.outOfTime, .outOfTime):
             return true
         default:
-             return false
+            return false
         }
     }
 }
@@ -48,36 +48,36 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
         if location.coordinate.latitude == 0 || location.coordinate.longitude == 0 {
             // iOS 13.5? seems to occasionally report 0 lat/long, so ignore these locations
             Current.Log.error("Location \(location.coordinate) was super duper invalid")
-            quality = .invalid
+            self.quality = .invalid
         } else {
             // now = 0 seconds ago
             // timestamp = 100 seconds ago
             // so age is the positive number of seconds since this update
             let age = Current.date().timeIntervalSince(location.timestamp)
             if location.horizontalAccuracy <= Self.desiredAccuracy && age <= Self.desiredAge {
-                quality = .perfect
+                self.quality = .perfect
             } else if location.horizontalAccuracy > Self.invalidAccuracyThreshold || age > Self.invalidAgeThreshold {
-                quality = .invalid
+                self.quality = .invalid
             } else {
-                quality = .meh
+                self.quality = .meh
             }
         }
     }
 
     var description: String {
-        return "accuracy \(accuracy) from \(timestamp) quality \(quality)"
+        "accuracy \(accuracy) from \(timestamp) quality \(quality)"
     }
 
     var accuracy: CLLocationAccuracy {
-        return location.horizontalAccuracy
+        location.horizontalAccuracy
     }
 
     var timestamp: Date {
-        return location.timestamp
+        location.timestamp
     }
 
     static func == (lhs: PotentialLocation, rhs: PotentialLocation) -> Bool {
-        return lhs.location == rhs.location
+        lhs.location == rhs.location
     }
 
     static func < (lhs: PotentialLocation, rhs: PotentialLocation) -> Bool {
@@ -143,7 +143,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
 
-        selfRetain = self
+        self.selfRetain = self
         locationManager.startUpdatingLocation()
         self.promise = promise.ensure {
             locationManager.stopUpdatingLocation()

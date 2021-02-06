@@ -1,7 +1,7 @@
+import Contacts
+import CoreLocation
 import Foundation
 import PromiseKit
-import CoreLocation
-import Contacts
 
 public class GeocoderSensor: SensorProvider {
     public enum GeocoderError: Error {
@@ -19,12 +19,12 @@ public class GeocoderSensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        return firstly { () -> Promise<[CLPlacemark]> in
+        firstly { () -> Promise<[CLPlacemark]> in
             guard let location = request.location else {
                 throw GeocoderError.noLocation
             }
@@ -42,7 +42,7 @@ public class GeocoderSensor: SensorProvider {
                         Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
                     }, setter: {
                         Current.settingsStore.prefs.set($0, forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
-                    }), title: UserDefaultsKeys.geocodeUseZone.title)
+                    }), title: UserDefaultsKeys.geocodeUseZone.title),
                 ]
             }
 
@@ -70,7 +70,7 @@ public class GeocoderSensor: SensorProvider {
                     .filter { $0 != "" }
 
                 if let zone = insideZones.first,
-                    Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue) {
+                   Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue) {
                     // only override if there's something to set, and only if the user wants us to do so
                     sensor.State = zone
                 }
@@ -107,7 +107,7 @@ public class GeocoderSensor: SensorProvider {
             "Sub Locality": value(\.subLocality),
             "Sub Thoroughfare": value(\.subThoroughfare),
             "Thoroughfare": value(\.thoroughfare),
-            "Time Zone": Self.best(from: placemarks, keyPath: \.timeZone?.identifier) ?? TimeZone.current.identifier
+            "Time Zone": Self.best(from: placemarks, keyPath: \.timeZone?.identifier) ?? TimeZone.current.identifier,
         ]
     }
 
@@ -130,7 +130,7 @@ public class GeocoderSensor: SensorProvider {
 
         return with(CNMutablePostalAddress()) {
             $0.street = placemark.thoroughfare ?? ""
-            $0.city =  placemark.locality ?? ""
+            $0.city = placemark.locality ?? ""
             $0.state = placemark.administrativeArea ?? ""
             $0.postalCode = placemark.postalCode ?? ""
 
@@ -147,7 +147,7 @@ public class GeocoderSensor: SensorProvider {
 
 public extension CLGeocoder {
     static func geocode(location: CLLocation) -> Promise<[CLPlacemark]> {
-        return Promise { seal in
+        Promise { seal in
             let geocoder = CLGeocoder()
             var strongGeocoder: CLGeocoder? = geocoder
 

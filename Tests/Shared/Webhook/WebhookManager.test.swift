@@ -1,9 +1,9 @@
 import Foundation
+import ObjectMapper
+import OHHTTPStubs
+import PromiseKit
 @testable import Shared
 import XCTest
-import OHHTTPStubs
-import ObjectMapper
-import PromiseKit
 
 class WebhookManagerTests: XCTestCase {
     private var manager: WebhookManager!
@@ -65,7 +65,7 @@ class WebhookManagerTests: XCTestCase {
         let (didInvokePromise, didInvokeSeal) = Promise<Void>.pending()
 
         sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
-        
+
         manager.handleBackground(for: manager.currentBackgroundSessionInfo.identifier, completionHandler: {
             didInvokeSeal.fulfill(())
         })
@@ -96,7 +96,7 @@ class WebhookManagerTests: XCTestCase {
         func waitRunLoop(queue: DispatchQueue = .main, count: Int = 1) {
             let expectation = self.expectation(description: "run loop")
             expectation.expectedFulfillmentCount = count
-            for _ in 0..<count {
+            for _ in 0 ..< count {
                 queue.async { expectation.fulfill() }
             }
             wait(for: [expectation], timeout: 10.0)
@@ -661,9 +661,7 @@ private func XCTAssertEqualWebhookRequest(
     XCTAssertEqual(try value(for: lhs), try value(for: rhs), file: file, line: line)
 }
 
-private class FakeHassAPI: HomeAssistantAPI {
-
-}
+private class FakeHassAPI: HomeAssistantAPI {}
 
 class ReplacingTestHandler: WebhookResponseHandler {
     static var returnedResult: WebhookResponseHandlerResult?

@@ -29,11 +29,11 @@ public class CrashReporterImpl: CrashReporter {
 
             let analyticsIntegrations = Set([
                 "SentryAutoBreadcrumbTrackingIntegration",
-                "SentryAutoSessionTrackingIntegration"
+                "SentryAutoSessionTrackingIntegration",
             ])
 
             let crashesIntegrations = Set([
-                "SentryCrashIntegration"
+                "SentryCrashIntegration",
             ])
 
             if !environment.settingsStore.privacy.crashes {
@@ -63,17 +63,17 @@ public class CrashReporterImpl: CrashReporter {
     }
 
     public func logEvent(event: String, params: [String: Any]) {
-        guard Current.settingsStore.privacy.analytics else { return}
+        guard Current.settingsStore.privacy.analytics else { return }
 
         Current.Log.verbose("event \(event): \(params)")
         SentrySDK.capture(message: event) { scope in
-            scope.setTags(params.mapValues { String(describing: $0)})
+            scope.setTags(params.mapValues { String(describing: $0) })
         }
     }
 
     public func logError(_ error: NSError) {
         // crash reporting is controlled by the crashes key, but this is more like analytics
-        guard Current.settingsStore.privacy.analytics else { return}
+        guard Current.settingsStore.privacy.analytics else { return }
 
         Current.Log.error("error: \(error.debugDescription)")
         SentrySDK.capture(error: error)

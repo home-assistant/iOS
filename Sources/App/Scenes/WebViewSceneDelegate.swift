@@ -1,7 +1,7 @@
 import Foundation
-import UIKit
 import PromiseKit
 import Shared
+import UIKit
 
 @available(iOS 13, *)
 final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {

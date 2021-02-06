@@ -1,15 +1,7 @@
-//
-//  OnboardingAuthenticationController.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 8/11/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
+import AuthenticationServices
 import Foundation
 import PromiseKit
 import SafariServices
-import AuthenticationServices
 import Shared
 
 /// Manages browser verification to retrive an access code that can be exchanged for an authentication token.
@@ -29,13 +21,12 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
 
     override init() {
         super.init()
-        self.configureAuthenticationObserver()
+        configureAuthenticationObserver()
     }
 
     /// Opens a browser to the URL for obtaining an access code.
-    // swiftlint:disable:next function_body_length
     func authenticateWithBrowser(at baseURL: URL) -> Promise<String> {
-        return Promise { (resolver: Resolver<String>) in
+        Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
 
             let redirectURI: String
@@ -63,7 +54,6 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
             let redirectQuery = URLQueryItem(name: "redirect_uri", value: redirectURI)
             components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
             if let authURL = try components?.asURL() {
-
                 let newStyleAuthCallback = { (callbackURL: URL?, error: Error?) in
                     if let authErr = error {
                         Current.Log.error("Error during \(self.authStyle) authentication: \(authErr)")
@@ -79,8 +69,11 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
                 }
 
                 self.authStyle = "ASWebAuthenticationSession"
-                let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: scheme,
-                                                                completionHandler: newStyleAuthCallback)
+                let webAuthSession = ASWebAuthenticationSession(
+                    url: authURL,
+                    callbackURLScheme: scheme,
+                    completionHandler: newStyleAuthCallback
+                )
 
                 if #available(iOS 13.0, *) {
                     let ctx = self.asWebContext as? ASWebAuthenticationPresentationContextProviding
@@ -99,12 +92,12 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
     // MARK: - SFSafariViewControllerDelegate
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        guard let resolver = self.promiseResolver else {
+        guard let resolver = promiseResolver else {
             return
         }
 
         resolver.reject(AuthenticationControllerError.userCancelled)
-        self.cleanUp()
+        cleanUp()
     }
 
     // MARK: - Private helpers
@@ -113,8 +106,11 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
         let notificationCenter = NotificationCenter.default
         let notificationName = Notification.Name("AuthCallback")
         let queue = OperationQueue.main
-        self.authenticationObserver = notificationCenter.addObserver(forName: notificationName, object: nil,
-                                                                     queue: queue) { notification in
+        authenticationObserver = notificationCenter.addObserver(
+            forName: notificationName,
+            object: nil,
+            queue: queue
+        ) { notification in
             self.authenticationViewController?.cancel()
 
             guard let url = notification.userInfo?["url"] as? URL else {
@@ -138,12 +134,12 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
 
         if let codeParamter = parameter, let code = codeParamter.value {
             Current.Log.verbose("Returning from authentication with code \(code)")
-            self.promiseResolver?.fulfill(code)
+            promiseResolver?.fulfill(code)
         }
     }
 
     private func cleanUp() {
-        self.authenticationViewController = nil
-        self.promiseResolver = nil
+        authenticationViewController = nil
+        promiseResolver = nil
     }
 }

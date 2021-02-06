@@ -7,7 +7,6 @@ public struct ServerAlert: Codable, Equatable {
         var min: Version?
         var max: Version?
 
-        // swiftlint:disable:next nesting
         private enum CodingKeys: CodingKey {
             case min, max
         }
@@ -68,8 +67,8 @@ public struct ServerAlert: Codable, Equatable {
         url = try container.decode(URL.self, forKey: .url)
         message = try container.decode(String.self, forKey: .message)
         adminOnly = try container.decodeIfPresent(Bool.self, forKey: .adminOnly) ?? false
-        ios = try container.decodeIfPresent(VersionRequirement.self, forKey: .ios) ?? .init(min: nil, max: nil)
-        core = try container.decodeIfPresent(VersionRequirement.self, forKey: .core) ?? .init(min: nil, max: nil)
+        self.ios = try container.decodeIfPresent(VersionRequirement.self, forKey: .ios) ?? .init(min: nil, max: nil)
+        self.core = try container.decodeIfPresent(VersionRequirement.self, forKey: .core) ?? .init(min: nil, max: nil)
     }
 
     internal init(
@@ -91,7 +90,7 @@ public struct ServerAlert: Codable, Equatable {
     }
 
     public static func == (lhs: ServerAlert, rhs: ServerAlert) -> Bool {
-        return lhs.id == rhs.id
+        lhs.id == rhs.id
             && abs(lhs.date.timeIntervalSince(rhs.date)) < 1
             && lhs.url == rhs.url
             && lhs.message == rhs.message

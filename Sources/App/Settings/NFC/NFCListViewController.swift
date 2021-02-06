@@ -1,6 +1,6 @@
-import Foundation
-import Eureka
 import CoreNFC
+import Eureka
+import Foundation
 import PromiseKit
 import Shared
 
@@ -23,53 +23,53 @@ class NFCListViewController: FormViewController {
         super.viewDidLoad()
 
         form +++ Section()
-        <<< InfoLabelRow {
-            $0.title = L10n.Nfc.List.description
-            $0.displayType = .primary
-        }
-        <<< ButtonRow {
-            $0.title = L10n.Nfc.List.learnMore
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .natural
+            <<< InfoLabelRow {
+                $0.title = L10n.Nfc.List.description
+                $0.displayType = .primary
             }
-            $0.onCellSelection { [weak self] _, _ in
-                openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/nfc")!, self)
+            <<< ButtonRow {
+                $0.title = L10n.Nfc.List.learnMore
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .natural
+                }
+                $0.onCellSelection { [weak self] _, _ in
+                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/nfc")!, self)
+                }
             }
-        }
 
         if Current.tags.isNFCAvailable {
             func image(for icon: MaterialDesignIcons) -> UIImage {
-                return icon.image(
+                icon.image(
                     ofSize: .init(width: 32, height: 32),
                     color: nil
                 ).withRenderingMode(.alwaysTemplate)
             }
 
             form +++ Section()
-            <<< ButtonRow {
-                $0.title = L10n.Nfc.List.readTag
-                $0.cellSetup { cell, _ in
-                    cell.imageView?.image = image(for: .nfcVariantIcon)
+                <<< ButtonRow {
+                    $0.title = L10n.Nfc.List.readTag
+                    $0.cellSetup { cell, _ in
+                        cell.imageView?.image = image(for: .nfcVariantIcon)
+                    }
+                    $0.cellUpdate { cell, _ in
+                        cell.textLabel?.textAlignment = .natural
+                    }
+                    $0.onCellSelection { [weak self] cell, _ in
+                        self?.read(sender: cell)
+                    }
                 }
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .natural
+                <<< ButtonRow {
+                    $0.title = L10n.Nfc.List.writeTag
+                    $0.cellSetup { cell, _ in
+                        cell.imageView?.image = image(for: .nfcTapIcon)
+                    }
+                    $0.cellUpdate { cell, _ in
+                        cell.textLabel?.textAlignment = .natural
+                    }
+                    $0.onCellSelection { [weak self] cell, _ in
+                        self?.write(sender: cell)
+                    }
                 }
-                $0.onCellSelection { [weak self] cell, _ in
-                    self?.read(sender: cell)
-                }
-            }
-            <<< ButtonRow {
-                $0.title = L10n.Nfc.List.writeTag
-                $0.cellSetup { cell, _ in
-                    cell.imageView?.image = image(for: .nfcTapIcon)
-                }
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .natural
-                }
-                $0.onCellSelection { [weak self] cell, _ in
-                    self?.write(sender: cell)
-                }
-            }
         } else {
             form +++ LabelRow {
                 $0.title = L10n.Nfc.notAvailable

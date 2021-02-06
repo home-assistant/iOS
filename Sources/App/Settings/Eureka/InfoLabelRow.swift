@@ -1,5 +1,5 @@
-import Foundation
 import Eureka
+import Foundation
 
 final class InfoLabelRow: _LabelRow, RowType {
     enum DisplayType {

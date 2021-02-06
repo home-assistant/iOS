@@ -1,7 +1,7 @@
-import WidgetKit
-import SwiftUI
-import Shared
 import Intents
+import Shared
+import SwiftUI
+import WidgetKit
 
 struct WidgetActions: Widget {
     var body: some WidgetConfiguration {

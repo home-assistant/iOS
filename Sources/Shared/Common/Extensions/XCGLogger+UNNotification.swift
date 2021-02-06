@@ -1,11 +1,11 @@
-import XCGLogger
 import UserNotifications
+import XCGLogger
 
-extension XCGLogger {
-    public static var notifyUserInfoKey: String { "is_xcglogger_notify_category" }
-    public static var shouldNotifyUserDefaultsKey: String { "xcglogger_unnotifications" }
+public extension XCGLogger {
+    static var notifyUserInfoKey: String { "is_xcglogger_notify_category" }
+    static var shouldNotifyUserDefaultsKey: String { "xcglogger_unnotifications" }
 
-    public func notify(
+    func notify(
         _ closure: @autoclosure () -> String,
         functionName: StaticString = #function,
         fileName: StaticString = #file,

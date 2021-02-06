@@ -1,9 +1,9 @@
+import CoreServices
 import Foundation
+import OHHTTPStubs
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
-import OHHTTPStubs
-import CoreServices
 
 class NotificationAttachmentManagerTests: XCTestCase {
     private var manager: NotificationAttachmentManager!
@@ -55,7 +55,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
     private func firstAttachment(for content: UNNotificationContent) throws -> UNNotificationAttachment {
         let promise = manager.content(from: content, api: api)
         let content = try hang(Promise(promise))
-        if let attachment =  content.attachments.first {
+        if let attachment = content.attachments.first {
             return attachment
         } else {
             enum NoAttachmentError: Error { case noAttachment }
@@ -181,7 +181,6 @@ class NotificationAttachmentManagerTests: XCTestCase {
         XCTAssertTrue(attachment.debugDescription.contains("displayLocation: default"))
     }
 
-
     func testHideThumbnailTrue() throws {
         parser1.result = image1.successParserResult(
             needsAuth: false,
@@ -213,7 +212,7 @@ private class Image {
     private var stubDescriptors: [HTTPStubsDescriptor] = []
 
     private class func newURL() -> URL {
-        return URL(string: "http://example.com/" + UUID().uuidString + ".png")!
+        URL(string: "http://example.com/" + UUID().uuidString + ".png")!
     }
 
     init() {
@@ -275,11 +274,11 @@ private class Image {
     ) -> NotificationAttachmentParserResult {
         let url = Self.newURL()
 
-        stubDescriptors.append(stub(condition: { $0.url == url }, response: { request in
+        stubDescriptors.append(stub(condition: { $0.url == url }, response: { _ in
             switch failure {
-            case .error(let error):
+            case let .error(error):
                 return .init(error: error)
-            case .statusCode(let statusCode):
+            case let .statusCode(statusCode):
                 return .init(data: Data(), statusCode: statusCode, headers: [:])
             }
         }))
@@ -303,10 +302,11 @@ private class FakeNotificationParser1: NotificationAttachmentParser {
     static func reset() {
         result = .rejected(UnSetError.unset)
     }
+
     static var result: NotificationAttachmentParserResult = .rejected(UnSetError.unset)
 
     func attachmentInfo(from content: UNNotificationContent) -> Guarantee<NotificationAttachmentParserResult> {
-        return .value(Self.result)
+        .value(Self.result)
     }
 }
 
@@ -316,10 +316,11 @@ private class FakeNotificationParser2: NotificationAttachmentParser {
     static func reset() {
         result = .rejected(UnSetError.unset)
     }
+
     static var result: NotificationAttachmentParserResult = .rejected(UnSetError.unset)
 
     func attachmentInfo(from content: UNNotificationContent) -> Guarantee<NotificationAttachmentParserResult> {
-        return .value(Self.result)
+        .value(Self.result)
     }
 }
 
@@ -329,13 +330,12 @@ private class FakeNotificationParser3: NotificationAttachmentParser {
     static func reset() {
         result = .rejected(UnSetError.unset)
     }
+
     static var result: NotificationAttachmentParserResult = .rejected(UnSetError.unset)
 
     func attachmentInfo(from content: UNNotificationContent) -> Guarantee<NotificationAttachmentParserResult> {
-        return .value(Self.result)
+        .value(Self.result)
     }
 }
 
-private class FakeHomeAssistantAPI: HomeAssistantAPI {
-
-}
+private class FakeHomeAssistantAPI: HomeAssistantAPI {}

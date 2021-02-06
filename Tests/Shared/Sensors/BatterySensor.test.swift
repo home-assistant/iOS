@@ -1,11 +1,11 @@
 import Foundation
-@testable import Shared
 import PromiseKit
+@testable import Shared
 import XCTest
 
 class BatterySensorTests: XCTestCase {
     func testUpdateSignalerCreated() throws {
-        Current.device.batteries = { [ DeviceBattery(level: 100, state: .unplugged, attributes: [:]) ] }
+        Current.device.batteries = { [DeviceBattery(level: 100, state: .unplugged, attributes: [:])] }
 
         let dependencies = SensorProviderDependencies()
         let provider = BatterySensor(request: .init(
@@ -31,13 +31,13 @@ class BatterySensorTests: XCTestCase {
     }
 
     func testAdditionalInfo() throws {
-        let (uLevel, uState, cLevel, cState) = try sensors(level: 100, attributes: [ "test": true ])
+        let (uLevel, uState, cLevel, cState) = try sensors(level: 100, attributes: ["test": true])
         XCTAssertEqual(uLevel.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(uState.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(cLevel.Attributes?["test"] as? Bool, true)
         XCTAssertEqual(cState.Attributes?["test"] as? Bool, true)
     }
-    
+
     func testBattery0() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 0)
         XCTAssertEqual(uLevel.Icon, "mdi:battery-outline")
@@ -326,9 +326,21 @@ class BatterySensorTests: XCTestCase {
             let uLevel = uSensors[idx]
             let uState = uSensors[idx + 1]
 
-            XCTAssertLevel(uLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
+            XCTAssertLevel(
+                uLevel,
+                name: names.isEmpty ? nil : names[idx / 2],
+                uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx / 2],
+                file: file,
+                line: line
+            )
 
-            XCTAssertState(uState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2], file: file, line: line)
+            XCTAssertState(
+                uState,
+                name: names.isEmpty ? nil : names[idx / 2],
+                uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx / 2],
+                file: file,
+                line: line
+            )
             XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
 
             uReturn.append((level: uLevel, state: uState))
@@ -370,9 +382,21 @@ class BatterySensorTests: XCTestCase {
             let cLevel = cSensors[idx]
             let cState = cSensors[idx + 1]
 
-            XCTAssertLevel(cLevel, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2],file: file, line: line)
+            XCTAssertLevel(
+                cLevel,
+                name: names.isEmpty ? nil : names[idx / 2],
+                uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx / 2],
+                file: file,
+                line: line
+            )
 
-            XCTAssertState(cState, name: names.isEmpty ? nil : names[idx/2], uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx/2],file: file, line: line)
+            XCTAssertState(
+                cState,
+                name: names.isEmpty ? nil : names[idx / 2],
+                uniqueId: uniqueIds.isEmpty ? nil : uniqueIds[idx / 2],
+                file: file,
+                line: line
+            )
             XCTAssertEqual(cState.Attributes?["Low Power Mode"] as? Bool, true)
 
             cReturn.append((level: cLevel, state: cState))

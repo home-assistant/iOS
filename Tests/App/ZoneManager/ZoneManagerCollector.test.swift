@@ -1,9 +1,9 @@
-import Foundation
-import XCTest
-import Shared
 import CoreLocation
-import RealmSwift
+import Foundation
 @testable import HomeAssistant
+import RealmSwift
+import Shared
+import XCTest
 
 class ZoneManagerCollectorTests: XCTestCase {
     private var realm: Realm!
@@ -150,7 +150,7 @@ class ZoneManagerCollectorTests: XCTestCase {
     func testDidUpdateLocations() {
         let locations = [
             CLLocation(latitude: 1.23, longitude: 4.56),
-            CLLocation(latitude: 2.34, longitude: 5.67)
+            CLLocation(latitude: 2.34, longitude: 5.67),
         ]
 
         collector.locationManager(locationManager, didUpdateLocations: locations)
@@ -174,7 +174,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         collector.locationManager(locationManager, didDetermineState: .outside, for: region1)
         XCTAssertEqual(delegate.events, [
             .init(eventType: .region(region2, .inside), associatedZone: nil),
-            .init(eventType: .region(region1, .outside), associatedZone: nil)
+            .init(eventType: .region(region1, .outside), associatedZone: nil),
         ])
     }
 }

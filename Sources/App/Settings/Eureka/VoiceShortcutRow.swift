@@ -1,5 +1,5 @@
-import Foundation
 import Eureka
+import Foundation
 import IntentsUI
 import Shared
 
@@ -10,9 +10,9 @@ public class VoiceShortcutCell: Cell<INShortcut>, CellType,
     INUIEditVoiceShortcutViewControllerDelegate {
     private let button = INUIAddVoiceShortcutButton(style: .automatic)
 
-    fileprivate var shortcutRow: VoiceShortcutRow? { return row as? VoiceShortcutRow }
+    fileprivate var shortcutRow: VoiceShortcutRow? { row as? VoiceShortcutRow }
 
-    public override func setup() {
+    override public func setup() {
         super.setup()
         selectionStyle = .none
 
@@ -28,13 +28,13 @@ public class VoiceShortcutCell: Cell<INShortcut>, CellType,
             button.topAnchor.constraint(equalTo: margins.topAnchor),
             button.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
             button.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
-            button.leadingAnchor.constraint(equalTo: margins.leadingAnchor)
+            button.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
         ])
 
         button.delegate = self
     }
 
-    public override func update() {
+    override public func update() {
         super.update()
         button.setStyle(shortcutRow?.buttonStyle ?? .automatic)
         button.shortcut = row.value

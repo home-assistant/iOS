@@ -1,10 +1,10 @@
 import CoreLocation
 import Foundation
-import XCTest
+@testable import HomeAssistant
 import PromiseKit
 import RealmSwift
 @testable import Shared
-@testable import HomeAssistant
+import XCTest
 
 class ZoneManagerProcessorTests: XCTestCase {
     private var api: FakeHassAPI!
@@ -81,7 +81,7 @@ class ZoneManagerProcessorTests: XCTestCase {
             beaconRegionZone?.ID = beaconRegion.identifier
             beacon?(beaconRegion, beaconRegionZone!)
 
-            realm.add([ circularRegionZone!, beaconRegionZone! ])
+            realm.add([circularRegionZone!, beaconRegionZone!])
         }
     }
 
@@ -247,28 +247,40 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testTrackingDisabled() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.TrackingEnabled = false
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .inside), associatedZone: circularRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(circularRegion, .inside),
+                associatedZone: circularRegionZone
+            ))
         XCTAssertEqual(try hangForIgnoreReason(promise), .zoneDisabled)
     }
 
     func testSSIDFiltered() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.SSIDFilter.append("wifi_name")
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .inside), associatedZone: circularRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(circularRegion, .inside),
+                associatedZone: circularRegionZone
+            ))
         XCTAssertEqual(try hangForIgnoreReason(promise), .ignoredSSID("wifi_name"))
     }
 
     func testZoneAlreadyIn() throws {
         // e.g. small zones getting multiple regions each with differing state
 
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = true
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .inside), associatedZone: circularRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(circularRegion, .inside),
+                associatedZone: circularRegionZone
+            ))
 
         let expectation = self.expectation(description: "promise")
         promise.ensure {
@@ -288,10 +300,14 @@ class ZoneManagerProcessorTests: XCTestCase {
     func testZoneAlreadyOut() throws {
         // e.g. small zones getting multiple regions each with differing state
 
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = false
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .outside), associatedZone: circularRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(circularRegion, .outside),
+                associatedZone: circularRegionZone
+            ))
 
         let expectation = self.expectation(description: "promise")
         promise.ensure {
@@ -308,10 +324,14 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testZoneUpdatedToInside() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = false
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .inside), associatedZone: circularRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(circularRegion, .inside),
+                associatedZone: circularRegionZone
+            ))
 
         let expectation = self.expectation(description: "promise")
         promise.ensure {
@@ -327,10 +347,14 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testZoneUpdatedToOutside() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = true
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .outside), associatedZone: circularRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(circularRegion, .outside),
+                associatedZone: circularRegionZone
+            ))
 
         let expectation = self.expectation(description: "promise")
         promise.ensure {
@@ -346,10 +370,14 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testBeaconExitIgnored() throws {
-        try setUpZones(beacon: { region, zone in
+        try setUpZones(beacon: { _, zone in
             zone.inRegion = true
         })
-        let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(beaconRegion, .outside), associatedZone: beaconRegionZone))
+        let promise = processor
+            .perform(event: ZoneManagerEvent(
+                eventType: .region(beaconRegion, .outside),
+                associatedZone: beaconRegionZone
+            ))
 
         let expectation = self.expectation(description: "promise")
         promise.ensure {
@@ -365,7 +393,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testOneShot() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = true
         })
         let event = ZoneManagerEvent(
@@ -405,7 +433,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testRegionEnterProducesInsideLocation() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = false
         })
         let event = ZoneManagerEvent(
@@ -420,7 +448,10 @@ class ZoneManagerProcessorTests: XCTestCase {
         }.cauterize()
 
         let oneShotLocation = { () -> CLLocation in
-            let coordinate = circularRegion.center.moving(distance: .init(value: circularRegion.radius - 1, unit: .meters), direction: .init(value: 80, unit: .degrees))
+            let coordinate = circularRegion.center.moving(
+                distance: .init(value: circularRegion.radius - 1, unit: .meters),
+                direction: .init(value: 80, unit: .degrees)
+            )
             return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         }()
 
@@ -451,7 +482,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testRegionExitProducesOutsideLocation() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = true
         })
         let event = ZoneManagerEvent(
@@ -466,7 +497,10 @@ class ZoneManagerProcessorTests: XCTestCase {
         }.cauterize()
 
         let oneShotLocation = { () -> CLLocation in
-            let coordinate = circularRegion.center.moving(distance: .init(value: circularRegion.radius + 10, unit: .meters), direction: .init(value: 80, unit: .degrees))
+            let coordinate = circularRegion.center.moving(
+                distance: .init(value: circularRegion.radius + 10, unit: .meters),
+                direction: .init(value: 80, unit: .degrees)
+            )
             return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         }()
 
@@ -494,11 +528,10 @@ class ZoneManagerProcessorTests: XCTestCase {
         } else {
             XCTFail("no state but one was expected")
         }
-
     }
 
     func testRegionEnterProducesOutsideLocation() throws {
-        try setUpZones(circular: { region, zone in
+        try setUpZones(circular: { _, zone in
             zone.inRegion = false
         })
         let event = ZoneManagerEvent(
@@ -513,7 +546,10 @@ class ZoneManagerProcessorTests: XCTestCase {
         }.cauterize()
 
         let oneShotLocation = { () -> CLLocation in
-            let coordinate = circularRegion.center.moving(distance: .init(value: circularRegion.radius + 10, unit: .meters), direction: .init(value: 80, unit: .degrees))
+            let coordinate = circularRegion.center.moving(
+                distance: .init(value: circularRegion.radius + 10, unit: .meters),
+                direction: .init(value: 80, unit: .degrees)
+            )
             return CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         }()
 
@@ -557,7 +593,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testNotOneShot() throws {
-        try setUpZones(beacon: { region, zone in
+        try setUpZones(beacon: { _, zone in
             zone.inRegion = false
         })
         let event = ZoneManagerEvent(
@@ -595,6 +631,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     // MARK: -
+
     private func hangForIgnoreReason(_ promise: Promise<Void>) throws -> ZoneManagerIgnoreReason {
         do {
             try hang(promise)
@@ -602,7 +639,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         } catch let error as ZoneManagerIgnoreReason {
             if let state = delegate.states.first {
                 switch state {
-                case .didIgnore(_, let innerError as ZoneManagerIgnoreReason):
+                case let .didIgnore(_, innerError as ZoneManagerIgnoreReason):
                     XCTAssertEqual(innerError, error)
                 default:
                     XCTFail("incorrect state was logged")
@@ -625,7 +662,7 @@ class ZoneManagerProcessorTests: XCTestCase {
 private extension PromiseKit.Result where T == Void {
     var ignoreReason: ZoneManagerIgnoreReason? {
         switch self {
-        case .rejected(let error as ZoneManagerIgnoreReason):
+        case let .rejected(error as ZoneManagerIgnoreReason):
             return error
         default:
             return nil

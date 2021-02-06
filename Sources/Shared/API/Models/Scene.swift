@@ -11,7 +11,7 @@ public class Scene: Entity {
     public static let textColorKey = "text_color"
     public static let iconColorKey = "icon_color"
 
-    public override func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
         entityIDs <- map["attributes.entity_id"]
         backgroundColor <- map["attributes." + Self.backgroundColorKey]

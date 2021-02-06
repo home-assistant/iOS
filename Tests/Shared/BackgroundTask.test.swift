@@ -1,7 +1,7 @@
 import Foundation
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
 
 class HomeAssistantBackgroundTaskTests: XCTestCase {
     enum TestError: Error {
@@ -9,7 +9,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
     }
 
     func testExpiredDeliversError() {
-        let expectedIdentifier: Int = 123456
+        let expectedIdentifier: Int = 123_456
         let expectedRemaining: TimeInterval = 456
 
         let wrappingExpectation = expectation(description: "wrapping")
@@ -48,7 +48,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
     func testRejectedDeliversError() {
         let (underlyingPromise, underlyingSeal) = Promise<String>.pending()
 
-        let endExpectedIdentifier: Int = 123456
+        let endExpectedIdentifier: Int = 123_456
         let expectedRemaining: TimeInterval = 456
 
         let wrappingExpectation = expectation(description: "wrapping")
@@ -86,7 +86,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
     func testFulfilledDeliversValue() throws {
         let (underlyingPromise, underlyingSeal) = Promise<String>.pending()
 
-        let expectedIdentifier: Int = 123456
+        let expectedIdentifier: Int = 123_456
         let expectedRemaining: TimeInterval = 456
 
         let wrappingExpectation = expectation(description: "wrapping")

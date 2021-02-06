@@ -1,7 +1,7 @@
-import Foundation
-import Shared
-import PromiseKit
 import Alamofire
+import Foundation
+import PromiseKit
+import Shared
 import UIKit
 
 class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
@@ -22,7 +22,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
             switch self {
             case .noPath:
                 return L10n.Extensions.NotificationContent.Error.Request.authFailed
-            case .networkError(let path, let error):
+            case let .networkError(path, error):
                 if let error = error as? AFError, let responseCode = error.responseCode {
                     switch responseCode {
                     case 401:
@@ -53,6 +53,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -67,7 +68,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
             imageView.topAnchor.constraint(equalTo: view.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
         setupStreamer()

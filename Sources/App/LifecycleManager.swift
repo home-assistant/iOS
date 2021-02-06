@@ -1,7 +1,7 @@
 import Foundation
-import UIKit
-import Shared
 import PromiseKit
+import Shared
+import UIKit
 #if !targetEnvironment(macCatalyst)
 import Lokalise
 #endif
@@ -14,6 +14,7 @@ class LifecycleManager {
             }
         }
     }
+
     static var supportsBackgroundPeriodicUpdates: Bool {
         Current.isCatalyst
     }
@@ -62,7 +63,7 @@ class LifecycleManager {
         }.cauterize()
 
         #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.checkForUpdates { (updated, error) in
+        Lokalise.shared.checkForUpdates { updated, error in
             if let error = error {
                 Current.Log.error("Error when updating Lokalise: \(error)")
             } else {
@@ -141,7 +142,7 @@ class LifecycleManager {
     }
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
-        return Current.backgroundTask(withName: "connect-api") { _ in
+        Current.backgroundTask(withName: "connect-api") { _ in
             Current.api.then(on: nil) { api in
                 api.Connect(reason: reason)
             }
@@ -154,5 +155,4 @@ class LifecycleManager {
             self.schedulePeriodicUpdateTimer()
         }
     }
-
 }

@@ -1,21 +1,15 @@
-//
-//  GetCameraImage.swift
-//  SiriIntents
-//
-//  Created by Robert Trencheny on 2/19/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import MobileCoreServices
-import UIKit
-import Shared
 import Intents
+import MobileCoreServices
 import PromiseKit
+import Shared
+import UIKit
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
-    func resolveCameraID(for intent: GetCameraImageIntent,
-                         with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolveCameraID(
+        for intent: GetCameraImageIntent,
+        with completion: @escaping (INStringResolutionResult) -> Void
+    ) {
         if let cameraID = intent.cameraID, cameraID.hasPrefix("camera.") {
             Current.Log.info("using given \(cameraID)")
             completion(.success(with: cameraID))
@@ -25,8 +19,10 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         }
     }
 
-    func provideCameraIDOptions(for intent: GetCameraImageIntent,
-                                with completion: @escaping ([String]?, Error?) -> Void) {
+    func provideCameraIDOptions(
+        for intent: GetCameraImageIntent,
+        with completion: @escaping ([String]?, Error?) -> Void
+    ) {
         Current.api.then(on: nil) { api in
             api.GetStates()
         }.compactMapValues { entity -> String? in
@@ -46,7 +42,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         for intent: GetCameraImageIntent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
     ) {
-        provideCameraIDOptions(for: intent) { (identifiers, error) in
+        provideCameraIDOptions(for: intent) { identifiers, error in
             completion(identifiers.flatMap { .init(items: $0.map { $0 as NSString }) }, error)
         }
     }
@@ -67,8 +63,11 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
                 }
 
                 let resp = GetCameraImageIntentResponse(code: .success, userActivity: nil)
-                resp.cameraImage = INFile(data: pngData, filename: "\(cameraID)_still.png",
-                    typeIdentifier: kUTTypePNG as String)
+                resp.cameraImage = INFile(
+                    data: pngData,
+                    filename: "\(cameraID)_still.png",
+                    typeIdentifier: kUTTypePNG as String
+                )
                 resp.cameraID = cameraID
                 completion(resp)
             }.catch { error in

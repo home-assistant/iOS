@@ -19,17 +19,17 @@ enum NotificationAttachmentErrorImage {
 
         message.append(NSAttributedString(string: L10n.NotificationService.failedToLoad, attributes: [
             .font: UIFont.preferredFont(forTextStyle: .title3),
-            .foregroundColor: UIColor.red
+            .foregroundColor: UIColor.red,
         ]))
         message.append(NSAttributedString(string: "\n" + error.localizedDescription, attributes: [
             .font: UIFont.preferredFont(forTextStyle: .body),
-            .foregroundColor: UIColor.black
+            .foregroundColor: UIColor.black,
         ]))
 
         message.addAttributes([
             .paragraphStyle: with(NSMutableParagraphStyle()) {
                 $0.alignment = .center
-            }
+            },
         ], range: NSRange(location: 0, length: message.length))
 
         return message

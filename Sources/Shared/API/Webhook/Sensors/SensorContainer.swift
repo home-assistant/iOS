@@ -1,6 +1,6 @@
+import CoreLocation
 import Foundation
 import PromiseKit
-import CoreLocation
 
 public struct SensorObserverUpdate {
     public let sensors: Guarantee<[WebhookSensor]>
@@ -45,7 +45,7 @@ public class SensorContainer {
 
     init() {
         self.providerDependencies = SensorProviderDependencies()
-        self.providerDependencies.updateSignalHandler = { [weak self] type in
+        providerDependencies.updateSignalHandler = { [weak self] type in
             self?.updateSignaled(from: type)
         }
     }
@@ -120,6 +120,7 @@ public class SensorContainer {
             }
         }
     }
+
     private var lastSentSensors: LastSentSensors = .init()
 
     internal func sensors(
@@ -141,7 +142,7 @@ public class SensorContainer {
         }.map { (sensors: [Result<([WebhookSensor], SensorProvider)>]) -> [WebhookSensor] in
             // now that we are done, we don't need to keep a strong reference to the provider instance anymore
             sensors.compactMap { (result: Result<([WebhookSensor], SensorProvider)>) -> [WebhookSensor]? in
-                if case .fulfilled(let value) = result {
+                if case let .fulfilled(value) = result {
                     return value.0
                 } else {
                     return nil

@@ -1,11 +1,3 @@
-//
-//  Event.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/10/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 
 public class Event {

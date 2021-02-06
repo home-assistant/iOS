@@ -1,6 +1,6 @@
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
 
 class ActiveSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(

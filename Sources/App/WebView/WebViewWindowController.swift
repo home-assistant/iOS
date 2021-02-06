@@ -1,7 +1,7 @@
 import Foundation
-import UIKit
-import Shared
 import PromiseKit
+import Shared
+import UIKit
 
 @available(iOS, deprecated: 13.0)
 enum StateRestorationKey: String {
@@ -45,7 +45,7 @@ class WebViewWindowController {
             }
         } else if webViewControllerPromise.isFulfilled {
             // replacing one, so set up a new promise if necessary
-            (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
+            (webViewControllerPromise, webViewControllerSeal) = Guarantee<WebViewController>.pending()
         }
     }
 
@@ -59,14 +59,13 @@ class WebViewWindowController {
     }
 
     private func onboardingNavigationController() -> UINavigationController {
-        return StoryboardScene.Onboarding.navController.instantiate()
+        StoryboardScene.Onboarding.navController.instantiate()
     }
 
     private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
         let navigationController = UINavigationController()
 
         if #available(iOS 13, *) {
-
         } else {
             navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
         }
@@ -179,7 +178,7 @@ class WebViewWindowController {
 extension WebViewWindowController: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
         switch state {
-        case .needed(let type):
+        case let .needed(type):
             let controller = onboardingNavigationController()
             updateRootViewController(to: controller)
 

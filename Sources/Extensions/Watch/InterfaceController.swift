@@ -1,22 +1,14 @@
-//
-//  InterfaceController.swift
-//  WatchApp Extension
-//
-//  Created by Robert Trencheny on 9/24/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import WatchKit
-import EMTLoadingIndicator
-import RealmSwift
 import Communicator
-import Shared
+import EMTLoadingIndicator
+import Foundation
 import PromiseKit
+import RealmSwift
+import Shared
+import WatchKit
 
 class InterfaceController: WKInterfaceController {
-    @IBOutlet weak var tableView: WKInterfaceTable!
-    @IBOutlet weak var noActionsLabel: WKInterfaceLabel!
+    @IBOutlet var tableView: WKInterfaceTable!
+    @IBOutlet var noActionsLabel: WKInterfaceLabel!
 
     var notificationToken: NotificationToken?
 
@@ -27,7 +19,7 @@ class InterfaceController: WKInterfaceController {
 
         MaterialDesignIcons.register()
 
-        self.setupTable()
+        setupTable()
     }
 
     override func willActivate() {
@@ -43,7 +35,7 @@ class InterfaceController: WKInterfaceController {
     func setupTable() {
         let realm = Realm.live()
 
-        self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
+        noActionsLabel.setText(L10n.Watch.Labels.noAction)
 
         let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
         self.actions = actions
@@ -61,7 +53,7 @@ class InterfaceController: WKInterfaceController {
                 for idx in actions.indices {
                     self.setupRow(idx)
                 }
-            case .update(_, let deletions, let insertions, let modifications):
+            case let .update(_, deletions, insertions, modifications):
                 let insertionsSet = NSMutableIndexSet()
                 insertions.forEach(insertionsSet.add)
 
@@ -75,7 +67,7 @@ class InterfaceController: WKInterfaceController {
                 tableView.removeRows(at: IndexSet(deletionsSet))
 
                 modifications.forEach(self.setupRow)
-            case .error(let error):
+            case let .error(error):
                 // An error occurred while opening the Realm file on the background worker thread
                 Current.Log.error("Error during Realm notifications! \(error)")
             }
@@ -85,12 +77,17 @@ class InterfaceController: WKInterfaceController {
     func setupRow(_ index: Int) {
         DispatchQueue.main.async {
             guard let row = self.tableView.rowController(at: index) as? ActionRowType,
-                let action = self.actions?[index] else { return }
+                  let action = self.actions?[index] else { return }
             Current.Log.verbose("Setup row \(index) with action \(action)")
             row.group.setBackgroundColor(UIColor(hex: action.BackgroundColor))
-            row.indicator = EMTLoadingIndicator(interfaceController: self, interfaceImage: row.image,
-                                                width: 24, height: 24, style: .dot)
-            row.icon = MaterialDesignIcons.init(named: action.IconName)
+            row.indicator = EMTLoadingIndicator(
+                interfaceController: self,
+                interfaceImage: row.image,
+                width: 24,
+                height: 24,
+                style: .dot
+            )
+            row.icon = MaterialDesignIcons(named: action.IconName)
             let iconColor = UIColor(hex: action.IconColor)
             row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: iconColor))
             row.image.setAlpha(1)
@@ -100,11 +97,11 @@ class InterfaceController: WKInterfaceController {
     }
 
     override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
-        let selectedAction = self.actions![rowIndex]
+        let selectedAction = actions![rowIndex]
 
         Current.Log.verbose("Selected action row at index \(rowIndex), \(selectedAction)")
 
-        guard let row = self.tableView.rowController(at: rowIndex) as? ActionRowType else {
+        guard let row = tableView.rowController(at: rowIndex) as? ActionRowType else {
             Current.Log.warning("Row at \(rowIndex) is not ActionRowType")
             return
         }
@@ -147,7 +144,7 @@ class InterfaceController: WKInterfaceController {
         }.recover { error -> Promise<Void> in
             Current.Log.error("recovering error \(error) by trying locally")
             return Current.api.then(on: nil) { api -> Promise<Void> in
-                return api.HandleAction(actionID: selectedAction.ID, source: .Watch)
+                api.HandleAction(actionID: selectedAction.ID, source: .Watch)
             }
         }.done {
             self.handleActionSuccess(row, rowIndex)
@@ -162,7 +159,7 @@ class InterfaceController: WKInterfaceController {
 
         row.image.stopAnimating()
 
-        self.setupRow(index)
+        setupRow(index)
     }
 
     func handleActionFailure(_ row: ActionRowType, _ index: Int) {
@@ -170,7 +167,7 @@ class InterfaceController: WKInterfaceController {
 
         row.image.stopAnimating()
 
-        self.setupRow(index)
+        setupRow(index)
     }
 
     deinit {

@@ -5,7 +5,7 @@ public class LocalizedManager {
     private var stringProviders = [(StringProviderRequest) -> String?]()
 
     init() {
-        bundle = Bundle(for: Self.self)
+        self.bundle = Bundle(for: Self.self)
 
         if let fallbackBundle = bundle.url(forResource: "en", withExtension: "lproj").flatMap(Bundle.init(url:)) {
             add(stringProvider: { request in
@@ -25,6 +25,7 @@ public class LocalizedManager {
         public var table: String
         public var defaultValue: String
     }
+
     public func add(stringProvider: @escaping (StringProviderRequest) -> String?) {
         stringProviders.insert(stringProvider, at: 0)
     }

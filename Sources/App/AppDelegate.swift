@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 3/25/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import Alamofire
 import CallbackURLKit
 import Communicator
@@ -14,14 +6,14 @@ import KeychainAccess
 #if canImport(Lokalise) && !targetEnvironment(macCatalyst)
 import Lokalise
 #endif
+import FirebaseCore
+import MBProgressHUD
 import PromiseKit
 import RealmSwift
 import SafariServices
 import Shared
-import XCGLogger
 import UIKit
-import FirebaseCore
-import MBProgressHUD
+import XCGLogger
 #if DEBUG
 import SimulatorStatusMagic
 #endif
@@ -44,12 +36,11 @@ extension Environment {
 }
 
 @UIApplicationMain
-// swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
     @available(iOS, deprecated: 13.0)
     var window: UIWindow? {
         get {
-            return sceneManager.compatibility.windowController?.window
+            sceneManager.compatibility.windowController?.window
         }
         set { // swiftlint:disable:this unused_setter_value
             fatalError("window is not settable in app delegate")
@@ -89,17 +80,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         notificationManager.setupNotifications()
-        self.setupFirebase()
-        self.setupModels()
-        self.setupLocalization()
-        self.setupMenus()
+        setupFirebase()
+        setupModels()
+        setupLocalization()
+        setupMenus()
 
         let launchingForLocation = launchOptions?[.location] != nil
-        let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
-                                type: .unknown)
+        let event = ClientEvent(
+            text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
+            type: .unknown
+        )
         Current.clientEventStore.addEvent(event)
 
-        self.zoneManager = ZoneManager()
+        zoneManager = ZoneManager()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
@@ -109,7 +102,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupiOS12Features()
 
         if #available(iOS 13, *) {
-
         } else {
             // window must be created before willFinishLaunching completes, or state restoration will not occur
             sceneManager.compatibility.willFinishLaunching()
@@ -118,8 +110,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         if NSClassFromString("XCTest") != nil {
             return true
         }
@@ -127,7 +121,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupTokens()
 
         if #available(iOS 13, *) {
-
         } else {
             sceneManager.compatibility.didFinishLaunching()
         }
@@ -265,13 +258,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notificationManager.didRegisterForRemoteNotifications(deviceToken: deviceToken)
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
     }
 
-    func application(_ application: UIApplication,
-                     performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(
+        _ application: UIApplication,
+        performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
@@ -280,7 +278,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let updatePromise: Promise<Void>
 
                 if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-                    prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+                   prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
                     updatePromise = api.GetAndSendLocation(
                         trigger: .BackgroundFetch,
                         maximumBackgroundTime: remaining
@@ -311,8 +309,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem,
-                     completionHandler: @escaping (Bool) -> Void) {
+    func application(
+        _ application: UIApplication,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
         if #available(iOS 13, *) {
             fatalError("scene delegate should be invoked on iOS 13")
         } else {
@@ -477,10 +478,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Tell the system we have a app notification settings screen and want critical alerts
         // This is effectively a migration
 
-        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-            guard settings.authorizationStatus == .authorized else {return}
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else { return }
 
-            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { (granted, error) in
+            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
                 Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
             }
         }
@@ -505,11 +506,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("Required fastlane argument 'webhookID' not provided or invalid!")
         }
 
-        let connectionInfo = ConnectionInfo(externalURL: url, internalURL: nil, cloudhookURL: nil, remoteUIURL: nil,
-                                            webhookID: webhookID,
-                                            webhookSecret: prefs.string(forKey: "webhookSecret"),
-                                            internalSSIDs: nil,
-                                            internalHardwareAddresses: nil)
+        let connectionInfo = ConnectionInfo(
+            externalURL: url,
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: webhookID,
+            webhookSecret: prefs.string(forKey: "webhookSecret"),
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil
+        )
 
         let tokenInfo = TokenInfo(accessToken: token, refreshToken: "", expiration: Date.distantFuture)
 
@@ -517,7 +523,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.settingsStore.connectionInfo = connectionInfo
         Current.resetAPI()
 
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             Current.Log.verbose("Requested notifications \(granted), \(String(describing: error))")
         }
     }

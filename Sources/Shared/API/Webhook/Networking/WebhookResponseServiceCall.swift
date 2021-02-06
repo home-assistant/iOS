@@ -1,6 +1,6 @@
 import Foundation
-import UserNotifications
 import PromiseKit
+import UserNotifications
 
 extension WebhookResponseIdentifier {
     static var serviceCall: Self { .init(rawValue: "serviceCall") }
@@ -14,7 +14,7 @@ struct WebhookResponseServiceCall: WebhookResponseHandler {
 
     static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // every service call is distinct
-        return false
+        false
     }
 
     func handle(

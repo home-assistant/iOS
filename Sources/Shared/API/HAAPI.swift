@@ -1,31 +1,20 @@
-//
-//  HAAPI.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 3/25/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import Alamofire
-import PromiseKit
 import CoreLocation
 import Foundation
+import Intents
 import KeychainAccess
 import ObjectMapper
+import PromiseKit
 import RealmSwift
-import UserNotifications
-import Intents
-import Version
 import UIKit
+import UserNotifications
+import Version
 #if os(iOS)
 import Reachability
 #endif
 
 private let keychain = Constants.Keychain
 
-// swiftlint:disable file_length
-
-// swiftlint:disable:next type_body_length
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
         case managerNotAvailable
@@ -47,11 +36,11 @@ public class HomeAssistantAPI {
 
     public private(set) var manager: Alamofire.Session!
     public static var unauthenticatedManager: Alamofire.Session = {
-        return configureSessionManager()
+        configureSessionManager()
     }()
 
     public var MobileAppComponentLoaded: Bool {
-        return HomeAssistantAPI.LoadedComponents.contains("mobile_app")
+        HomeAssistantAPI.LoadedComponents.contains("mobile_app")
     }
 
     let tokenManager: TokenManager
@@ -129,12 +118,11 @@ public class HomeAssistantAPI {
                     } catch {
                         completion(.failure(error))
                     }
-                }
+                },
             ], retriers: [
-
             ], interceptors: [
                 tokenManager.authenticationInterceptor,
-                RetryPolicy()
+                RetryPolicy(),
             ]
         )
     }
@@ -152,7 +140,7 @@ public class HomeAssistantAPI {
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
-        return MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
+        MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: MJPEGStreamerSessionDelegate(),
             interceptor: newInterceptor()
         ))
@@ -174,7 +162,7 @@ public class HomeAssistantAPI {
     }
 
     public func Connect(reason: ConnectReason) -> Promise<Void> {
-        return firstly {
+        firstly {
             self.UpdateRegistration()
         }.recover { error -> Promise<MobileAppRegistrationResponse> in
             switch error as? WebhookError {
@@ -187,7 +175,7 @@ public class HomeAssistantAPI {
 
                 let message = "Integration is missing; registering."
                 Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
-                    "error": String(describing: error)
+                    "error": String(describing: error),
                 ]))
                 return self.Register()
             case .noApi,
@@ -199,15 +187,18 @@ public class HomeAssistantAPI {
                 throw error
             }
         }.then { _ in
-            return when(fulfilled: [
+            when(fulfilled: [
                 self.GetConfig().asVoid(),
                 Current.modelManager.fetch(),
                 self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
-                self.updateComplications(passively: false).asVoid()
+                self.updateComplications(passively: false).asVoid(),
             ]).asVoid()
         }.get { _ in
-            NotificationCenter.default.post(name: Self.didConnectNotification,
-                                            object: nil, userInfo: nil)
+            NotificationCenter.default.post(
+                name: Self.didConnectNotification,
+                object: nil,
+                userInfo: nil
+            )
         }
     }
 
@@ -219,7 +210,7 @@ public class HomeAssistantAPI {
             identifier: .unhandled,
             request: .init(type: "fire_event", data: [
                 "event_type": eventType,
-                "event_data": eventData
+                "event_data": eventData,
             ])
         )
     }
@@ -247,7 +238,7 @@ public class HomeAssistantAPI {
     }
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
-        return Promise { seal in
+        Promise { seal in
 
             var finalURL = url
 
@@ -271,14 +262,14 @@ public class HomeAssistantAPI {
             }
 
             let destination: DownloadRequest.Destination = { _, _ in
-                return (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
+                (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
             }
 
             dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
                 switch downloadResponse.result {
                 case .success:
                     seal.fulfill(downloadResponse.fileURL!)
-                case .failure(let error):
+                case let .failure(error):
                     seal.reject(error)
                 }
             }
@@ -325,23 +316,27 @@ public class HomeAssistantAPI {
     }
 
     public func GetEvents() -> Promise<[EventsResponse]> {
-        return self.request(path: "events", callingFunctionName: "\(#function)")
+        request(path: "events", callingFunctionName: "\(#function)")
     }
 
     public func GetStates() -> Promise<[Entity]> {
-        return self.request(path: "states", callingFunctionName: "\(#function)")
+        request(path: "states", callingFunctionName: "\(#function)")
     }
 
     public func GetScenes() -> Promise<[Scene]> {
-        return self.request(path: "states", callingFunctionName: "\(#function)")
+        request(path: "states", callingFunctionName: "\(#function)")
     }
 
     public func GetServices() -> Promise<[ServicesResponse]> {
-        return self.request(path: "services", callingFunctionName: "\(#function)")
+        request(path: "services", callingFunctionName: "\(#function)")
     }
 
-    public func CallService(domain: String, service: String, serviceData: [String: Any],
-                            shouldLog: Bool = true) -> Promise<Void> {
+    public func CallService(
+        domain: String,
+        service: String,
+        serviceData: [String: Any],
+        shouldLog: Bool = true
+    ) -> Promise<Void> {
         let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
         INInteraction(intent: intent, response: nil).donate(completion: nil)
 
@@ -350,7 +345,7 @@ public class HomeAssistantAPI {
             request: .init(type: "call_service", data: [
                 "domain": domain,
                 "service": service,
-                "service_data": serviceData
+                "service_data": serviceData,
             ])
         )
     }
@@ -361,20 +356,20 @@ public class HomeAssistantAPI {
 
         public var errorDescription: String? {
             switch self {
-            case .error(let error): return error
+            case let .error(error): return error
             case .unknownError: return L10n.HaApi.ApiError.unknown
             }
         }
     }
 
     public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<Any> {
-        return firstly { () -> Promise<Any> in
+        firstly { () -> Promise<Any> in
             Current.webhooks.sendEphemeral(
                 request: .init(type: "render_template", data: [
                     "tpl": [
                         "template": templateStr,
-                        "variables": variables
-                    ]
+                        "variables": variables,
+                    ],
                 ])
             )
         }.map { value in
@@ -392,7 +387,7 @@ public class HomeAssistantAPI {
     }
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
-        return Promise { seal in
+        Promise { seal in
             let connectionInfo = try self.connectionInfo()
 
             let queryUrl = connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
@@ -400,11 +395,11 @@ public class HomeAssistantAPI {
                 .validate()
                 .responseData { response in
                     switch response.result {
-                    case .success(let data):
+                    case let .success(data):
                         if let image = UIImage(data: data) {
                             seal.fulfill(image)
                         }
-                    case .failure(let error):
+                    case let .failure(error):
                         Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
                         seal.reject(error)
                     }
@@ -413,18 +408,23 @@ public class HomeAssistantAPI {
     }
 
     public func Register() -> Promise<MobileAppRegistrationResponse> {
-        return self.request(path: "mobile_app/registrations", callingFunctionName: "\(#function)", method: .post,
-                            parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
-            .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
-                Current.Log.verbose("Registration response \(resp)")
+        request(
+            path: "mobile_app/registrations",
+            callingFunctionName: "\(#function)",
+            method: .post,
+            parameters: buildMobileAppRegistration(),
+            encoding: JSONEncoding.default
+        )
+        .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
+            Current.Log.verbose("Registration response \(resp)")
 
-                let connectionInfo = try self.connectionInfo()
-                connectionInfo.setAddress(resp.RemoteUIURL, .remoteUI)
-                connectionInfo.cloudhookURL = resp.CloudhookURL
-                connectionInfo.webhookID = resp.WebhookID
-                connectionInfo.webhookSecret = resp.WebhookSecret
+            let connectionInfo = try self.connectionInfo()
+            connectionInfo.setAddress(resp.RemoteUIURL, .remoteUI)
+            connectionInfo.cloudhookURL = resp.CloudhookURL
+            connectionInfo.webhookID = resp.WebhookID
+            connectionInfo.webhookSecret = resp.WebhookSecret
 
-                return Promise.value(resp)
+            return Promise.value(resp)
         }
     }
 
@@ -440,7 +440,7 @@ public class HomeAssistantAPI {
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
-        return firstly { () -> Promise<MobileAppConfig> in
+        firstly { () -> Promise<MobileAppConfig> in
             if let version = Current.serverVersion(), version < .actionSyncing {
                 let old: Promise<MobileAppConfigPush> = requestImmutable(
                     path: "ios/push",
@@ -480,11 +480,11 @@ public class HomeAssistantAPI {
     }
 
     private func mobileAppRegistrationRequestModel() -> MobileAppRegistrationRequest {
-        return with(MobileAppRegistrationRequest()) {
+        with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
                 $0.AppData = [
                     "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
-                    "push_token": pushID
+                    "push_token": pushID,
                 ]
             }
 
@@ -516,8 +516,11 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    public func SubmitLocation(updateType: LocationUpdateTrigger,
-                               location: CLLocation?, zone: RLMZone?) -> Promise<Void> {
+    public func SubmitLocation(
+        updateType: LocationUpdateTrigger,
+        location: CLLocation?,
+        zone: RLMZone?
+    ) -> Promise<Void> {
         firstly {
             .value(WebhookUpdateLocation(
                 trigger: updateType,
@@ -538,15 +541,20 @@ public class HomeAssistantAPI {
                     jsonPayload = p
                 }
 
-                realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
-                                               zone: zone, payload: jsonPayload))
+                realm.add(LocationHistoryEntry(
+                    updateType: updateType,
+                    location: payload.cllocation,
+                    zone: zone,
+                    payload: jsonPayload
+                ))
             }
         }.map { payload -> [String: Any] in
             let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
             Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict
         }.then { payload in
-            return when(resolved:
+            when(
+                resolved:
                 self.UpdateSensors(trigger: updateType, location: location).asVoid(),
                 Current.webhooks.send(
                     identifier: .location,
@@ -575,7 +583,7 @@ public class HomeAssistantAPI {
         Current.Log.verbose("getAndSendLocation called via \(String(describing: updateTrigger))")
 
         return firstly { () -> Promise<CLLocation> in
-            return CLLocationManager.oneShotLocation(
+            CLLocationManager.oneShotLocation(
                 timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
             )
         }.then { location in
@@ -583,12 +591,18 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
-                                       payloadDict: [String: Any]) {
+    private func sendLocalNotification(
+        withZone: RLMZone?,
+        updateType: LocationUpdateTrigger,
+        payloadDict: [String: Any]
+    ) {
         let zoneName = withZone?.Name ?? "Unknown zone"
         let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
-        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
-                                                      payload: payloadDict))
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: notificationOptions.body,
+            type: .locationUpdate,
+            payload: payloadDict
+        ))
         if notificationOptions.shouldNotify {
             let content = UNMutableNotificationContent()
             content.title = notificationOptions.title
@@ -596,8 +610,11 @@ public class HomeAssistantAPI {
             content.sound = UNNotificationSound.default
 
             let notificationRequest =
-                UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
-                                           content: content, trigger: nil)
+                UNNotificationRequest(
+                    identifier: notificationOptions.identifier ?? "",
+                    content: content,
+                    trigger: nil
+                )
             UNUserNotificationCenter.current().add(notificationRequest)
         }
     }
@@ -605,7 +622,7 @@ public class HomeAssistantAPI {
     public class var sharedEventDeviceInfo: [String: String] { [
         "sourceDevicePermanentID": Constants.PermanentID,
         "sourceDeviceName": Current.settingsStore.overrideDeviceName ?? Current.device.deviceName(),
-        "sourceDeviceID": Current.settingsStore.deviceID
+        "sourceDeviceID": Current.settingsStore.deviceID,
     ] }
 
     public enum ActionSource: String, CaseIterable, CustomStringConvertible {
@@ -661,7 +678,7 @@ public class HomeAssistantAPI {
         actionID: String,
         source: ActionSource
     ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
-        return (serviceDomain: "scene", serviceName: "turn_on", serviceData: [ "entity_id": actionID ])
+        return (serviceDomain: "scene", serviceName: "turn_on", serviceData: ["entity_id": actionID])
     }
 
     public class func tagEvent(
@@ -764,10 +781,10 @@ public class HomeAssistantAPI {
     }
 
     public func RegisterSensors() -> Promise<Void> {
-        return firstly {
+        firstly {
             Current.sensors.sensors(reason: .registration).map(\.sensors)
         }.get { sensors in
-            Current.Log.verbose("Registering sensors \(sensors.map { $0.UniqueID  })")
+            Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
         }.thenMap { sensor in
             Current.webhooks.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
@@ -775,9 +792,11 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    public func UpdateSensors(trigger: LocationUpdateTrigger,
-                              location: CLLocation? = nil) -> Promise<Void> {
-        return firstly {
+    public func UpdateSensors(
+        trigger: LocationUpdateTrigger,
+        location: CLLocation? = nil
+    ) -> Promise<Void> {
+        firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
                 location: location
@@ -822,9 +841,11 @@ extension HomeAssistantAPI.APIError: LocalizedError {
             return L10n.HaApi.ApiError.updateNotPossible
         case .mobileAppComponentNotLoaded:
             return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
-        case .mustUpgradeHomeAssistant(let current):
-            return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(current.description,
-                                                                HomeAssistantAPI.minimumRequiredVersion.description)
+        case let .mustUpgradeHomeAssistant(current):
+            return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(
+                current.description,
+                HomeAssistantAPI.minimumRequiredVersion.description
+            )
         case .unknown:
             return L10n.HaApi.ApiError.unknown
         }

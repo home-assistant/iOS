@@ -1,15 +1,15 @@
 import Foundation
 import Version
 
-extension Version {
+public extension Version {
     private static func replacements() throws -> [(regex: NSRegularExpression, replacement: String)] {
         [
             (regex: try NSRegularExpression(pattern: #"\.([a-zA-Z])"#, options: []), replacement: #"-$1"#),
-            (regex: try NSRegularExpression(pattern: #"([0-9])([a-zA-Z])"#, options: []), replacement: #"$1-$2"#)
+            (regex: try NSRegularExpression(pattern: #"([0-9])([a-zA-Z])"#, options: []), replacement: #"$1-$2"#),
         ]
     }
 
-    public init(hassVersion: String) throws {
+    init(hassVersion: String) throws {
         let sanitized = try Self.replacements().reduce(into: hassVersion) { result, pair in
             result = pair.regex.stringByReplacingMatches(
                 in: result,
@@ -23,10 +23,10 @@ extension Version {
         self = try parser.parse(string: sanitized)
     }
 
-    public func compare(buildOf other: Version) -> ComparisonResult {
+    func compare(buildOf other: Version) -> ComparisonResult {
         // Build can effectively be a sub-version
-        guard let buildVersion = build.flatMap({ try? Version.init(hassVersion: $0) }),
-              let otherBuildVersion = other.build.flatMap({ try? Version.init(hassVersion: $0) }) else {
+        guard let buildVersion = build.flatMap({ try? Version(hassVersion: $0) }),
+              let otherBuildVersion = other.build.flatMap({ try? Version(hassVersion: $0) }) else {
             return .orderedAscending
         }
 

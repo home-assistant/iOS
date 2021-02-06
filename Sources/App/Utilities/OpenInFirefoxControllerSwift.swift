@@ -1,10 +1,4 @@
-//
-//  OpenInFirefoxControllerSwift.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 6/12/20.
-//
-//
+// swiftformat:disable fileHeader
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -21,14 +15,14 @@ open class OpenInFirefoxControllerSwift {
     // can't open arbitrary URLs from an extension anyway.
     let app = UIApplication.shared
 
-    fileprivate func encodeByAddingPercentEscapes(_ input: String) -> String {
-        return NSString(string: input).addingPercentEncoding(
+    private func encodeByAddingPercentEscapes(_ input: String) -> String {
+        NSString(string: input).addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed
         )!
     }
 
     open func isFirefoxInstalled() -> Bool {
-        return app.canOpenURL(basicURL)
+        app.canOpenURL(basicURL)
     }
 
     open func openInFirefox(_ url: URL) {

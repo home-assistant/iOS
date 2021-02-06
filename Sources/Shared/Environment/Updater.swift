@@ -35,6 +35,7 @@ public struct AvailableUpdate: Codable, Comparable {
         var browserDownloadUrl: URL
         var name: String
     }
+
     public var assets: [Asset]
 
     public static func < (lhs: AvailableUpdate, rhs: AvailableUpdate) -> Bool {
@@ -90,7 +91,7 @@ public class Updater {
         return firstly {
             URLSession.shared.dataTask(.promise, with: apiUrl)
         }.map { data, _ -> [AvailableUpdate] in
-            return try with(JSONDecoder()) {
+            try with(JSONDecoder()) {
                 $0.keyDecodingStrategy = .convertFromSnakeCase
             }.decode([AvailableUpdate].self, from: data)
         }.get { updates in

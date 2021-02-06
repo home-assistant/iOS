@@ -1,5 +1,5 @@
-import Foundation
 import CoreWLAN
+import Foundation
 import SystemConfiguration
 
 class MacBridgeNetworkMonitor {
@@ -32,7 +32,7 @@ class MacBridgeNetworkMonitor {
         )
 
         let scStore = SCDynamicStoreCreate(nil, "HAMacBridge" as CFString, callback, &context)!
-        SCDynamicStoreSetNotificationKeys(scStore, nil, [ Self.networkKey ] as CFArray)
+        SCDynamicStoreSetNotificationKeys(scStore, nil, [Self.networkKey] as CFArray)
         SCDynamicStoreSetDispatchQueue(scStore, DispatchQueue.main)
         self.scStore = scStore
     }

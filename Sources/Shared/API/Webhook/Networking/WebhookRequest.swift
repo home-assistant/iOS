@@ -72,7 +72,7 @@ public struct WebhookRequest: ImmutableMappable {
             return nil
         }
 
-        let key: Bytes = Array(secret.bytes[0..<sodium.secretBox.KeyBytes])
+        let key: Bytes = Array(secret.bytes[0 ..< sodium.secretBox.KeyBytes])
 
         guard let encryptedData: Bytes = sodium.secretBox.seal(
             message: jsonStr.bytes,

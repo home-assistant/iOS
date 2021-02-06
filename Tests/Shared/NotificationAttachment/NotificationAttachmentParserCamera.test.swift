@@ -1,8 +1,8 @@
+import CoreServices
 import Foundation
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
-import CoreServices
 
 class NotificationAttachmentParserCameraTests: XCTestCase {
     private typealias CameraError = NotificationAttachmentParserCamera.CameraError
@@ -22,14 +22,14 @@ class NotificationAttachmentParserCameraTests: XCTestCase {
             "camera1",
             "CAMERA1",
             "camera2",
-            "CAMERA2"
+            "CAMERA2",
         ]
 
         let invalidIdentifiers: [String] = [
             "", // same as no category in api
             "cammy",
             "alarm",
-            "alert"
+            "alert",
         ]
 
         for valid in validIdentifiers {
@@ -67,7 +67,7 @@ class NotificationAttachmentParserCameraTests: XCTestCase {
         content.categoryIdentifier = "camera"
         content.userInfo["entity_id"] = "camera.any"
         content.userInfo["attachment"] = [
-            "hide-thumbnail": true
+            "hide-thumbnail": true,
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -87,7 +87,7 @@ class NotificationAttachmentParserCameraTests: XCTestCase {
         content.categoryIdentifier = "camera"
         content.userInfo["entity_id"] = "camera.any"
         content.userInfo["attachment"] = [
-            "hide-thumbnail": false
+            "hide-thumbnail": false,
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -101,7 +101,6 @@ class NotificationAttachmentParserCameraTests: XCTestCase {
         XCTAssertEqual(result.typeHint, kUTTypeJPEG)
         XCTAssertEqual(result.hideThumbnail, false)
     }
-
 
     func testAttachmentInfo() {
         let content = UNMutableNotificationContent()

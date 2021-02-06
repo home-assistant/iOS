@@ -27,7 +27,7 @@ public class SensorProviderDependencies {
         }
 
         let sensorType = type(of: sensorProvider)
-        let created = SignalerType.init(signal: { [weak self] in
+        let created = SignalerType(signal: { [weak self] in
             self?.updateSignalHandler(sensorType)
         })
 

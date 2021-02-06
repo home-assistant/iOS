@@ -1,11 +1,3 @@
-//
-//  AuthRequestMessage.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/9/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 
 class AuthRequestMessage: WebSocketMessage {
@@ -29,7 +21,7 @@ class AuthRequestMessage: WebSocketMessage {
         AccessToken = try values.decode(String.self, forKey: .AccessToken)
     }
 
-    public override func encode(to encoder: Encoder) throws {
+    override public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(AccessToken, forKey: .AccessToken)
 

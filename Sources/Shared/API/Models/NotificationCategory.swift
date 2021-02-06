@@ -1,16 +1,8 @@
-//
-//  NotificationCategory.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/28/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import RealmSwift
 import UserNotifications
 
-final public class NotificationCategory: Object, UpdatableModel {
+public final class NotificationCategory: Object, UpdatableModel {
     public static let FallbackActionIdentifier = "_"
 
     @objc public dynamic var isServerControlled: Bool = false
@@ -32,17 +24,17 @@ final public class NotificationCategory: Object, UpdatableModel {
     public var Actions = List<NotificationAction>()
 
     override public static func primaryKey() -> String? {
-        return "Identifier"
+        "Identifier"
     }
 
     public var options: UNNotificationCategoryOptions {
         var categoryOptions = UNNotificationCategoryOptions([])
 
-        if self.SendDismissActions { categoryOptions.insert(.customDismissAction) }
+        if SendDismissActions { categoryOptions.insert(.customDismissAction) }
 
         #if os(iOS)
-            if self.HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
-            if self.HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
+        if HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
+        if HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
         #endif
 
         return categoryOptions
@@ -50,14 +42,18 @@ final public class NotificationCategory: Object, UpdatableModel {
 
     #if os(iOS)
     public var categories: [UNNotificationCategory] {
-        let allActions = Array(self.Actions.map({ $0.action }))
+        let allActions = Array(Actions.map(\.action))
 
         // both lowercase and uppercase since this is a point of confusion
-        return [ Identifier.uppercased(), Identifier.lowercased() ].map { anIdentifier in
-            return UNNotificationCategory(identifier: anIdentifier, actions: allActions, intentIdentifiers: [],
-                                          hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
-                                          categorySummaryFormat: self.CategorySummaryFormat,
-                                          options: self.options)
+        return [Identifier.uppercased(), Identifier.lowercased()].map { anIdentifier in
+            UNNotificationCategory(
+                identifier: anIdentifier,
+                actions: allActions,
+                intentIdentifiers: [],
+                hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
+                categorySummaryFormat: self.CategorySummaryFormat,
+                options: self.options
+            )
         }
     }
     #endif
@@ -94,13 +90,9 @@ final public class NotificationCategory: Object, UpdatableModel {
         """
     }
 
-    static func didUpdate(objects: [NotificationCategory], realm: Realm) {
+    static func didUpdate(objects: [NotificationCategory], realm: Realm) {}
 
-    }
-
-    static func willDelete(objects: [NotificationCategory], realm: Realm) {
-
-    }
+    static func willDelete(objects: [NotificationCategory], realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "isServerControlled == YES")
@@ -116,11 +108,11 @@ final public class NotificationCategory: Object, UpdatableModel {
         isServerControlled = true
         Name = object.name
 
-        // todo: update
+        // TODO: update
         realm.delete(Actions)
         Actions.removeAll()
 
-        Actions.append(objectsIn: (object.actions).map { action in
+        Actions.append(objectsIn: object.actions.map { action in
             with(NotificationAction()) {
                 $0.isServerControlled = true
                 $0.Title = action.title

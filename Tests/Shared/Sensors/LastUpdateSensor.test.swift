@@ -1,7 +1,7 @@
 import Foundation
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
 
 class LastUpdateSensorTests: XCTestCase {
     func testManualTriggerOnPhone() throws {
@@ -56,7 +56,6 @@ class LastUpdateSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Icon, "mdi:desktop-mac")
         XCTAssertEqual(sensors[0].State as? String, "Manual")
     }
-
 
     func testManualTriggerOniMac() throws {
         Current.isCatalyst = true

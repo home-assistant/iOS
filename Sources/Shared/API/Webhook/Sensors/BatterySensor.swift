@@ -16,7 +16,7 @@ final class BatterySensorUpdateSignaler: SensorProviderUpdateSignaler, DeviceWra
 
 public class BatterySensor: SensorProvider {
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
@@ -63,44 +63,42 @@ public class BatterySensor: SensorProvider {
             state: battery.state.description
         )) {
             $0.Attributes = [
-                "Low Power Mode": isLowPowerMode
+                "Low Power Mode": isLowPowerMode,
             ].merging(battery.attributes, uniquingKeysWith: { a, _ in a })
         }
 
         return [levelSensor, stateSensor]
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     static func chargingIcon(level: Int) -> String {
         switch level {
         case 100...: return "mdi:battery-charging-100"
-        case 90...:  return "mdi:battery-charging-80"
-        case 80...:  return "mdi:battery-charging-80"
-        case 70...:  return "mdi:battery-charging-60"
-        case 60...:  return "mdi:battery-charging-60"
-        case 50...:  return "mdi:battery-charging-40"
-        case 40...:  return "mdi:battery-charging-40"
-        case 30...:  return "mdi:battery-charging-20"
-        case 20...:  return "mdi:battery-charging-20"
-        case 10...:  return "mdi:battery-outline"
-        default:     return "mdi:battery-outline"
+        case 90...: return "mdi:battery-charging-80"
+        case 80...: return "mdi:battery-charging-80"
+        case 70...: return "mdi:battery-charging-60"
+        case 60...: return "mdi:battery-charging-60"
+        case 50...: return "mdi:battery-charging-40"
+        case 40...: return "mdi:battery-charging-40"
+        case 30...: return "mdi:battery-charging-20"
+        case 20...: return "mdi:battery-charging-20"
+        case 10...: return "mdi:battery-outline"
+        default: return "mdi:battery-outline"
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     static func unpluggedIcon(level: Int) -> String {
         switch level {
         case 100...: return "mdi:battery"
-        case 90...:  return "mdi:battery-90"
-        case 80...:  return "mdi:battery-80"
-        case 70...:  return "mdi:battery-70"
-        case 60...:  return "mdi:battery-60"
-        case 50...:  return "mdi:battery-50"
-        case 40...:  return "mdi:battery-40"
-        case 30...:  return "mdi:battery-30"
-        case 20...:  return "mdi:battery-20"
-        case 10...:  return "mdi:battery-10"
-        default:     return "mdi:battery-outline"
+        case 90...: return "mdi:battery-90"
+        case 80...: return "mdi:battery-80"
+        case 70...: return "mdi:battery-70"
+        case 60...: return "mdi:battery-60"
+        case 50...: return "mdi:battery-50"
+        case 40...: return "mdi:battery-40"
+        case 30...: return "mdi:battery-30"
+        case 20...: return "mdi:battery-20"
+        case 10...: return "mdi:battery-10"
+        default: return "mdi:battery-outline"
         }
     }
 }

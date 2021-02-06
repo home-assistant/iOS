@@ -1,17 +1,8 @@
-//
-//  ComplicationController.swift
-//  WatchApp Extension
-//
-//  Created by Robert Trencheny on 9/24/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import ClockKit
 import RealmSwift
 import Shared
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
-
     // Helpful resources
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
@@ -69,7 +60,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         for complication: CLKComplication,
         withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void
     ) {
-
         let model = complicationModel(for: complication)
 
         if model?.IsPublic == false {

@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 import Shared
 
 struct ZoneManagerEvent: Equatable, CustomStringConvertible {
@@ -9,7 +9,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
         var description: String {
             switch self {
-            case .region(let region, let state):
+            case let .region(region, state):
                 let readableState = { () -> String in
                     switch state {
                     case .inside:
@@ -21,7 +21,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
                     }
                 }()
                 return "region(\(region), \(readableState))"
-            case .locationChange(let locations):
+            case let .locationChange(locations):
                 return "locationChange(\(locations))"
             }
         }
@@ -39,7 +39,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
     }
 
     static func == (lhs: ZoneManagerEvent, rhs: ZoneManagerEvent) -> Bool {
-        return lhs.eventType == rhs.eventType &&
+        lhs.eventType == rhs.eventType &&
             lhs.associatedZone?.ID == rhs.associatedZone?.ID
     }
 
@@ -61,7 +61,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
     var shouldOneShotLocation: Bool {
         switch eventType {
-        case .region(let region, _) where region is CLBeaconRegion:
+        case let .region(region, _) where region is CLBeaconRegion:
             return false
         default:
             return true
@@ -70,7 +70,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
     var associatedLocation: CLLocation? {
         switch eventType {
-        case .locationChange(let locations):
+        case let .locationChange(locations):
             return locations.last
         case .region:
             return nil
@@ -82,14 +82,14 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
             switch eventType {
             case .locationChange:
                 return "location-change"
-            case .region(let region, _):
+            case let .region(region, _):
                 return "region-\(region.identifier)"
             }
         }()
     }
 
     func asFirableEvent() -> (eventType: String, eventData: [String: Any])? {
-        guard case .region(let region, let state) = eventType, let zone = associatedZone else {
+        guard case let .region(region, state) = eventType, let zone = associatedZone else {
             return nil
         }
 
@@ -98,7 +98,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
     func asTrigger() -> LocationUpdateTrigger {
         switch eventType {
-        case .region(let region, let state):
+        case let .region(region, state):
             let isBeacon = region is CLBeaconRegion
 
             switch state {

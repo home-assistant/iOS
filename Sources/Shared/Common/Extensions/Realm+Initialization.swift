@@ -1,28 +1,20 @@
-//
-//  Realm+Initialization.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 6/21/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import RealmSwift
 #if os(iOS)
 import UIKit
 #endif
 
-extension Realm {
+public extension Realm {
     /// An in-memory data store, intended to be used in tests.
-    public static let mock: () -> Realm = {
+    static let mock: () -> Realm = {
         do {
             return try Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Memory"))
-        } catch let error {
+        } catch {
             fatalError("Error setting up Realm.mock! \(error)")
         }
     }
 
-    public static var storeDirectoryURL: URL {
+    static var storeDirectoryURL: URL {
         let fileManager = FileManager.default
         let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
             .appendingPathComponent("dataStore", isDirectory: true)
@@ -35,7 +27,7 @@ extension Realm {
     }
 
     /// The live data store, located in shared storage.
-    public static let live: () -> Realm = {
+    static let live: () -> Realm = {
         if NSClassFromString("XCTest") != nil {
             do {
                 return try Realm(configuration: .init(inMemoryIdentifier: "Tests", deleteRealmIfMigrationNeeded: true))
@@ -52,8 +44,11 @@ extension Realm {
             do {
                 let attributes =
                     [FileAttributeKey.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication]
-                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true,
-                                                attributes: attributes)
+                try fileManager.createDirectory(
+                    at: directoryURL,
+                    withIntermediateDirectories: true,
+                    attributes: attributes
+                )
             } catch {
                 Realm.handleError(
                     message: "Error while attempting to create data store URL",
@@ -65,7 +60,7 @@ extension Realm {
         let storeURL = directoryURL.appendingPathComponent("store.realm", isDirectory: false)
 
         #if targetEnvironment(simulator)
-            Current.Log.info("Realm is stored at \(storeURL.description)")
+        Current.Log.info("Realm is stored at \(storeURL.description)")
         #endif
 
         // 5  - 2020-07-08 v2020.4
@@ -123,8 +118,8 @@ extension Realm {
                         let iconDictIconKey = "icon"
 
                         if let oldData = newObject?[dataKey] as? Data,
-                           // swiftlint:disable:next line_length
-                           let oldJson = try? JSONSerialization.jsonObject(with: oldData, options: []) as? [String: Any],
+                           let oldJson = try? JSONSerialization
+                           .jsonObject(with: oldData, options: []) as? [String: Any],
                            let oldIconDict = oldJson[iconDictKey] as? [String: String],
                            let oldIconIcon = oldIconDict[iconDictIconKey] {
                             var updatedIconDict = oldIconDict
@@ -150,7 +145,7 @@ extension Realm {
 
                 if oldVersion < 14 {
                     migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
-                         newObject?["IsPublic"] = true
+                        newObject?["IsPublic"] = true
                     }
                 }
             },
@@ -159,7 +154,7 @@ extension Realm {
 
         do {
             return try Realm(configuration: config)
-        } catch let error {
+        } catch {
             Current.crashReporter.logError(error as NSError)
 
             Realm.handleError(
@@ -177,13 +172,13 @@ extension Realm {
     }
 
     /// Backup the Realm database, returning the URL of the backup location.
-    public static func backup() -> URL? {
+    static func backup() -> URL? {
         let backupURL = Realm.storeDirectoryURL.appendingPathComponent("backup.realm")
 
         if FileManager.default.fileExists(atPath: backupURL.path) {
             do {
                 _ = try FileManager.default.removeItem(at: backupURL)
-            } catch let error {
+            } catch {
                 Current.Log.error("Error while removing existing Realm backup: \(error)")
             }
         }
@@ -204,7 +199,7 @@ extension Realm {
     }
 
     /// Deletes all Realm objects
-    public static func reset() {
+    static func reset() {
         let realm = Realm.live()
         realm.beginWrite()
         realm.deleteAll()
@@ -257,9 +252,9 @@ extension Realm {
         #endif
     }
 
-    public func reentrantWrite<Result>(
+    func reentrantWrite<Result>(
         withoutNotifying tokens: [NotificationToken] = [],
-        _ block: (() throws -> Result)
+        _ block: () throws -> Result
     ) throws -> Result {
         if isInWriteTransaction {
             return try block()

@@ -1,21 +1,12 @@
-//
-//  WatchComplication.swift
-//  Shared
-//
-//  Created by Robert Trencheny on 9/26/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
-import RealmSwift
 import ObjectMapper
+import RealmSwift
 import UIColor_Hex_Swift
+import UIKit
 #if os(watchOS)
 import ClockKit
 #endif
 
-// swiftlint:disable:next type_body_length
 public class WatchComplication: Object, ImmutableMappable {
     @objc public dynamic var identifier: String = UUID().uuidString
 
@@ -32,6 +23,7 @@ public class WatchComplication: Object, ImmutableMappable {
             rawFamily = newValue.rawValue
         }
     }
+
     @objc private dynamic var rawTemplate: String = ""
     public var Template: ComplicationTemplate {
         get {
@@ -39,13 +31,14 @@ public class WatchComplication: Object, ImmutableMappable {
             if let t = ComplicationTemplate(rawValue: rawTemplate) {
                 return t
             }
-            return self.Family.templates.first!
+            return Family.templates.first!
         }
         set {
             rawTemplate = newValue.rawValue
         }
     }
-    @objc dynamic public var Data: [String: Any] {
+
+    @objc public dynamic var Data: [String: Any] {
         get {
             guard let dictionaryData = complicationData else {
                 return [String: Any]()
@@ -67,25 +60,26 @@ public class WatchComplication: Object, ImmutableMappable {
             }
         }
     }
-    @objc fileprivate dynamic var complicationData: Data?
-    @objc dynamic public var CreatedAt = Date()
 
-    @objc dynamic public var name: String?
+    @objc fileprivate dynamic var complicationData: Data?
+    @objc public dynamic var CreatedAt = Date()
+
+    @objc public dynamic var name: String?
     public var displayName: String {
         name ?? Template.style
     }
 
-    @objc dynamic public var IsPublic: Bool = true
+    @objc public dynamic var IsPublic: Bool = true
 
     override public static func primaryKey() -> String? {
-        return "identifier"
+        "identifier"
     }
 
     override public static func ignoredProperties() -> [String] {
-        return ["Family", "Template"]
+        ["Family", "Template"]
     }
 
-    public required override init() {
+    override public required init() {
         super.init()
     }
 
@@ -137,7 +131,7 @@ public class WatchComplication: Object, ImmutableMappable {
 
         var stringValue: String {
             switch self {
-            case .textArea(let value): return "textArea,\(value)"
+            case let .textArea(value): return "textArea,\(value)"
             case .gauge: return "gauge"
             case .ring: return "ring"
             }
@@ -145,7 +139,7 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     func renderedValues() -> [RenderedValueType: Any] {
-        return (Data["rendered"] as? [String: Any] ?? [:])
+        (Data["rendered"] as? [String: Any] ?? [:])
             .compactMapKeys(RenderedValueType.init(stringValue:))
     }
 
@@ -168,7 +162,7 @@ public class WatchComplication: Object, ImmutableMappable {
             renders[.gauge] = gauge
         }
 
-        if let ringDict = self.Data["ring"] as? [String: String],
+        if let ringDict = Data["ring"] as? [String: String],
            let ringValue = ringDict["ring_value"], ringValue.containsJinjaTemplate {
             renders[.ring] = ringValue
         }
@@ -176,7 +170,7 @@ public class WatchComplication: Object, ImmutableMappable {
         return renders.mapKeys { $0.stringValue }
     }
 
-    static public func percentileNumber(from value: Any) -> Float? {
+    public static func percentileNumber(from value: Any) -> Float? {
         switch value {
         case let value as String:
             // a bit more forgiving than Float(_:)
@@ -188,7 +182,7 @@ public class WatchComplication: Object, ImmutableMappable {
                 // but it's a non-locale-aware string, so we need to parse `0.33` even if the locale expects `0,33`
                 Locale(identifier: "en_US_POSIX"),
                 // but since it's free-form text, the user may also have typed `0,33` expecting it to work
-                Locale.current
+                Locale.current,
             ] {
                 formatter.locale = locale
                 if let value = formatter.number(from: value)?.floatValue {
@@ -217,15 +211,15 @@ public class WatchComplication: Object, ImmutableMappable {
             identifier: identifier,
             displayName: displayName,
             supportedFamilies: [
-                Family.family
+                Family.family,
             ]
         )
     }
 
     public var textDataProviders: [String: CLKTextProvider] {
-        var providers: [String: CLKTextProvider] = [String: CLKTextProvider]()
+        var providers = [String: CLKTextProvider]()
 
-        if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
+        if let textAreas = Data["textAreas"] as? [String: [String: Any]] {
             let rendered = renderedValues()
             for (key, textArea) in textAreas {
                 let renderedText = rendered[.textArea(key)].flatMap(String.init(describing:))
@@ -248,8 +242,8 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     public var iconProvider: CLKImageProvider? {
-        if let iconDict = self.Data["icon"] as? [String: String], let iconName = iconDict["icon"],
-            let iconColor = iconDict["icon_color"], let iconSize = self.Template.imageSize {
+        if let iconDict = Data["icon"] as? [String: String], let iconName = iconDict["icon"],
+           let iconColor = iconDict["icon_color"], let iconSize = Template.imageSize {
             let iconColor = UIColor(iconColor)
             let icon = MaterialDesignIcons(named: iconName)
             let image = icon.image(ofSize: iconSize, color: iconColor)
@@ -262,8 +256,8 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     public var fullColorImageProvider: CLKFullColorImageProvider? {
-        if let iconDict = self.Data["icon"] as? [String: String], let iconName = iconDict["icon"],
-            let iconColor = iconDict["icon_color"], let iconSize = self.Template.imageSize {
+        if let iconDict = Data["icon"] as? [String: String], let iconName = iconDict["icon"],
+           let iconColor = iconDict["icon_color"], let iconSize = Template.imageSize {
             let icon = MaterialDesignIcons(named: iconName)
             let image = icon.image(ofSize: iconSize, color: UIColor(iconColor))
             return CLKFullColorImageProvider(fullColorImage: image)
@@ -273,7 +267,7 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     public var gaugeProvider: CLKSimpleGaugeProvider? {
-        guard let info = self.Data["gauge"] as? [String: String] else {
+        guard let info = Data["gauge"] as? [String: String] else {
             return nil
         }
 
@@ -357,13 +351,13 @@ public class WatchComplication: Object, ImmutableMappable {
         return alignment
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     public func CLKComplicationTemplate(family: CLKComplicationFamily) -> CLKComplicationTemplate? {
-        if self.Template.groupMember != ComplicationGroupMember(family: family) {
-            Current.Log.warning("Would have returned template (\(self.Template)) outside expected family (\(family)")
+        if Template.groupMember != ComplicationGroupMember(family: family) {
+            Current.Log.warning("Would have returned template (\(Template)) outside expected family (\(family)")
             return nil
         }
-        switch self.Template {
+        switch Template {
         case .CircularSmallRingImage:
             let template = CLKComplicationTemplateCircularSmallRingImage()
             if let iconProvider = self.iconProvider {
@@ -391,7 +385,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Line2"] {
+            if let textProvider = textDataProviders["Line2"] {
                 template.line2TextProvider = textProvider
             } else {
                 return nil
@@ -399,7 +393,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .CircularSmallRingText:
             let template = CLKComplicationTemplateCircularSmallRingText()
-            if let textProvider = self.textDataProviders["InsideRing"] {
+            if let textProvider = textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -411,7 +405,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .CircularSmallSimpleText:
             let template = CLKComplicationTemplateCircularSmallSimpleText()
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -419,12 +413,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .CircularSmallStackText:
             let template = CLKComplicationTemplateCircularSmallStackText()
-            if let textProvider = self.textDataProviders["Line1"] {
+            if let textProvider = textDataProviders["Line1"] {
                 template.line1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Line2"] {
+            if let textProvider = textDataProviders["Line2"] {
                 template.line2TextProvider = textProvider
             } else {
                 return nil
@@ -457,7 +451,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Line2"] {
+            if let textProvider = textDataProviders["Line2"] {
                 template.line2TextProvider = textProvider
             } else {
                 return nil
@@ -465,22 +459,22 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ExtraLargeColumnsText:
             let template = CLKComplicationTemplateExtraLargeColumnsText()
-            if let textProvider = self.textDataProviders["Row1Column1"] {
+            if let textProvider = textDataProviders["Row1Column1"] {
                 template.row1Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row1Column2"] {
+            if let textProvider = textDataProviders["Row1Column2"] {
                 template.row1Column2TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column1"] {
+            if let textProvider = textDataProviders["Row2Column1"] {
                 template.row2Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column2"] {
+            if let textProvider = textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             } else {
                 return nil
@@ -489,7 +483,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ExtraLargeRingText:
             let template = CLKComplicationTemplateExtraLargeRingText()
-            if let textProvider = self.textDataProviders["InsideRing"] {
+            if let textProvider = textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -501,7 +495,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ExtraLargeSimpleText:
             let template = CLKComplicationTemplateExtraLargeSimpleText()
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -509,12 +503,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ExtraLargeStackText:
             let template = CLKComplicationTemplateExtraLargeStackText()
-            if let textProvider = self.textDataProviders["Line1"] {
+            if let textProvider = textDataProviders["Line1"] {
                 template.line1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Line2"] {
+            if let textProvider = textDataProviders["Line2"] {
                 template.line2TextProvider = textProvider
             } else {
                 return nil
@@ -547,7 +541,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Line2"] {
+            if let textProvider = textDataProviders["Line2"] {
                 template.line2TextProvider = textProvider
             } else {
                 return nil
@@ -555,22 +549,22 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularSmallColumnsText:
             let template = CLKComplicationTemplateModularSmallColumnsText()
-            if let textProvider = self.textDataProviders["Row1Column1"] {
+            if let textProvider = textDataProviders["Row1Column1"] {
                 template.row1Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row1Column2"] {
+            if let textProvider = textDataProviders["Row1Column2"] {
                 template.row1Column2TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column1"] {
+            if let textProvider = textDataProviders["Row2Column1"] {
                 template.row2Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column2"] {
+            if let textProvider = textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             } else {
                 return nil
@@ -579,7 +573,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularSmallRingText:
             let template = CLKComplicationTemplateModularSmallRingText()
-            if let textProvider = self.textDataProviders["InsideRing"] {
+            if let textProvider = textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -591,7 +585,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularSmallSimpleText:
             let template = CLKComplicationTemplateModularSmallSimpleText()
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -599,12 +593,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularSmallStackText:
             let template = CLKComplicationTemplateModularSmallStackText()
-            if let textProvider = self.textDataProviders["Line1"] {
+            if let textProvider = textDataProviders["Line1"] {
                 template.line1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Line2"] {
+            if let textProvider = textDataProviders["Line2"] {
                 template.line2TextProvider = textProvider
             } else {
                 return nil
@@ -612,17 +606,17 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularLargeStandardBody:
             let template = CLKComplicationTemplateModularLargeStandardBody()
-            if let textProvider = self.textDataProviders["Header"] {
+            if let textProvider = textDataProviders["Header"] {
                 template.headerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Body1"] {
+            if let textProvider = textDataProviders["Body1"] {
                 template.body1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Body2"] {
+            if let textProvider = textDataProviders["Body2"] {
                 template.body2TextProvider = textProvider
             } else {
                 // optional, allowed to be nil and makes body1 wrap
@@ -630,12 +624,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularLargeTallBody:
             let template = CLKComplicationTemplateModularLargeTallBody()
-            if let textProvider = self.textDataProviders["Header"] {
+            if let textProvider = textDataProviders["Header"] {
                 template.headerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.bodyTextProvider = textProvider
             } else {
                 return nil
@@ -643,22 +637,22 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularLargeColumns:
             let template = CLKComplicationTemplateModularLargeColumns()
-            if let textProvider = self.textDataProviders["Row1Column1"] {
+            if let textProvider = textDataProviders["Row1Column1"] {
                 template.row1Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row1Column2"] {
+            if let textProvider = textDataProviders["Row1Column2"] {
                 template.row1Column2TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column1"] {
+            if let textProvider = textDataProviders["Row2Column1"] {
                 template.row2Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column2"] {
+            if let textProvider = textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             } else {
                 return nil
@@ -667,27 +661,27 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularLargeTable:
             let template = CLKComplicationTemplateModularLargeTable()
-            if let textProvider = self.textDataProviders["Header"] {
+            if let textProvider = textDataProviders["Header"] {
                 template.headerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row1Column1"] {
+            if let textProvider = textDataProviders["Row1Column1"] {
                 template.row1Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row1Column2"] {
+            if let textProvider = textDataProviders["Row1Column2"] {
                 template.row1Column2TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column1"] {
+            if let textProvider = textDataProviders["Row2Column1"] {
                 template.row2Column1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Row2Column2"] {
+            if let textProvider = textDataProviders["Row2Column2"] {
                 template.row2Column2TextProvider = textProvider
             } else {
                 return nil
@@ -701,7 +695,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 // optional
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -721,7 +715,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .UtilitarianSmallRingText:
             let template = CLKComplicationTemplateUtilitarianSmallRingText()
-            if let textProvider = self.textDataProviders["InsideRing"] {
+            if let textProvider = textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -741,7 +735,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .UtilitarianLargeFlat:
             let template = CLKComplicationTemplateUtilitarianLargeFlat()
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -754,7 +748,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCornerCircularImage:
             let template = CLKComplicationTemplateGraphicCornerCircularImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -762,7 +756,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCornerGaugeImage:
             let template = CLKComplicationTemplateGraphicCornerGaugeImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -772,12 +766,12 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Leading"] {
+            if let textProvider = textDataProviders["Leading"] {
                 template.leadingTextProvider = textProvider
             } else {
                 // optional
             }
-            if let textProvider = self.textDataProviders["Trailing"] {
+            if let textProvider = textDataProviders["Trailing"] {
                 template.trailingTextProvider = textProvider
             } else {
                 // optional
@@ -790,17 +784,17 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Outer"] {
+            if let textProvider = textDataProviders["Outer"] {
                 template.outerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Leading"] {
+            if let textProvider = textDataProviders["Leading"] {
                 template.leadingTextProvider = textProvider
             } else {
                 // optional
             }
-            if let textProvider = self.textDataProviders["Trailing"] {
+            if let textProvider = textDataProviders["Trailing"] {
                 template.trailingTextProvider = textProvider
             } else {
                 // optional
@@ -808,12 +802,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCornerStackText:
             let template = CLKComplicationTemplateGraphicCornerStackText()
-            if let textProvider = self.textDataProviders["Outer"] {
+            if let textProvider = textDataProviders["Outer"] {
                 template.outerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Inner"] {
+            if let textProvider = textDataProviders["Inner"] {
                 template.innerTextProvider = textProvider
             } else {
                 return nil
@@ -821,12 +815,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCornerTextImage:
             let template = CLKComplicationTemplateGraphicCornerTextImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -834,7 +828,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCircularImage:
             let template = CLKComplicationTemplateGraphicCircularImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -842,7 +836,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCircularClosedGaugeImage:
             let template = CLKComplicationTemplateGraphicCircularClosedGaugeImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -855,7 +849,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCircularOpenGaugeImage:
             let template = CLKComplicationTemplateGraphicCircularOpenGaugeImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.bottomImageProvider = iconProvider
             } else {
                 return nil
@@ -865,7 +859,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.centerTextProvider = textProvider
             } else {
                 return nil
@@ -878,7 +872,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.centerTextProvider = textProvider
             } else {
                 return nil
@@ -891,12 +885,12 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.centerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Bottom"] {
+            if let textProvider = textDataProviders["Bottom"] {
                 template.bottomTextProvider = textProvider
             } else {
                 return nil
@@ -909,17 +903,17 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.centerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Leading"] {
+            if let textProvider = textDataProviders["Leading"] {
                 template.leadingTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Trailing"] {
+            if let textProvider = textDataProviders["Trailing"] {
                 template.trailingTextProvider = textProvider
             } else {
                 return nil
@@ -927,14 +921,14 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicBezelCircularText:
             let template = CLKComplicationTemplateGraphicBezelCircularText()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.circularTemplate = with(CLKComplicationTemplateGraphicCircularImage()) {
                     $0.imageProvider = iconProvider
                 }
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Center"] {
+            if let textProvider = textDataProviders["Center"] {
                 template.textProvider = textProvider
             } else {
                 // optional
@@ -942,17 +936,17 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicRectangularStandardBody:
             let template = CLKComplicationTemplateGraphicRectangularStandardBody()
-            if let textProvider = self.textDataProviders["Header"] {
+            if let textProvider = textDataProviders["Header"] {
                 template.headerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Body1"] {
+            if let textProvider = textDataProviders["Body1"] {
                 template.body1TextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Body2"] {
+            if let textProvider = textDataProviders["Body2"] {
                 template.body2TextProvider = textProvider
             } else {
                 // optional
@@ -965,12 +959,12 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Header"] {
+            if let textProvider = textDataProviders["Header"] {
                 template.headerTextProvider = textProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Body1"] {
+            if let textProvider = textDataProviders["Body1"] {
                 template.body1TextProvider = textProvider
             } else {
                 return nil
@@ -978,12 +972,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicRectangularLargeImage:
             let template = CLKComplicationTemplateGraphicRectangularLargeImage()
-            if let iconProvider = self.fullColorImageProvider {
+            if let iconProvider = fullColorImageProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
             }
-            if let textProvider = self.textDataProviders["Header"] {
+            if let textProvider = textDataProviders["Header"] {
                 template.textProvider = textProvider
             } else {
                 return nil
@@ -993,5 +987,4 @@ public class WatchComplication: Object, ImmutableMappable {
     }
 
     #endif
-// swiftlint:disable:next file_length
 }

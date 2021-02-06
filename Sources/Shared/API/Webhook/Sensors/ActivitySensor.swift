@@ -1,6 +1,6 @@
+import CoreMotion
 import Foundation
 import PromiseKit
-import CoreMotion
 
 public class ActivitySensor: SensorProvider {
     public enum ActivityError: Error {
@@ -10,7 +10,7 @@ public class ActivitySensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
@@ -22,7 +22,7 @@ public class ActivitySensor: SensorProvider {
                 $0.State = activity.activityTypes.first
                 $0.Attributes = [
                     "Confidence": activity.confidence.description,
-                    "Types": activity.activityTypes
+                    "Types": activity.activityTypes,
                 ]
                 $0.Icon = activity.icons.first
             }

@@ -1,9 +1,9 @@
-import Foundation
 import Eureka
+import Foundation
 import RealmSwift
 import Shared
 
-final public class RealmSection<ObjectType: Object>: Section {
+public final class RealmSection<ObjectType: Object>: Section {
     private let collection: AnyRealmCollection<ObjectType>
     private let getter: (ObjectType) -> [BaseRow]?
     private let emptyRows: [BaseRow]

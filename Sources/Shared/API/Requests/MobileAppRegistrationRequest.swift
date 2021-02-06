@@ -1,11 +1,3 @@
-//
-//  MobileAppRegistrationRequest.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 9/7/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import ObjectMapper
 
@@ -28,17 +20,17 @@ class MobileAppRegistrationRequest: Mappable {
     required init?(map: Map) {}
 
     func mapping(map: Map) {
-        AppData             <- map["app_data"]
-        AppIdentifier       <- map["app_id"]
-        AppName             <- map["app_name"]
-        AppVersion          <- map["app_version"]
-        DeviceName          <- map["device_name"]
-        DeviceID            <- map["device_id"]
-        Manufacturer        <- map["manufacturer"]
-        Model               <- map["model"]
-        OSName              <- map["os_name"]
-        OSVersion           <- map["os_version"]
-        SupportsEncryption  <- map["supports_encryption"]
+        AppData <- map["app_data"]
+        AppIdentifier <- map["app_id"]
+        AppName <- map["app_name"]
+        AppVersion <- map["app_version"]
+        DeviceName <- map["device_name"]
+        DeviceID <- map["device_id"]
+        Manufacturer <- map["manufacturer"]
+        Model <- map["model"]
+        OSName <- map["os_name"]
+        OSVersion <- map["os_version"]
+        SupportsEncryption <- map["supports_encryption"]
         // SupportsMediaPlayer <- map["supports_media_player"]
     }
 }

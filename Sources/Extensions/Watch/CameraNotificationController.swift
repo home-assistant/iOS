@@ -1,26 +1,17 @@
-//
-//  CameraNotificationController.swift
-//  WatchAppExtension
-//
-//  Created by Robert Trencheny on 2/27/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import WatchKit
-import Foundation
-import UserNotifications
-import Shared
 import Alamofire
 import EMTLoadingIndicator
+import Foundation
 import PromiseKit
+import Shared
+import UserNotifications
+import WatchKit
 
 class CameraNotificationController: WKUserNotificationInterfaceController {
+    @IBOutlet var notificationTitleLabel: WKInterfaceLabel!
+    @IBOutlet var notificationSubtitleLabel: WKInterfaceLabel!
+    @IBOutlet var notificationAlertLabel: WKInterfaceLabel!
 
-    @IBOutlet weak var notificationTitleLabel: WKInterfaceLabel!
-    @IBOutlet weak var notificationSubtitleLabel: WKInterfaceLabel!
-    @IBOutlet weak var notificationAlertLabel: WKInterfaceLabel!
-
-    @IBOutlet weak var imageView: WKInterfaceImage!
+    @IBOutlet var imageView: WKInterfaceImage!
 
     var streamer: MJPEGStreamer?
 
@@ -28,10 +19,10 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
 
     var shouldPlay: Bool = true {
         didSet {
-            if !self.shouldPlay {
+            if !shouldPlay {
                 Current.Log.verbose("Ending playback at frame #\(frameCount)")
-                self.streamer?.cancel()
-                self.streamer = nil
+                streamer?.cancel()
+                streamer = nil
             }
         }
     }
@@ -43,8 +34,13 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
     override func willActivate() {
         super.willActivate()
 
-        indicator = EMTLoadingIndicator(interfaceController: self, interfaceImage: self.imageView, width: 40,
-                                        height: 40, style: .dot)
+        indicator = EMTLoadingIndicator(
+            interfaceController: self,
+            interfaceImage: imageView,
+            width: 40,
+            height: 40,
+            style: .dot
+        )
         indicator?.prepareImagesForWait()
     }
 
@@ -55,13 +51,13 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         super.didDeactivate()
-        self.shouldPlay = false
+        shouldPlay = false
     }
 
     override func didReceive(_ notification: UNNotification) {
-        self.notificationTitleLabel.setText(notification.request.content.title)
-        self.notificationSubtitleLabel.setText(notification.request.content.subtitle)
-        self.notificationAlertLabel!.setText(notification.request.content.body)
+        notificationTitleLabel.setText(notification.request.content.title)
+        notificationSubtitleLabel.setText(notification.request.content.subtitle)
+        notificationAlertLabel!.setText(notification.request.content.body)
 
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
             Current.Log.error(L10n.Extensions.NotificationContent.Error.noEntityId)
@@ -84,7 +80,7 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
         let apiURL = connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
-        streamer.streamImages(fromURL: queryUrl) { (image, error) in
+        streamer.streamImages(fromURL: queryUrl) { image, error in
             if let error = error, let afError = error as? AFError {
                 Current.Log.error("Streaming image AFError: \(afError)")
                 var labelText = L10n.Extensions.NotificationContent.Error.Request.unknown

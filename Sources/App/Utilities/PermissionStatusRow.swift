@@ -1,12 +1,12 @@
-import Foundation
-import Eureka
-import UIKit
 import CoreLocation
 import CoreMotion
+import Eureka
+import Foundation
 import Shared
+import UIKit
 
 public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>>, RowType {
-    required public init(tag: String?) {
+    public required init(tag: String?) {
         super.init(tag: tag)
 
         displayValueFor = { value in
@@ -30,7 +30,7 @@ public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>
 
 @available(iOS 14, *)
 public final class LocationAccuracyRow: Row<LabelCellOf<CLAccuracyAuthorization>>, RowType {
-    required public init(tag: String?) {
+    public required init(tag: String?) {
         super.init(tag: tag)
 
         displayValueFor = { value in
@@ -47,7 +47,7 @@ public final class LocationAccuracyRow: Row<LabelCellOf<CLAccuracyAuthorization>
 }
 
 public final class MotionPermissionRow: Row<LabelCellOf<CMAuthorizationStatus>>, RowType {
-    required public init(tag: String?) {
+    public required init(tag: String?) {
         super.init(tag: tag)
 
         displayValueFor = { value in
@@ -68,7 +68,7 @@ public final class MotionPermissionRow: Row<LabelCellOf<CMAuthorizationStatus>>,
 }
 
 public final class BackgroundRefreshStatusRow: Row<LabelCellOf<UIBackgroundRefreshStatus>>, RowType {
-    required public init(tag: String?) {
+    public required init(tag: String?) {
         super.init(tag: tag)
 
         displayValueFor = { value in
@@ -138,15 +138,15 @@ extension Condition {
         conditions: LocationCondition
     ) -> Condition {
         .function(["locationPermission", "locationAccuracy", "backgroundRefresh"], { form in
-            if conditions.contains(.permissionNotAlways) && locationPermissionAlways(from: form) == false {
+            if conditions.contains(.permissionNotAlways), locationPermissionAlways(from: form) == false {
                 return true
             }
 
-            if conditions.contains(.accuracyNotFull) && locationAccuracyFull(from: form) == false {
+            if conditions.contains(.accuracyNotFull), locationAccuracyFull(from: form) == false {
                 return true
             }
 
-            if conditions.contains(.backgroundRefreshNotAvailable) && backgroundRefreshAvailable(from: form) == false {
+            if conditions.contains(.backgroundRefreshNotAvailable), backgroundRefreshAvailable(from: form) == false {
                 return true
             }
 

@@ -1,18 +1,10 @@
-//
-//  Environment.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 6/15/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
+import CoreLocation
+import CoreMotion
 import Foundation
 import PromiseKit
 import RealmSwift
-import XCGLogger
-import CoreMotion
-import CoreLocation
 import Version
+import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     case FastlaneSnapshot
@@ -48,7 +40,7 @@ public class Environment {
                     return "PromiseKit: warning: pending promise deallocated"
                 case .pendingGuaranteeDeallocated:
                     return "PromiseKit: warning: pending guarantee deallocated"
-                case .cauterized (let error):
+                case let .cauterized(error):
                     return "PromiseKit:cauterized-error: \(error)"
                 }
             }
@@ -93,6 +85,7 @@ public class Environment {
             underlyingAPI = newValue
         }
     }
+
     public func resetAPI() {
         underlyingAPI = nil
     }
@@ -128,8 +121,8 @@ public class Environment {
 
     public var tags: TagManager = EmptyTagManager()
 
-    public var updater: Updater = Updater()
-    public var serverAlerter: ServerAlerter = ServerAlerter()
+    public var updater = Updater()
+    public var serverAlerter = ServerAlerter()
 
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
@@ -138,8 +131,7 @@ public class Environment {
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {
         guard let pluginUrl = Bundle(for: Environment.self).builtInPlugInsURL,
-              let bundle = Bundle(url: pluginUrl.appendingPathComponent("MacBridge.bundle"))
-        else {
+              let bundle = Bundle(url: pluginUrl.appendingPathComponent("MacBridge.bundle")) else {
             fatalError("couldn't load mac bridge bundle")
         }
 
@@ -180,6 +172,7 @@ public class Environment {
             return false
         }
     }()
+
     public var isCatalyst: Bool = {
         #if targetEnvironment(macCatalyst)
         return true
@@ -200,7 +193,7 @@ public class Environment {
     }
 
     public var isRunningTests: Bool {
-        return NSClassFromString("XCTest") != nil
+        NSClassFromString("XCTest") != nil
     }
 
     public var isBackgroundRequestsImmediate = { true }
@@ -210,7 +203,7 @@ public class Environment {
             return .FastlaneSnapshot
         } else if isDebug {
             return .Debug
-        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta") && isTestFlight {
+        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta"), isTestFlight {
             return .Beta
         } else {
             return .Release
@@ -249,13 +242,15 @@ public class Environment {
 
         // Create a file log destination
         let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
-        let fileDestination = AutoRotatingFileDestination(writeToFile: logPath,
-                                                          identifier: "advancedLogger.fileDestination",
-                                                          shouldAppend: true,
-                                                          maxFileSize: 10_485_760,
-                                                          maxTimeInterval: 86400,
-                                                          // archived logs + 1 current, so realy this is -1'd
-                                                          targetMaxLogFiles: isTestFlight ? 8 : 4)
+        let fileDestination = AutoRotatingFileDestination(
+            writeToFile: logPath,
+            identifier: "advancedLogger.fileDestination",
+            shouldAppend: true,
+            maxFileSize: 10_485_760,
+            maxTimeInterval: 86400,
+            // archived logs + 1 current, so realy this is -1'd
+            targetMaxLogFiles: isTestFlight ? 8 : 4
+        )
 
         // Optionally set some configuration options
         fileDestination.outputLevel = .verbose
@@ -283,8 +278,9 @@ public class Environment {
     public struct Motion {
         private let underlyingManager = CMMotionActivityManager()
         public var isAuthorized: () -> Bool = {
-            return CMMotionActivityManager.authorizationStatus() == .authorized
+            CMMotionActivityManager.authorizationStatus() == .authorized
         }
+
         public var isActivityAvailable: () -> Bool = CMMotionActivityManager.isActivityAvailable
         public lazy var queryStartEndOnQueueHandler: (
             Date, Date, OperationQueue, @escaping CMMotionActivityQueryHandler
@@ -292,13 +288,14 @@ public class Environment {
             underlyingManager.queryActivityStarting(from: start, to: end, to: queue, withHandler: handler)
         }
     }
+
     public var motion = Motion()
 
     /// Wrapper around CMPedometeer
     public struct Pedometer {
         private let underlyingPedometer = CMPedometer()
         public var isAuthorized: () -> Bool = {
-            return CMPedometer.authorizationStatus() == .authorized
+            CMPedometer.authorizationStatus() == .authorized
         }
 
         public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable
@@ -308,6 +305,7 @@ public class Environment {
             underlyingPedometer.queryPedometerData(from: start, to: end, withHandler: handler)
         }
     }
+
     public var pedometer = Pedometer()
 
     public var device = DeviceWrapper()
@@ -316,6 +314,7 @@ public class Environment {
     public struct Geocoder {
         public var geocode: (CLLocation) -> Promise<[CLPlacemark]> = CLGeocoder.geocode(location:)
     }
+
     public var geocoder = Geocoder()
 
     /// Wrapper around One Shot
@@ -324,6 +323,7 @@ public class Environment {
             CLLocationManager.oneShotLocation(timeout: $0)
         }
     }
+
     public var location = Location()
 
     public var connectivity = ConnectivityWrapper()

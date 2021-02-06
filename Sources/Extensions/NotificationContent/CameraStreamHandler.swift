@@ -1,6 +1,6 @@
 import Foundation
-import Shared
 import PromiseKit
+import Shared
 
 enum CameraStreamHandlerState {
     case playing
@@ -21,7 +21,7 @@ extension CameraStreamHandler {
             return nil
         }
 
-        let ratio = size.width/size.height
+        let ratio = size.width / size.height
         return view.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: ratio)
     }
 }
