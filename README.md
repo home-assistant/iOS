@@ -37,7 +37,21 @@ Xcode should generate provisioning profiles in your Team ID and our configuratio
 
 ## Code style
 
-SwiftLint runs as part of Pull Request checks and will run automatically when building the project.
+Linters run as part of Pull Request checks. Additionally, some linting requirements can be autocorrected.
+
+```bash
+# checks for linting problems, doesn't fix
+bundle exec fastlane lint
+# checks for linting problems and fixes them
+bundle exec fastlane autocorrect
+```
+
+In the Xcode project, the autocorrectable linters will not modify your source code but will provide warnings. This project uses several linters:
+
+- [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)
+- [SwiftLint](https://github.com/realm/swiftlint) (for things SwiftFormat doesn't automate)
+- [Rubocop](https://rubocop.org) (largely for Fastlane)
+- [YamlLint](https://yamllint.readthedocs.io/en/stable/index.html) (largely for GitHub Actions)
 
 ## Continuous Integration
 
