@@ -6,6 +6,7 @@ project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :re
 def support_modules
   pod 'SwiftGen', '~> 6.4.0'
   pod 'SwiftLint'
+  pod 'SwiftFormat/CLI'
 end
 
 if ENV['ONLY_SUPPORT_MODULES']
@@ -21,8 +22,6 @@ end
 plugin 'cocoapods-acknowledgements'
 
 system('./Tools/BuildMaterialDesignIconsFont.sh')
-
-support_modules
 
 pod 'Alamofire', '~> 5.0'
 pod 'Communicator', '~> 4.0'
@@ -77,6 +76,8 @@ abstract_target 'iOS' do
     pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
     pod 'ZIPFoundation', '~> 0.9'
+
+    support_modules
 
     target 'Tests-App' do
       inherit! :search_paths

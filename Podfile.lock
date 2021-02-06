@@ -48,6 +48,7 @@ PODS:
   - Sentry/Core (6.1.0)
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.9.1)
+  - SwiftFormat/CLI (0.47.11)
   - SwiftGen (6.4.0)
   - SwiftLint (0.42.0)
   - SwiftMessages (8.0.5):
@@ -84,6 +85,7 @@ DEPENDENCIES:
   - Sentry
   - SimulatorStatusMagic
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
+  - SwiftFormat/CLI
   - SwiftGen (~> 6.4.0)
   - SwiftLint
   - SwiftMessages
@@ -109,6 +111,7 @@ SPEC REPOS:
     - ReachabilitySwift
     - Sentry
     - SimulatorStatusMagic
+    - SwiftFormat
     - SwiftGen
     - SwiftLint
     - SwiftMessages
@@ -183,6 +186,7 @@ SPEC CHECKSUMS:
   Sentry: 367db11b23fc30944358dbd198fa35a96ad7f2a5
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
+  SwiftFormat: 6f2fd4689e09959ba5b690ab950279e33eb6441e
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
   SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
   SwiftMessages: 539fd54a766bf08ec667e90aa141c44b8b8aaa55
@@ -192,6 +196,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 71cc3c720ab077bac24896a553c279a08cc93356
+PODFILE CHECKSUM: 886ee9e9156c28c493fe7ac11eec28e43231325d
 
 COCOAPODS: 1.10.1
