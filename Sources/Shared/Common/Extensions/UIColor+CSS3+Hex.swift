@@ -25,7 +25,6 @@
 import UIKit
 
 public extension UIColor {
-
     /**
      Creates an immuatble UIColor instance specified by a hex string, CSS color name, or nil.
      - parameter hexString: A case insensitive String? representing a hex or CSS value e.g.
@@ -48,8 +47,12 @@ public extension UIColor {
         var scannedInt: UInt64 = 0
         Scanner(string: normalizedHexString).scanHexInt64(&scannedInt)
         c = CUnsignedInt(truncatingIfNeeded: scannedInt)
-        self.init(red: UIColorMasks.redValue(c), green: UIColorMasks.greenValue(c), blue: UIColorMasks.blueValue(c),
-                  alpha: UIColorMasks.alphaValue(c))
+        self.init(
+            red: UIColorMasks.redValue(c),
+            green: UIColorMasks.greenValue(c),
+            blue: UIColorMasks.blueValue(c),
+            alpha: UIColorMasks.alphaValue(c)
+        )
     }
 
     /**
@@ -60,38 +63,38 @@ public extension UIColor {
      - Returns: A new string with `String` with the color's hexidecimal value.
      */
     func hexDescription(_ includeAlpha: Bool = false) -> String {
-        guard self.cgColor.numberOfComponents == 4 else {
+        guard cgColor.numberOfComponents == 4 else {
             return "Color not RGB."
         }
-        let a = self.cgColor.components!.map { Int($0 * CGFloat(255)) }
-        let color = String.init(format: "%02x%02x%02x", a[0], a[1], a[2])
+        let a = cgColor.components!.map { Int($0 * CGFloat(255)) }
+        let color = String(format: "%02x%02x%02x", a[0], a[1], a[2])
         if includeAlpha {
-            let alpha = String.init(format: "%02x", a[3])
+            let alpha = String(format: "%02x", a[3])
             return "\(color)\(alpha)"
         }
         return color
     }
 
     fileprivate enum UIColorMasks: CUnsignedInt {
-        case redMask    = 0xff000000
-        case greenMask  = 0x00ff0000
-        case blueMask   = 0x0000ff00
-        case alphaMask  = 0x000000ff
+        case redMask = 0xFF00_0000
+        case greenMask = 0x00FF_0000
+        case blueMask = 0x0000_FF00
+        case alphaMask = 0x0000_00FF
 
         static func redValue(_ value: CUnsignedInt) -> CGFloat {
-            return CGFloat((value & redMask.rawValue) >> 24) / 255.0
+            CGFloat((value & redMask.rawValue) >> 24) / 255.0
         }
 
         static func greenValue(_ value: CUnsignedInt) -> CGFloat {
-            return CGFloat((value & greenMask.rawValue) >> 16) / 255.0
+            CGFloat((value & greenMask.rawValue) >> 16) / 255.0
         }
 
         static func blueValue(_ value: CUnsignedInt) -> CGFloat {
-            return CGFloat((value & blueMask.rawValue) >> 8) / 255.0
+            CGFloat((value & blueMask.rawValue) >> 8) / 255.0
         }
 
         static func alphaValue(_ value: CUnsignedInt) -> CGFloat {
-            return CGFloat(value & alphaMask.rawValue) / 255.0
+            CGFloat(value & alphaMask.rawValue) / 255.0
         }
     }
 
@@ -276,6 +279,6 @@ public extension UIColor {
         "WHITE": "FFFFFF",
         "WHITESMOKE": "F5F5F5",
         "YELLOW": "FFFF00",
-        "YELLOWGREEN": "9ACD32"
+        "YELLOWGREEN": "9ACD32",
     ]
 }

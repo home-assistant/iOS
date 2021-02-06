@@ -1,3 +1,5 @@
+// swiftlint:disable all
+// swiftformat:disable all
 //
 //  IconImageView.swift
 //  https://github.com/home-assistant/Iconic

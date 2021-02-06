@@ -67,7 +67,6 @@ import UIKit
 /// in the dictionary it will fallback to the system preferred
 /// font.
 public struct ScaledFont {
-
     private struct FontDescription: Decodable {
         let fontSize: CGFloat
         let fontName: String
@@ -86,7 +85,7 @@ public struct ScaledFont {
 
     public init(fontName: String, in bundle: Bundle = Bundle.main) {
         if let url = bundle.url(forResource: fontName, withExtension: "plist"),
-            let data = try? Data(contentsOf: url) {
+           let data = try? Data(contentsOf: url) {
             let decoder = PropertyListDecoder()
             styleDictionary = try? decoder.decode(StyleDictionary.self, from: data)
         }
@@ -106,8 +105,8 @@ public struct ScaledFont {
     ///   font is returned.
     public func font(forTextStyle textStyle: UIFont.TextStyle) -> UIFont {
         guard let fontDescription = styleDictionary?[textStyle.rawValue],
-            let font = UIFont(name: fontDescription.fontName, size: fontDescription.fontSize) else {
-                return UIFont.preferredFont(forTextStyle: textStyle)
+              let font = UIFont(name: fontDescription.fontName, size: fontDescription.fontSize) else {
+            return UIFont.preferredFont(forTextStyle: textStyle)
         }
 
         let fontMetrics = UIFontMetrics(forTextStyle: textStyle)

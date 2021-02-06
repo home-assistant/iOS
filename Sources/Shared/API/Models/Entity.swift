@@ -1,15 +1,7 @@
-//
-//  Entity.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 4/5/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import UIKit
 import CoreGraphics
+import Foundation
 import ObjectMapper
+import UIKit
 
 public class Entity: StaticMappable {
     @objc public dynamic var ID: String = ""
@@ -36,6 +28,7 @@ public class Entity: StaticMappable {
             }
         }
     }
+
     @objc fileprivate dynamic var attributesData: Data?
     @objc public dynamic var FriendlyName: String?
     @objc public dynamic var Hidden = false
@@ -51,24 +44,24 @@ public class Entity: StaticMappable {
     @objc public dynamic var NodeID: String?
 
     public func mapping(map: Map) {
-        ID                <- map["entity_id"]
-        State             <- map["state"]
-        Attributes        <- map["attributes"]
-        FriendlyName      <- map["attributes.friendly_name"]
-        Hidden            <- map["attributes.hidden"]
-        Icon              <- map["attributes.icon"]
-        MobileIcon        <- map["attributes.mobile_icon"]
-        Picture           <- map["attributes.entity_picture"]
-        LastChanged       <- (map["last_changed"], HomeAssistantTimestampTransform())
-        LastUpdated       <- (map["last_updated"], HomeAssistantTimestampTransform())
+        ID <- map["entity_id"]
+        State <- map["state"]
+        Attributes <- map["attributes"]
+        FriendlyName <- map["attributes.friendly_name"]
+        Hidden <- map["attributes.hidden"]
+        Icon <- map["attributes.icon"]
+        MobileIcon <- map["attributes.mobile_icon"]
+        Picture <- map["attributes.entity_picture"]
+        LastChanged <- (map["last_changed"], HomeAssistantTimestampTransform())
+        LastUpdated <- (map["last_updated"], HomeAssistantTimestampTransform())
 
         // Z-Wave properties
-        NodeID            <- map["attributes.node_id"]
-        Location          <- map["attributes.location"]
+        NodeID <- map["attributes.node_id"]
+        Location <- map["attributes.location"]
     }
 
     public var Domain: String {
-        return self.ID.components(separatedBy: ".")[0]
+        ID.components(separatedBy: ".")[0]
     }
 
     public class func objectForMapping(map: Map) -> BaseMappable? {

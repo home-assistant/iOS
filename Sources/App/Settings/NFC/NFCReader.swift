@@ -1,7 +1,7 @@
+import CoreNFC
 import Foundation
 import PromiseKit
 import Shared
-import CoreNFC
 
 @available(iOS 13, *)
 class NFCReader: NSObject, NFCTagReaderSessionDelegate {
@@ -25,7 +25,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         (self.promise, self.seal) = Promise<NFCNDEFMessage>.pending()
 
         super.init()
-        readerSession = NFCTagReaderSession(
+        self.readerSession = NFCTagReaderSession(
             pollingOption: [.iso14443, .iso15693, .iso18092],
             delegate: self,
             queue: nil
@@ -34,9 +34,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         readerSession.begin()
     }
 
-    func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {
-
-    }
+    func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {}
 
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
         session.invalidate(errorMessage: error.localizedDescription)

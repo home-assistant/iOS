@@ -1,7 +1,7 @@
 import Foundation
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
 
 class WebhookResponseUnhandledTests: XCTestCase {
     private var api: HomeAssistantAPI!

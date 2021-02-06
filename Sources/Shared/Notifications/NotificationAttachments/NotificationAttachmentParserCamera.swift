@@ -1,7 +1,7 @@
-import Foundation
-import UserNotifications
-import PromiseKit
 import CoreServices
+import Foundation
+import PromiseKit
+import UserNotifications
 
 final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
     enum CameraError: LocalizedError {

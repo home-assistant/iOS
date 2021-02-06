@@ -1,20 +1,12 @@
-//
-//  Camera.swift
-//  NotificationContentExtension
-//
-//  Created by Robert Trencheny on 10/2/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import UserNotifications
-import UserNotificationsUI
-import KeychainAccess
-import Shared
 import Alamofire
 import AVFoundation
 import AVKit
+import KeychainAccess
 import PromiseKit
+import Shared
+import UIKit
+import UserNotifications
+import UserNotificationsUI
 
 class CameraViewController: UIViewController, NotificationCategory {
     var activeViewController: (UIViewController & CameraStreamHandler)? {
@@ -33,7 +25,7 @@ class CameraViewController: UIViewController, NotificationCategory {
                     viewController.view.topAnchor.constraint(equalTo: view.topAnchor),
                     viewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                     viewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                    viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                    viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 ])
 
                 viewController.didMove(toParent: self)
@@ -61,7 +53,7 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
 
         return Current.api.then(on: nil) { api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
-            return firstly {
+            firstly {
                 api.StreamCamera(entityId: entityId)
             }.recover { error -> Promise<StreamCameraResponse> in
                 Current.Log.info("falling back due to no streaming info for \(entityId) due to \(error)")
@@ -72,7 +64,7 @@ class CameraViewController: UIViewController, NotificationCategory {
         }.then { [weak self] (api, result) -> Promise<Void> in
             let controllers = Self.possibleControllers
                 .compactMap { (controllerClass) -> () -> Promise<UIViewController & CameraStreamHandler> in
-                    return {
+                    {
                         do {
                             return .value(try controllerClass.init(api: api, response: result))
                         } catch {
@@ -107,22 +99,26 @@ class CameraViewController: UIViewController, NotificationCategory {
             switch self {
             case .noControllers:
                 return nil
-            case .accumulated(let errors):
-                return errors.map { $0.localizedDescription }.joined(separator: "\n\n")
+            case let .accumulated(errors):
+                return errors.map { error in
+                    // $0. syntax crashes the swift compiler, at least in xcode 12.4
+                    error.localizedDescription
+                }.joined(separator: "\n\n")
             }
         }
     }
 
     private static var possibleControllers: [(UIViewController & CameraStreamHandler).Type] { [
         CameraStreamHLSViewController.self,
-        CameraStreamMJPEGViewController.self
+        CameraStreamMJPEGViewController.self,
     ] }
 
     private func viewController(
         from controllerPromises: [() -> Promise<UIViewController & CameraStreamHandler>]
     ) -> Promise<UIViewController & CameraStreamHandler> {
         var accumulatedErrors = [Error]()
-        var promise: Promise<UIViewController & CameraStreamHandler> = .init(error:
+        var promise: Promise<UIViewController & CameraStreamHandler> = .init(
+            error:
             CameraViewControllerError.noControllers
         )
 

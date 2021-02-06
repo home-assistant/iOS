@@ -1,10 +1,10 @@
 import Foundation
-import UIKit
+import MBProgressHUD
 import PromiseKit
 import Shared
-import MBProgressHUD
+import UIKit
 
-// todo: can i combine this with the enum?
+// TODO: can i combine this with the enum?
 @available(iOS 13, *)
 struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
     let activity: SceneActivity
@@ -35,7 +35,7 @@ struct SceneManagerPreSceneCompatibility {
         let window = UIWindow(haForiOS12: ())
         let windowController = WebViewWindowController(window: window, restorationActivity: nil)
         self.windowController = windowController
-        self.urlHandler = IncomingURLHandler(windowController: windowController)
+        urlHandler = IncomingURLHandler(windowController: windowController)
         windowControllerSeal(windowController)
     }
 
@@ -62,6 +62,7 @@ class SceneManager {
             handleBlock(possible)
         }
     }
+
     private var pendingResolvers: [String: PendingResolver] = [:]
 
     @available(iOS, deprecated: 13.0)
@@ -167,8 +168,10 @@ class SceneManager {
             return .value(delegate)
         }
 
-        assert(supportsMultipleScenes || query.activity == .webView,
-               "if we don't support multiple scenes, how are we running without one besides at immediate startup?")
+        assert(
+            supportsMultipleScenes || query.activity == .webView,
+            "if we don't support multiple scenes, how are we running without one besides at immediate startup?"
+        )
 
         let (promise, resolver) = Guarantee<DelegateType>.pending()
 
@@ -178,7 +181,7 @@ class SceneManager {
         if supportsMultipleScenes {
             let activity = query.activity.activity
             activity.userInfo = [
-                Self.activityUserInfoKeyResolver: token
+                Self.activityUserInfoKeyResolver: token,
             ]
 
             UIApplication.shared.requestSceneSessionActivation(
@@ -187,7 +190,7 @@ class SceneManager {
                 options: nil,
                 errorHandler: { error in
                     // error is called in most cases, even when no error occurs, so we silently swallow it
-                    // todo: does this actually happen in normal circumstances?
+                    // TODO: does this actually happen in normal circumstances?
                     Current.Log.error("scene activation error: \(error)")
                 }
             )
@@ -202,8 +205,8 @@ class SceneManager {
     ) {
         firstly {
             webViewWindowControllerPromise
-        }.compactMap {
-            $0.window
+        }.compactMap { windowController in
+            windowController.window
         }.done { window in
             let hud = MBProgressHUD.showAdded(to: window, animated: true)
             hud.mode = .customView

@@ -1,5 +1,5 @@
-import Foundation
 import Eureka
+import Foundation
 import Shared
 
 class ComplicationFamilySelectViewController: FormViewController, RowControllerType {
@@ -34,10 +34,10 @@ class ComplicationFamilySelectViewController: FormViewController, RowControllerT
         title = L10n.Watch.Configurator.New.title
 
         navigationItem.leftBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(_:)))
+            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(_:))),
         ]
 
-        if !allowMultiple && !currentFamilies.isEmpty {
+        if !allowMultiple, !currentFamilies.isEmpty {
             form +++ InfoLabelRow {
                 $0.title = L10n.Watch.Configurator.New.multipleComplicationInfo
             }
@@ -50,7 +50,7 @@ class ComplicationFamilySelectViewController: FormViewController, RowControllerT
         form.append(contentsOf: ComplicationGroup.allCases.sorted().map { group in
             let section = Section(header: group.name, footer: group.description)
             section.append(contentsOf: group.members.sorted().map { family in
-                return ButtonRow {
+                ButtonRow {
                     $0.title = family.shortName
                     $0.cellStyle = .subtitle
 

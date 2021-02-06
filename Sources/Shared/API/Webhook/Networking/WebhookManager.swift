@@ -1,7 +1,7 @@
 import Foundation
+import ObjectMapper
 import PromiseKit
 import UserNotifications
-import ObjectMapper
 
 internal enum WebhookError: LocalizedError, Equatable {
     case noApi
@@ -16,9 +16,9 @@ internal enum WebhookError: LocalizedError, Equatable {
             return L10n.HaApi.ApiError.notConfigured
         case .unregisteredIdentifier:
             return L10n.HaApi.ApiError.unknown
-        case .unexpectedType(let given, let desire):
+        case let .unexpectedType(given, desire):
             return L10n.HaApi.ApiError.unexpectedType(given, desire)
-        case .unacceptableStatusCode(let statusCode):
+        case let .unacceptableStatusCode(statusCode):
             return L10n.HaApi.ApiError.unacceptableStatusCode(statusCode)
         case .unmappableValue:
             return L10n.HaApi.ApiError.invalidResponse
@@ -26,17 +26,16 @@ internal enum WebhookError: LocalizedError, Equatable {
     }
 }
 
-// swiftlint:disable file_length
-// swiftlint:disable type_body_length
-
 public class WebhookManager: NSObject {
     public static func isManager(forSessionIdentifier identifier: String) -> Bool {
-        return identifier.starts(with: baseURLSessionIdentifier)
+        identifier.starts(with: baseURLSessionIdentifier)
     }
+
     private static let baseURLSessionIdentifier = "webhook-"
     private static var currentURLSessionIdentifier: String {
         baseURLSessionIdentifier + Bundle.main.bundleIdentifier!
     }
+
     private static var currentRegularURLSessionIdentifier: String {
         "non-background"
     }
@@ -45,6 +44,7 @@ public class WebhookManager: NSObject {
     internal var currentBackgroundSessionInfo: WebhookSessionInfo {
         sessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
     }
+
     internal var currentRegularSessionInfo: WebhookSessionInfo {
         sessionInfo(forIdentifier: Self.currentRegularURLSessionIdentifier)
     }
@@ -60,6 +60,7 @@ public class WebhookManager: NSObject {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
     }
+
     private var resolverForTask: [TaskKey: Resolver<Void>] = [:] {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
@@ -218,9 +219,9 @@ public class WebhookManager: NSObject {
             }
         }.tap { result in
             switch result {
-            case .fulfilled(let response):
+            case let .fulfilled(response):
                 Current.Log.info("got successful response for \(request.type): \(response)")
-            case .rejected(let error):
+            case let .rejected(error):
                 Current.Log.error("got failure for \(request.type): \(error)")
             }
         }
@@ -280,7 +281,6 @@ public class WebhookManager: NSObject {
         return promise
     }
 
-    // swiftlint:disable:next function_body_length
     private func send(
         on sessionInfo: WebhookSessionInfo,
         identifier: WebhookResponseIdentifier,
@@ -339,7 +339,7 @@ public class WebhookManager: NSObject {
                 let values = [
                     "\(taskKey)",
                     "type(\(handlerType))",
-                    "request(\(persisted.request))"
+                    "request(\(persisted.request))",
                 ]
                 return "starting request: " + values.joined(separator: ", ")
             }
@@ -366,8 +366,9 @@ public class WebhookManager: NSObject {
     }
 
     // MARK: - Testing Connection Info
+
     public func sendTest(baseURL: URL) -> Promise<Void> {
-        return firstly {
+        firstly {
             Self.urlRequest(
                 for: .init(type: "get_config", data: [:]),
                 baseURL: baseURL
@@ -418,7 +419,7 @@ public class WebhookManager: NSObject {
         for request: WebhookRequest,
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
-        return Promise { seal in
+        Promise { seal in
             guard let connectionInfo = Current.settingsStore.connectionInfo else {
                 seal.reject(WebhookError.noApi)
                 return
@@ -513,7 +514,7 @@ extension WebhookManager: URLSessionDataDelegate {
                         "type(\(handlerType))",
                         "request(\(persisted.request))",
                         "statusCode(\(statusCode.flatMap { String(describing: $0) } ?? "none"))",
-                        "body(\(body))"
+                        "body(\(body))",
                     ]
 
                     return "got response: " + values.joined(separator: ", ")
@@ -630,7 +631,7 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
                 $0.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
                 $0.httpAdditionalHeaders = [
-                    "User-Agent": HomeAssistantAPI.userAgent
+                    "User-Agent": HomeAssistantAPI.userAgent,
                 ]
 
                 // how long should this request be retried in the background?

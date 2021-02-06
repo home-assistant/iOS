@@ -1,7 +1,7 @@
-import Foundation
-import XCTest
 import CoreLocation
+import Foundation
 @testable import Shared
+import XCTest
 
 class RealmZoneTests: XCTestCase {
     private var zone: RLMZone!
@@ -62,7 +62,7 @@ class RealmZoneTests: XCTestCase {
 
         XCTAssertFalse(zone.isBeaconRegion)
         XCTAssertEqualRegions(zone.regionsForMonitoring, [
-            CLCircularRegion(center: zone.center, radius: 100, identifier: zone.ID)
+            CLCircularRegion(center: zone.center, radius: 100, identifier: zone.ID),
         ])
     }
 

@@ -1,17 +1,9 @@
-//
-//  SnapshotHelper.swift
-//  Example
-//
-//  Created by Felix Krause on 10/8/15.
-//
-
 // -----------------------------------------------------
 // IMPORTANT: When modifying this file, make sure to
 //            increment the version number at the very
 //            bottom of the file to notify users about
 //            the new SnapshotHelper.swift
 // -----------------------------------------------------
-
 import Foundation
 import XCTest
 
@@ -52,7 +44,7 @@ enum SnapshotError: Error, CustomDebugStringConvertible {
             return "Couldn't find Snapshot configuration files - can't detect `Users` dir"
         case .cannotFindSimulatorHomeDirectory:
             return "Couldn't find simulator home location. Please, check SIMULATOR_HOST_HOME env variable."
-        case .cannotAccessSimulatorHomeDirectory(let simulatorHostHome):
+        case let .cannotAccessSimulatorHomeDirectory(simulatorHostHome):
             return "Can't prepare environment. Simulator home location is inaccessible. Does \(simulatorHostHome) exist?"
         case .cannotRunOnPhysicalDevice:
             return "Can't use Snapshot on a physical device."
@@ -66,11 +58,10 @@ open class Snapshot: NSObject {
     static var waitForAnimations = true
     static var cacheDirectory: URL?
     static var screenshotsDirectory: URL? {
-        return cacheDirectory?.appendingPathComponent("screenshots", isDirectory: true)
+        cacheDirectory?.appendingPathComponent("screenshots", isDirectory: true)
     }
 
     open class func setupSnapshot(_ app: XCUIApplication, waitForAnimations: Bool = true) {
-
         Snapshot.app = app
         Snapshot.waitForAnimations = waitForAnimations
 
@@ -80,7 +71,7 @@ open class Snapshot: NSObject {
             setLanguage(app)
             setLocale(app)
             setLaunchArguments(app)
-        } catch let error {
+        } catch {
             NSLog(error.localizedDescription)
         }
     }
@@ -117,7 +108,7 @@ open class Snapshot: NSObject {
             NSLog("Couldn't detect/set locale...")
         }
 
-        if locale.isEmpty && !deviceLanguage.isEmpty {
+        if locale.isEmpty, !deviceLanguage.isEmpty {
             locale = Locale(identifier: deviceLanguage).identifier
         }
 
@@ -138,7 +129,11 @@ open class Snapshot: NSObject {
         do {
             let launchArguments = try String(contentsOf: path, encoding: String.Encoding.utf8)
             let regex = try NSRegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
-            let matches = regex.matches(in: launchArguments, options: [], range: NSRange(location: 0, length: launchArguments.count))
+            let matches = regex.matches(
+                in: launchArguments,
+                options: [],
+                range: NSRange(location: 0, length: launchArguments.count)
+            )
             let results = matches.map { result -> String in
                 (launchArguments as NSString).substring(with: result.range)
             }
@@ -160,35 +155,36 @@ open class Snapshot: NSObject {
         }
 
         #if os(OSX)
-            guard let app = self.app else {
-                NSLog("XCUIApplication is not set. Please call setupSnapshot(app) before snapshot().")
-                return
-            }
+        guard let app = self.app else {
+            NSLog("XCUIApplication is not set. Please call setupSnapshot(app) before snapshot().")
+            return
+        }
 
-            app.typeKey(XCUIKeyboardKeySecondaryFn, modifierFlags: [])
+        app.typeKey(XCUIKeyboardKeySecondaryFn, modifierFlags: [])
         #else
 
-            guard let app = self.app else {
-                NSLog("XCUIApplication is not set. Please call setupSnapshot(app) before snapshot().")
-                return
-            }
+        guard let app = self.app else {
+            NSLog("XCUIApplication is not set. Please call setupSnapshot(app) before snapshot().")
+            return
+        }
 
-            let window = app.windows.firstMatch
-            let screenshot = window.screenshot()
-            guard let simulator = ProcessInfo().environment["SIMULATOR_DEVICE_NAME"], let screenshotsDir = screenshotsDirectory else { return }
-            let path = screenshotsDir.appendingPathComponent("\(simulator)-\(name).png")
-            do {
-                try screenshot.pngRepresentation.write(to: path)
-            } catch let error {
-                NSLog("Problem writing screenshot: \(name) to \(path)")
-                NSLog(error.localizedDescription)
-            }
+        let window = app.windows.firstMatch
+        let screenshot = window.screenshot()
+        guard let simulator = ProcessInfo().environment["SIMULATOR_DEVICE_NAME"],
+              let screenshotsDir = screenshotsDirectory else { return }
+        let path = screenshotsDir.appendingPathComponent("\(simulator)-\(name).png")
+        do {
+            try screenshot.pngRepresentation.write(to: path)
+        } catch {
+            NSLog("Problem writing screenshot: \(name) to \(path)")
+            NSLog(error.localizedDescription)
+        }
         #endif
     }
 
     class func waitForLoadingIndicatorToDisappear(within timeout: TimeInterval) {
         #if os(tvOS)
-            return
+        return
         #endif
 
         guard let app = self.app else {
@@ -197,7 +193,10 @@ open class Snapshot: NSObject {
         }
 
         let networkLoadingIndicator = app.otherElements.deviceStatusBars.networkLoadingIndicators.element
-        let networkLoadingIndicatorDisappeared = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: networkLoadingIndicator)
+        let networkLoadingIndicatorDisappeared = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == false"),
+            object: networkLoadingIndicator
+        )
         _ = XCTWaiter.wait(for: [networkLoadingIndicatorDisappeared], timeout: timeout)
     }
 
@@ -206,27 +205,27 @@ open class Snapshot: NSObject {
         // on OSX config is stored in /Users/<username>/Library
         // and on iOS/tvOS/WatchOS it's in simulator's home dir
         #if os(OSX)
-            guard let user = ProcessInfo().environment["USER"] else {
-                throw SnapshotError.cannotDetectUser
-            }
+        guard let user = ProcessInfo().environment["USER"] else {
+            throw SnapshotError.cannotDetectUser
+        }
 
-            guard let usersDir = FileManager.default.urls(for: .userDirectory, in: .localDomainMask).first else {
-                throw SnapshotError.cannotFindHomeDirectory
-            }
+        guard let usersDir = FileManager.default.urls(for: .userDirectory, in: .localDomainMask).first else {
+            throw SnapshotError.cannotFindHomeDirectory
+        }
 
-            homeDir = usersDir.appendingPathComponent(user)
+        homeDir = usersDir.appendingPathComponent(user)
         #else
-            #if arch(i386) || arch(x86_64)
-                guard let simulatorHostHome = ProcessInfo().environment["SIMULATOR_HOST_HOME"] else {
-                    throw SnapshotError.cannotFindSimulatorHomeDirectory
-                }
-                guard let homeDirUrl = URL(string: simulatorHostHome) else {
-                    throw SnapshotError.cannotAccessSimulatorHomeDirectory(simulatorHostHome)
-                }
-                homeDir = URL(fileURLWithPath: homeDirUrl.path)
-            #else
-                throw SnapshotError.cannotRunOnPhysicalDevice
-            #endif
+        #if arch(i386) || arch(x86_64)
+        guard let simulatorHostHome = ProcessInfo().environment["SIMULATOR_HOST_HOME"] else {
+            throw SnapshotError.cannotFindSimulatorHomeDirectory
+        }
+        guard let homeDirUrl = URL(string: simulatorHostHome) else {
+            throw SnapshotError.cannotAccessSimulatorHomeDirectory(simulatorHostHome)
+        }
+        homeDir = URL(fileURLWithPath: homeDirUrl.path)
+        #else
+        throw SnapshotError.cannotRunOnPhysicalDevice
+        #endif
         #endif
         return homeDir.appendingPathComponent("Library/Caches/tools.fastlane")
     }
@@ -237,7 +236,8 @@ private extension XCUIElementAttributes {
         if hasWhiteListedIdentifier { return false }
 
         let hasOldLoadingIndicatorSize = frame.size == CGSize(width: 10, height: 20)
-        let hasNewLoadingIndicatorSize = frame.size.width.isBetween(46, and: 47) && frame.size.height.isBetween(2, and: 3)
+        let hasNewLoadingIndicatorSize = frame.size.width.isBetween(46, and: 47) && frame.size.height
+            .isBetween(2, and: 3)
 
         return hasOldLoadingIndicatorSize || hasNewLoadingIndicatorSize
     }
@@ -261,13 +261,13 @@ private extension XCUIElementAttributes {
 
 private extension XCUIElementQuery {
     var networkLoadingIndicators: XCUIElementQuery {
-        let isNetworkLoadingIndicator = NSPredicate { (evaluatedObject, _) in
+        let isNetworkLoadingIndicator = NSPredicate { evaluatedObject, _ in
             guard let element = evaluatedObject as? XCUIElementAttributes else { return false }
 
             return element.isNetworkLoadingIndicator
         }
 
-        return self.containing(isNetworkLoadingIndicator)
+        return containing(isNetworkLoadingIndicator)
     }
 
     var deviceStatusBars: XCUIElementQuery {
@@ -277,19 +277,19 @@ private extension XCUIElementQuery {
 
         let deviceWidth = app.windows.firstMatch.frame.width
 
-        let isStatusBar = NSPredicate { (evaluatedObject, _) in
+        let isStatusBar = NSPredicate { evaluatedObject, _ in
             guard let element = evaluatedObject as? XCUIElementAttributes else { return false }
 
             return element.isStatusBar(deviceWidth)
         }
 
-        return self.containing(isStatusBar)
+        return containing(isStatusBar)
     }
 }
 
 private extension CGFloat {
     func isBetween(_ numberA: CGFloat, and numberB: CGFloat) -> Bool {
-        return numberA...numberB ~= self
+        numberA ... numberB ~= self
     }
 }
 

@@ -1,9 +1,8 @@
+import CoreNFC
 import Foundation
 import PromiseKit
-import CoreNFC
 import Shared
 
-// swiftlint:disable:next type_name
 class iOSTagManager: TagManager {
     var isNFCAvailable: Bool {
         if #available(iOS 13, *) {
@@ -41,12 +40,11 @@ class iOSTagManager: TagManager {
     func writeNFC(value: String) -> Promise<String> {
         if #available(iOS 13, *) {
             guard let uriPayload = NFCNDEFPayload.wellKnownTypeURIPayload(url: Self.url(for: value)),
-                  let aarPayload = NFCNDEFPayload.androidPackage(payload: "io.homeassistant.companion.android")
-            else {
+                  let aarPayload = NFCNDEFPayload.androidPackage(payload: "io.homeassistant.companion.android") else {
                 return .init(error: TagManagerError.notHomeAssistantTag)
             }
 
-            let writer = NFCWriter(requiredPayload: [ uriPayload ], optionalPayload: [ aarPayload ])
+            let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [aarPayload])
             var writerRetain: NFCWriter? = writer
 
             return firstly {
@@ -131,5 +129,4 @@ class iOSTagManager: TagManager {
             }
         }
     }
-
 }

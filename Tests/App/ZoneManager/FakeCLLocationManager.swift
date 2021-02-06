@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 
 class FakeCLLocationManager: CLLocationManager {
     var startMonitoringRegions = [CLRegion]()

@@ -41,7 +41,7 @@ import Foundation
     case command = 0b10000 // Set if Command key is pressed.
     case numericPad = 0b100000 // Set if any key in the numeric keypad is pressed.
     case help = 0b1000000 // Set if the Help key is pressed.
-    case function = 0b10000000 // Set if any function key is pressed.
+    case function = 0b1000_0000 // Set if any function key is pressed.
 }
 
 @objc(MacBridgeStatusItemActionInfo) public protocol MacBridgeStatusItemMenuItem {

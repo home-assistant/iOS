@@ -1,27 +1,19 @@
-//
-//  Constants.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 6/24/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
 import KeychainAccess
+import UIKit
 import Version
 
 /// Contains shared constants
-public struct Constants {
+public enum Constants {
     /// Home Assistant Blue
     public static var tintColor: UIColor {
-        let light = UIColor(hue: 199.0/360.0, saturation: 0.99, brightness: 0.96, alpha: 1.0)
-        let dark = UIColor(hue: 199.0/360.0, saturation: 0.99, brightness: 0.67, alpha: 1.0)
+        let light = UIColor(hue: 199.0 / 360.0, saturation: 0.99, brightness: 0.96, alpha: 1.0)
+        let dark = UIColor(hue: 199.0 / 360.0, saturation: 0.99, brightness: 0.67, alpha: 1.0)
 
         #if os(iOS)
         if #available(iOS 13, *) {
             return UIColor { (traitCollection: UITraitCollection) -> UIColor in
-                return traitCollection.userInterfaceStyle == .dark ? light : dark
+                traitCollection.userInterfaceStyle == .dark ? light : dark
             }
         } else {
             return dark
@@ -56,7 +48,7 @@ public struct Constants {
 
     /// The App Group ID used by the app and extensions for sharing data.
     public static var AppGroupID: String {
-        return "group." + self.BundleID.lowercased()
+        "group." + BundleID.lowercased()
     }
 
     public static var AppGroupContainer: URL {
@@ -73,7 +65,7 @@ public struct Constants {
 
     public static var LogsDirectory: URL {
         let fileManager = FileManager.default
-        let directoryURL = self.AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
+        let directoryURL = AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
 
         if !fileManager.fileExists(atPath: directoryURL.path) {
             do {
@@ -88,7 +80,7 @@ public struct Constants {
 
     /// An initialized Keychain from KeychainAccess.
     public static var Keychain: KeychainAccess.Keychain {
-        return KeychainAccess.Keychain(service: self.BundleID)
+        KeychainAccess.Keychain(service: BundleID)
     }
 
     /// A permanent ID stored in UserDefaults and Keychain.
@@ -118,15 +110,15 @@ public struct Constants {
         return newID
     }
 
-    static public var build: String {
+    public static var build: String {
         SharedPlistFiles.Info.cfBundleVersion
     }
 
-    static public var version: String {
+    public static var version: String {
         SharedPlistFiles.Info.cfBundleShortVersionString
     }
 
-    static internal var clientVersion: Version {
+    internal static var clientVersion: Version {
         // swiftlint:disable:next force_try
         var clientVersion = try! Version(version)
         clientVersion.build = build

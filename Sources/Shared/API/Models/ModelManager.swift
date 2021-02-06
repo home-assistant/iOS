@@ -1,6 +1,6 @@
 import Foundation
-import RealmSwift
 import PromiseKit
+import RealmSwift
 
 public final class ModelManager {
     private var notificationTokens = [NotificationToken]()
@@ -15,7 +15,7 @@ public final class ModelManager {
                 break
             case .update(let collection, deletions: _, insertions: _, modifications: _):
                 handler(collection).cauterize()
-            case .error(let error):
+            case let .error(error):
                 Current.Log.error("failed to watch \(collection): \(error)")
             }
         })
@@ -48,7 +48,7 @@ public final class ModelManager {
             CleanupDefinition(
                 model: ClientEvent.self,
                 createdKey: #keyPath(ClientEvent.date)
-            )
+            ),
         ]
     }
 
@@ -118,7 +118,7 @@ public final class ModelManager {
                         try manager.store(type: NotificationCategory.self, sourceModels: $0.push.categories)
                         try manager.store(type: Action.self, sourceModels: $0.actions)
                     }
-            })
+            }),
         ]
     }
 
@@ -163,7 +163,7 @@ public final class ModelManager {
                     "eligible(\(incomingIDs.count))",
                     "deleted(\(deleteObjects.count))",
                     "ignored(\(deletedIDs.count - deleteObjects.count))",
-                    "new(\(newIDs.count))"
+                    "new(\(newIDs.count))",
                 ].joined(separator: " ")
             )
 

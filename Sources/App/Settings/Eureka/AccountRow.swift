@@ -1,10 +1,10 @@
-import Foundation
 import Eureka
-import Shared
+import Foundation
 import PromiseKit
+import Shared
 
 class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
-    private var accountRow: HomeAssistantAccountRow? { return row as? HomeAssistantAccountRow }
+    private var accountRow: HomeAssistantAccountRow? { row as? HomeAssistantAccountRow }
 
     override func setup() {
         super.setup()
@@ -37,7 +37,6 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
                     // scaled down because the cell sizes to fit too much
                     imageView.image = image.scaledToSize(size)
                 } completion: { _ in
-
                 }
             } else {
                 imageView.image = AccountInitialsImage
@@ -66,7 +65,7 @@ struct HomeAssistantAccountRowInfo: Equatable {
     var locationName: String?
 
     static func == (lhs: HomeAssistantAccountRowInfo, rhs: HomeAssistantAccountRowInfo) -> Bool {
-        return lhs.user?.ID == rhs.user?.ID &&
+        lhs.user?.ID == rhs.user?.ID &&
             lhs.locationName == rhs.locationName
     }
 }

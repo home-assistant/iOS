@@ -1,14 +1,6 @@
-//
-//  LocationHistory.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 6/13/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
+import CoreLocation
 import Foundation
 import RealmSwift
-import CoreLocation
 
 public class LocationHistoryEntry: Object {
     @objc public dynamic var Trigger: String?
@@ -38,7 +30,7 @@ public class LocationHistoryEntry: Object {
     }
 
     public var clLocation: CLLocation {
-        return CLLocation(latitude: self.Latitude, longitude: self.Longitude)
+        CLLocation(latitude: Latitude, longitude: Longitude)
     }
 }
 

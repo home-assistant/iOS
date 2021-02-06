@@ -1,8 +1,8 @@
 import Foundation
-@testable import Shared
 import PromiseKit
-import XCTest
 import RealmSwift
+@testable import Shared
+import XCTest
 
 class WebhookResponseUpdateComplicationsTests: XCTestCase {
     private var api: FakeHomeAssistantAPI!
@@ -51,7 +51,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
                 $0.Template = .ExtraLargeColumnsText
                 $0.resultRawRendered = [
                     "fwc1k1": "fwc1v1",
-                    "fwc1k2": "fwc1v2"
+                    "fwc1k2": "fwc1v2",
                 ]
             },
             with(FakeWatchComplication()) {
@@ -63,7 +63,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
                 $0.identifier = "c3"
                 $0.Template = .GraphicBezelCircularText
                 $0.resultRawRendered = [
-                    "fwc3k1": "fwc3v1"
+                    "fwc3k1": "fwc3v1",
                 ]
             },
         ]
@@ -73,14 +73,14 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
 
         let expected: [String: [String: String]] = [
             "c1|fwc1k1": [
-                "template": "fwc1v1"
+                "template": "fwc1v1",
             ],
             "c1|fwc1k2": [
-                "template": "fwc1v2"
+                "template": "fwc1v2",
             ],
             "c3|fwc3k1": [
-                "template": "fwc3v1"
-            ]
+                "template": "fwc3v1",
+            ],
         ]
 
         XCTAssertEqual(request?.data as? [String: [String: String]], expected)
@@ -94,7 +94,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
                 $0.Family = .extraLarge
                 $0.resultRawRendered = [
                     "fwc1k1": "fwc1v1",
-                    "fwc1k2": "fwc1v2"
+                    "fwc1k2": "fwc1v2",
                 ]
             },
             with(FakeWatchComplication()) {
@@ -108,7 +108,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
                 $0.Template = .GraphicBezelCircularText
                 $0.Family = .graphicBezel
                 $0.resultRawRendered = [
-                    "fwc3k1": "fwc3v1"
+                    "fwc3k1": "fwc3v1",
                 ]
             },
         ]
@@ -153,20 +153,18 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
     }
 }
 
-private class FakeHomeAssistantAPI: HomeAssistantAPI {
-
-}
+private class FakeHomeAssistantAPI: HomeAssistantAPI {}
 
 class FakeWatchComplication: WatchComplication {
     var resultRawRendered: [String: String] = [:]
 
-    override func rawRendered() -> [String : String] {
+    override func rawRendered() -> [String: String] {
         resultRawRendered
     }
 
     static var rawRenderedUpdates: [String: [String: Any]] = [:]
 
-    override func updateRawRendered(from response: [String : Any]) {
+    override func updateRawRendered(from response: [String: Any]) {
         Self.rawRenderedUpdates[identifier] = response
     }
 }

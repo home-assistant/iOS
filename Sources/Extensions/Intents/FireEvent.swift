@@ -1,16 +1,8 @@
-//
-//  FireEvent.swift
-//  Intents
-//
-//  Created by Robert Trencheny on 9/17/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
-import Shared
 import Intents
 import PromiseKit
+import Shared
+import UIKit
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     func resolveEventName(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
@@ -34,7 +26,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     }
 
     func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        Current.api.catch { (error) in
+        Current.api.catch { error in
             Current.Log.error("Can't get a authenticated API \(error)")
             completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
@@ -50,9 +42,10 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
 
         if let storedData = intent.eventData, storedData.isEmpty == false, let data = storedData.data(using: .utf8) {
             do {
-                if let jsonArray = try JSONSerialization.jsonObject(with: data,
-                                                                    options: .allowFragments) as? [String: Any] {
-
+                if let jsonArray = try JSONSerialization.jsonObject(
+                    with: data,
+                    options: .allowFragments
+                ) as? [String: Any] {
                     var isGenericPayload: Bool = true
 
                     if let eventName = jsonArray["eventName"] as? String {

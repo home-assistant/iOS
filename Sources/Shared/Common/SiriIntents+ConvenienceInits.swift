@@ -1,15 +1,7 @@
-//
-//  SiriIntents+ConvenienceInits.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/19/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 import CoreLocation
-import MapKit
+import Foundation
 import Intents
+import MapKit
 import UIColor_Hex_Swift
 
 @available(iOS 12, *)
@@ -24,7 +16,7 @@ public extension CallServiceIntent {
         self.service = "\(domain).\(service)"
 
         if let payload = payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
-            let jsonString = String(data: jsonData, encoding: .utf8) {
+           let jsonString = String(data: jsonData, encoding: .utf8) {
             self.payload = jsonString
         }
     }
@@ -42,7 +34,7 @@ public extension FireEventIntent {
         self.eventName = eventName
 
         if let payload = payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
-            let jsonString = String(data: jsonData, encoding: .utf8) {
+           let jsonString = String(data: jsonData, encoding: .utf8) {
             self.eventData = jsonString
         }
     }
@@ -85,29 +77,29 @@ public extension PerformActionIntent {
 }
 
 @available(iOS 12, *)
-extension IntentAction {
-    public convenience init(action: Action) {
+public extension IntentAction {
+    convenience init(action: Action) {
         #if os(iOS)
-            if #available(iOS 14, *) {
-                self.init(
-                    identifier: action.ID,
-                    display: action.Name,
-                    subtitle: nil,
-                    image: INImage(
-                        icon: MaterialDesignIcons(named: action.IconName),
-                        foreground: UIColor(hex: action.IconColor),
-                        background: UIColor(hex: action.BackgroundColor)
-                    )
+        if #available(iOS 14, *) {
+            self.init(
+                identifier: action.ID,
+                display: action.Name,
+                subtitle: nil,
+                image: INImage(
+                    icon: MaterialDesignIcons(named: action.IconName),
+                    foreground: UIColor(hex: action.IconColor),
+                    background: UIColor(hex: action.BackgroundColor)
                 )
-            } else {
-                self.init(identifier: action.ID, display: action.Name)
-            }
-        #else
+            )
+        } else {
             self.init(identifier: action.ID, display: action.Name)
+        }
+        #else
+        self.init(identifier: action.ID, display: action.Name)
         #endif
     }
 
-    public func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
+    func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
         guard let action = asAction() else {
             return nil
         }
@@ -115,7 +107,7 @@ extension IntentAction {
         return (.init(action: action), action)
     }
 
-    public func asAction() -> Action? {
+    func asAction() -> Action? {
         guard let identifier = identifier, identifier.isEmpty == false else {
             return nil
         }
@@ -129,6 +121,6 @@ extension IntentAction {
 }
 
 @available(iOS 12, *)
-extension WidgetActionsIntent {
-    public static let widgetKind = "WidgetActions"
+public extension WidgetActionsIntent {
+    static let widgetKind = "WidgetActions"
 }

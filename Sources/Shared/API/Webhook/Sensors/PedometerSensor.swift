@@ -1,6 +1,6 @@
+import CoreMotion
 import Foundation
 import PromiseKit
-import CoreMotion
 import Version
 
 public class PedometerSensor: SensorProvider {
@@ -11,7 +11,7 @@ public class PedometerSensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
@@ -22,7 +22,7 @@ public class PedometerSensor: SensorProvider {
             when(resolved: PedometerSensor.allCases.map { $0.asSensor(from: data) })
         }.map { sensors -> [WebhookSensor] in
             sensors.compactMap {
-                if case .fulfilled(let value) = $0 {
+                if case let .fulfilled(value) = $0 {
                     return value
                 } else {
                     return nil
@@ -64,8 +64,8 @@ public class PedometerSensor: SensorProvider {
 
         func intValue(on data: CMPedometerData) -> Int? {
             switch self {
-            case .normal(let keyPath): return data[keyPath: keyPath].intValue
-            case .optional(let keyPath): return data[keyPath: keyPath]?.intValue
+            case let .normal(keyPath): return data[keyPath: keyPath].intValue
+            case let .optional(keyPath): return data[keyPath: keyPath]?.intValue
             }
         }
     }
@@ -83,7 +83,7 @@ public class PedometerSensor: SensorProvider {
             switch self {
             case .distance: return "Distance"
             case .floorsAscended: return "Floors Ascended"
-            case .floorsDescended: return  "Floors Descended"
+            case .floorsDescended: return "Floors Descended"
             case .steps: return "Steps"
             case .averageActivePace: return "Average Active Pace"
             case .currentPace: return "Current Pace"

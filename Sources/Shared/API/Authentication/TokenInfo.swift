@@ -1,14 +1,6 @@
-//
-//  TokenInfo.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 7/20/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
+import Alamofire
 import Foundation
 import ObjectMapper
-import Alamofire
 
 public struct TokenInfo: ImmutableMappable, Codable {
     struct TokenInfoContext: MapContext {

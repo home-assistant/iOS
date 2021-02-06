@@ -1,7 +1,7 @@
 import Foundation
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
 
 class WebhookResponseServiceCallTests: XCTestCase {
     private var api: HomeAssistantAPI!
@@ -26,17 +26,17 @@ class WebhookResponseServiceCallTests: XCTestCase {
         let request1 = WebhookRequest(type: "call_service", data: [
             "domain": "domain",
             "service": "service",
-            "service_data": ["dog": "bark"]
+            "service_data": ["dog": "bark"],
         ])
         let request2 = WebhookRequest(type: "call_service", data: [
             "domain": "domain",
             "service": "service",
-            "service_data": ["dog": "bark"]
+            "service_data": ["dog": "bark"],
         ])
         let request3 = WebhookRequest(type: "call_service", data: [
             "domain": "domain",
             "service": "service2",
-            "service_data": ["cat": "meow"]
+            "service_data": ["cat": "meow"],
         ])
 
         XCTAssertFalse(WebhookResponseServiceCall.shouldReplace(request: request1, with: request2))
@@ -50,7 +50,7 @@ class WebhookResponseServiceCallTests: XCTestCase {
             request: .value(WebhookRequest(type: "call_service", data: [
                 "domain": "domain",
                 "service": "service",
-                "service_data": ["dog": "bark"]
+                "service_data": ["dog": "bark"],
             ])), result: .value([:])
         )
 
@@ -63,11 +63,10 @@ class WebhookResponseServiceCallTests: XCTestCase {
             request: .value(WebhookRequest(type: "call_service", data: [
                 "domain": "domain",
                 "service": "service",
-                "service_data": ["dog": "bark"]
+                "service_data": ["dog": "bark"],
             ])), result: .init(error: TestError.any)
         )
 
         XCTAssertNil(try hang(Promise(promise)).notification)
-
     }
 }

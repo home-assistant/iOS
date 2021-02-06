@@ -34,8 +34,15 @@ private_lane :setup do
   ENV['SIGH_PROFILE_PATHS'] = '../Configuration/Provisioning'
 end
 
-lane :clean_all_testers do
-  clean_testflight_testers(days_of_inactivity: 1, app_identifier: 'io.robbie.HomeAssistant')
+lane :lint do
+  sh('cd .. ; Pods/SwiftFormat/CommandLineTool/swiftformat --config .swiftformat --lint --quiet .')
+  sh('cd .. ; Pods/SwiftLint/swiftlint lint --config .swiftlint.yml --quiet .')
+  sh('cd .. ; bundle exec rubocop --config .rubocop.yml')
+end
+
+lane :autocorrect do
+  sh('../Pods/SwiftFormat/CommandLineTool/swiftformat ..')
+  sh('bundle exec rubocop -a ..')
 end
 
 lane :download_provisioning_profiles do

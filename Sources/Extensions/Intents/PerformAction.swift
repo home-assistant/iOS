@@ -1,7 +1,7 @@
 import Foundation
-import Shared
-import PromiseKit
 import Intents
+import PromiseKit
+import Shared
 
 class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
     func handle(
@@ -42,7 +42,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         let actions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
         let performActions = Array(actions.map { IntentAction(action: $0) })
         Current.Log.info { () -> String in
-            return "providing " + performActions.map { action -> String in
+            "providing " + performActions.map { action -> String in
                 (action.identifier ?? "?") + " (" + action.displayString + ")"
             }.joined(separator: ", ")
         }
@@ -54,7 +54,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         for intent: PerformActionIntent,
         with completion: @escaping (INObjectCollection<IntentAction>?, Error?) -> Void
     ) {
-        provideActionOptions(for: intent) { (actions, error) in
+        provideActionOptions(for: intent) { actions, error in
             completion(actions.flatMap { .init(items: $0) }, error)
         }
     }

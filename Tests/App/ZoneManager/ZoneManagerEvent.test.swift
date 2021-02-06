@@ -1,7 +1,7 @@
-import Foundation
-import XCTest
 import CoreLocation
+import Foundation
 @testable import HomeAssistant
+import XCTest
 
 class ZoneManagerEventTests: XCTestCase {
     private var beaconRegion: CLBeaconRegion!
@@ -62,7 +62,7 @@ class ZoneManagerEventTests: XCTestCase {
 
         let locations = [
             CLLocation(latitude: 37.123, longitude: -122.456),
-            CLLocation(latitude: 37.124, longitude: -122.457)
+            CLLocation(latitude: 37.124, longitude: -122.457),
         ]
         XCTAssertEqual(
             ZoneManagerEvent(eventType: .locationChange(locations)).associatedLocation,

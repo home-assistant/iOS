@@ -1,23 +1,17 @@
-//
-//  Bonjur.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 8/24/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import Shared
 
 public class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
-
     var resolving = [NetService]()
     var resolvingDict = [String: NetService]()
 
     // Browser methods
 
-    public func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didFind netService: NetService,
-                                  moreComing moreServicesComing: Bool) {
+    public func netServiceBrowser(
+        _ netServiceBrowser: NetServiceBrowser,
+        didFind netService: NetService,
+        moreComing moreServicesComing: Bool
+    ) {
         Current.Log.verbose("BonjourDelegate.Browser.didFindService")
         netService.delegate = self
         resolvingDict[netService.name] = netService
@@ -37,24 +31,33 @@ public class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDel
 
             let discoveryInfo = DiscoveryInfoFromDict(locationName: sender.name, netServiceDictionary: serviceDict)
             discoveryInfo.AnnouncedFrom = sender.addresses?.compactMap { InternetAddress(data: $0)?.host } ?? []
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"),
-                                            object: nil,
-                                            userInfo: discoveryInfo.toJSON())
+            NotificationCenter.default.post(
+                name: NSNotification.Name(rawValue: "homeassistant.discovered"),
+                object: nil,
+                userInfo: discoveryInfo.toJSON()
+            )
         }
     }
 
-    public func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didRemove netService: NetService,
-                                  moreComing moreServicesComing: Bool) {
+    public func netServiceBrowser(
+        _ netServiceBrowser: NetServiceBrowser,
+        didRemove netService: NetService,
+        moreComing moreServicesComing: Bool
+    ) {
         Current.Log.verbose("BonjourDelegate.Browser.didRemoveService")
         let discoveryInfo: [NSObject: Any] = ["name" as NSObject: netService.name]
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
-                                        object: nil,
-                                        userInfo: discoveryInfo)
+        NotificationCenter.default.post(
+            name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
+            object: nil,
+            userInfo: discoveryInfo
+        )
         resolvingDict.removeValue(forKey: netService.name)
     }
 
-    private func DiscoveryInfoFromDict(locationName: String,
-                                       netServiceDictionary: [String: Data]) -> DiscoveredHomeAssistant {
+    private func DiscoveryInfoFromDict(
+        locationName: String,
+        netServiceDictionary: [String: Data]
+    ) -> DiscoveredHomeAssistant {
         var outputDict: [String: Any] = [:]
         for (key, value) in netServiceDictionary {
             outputDict[key] = String(data: value, encoding: .utf8)
@@ -110,28 +113,27 @@ public class Bonjour {
     }
 
     public func startDiscovery() {
-        self.browserIsRunning = true
-        self.nsdel = BonjourDelegate()
+        browserIsRunning = true
+        nsdel = BonjourDelegate()
         nsb.delegate = nsdel
         nsb.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
     }
 
     public func stopDiscovery() {
-        self.browserIsRunning = false
+        browserIsRunning = false
         nsb.stop()
     }
 
     public func startPublish() {
         //        self.nsdel = BonjourDelegate()
         //        nsp.delegate = nsdel
-        self.publishIsRunning = true
+        publishIsRunning = true
         nsp.setTXTRecord(NetService.data(fromTXTRecord: buildPublishDict()))
         nsp.publish()
     }
 
     public func stopPublish() {
-        self.publishIsRunning = false
+        publishIsRunning = false
         nsp.stop()
     }
-
 }

@@ -1,7 +1,7 @@
 import Foundation
-import Shared
-import RealmSwift
 import PromiseKit
+import RealmSwift
+import Shared
 import UserNotifications
 
 extension NotificationCategory {
@@ -36,15 +36,15 @@ extension NotificationCategory {
             }
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
-                seal.fulfill(Set(collection.flatMap { $0.categories }))
+                seal.fulfill(Set(collection.flatMap(\.categories)))
             }
 
             return when(fulfilled: [
                 fastlane,
-                persisted
+                persisted,
             ]).done(on: .main) { unCategories in
                 let provided = unCategories.reduce(into: Set(), { $0.formUnion($1) })
-                Current.Log.verbose("registering \(provided.map { $0.identifier })")
+                Current.Log.verbose("registering \(provided.map(\.identifier))")
                 UNUserNotificationCenter.current().setNotificationCategories(provided)
             }
         }

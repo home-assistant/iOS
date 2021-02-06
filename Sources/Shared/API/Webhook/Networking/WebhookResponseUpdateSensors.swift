@@ -39,7 +39,9 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
         let needsRegistering = parsed.map { response in
             response.filter { _, value in
                 value.Success == false && value.ErrorCode == "not_registered"
-            }.compactMap { $0.key }
+            }.compactMap { value in
+                value.key
+            }
         }.get { keys in
             if keys.isEmpty == false {
                 Current.Log.info("need to register \(keys)")
@@ -58,7 +60,7 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
                     return false
                 }
             }.get { sensors in
-                Current.Log.info("registering \(sensors.map { $0.UniqueID })")
+                Current.Log.info("registering \(sensors.map(\.UniqueID))")
             }.thenMap { sensor in
                 Current.webhooks.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
             }.asVoid()
@@ -70,6 +72,6 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
 
     static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // always replace an existing request with a new one
-        return true
+        true
     }
 }

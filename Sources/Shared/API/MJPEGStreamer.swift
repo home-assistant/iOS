@@ -1,6 +1,6 @@
+import Alamofire
 import Foundation
 import UIKit
-import Alamofire
 
 class MJPEGStreamerSessionDelegate: SessionDelegate {
     static var didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")
@@ -29,9 +29,9 @@ enum MJPEGEvent: CustomStringConvertible {
 
     var description: String {
         switch self {
-        case .data(let data):
+        case let .data(data):
             return "data(\(data.count))"
-        case .endOfStream(let error):
+        case let .endOfStream(error):
             return "endOfStream(\(String(describing: error)))"
         case .endOfResponse:
             return "endOfResponse"
@@ -42,7 +42,7 @@ enum MJPEGEvent: CustomStringConvertible {
 public class MJPEGStreamer {
     let manager: Alamofire.Session
     let queue = DispatchQueue(label: "mjpegstreamer-process")
-    var data: Data = Data()
+    var data = Data()
     var request: DataStreamRequest?
     var callback: ((UIImage?, Error?) -> Void)?
 
@@ -64,17 +64,17 @@ public class MJPEGStreamer {
     public func streamImages(fromURL url: URL, callback: @escaping (UIImage?, Error?) -> Void) {
         self.callback = callback
 
-        self.request?.cancel()
-        self.request = self.manager
+        request?.cancel()
+        request = manager
             .streamRequest(url)
             .validate()
             .responseStream(on: queue, stream: { [weak self] stream in
                 switch stream.event {
-                case .complete(let completion):
+                case let .complete(completion):
                     self?.handle(event: .endOfStream(completion.error))
-                case .stream(let result):
+                case let .stream(result):
                     switch result {
-                    case .success(let data):
+                    case let .success(data):
                         self?.handle(event: .data(data))
                     }
                 }
@@ -82,11 +82,12 @@ public class MJPEGStreamer {
     }
 
     public var isActive: Bool {
-        return self.request != nil
+        request != nil
     }
+
     public func cancel() {
-        self.request?.cancel()
-        self.request = nil
+        request?.cancel()
+        request = nil
     }
 
     @objc private func didReceiveResponse(_ note: Notification) {
@@ -104,9 +105,9 @@ public class MJPEGStreamer {
         Current.Log.info(event)
 
         switch event {
-        case .data(let data):
+        case let .data(data):
             pendingData.append(data)
-        case .endOfStream(let error):
+        case let .endOfStream(error):
             DispatchQueue.main.async { [self] in
                 callback?(nil, error ?? MJPEGError.unknownEndOfStream)
             }

@@ -1,17 +1,9 @@
-//
-//  CLError+DebugDescription.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 6/13/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 import CoreLocation
+import Foundation
 
-extension CLError {
-    public var debugDescription: String {
-        switch self.code {
+public extension CLError {
+    var debugDescription: String {
+        switch code {
         case CLError.locationUnknown:
             return L10n.ClError.Description.locationUnknown
         case CLError.denied:

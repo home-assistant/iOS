@@ -1,9 +1,9 @@
+import CoreLocation
 import Foundation
 import PromiseKit
-import CoreLocation
+import RealmSwift
 import Shared
 import UIKit
-import RealmSwift
 
 class ZoneManager {
     let locationManager: CLLocationManager
@@ -25,8 +25,8 @@ class ZoneManager {
         self.regionFilter = regionFilter
         self.zones = AnyRealmCollection(
             Current.realm()
-            .objects(RLMZone.self)
-            .filter("TrackingEnabled == true")
+                .objects(RLMZone.self)
+                .filter("TrackingEnabled == true")
         )
 
         self.locationManager = with(locationManager) {
@@ -36,11 +36,11 @@ class ZoneManager {
 
         self.collector.delegate = self
         self.processor.delegate = self
-        notificationTokens.append(self.zones.observe { [weak self] change in
+        notificationTokens.append(zones.observe { [weak self] change in
             switch change {
-            case .initial(let collection), .update(let collection, deletions: _, insertions: _, modifications: _):
+            case let .initial(collection), .update(let collection, deletions: _, insertions: _, modifications: _):
                 self?.sync(zones: AnyCollection(collection))
-            case .error(let error):
+            case let .error(error):
                 Current.Log.error("couldn't sync zones: \(error)")
             }
         })
@@ -56,13 +56,13 @@ class ZoneManager {
     }
 
     private func log(state: ZoneManagerState) {
-         Current.Log.info(state)
+        Current.Log.info(state)
     }
 
     private func perform(event: ZoneManagerEvent) {
         let logPayload: [String: String] = [
             "start_ssid": Current.connectivity.currentWiFiSSID() ?? "none",
-            "event": event.description
+            "event": event.description,
         ]
 
         // although technically the processor also does this, it does it after some async processing.
@@ -125,7 +125,7 @@ class ZoneManager {
                 text: "Ending monitoring \(region.identifier)",
                 type: .locationUpdate,
                 payload: [
-                    "region": String(describing: region)
+                    "region": String(describing: region),
                 ]
             ))
             locationManager.stopMonitoring(for: region)
@@ -136,7 +136,7 @@ class ZoneManager {
                 text: "Initially monitoring \(region.identifier)",
                 type: .locationUpdate,
                 payload: [
-                    "region": String(describing: region)
+                    "region": String(describing: region),
                 ]
             ))
 
@@ -146,7 +146,7 @@ class ZoneManager {
 
         let counts = (
             beacon: expected.filter { $0.region is CLBeaconRegion }.count,
-            circular: expected.filter {$0.region is CLCircularRegion }.count,
+            circular: expected.filter { $0.region is CLCircularRegion }.count,
             zone: Set(zones).count
         )
 
@@ -154,7 +154,7 @@ class ZoneManager {
             let info = [
                 "monitoring \(expected.count) (\(counts))",
                 "started \(needsAddition.count)",
-                "ended \(needsRemoval.count)"
+                "ended \(needsRemoval.count)",
             ]
             return info.joined(separator: ", ")
         }

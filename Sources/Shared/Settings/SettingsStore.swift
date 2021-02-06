@@ -1,19 +1,9 @@
-//
-//  SettingsStore.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 8/13/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import KeychainAccess
 import CoreLocation
 import CoreMotion
-import Version
+import Foundation
+import KeychainAccess
 import UIKit
-
-// swiftlint:disable type_body_length file_length
+import Version
 
 public class SettingsStore {
     let keychain = Constants.Keychain
@@ -28,7 +18,7 @@ public class SettingsStore {
     public var tokenInfo: TokenInfo? {
         get {
             guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
-                let unwrappedData = tokenData else {
+                  let unwrappedData = tokenData else {
                 return nil
             }
 
@@ -61,13 +51,13 @@ public class SettingsStore {
             }
 
             guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
-                let unwrappedData = connectionData else {
-                    return nil
+                  let unwrappedData = connectionData else {
+                return nil
             }
 
             do {
                 return try JSONDecoder().decode(ConnectionInfo.self, from: unwrappedData)
-            } catch let error {
+            } catch {
                 Current.Log.error("Error when decoding Keychain ConnectionInfo: \(error)")
             }
             return nil
@@ -123,8 +113,8 @@ public class SettingsStore {
             }
 
             guard let userData = ((try? keychain.getData("authenticatedUser")) as Data??),
-                let unwrappedData = userData else {
-                    return nil
+                  let unwrappedData = userData else {
+                return nil
             }
 
             return try? JSONDecoder().decode(AuthenticatedUser.self, from: unwrappedData)
@@ -151,10 +141,10 @@ public class SettingsStore {
 
     public var pushID: String? {
         get {
-          return prefs.string(forKey: "pushID")
+            prefs.string(forKey: "pushID")
         }
         set {
-           prefs.setValue(newValue, forKeyPath: "pushID")
+            prefs.setValue(newValue, forKeyPath: "pushID")
         }
     }
 
@@ -173,7 +163,7 @@ public class SettingsStore {
 
     public var deviceID: String {
         get {
-            return keychain["deviceID"] ?? self.defaultDeviceID
+            keychain["deviceID"] ?? defaultDeviceID
         }
         set {
             keychain["deviceID"] = newValue
@@ -182,7 +172,7 @@ public class SettingsStore {
 
     public var overrideDeviceName: String? {
         get {
-            return prefs.string(forKey: "override_device_name")
+            prefs.string(forKey: "override_device_name")
         }
         set {
             prefs.set(newValue, forKey: "override_device_name")
@@ -229,7 +219,7 @@ public class SettingsStore {
 
     public var showAdvancedConnectionSettings: Bool {
         get {
-            return prefs.bool(forKey: "showAdvancedConnectionSettings")
+            prefs.bool(forKey: "showAdvancedConnectionSettings")
         }
         set {
             prefs.set(newValue, forKey: "showAdvancedConnectionSettings")
@@ -238,7 +228,7 @@ public class SettingsStore {
 
     public var timezone: String? {
         get {
-            return prefs.string(forKey: "time_zone")
+            prefs.string(forKey: "time_zone")
         }
         set {
             prefs.setValue(newValue, forKey: "time_zone")
@@ -273,7 +263,7 @@ public class SettingsStore {
         }
 
         public var viewScaleValue: String {
-            return String(format: "%.02f", CGFloat(zoom) / 100.0)
+            String(format: "%.02f", CGFloat(zoom) / 100.0)
         }
 
         public static let `default`: PageZoom = .init(100)
@@ -282,7 +272,7 @@ public class SettingsStore {
             // similar zooms to Safari, but with nothing above 200%
             .init(50), .init(75), .init(85),
             .init(100), .init(115), .init(125), .init(150), .init(175),
-            .init(200)
+            .init(200),
         ]
     }
 
@@ -406,6 +396,7 @@ public class SettingsStore {
             }
         }
     }
+
     public var locationVisibility: LocationVisibility {
         get {
             prefs.string(forKey: "locationVisibility").flatMap(LocationVisibility.init(rawValue:)) ?? .dock
@@ -423,7 +414,7 @@ public class SettingsStore {
     // MARK: - Private helpers
 
     private var defaultDeviceID: String {
-        let baseID = self.removeSpecialCharsFromString(text: Current.device.deviceName())
+        let baseID = removeSpecialCharsFromString(text: Current.device.deviceName())
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
 
@@ -437,6 +428,6 @@ public class SettingsStore {
     private func removeSpecialCharsFromString(text: String) -> String {
         let okayChars: Set<Character> =
             Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890")
-        return String(text.filter {okayChars.contains($0) })
+        return String(text.filter { okayChars.contains($0) })
     }
 }

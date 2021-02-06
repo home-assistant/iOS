@@ -7,7 +7,7 @@ class HACoreBlahObject {
     }
 
     fileprivate func value<PropertyType: HACoreBlahProperty>(for property: PropertyType) -> PropertyType.ValueType? {
-        let propsize: UInt32 = UInt32(MemoryLayout<PropertyType.ValueType>.size)
+        let propsize = UInt32(MemoryLayout<PropertyType.ValueType>.size)
 
         let data = UnsafeMutableRawPointer.allocate(
             byteCount: Int(propsize),

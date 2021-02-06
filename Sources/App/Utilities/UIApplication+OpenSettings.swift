@@ -1,5 +1,5 @@
-import UIKit
 import Shared
+import UIKit
 
 extension UIApplication {
     enum OpenSettingsDestination {

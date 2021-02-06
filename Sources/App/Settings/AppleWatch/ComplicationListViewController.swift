@@ -1,8 +1,8 @@
-import Foundation
-import Eureka
-import Shared
-import RealmSwift
 import Communicator
+import Eureka
+import Foundation
+import RealmSwift
+import Shared
 import Version
 
 class ComplicationListViewController: FormViewController {
@@ -48,22 +48,22 @@ class ComplicationListViewController: FormViewController {
         title = L10n.SettingsDetails.Watch.title
 
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: L10n.addButtonLabel, style: .plain, target: self, action: #selector(add(_:)))
+            UIBarButtonItem(title: L10n.addButtonLabel, style: .plain, target: self, action: #selector(add(_:))),
         ]
 
         form +++ InfoLabelRow {
             $0.title = L10n.Watch.Configurator.List.description
             $0.displayType = .primary
         }
-        <<< ButtonRow {
-            $0.title = L10n.Watch.Configurator.List.learnMore
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .natural
+            <<< ButtonRow {
+                $0.title = L10n.Watch.Configurator.List.learnMore
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .natural
+                }
+                $0.onCellSelection { [weak self] _, _ in
+                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
+                }
             }
-            $0.onCellSelection { [weak self] _, _ in
-                openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
-            }
-        }
 
         let allComplications = Current.realm()
             .objects(WatchComplication.self)
@@ -87,7 +87,7 @@ class ComplicationListViewController: FormViewController {
                             cell.detailTextLabel?.text = row.value
                         }
                         $0.presentationMode = .show(controllerProvider: .callback {
-                            return ComplicationEditViewController(config: complication)
+                            ComplicationEditViewController(config: complication)
                         }, onDismiss: { vc in
                             _ = vc.navigationController?.popViewController(animated: true)
                         })

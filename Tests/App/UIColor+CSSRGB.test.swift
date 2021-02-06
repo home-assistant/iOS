@@ -38,8 +38,8 @@ class UIColorCSSRGBTests: XCTestCase {
     }
 
     func testMixed() {
-        XCTAssertEqualColor("rgb(120, 164, 227)", 120.0/255.0, 164.0/255.0, 227.0/255.0, 1.0)
-        XCTAssertEqualColor("rgba(120, 164, 227, 0.5)", 120.0/255.0, 164.0/255.0, 227.0/255.0, 0.5)
+        XCTAssertEqualColor("rgb(120, 164, 227)", 120.0 / 255.0, 164.0 / 255.0, 227.0 / 255.0, 1.0)
+        XCTAssertEqualColor("rgba(120, 164, 227, 0.5)", 120.0 / 255.0, 164.0 / 255.0, 227.0 / 255.0, 0.5)
     }
 
     private func XCTAssertNotColor(_ string: String) {

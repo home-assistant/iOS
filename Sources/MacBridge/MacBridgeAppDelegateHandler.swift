@@ -1,5 +1,5 @@
-import Foundation
 import AppKit
+import Foundation
 import ObjectiveC.runtime
 
 enum MacBridgeAppDelegateHandler {
@@ -28,7 +28,7 @@ enum MacBridgeAppDelegateHandler {
             .init(
                 original: #selector(NSApplicationDelegate.applicationShouldTerminate(_:)),
                 replacement: #selector(NSObject.ha_applicationShouldTerminate(_:))
-            )
+            ),
         ]
 
         let klass = type(of: delegate)

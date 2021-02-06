@@ -1,9 +1,9 @@
-import Foundation
 import CoreLocation
+import Foundation
 
 extension CLLocationCoordinate2D {
     func toArray() -> [Double] {
-        return [latitude, longitude]
+        [latitude, longitude]
     }
 
     func moving(
@@ -42,8 +42,8 @@ extension CLLocationCoordinate2D {
     }
 }
 
-extension CLLocationDegrees {
-    public init?(templateValue value: Any?) {
+public extension CLLocationDegrees {
+    init?(templateValue value: Any?) {
         if let value = value as? String {
             self.init(value)
         } else if let value = value as? Double {

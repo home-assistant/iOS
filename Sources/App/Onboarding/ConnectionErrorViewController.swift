@@ -1,58 +1,49 @@
-//
-//  ConnectionErrorViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/24/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
 import Lottie
 import Shared
+import UIKit
 
 class ConnectionErrorViewController: UIViewController {
-
-    @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var moreInfoButton: UIButton!
-    @IBOutlet weak var errorLabel: UILabel!
-    @IBOutlet weak var goBackButton: UIButton!
+    @IBOutlet var animationView: AnimationView!
+    @IBOutlet var moreInfoButton: UIButton!
+    @IBOutlet var errorLabel: UILabel!
+    @IBOutlet var goBackButton: UIButton!
 
     var error: Error!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(self.moreInfoButton)
-            navVC.styleButton(self.goBackButton)
+        if let navVC = navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(moreInfoButton)
+            navVC.styleButton(goBackButton)
         }
 
-        self.animationView.animation = Animation.named("error")
-        self.animationView.loopMode = .playOnce
-        self.animationView.contentMode = .scaleAspectFill
-        self.animationView.play()
+        animationView.animation = Animation.named("error")
+        animationView.loopMode = .playOnce
+        animationView.contentMode = .scaleAspectFill
+        animationView.play()
 
-        self.errorLabel.text = error.localizedDescription
+        errorLabel.text = error.localizedDescription
 
         if let error = error as? ConnectionTestResult {
             if error.kind == .sslExpired || error.kind == .sslUntrusted {
                 let text = L10n.Onboarding.ConnectionTestResult.SslContainer.description(error.localizedDescription)
-                self.errorLabel.text = text
+                errorLabel.text = text
             }
         } else {
-            self.moreInfoButton.isHidden = true
+            moreInfoButton.isHidden = true
         }
     }
 
     /*
-    // MARK: - Navigation
+     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+         // Get the new view controller using segue.destination.
+         // Pass the selected object to the new view controller.
+     }
+     */
 
     @IBAction func moreInfoTapped(_ sender: UIButton) {
         guard let error = self.error as? ConnectionTestResult else { return }

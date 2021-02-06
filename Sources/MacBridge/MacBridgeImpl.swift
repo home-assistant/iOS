@@ -1,5 +1,5 @@
-import Foundation
 import AppKit
+import Foundation
 import ServiceManagement
 
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
@@ -76,7 +76,7 @@ import ServiceManagement
     }
 
     private static func userDefaultsKey(forLoginItemBundleIdentifier identifier: String) -> String {
-        return "LoginItemEnabled-\(identifier)"
+        "LoginItemEnabled-\(identifier)"
     }
 
     func setLoginItem(forBundleIdentifier identifier: String, enabled: Bool) -> Bool {

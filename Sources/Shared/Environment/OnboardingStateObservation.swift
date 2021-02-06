@@ -7,7 +7,7 @@ public enum NeededType {
     public var shouldShowError: Bool {
         switch self {
         case .logout: return false
-        case .error:  return true
+        case .error: return true
         }
     }
 }

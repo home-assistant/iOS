@@ -1,5 +1,5 @@
-import Foundation
 import CoreServices
+import Foundation
 import PromiseKit
 
 public struct ItemProviderRequest<Type> {
@@ -12,9 +12,9 @@ public struct ItemProviderRequest<Type> {
     public static var text: ItemProviderRequest<String> { .init(kUTTypeText) }
 }
 
-extension NSItemProvider {
-    public func item<T>(for request: ItemProviderRequest<T>) -> Promise<T> {
-        return Promise { seal in
+public extension NSItemProvider {
+    func item<T>(for request: ItemProviderRequest<T>) -> Promise<T> {
+        Promise { seal in
             loadItem(forTypeIdentifier: request.utType, options: nil, completionHandler: { value, error in
                 seal.resolve(value as? T, error)
             })
@@ -22,8 +22,8 @@ extension NSItemProvider {
     }
 }
 
-extension NSExtensionContext {
-    public func inputItemAttachments<T>(for request: ItemProviderRequest<T>) -> Guarantee<[T]> {
+public extension NSExtensionContext {
+    func inputItemAttachments<T>(for request: ItemProviderRequest<T>) -> Guarantee<[T]> {
         let extensionItems = inputItems.compactMap { $0 as? NSExtensionItem }
         let attachments = extensionItems
             .flatMap { $0.attachments ?? [] }
@@ -31,7 +31,7 @@ extension NSExtensionContext {
 
         return when(resolved: attachments).compactMapValues {
             switch $0 {
-            case .fulfilled(let value): return value
+            case let .fulfilled(value): return value
             case .rejected: return nil
             }
         }

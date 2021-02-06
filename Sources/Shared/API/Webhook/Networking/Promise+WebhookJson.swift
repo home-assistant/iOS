@@ -1,6 +1,6 @@
 import Foundation
-import Sodium
 import PromiseKit
+import Sodium
 
 enum WebhookJsonParseError: Error, Equatable {
     case empty
@@ -17,7 +17,7 @@ extension Promise where T == Data? {
         secretGetter: @escaping () -> String? = { Current.settingsStore.connectionInfo?.webhookSecret },
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
-        return then { optionalData -> Promise<Any> in
+        then { optionalData -> Promise<Any> in
             if let data = optionalData {
                 return Promise<Data>.value(data).definitelyWebhookJson(
                     on: queue,
@@ -83,8 +83,7 @@ extension Promise where T == Data {
             }
         }.map { object in
             guard let dictionary = object as? [String: Any],
-                let encoded = dictionary["encrypted_data"] as? String
-            else {
+                  let encoded = dictionary["encrypted_data"] as? String else {
                 return object
             }
 

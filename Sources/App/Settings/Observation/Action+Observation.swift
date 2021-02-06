@@ -1,7 +1,7 @@
 import Foundation
-import Shared
-import RealmSwift
 import PromiseKit
+import RealmSwift
+import Shared
 #if !targetEnvironment(macCatalyst)
 import NotificationCenter
 #endif
@@ -67,7 +67,7 @@ extension Action {
                 updateTodayWidget,
                 updateWidgetKitWidgets,
                 updateWatch,
-                updateSuggestions
+                updateSuggestions,
             ]).asVoid()
         }
     }

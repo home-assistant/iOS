@@ -1,18 +1,15 @@
-//
-//  SearchPushRow.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 2/18/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
+// swiftformat:disable fileHeader
 // From https://gist.github.com/gotelgest/cf309f6e2095ff22a20b09ba5c95be36
 
-import Foundation
 import Eureka
+import Foundation
 
 // swiftlint:disable type_name line_length
-open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: OptionsProviderRow>: SelectorViewController<OptionsRow>, UISearchResultsUpdating where Row.Cell.Value: SearchItem {
-
+open class _SearchSelectorViewController<
+    Row: SelectableRowType,
+    OptionsRow: OptionsProviderRow
+>: SelectorViewController<OptionsRow>,
+    UISearchResultsUpdating where Row.Cell.Value: SearchItem {
     private var notificationCenterObservers: [AnyObject] = []
 
     let searchController = UISearchController(searchResultsController: nil)
@@ -24,7 +21,7 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
         notificationCenterObservers.forEach { NotificationCenter.default.removeObserver($0) }
     }
 
-    open override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         searchController.searchResultsUpdater = self
@@ -39,7 +36,7 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
             queue: .main
         ) { [tableView] note in
             guard let tableView = tableView,
-                let screenFrameValue = note.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? NSValue else {
+                  let screenFrameValue = note.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? NSValue else {
                 return
             }
 
@@ -64,26 +61,26 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
         tableView.reloadData()
     }
 
-    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentOptions.count
+    override open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        currentOptions.count
     }
 
-    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let option = currentOptions[indexPath.row]
         option.updateCell()
         return option.baseCell
     }
 
-    open override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return nil
+    override open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        nil
     }
 
-    open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         currentOptions[indexPath.row].didSelect()
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    open override func setupForm(with options: [OptionsRow.OptionsProviderType.Option]) {
+    override open func setupForm(with options: [OptionsRow.OptionsProviderType.Option]) {
         super.setupForm(with: options)
         if let allRows = form.first?.map({ $0 }) as? [ListCheckRow<Row.Cell.Value>] {
             originalOptions = allRows
@@ -93,16 +90,21 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
     }
 }
 
-open class SearchSelectorViewController<OptionsRow: OptionsProviderRow>: _SearchSelectorViewController<ListCheckRow<OptionsRow.OptionsProviderType.Option>, OptionsRow> where OptionsRow.OptionsProviderType.Option: SearchItem {
-}
+open class SearchSelectorViewController<OptionsRow: OptionsProviderRow>: _SearchSelectorViewController<
+    ListCheckRow<OptionsRow.OptionsProviderType.Option>,
+    OptionsRow
+> where OptionsRow.OptionsProviderType.Option: SearchItem {}
 
 open class _SearchPushRow<Cell: CellType>: SelectorRow<Cell> where Cell: BaseCell, Cell.Value: SearchItem {
     public required init(tag: String?) {
         super.init(tag: tag)
-        presentationMode = .show(controllerProvider: ControllerProvider.callback {
-            return SearchSelectorViewController<SelectorRow<Cell>> { _ in }
-        }, onDismiss: { vc in
-            _ = vc.navigationController?.popViewController(animated: true) }
+        presentationMode = .show(
+            controllerProvider: ControllerProvider.callback {
+                SearchSelectorViewController<SelectorRow<Cell>> { _ in }
+            },
+            onDismiss: { vc in
+                _ = vc.navigationController?.popViewController(animated: true)
+            }
         )
     }
 }
@@ -119,6 +121,6 @@ public protocol SearchItem {
 
 extension String: SearchItem {
     public func matchesSearchQuery(_ query: String) -> Bool {
-        return self.contains(query.lowercased())
+        contains(query.lowercased())
     }
 }

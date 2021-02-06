@@ -1,11 +1,3 @@
-//
-//  NSURL+QueryDictionary.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 5/31/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 extension URL {
     var queryDictionary: [String: [String]]? {
@@ -14,7 +6,7 @@ extension URL {
 
             for keyValueString in query.components(separatedBy: "&") {
                 let parts = keyValueString.components(separatedBy: "=")
-                if parts.count < 2 { continue; }
+                if parts.count < 2 { continue }
 
                 let key = parts[0].removingPercentEncoding!
                 let value = parts[1].removingPercentEncoding!

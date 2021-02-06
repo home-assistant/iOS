@@ -1,40 +1,44 @@
-//
-//  DiscoverInstancesViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/21/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import Shared
 import Lottie
+import Shared
+import UIKit
 
 class DiscoverInstancesViewController: UIViewController {
     private let discovery = Bonjour()
     private var discoveredInstances: [DiscoveredHomeAssistant] = []
 
-    @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var animationView: AnimationView!
-    @IBOutlet private weak var manualButton: UIButton!
+    @IBOutlet private var tableView: UITableView!
+    @IBOutlet private var animationView: AnimationView!
+    @IBOutlet private var manualButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(self.manualButton)
+        if let navVC = navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(manualButton)
         }
 
         if Current.appConfiguration == .Debug {
             for (idx, instance) in [
-                DiscoveredHomeAssistant(baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic/api/discovery_info")!,
-                                        name: "Basic Auth", version: "0.92.0"),
-                DiscoveredHomeAssistant(baseURL: URL(string: "https://self-signed.badssl.com/")!,
-                                        name: "Self signed SSL", version: "0.92.0"),
-                DiscoveredHomeAssistant(baseURL: URL(string: "https://client.badssl.com/")!, name: "Client Cert",
-                                        version: "0.92.0"),
-                DiscoveredHomeAssistant(baseURL: URL(string: "http://http.badssl.com/")!, name: "HTTP",
-                                        version: "0.92.0")
+                DiscoveredHomeAssistant(
+                    baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic/api/discovery_info")!,
+                    name: "Basic Auth",
+                    version: "0.92.0"
+                ),
+                DiscoveredHomeAssistant(
+                    baseURL: URL(string: "https://self-signed.badssl.com/")!,
+                    name: "Self signed SSL",
+                    version: "0.92.0"
+                ),
+                DiscoveredHomeAssistant(
+                    baseURL: URL(string: "https://client.badssl.com/")!,
+                    name: "Client Cert",
+                    version: "0.92.0"
+                ),
+                DiscoveredHomeAssistant(
+                    baseURL: URL(string: "http://http.badssl.com/")!,
+                    name: "HTTP",
+                    version: "0.92.0"
+                ),
             ].enumerated() {
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500 * idx)) { [weak self] in
                     self?.add(discoveredInstance: instance)
@@ -47,11 +51,15 @@ class DiscoverInstancesViewController: UIViewController {
         // hides the empty separators
         tableView.tableFooterView = UIView()
 
-        self.animationView.contentMode = .scaleAspectFill
-        self.animationView.backgroundBehavior = .pauseAndRestore
-        self.animationView.animation = Animation.named("ha-loading")
-        self.animationView.play(fromMarker: "Circle Fill Begins", toMarker: "Deform Begins", loopMode: .loop,
-                                completion: nil)
+        animationView.contentMode = .scaleAspectFill
+        animationView.backgroundBehavior = .pauseAndRestore
+        animationView.animation = Animation.named("ha-loading")
+        animationView.play(
+            fromMarker: "Circle Fill Begins",
+            toMarker: "Deform Begins",
+            loopMode: .loop,
+            completion: nil
+        )
 
         let queue = DispatchQueue(label: Bundle.main.bundleIdentifier!, attributes: [])
         queue.async {
@@ -63,18 +71,26 @@ class DiscoverInstancesViewController: UIViewController {
         }
 
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(HomeAssistantDiscovered(_:)),
-                           name: NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil)
+        center.addObserver(
+            self,
+            selector: #selector(HomeAssistantDiscovered(_:)),
+            name: NSNotification.Name(rawValue: "homeassistant.discovered"),
+            object: nil
+        )
 
-        center.addObserver(self, selector: #selector(HomeAssistantUndiscovered(_:)),
-                           name: NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil)
+        center.addObserver(
+            self,
+            selector: #selector(HomeAssistantUndiscovered(_:)),
+            name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
+            object: nil
+        )
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        self.discovery.stopDiscovery()
-        self.discovery.stopPublish()
+        discovery.stopDiscovery()
+        discovery.stopPublish()
     }
 
     deinit {
@@ -145,7 +161,7 @@ extension DiscoverInstancesViewController: UITableViewDelegate {
 
 extension DiscoverInstancesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return discoveredInstances.count
+        discoveredInstances.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

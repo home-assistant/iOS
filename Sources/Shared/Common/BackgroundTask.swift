@@ -32,7 +32,7 @@ public enum HomeAssistantBackgroundTask {
                     return String(describing: identifier)
                 }
                 #else
-                    return String(describing: identifier)
+                return String(describing: identifier)
                 #endif
             } else {
                 return "(none)"

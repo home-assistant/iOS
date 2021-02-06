@@ -9,13 +9,13 @@ public class StorageSensor: SensorProvider {
     }
 
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
     #if os(watchOS)
     public func sensors() -> Promise<[WebhookSensor]> {
-        return .init(error: StorageError.noData)
+        .init(error: StorageError.noData)
     }
     #else
     public func sensors() -> Promise<[WebhookSensor]> {
@@ -28,7 +28,7 @@ public class StorageSensor: SensorProvider {
                 throw StorageError.noData
             }
         }.map { (volumes: [URLResourceKey: Int64]) -> [WebhookSensor] in
-            return [ try Self.sensor(for: volumes) ]
+            [try Self.sensor(for: volumes)]
         }
     }
 
@@ -48,7 +48,7 @@ public class StorageSensor: SensorProvider {
             "Total": values.byteString(for: \.total),
             "Available": values.byteString(for: \.availableOverall),
             "Available (Important)": values.byteString(for: \.availableImportant),
-            "Available (Opportunistic)": values.byteString(for: \.availableOpportunistic)
+            "Available (Opportunistic)": values.byteString(for: \.availableOpportunistic),
         ]
 
         return sensor
@@ -77,10 +77,10 @@ public class StorageSensor: SensorProvider {
                 }
             }
 
-            availableOverall = try value(of: .volumeAvailableCapacityKey)
-            availableImportant = try value(of: .volumeAvailableCapacityForImportantUsageKey)
-            availableOpportunistic = try value(of: .volumeAvailableCapacityForOpportunisticUsageKey)
-            total = try value(of: .volumeTotalCapacityKey)
+            self.availableOverall = try value(of: .volumeAvailableCapacityKey)
+            self.availableImportant = try value(of: .volumeAvailableCapacityForImportantUsageKey)
+            self.availableOpportunistic = try value(of: .volumeAvailableCapacityForOpportunisticUsageKey)
+            self.total = try value(of: .volumeTotalCapacityKey)
 
             guard total > 0 else {
                 throw StorageError.invalidData

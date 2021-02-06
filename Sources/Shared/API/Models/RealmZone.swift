@@ -1,17 +1,8 @@
-//
-//  ZoneComponent.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 4/10/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 import CoreLocation
+import Foundation
 import RealmSwift
 
 public final class RLMZone: Object, UpdatableModel {
-
     @objc public dynamic var ID: String = ""
     @objc public dynamic var FriendlyName: String?
     @objc public dynamic var Latitude: Double = 0.0
@@ -36,37 +27,33 @@ public final class RLMZone: Object, UpdatableModel {
         ID == "zone.home"
     }
 
-    static func didUpdate(objects: [RLMZone], realm: Realm) {
+    static func didUpdate(objects: [RLMZone], realm: Realm) {}
 
-    }
-
-    static func willDelete(objects: [RLMZone], realm: Realm) {
-
-    }
+    static func willDelete(objects: [RLMZone], realm: Realm) {}
 
     func update(with zone: Zone, using: Realm) {
         if realm == nil {
-            self.ID = zone.ID
+            ID = zone.ID
         } else {
             precondition(zone.ID == ID)
         }
-        self.FriendlyName = zone.FriendlyName
-        self.Latitude = zone.Latitude
-        self.Longitude = zone.Longitude
-        self.Radius = zone.Radius
-        self.TrackingEnabled = zone.TrackingEnabled
-        self.BeaconUUID = zone.UUID
-        self.BeaconMajor.value = zone.Major
-        self.BeaconMinor.value = zone.Minor
-        self.isPassive = zone.isPassive
+        FriendlyName = zone.FriendlyName
+        Latitude = zone.Latitude
+        Longitude = zone.Longitude
+        Radius = zone.Radius
+        TrackingEnabled = zone.TrackingEnabled
+        BeaconUUID = zone.UUID
+        BeaconMajor.value = zone.Major
+        BeaconMinor.value = zone.Minor
+        isPassive = zone.isPassive
 
-        self.SSIDTrigger.removeAll()
+        SSIDTrigger.removeAll()
         if let ssidTrigger = zone.SSIDTrigger {
-            self.SSIDTrigger.append(objectsIn: ssidTrigger)
+            SSIDTrigger.append(objectsIn: ssidTrigger)
         }
-        self.SSIDFilter.removeAll()
+        SSIDFilter.removeAll()
         if let ssidFilter = zone.SSIDFilter {
-            self.SSIDFilter.append(objectsIn: ssidFilter)
+            SSIDFilter.append(objectsIn: ssidFilter)
         }
     }
 
@@ -78,11 +65,13 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     public var location: CLLocation {
-        return CLLocation(coordinate: center,
-                          altitude: 0,
-                          horizontalAccuracy: self.Radius,
-                          verticalAccuracy: -1,
-                          timestamp: Date())
+        CLLocation(
+            coordinate: center,
+            altitude: 0,
+            horizontalAccuracy: Radius,
+            verticalAccuracy: -1,
+            timestamp: Date()
+        )
     }
 
     public var regionsForMonitoring: [CLRegion] {
@@ -106,22 +95,24 @@ public final class RLMZone: Object, UpdatableModel {
 
     #if os(iOS)
     public var beaconRegion: CLBeaconRegion? {
-        guard let uuidString = self.BeaconUUID else {
+        guard let uuidString = BeaconUUID else {
             return nil
         }
 
         guard let uuid = UUID(uuidString: uuidString) else {
             let event =
-                ClientEvent(text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
-                    type: .locationUpdate)
+                ClientEvent(
+                    text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
+                    type: .locationUpdate
+                )
             Current.clientEventStore.addEvent(event)
-            Current.Log.error("Couldn't create CLBeaconRegion (\(self.ID)) because of invalid UUID: \(uuidString)")
+            Current.Log.error("Couldn't create CLBeaconRegion (\(ID)) because of invalid UUID: \(uuidString)")
             return nil
         }
 
         let beaconRegion: CLBeaconRegion
 
-        if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
+        if let major = BeaconMajor.value, let minor = BeaconMinor.value {
             if #available(iOS 13, *) {
                 beaconRegion = CLBeaconRegion(
                     uuid: uuid,
@@ -134,10 +125,10 @@ public final class RLMZone: Object, UpdatableModel {
                     proximityUUID: uuid,
                     major: CLBeaconMajorValue(major),
                     minor: CLBeaconMinorValue(minor),
-                    identifier: self.ID
+                    identifier: ID
                 )
             }
-        } else if let major = self.BeaconMajor.value {
+        } else if let major = BeaconMajor.value {
             if #available(iOS 13, *) {
                 beaconRegion = CLBeaconRegion(
                     uuid: uuid,
@@ -148,14 +139,14 @@ public final class RLMZone: Object, UpdatableModel {
                 beaconRegion = CLBeaconRegion(
                     proximityUUID: uuid,
                     major: CLBeaconMajorValue(major),
-                    identifier: self.ID
+                    identifier: ID
                 )
             }
         } else {
             if #available(iOS 13, *) {
                 beaconRegion = CLBeaconRegion(uuid: uuid, identifier: self.ID)
             } else {
-                beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: self.ID)
+                beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: ID)
             }
         }
 
@@ -184,12 +175,12 @@ public final class RLMZone: Object, UpdatableModel {
             let centerOffset = Measurement<UnitLength>(value: minimumRadius - Radius, unit: .meters)
             let sliceAngle = ((2.0 * Double.pi) / Double(numberOfCircles))
 
-            let angles: [Measurement<UnitAngle>] = (0..<numberOfCircles).map { amount in
-                return .init(value: sliceAngle * Double(amount), unit: .radians)
+            let angles: [Measurement<UnitAngle>] = (0 ..< numberOfCircles).map { amount in
+                .init(value: sliceAngle * Double(amount), unit: .radians)
             }
 
             return angles.map { angle in
-                return CLCircularRegion(
+                CLCircularRegion(
                     center: center.moving(distance: centerOffset, direction: angle),
                     radius: minimumRadius,
                     identifier: String(format: "%@@%03.0f", ID, angle.converted(to: .degrees).value)
@@ -198,20 +189,24 @@ public final class RLMZone: Object, UpdatableModel {
         }
     }
 
-    public override static func primaryKey() -> String? {
-        return "ID"
+    override public static func primaryKey() -> String? {
+        "ID"
     }
 
     public var Name: String {
-        if self.isInvalidated { return "Deleted" }
-        if let fName = self.FriendlyName { return fName }
-        return self.ID.replacingOccurrences(of: "\(self.Domain).",
-                                            with: "").replacingOccurrences(of: "_",
-                                                                           with: " ").capitalized
+        if isInvalidated { return "Deleted" }
+        if let fName = FriendlyName { return fName }
+        return ID.replacingOccurrences(
+            of: "\(Domain).",
+            with: ""
+        ).replacingOccurrences(
+            of: "_",
+            with: " "
+        ).capitalized
     }
 
     public var Domain: String {
-        return "zone"
+        "zone"
     }
 
     public var isBeaconRegion: Bool {
@@ -219,7 +214,7 @@ public final class RLMZone: Object, UpdatableModel {
         return self.BeaconUUID != nil
     }
 
-    public override var debugDescription: String {
-        return "Zone - ID: \(self.ID), state: " + (self.inRegion ? "inside" : "outside")
+    override public var debugDescription: String {
+        "Zone - ID: \(ID), state: " + (inRegion ? "inside" : "outside")
     }
 }

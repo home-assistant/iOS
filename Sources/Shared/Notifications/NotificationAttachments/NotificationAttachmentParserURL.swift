@@ -1,6 +1,6 @@
 import Foundation
-import UserNotifications
 import PromiseKit
+import UserNotifications
 
 final class NotificationAttachmentParserURL: NotificationAttachmentParser {
     enum URLError: LocalizedError {

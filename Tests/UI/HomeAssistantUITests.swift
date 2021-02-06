@@ -1,18 +1,9 @@
-//
-//  HomeAssistantUITests.swift
-//  HomeAssistantUITests
-//
-//  Created by Robbie Trencheny on 3/25/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import XCTest
 
 class HomeAssistantUITests: XCTestCase {
-        
     override func setUp() {
         super.setUp()
-        
+
         let app = XCUIApplication()
         continueAfterFailure = false
 
@@ -27,7 +18,7 @@ class HomeAssistantUITests: XCTestCase {
         app.tap()
         removeUIInterruptionMonitor(handler)
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
@@ -36,17 +27,17 @@ class HomeAssistantUITests: XCTestCase {
     func testScreenshots() {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         /* let app = XCUIApplication()
-        let web = app.webViews
+         let web = app.webViews
 
-        let sidebarToggle = web.buttons["Sidebar Toggle"]
+         let sidebarToggle = web.buttons["Sidebar Toggle"]
 
-        wait(for: sidebarToggle, timeout: 20)
+         wait(for: sidebarToggle, timeout: 20)
 
-        sidebarToggle.tap(withNumberOfTaps: 2, numberOfTouches: 1)
-        web.links["App Configuration"].firstMatch.tap()
+         sidebarToggle.tap(withNumberOfTaps: 2, numberOfTouches: 1)
+         web.links["App Configuration"].firstMatch.tap()
 
-        // Map Notification Screenshot
-        app.tables.cells["map_notification_test"].tap() */
+         // Map Notification Screenshot
+         app.tables.cells["map_notification_test"].tap() */
 
         ensureMapNotification()
 
@@ -124,7 +115,7 @@ extension XCTestCase {
     /// Wait for element to appear
     func wait(for element: XCUIElement, timeout duration: TimeInterval) {
         let predicate = NSPredicate(format: "exists == true")
-        let _ = expectation(for: predicate, evaluatedWith: element, handler: nil)
+        _ = expectation(for: predicate, evaluatedWith: element, handler: nil)
 
         // Here we don't need to call `waitExpectation.fulfill()`
 

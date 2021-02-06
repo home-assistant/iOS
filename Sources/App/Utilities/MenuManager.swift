@@ -1,8 +1,8 @@
 import Foundation
-import UIKit
+import PromiseKit
 import RealmSwift
 import Shared
-import PromiseKit
+import UIKit
 
 @available(iOS 13, *)
 private extension UIMenu.Identifier {
@@ -12,8 +12,6 @@ private extension UIMenu.Identifier {
     static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
     static var haFile: Self { .init(rawValue: "ha.file") }
 }
-
-// swiftlint:disable type_body_length
 
 @available(iOS 13, *)
 class MenuManager {
@@ -40,8 +38,8 @@ class MenuManager {
         return URL(string: urlString)
     }
 
-    static private func propertyList(for url: URL) -> Any {
-        return ["url": url.absoluteString]
+    private static func propertyList(for url: URL) -> Any {
+        ["url": url.absoluteString]
     }
 
     private var appName: String {
@@ -79,7 +77,7 @@ class MenuManager {
         )
 
         var children: [UICommand] = [
-            about
+            about,
         ]
 
         if Current.updater.isSupported {
@@ -96,7 +94,7 @@ class MenuManager {
     }
 
     private func aboutMenu() -> [AppMacBridgeStatusItemMenuItem] {
-        return [
+        [
             .init(name: L10n.About.title) { callbackInfo in
                 Current.sceneManager.activateAnyScene(for: .about)
                 callbackInfo.activate()
@@ -111,7 +109,7 @@ class MenuManager {
                     from: callbackInfo,
                     for: nil
                 )
-            }
+            },
         ]
     }
 
@@ -162,13 +160,13 @@ class MenuManager {
                 identifier: .haHelp,
                 options: .displayInline,
                 children: [helpCommand]
-            )
+            ),
         ]
     }
 
     private static func actionsWithImages() -> [(Action, UIImage)] {
         // Action+Observation calls reload, so when they change this all gets run again
-        return Current.realm()
+        Current.realm()
             .objects(Action.self)
             .sorted(byKeyPath: #keyPath(Action.Position))
             .map { action -> (Action, UIImage) in
@@ -191,22 +189,22 @@ class MenuManager {
 
     private func actionsMenu() -> UIMenu {
         let children = actionsWithImages.map { action, image in
-                return UICommand(
-                    title: action.Text,
-                    image: image,
-                    action: #selector(AppDelegate.openMenuUrl(_:)),
-                    propertyList: Self.propertyList(for: action.widgetLinkURL)
-                )
-            } + [
-                UIMenu(title: "", image: nil, identifier: .haActionsConfigure, options: [.displayInline], children: [
-                    UICommand(
-                        title: L10n.Menu.Actions.configure,
-                        image: nil,
-                        action: #selector(AppDelegate.openActionsPreferences),
-                        propertyList: nil
-                    )
-                ])
-            ]
+            UICommand(
+                title: action.Text,
+                image: image,
+                action: #selector(AppDelegate.openMenuUrl(_:)),
+                propertyList: Self.propertyList(for: action.widgetLinkURL)
+            )
+        } + [
+            UIMenu(title: "", image: nil, identifier: .haActionsConfigure, options: [.displayInline], children: [
+                UICommand(
+                    title: L10n.Menu.Actions.configure,
+                    image: nil,
+                    action: #selector(AppDelegate.openActionsPreferences),
+                    propertyList: nil
+                ),
+            ]),
+        ]
 
         return UIMenu(
             title: L10n.Menu.Actions.title,
@@ -266,7 +264,7 @@ class MenuManager {
                     action: #selector(refresh),
                     input: "R",
                     modifierFlags: [.command]
-                )
+                ),
             ]
         )
     }
@@ -284,7 +282,7 @@ class MenuManager {
                     action: #selector(updateSensors),
                     input: "R",
                     modifierFlags: [.command, .shift]
-                )
+                ),
             ]
         )
     }

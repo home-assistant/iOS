@@ -1,26 +1,15 @@
-//
-//  SecondViewController.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 3/25/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
+import CoreMotion
 import Eureka
-import Shared
+import FirebaseMessaging
 import Intents
 import IntentsUI
 import PromiseKit
-import CoreMotion
-import FirebaseMessaging
-import Version
 import RealmSwift
+import Shared
+import UIKit
+import Version
 
-// swiftlint:disable file_length
-// swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController, TypedRowControllerType {
-
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -42,29 +31,32 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if self.doneButton {
-            self.navigationItem.rightBarButtonItem = nil
-            self.doneButton = false
+        if doneButton {
+            navigationItem.rightBarButtonItem = nil
+            doneButton = false
         }
-        self.onDismissCallback?(self)
+        onDismissCallback?(self)
     }
 
-    // swiftlint:disable:next function_body_length cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
         if doneButton {
             let closeSelector = #selector(SettingsDetailViewController.closeSettingsDetailView(_:))
-            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
-                                             action: closeSelector)
-            self.navigationItem.setRightBarButton(doneButton, animated: true)
+            let doneButton = UIBarButtonItem(
+                barButtonSystemItem: .done,
+                target: self,
+                action: closeSelector
+            )
+            navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
         switch detailGroup {
         case "general":
-            self.title = L10n.SettingsDetails.General.title
-            self.form
+            title = L10n.SettingsDetails.General.title
+            form
                 +++ Section()
                 <<< TextRow {
                     $0.title = L10n.SettingsDetails.General.DeviceName.title
@@ -76,32 +68,32 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 <<< PushRow<AppIcon>("appIcon") {
-                        $0.hidden = .isCatalyst
-                        $0.title = L10n.SettingsDetails.General.AppIcon.title
-                        $0.selectorTitle = $0.title
-                        $0.options = AppIcon.allCases
-                        $0.value = AppIcon.Release
-                        if let altIconName = UIApplication.shared.alternateIconName,
-                            let icon = AppIcon(rawValue: altIconName) {
-                            $0.value = icon
-                        }
-                        $0.displayValueFor = { $0?.title }
-                    }.onPresent { _, to in
-                        to.selectableRowCellUpdate = { (cell, row) in
-                            cell.height = { return 72 }
-                            cell.imageView?.layer.masksToBounds = true
-                            cell.imageView?.layer.cornerRadius = 12.63
-                            guard let newIcon = row.selectableValue else { return }
-                            cell.imageView?.image = UIImage(named: newIcon.rawValue)
+                $0.hidden = .isCatalyst
+                $0.title = L10n.SettingsDetails.General.AppIcon.title
+                $0.selectorTitle = $0.title
+                $0.options = AppIcon.allCases
+                $0.value = AppIcon.Release
+                if let altIconName = UIApplication.shared.alternateIconName,
+                   let icon = AppIcon(rawValue: altIconName) {
+                    $0.value = icon
+                }
+                $0.displayValueFor = { $0?.title }
+            }.onPresent { _, to in
+                to.selectableRowCellUpdate = { cell, row in
+                    cell.height = { 72 }
+                    cell.imageView?.layer.masksToBounds = true
+                    cell.imageView?.layer.cornerRadius = 12.63
+                    guard let newIcon = row.selectableValue else { return }
+                    cell.imageView?.image = UIImage(named: newIcon.rawValue)
 
-                            cell.textLabel?.text = newIcon.title
-                        }
-                    }.onChange { row in
-                        guard let newAppIconName = row.value else { return }
-                        guard UIApplication.shared.alternateIconName != newAppIconName.rawValue else { return }
+                    cell.textLabel?.text = newIcon.title
+                }
+            }.onChange { row in
+                guard let newAppIconName = row.value else { return }
+                guard UIApplication.shared.alternateIconName != newAppIconName.rawValue else { return }
 
-                        UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
-                    }
+                UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
+            }
 
                 +++ Section {
                     $0.hidden = .isNotCatalyst
@@ -160,23 +152,23 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
-                    $0.hidden = .isCatalyst
-                    $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
+                $0.hidden = .isCatalyst
+                $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
 
-                    if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
-                        value.isInstalled {
-                        $0.value = value
-                    } else {
-                        $0.value = .Safari
-                    }
-                    $0.selectorTitle = $0.title
-                    $0.options = OpenInBrowser.allCases.filter { $0.isInstalled }
-                    $0.displayValueFor = { $0?.title }
-                }.onChange { row in
-                    guard let browserChoice = row.value else { return }
-                    prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
-                    prefs.synchronize()
+                if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
+                   value.isInstalled {
+                    $0.value = value
+                } else {
+                    $0.value = .Safari
                 }
+                $0.selectorTitle = $0.title
+                $0.options = OpenInBrowser.allCases.filter { $0.isInstalled }
+                $0.displayValueFor = { $0?.title }
+            }.onChange { row in
+                guard let browserChoice = row.value else { return }
+                prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
+                prefs.synchronize()
+            }
 
                 <<< SwitchRow {
                     // mac has a system-level setting for state restoration
@@ -200,57 +192,59 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
         case "location":
-            self.title = L10n.SettingsDetails.Location.title
-            self.form
+            title = L10n.SettingsDetails.Location.title
+            form
                 +++ locationPermissionsSection()
 
-                +++ Section(header: L10n.SettingsDetails.Location.Updates.header,
-                            footer: L10n.SettingsDetails.Location.Updates.footer)
+                +++ Section(
+                    header: L10n.SettingsDetails.Location.Updates.header,
+                    footer: L10n.SettingsDetails.Location.Updates.footer
+                )
                 <<< SwitchRow {
-                        $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
-                        $0.value = prefs.bool(forKey: "locationUpdateOnZone")
-                        $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
-                    }.onChange({ (row) in
-                        if let val = row.value {
-                            prefs.set(val, forKey: "locationUpdateOnZone")
-                        }
-                    })
+                    $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
+                    $0.value = prefs.bool(forKey: "locationUpdateOnZone")
+                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                }.onChange({ row in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "locationUpdateOnZone")
+                    }
+                })
                 <<< SwitchRow {
-                        $0.title = L10n.SettingsDetails.Location.Updates.Background.title
-                        $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
-                        $0.disabled = .location(conditions: [
-                            .permissionNotAlways,
-                            .accuracyNotFull,
-                            .backgroundRefreshNotAvailable
-                        ])
-                        $0.hidden = .isCatalyst
-                    }.onChange({ (row) in
-                        if let val = row.value {
-                            prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
-                        }
-                    })
+                    $0.title = L10n.SettingsDetails.Location.Updates.Background.title
+                    $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
+                    $0.disabled = .location(conditions: [
+                        .permissionNotAlways,
+                        .accuracyNotFull,
+                        .backgroundRefreshNotAvailable,
+                    ])
+                    $0.hidden = .isCatalyst
+                }.onChange({ row in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
+                    }
+                })
                 <<< SwitchRow {
-                        $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
-                        $0.value = prefs.bool(forKey: "locationUpdateOnSignificant")
-                        $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
-                    }.onChange({ (row) in
-                        if let val = row.value {
-                            prefs.set(val, forKey: "locationUpdateOnSignificant")
-                        }
-                    })
+                    $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
+                    $0.value = prefs.bool(forKey: "locationUpdateOnSignificant")
+                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                }.onChange({ row in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "locationUpdateOnSignificant")
+                    }
+                })
                 <<< SwitchRow {
-                        $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
-                        $0.value = prefs.bool(forKey: "locationUpdateOnNotification")
-                        $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
-                    }.onChange({ (row) in
-                        if let val = row.value {
-                            prefs.set(val, forKey: "locationUpdateOnNotification")
-                        }
-                    })
+                    $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
+                    $0.value = prefs.bool(forKey: "locationUpdateOnNotification")
+                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                }.onChange({ row in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "locationUpdateOnNotification")
+                    }
+                })
 
-            let zoneEntities = self.realm.objects(RLMZone.self).map { $0 }
+            let zoneEntities = realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
-                self.form
+                form
                     +++ Section(header: zone.Name, footer: "") {
                         $0.tag = zone.ID
                     }
@@ -270,7 +264,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
                         $0.value = zone.BeaconUUID
-                        $0.hidden = Condition(booleanLiteral: (zone.BeaconUUID == nil))
+                        $0.hidden = Condition(booleanLiteral: zone.BeaconUUID == nil)
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
@@ -279,7 +273,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         } else {
                             $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
                         }
-                        $0.hidden = Condition(booleanLiteral: (zone.BeaconMajor.value == nil))
+                        $0.hidden = Condition(booleanLiteral: zone.BeaconMajor.value == nil)
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
@@ -288,16 +282,16 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         } else {
                             $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
                         }
-                        $0.hidden = Condition(booleanLiteral: (zone.BeaconMinor.value == nil))
-                }
+                        $0.hidden = Condition(booleanLiteral: zone.BeaconMinor.value == nil)
+                    }
             }
             if zoneEntities.count > 0 {
-                self.form
+                form
                     +++ Section(header: "", footer: L10n.SettingsDetails.Location.Zones.footer)
             }
 
         case "actions":
-            self.title = L10n.SettingsDetails.Actions.title
+            title = L10n.SettingsDetails.Actions.title
             let actions = realm.objects(Action.self)
                 .sorted(byKeyPath: "Position")
                 .filter("Scene == nil")
@@ -307,7 +301,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             infoBarButtonItem.action = #selector(actionsHelp)
             infoBarButtonItem.target = self
 
-            self.navigationItem.rightBarButtonItem = infoBarButtonItem
+            navigationItem.rightBarButtonItem = infoBarButtonItem
 
             let refreshControl = UIRefreshControl()
             tableView.refreshControl = refreshControl
@@ -322,11 +316,11 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 footer: actionsFooter
             ) { section in
                 section.tag = "actions"
-                section.multivaluedRowToInsertAt = { [unowned self] _ -> ButtonRowWithPresent<ActionConfigurator> in
-                    return self.getActionRow(nil)
+                section.multivaluedRowToInsertAt = { [weak self] _ -> ButtonRowWithPresent<ActionConfigurator> in
+                    self?.getActionRow(nil) ?? .init()
                 }
                 section.addButtonProvider = { _ in
-                    return ButtonRow {
+                    ButtonRow {
                         $0.title = L10n.addButtonLabel
                         $0.cellStyle = .value1
                         $0.tag = "add_action"
@@ -349,7 +343,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         LabelRow {
                             $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
                             $0.disabled = true
-                        }
+                        },
                     ], getter: { [weak self] in self?.getActionRow($0) },
                     didUpdate: { section, collection in
                         if collection.isEmpty {
@@ -375,22 +369,22 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     LabelRow {
                         $0.title = L10n.SettingsDetails.Actions.Scenes.empty
                         $0.disabled = true
-                    }
+                    },
                 ], getter: {
                     Self.getSceneRows($0)
                 }
             )
 
         case "privacy":
-            self.title = L10n.SettingsDetails.Privacy.title
+            title = L10n.SettingsDetails.Privacy.title
             let infoBarButtonItem = Constants.helpBarButtonItem
 
             infoBarButtonItem.action = #selector(firebasePrivacy)
             infoBarButtonItem.target = self
 
-            self.navigationItem.rightBarButtonItem = infoBarButtonItem
+            navigationItem.rightBarButtonItem = infoBarButtonItem
 
-            self.form
+            form
                 +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Messaging.description)
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Privacy.Messaging.title
@@ -495,7 +489,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         let deletedIDs = rows.filter {
             guard let tag = $0.tag else { return false }
             return reorderingRows[tag] == nil
-        }.compactMap { $0.tag }
+        }.compactMap(\.tag)
 
         if deletedIDs.count == 0 { return }
 
@@ -518,7 +512,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 
     @objc private func refreshScenes(_ sender: UIRefreshControl) {
@@ -591,7 +585,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         return [switchRow, configure]
     }
 
-    // swiftlint:disable:next function_body_length
     func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {
         var identifier = UUID().uuidString
         var title = L10n.ActionsConfigurator.title
@@ -624,7 +617,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     .withRenderingMode(.alwaysTemplate)
             }
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                return ActionConfigurator(action: action)
+                ActionConfigurator(action: action)
             }, onDismiss: { [weak self] vc in
                 _ = vc.navigationController?.popViewController(animated: true)
 
@@ -754,7 +747,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     private func motionPermissionRow() -> BaseRow {
-        return MotionPermissionRow { row in
+        MotionPermissionRow { row in
             func update(isInitial: Bool) {
                 row.value = CMMotionActivityManager.authorizationStatus()
 
@@ -791,7 +784,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     private func backgroundRefreshRow() -> BaseRow {
-        return BackgroundRefreshStatusRow("backgroundRefresh") { row in
+        BackgroundRefreshStatusRow("backgroundRefresh") { row in
             func updateRow(isInitial: Bool) {
                 row.value = UIApplication.shared.backgroundRefreshStatus
 

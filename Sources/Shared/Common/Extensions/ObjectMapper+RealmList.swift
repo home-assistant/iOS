@@ -1,16 +1,8 @@
-//
-//  ObjectMapper+RealmList.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 2/22/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-// https://gist.github.com/danilValeev/ef29630b61eed510ca135034c444a98a
+// swiftlint:disable all
 
 import Foundation
-import RealmSwift
 import ObjectMapper
+import RealmSwift
 
 infix operator <-
 

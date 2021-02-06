@@ -13,6 +13,7 @@
 			buildPhases = (
 				111711F725B29AFC003C149E /* Run SwiftGen */,
 				115CF89325B29B64001DAECE /* Run SwiftLint */,
+				119C779C25CE581B00D41734 /* Run SwiftFormat Lint */,
 			);
 			dependencies = (
 			);
@@ -4158,6 +4159,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    # swiftlint as of 2021-01-21 (0.42.0) can't handle spaces in paths\n    # for the config arg, so we rely on relative here\n    # https://github.com/realm/SwiftLint/issues/3471\n    \"${SRCROOT}/Pods/SwiftLint/swiftlint\" \\\n       --config \".swiftlint.yml\" \\\n       --quiet \\\n       \"${SRCROOT}\"\nfi\n";
+		};
+		119C779C25CE581B00D41734 /* Run SwiftFormat Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftFormat Lint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    \"${SRCROOT}/Pods/SwiftFormat/CommandLineTool/swiftformat\" \\\n       --config \"${SRCROOT}/.swiftformat\" \\\n       --lint --lenient \\\n       \"${SRCROOT}\"\nfi\n";
 		};
 		11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */ = {
 			isa = PBXShellScriptBuildPhase;

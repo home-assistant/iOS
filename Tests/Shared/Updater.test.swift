@@ -1,8 +1,8 @@
-@testable import Shared
-import XCTest
-import Version
-import PromiseKit
 import OHHTTPStubs
+import PromiseKit
+@testable import Shared
+import Version
+import XCTest
 
 class UpdaterTest: XCTestCase {
     private var stubDescriptors: [HTTPStubsDescriptor] = []
@@ -194,9 +194,9 @@ class UpdaterTest: XCTestCase {
 
         let url = URL(string: "https://api.github.com/repos/home-assistant/ios/releases?per_page=25")!
         removeDescriptors()
-        stubDescriptors.append(stub(condition: { $0.url == url }, response: { request in
+        stubDescriptors.append(stub(condition: { $0.url == url }, response: { _ in
             switch versions {
-            case .success(let versions):
+            case let .success(versions):
                 let encoder = JSONEncoder()
                 encoder.outputFormatting = .prettyPrinted
                 encoder.keyEncodingStrategy = .convertToSnakeCase
@@ -228,20 +228,20 @@ class UpdaterTest: XCTestCase {
                     statusCode: 200,
                     headers: [:]
                 )
-            case .failure(let error):
+            case let .failure(error):
                 return HTTPStubsResponse(error: error)
             }
         }))
 
         let promise = updater.check(dueToUserInteraction: dueToUserInteraction)
         switch expecting {
-        case .hasUpdate(let version):
+        case let .hasUpdate(version):
             XCTAssertEqual(try hang(promise), try! versions.get()[version])
-        case .updateError(let expectedError):
+        case let .updateError(expectedError):
             XCTAssertThrowsError(try hang(promise)) { error in
                 XCTAssertEqual(error as? Updater.UpdateError, expectedError)
             }
-        case .networkError(let code):
+        case let .networkError(code):
             XCTAssertThrowsError(try hang(promise)) { error in
                 XCTAssertEqual((error as? URLError)?.code, code)
             }
@@ -265,7 +265,7 @@ private extension AvailableUpdate {
         }
 
         self.init(
-            id: Int.random(in: 0..<Int.max),
+            id: Int.random(in: 0 ..< Int.max),
             htmlUrl: URL(string: "https://example.com/htmlUrl")!,
             tagName: "release/\(version)/\(build)",
             name: "\(version) (\(build))",

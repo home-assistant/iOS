@@ -1,15 +1,15 @@
-import XCTest
 import OHHTTPStubs
 import PromiseKit
-import Version
 @testable import Shared
+import Version
+import XCTest
 
 class ServerAlerterTests: XCTestCase {
     private var alerter: ServerAlerter!
     private var stubDescriptors: [HTTPStubsDescriptor] = []
 
     private func randomURL() -> URL {
-        return URL(string: "https://example.com/\(UUID().uuidString)")!
+        URL(string: "https://example.com/\(UUID().uuidString)")!
     }
 
     override func setUp() {
@@ -21,9 +21,9 @@ class ServerAlerterTests: XCTestCase {
         Current.settingsStore.privacy.alerts = true
 
         let url = URL(string: "https://alerts.home-assistant.io/mobile.json")!
-        stubDescriptors.append(stub(condition: { $0.url == url }, response: { request in
+        stubDescriptors.append(stub(condition: { $0.url == url }, response: { _ in
             switch response {
-            case .success(let value):
+            case let .success(value):
                 let encoder = JSONEncoder()
                 encoder.dateEncodingStrategy = .iso8601
                 encoder.outputFormatting = .prettyPrinted
@@ -32,7 +32,7 @@ class ServerAlerterTests: XCTestCase {
                     statusCode: 200,
                     headers: [:]
                 )
-            case .failure(let error):
+            case let .failure(error):
                 return HTTPStubsResponse(error: error)
             }
         }))
@@ -48,7 +48,7 @@ class ServerAlerterTests: XCTestCase {
     func testEncoderSinceTestsRelyOnItsFormat() throws {
         let alert = ServerAlert(
             id: "id",
-            date: Date(timeIntervalSince1970: 1610837683),
+            date: Date(timeIntervalSince1970: 1_610_837_683),
             url: URL(string: "http://example.com")!,
             message: "Some message",
             adminOnly: false,
@@ -60,7 +60,10 @@ class ServerAlerterTests: XCTestCase {
         encoder.dateEncodingStrategy = .iso8601
         encoder.keyEncodingStrategy = .convertToSnakeCase
         let result = String(data: try encoder.encode(alert), encoding: .utf8)
-        XCTAssertEqual(result, "{\"admin_only\":false,\"core\":{\"max\":\"20.0\",\"min\":null},\"date\":\"2021-01-16T22:54:43Z\",\"id\":\"id\",\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}")
+        XCTAssertEqual(
+            result,
+            "{\"admin_only\":false,\"core\":{\"max\":\"20.0\",\"min\":null},\"date\":\"2021-01-16T22:54:43Z\",\"id\":\"id\",\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}"
+        )
     }
 
     func testNoAlerts() {
@@ -84,7 +87,7 @@ class ServerAlerterTests: XCTestCase {
 
     func testNoVersionedAlerts() {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
-        
+
         setUp(response: .success([
             ServerAlert(
                 id: UUID().uuidString,
@@ -94,7 +97,7 @@ class ServerAlerterTests: XCTestCase {
                 adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: nil, max: nil)
-            )
+            ),
         ]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
@@ -111,7 +114,7 @@ class ServerAlerterTests: XCTestCase {
                 adminOnly: false,
                 ios: .init(min: .init(major: 50), max: .init(major: 99)),
                 core: .init(min: nil, max: nil)
-            )
+            ),
         ]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
@@ -128,7 +131,7 @@ class ServerAlerterTests: XCTestCase {
                 adminOnly: false,
                 ios: .init(min: .init(major: 101), max: .init(major: 150)),
                 core: .init(min: nil, max: nil)
-            )
+            ),
         ]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
@@ -146,7 +149,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -175,7 +178,7 @@ class ServerAlerterTests: XCTestCase {
             isAdmin: false
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
 
         Current.settingsStore.authenticatedUser = nil
@@ -194,7 +197,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -216,7 +219,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
@@ -233,7 +236,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -255,7 +258,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
@@ -271,7 +274,7 @@ class ServerAlerterTests: XCTestCase {
                 adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: .init(major: 50), max: .init(major: 99))
-            )
+            ),
         ]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
@@ -288,7 +291,7 @@ class ServerAlerterTests: XCTestCase {
                 adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: .init(major: 101), max: .init(major: 150))
-            )
+            ),
         ]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
@@ -306,7 +309,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: .init(major: 75), max: .init(major: 125))
         )
 
-        setUp(response: .success([ alert ]))
+        setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -337,7 +340,7 @@ class ServerAlerterTests: XCTestCase {
                 adminOnly: false,
                 ios: .init(min: nil, max: nil),
                 core: .init(min: .init(major: 75), max: .init(major: 125))
-            )
+            ),
         ]
 
         setUp(response: .success(alerts))

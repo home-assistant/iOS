@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 import Shared
 
 protocol ZoneManagerRegionFilter {
@@ -54,7 +54,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
 
         var eventPayload: [String: String] { [
             "beacon": String(beacon),
-            "circular": String(circular)
+            "circular": String(circular),
         ] }
     }
 
@@ -149,8 +149,8 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 "counts": counts.eventPayload,
                 "limits": limits.eventPayload,
                 "total_zones": allZones.count,
-                "stripped_zones": strippedZones.map { $0.ID },
-                "stripped_decision": decisionSource
+                "stripped_zones": strippedZones.map(\.ID),
+                "stripped_decision": decisionSource,
             ]
         ))
     }

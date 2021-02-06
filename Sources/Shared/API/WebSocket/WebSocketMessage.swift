@@ -1,11 +1,3 @@
-//
-//  WebSocketMessage.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/9/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 
 public class WebSocketMessage: Codable {
@@ -27,7 +19,7 @@ public class WebSocketMessage: Codable {
         case HAVersion = "ha_version"
     }
 
-    required public init(from decoder: Decoder) throws {
+    public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         MessageType = try values.decode(String.self, forKey: .MessageType)
         ID = try? values.decode(Int.self, forKey: .ID)
@@ -87,11 +79,10 @@ public class WebSocketMessage: Codable {
 
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        // swiftlint:disable:next line_length
-        return "WebSocketMessage(type: \(self.MessageType), id: \(String(describing: self.ID)), payload: \(String(describing: self.Payload)), result: \(String(describing: self.Result)), success: \(String(describing: self.Success)))"
+        "WebSocketMessage(type: \(MessageType), id: \(String(describing: ID)), payload: \(String(describing: Payload)), result: \(String(describing: Result)), success: \(String(describing: Success)))"
     }
 
     public var debugDescription: String {
-        return self.description
+        description
     }
 }

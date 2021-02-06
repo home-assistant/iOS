@@ -1,6 +1,6 @@
+import CoreTelephony
 import Foundation
 import PromiseKit
-import CoreTelephony
 @testable import Shared
 import XCTest
 
@@ -78,7 +78,6 @@ class ConnectivitySensorTests: XCTestCase {
         let signaler: ConnectivitySensorUpdateSignaler? = dependencies.existingSignaler(for: provider)
         XCTAssertNotNil(signaler)
     }
-
 
     func testNoWifiAtAll() throws {
         let s = try setUp(
@@ -185,10 +184,10 @@ class ConnectivitySensorTests: XCTestCase {
             cellular: [
                 "1": with(FakeCTCarrier()) {
                     $0.overrideCarrierName = "Cellular1"
-                }
+                },
             ],
             radioTech: [
-                "1": "garbage value"
+                "1": "garbage value",
             ]
         )
 
@@ -211,11 +210,11 @@ class ConnectivitySensorTests: XCTestCase {
                 },
                 "2": with(FakeCTCarrier()) {
                     $0.overrideCarrierName = "Cellular2"
-                }
+                },
             ],
             radioTech: [
                 "1": CTRadioAccessTechnologyEdge,
-                "2": CTRadioAccessTechnologyLTE
+                "2": CTRadioAccessTechnologyLTE,
             ]
         )
 
@@ -289,7 +288,7 @@ class ConnectivitySensorTests: XCTestCase {
             cellularNetworkType: nil,
             hasWiFi: false,
             networkAttributes: [
-                "key": "value"
+                "key": "value",
             ]
         )
 
@@ -312,7 +311,7 @@ class ConnectivitySensorTests: XCTestCase {
             networkType: .ethernet,
             cellularNetworkType: nil,
             networkAttributes: [
-                "key": "value"
+                "key": "value",
             ]
         )
 
@@ -342,7 +341,7 @@ class ConnectivitySensorTests: XCTestCase {
             networkType: .ethernet,
             cellularNetworkType: nil,
             networkAttributes: [
-                "key": "value"
+                "key": "value",
             ]
         )
 
@@ -371,7 +370,7 @@ private class FakeCTCarrier: CTCarrier {
     var overrideMobileCountryCode: String?
     var overrideMobileNetworkCode: String?
     var overrideIsoCountryCode: String?
-    var overrideAllowsVOIP: Bool  = false
+    var overrideAllowsVOIP: Bool = false
 
     override var carrierName: String? { overrideCarrierName }
     override var mobileCountryCode: String? { overrideMobileCountryCode }

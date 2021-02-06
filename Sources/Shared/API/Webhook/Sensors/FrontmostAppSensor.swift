@@ -48,7 +48,7 @@ final class FrontmostAppSensor: SensorProvider {
             attributes["Bundle Identifier"] = frontmost?.bundleIdentifier ?? "N/A"
             attributes["Launch Date"] = frontmost?.launchDate.map {
                 ISO8601DateFormatter.string(from: $0, timeZone: .current, formatOptions: [
-                    .withInternetDateTime
+                    .withInternetDateTime,
                 ])
             } ?? "N/A"
             attributes["Is Hidden"] = frontmost?.isHidden ?? "N/A"

@@ -1,7 +1,7 @@
 import Foundation
 import PromiseKit
-import XCTest
 @testable import Shared
+import XCTest
 
 class StorageSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
@@ -30,7 +30,7 @@ class StorageSensorTests: XCTestCase {
         Current.device.volumes = { [
             .volumeTotalCapacityKey: 0,
             .volumeAvailableCapacityForImportantUsageKey: 100,
-            .volumeAvailableCapacityForOpportunisticUsageKey: 100
+            .volumeAvailableCapacityForOpportunisticUsageKey: 100,
         ] }
         let promise = StorageSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -43,7 +43,7 @@ class StorageSensorTests: XCTestCase {
             .volumeTotalCapacityKey: 0,
             .volumeAvailableCapacityKey: 100,
             .volumeAvailableCapacityForImportantUsageKey: 100,
-            .volumeAvailableCapacityForOpportunisticUsageKey: 100
+            .volumeAvailableCapacityForOpportunisticUsageKey: 100,
         ] }
         let promise = StorageSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -56,7 +56,7 @@ class StorageSensorTests: XCTestCase {
             .volumeTotalCapacityKey: 100_000_000_000,
             .volumeAvailableCapacityKey: 20_000_000_000,
             .volumeAvailableCapacityForImportantUsageKey: 21_000_000_000,
-            .volumeAvailableCapacityForOpportunisticUsageKey: 22_000_000_000
+            .volumeAvailableCapacityForOpportunisticUsageKey: 22_000_000_000,
         ] }
         let promise = StorageSensor(request: request).sensors()
         let sensors = try hang(promise)

@@ -1,45 +1,36 @@
-//
-//  ConnectInstanceViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/21/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
 import Lottie
-import Shared
 import PromiseKit
+import Shared
+import UIKit
 
 class ConnectInstanceViewController: UIViewController {
-
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo!
     var tokenManager: TokenManager!
 
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var overallProgress: AnimationView!
-    @IBOutlet weak var connectionStatus: AnimationView!
-    @IBOutlet weak var authenticated: AnimationView!
-    @IBOutlet weak var integrationCreated: AnimationView!
-    @IBOutlet weak var cloudStatus: AnimationView!
-    @IBOutlet weak var encrypted: AnimationView!
-    @IBOutlet weak var sensorsConfigured: AnimationView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var overallProgress: AnimationView!
+    @IBOutlet var connectionStatus: AnimationView!
+    @IBOutlet var authenticated: AnimationView!
+    @IBOutlet var integrationCreated: AnimationView!
+    @IBOutlet var cloudStatus: AnimationView!
+    @IBOutlet var encrypted: AnimationView!
+    @IBOutlet var sensorsConfigured: AnimationView!
 
     private var wantedAnimationStates: [AnimationView: AnimationState] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.titleLabel.text = L10n.Onboarding.Connect.title(self.instance.LocationName)
+        titleLabel.text = L10n.Onboarding.Connect.title(instance.LocationName)
 
-        self.configureAnimation(connectionStatus, .success)
-        self.configureAnimation(authenticated, .success)
+        configureAnimation(connectionStatus, .success)
+        configureAnimation(authenticated, .success)
 
-        self.overallProgress.loopMode = .loop
-        self.overallProgress.contentMode = .scaleAspectFill
-        self.overallProgress.animation = Animation.named("home")
-        self.overallProgress.play()
+        overallProgress.loopMode = .loop
+        overallProgress.contentMode = .scaleAspectFill
+        overallProgress.animation = Animation.named("home")
+        overallProgress.play()
 
         let completedSteps: [AnimationView] = [connectionStatus, authenticated]
         for animationView in completedSteps {
@@ -51,10 +42,10 @@ class ConnectInstanceViewController: UIViewController {
 
         let pendingViews: [AnimationView] = [integrationCreated, cloudStatus, encrypted, sensorsConfigured]
         for aView in pendingViews {
-            self.configureAnimation(aView)
+            configureAnimation(aView)
         }
 
-        self.Connect().done {
+        Connect().done {
             Current.Log.verbose("Done with setup, continuing!")
 
             self.overallProgress.loopMode = .playOnce
@@ -68,8 +59,11 @@ class ConnectInstanceViewController: UIViewController {
                 }
             }
         }.catch { error in
-            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
-                                          preferredStyle: .alert)
+            let alert = UIAlertController(
+                title: L10n.errorLabel,
+                message: error.localizedDescription,
+                preferredStyle: .alert
+            )
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
@@ -79,14 +73,14 @@ class ConnectInstanceViewController: UIViewController {
         animationView.loopMode = .loop
         animationView.contentMode = .scaleAspectFill
         animationView.animation = Animation.named("loader-success-failed")
-        self.setAnimationStatus(animationView, state: state)
+        setAnimationStatus(animationView, state: state)
     }
 
     private func setAnimationStatus(_ animationView: AnimationView, state: AnimationState) {
         switch state {
         case .failed, .success:
             animationView.loopMode = .playOnce
-            self.wantedAnimationStates[animationView] = state
+            wantedAnimationStates[animationView] = state
         case .loading:
             animationView.play(fromFrame: state.startFrame, toFrame: state.endFrame, loopMode: .loop) { _ in
                 self.finalizeAnimationView(animationView)
@@ -95,11 +89,15 @@ class ConnectInstanceViewController: UIViewController {
     }
 
     private func finalizeAnimationView(_ animationView: AnimationView) {
-        guard let wantedState = self.wantedAnimationStates[animationView], wantedState != .loading else { return }
+        guard let wantedState = wantedAnimationStates[animationView], wantedState != .loading else { return }
 
-        animationView.play(fromFrame: wantedState.startFrame, toFrame: wantedState.endFrame, loopMode: .playOnce,
-                           completion: nil)
-        self.wantedAnimationStates[animationView] = nil
+        animationView.play(
+            fromFrame: wantedState.startFrame,
+            toFrame: wantedState.endFrame,
+            loopMode: .playOnce,
+            completion: nil
+        )
+        wantedAnimationStates[animationView] = nil
     }
 
     private enum AnimationState {
@@ -155,14 +153,17 @@ class ConnectInstanceViewController: UIViewController {
 
             return api
         }.then { api in
-            return when(fulfilled: [
+            when(fulfilled: [
                 api.GetConfig().asVoid(),
                 Current.modelManager.fetch(),
-                api.RegisterSensors().asVoid()
+                api.RegisterSensors().asVoid(),
             ]).asVoid()
         }.map { _ in
-            NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification,
-                                            object: nil, userInfo: nil)
+            NotificationCenter.default.post(
+                name: HomeAssistantAPI.didConnectNotification,
+                object: nil,
+                userInfo: nil
+            )
 
             self.setAnimationStatus(self.sensorsConfigured, state: .success)
         }

@@ -1,10 +1,10 @@
-import Foundation
-import UserNotifications
-import FirebaseMessaging
-import Shared
-import PromiseKit
-import XCGLogger
 import CallbackURLKit
+import FirebaseMessaging
+import Foundation
+import PromiseKit
+import Shared
+import UserNotifications
+import XCGLogger
 
 class NotificationManager: NSObject {
     func setupNotifications() {
@@ -46,40 +46,39 @@ class NotificationManager: NSObject {
         Messaging.messaging().appDidReceiveMessage(userInfo)
 
         if let userInfoDict = userInfo as? [String: Any],
-            let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
-                switch command {
-                case "request_location_update":
-                    if prefs.bool(forKey: "locationUpdateOnNotification") == false {
-                        completionHandler(.noData)
-                        return
-                    }
-
-                    Current.Log.verbose("Received remote request to provide a location update")
-
-                    Current.backgroundTask(withName: "push-location-request") { remaining in
-                        Current.api.then(on: nil) { api in
-                            api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
-                        }
-                    }.done { success in
-                        Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
-                        completionHandler(.newData)
-                    }.catch { error in
-                        Current.Log.error("Error when attempting to submit location update: \(error)")
-                        completionHandler(.failed)
-                    }
-                case "clear_badge":
-                    Current.Log.verbose("Setting badge to 0 as requested")
-                    UIApplication.shared.applicationIconBadgeNumber = 0
-                default:
-                    Current.Log.warning("Received unknown command via APNS! \(userInfo)")
+           let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
+            switch command {
+            case "request_location_update":
+                if prefs.bool(forKey: "locationUpdateOnNotification") == false {
                     completionHandler(.noData)
+                    return
                 }
+
+                Current.Log.verbose("Received remote request to provide a location update")
+
+                Current.backgroundTask(withName: "push-location-request") { remaining in
+                    Current.api.then(on: nil) { api in
+                        api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
+                    }
+                }.done { success in
+                    Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
+                    completionHandler(.newData)
+                }.catch { error in
+                    Current.Log.error("Error when attempting to submit location update: \(error)")
+                    completionHandler(.failed)
+                }
+            case "clear_badge":
+                Current.Log.verbose("Setting badge to 0 as requested")
+                UIApplication.shared.applicationIconBadgeNumber = 0
+            default:
+                Current.Log.warning("Received unknown command via APNS! \(userInfo)")
+                completionHandler(.noData)
+            }
         } else {
             completionHandler(.failed)
         }
     }
 
-    // swiftlint:disable:next function_body_length
     fileprivate func handleShortcutNotification(
         _ shortcutName: String,
         _ shortcutDict: [String: String]
@@ -92,14 +91,14 @@ class NotificationManager: NSObject {
         let eventName: String = "ios.shortcut_run"
         let deviceDict: [String: String] = [
             "sourceDevicePermanentID": Constants.PermanentID, "sourceDeviceName": UIDevice.current.name,
-            "sourceDeviceID": Current.settingsStore.deviceID
+            "sourceDeviceID": Current.settingsStore.deviceID,
         ]
         var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]
 
         var successHandler: CallbackURLKit.SuccessCallback?
 
         if shortcutDict["ignore_result"] == nil {
-            successHandler = { (params) in
+            successHandler = { params in
                 Current.Log.verbose("Received params from shortcut run \(String(describing: params))")
                 eventData["status"] = "success"
                 eventData["result"] = params?["result"]
@@ -114,7 +113,7 @@ class NotificationManager: NSObject {
             }
         }
 
-        let failureHandler: CallbackURLKit.FailureCallback = { (error) in
+        let failureHandler: CallbackURLKit.FailureCallback = { error in
             eventData["status"] = "failure"
             eventData["error"] = error.XCUErrorParameters
 
@@ -136,9 +135,14 @@ class NotificationManager: NSObject {
         }
 
         do {
-            try Manager.shared.perform(action: "run-shortcut", urlScheme: "shortcuts",
-                                       parameters: inputParams, onSuccess: successHandler,
-                                       onFailure: failureHandler, onCancel: cancelHandler)
+            try Manager.shared.perform(
+                action: "run-shortcut",
+                urlScheme: "shortcuts",
+                parameters: inputParams,
+                onSuccess: successHandler,
+                onFailure: failureHandler,
+                onCancel: cancelHandler
+            )
         } catch let error as NSError {
             Current.Log.error("Running shortcut failed \(error)")
 
@@ -152,11 +156,9 @@ class NotificationManager: NSObject {
             }
         }
     }
-
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
-    // swiftlint:disable:next function_body_length
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -184,10 +186,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         Current.Log.verbose("User info in incoming notification \(userInfo)")
 
         if let shortcutDict = userInfo["shortcut"] as? [String: String],
-            let shortcutName = shortcutDict["name"] {
-
-            self.handleShortcutNotification(shortcutName, shortcutDict)
-
+           let shortcutName = shortcutDict["name"] {
+            handleShortcutNotification(shortcutName, shortcutDict)
         }
 
         if let openURLRaw = userInfo["url"] as? String {
@@ -195,7 +195,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         } else if let openURLDictionary = userInfo["url"] as? [String: String] {
             let url = openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                    key.lowercased() == NotificationCategory.FallbackActionIdentifier {
+                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
                     return value
                 } else if key.lowercased() == response.actionIdentifier.lowercased() {
                     return value
@@ -241,7 +241,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
 
         if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
-            UIApplication.shared.applicationState != .background {
+           UIApplication.shared.applicationState != .background {
             completionHandler([])
             return
         }

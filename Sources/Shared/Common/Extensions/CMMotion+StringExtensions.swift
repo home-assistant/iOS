@@ -1,13 +1,5 @@
-//
-//  CMMotion+StringExtensions.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 8/6/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 import CoreMotion
+import Foundation
 
 // Don't translate these strings as they are sent to HA and we don't want to cause people to have to write
 // automations expecting localized strings.
@@ -16,15 +8,15 @@ extension CMMotionActivity {
     var activityTypes: [String] {
         var types: [String] = []
 
-        if self.walking {
+        if walking {
             types.append("Walking")
-        } else if self.running {
+        } else if running {
             types.append("Running")
-        } else if self.automotive {
+        } else if automotive {
             types.append("Automotive")
-        } else if self.cycling {
+        } else if cycling {
             types.append("Cycling")
-        } else if self.stationary {
+        } else if stationary {
             types.append("Stationary")
         } else {
             types.append("Unknown")
@@ -36,15 +28,15 @@ extension CMMotionActivity {
     var icons: [String] {
         var icons: [String] = []
 
-        if self.walking {
+        if walking {
             icons.append("mdi:walk")
-        } else if self.running {
+        } else if running {
             icons.append("mdi:run")
-        } else if self.automotive {
+        } else if automotive {
             icons.append("mdi:car")
-        } else if self.cycling {
+        } else if cycling {
             icons.append("mdi:bike")
-        } else if self.stationary {
+        } else if stationary {
             icons.append("mdi:human-male")
         } else {
             icons.append("mdi:help-circle")

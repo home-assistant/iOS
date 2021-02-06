@@ -1,27 +1,17 @@
-//
-//  ConnectionSettingsViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/20/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import Eureka
-import Shared
-import PromiseKit
 import Alamofire
+import Eureka
 import ObjectMapper
+import PromiseKit
+import Shared
+import UIKit
 
 class ConnectionSettingsViewController: FormViewController, RowControllerType {
-
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = L10n.Settings.ConnectionSection.header
+        title = L10n.Settings.ConnectionSection.header
 
         NotificationCenter.default.addObserver(
             self,
@@ -80,7 +70,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 row.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
                 row.displayValueFor = { _ in
                     if let connectionInfo = Current.settingsStore.connectionInfo {
-                        if connectionInfo.useCloud && connectionInfo.canUseCloud {
+                        if connectionInfo.useCloud, connectionInfo.canUseCloud {
                             return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                         } else {
                             return Current.settingsStore.connectionInfo?.externalURL?.absoluteString

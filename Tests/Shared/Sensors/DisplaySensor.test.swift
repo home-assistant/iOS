@@ -1,6 +1,6 @@
+import PromiseKit
 @testable import Shared
 import XCTest
-import PromiseKit
 
 class DeviceSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
@@ -43,7 +43,7 @@ class DeviceSensorTests: XCTestCase {
     }
 
     func testUpdateSignalerCreated() throws {
-        Current.device.batteries = { [ DeviceBattery(level: 100, state: .unplugged, attributes: [:]) ] }
+        Current.device.batteries = { [DeviceBattery(level: 100, state: .unplugged, attributes: [:])] }
 
         let dependencies = SensorProviderDependencies()
         let provider = DisplaySensor(request: .init(
@@ -103,7 +103,7 @@ class DeviceSensorTests: XCTestCase {
     func testTwoDisplay() throws {
         let (displays, primaryName, primaryID) = try sensors(for: [
             .init(identifier: "identifier1", name: "name1"),
-            .init(identifier: "identifier2", name: "name2")
+            .init(identifier: "identifier2", name: "name2"),
         ])
 
         XCTAssertEqual(displays.UniqueID, "displays_count")

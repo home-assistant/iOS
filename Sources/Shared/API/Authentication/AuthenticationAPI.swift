@@ -1,15 +1,7 @@
-//
-//  AuthenticationAPI.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 7/21/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import PromiseKit
 import Alamofire
 import Foundation
 import ObjectMapper
+import PromiseKit
 
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
@@ -38,18 +30,20 @@ public class AuthenticationAPI {
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
-        return Promise { seal in
+        Promise { seal in
             let token = tokenInfo.refreshToken
-            let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
-                                      baseURL: try activeURL())
+            let routeInfo = RouteInfo(
+                route: AuthenticationRoute.refreshToken(token: token),
+                baseURL: try activeURL()
+            )
             let request = Session.default.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
             request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo, AFError>) in
                 switch dataresponse.result {
-                case .failure(let error):
+                case let .failure(error):
                     seal.reject(error)
-                case .success(let value):
+                case let .success(value):
                     seal.fulfill(value)
                 }
                 return
@@ -58,10 +52,12 @@ public class AuthenticationAPI {
     }
 
     public func revokeToken(tokenInfo: TokenInfo) -> Promise<Bool> {
-        return Promise { seal in
+        Promise { seal in
             let token = tokenInfo.accessToken
-            let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
-                                      baseURL: try activeURL())
+            let routeInfo = RouteInfo(
+                route: AuthenticationRoute.revokeToken(token: token),
+                baseURL: try activeURL()
+            )
             let request = Session.default.request(routeInfo)
 
             request.validate().response { _ in
@@ -76,34 +72,38 @@ public class AuthenticationAPI {
     }
 
     public func fetchTokenWithCode(_ authorizationCode: String) -> Promise<TokenInfo> {
-        return Promise { seal in
-            let routeInfo = RouteInfo(route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                                      baseURL: try activeURL())
+        Promise { seal in
+            let routeInfo = RouteInfo(
+                route: AuthenticationRoute.token(authorizationCode: authorizationCode),
+                baseURL: try activeURL()
+            )
             let request = Session.default.request(routeInfo)
 
             request.validate().responseObject { (dataresponse: DataResponse<TokenInfo, AFError>) in
                 switch dataresponse.result {
-                case .failure(let networkError):
+                case let .failure(networkError):
 
                     guard case let AFError.responseValidationFailed(reason: reason) = networkError,
-                        case let AFError.ResponseValidationFailureReason.unacceptableStatusCode(code: code)
-                        = reason, code == 400, let errorData = dataresponse.data else {
-                            seal.reject(networkError)
-                            return
+                          case let AFError.ResponseValidationFailureReason.unacceptableStatusCode(code: code)
+                          = reason, code == 400, let errorData = dataresponse.data else {
+                        seal.reject(networkError)
+                        return
                     }
                     do {
-                        let jsonObject = try JSONSerialization.jsonObject(with: errorData,
-                                                                          options: .allowFragments)
+                        let jsonObject = try JSONSerialization.jsonObject(
+                            with: errorData,
+                            options: .allowFragments
+                        )
                         if let errorDictionary = jsonObject as? [String: AnyObject],
-                            let errorString = errorDictionary["error_description"] as? String,
-                            errorString == "Invalid code" {
+                           let errorString = errorDictionary["error_description"] as? String,
+                           errorString == "Invalid code" {
                             seal.reject(AuthenticationError.invalidCode)
                             return
                         }
                     } catch {
                         Current.Log.error("Error deserializing failure json response: \(error)")
                     }
-                case .success(let value):
+                case let .success(value):
                     seal.fulfill(value)
                 }
                 return

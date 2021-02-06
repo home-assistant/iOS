@@ -63,7 +63,7 @@ final class ActiveSensor: SensorProvider {
                     }
                 ),
                 title: L10n.Sensors.Active.Setting.timeUntilIdle
-            )
+            ),
         ]
 
         // Set up our observer

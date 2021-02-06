@@ -1,5 +1,5 @@
-import Foundation
 import CoreNFC
+import Foundation
 import PromiseKit
 import Shared
 
@@ -20,7 +20,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
             switch self {
             case .notWritable:
                 return L10n.Nfc.Write.Error.notWritable
-            case .insufficientCapacity(required: let required, available: let available):
+            case let .insufficientCapacity(required: required, available: available):
                 return L10n.Nfc.Write.Error.capacity(required, available)
             case .invalidFormat:
                 return L10n.Nfc.Write.Error.invalidFormat
@@ -34,7 +34,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         (self.promise, self.seal) = Promise<NFCNDEFMessage>.pending()
 
         super.init()
-        readerSession = NFCNDEFReaderSession(
+        self.readerSession = NFCNDEFReaderSession(
             delegate: self,
             queue: nil,
             invalidateAfterFirstRead: false
@@ -43,8 +43,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         readerSession.begin()
     }
 
-    func readerSessionDidBecomeActive(_ session: NFCNDEFReaderSession) {
-    }
+    func readerSessionDidBecomeActive(_ session: NFCNDEFReaderSession) {}
 
     func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
         seal.reject(error)
@@ -116,6 +115,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
                     let error = NFCWriterError.notWritable
                     session.invalidate(errorMessage: error.localizedDescription)
                     seal.reject(error)
+                // swiftlint:disable:next fallthrough
                 case .notSupported: fallthrough
                 @unknown default:
                     let error = NFCWriterError.invalidFormat

@@ -1,8 +1,8 @@
-import MobileCoreServices
 import Foundation
-import UserNotifications
+import MobileCoreServices
 import PromiseKit
 import UIKit
+import UserNotifications
 
 public class NotificationAttachmentManager {
     let parsers: [NotificationAttachmentParser.Type]
@@ -10,7 +10,7 @@ public class NotificationAttachmentManager {
     public convenience init() {
         self.init(parsers: [
             NotificationAttachmentParserURL.self,
-            NotificationAttachmentParserCamera.self
+            NotificationAttachmentParserCamera.self,
         ])
     }
 
@@ -99,7 +99,7 @@ public class NotificationAttachmentManager {
         from attachmentInfo: NotificationAttachmentInfo,
         api: HomeAssistantAPI
     ) -> Promise<UNNotificationAttachment> {
-        return firstly {
+        firstly {
             api.DownloadDataAt(url: attachmentInfo.url, needsAuth: attachmentInfo.needsAuth)
         }.map { url -> UNNotificationAttachment in
             try UNNotificationAttachment(
@@ -128,7 +128,7 @@ public class NotificationAttachmentManager {
             identifier: "error",
             url: temporaryURL,
             options: [
-                UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG
+                UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG,
             ]
         )) {
             // note: attachments don't actually support accessibility here (yet?) but this is used also for tests

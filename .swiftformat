@@ -1,0 +1,23 @@
+--swiftversion 5.3
+
+--exclude vendor,Pods,**/Swiftgen/**,**/Resources/**,fastlane
+
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+
+--stripunusedargs closure-only
+
+--ifdef no-indent
+
+--disable wrapMultilineStatementBraces 
+
+--maxwidth 120
+
+--self init-only
+--guardelse same-line
+--header strip
+--disable redundantRawValues
+--disable trailingclosures
+

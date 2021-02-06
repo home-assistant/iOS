@@ -1,6 +1,6 @@
 import Foundation
-@testable import Shared
 import PromiseKit
+@testable import Shared
 import XCTest
 
 class WebhookResponseUpdateSensorsTests: XCTestCase {
@@ -44,7 +44,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
         let handler = WebhookResponseUpdateSensors(api: api)
         let request = WebhookRequest(type: "update_sensor_states", data: [:])
         let result: [String: [String: Any]] = [
-            "one": WebhookSensorResponse(success: true).toJSON()
+            "one": WebhookSensorResponse(success: true).toJSON(),
         ]
 
         let expectation = self.expectation(description: "result")
@@ -59,7 +59,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
         let handler = WebhookResponseUpdateSensors(api: api)
         let request = WebhookRequest(type: "update_sensor_states", data: [:])
         let result: [String: Any] = [
-            "one": [ "not an object here" ]
+            "one": ["not an object here"],
         ]
 
         let expectation = self.expectation(description: "result")
@@ -68,7 +68,6 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 10)
-
     }
 
     func testUpdatedRequiringRegistration() throws {
@@ -78,9 +77,9 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
         let handler = WebhookResponseUpdateSensors(api: api)
         let request = WebhookRequest(type: "update_sensor_states", data: [:])
 
-        let expectedRegisteredKeys = Set(sensors[0...1].map { $0.UniqueID! })
+        let expectedRegisteredKeys = Set(sensors[0 ... 1].map { $0.UniqueID! })
         // false-positive, changing to short hand doesn't compile
-        let result = Dictionary<String, [String: Any]>(uniqueKeysWithValues: sensors.enumerated().map { idx, sensor in
+        let result = [String: [String: Any]](uniqueKeysWithValues: sensors.enumerated().map { idx, sensor in
             if idx <= 1 {
                 return (sensor.UniqueID!, WebhookSensorResponse(
                     success: false,
@@ -124,6 +123,4 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
     }
 }
 
-private class FakeHomeAssistantAPI: HomeAssistantAPI {
-
-}
+private class FakeHomeAssistantAPI: HomeAssistantAPI {}

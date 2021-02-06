@@ -1,7 +1,7 @@
+import CoreServices
 import Foundation
 @testable import Shared
 import XCTest
-import CoreServices
 
 class NotificationAttachmentParserURLTests: XCTestCase {
     private typealias URLError = NotificationAttachmentParserURL.URLError
@@ -30,7 +30,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
     func testInvalidURL() {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
-            "url": ""
+            "url": "",
         ]
         let promise = parser.attachmentInfo(from: content)
         XCTAssertEqual(promise.wait(), .rejected(URLError.invalidURL))
@@ -39,7 +39,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
     func testRelativeAttachmentURL() {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
-            "url": "/media/local/file.png"
+            "url": "/media/local/file.png",
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -57,7 +57,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
     func testAbsoluteAttachmentURL() {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
-            "url": "http://google.com/media/local/file.png"
+            "url": "http://google.com/media/local/file.png",
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -76,7 +76,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
             "url": "/media/local/file.png",
-            "content-type": "png"
+            "content-type": "png",
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -95,7 +95,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
             "url": "/media/local/file.png",
-            "hide-thumbnail": true
+            "hide-thumbnail": true,
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -114,7 +114,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
             "url": "/media/local/file.png",
-            "hide-thumbnail": false
+            "hide-thumbnail": false,
         ]
         let promise = parser.attachmentInfo(from: content)
 

@@ -1,8 +1,8 @@
-import UIKit
-import Social
-import Shared
-import PromiseKit
 import CoreServices
+import PromiseKit
+import Shared
+import Social
+import UIKit
 
 @objc(HAShareViewController)
 class ShareViewController: SLComposeServiceViewController {
@@ -29,7 +29,7 @@ class ShareViewController: SLComposeServiceViewController {
         }
 
         let entered: Guarantee<String> = .value(contentText)
-        let url: Guarantee<URL?> = extensionContext.inputItemAttachments(for: .url).map { $0.first }
+        let url: Guarantee<URL?> = extensionContext.inputItemAttachments(for: .url).map(\.first)
         let text: Guarantee<String?> = extensionContext.inputItemAttachments(for: .text).map { values in
             if values.isEmpty {
                 return nil
@@ -79,7 +79,7 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     override func configurationItems() -> [Any]! {
-        return []
+        []
     }
 
     override func viewDidLoad() {

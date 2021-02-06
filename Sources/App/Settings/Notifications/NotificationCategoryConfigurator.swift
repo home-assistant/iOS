@@ -1,31 +1,22 @@
-//
-//  NotificationCategoryConfigurator.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/28/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import UIKit
 import Eureka
-import UserNotifications
+import Foundation
 import RealmSwift
 import Shared
+import UIKit
+import UserNotifications
 
-// swiftlint:disable type_body_length
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    var category: NotificationCategory = NotificationCategory()
+    var category = NotificationCategory()
     var newCategory: Bool = true
     var shouldSave: Bool = false
 
     private var maxActionsForCategory = 10
     private var defaultMultivalueOptions: MultivaluedOptions = [.Reorder, .Insert, .Delete]
-    private var addButtonRow: ButtonRow = ButtonRow()
+    private var addButtonRow = ButtonRow()
     private let realm = Current.realm()
 
     convenience init(category: NotificationCategory?) {
@@ -38,15 +29,15 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         if let category = category {
             self.category = category
             if self.category.isServerControlled {
-                defaultMultivalueOptions = []
+                self.defaultMultivalueOptions = []
             } else if self.category.Actions.count >= maxActionsForCategory {
-                defaultMultivalueOptions = [.Reorder, .Delete]
+                self.defaultMultivalueOptions = [.Reorder, .Delete]
             }
             self.newCategory = false
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -54,13 +45,19 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         if !category.isServerControlled {
             let cancelSelector = #selector(NotificationCategoryConfigurator.cancel)
 
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
-                                                                    action: cancelSelector)
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .cancel,
+                target: self,
+                action: cancelSelector
+            )
 
             let saveSelector = #selector(NotificationCategoryConfigurator.save)
 
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
-                                                                     action: saveSelector)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .save,
+                target: self,
+                action: saveSelector
+            )
         }
 
         let infoBarButtonItem = Constants.helpBarButtonItem
@@ -77,14 +74,14 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 
-        self.setToolbarItems([infoBarButtonItem, flexibleSpace, previewButton], animated: false)
+        setToolbarItems([infoBarButtonItem, flexibleSpace, previewButton], animated: false)
 
-        self.navigationController?.setToolbarHidden(false, animated: false)
+        navigationController?.setToolbarHidden(false, animated: false)
 
-        self.title = L10n.NotificationsConfigurator.Category.NavigationBar.title
+        title = L10n.NotificationsConfigurator.Category.NavigationBar.title
 
         if newCategory == false {
-            self.title = category.Name
+            title = category.Name
         }
 
         TextRow.defaultCellUpdate = { cell, row in
@@ -115,72 +112,72 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             settingsFooter = L10n.NotificationsConfigurator.Settings.Footer.idSet
         }
 
-        self.form
-        +++ Section(header: L10n.NotificationsConfigurator.Settings.header, footer: settingsFooter)
+        form
+            +++ Section(header: L10n.NotificationsConfigurator.Settings.header, footer: settingsFooter)
 
-        <<< TextRow {
-            $0.tag = "name"
-            $0.title = L10n.NotificationsConfigurator.Category.Rows.Name.title
-            $0.add(rule: RuleRequired())
-            if self.category.isServerControlled {
-                $0.disabled = true
-            }
-            if !newCategory {
-                $0.value = self.category.Name
-            }
-        }.onChange { row in
-            // swiftlint:disable:next force_try
-            try! self.realm.write {
-                if let value = row.value {
-                    self.category.Name = value
+            <<< TextRow {
+                $0.tag = "name"
+                $0.title = L10n.NotificationsConfigurator.Category.Rows.Name.title
+                $0.add(rule: RuleRequired())
+                if self.category.isServerControlled {
+                    $0.disabled = true
+                }
+                if !newCategory {
+                    $0.value = self.category.Name
+                }
+            }.onChange { row in
+                // swiftlint:disable:next force_try
+                try! self.realm.write {
+                    if let value = row.value {
+                        self.category.Name = value
+                    }
                 }
             }
-        }
 
-        <<< NotificationIdentifierRow {
-            $0.tag = "identifier"
-            $0.title = L10n.NotificationsConfigurator.identifier
-            $0.uppercaseOnly = false
-            if !newCategory {
-                $0.value = self.category.Identifier
-                $0.disabled = true
-            }
-        }.onChange { row in
-            // swiftlint:disable:next force_try
-            try! self.realm.write {
-                if let value = row.value {
-                    self.category.Identifier = value
+            <<< NotificationIdentifierRow {
+                $0.tag = "identifier"
+                $0.title = L10n.NotificationsConfigurator.identifier
+                $0.uppercaseOnly = false
+                if !newCategory {
+                    $0.value = self.category.Identifier
+                    $0.disabled = true
+                }
+            }.onChange { row in
+                // swiftlint:disable:next force_try
+                try! self.realm.write {
+                    if let value = row.value {
+                        self.category.Identifier = value
+                    }
                 }
             }
-        }
 
-        +++ Section(
-            header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
-            footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer
-        ) {
-            if category.isServerControlled {
-                $0.hidden = true
-            }
-        }
-
-        <<< TextAreaRow {
-            $0.tag = "hiddenPreviewsBodyPlaceholder"
-            $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
-            if !newCategory && self.category.HiddenPreviewsBodyPlaceholder != "" {
-                $0.value = self.category.HiddenPreviewsBodyPlaceholder
-            } else {
-                $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
-            }
-        }.onChange { row in
-            // swiftlint:disable:next force_try
-            try! self.realm.write {
-                if let value = row.value {
-                    self.category.HiddenPreviewsBodyPlaceholder = value
+            +++ Section(
+                header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
+                footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer
+            ) {
+                if category.isServerControlled {
+                    $0.hidden = true
                 }
             }
-        }
 
-        self.form
+            <<< TextAreaRow {
+                $0.tag = "hiddenPreviewsBodyPlaceholder"
+                $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
+                if !newCategory && self.category.HiddenPreviewsBodyPlaceholder != "" {
+                    $0.value = self.category.HiddenPreviewsBodyPlaceholder
+                } else {
+                    $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
+                }
+            }.onChange { row in
+                // swiftlint:disable:next force_try
+                try! self.realm.write {
+                    if let value = row.value {
+                        self.category.HiddenPreviewsBodyPlaceholder = value
+                    }
+                }
+            }
+
+        form
             +++ Section(
                 header: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.header,
                 footer: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.footer
@@ -206,7 +203,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 }
             }
 
-        self.form
+        form
             +++ MultivaluedSection(
                 multivaluedOptions: defaultMultivalueOptions,
                 header: L10n.NotificationsConfigurator.Category.Rows.Actions.header,
@@ -262,11 +259,10 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
         super.rowsHaveBeenRemoved(rows, at: indexes)
         if let index = indexes.first?.section, let section = form.allSections[index] as? MultivaluedSection {
-
-            let deletedIDs = rows.compactMap { $0.tag }
+            let deletedIDs = rows.compactMap(\.tag)
 
             // swiftlint:disable:next force_try
-            try! self.realm.write {
+            try! realm.write {
                 // if the category isn't persisted yet, we need to remove the actions manually
                 category.Actions.remove(
                     atOffsets: category.Actions
@@ -282,12 +278,12 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             }
 
             if section.count < maxActionsForCategory {
-                section.multivaluedOptions = self.defaultMultivalueOptions
-                self.addButtonRow.hidden = false
-                self.addButtonRow.evaluateHidden()
+                section.multivaluedOptions = defaultMultivalueOptions
+                addButtonRow.hidden = false
+                addButtonRow.evaluateHidden()
             }
 
-            self.updatePreview()
+            updatePreview()
         }
     }
 
@@ -310,7 +306,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     func getActionRow(_ existingAction: NotificationAction?) -> ButtonRowWithPresent<NotificationActionConfigurator> {
         var action = existingAction
 
-        var identifier = "new_action_"+UUID().uuidString
+        var identifier = "new_action_" + UUID().uuidString
         var title = L10n.NotificationsConfigurator.NewAction.title
 
         if let action = action {
@@ -323,7 +319,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             row.title = title
 
             row.presentationMode = PresentationMode.show(controllerProvider: ControllerProvider.callback { [category] in
-                return NotificationActionConfigurator(category: category, action: action)
+                NotificationActionConfigurator(category: category, action: action)
             }, onDismiss: { vc in
                 vc.navigationController?.popViewController(animated: true)
 
@@ -363,11 +359,11 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     func save(_ sender: Any) {
         Current.Log.verbose("Go back hit, check for validation")
 
-        Current.Log.verbose("Validate result \(self.form.validate())")
-        if self.form.validate().count == 0 {
+        Current.Log.verbose("Validate result \(form.validate())")
+        if form.validate().count == 0 {
             Current.Log.verbose("Category form is valid, calling dismiss callback!")
 
-            self.shouldSave = true
+            shouldSave = true
 
             onDismissCallback?(self)
         }
@@ -377,7 +373,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     func cancel(_ sender: Any) {
         Current.Log.verbose("Cancel hit, calling dismiss")
 
-        self.shouldSave = false
+        shouldSave = false
 
         onDismissCallback?(self)
     }
@@ -388,13 +384,15 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         let content = UNMutableNotificationContent()
         content.title = L10n.NotificationsConfigurator.Category.PreviewNotification.title
-        content.body = L10n.NotificationsConfigurator.Category.PreviewNotification.body(self.category.Name)
+        content.body = L10n.NotificationsConfigurator.Category.PreviewNotification.body(category.Name)
         content.sound = .default
-        content.categoryIdentifier = self.category.Identifier
+        content.categoryIdentifier = category.Identifier
         content.userInfo = ["preview": true]
 
-        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: self.category.Identifier,
-                                                                     content: content, trigger: nil))
+        UNUserNotificationCenter.current().add(UNNotificationRequest(
+            identifier: category.Identifier,
+            content: content,
+            trigger: nil
+        ))
     }
-
 }

@@ -1,17 +1,9 @@
-//
-//  Map.swift
-//  NotificationContentExtension
-//
-//  Created by Robert Trencheny on 10/2/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import UserNotifications
-import UserNotificationsUI
 import MapKit
 import PromiseKit
 import Shared
+import UIKit
+import UserNotifications
+import UserNotificationsUI
 
 class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
     private var mapView: MKMapView!
@@ -33,7 +25,6 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         }
     }
 
-    // swiftlint:disable:next function_body_length
     func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
         let userInfo = notification.request.content.userInfo
 
@@ -47,24 +38,24 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
             return .init(error: MapError.missingLongitude)
         }
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        self.mapView = MKMapView()
+        mapView = MKMapView()
 
-        self.mapView.delegate = self
-        self.mapView.mapType = .standard
-        self.mapView.frame = view.frame
+        mapView.delegate = self
+        mapView.mapType = .standard
+        mapView.frame = view.frame
 
-        self.mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
-        self.mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
-        self.mapView.showsCompass = (haDict["shows_compass"] != nil)
-        self.mapView.showsScale = (haDict["shows_scale"] != nil)
-        self.mapView.showsTraffic = (haDict["shows_traffic"] != nil)
+        mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
+        mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
+        mapView.showsCompass = (haDict["shows_compass"] != nil)
+        mapView.showsScale = (haDict["shows_scale"] != nil)
+        mapView.showsTraffic = (haDict["shows_traffic"] != nil)
 
-        self.mapView.accessibilityIdentifier = "notification_map"
+        mapView.accessibilityIdentifier = "notification_map"
 
-        let span = MKCoordinateSpan.init(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let region = MKCoordinateRegion(center: location, span: span)
-        self.mapView.setRegion(region, animated: true)
-        view.addSubview(self.mapView)
+        mapView.setRegion(region, animated: true)
+        view.addSubview(mapView)
 
         let dropPin = MKPointAnnotation()
         dropPin.coordinate = location
@@ -74,23 +65,23 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
             let secondDropPin = MKPointAnnotation()
             secondDropPin.coordinate = CLLocationCoordinate2D(latitude: secondLatitude, longitude: secondLongitude)
             secondDropPin.title = L10n.Extensions.Map.Location.new
-            self.mapView.addAnnotation(secondDropPin)
+            mapView.addAnnotation(secondDropPin)
 
-            self.mapView.selectAnnotation(secondDropPin, animated: true)
+            mapView.selectAnnotation(secondDropPin, animated: true)
 
             dropPin.title = L10n.Extensions.Map.Location.original
         }
 
-        self.mapView.addAnnotation(dropPin)
+        mapView.addAnnotation(dropPin)
 
         if mapView.annotations.count > 1 {
             if haDict["shows_line_between_points"] != nil {
-                var polylinePoints: [CLLocationCoordinate2D] = [CLLocationCoordinate2D]()
+                var polylinePoints = [CLLocationCoordinate2D]()
 
-                for annotation in self.mapView.annotations {
+                for annotation in mapView.annotations {
                     polylinePoints.append(annotation.coordinate)
                 }
-                self.mapView.addOverlay(MKPolyline(coordinates: &polylinePoints, count: polylinePoints.count))
+                mapView.addOverlay(MKPolyline(coordinates: &polylinePoints, count: polylinePoints.count))
             }
 
             mapView.showAnnotations(mapView.annotations, animated: true)
@@ -113,7 +104,7 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
             return nil
         }
 
-        let pinView: MKPinAnnotationView = MKPinAnnotationView()
+        let pinView = MKPinAnnotationView()
         pinView.annotation = annotation
         if let title = annotation.title {
             if title == L10n.Extensions.Map.Location.original {

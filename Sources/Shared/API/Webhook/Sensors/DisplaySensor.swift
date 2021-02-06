@@ -52,7 +52,7 @@ final class DisplaySensor: SensorProvider {
         )) {
             $0.Attributes = [
                 "Display IDs": screens.map(\.identifier),
-                "Display Names": screens.map(\.name)
+                "Display Names": screens.map(\.name),
             ]
         })
 

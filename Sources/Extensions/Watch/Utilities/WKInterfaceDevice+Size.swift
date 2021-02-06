@@ -1,11 +1,3 @@
-//
-//  WKInterfaceDevice+Size.swift
-//  WatchAppExtension
-//
-//  Created by Robert Trencheny on 10/1/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import WatchKit

@@ -1,13 +1,5 @@
-//
-//  WatchHelpers.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 2/27/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 import Communicator
+import Foundation
 import ObjectMapper
 import PromiseKit
 import RealmSwift
@@ -15,7 +7,7 @@ import RealmSwift
 import ClockKit
 #endif
 
-extension HomeAssistantAPI {
+public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     private static var watchContext: Content {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
@@ -54,12 +46,11 @@ extension HomeAssistantAPI {
         return content
     }
 
-    public static func SyncWatchContext() -> NSError? {
-
+    static func SyncWatchContext() -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
-                Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
-                return nil
+            Current.Log.warning("Tried to sync HAAPI config to watch but watch not paired or app not installed")
+            return nil
         }
         #endif
 
@@ -76,7 +67,7 @@ extension HomeAssistantAPI {
         return nil
     }
 
-    public func updateComplications(passively: Bool) -> Promise<Void> {
+    func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
         guard case .paired = Communicator.shared.currentWatchState else {
             Current.Log.verbose("skipping complication updates; no paired watch")

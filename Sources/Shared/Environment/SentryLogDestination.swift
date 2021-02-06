@@ -1,9 +1,9 @@
 import Foundation
-import XCGLogger
 import Sentry
+import XCGLogger
 
 open class SentryLogDestination: BaseQueuedDestination {
-    open override func output(logDetails: LogDetails, message: String) {
+    override open func output(logDetails: LogDetails, message: String) {
         guard Current.settingsStore.privacy.analytics else {
             return
         }

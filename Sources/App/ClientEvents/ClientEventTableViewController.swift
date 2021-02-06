@@ -1,11 +1,3 @@
-//
-//  ClientEventTableViewController.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 6/18/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import RealmSwift
 import Shared
 import UIKit
@@ -52,13 +44,13 @@ public class ClientEventTableViewController: UITableViewController, UISearchResu
         notificationToken?.invalidate()
     }
 
-    public override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.ClientEvents(segue) else {
             return
         }
 
         if segueType == .showPayload, let destination = segue.destination as? ClientEventPayloadViewController {
-            guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else {
+            guard let selectedIndexPath = tableView.indexPathForSelectedRow else {
                 return
             }
             destination.showEvent(results[selectedIndexPath.row])
@@ -86,12 +78,12 @@ public class ClientEventTableViewController: UITableViewController, UISearchResu
     }
 }
 
-extension ClientEventTableViewController {
-    override public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results.count
+public extension ClientEventTableViewController {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        results.count
     }
 
-    public override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if results[indexPath.row].jsonPayload == nil {
             return nil
         } else {
@@ -99,12 +91,12 @@ extension ClientEventTableViewController {
         }
     }
 
-    override public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as UITableViewCell
         if results.count > indexPath.item, let eventCell = cell as? ClientEventCell {
             let item = results[indexPath.item]
             eventCell.titleLabel.text = item.text
-            eventCell.dateLabel.text = self.dateFormatter.string(from: item.date)
+            eventCell.dateLabel.text = dateFormatter.string(from: item.date)
             eventCell.typeLabel.text = item.type.displayText
 
             if item.jsonPayload != nil {
@@ -122,16 +114,16 @@ extension ClientEventTableViewController {
 extension UITableView {
     func applyChanges<T>(changes: RealmCollectionChange<T>) {
         switch changes {
-        case .initial: self.reloadData()
-        case .update(_, let deletions, let insertions, let updates):
-            let fromRow = { (row: Int) in return IndexPath(row: row, section: 0) }
+        case .initial: reloadData()
+        case let .update(_, deletions, insertions, updates):
+            let fromRow = { (row: Int) in IndexPath(row: row, section: 0) }
 
-            self.beginUpdates()
-            self.insertRows(at: insertions.map(fromRow), with: .automatic)
-            self.deleteRows(at: deletions.map(fromRow), with: .automatic)
-            self.reloadRows(at: updates.map(fromRow), with: .automatic)
-            self.endUpdates()
-        case .error(let error): fatalError("\(error)")
+            beginUpdates()
+            insertRows(at: insertions.map(fromRow), with: .automatic)
+            deleteRows(at: deletions.map(fromRow), with: .automatic)
+            reloadRows(at: updates.map(fromRow), with: .automatic)
+            endUpdates()
+        case let .error(error): fatalError("\(error)")
         }
     }
 }

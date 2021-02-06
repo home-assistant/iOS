@@ -1,11 +1,3 @@
-//
-//  DiscoveryInfo.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 9/18/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import ObjectMapper
 import PromiseKit
@@ -22,7 +14,7 @@ public class DiscoveredHomeAssistant: Mappable {
 
     public init() {}
 
-    required public init?(map: Map) { }
+    public required init?(map: Map) {}
 
     public convenience init(baseURL: URL, name: String, version: String, announcedFrom: [String] = []) {
         self.init()
@@ -34,8 +26,8 @@ public class DiscoveredHomeAssistant: Mappable {
     }
 
     public func mapping(map: Map) {
-        BaseURL             <- (map["base_url"], URLTransform())
-        LocationName        <- map["location_name"]
-        Version             <- map["version"]
+        BaseURL <- (map["base_url"], URLTransform())
+        LocationName <- map["location_name"]
+        Version <- map["version"]
     }
 }
