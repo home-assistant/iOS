@@ -55,7 +55,7 @@ jobs:
         run: Pods/SwiftLint/swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
 
       - name: SwiftFormat
-        run: Pods/SwiftFormat/CommandLineTool/swiftformat --lint --config .swiftformat
+        run: Pods/SwiftFormat/CommandLineTool/swiftformat --lint --config .swiftformat .
 
   test:
     runs-on: macos-latest
