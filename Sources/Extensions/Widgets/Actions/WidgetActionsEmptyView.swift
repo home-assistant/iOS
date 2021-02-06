@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct WidgetActionsEmptyView: View {
     var body: some View {

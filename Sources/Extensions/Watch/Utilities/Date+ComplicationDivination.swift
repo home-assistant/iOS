@@ -1,15 +1,5 @@
-//
-//  Date+ComplicationDivination.swift
-//  WatchAppExtension
-//
-//  Created by Robert Trencheny on 2/15/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-// From https://crunchybagel.com/detecting-which-complication-was-tapped/
-
-import Foundation
 import ClockKit
+import Foundation
 
 extension Date {
     func encodedForComplication(family: CLKComplicationFamily) -> Date? {
@@ -31,12 +21,12 @@ extension Date {
 
 extension Int {
     var millisecondsToNanoseconds: Int {
-        return self * 1000000
+        self * 1_000_000
     }
 }
 
 extension Int {
     var nanosecondsToMilliseconds: Int {
-        return Int(round(Double(self) / 1000000))
+        Int(round(Double(self) / 1_000_000))
     }
 }

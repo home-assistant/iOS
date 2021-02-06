@@ -1,45 +1,36 @@
-//
-//  NotificationIdentifierEurekaRow.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/28/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 import Eureka
+import Foundation
 
 public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell>, RowType {
-
     public var uppercaseOnly: Bool = true {
         didSet {
-            self.cell.uppercaseOnly = self.uppercaseOnly
+            cell.uppercaseOnly = uppercaseOnly
         }
     }
 
-    required public init(tag: String?) {
+    public required init(tag: String?) {
         super.init(tag: tag)
 
         cellProvider = CellProvider<NotificationIdentifierTextCell>()
 
-        self.cell.textField.tag = 999
+        cell.textField.tag = 999
 
-        if self.uppercaseOnly {
-            self.cell.textField.autocapitalizationType = .allCharacters
+        if uppercaseOnly {
+            cell.textField.autocapitalizationType = .allCharacters
 
-            self.add(rule: RuleRegExp(regExpr: "[A-Za-z1-9_]+"))
+            add(rule: RuleRegExp(regExpr: "[A-Za-z1-9_]+"))
         } else {
-            self.add(rule: RuleRegExp(regExpr: "[A-Z1-9_]+"))
+            add(rule: RuleRegExp(regExpr: "[A-Z1-9_]+"))
         }
 
-        self.add(rule: RuleRequired())
+        add(rule: RuleRequired())
     }
 }
 
 public class NotificationIdentifierTextCell: TextCell {
     public var uppercaseOnly: Bool = true
 
-    public override func setup() {
+    override public func setup() {
         super.setup()
 
         textField.autocorrectionType = .no
@@ -47,9 +38,11 @@ public class NotificationIdentifierTextCell: TextCell {
         textField.keyboardType = .asciiCapable
     }
 
-    public override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
-                                   replacementString string: String) -> Bool {
-
+    override public func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         if textField.tag != 999 { // Only modify rows with the tag 999
             return false
         }
@@ -60,14 +53,14 @@ public class NotificationIdentifierTextCell: TextCell {
 
         var regex = "[A-Za-z_ ]+"
 
-        if self.uppercaseOnly {
+        if uppercaseOnly {
             regex = "[A-Z_ ]+"
         }
 
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: string)
     }
 
-    public override func textFieldDidChange(_ textField: UITextField) {
+    override public func textFieldDidChange(_ textField: UITextField) {
         if textField.tag != 999 { // Only modify rows with the tag 999
             return
         }

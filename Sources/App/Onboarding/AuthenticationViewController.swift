@@ -1,22 +1,13 @@
-//
-//  AuthenticationViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/22/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import Shared
-import PromiseKit
 import Alamofire
+import AuthenticationServices
 import MBProgressHUD
 import ObjectMapper
-import AuthenticationServices
+import PromiseKit
+import Shared
+import UIKit
 
 class AuthenticationViewController: UIViewController {
-
-    let authenticationController: OnboardingAuthenticationController = OnboardingAuthenticationController()
+    let authenticationController = OnboardingAuthenticationController()
 
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo?
@@ -24,9 +15,9 @@ class AuthenticationViewController: UIViewController {
 
     var testResult: Error?
 
-    @IBOutlet weak var whatsAboutToHappenLabel: UILabel!
-    @IBOutlet weak var connectButton: UIButton!
-    @IBOutlet weak var goBackButton: UIButton!
+    @IBOutlet var whatsAboutToHappenLabel: UILabel!
+    @IBOutlet var connectButton: UIButton!
+    @IBOutlet var goBackButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +26,11 @@ class AuthenticationViewController: UIViewController {
             self.authenticationController.asWebContext = self
         }
 
-        MBProgressHUD.showAdded(to: self.view, animated: true)
+        MBProgressHUD.showAdded(to: view, animated: true)
 
-        if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(self.connectButton)
-            navVC.styleButton(self.goBackButton)
+        if let navVC = navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(connectButton)
+            navVC.styleButton(goBackButton)
         }
 
         guard let instance = self.instance, let baseURL = instance.BaseURL else {
@@ -47,13 +38,13 @@ class AuthenticationViewController: UIViewController {
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
 
-            self.testResult = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil)
-            self.perform(segue: StoryboardSegue.Onboarding.showError)
+            testResult = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil)
+            perform(segue: StoryboardSegue.Onboarding.showError)
             return
         }
 
         firstly {
-            return self.testConnection(baseURL)
+            self.testConnection(baseURL)
         }.get { foundInstance in
             self.instance = foundInstance
         }.done { _ in
@@ -87,11 +78,11 @@ class AuthenticationViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
         if segueType == .permissions, let vc = segue.destination as? PermissionsViewController {
-            vc.instance = self.instance
-            vc.connectionInfo = self.connectionInfo
-            vc.tokenManager = self.tokenManager
+            vc.instance = instance
+            vc.connectionInfo = connectionInfo
+            vc.tokenManager = tokenManager
         } else if segueType == .showError, let vc = segue.destination as? ConnectionErrorViewController {
-            vc.error = self.testResult
+            vc.error = testResult
         }
     }
 
@@ -103,7 +94,7 @@ class AuthenticationViewController: UIViewController {
         Current.Log.verbose("Attempting browser auth to: \(connectionInfo.activeURL)")
         let url = connectionInfo.activeURL
         let initialTokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
-        self.authenticationController.authenticateWithBrowser(at: url).then { (code: String) -> Promise<TokenInfo> in
+        authenticationController.authenticateWithBrowser(at: url).then { (code: String) -> Promise<TokenInfo> in
             Current.Log.verbose("Browser auth succeeded, getting token")
             return initialTokenManager.initialTokenWithCode(code)
         }.then { tokenInfo -> Promise<ConfigResponse> in
@@ -120,8 +111,11 @@ class AuthenticationViewController: UIViewController {
             self.perform(segue: StoryboardSegue.Onboarding.permissions, sender: nil)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")
-            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
-                                          preferredStyle: .alert)
+            let alert = UIAlertController(
+                title: L10n.errorLabel,
+                message: error.localizedDescription,
+                preferredStyle: .alert
+            )
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
@@ -131,7 +125,6 @@ class AuthenticationViewController: UIViewController {
 
     private var lastTestSession: Session?
 
-    // swiftlint:disable:next function_body_length
     private func testConnection(_ baseURL: URL) -> Promise<DiscoveredHomeAssistant> {
         let discoveryURL = baseURL.appendingPathComponent("api/discovery_info")
         return Promise { seal in
@@ -154,7 +147,7 @@ class AuthenticationViewController: UIViewController {
                     task.cancel()
                 }
             }
-            let session = Session(eventMonitors: [ eventMonitor ])
+            let session = Session(eventMonitors: [eventMonitor])
             lastTestSession = session
             session.request(discoveryURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant, AFError>) in
                 Current.Log.verbose("Request: \(String(describing: response.request))")
@@ -180,15 +173,17 @@ class AuthenticationViewController: UIViewController {
 
                 if let statusCode = response.response?.statusCode, statusCode >= 400 {
                     let reason: ErrorReason = .unacceptableStatusCode(code: statusCode)
-                    seal.reject(ConnectionTestResult(kind: .serverError,
-                                                     underlying: AFError.responseValidationFailed(reason: reason)))
+                    seal.reject(ConnectionTestResult(
+                        kind: .serverError,
+                        underlying: AFError.responseValidationFailed(reason: reason)
+                    ))
                     return
                 }
 
                 switch response.result {
-                case .success(let value):
+                case let .success(value):
                     seal.fulfill(value)
-                case .failure(let error):
+                case let .failure(error):
                     seal.reject(error)
                 }
             }
@@ -199,7 +194,7 @@ class AuthenticationViewController: UIViewController {
 @available(iOS 13, *)
 extension AuthenticationViewController: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return self.view.window ?? ASPresentationAnchor()
+        view.window ?? ASPresentationAnchor()
     }
 }
 
@@ -221,8 +216,8 @@ public struct ConnectionTestResult: LocalizedError {
     let underlying: Error?
 
     public var errorDescription: String? {
-        let description = self.underlying?.localizedDescription ?? ""
-        switch self.kind {
+        let description = underlying?.localizedDescription ?? ""
+        switch kind {
         case .sslUntrusted:
             return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
         case .basicAuth:
@@ -247,6 +242,6 @@ public struct ConnectionTestResult: LocalizedError {
     }
 
     public var DocumentationURL: URL {
-        return URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors#\(self.kind.rawValue)")!
+        URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors#\(kind.rawValue)")!
     }
 }

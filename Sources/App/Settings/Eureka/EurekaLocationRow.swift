@@ -1,15 +1,7 @@
-//
-//  EurekaLocationRow.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 4/4/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import UIKit
 import Eureka
+import Foundation
 import MapKit
+import UIKit
 
 // MARK: LocationRow
 
@@ -27,7 +19,7 @@ public final class LocationRow: Row<PushSelectorCell<CLLocation>>, RowType {
             fmt.minimumFractionDigits = 4
             let latitude = fmt.string(from: NSNumber(value: location.coordinate.latitude))!
             let longitude = fmt.string(from: NSNumber(value: location.coordinate.longitude))!
-            return  "\(latitude), \(longitude)"
+            return "\(latitude), \(longitude)"
         }
     }
 
@@ -45,31 +37,30 @@ public final class LocationRow: Row<PushSelectorCell<CLLocation>>, RowType {
 }
 
 public class MapViewController: UIViewController, TypedRowControllerType, MKMapViewDelegate {
-
     public var row: RowOf<CLLocation>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    lazy var mapView: MKMapView = { [unowned self] in
-        let v = MKMapView(frame: self.view.bounds)
+    lazy var mapView: MKMapView = {
+        let v = MKMapView(frame: view.bounds)
         v.autoresizingMask = UIView.AutoresizingMask.flexibleWidth.union(UIView.AutoresizingMask.flexibleHeight)
         return v
-        }()
+    }()
 
-    required public init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nil, bundle: nil)
     }
 
-    convenience public init(_ callback: ((UIViewController) -> Void)?) {
+    public convenience init(_ callback: ((UIViewController) -> Void)?) {
         self.init(nibName: nil, bundle: nil)
-        onDismissCallback = callback
+        self.onDismissCallback = callback
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(mapView)
 
@@ -80,11 +71,14 @@ public class MapViewController: UIViewController, TypedRowControllerType, MKMapV
             let dropPin = MKPointAnnotation()
             dropPin.coordinate = value.coordinate
             mapView.addAnnotation(dropPin)
-            let region = MKCoordinateRegion.init(center: value.coordinate, latitudinalMeters: 400,
-                                                 longitudinalMeters: 400)
+            let region = MKCoordinateRegion(
+                center: value.coordinate,
+                latitudinalMeters: 400,
+                longitudinalMeters: 400
+            )
             mapView.setRegion(region, animated: true)
             if value.horizontalAccuracy != 0 {
-                let circle = HACircle.init(center: value.coordinate, radius: value.horizontalAccuracy)
+                let circle = HACircle(center: value.coordinate, radius: value.horizontalAccuracy)
                 circle.type = "device"
                 mapView.addOverlay(circle)
             }

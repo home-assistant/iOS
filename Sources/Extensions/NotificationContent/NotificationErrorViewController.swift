@@ -1,6 +1,6 @@
 import Foundation
-import UIKit
 import PromiseKit
+import UIKit
 import UserNotificationsUI
 
 class NotificationErrorViewController: UIViewController, NotificationCategory {
@@ -11,6 +11,7 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
         label.text = error.localizedDescription
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -33,13 +34,14 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
             label.topAnchor.constraint(equalTo: view.topAnchor),
             label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            label.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
 
     func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
         .value(())
     }
+
     var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType { .none }
     var mediaPlayPauseButtonFrame: CGRect?
     var mediaPlayPauseButtonTintColor: UIColor?

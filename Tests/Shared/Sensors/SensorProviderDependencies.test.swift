@@ -1,6 +1,6 @@
-import XCTest
-@testable import Shared
 import PromiseKit
+@testable import Shared
+import XCTest
 
 class SensorProviderDependenciesTests: XCTestCase {
     func testUpdateSignalerGivenHandler() {

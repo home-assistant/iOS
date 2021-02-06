@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 import PromiseKit
 
 public struct SensorProviderRequest {
@@ -7,6 +7,7 @@ public struct SensorProviderRequest {
         case registration
         case trigger(String)
     }
+
     public var reason: Reason
     public var dependencies: SensorProviderDependencies
     public var location: CLLocation?
@@ -21,7 +22,7 @@ public struct SensorProviderRequest {
         switch reason {
         case .registration:
             return "registration"
-        case .trigger(let reason):
+        case let .trigger(reason):
             return reason
         }
     }

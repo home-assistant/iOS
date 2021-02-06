@@ -1,10 +1,10 @@
-import Foundation
-import XCTest
 import CoreLocation
+import Foundation
 @testable import HomeAssistant
-@testable import Shared
-import RealmSwift
 import PromiseKit
+import RealmSwift
+@testable import Shared
+import XCTest
 
 class ZoneManagerTests: XCTestCase {
     private var realm: Realm!
@@ -67,7 +67,7 @@ class ZoneManagerTests: XCTestCase {
     }
 
     private func addedZones(_ toAdd: [RLMZone]) throws -> [RLMZone] {
-        return try realm.write {
+        try realm.write {
             realm.add(toAdd)
             return toAdd
         }
@@ -89,18 +89,18 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
-                $0.Latitude =  37.2345
+                $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 100
                 $0.TrackingEnabled = true
-            }
+            },
         ])
         var currentRegions: Set<CLRegion> {
-            Set(zones.flatMap { $0.regionsForMonitoring })
+            Set(zones.flatMap(\.regionsForMonitoring))
         }
 
         let manager = newZoneManager()
-        addedRegions.append(contentsOf: zones.flatMap { $0.regionsForMonitoring })
+        addedRegions.append(contentsOf: zones.flatMap(\.regionsForMonitoring))
 
         XCTAssertEqual(
             locationManager.startMonitoringRegions.hackilySorted(),
@@ -170,15 +170,15 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
-                $0.Latitude =  37.2345
+                $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 150
                 $0.TrackingEnabled = true
-            }
+            },
         ])
 
         let manager = newZoneManager()
-        XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["work"]))
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["work"]))
 
         try realm.write {
             zones[0].TrackingEnabled = true
@@ -186,7 +186,7 @@ class ZoneManagerTests: XCTestCase {
 
         realm.refresh()
 
-        XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["work" ,"home"]))
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["work", "home"]))
 
         try realm.write {
             zones[1].TrackingEnabled = false
@@ -194,7 +194,7 @@ class ZoneManagerTests: XCTestCase {
 
         realm.refresh()
 
-        XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["home"]))
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["home"]))
 
         withExtendedLifetime(manager) { /* silences unused variable */ }
     }
@@ -213,11 +213,11 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
-                $0.Latitude =  37.2345
+                $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 100
                 $0.TrackingEnabled = true
-            }
+            },
         ])
 
         XCTAssertEqual(locationManager.monitoredRegions.count, 0)
@@ -233,7 +233,7 @@ class ZoneManagerTests: XCTestCase {
         )
 
         regionFilter.regionsBlock = {
-            return AnyCollection([ expectedReplacement ])
+            AnyCollection([expectedReplacement])
         }
 
         processor.promiseToReturn = .value(())
@@ -246,7 +246,11 @@ class ZoneManagerTests: XCTestCase {
             eventType: .locationChange([CLLocation(latitude: 1.23, longitude: 4.56)])
         ))
 
-        let expectation2 = self.expectation(for: .init(format: "monitoredRegions.@count == 1"), evaluatedWith: locationManager, handler: nil)
+        let expectation2 = self.expectation(
+            for: .init(format: "monitoredRegions.@count == 1"),
+            evaluatedWith: locationManager,
+            handler: nil
+        )
 
         wait(for: [expectation, expectation2], timeout: 10)
 
@@ -279,7 +283,7 @@ class ZoneManagerTests: XCTestCase {
                 $0.Longitude = 43.3333
                 $0.Radius = 100
                 $0.TrackingEnabled = true
-            }
+            },
         ])[0]
         processor.promiseToReturn = .value(())
 
@@ -319,7 +323,7 @@ class ZoneManagerTests: XCTestCase {
                 $0.Longitude = 43.3333
                 $0.Radius = 99
                 $0.TrackingEnabled = true
-            }
+            },
         ])[0]
         processor.promiseToReturn = .value(())
 
@@ -368,7 +372,7 @@ class ZoneManagerTests: XCTestCase {
 
         seal.fulfill(())
         wait(for: [expectation], timeout: 10)
-        
+
         guard let loggedEvent = loggedEvents.first else {
             return
         }
@@ -445,19 +449,23 @@ private class FakeRegionFilter: ZoneManagerRegionFilter {
     var lastAskedZones: AnyCollection<RLMZone>?
     var regionsBlock: (() -> AnyCollection<CLRegion>)?
 
-    func regions(from zones: AnyCollection<RLMZone>, currentRegions: AnyCollection<CLRegion>, lastLocation: CLLocation?) -> AnyCollection<CLRegion> {
+    func regions(
+        from zones: AnyCollection<RLMZone>,
+        currentRegions: AnyCollection<CLRegion>,
+        lastLocation: CLLocation?
+    ) -> AnyCollection<CLRegion> {
         lastAskedZones = zones
 
         if let regionsBlock = regionsBlock {
             return regionsBlock()
         } else {
-            return AnyCollection(zones.flatMap { $0.regionsForMonitoring })
+            return AnyCollection(zones.flatMap(\.regionsForMonitoring))
         }
     }
 }
 
 private class FakeHassAPI: HomeAssistantAPI {
-    typealias CreatedEventInfo = (eventType: String, eventData: [String : Any])
+    typealias CreatedEventInfo = (eventType: String, eventData: [String: Any])
 
     func resetCreatedEventInfo() {
         (createdEventPromise, createdEventSeal) = Promise<CreatedEventInfo>.pending()
@@ -466,7 +474,7 @@ private class FakeHassAPI: HomeAssistantAPI {
     var createdEventPromise: Promise<CreatedEventInfo>!
     var createdEventSeal: Resolver<CreatedEventInfo>?
 
-    override func CreateEvent(eventType: String, eventData: [String : Any]) -> Promise<Void> {
+    override func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
         createdEventSeal?.fulfill((eventType: eventType, eventData: eventData))
         return .value(())
     }

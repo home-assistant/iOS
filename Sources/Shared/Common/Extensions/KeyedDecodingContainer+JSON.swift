@@ -1,18 +1,10 @@
-//
-//  KeyedDecodingContainer+JSON.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/9/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
 // https://stackoverflow.com/a/46049763/486182
 //
 //  JSONCodingKeys.swift
 //
 // original https://gist.github.com/loudmouth/332e8d89d8de2c1eaf81875cfcd22e24
 import CoreGraphics
+import Foundation
 
 public struct JSONCodingKeys: CodingKey {
     public var stringValue: String
@@ -30,14 +22,13 @@ public struct JSONCodingKeys: CodingKey {
 }
 
 public extension KeyedDecodingContainer {
-
     func decode(_ type: [String: Any].Type, forKey key: K) throws -> [String: Any] {
-        let container = try self.nestedContainer(keyedBy: JSONCodingKeys.self, forKey: key)
+        let container = try nestedContainer(keyedBy: JSONCodingKeys.self, forKey: key)
         return try container.decode(type)
     }
 
     func decode(_ type: [Any].Type, forKey key: K) throws -> [Any] {
-        var container = try self.nestedUnkeyedContainer(forKey: key)
+        var container = try nestedUnkeyedContainer(forKey: key)
         return try container.decode(type)
     }
 
@@ -64,7 +55,6 @@ public extension KeyedDecodingContainer {
 }
 
 public extension UnkeyedDecodingContainer {
-
     mutating func decode(_ type: [Any].Type) throws -> [Any] {
         var array: [Any] = []
         while isAtEnd == false {
@@ -91,7 +81,7 @@ public extension UnkeyedDecodingContainer {
 
 public extension KeyedEncodingContainerProtocol where Key == JSONCodingKeys {
     mutating func encode(_ value: [String: Any]) throws {
-        try value.forEach({ (key, value) in
+        try value.forEach({ key, value in
             let key = JSONCodingKeys(stringValue: key)
             switch value {
             case let value as Bool:
@@ -108,7 +98,7 @@ public extension KeyedEncodingContainerProtocol where Key == JSONCodingKeys {
                 try encode(value, forKey: key)
             case let value as [Any]:
                 try encode(value, forKey: key)
-            // swiftlint:disable:next syntactic_sugar
+            // swiftformat:disable:next typeSugar
             case Optional<Any>.none:
                 try encodeNil(forKey: key)
             default:
@@ -122,14 +112,14 @@ public extension KeyedEncodingContainerProtocol where Key == JSONCodingKeys {
 public extension KeyedEncodingContainerProtocol {
     mutating func encode(_ value: [String: Any]?, forKey key: Key) throws {
         if value != nil {
-            var container = self.nestedContainer(keyedBy: JSONCodingKeys.self, forKey: key)
+            var container = nestedContainer(keyedBy: JSONCodingKeys.self, forKey: key)
             try container.encode(value!)
         }
     }
 
     mutating func encode(_ value: [Any]?, forKey key: Key) throws {
         if value != nil {
-            var container = self.nestedUnkeyedContainer(forKey: key)
+            var container = nestedUnkeyedContainer(forKey: key)
             try container.encode(value!)
         }
     }
@@ -137,7 +127,7 @@ public extension KeyedEncodingContainerProtocol {
 
 public extension UnkeyedEncodingContainer {
     mutating func encode(_ value: [Any]) throws {
-        try value.enumerated().forEach({ (index, value) in
+        try value.enumerated().forEach({ index, value in
             switch value {
             case let value as Bool:
                 try encode(value)
@@ -153,11 +143,11 @@ public extension UnkeyedEncodingContainer {
                 try encode(value)
             case let value as [Any]:
                 try encode(value)
-            // swiftlint:disable:next syntactic_sugar
+            // swiftformat:disable:next typeSugar
             case Optional<Any>.none:
                 try encodeNil()
             default:
-                let keys = JSONCodingKeys(intValue: index).map({ [ $0 ] }) ?? []
+                let keys = JSONCodingKeys(intValue: index).map({ [$0] }) ?? []
                 let err = EncodingError.Context(codingPath: codingPath + keys, debugDescription: "Invalid JSON value")
                 throw EncodingError.invalidValue(value, err)
             }

@@ -1,19 +1,11 @@
-//
-//  NotificationViewController.swift
-//  NotificationContentExtension
-//
-//  Created by Robbie Trencheny on 9/9/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
+import Alamofire
+import KeychainAccess
+import MBProgressHUD
+import PromiseKit
+import Shared
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-import KeychainAccess
-import Shared
-import PromiseKit
-import Alamofire
-import MBProgressHUD
 
 enum NotificationCategories: String {
     case map
@@ -45,7 +37,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                     viewController.view.topAnchor.constraint(equalTo: view.topAnchor),
                     viewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                     viewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                    viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                    viewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 ])
 
                 viewController.didMove(toParent: self)
@@ -61,7 +53,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         }
 
         Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
-        let controller: (UIViewController & NotificationCategory)
+        let controller: UIViewController & NotificationCategory
 
         switch category {
         case .camera, .camera1, .camera2, .camera3, .camera4:
@@ -78,7 +70,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
             let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
             let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
-            hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
+            hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
             hud.detailsLabel.text = loadTxt
             return hud
         }()
@@ -101,7 +93,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     }
 
     var mediaPlayPauseButtonFrame: CGRect {
-        return CGRect(
+        CGRect(
             x: view.bounds.width / 2.0 - 22,
             y: view.bounds.height / 2.0 - 22,
             width: 44,

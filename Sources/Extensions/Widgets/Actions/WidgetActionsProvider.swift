@@ -1,8 +1,8 @@
-import WidgetKit
 import Shared
+import WidgetKit
 
 struct WidgetActionsEntry: TimelineEntry {
-    var date: Date = Date()
+    var date = Date()
     var actions: [Action] = []
 }
 
@@ -35,7 +35,7 @@ struct WidgetActionsProvider: IntentTimelineProvider {
 
     private static func entry(for configuration: Intent, in context: Context) -> Entry {
         if let existing = configuration.actions?.compactMap({ $0.asAction() }), !existing.isEmpty {
-            return .init(actions:  existing)
+            return .init(actions: existing)
         } else {
             return .init(actions: Self.defaultActions(in: context))
         }
@@ -46,6 +46,6 @@ struct WidgetActionsProvider: IntentTimelineProvider {
     }
 
     func getTimeline(for configuration: Intent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        completion(.init(entries: [ Self.entry(for: configuration, in: context) ], policy: .never))
+        completion(.init(entries: [Self.entry(for: configuration, in: context)], policy: .never))
     }
 }

@@ -1,31 +1,22 @@
-//
-//  MapNotificationController.swift
-//  WatchAppExtension
-//
-//  Created by Robert Trencheny on 2/27/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import WatchKit
 import Foundation
-import UserNotifications
 import MapKit
 import Shared
+import UserNotifications
+import WatchKit
 
 class MapNotificationController: WKUserNotificationInterfaceController {
+    @IBOutlet var mapView: WKInterfaceMap!
 
-    @IBOutlet weak var mapView: WKInterfaceMap!
-
-    @IBOutlet weak var notificationTitleLabel: WKInterfaceLabel!
-    @IBOutlet weak var notificationSubtitleLabel: WKInterfaceLabel!
-    @IBOutlet weak var notificationAlertLabel: WKInterfaceLabel!
+    @IBOutlet var notificationTitleLabel: WKInterfaceLabel!
+    @IBOutlet var notificationSubtitleLabel: WKInterfaceLabel!
+    @IBOutlet var notificationAlertLabel: WKInterfaceLabel!
 
     // MARK: - WKUserNotificationInterfaceController
 
     override func didReceive(_ notification: UNNotification) {
-        self.notificationTitleLabel.setText(notification.request.content.title)
-        self.notificationSubtitleLabel.setText(notification.request.content.subtitle)
-        self.notificationAlertLabel!.setText(notification.request.content.body)
+        notificationTitleLabel.setText(notification.request.content.title)
+        notificationSubtitleLabel.setText(notification.request.content.subtitle)
+        notificationAlertLabel!.setText(notification.request.content.body)
 
         let userInfo = notification.request.content.userInfo
 
@@ -45,7 +36,7 @@ class MapNotificationController: WKUserNotificationInterfaceController {
 
         var pinLocations: [CLLocationCoordinate2D] = [location]
 
-        self.mapView.addAnnotation(location, with: .red)
+        mapView.addAnnotation(location, with: .red)
 
         if let secondLatitude = CLLocationDegrees(templateValue: haDict["second_latitude"]),
            let secondLongitude = CLLocationDegrees(templateValue: haDict["second_longitude"]) {
@@ -53,19 +44,20 @@ class MapNotificationController: WKUserNotificationInterfaceController {
 
             pinLocations.append(secondCoords)
 
-            self.mapView.addAnnotation(secondCoords, with: .green)
+            mapView.addAnnotation(secondCoords, with: .green)
         }
 
-        var region = MKCoordinateRegion(center: pinLocations[0],
-                                        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+        var region = MKCoordinateRegion(
+            center: pinLocations[0],
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        )
 
         if pinLocations.count > 1 {
             region = MKCoordinateRegion(coordinates: pinLocations)
         }
 
-        self.mapView.setRegion(region)
+        mapView.setRegion(region)
     }
-
 }
 
 extension MKCoordinateRegion {
@@ -92,7 +84,7 @@ extension MKCoordinateRegion {
             }
         }
 
-        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat)*2.0, longitudeDelta: (maxLon - minLon)*2.0)
+        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 2.0, longitudeDelta: (maxLon - minLon) * 2.0)
         let center = CLLocationCoordinate2DMake(maxLat - span.latitudeDelta / 4, maxLon - span.longitudeDelta / 4)
         self.init(center: center, span: span)
     }

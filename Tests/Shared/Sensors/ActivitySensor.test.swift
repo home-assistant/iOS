@@ -1,8 +1,8 @@
-import Foundation
-import XCTest
-import PromiseKit
 import CoreMotion
+import Foundation
+import PromiseKit
 @testable import Shared
+import XCTest
 
 class ActivitySensorTests: XCTestCase {
     private enum TestError: Error {
@@ -19,7 +19,7 @@ class ActivitySensorTests: XCTestCase {
         super.setUp()
 
         // start by assuming nothing is enabled/available
-        Current.motion.isAuthorized = { false  }
+        Current.motion.isAuthorized = { false }
         Current.motion.isActivityAvailable = { false }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, handler in handler([], nil) }
     }
@@ -90,7 +90,6 @@ class ActivitySensorTests: XCTestCase {
         Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
 
-
         let testCases: [(FakeMotionActivity) -> Void] = [
             { $0.walking = true },
             { $0.running = true },
@@ -103,7 +102,7 @@ class ActivitySensorTests: XCTestCase {
             { $0.cycling = true; $0.stationary = true },
             { $0.walking = true; $0.confidence = .low },
             { $0.walking = true; $0.confidence = .medium },
-            { $0.walking = true; $0.confidence = .high }
+            { $0.walking = true; $0.confidence = .high },
         ]
 
         for testCase in testCases {

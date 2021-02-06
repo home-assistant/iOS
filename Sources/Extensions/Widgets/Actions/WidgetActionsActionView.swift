@@ -15,7 +15,7 @@ struct WidgetActionsActionView: View {
             switch self {
             case .single:
                 return .subheadline
-            case .multiple(expanded: let expanded):
+            case let .multiple(expanded: expanded):
                 return expanded ? .subheadline : .footnote
             }
         }
@@ -63,10 +63,10 @@ struct WidgetActionsActionView_Previews: PreviewProvider {
 
     static var previews: some View {
         shortAction()
-        .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
 
         longAction()
-        .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
 #endif

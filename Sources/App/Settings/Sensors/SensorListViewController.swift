@@ -1,7 +1,7 @@
-import Foundation
 import Eureka
-import Shared
+import Foundation
 import PromiseKit
+import Shared
 
 class SensorListViewController: FormViewController, SensorObserver {
     private let sensorSection = Section()
@@ -28,35 +28,35 @@ class SensorListViewController: FormViewController, SensorObserver {
         }
 
         form +++ Section(header: nil, footer: periodicDescription)
-        <<< PushRow<TimeInterval?> {
-            $0.title =  L10n.SettingsSensors.PeriodicUpdate.title
-            $0.options = {
-                var options: [TimeInterval?] = [nil, 20, 60, 120, 300, 600, 900, 1800, 3600]
+            <<< PushRow<TimeInterval?> {
+                $0.title = L10n.SettingsSensors.PeriodicUpdate.title
+                $0.options = {
+                    var options: [TimeInterval?] = [nil, 20, 60, 120, 300, 600, 900, 1800, 3600]
 
-                if Current.appConfiguration == .Debug {
-                    options.insert(contentsOf: [2, 5], at: 1)
+                    if Current.appConfiguration == .Debug {
+                        options.insert(contentsOf: [2, 5], at: 1)
+                    }
+
+                    return options
+                }()
+                $0.value = Current.settingsStore.periodicUpdateInterval
+                $0.onChange { row in
+                    // this looks silly but value is actually `Optional<Optional<TimeInterval>>`
+                    Current.settingsStore.periodicUpdateInterval = row.value ?? nil
                 }
 
-                return options
-            }()
-            $0.value = Current.settingsStore.periodicUpdateInterval
-            $0.onChange { row in
-                // this looks silly but value is actually `Optional<Optional<TimeInterval>>`
-                Current.settingsStore.periodicUpdateInterval = row.value ?? nil
-            }
+                let formatter = DateComponentsFormatter()
+                formatter.unitsStyle = .full
 
-            let formatter = DateComponentsFormatter()
-            formatter.unitsStyle = .full
-
-            $0.displayValueFor = { value in
-                switch value {
-                case .some(.none), .none:
-                    return L10n.SettingsSensors.PeriodicUpdate.off
-                case .some(.some(let interval)):
-                    return formatter.string(from: interval)
+                $0.displayValueFor = { value in
+                    switch value {
+                    case .some(.none), .none:
+                        return L10n.SettingsSensors.PeriodicUpdate.off
+                    case let .some(.some(interval)):
+                        return formatter.string(from: interval)
+                    }
                 }
             }
-        }
 
         form +++ sensorSection
 
@@ -123,7 +123,7 @@ class SensorListViewController: FormViewController, SensorObserver {
     }
 
     class func row(for sensor: WebhookSensor) -> BaseRow {
-        return ButtonRow { row in
+        ButtonRow { row in
             func updateDetails(from sensor: WebhookSensor, isInitial: Bool) {
                 row.title = sensor.Name
                 row.value = sensor.StateDescription

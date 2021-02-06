@@ -1,39 +1,30 @@
-//
-//  OnboardingViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/20/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import Shared
 import Eureka
 import Lottie
 import Reachability
 import RealmSwift
+import Shared
+import UIKit
 
 class WelcomeViewController: UIViewController, UITextViewDelegate {
-
-    @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var continueButton: UIButton!
-    @IBOutlet weak var wifiWarningLabel: UILabel!
+    @IBOutlet var animationView: AnimationView!
+    @IBOutlet var continueButton: UIButton!
+    @IBOutlet var wifiWarningLabel: UILabel!
 
     private var loggedOutView: UIView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let reachability = (self.navigationController as? OnboardingNavigationViewController)?.reachability
-        self.wifiWarningLabel.isHidden = reachability?.connection == .wifi
+        let reachability = (navigationController as? OnboardingNavigationViewController)?.reachability
+        wifiWarningLabel.isHidden = reachability?.connection == .wifi
 
-        if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(self.continueButton)
+        if let navVC = navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(continueButton)
         }
 
-        self.animationView.animation = Animation.named("ha-loading")
-        self.animationView.loopMode = .playOnce
-        self.animationView.play(toMarker: "Circles Formed")
+        animationView.animation = Animation.named("ha-loading")
+        animationView.loopMode = .playOnce
+        animationView.play(toMarker: "Circles Formed")
 
         if prefs.bool(forKey: "onboardingShouldShowMigrationMessage") {
             setupLoggedOutView()
@@ -43,16 +34,20 @@ class WelcomeViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let reachability = (self.navigationController as? OnboardingNavigationViewController)?.reachability
+        let reachability = (navigationController as? OnboardingNavigationViewController)?.reachability
 
-        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)),
-                                               name: .reachabilityChanged, object: reachability)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(reachabilityChanged(_:)),
+            name: .reachabilityChanged,
+            object: reachability
+        )
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        let reachability = (self.navigationController as? OnboardingNavigationViewController)?.reachability
+        let reachability = (navigationController as? OnboardingNavigationViewController)?.reachability
         NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
     }
 
@@ -64,10 +59,10 @@ class WelcomeViewController: UIViewController, UITextViewDelegate {
     }
 
     @IBAction func continueButton(_ sender: UIButton) {
-        if self.wifiWarningLabel.isHidden {
-            self.perform(segue: StoryboardSegue.Onboarding.discoverInstances, sender: nil)
+        if wifiWarningLabel.isHidden {
+            perform(segue: StoryboardSegue.Onboarding.discoverInstances, sender: nil)
         } else {
-            self.perform(segue: StoryboardSegue.Onboarding.manuallyConnectInstance, sender: nil)
+            perform(segue: StoryboardSegue.Onboarding.manuallyConnectInstance, sender: nil)
         }
     }
 
@@ -78,13 +73,12 @@ class WelcomeViewController: UIViewController, UITextViewDelegate {
         }
 
         Current.Log.verbose("Reachability changed to \(reachability.connection.description)")
-        self.wifiWarningLabel.isHidden = (reachability.connection == .wifi)
+        wifiWarningLabel.isHidden = (reachability.connection == .wifi)
     }
 }
 
 // logged out from app store migration handling
 extension WelcomeViewController {
-    // swiftlint:disable:next function_body_length
     private func setupLoggedOutView() {
         let scrollView = with(UIScrollView()) {
             $0.contentInsetAdjustmentBehavior = .always
@@ -115,7 +109,7 @@ extension WelcomeViewController {
             container.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             container.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
             container.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
-            container.heightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor)
+            container.heightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor),
         ])
 
         func textView() -> UITextView {
@@ -150,7 +144,7 @@ extension WelcomeViewController {
             $0.setAttributedTitle(NSAttributedString(string: L10n.Onboarding.LoggedOutFromMove.learnMore, attributes: [
                 .font: UIFont.preferredFont(forTextStyle: .body),
                 .foregroundColor: UIColor.white,
-                .underlineStyle: NSUnderlineStyle.single.rawValue
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
             ]), for: .normal)
             $0.addTarget(self, action: #selector(learnMoreAboutMove), for: .touchUpInside)
         })
@@ -184,7 +178,7 @@ extension WelcomeViewController {
             container.addArrangedSubview(with(textView()) {
                 $0.font = UIFont.preferredFont(forTextStyle: .body)
                 $0.text = L10n.Onboarding.LoggedOutFromMove.duplicateWarning
-                $0.backgroundColor = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 219.0/255.0, alpha: 1.0)
+                $0.backgroundColor = UIColor(red: 255.0 / 255.0, green: 255.0 / 255.0, blue: 219.0 / 255.0, alpha: 1.0)
                 $0.textColor = .black
                 $0.textContainerInset = .init(top: 8, left: 8, bottom: 8, right: 8)
             })
@@ -222,5 +216,4 @@ extension WelcomeViewController {
         prefs.removeObject(forKey: "onboardingShouldShowMigrationMessage")
         loggedOutView?.removeFromSuperview()
     }
-
 }

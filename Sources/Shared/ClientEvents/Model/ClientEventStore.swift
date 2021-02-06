@@ -1,11 +1,3 @@
-//
-//  ClientEventStore.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 6/18/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import RealmSwift
 

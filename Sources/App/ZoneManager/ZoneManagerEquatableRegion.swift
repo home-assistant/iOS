@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 
 /// Wraps CLRegion but does deep inspection of properties
 /// so changing e.g. lat/long breaks Equatable rather than relying on identifier

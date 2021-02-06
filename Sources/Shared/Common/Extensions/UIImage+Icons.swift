@@ -1,15 +1,7 @@
-//
-//  UIImage+Icons.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 9/15/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import UIKit
 
-extension UIImage {
-    public convenience init(size: CGSize, color: UIColor) {
+public extension UIImage {
+    convenience init(size: CGSize, color: UIColor) {
         // why is UIGraphicsImageRenderer not available on watchOS?
         var alpha: CGFloat = 1
         color.getRed(nil, green: nil, blue: nil, alpha: &alpha)
@@ -33,8 +25,7 @@ public extension MaterialDesignIcons {
 
 internal extension String {
     var normalizingIconString: String {
-        return self
-            .replacingOccurrences(of: "mdi:|hass:", with: "", options: .regularExpression)
+        replacingOccurrences(of: "mdi:|hass:", with: "", options: .regularExpression)
             .replacingOccurrences(of: ":", with: "_")
             .replacingOccurrences(of: "-", with: "_")
     }

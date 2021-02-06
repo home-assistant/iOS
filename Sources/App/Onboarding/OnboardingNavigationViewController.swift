@@ -1,18 +1,9 @@
-//
-//  OnboardingNavigationViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/22/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
 import Eureka
-import Shared
 import Reachability
+import Shared
+import UIKit
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
-
     public var onDismissCallback: ((UIViewController) -> Void)?
 
     // swiftlint:disable:next force_try
@@ -31,30 +22,30 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
         do {
             try reachability.startNotifier()
-        } catch let error {
+        } catch {
             Current.Log.error("Unable to start Reachability notifier: \(error)")
         }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.reachability.stopNotifier()
+        reachability.stopNotifier()
     }
 
     func dismiss() {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
         onDismissCallback?(self)
     }
 
     /*
-    // MARK: - Navigation
+     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+         // Get the new view controller using segue.destination.
+         // Pass the selected object to the new view controller.
+     }
+     */
 
     func styleButton(_ button: UIButton) {
         button.layer.cornerRadius = 6.0

@@ -26,10 +26,10 @@ private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
             switch self {
             case .invalid: return .max
             #if targetEnvironment(macCatalyst)
-            case .coreAudio(let id): return id
+            case let .coreAudio(id): return id
             #endif
             #if canImport(CoreMediaIO)
-            case .coreMedia(let id): return id
+            case let .coreMedia(id): return id
             #endif
             }
         }
@@ -96,7 +96,7 @@ public class InputDeviceSensor: SensorProvider {
     let audioSystemObject: HACoreAudioObjectSystem
     #endif
 
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
         #if canImport(CoreMediaIO)
         self.cameraSystemObject = HACoreMediaObjectSystem()
@@ -179,9 +179,9 @@ public class InputDeviceSensor: SensorProvider {
             )) {
                 $0.Attributes = [
                     "All \(name)": all,
-                    "Active \(name)": active
+                    "Active \(name)": active,
                 ]
-            }
+            },
         ]
     }
     #endif

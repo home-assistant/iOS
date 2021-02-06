@@ -1,6 +1,6 @@
 import Foundation
-import Shared
 import PromiseKit
+import Shared
 
 #if targetEnvironment(simulator)
 class SimulatorTagManager: iOSTagManager {
@@ -9,11 +9,11 @@ class SimulatorTagManager: iOSTagManager {
     }
 
     override func readNFC() -> Promise<String> {
-        return .value(UUID().uuidString.lowercased())
+        .value(UUID().uuidString.lowercased())
     }
 
     override func writeNFC(value: String) -> Promise<String> {
-        return .value(value)
+        .value(value)
     }
 }
 #endif

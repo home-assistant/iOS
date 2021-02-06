@@ -1,16 +1,8 @@
-//
-//  Utils.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 4/3/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import KeychainAccess
-import Shared
 import RealmSwift
 import SafariServices
+import Shared
 import Version
 
 func resetStores() {
@@ -66,9 +58,9 @@ func convertToDictionary(text: String) -> [String: Any]? {
 func setDefaults() {
     // before we reset the value, read in the last version number -- if it's pre-team migration, save that
     if let previous = prefs.string(forKey: "lastInstalledShortVersion"),
-        let version = try? Version(hassVersion: previous),
-        version <= Version(major: 2020, minor: 4, patch: 1),
-        Current.settingsStore.connectionInfo == nil {
+       let version = try? Version(hassVersion: previous),
+       version <= Version(major: 2020, minor: 4, patch: 1),
+       Current.settingsStore.connectionInfo == nil {
         Current.Log.info("going to show migration message")
         prefs.set(true, forKey: "onboardingShouldShowMigrationMessage")
     }

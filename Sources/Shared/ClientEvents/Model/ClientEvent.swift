@@ -1,11 +1,3 @@
-//
-//  ClientEvent.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 6/17/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import RealmSwift
 
@@ -20,7 +12,7 @@ public class ClientEvent: Object {
         case unknown
     }
 
-    convenience public init(text: String, type: EventType, payload: [String: Any]? = nil) {
+    public convenience init(text: String, type: EventType, payload: [String: Any]? = nil) {
         self.init()
         self.text = text
         self.type = type
@@ -36,8 +28,8 @@ public class ClientEvent: Object {
 
     /// The even type
     public var type: EventType {
-        get { return EventType(rawValue: self.typeString) ?? .unknown }
-        set { self.typeString = newValue.rawValue }
+        get { EventType(rawValue: typeString) ?? .unknown }
+        set { typeString = newValue.rawValue }
     }
 
     @objc private dynamic var jsonData: Data?
@@ -45,9 +37,9 @@ public class ClientEvent: Object {
     /// The payload for the event.
     public var jsonPayload: [String: Any]? {
         get {
-            guard let payloadData = self.jsonData,
-            let jsonObject = try? JSONSerialization.jsonObject(with: payloadData),
-            let dictionary = jsonObject as? [String: Any] else {
+            guard let payloadData = jsonData,
+                  let jsonObject = try? JSONSerialization.jsonObject(with: payloadData),
+                  let dictionary = jsonObject as? [String: Any] else {
                 return nil
             }
 
@@ -56,7 +48,7 @@ public class ClientEvent: Object {
 
         set {
             guard let payload = newValue else {
-                self.jsonData = nil
+                jsonData = nil
                 return
             }
 
@@ -79,6 +71,6 @@ public class ClientEvent: Object {
     }
 
     override public static func indexedProperties() -> [String] {
-        return ["date", "typeString"]
+        ["date", "typeString"]
     }
 }

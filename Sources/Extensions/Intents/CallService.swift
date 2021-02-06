@@ -1,16 +1,8 @@
-//
-//  CallService.swift
-//  Intents
-//
-//  Created by Robert Trencheny on 9/17/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
-import Shared
 import Intents
 import PromiseKit
+import Shared
+import UIKit
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
@@ -40,10 +32,10 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             var allServices: [String] = []
 
             for domainContainer in serviceResp.sorted(by: { (a, b) -> Bool in
-                return a.Domain < b.Domain
+                a.Domain < b.Domain
             }) {
                 for service in domainContainer.Services.sorted(by: { (a, b) -> Bool in
-                    return a.key < b.key
+                    a.key < b.key
                 }) {
                     allServices.append("\(domainContainer.Domain).\(service.key)")
                 }
@@ -59,20 +51,21 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         for intent: CallServiceIntent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
     ) {
-        provideServiceOptions(for: intent) { (services, error) in
+        provideServiceOptions(for: intent) { services, error in
             completion(services.flatMap { .init(items: $0.map { $0 as NSString }) }, error)
         }
     }
 
-    // swiftlint:disable:next function_body_length
     func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         var payloadDict: [String: Any] = [:]
 
         if let payload = intent.payload, payload.isEmpty == false {
             let data = payload.data(using: .utf8)!
             do {
-                if let jsonArray = try JSONSerialization.jsonObject(with: data,
-                                                                    options: .allowFragments) as? [String: Any] {
+                if let jsonArray = try JSONSerialization.jsonObject(
+                    with: data,
+                    options: .allowFragments
+                ) as? [String: Any] {
                     payloadDict = jsonArray
                 } else {
                     Current.Log.error("Unable to parse stored payload: \(payload)")

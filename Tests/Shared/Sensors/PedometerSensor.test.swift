@@ -1,9 +1,9 @@
-import Foundation
 import CoreMotion
-import XCTest
+import Foundation
 import PromiseKit
-import Version
 @testable import Shared
+import Version
+import XCTest
 
 class PedometerSensorTests: XCTestCase {
     private enum TestError: Error {
@@ -250,7 +250,7 @@ class PedometerSensorTests: XCTestCase {
 }
 
 private class FakePedometerData: CMPedometerData {
-    var overrideNumberOfSteps: NSNumber = NSNumber(value: 0)
+    var overrideNumberOfSteps = NSNumber(value: 0)
     override var numberOfSteps: NSNumber { overrideNumberOfSteps }
     var overrideDistance: NSNumber?
     override var distance: NSNumber? { overrideDistance }

@@ -1,10 +1,8 @@
-import Foundation
-import Eureka
-import Shared
-import PromiseKit
 import CoreLocation
-
-// swiftlint:disable function_body_length type_body_length
+import Eureka
+import Foundation
+import PromiseKit
+import Shared
 
 final class ConnectionURLViewController: FormViewController, TypedRowControllerType {
     typealias RowValue = ConnectionURLViewController
@@ -41,7 +39,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         var errorDescription: String? {
             switch self {
             case .lastURL: return L10n.Settings.ConnectionSection.Errors.cannotRemoveLastUrl
-            case .validation(let errors): return errors.map(\.msg).joined(separator: "\n")
+            case let .validation(errors): return errors.map(\.msg).joined(separator: "\n")
             }
         }
 
@@ -85,14 +83,14 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
                 Current.settingsStore.connectionInfo?.internalSSIDs = section.allRows
                     .compactMap { $0 as? TextRow }
-                    .compactMap { $0.value }
+                    .compactMap(\.value)
                     .filter { !$0.isEmpty }
             }
 
             if let section = form.sectionBy(tag: RowTag.hardwareAddresses.rawValue) as? MultivaluedSection {
                 Current.settingsStore.connectionInfo?.internalHardwareAddresses = section.allRows
                     .compactMap { $0 as? TextRow }
-                    .compactMap { $0.value }
+                    .compactMap(\.value)
                     .map { $0.lowercased() }
                     .filter { !$0.isEmpty }
             }
@@ -159,7 +157,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
 
     private func updateNavigationItems(isChecking: Bool) {
         navigationItem.leftBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel)),
         ]
 
         if isChecking {
@@ -174,11 +172,11 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             activityIndicator.startAnimating()
 
             navigationItem.rightBarButtonItems = [
-                UIBarButtonItem(customView: activityIndicator)
+                UIBarButtonItem(customView: activityIndicator),
             ]
         } else {
             navigationItem.rightBarButtonItems = [
-                UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(save))
+                UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(save)),
             ]
         }
     }
@@ -197,38 +195,38 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         }
 
         form +++ Section()
-        <<< URLRow(RowTag.url.rawValue) {
-            $0.value = Current.settingsStore.connectionInfo?.address(for: urlType)
-            $0.hidden = .function([RowTag.useCloud.rawValue], { form in
-                if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
-                    // if cloud's around, hide when it's turned on
-                    return row.value == true
-                } else {
-                    // never hide if cloud isn't around
-                    return false
-                }
-            })
-            $0.placeholder = { () -> String? in
-                switch urlType {
-                case .internal: return L10n.Settings.ConnectionSection.InternalBaseUrl.placeholder
-                case .external: return L10n.Settings.ConnectionSection.ExternalBaseUrl.placeholder
-                case .remoteUI: return nil
-                }
-            }()
-        }
+            <<< URLRow(RowTag.url.rawValue) {
+                $0.value = Current.settingsStore.connectionInfo?.address(for: urlType)
+                $0.hidden = .function([RowTag.useCloud.rawValue], { form in
+                    if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
+                        // if cloud's around, hide when it's turned on
+                        return row.value == true
+                    } else {
+                        // never hide if cloud isn't around
+                        return false
+                    }
+                })
+                $0.placeholder = { () -> String? in
+                    switch urlType {
+                    case .internal: return L10n.Settings.ConnectionSection.InternalBaseUrl.placeholder
+                    case .external: return L10n.Settings.ConnectionSection.ExternalBaseUrl.placeholder
+                    case .remoteUI: return nil
+                    }
+                }()
+            }
 
-        <<< InfoLabelRow {
-            $0.title = L10n.Settings.ConnectionSection.cloudOverridesExternal
-            $0.hidden = .function([RowTag.useCloud.rawValue], { form in
-                if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
-                    // this is effectively the visual replacement for the external url, so show when cloud is on
-                    return row.value == false
-                } else {
-                    // always hide if we're not offering the cloud option
-                    return true
-                }
-            })
-        }
+            <<< InfoLabelRow {
+                $0.title = L10n.Settings.ConnectionSection.cloudOverridesExternal
+                $0.hidden = .function([RowTag.useCloud.rawValue], { form in
+                    if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
+                        // this is effectively the visual replacement for the external url, so show when cloud is on
+                        return row.value == false
+                    } else {
+                        // always hide if we're not offering the cloud option
+                        return true
+                    }
+                })
+            }
 
         if urlType.isAffectedBySSID {
             form +++ locationPermissionSection()
@@ -248,7 +246,6 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         if urlType.isAffectedByHardwareAddress {
             var rules = RuleSet<String>()
             rules.add(rule: RuleRegExp(
-                // swiftlint:disable:next line_length
                 regExpr: "^[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}\\:[a-zA-Z0-9]{2}$",
                 allowsEmpty: true,
                 msg: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.invalid,
@@ -349,7 +346,7 @@ private extension MultivaluedSection {
         ) { section in
             section.tag = tag.rawValue
             section.addButtonProvider = { _ in
-                return ButtonRow {
+                ButtonRow {
                     $0.title = addNewLabel
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .natural

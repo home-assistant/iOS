@@ -1,16 +1,7 @@
-//
-//  LocationTrigger.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 9/15/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import CoreLocation
 import Foundation
 
 public enum LocationUpdateTrigger: String, CaseIterable {
-
     public struct NotificationOptions {
         public let shouldNotify: Bool
         public let identifier: String?
@@ -74,14 +65,13 @@ public enum LocationUpdateTrigger: String, CaseIterable {
         case .Visit: return nil
         case .Manual: return nil
         case .Siri: return nil
-        case .RegionExit, .RegionEnter, .Unknown:  return nil
+        case .RegionExit, .RegionEnter, .Unknown: return nil
         case .Launch: return nil
         case .Periodic: return nil
         case .Signaled: return nil
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         var identifier: String?
         let body: String

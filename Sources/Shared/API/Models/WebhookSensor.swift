@@ -1,11 +1,3 @@
-//
-//  WebhookSensor.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 3/8/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import ObjectMapper
 
@@ -13,13 +5,13 @@ public struct WebhookSensorSetting {
     public enum SettingType {
         case `switch`(getter: () -> Bool, setter: (Bool) -> Void)
         case stepper(
-                getter: () -> Double,
-                setter: (Double) -> Void,
-                minimum: Double = 0,
-                maximum: Double = 100,
-                step: Double = 1,
-                displayValueFor: ((Double?) -> String?)?
-             )
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            minimum: Double = 0,
+            maximum: Double = 100,
+            step: Double = 1,
+            displayValueFor: ((Double?) -> String?)?
+        )
     }
 
     public let type: SettingType
@@ -63,26 +55,32 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.init(name: name, uniqueID: uniqueID, icon: "mdi:\(icon.name)", state: state, unit: unit)
     }
 
-    convenience init(name: String, uniqueID: String, icon: String, deviceClass: DeviceClass,
-                     state: Any, unit: String? = nil) {
+    convenience init(
+        name: String,
+        uniqueID: String,
+        icon: String,
+        deviceClass: DeviceClass,
+        state: Any,
+        unit: String? = nil
+    ) {
         self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit)
         self.DeviceClass = deviceClass
     }
 
     // Mappable
     public func mapping(map: Map) {
-        Attributes        <-  map["attributes"]
-        Icon              <-  map["icon"]
-        State             <-  map["state"]
-        `Type`            <-  map["type"]
-        UniqueID          <-  map["unique_id"]
+        Attributes <- map["attributes"]
+        Icon <- map["icon"]
+        State <- map["state"]
+        `Type` <- map["type"]
+        UniqueID <- map["unique_id"]
 
         let isUpdate = (map.context as? WebhookSensorContext)?.SensorUpdate ?? false
 
         if !isUpdate {
-            DeviceClass       <-  map["device_class"]
-            Name              <-  map["name"]
-            UnitOfMeasurement <-  map["unit_of_measurement"]
+            DeviceClass <- map["device_class"]
+            Name <- map["name"]
+            UnitOfMeasurement <- map["unit_of_measurement"]
         }
     }
 
@@ -95,10 +93,10 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     }
 
     public static func == (lhs: WebhookSensor, rhs: WebhookSensor) -> Bool {
-         let mapper = Mapper<WebhookSensor>()
-         let lhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(lhs), options: [.sortedKeys])
-         let rhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(rhs), options: [.sortedKeys])
-         return lhsData == rhsData
+        let mapper = Mapper<WebhookSensor>()
+        let lhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(lhs), options: [.sortedKeys])
+        let rhsData = try? JSONSerialization.data(withJSONObject: mapper.toJSON(rhs), options: [.sortedKeys])
+        return lhsData == rhsData
     }
 
     public static func < (lhs: WebhookSensor, rhs: WebhookSensor) -> Bool {
@@ -162,8 +160,8 @@ public class WebhookSensorResponse: Mappable {
 
     // Mappable
     public func mapping(map: Map) {
-        Success        <-  map["success"]
-        ErrorMessage   <-  map["error.message"]
-        ErrorCode      <-  map["error.code"]
+        Success <- map["success"]
+        ErrorMessage <- map["error.message"]
+        ErrorCode <- map["error.code"]
     }
 }

@@ -1,17 +1,8 @@
-//
-//  ZoneComponent.swift
-//  HomeAssistant
-//
-//  Created by Robbie Trencheny on 4/10/16.
-//  Copyright © 2016 Robbie Trencheny. All rights reserved.
-//
-
+import CoreLocation
 import Foundation
 import ObjectMapper
-import CoreLocation
 
 public class Zone: Entity {
-
     @objc public dynamic var Latitude: Double = 0.0
     @objc public dynamic var Longitude: Double = 0.0
     @objc public dynamic var Radius: Double = 0.0
@@ -29,31 +20,35 @@ public class Zone: Entity {
     public var SSIDTrigger: [String]?
     public var SSIDFilter: [String]?
 
-    public override func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
 
-        Latitude           <- map["attributes.latitude"]
-        Longitude          <- map["attributes.longitude"]
-        Radius             <- map["attributes.radius"]
-        TrackingEnabled    <- map["attributes.track_ios"]
-        UUID               <- map["attributes.beacon.uuid"]
-        Major              <- map["attributes.beacon.major"]
-        Minor              <- map["attributes.beacon.minor"]
-        SSIDTrigger        <- map["attributes.ssid_trigger"]
-        SSIDFilter         <- map["attributes.ssid_filter"]
-        isPassive          <- map["attributes.passive"]
+        Latitude <- map["attributes.latitude"]
+        Longitude <- map["attributes.longitude"]
+        Radius <- map["attributes.radius"]
+        TrackingEnabled <- map["attributes.track_ios"]
+        UUID <- map["attributes.beacon.uuid"]
+        Major <- map["attributes.beacon.major"]
+        Minor <- map["attributes.beacon.minor"]
+        SSIDTrigger <- map["attributes.ssid_trigger"]
+        SSIDFilter <- map["attributes.ssid_filter"]
+        isPassive <- map["attributes.passive"]
     }
 
     public func locationCoordinates() -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude),
-                                      longitude: CLLocationDegrees(self.Longitude))
+        CLLocationCoordinate2D(
+            latitude: CLLocationDegrees(Latitude),
+            longitude: CLLocationDegrees(Longitude)
+        )
     }
 
     public func location() -> CLLocation {
-        return CLLocation(coordinate: self.locationCoordinates(),
-                          altitude: 0,
-                          horizontalAccuracy: self.Radius,
-                          verticalAccuracy: -1,
-                          timestamp: Date())
+        CLLocation(
+            coordinate: locationCoordinates(),
+            altitude: 0,
+            horizontalAccuracy: Radius,
+            verticalAccuracy: -1,
+            timestamp: Date()
+        )
     }
 }

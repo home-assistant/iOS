@@ -3,7 +3,6 @@ import UIKit
 
 enum AccountInitialsImage {
     private static func initials(for string: String?) -> String {
-        // swiftlint:disable:next line_length
         // matching https://github.com/home-assistant/frontend/blob/42bf350034b7a53f0c6ba76791ea9d2a65bf6d67/src/components/user/ha-user-badge.ts
 
         guard let string = string else {
@@ -32,7 +31,7 @@ enum AccountInitialsImage {
                 string: initials,
                 attributes: [
                     .font: UIFont.systemFont(ofSize: fontSize, weight: .regular),
-                    .foregroundColor: UIColor.white
+                    .foregroundColor: UIColor.white,
                 ]
             )
             let initialsSize = initials

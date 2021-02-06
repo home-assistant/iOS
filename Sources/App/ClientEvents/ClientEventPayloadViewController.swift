@@ -1,27 +1,19 @@
-//
-//  ClientEventPayloadViewController.swift
-//  HomeAssistant
-//
-//  Created by Stephan Vanterpool on 8/25/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
 import Shared
+import UIKit
 
-/// View controller responsible for displaying the details of a client event. 
+/// View controller responsible for displaying the details of a client event.
 class ClientEventPayloadViewController: UIViewController {
-    @IBOutlet weak var textView: UITextView!
+    @IBOutlet var textView: UITextView!
     private var jsonString: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(_:)))
+            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(_:))),
         ]
-        self.textView.text = self.jsonString
+        textView.text = jsonString
     }
 
     @objc private func share(_ sender: UIBarButtonItem) {

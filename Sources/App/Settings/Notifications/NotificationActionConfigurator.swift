@@ -1,16 +1,8 @@
-//
-//  NotificationActionConfigurator.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/28/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import UIKit
-import Shared
 import Eureka
+import Foundation
 import RealmSwift
+import Shared
+import UIKit
 
 class NotificationActionConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
@@ -19,7 +11,7 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
 
     private let category: NotificationCategory
     var newAction: Bool = true
-    var action: NotificationAction = NotificationAction()
+    var action = NotificationAction()
 
     private let realm = Current.realm()
 
@@ -42,15 +34,15 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
         fatalError("init(coder:) has not been implemented")
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        self.title = action.Title
+        title = action.Title
 
         if newAction {
-            self.title = L10n.NotificationsConfigurator.NewAction.title
+            title = L10n.NotificationsConfigurator.NewAction.title
         }
 
         if !action.isServerControlled {
@@ -91,23 +83,25 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
             footer = L10n.NotificationsConfigurator.Settings.Footer.idSet
         }
 
-        self.form
-        +++ Section(header: L10n.NotificationsConfigurator.Settings.header,
-                    footer: footer)
+        form
+            +++ Section(
+                header: L10n.NotificationsConfigurator.Settings.header,
+                footer: footer
+            )
 
-        <<< TextRow {
-            $0.tag = "title"
-            $0.title = L10n.NotificationsConfigurator.Action.Rows.Title.title
-            $0.add(rule: RuleRequired())
-            if action.isServerControlled {
-                $0.disabled = true
+            <<< TextRow {
+                $0.tag = "title"
+                $0.title = L10n.NotificationsConfigurator.Action.Rows.Title.title
+                $0.add(rule: RuleRequired())
+                if action.isServerControlled {
+                    $0.disabled = true
+                }
+                if !self.newAction {
+                    $0.value = self.action.Title
+                }
             }
-            if !self.newAction {
-                $0.value = self.action.Title
-            }
-        }
 
-        <<< NotificationIdentifierRow {
+            <<< NotificationIdentifierRow {
                 $0.tag = "identifier"
                 $0.title = L10n.NotificationsConfigurator.identifier
                 $0.uppercaseOnly = true
@@ -117,32 +111,32 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section {
-            if self.action.isServerControlled {
-                $0.hidden = true
-            }
-        }
-
-        <<< SwitchRow {
-            $0.tag = "textInput"
-            $0.title = L10n.NotificationsConfigurator.Action.TextInput.title
-            if !self.newAction {
-                $0.value = self.action.TextInput
-            }
-        }.onChange { row in
-            if let value = row.value {
-                if let buttonTitle = self.form.rowBy(tag: "textInputButtonTitle") {
-                    buttonTitle.hidden = Condition(booleanLiteral: !value)
-                    buttonTitle.evaluateHidden()
-                }
-                if let placeholder = self.form.rowBy(tag: "textInputPlaceholder") {
-                    placeholder.hidden = Condition(booleanLiteral: !value)
-                    placeholder.evaluateHidden()
+            +++ Section {
+                if self.action.isServerControlled {
+                    $0.hidden = true
                 }
             }
-        }
 
-        <<< TextRow {
+            <<< SwitchRow {
+                $0.tag = "textInput"
+                $0.title = L10n.NotificationsConfigurator.Action.TextInput.title
+                if !self.newAction {
+                    $0.value = self.action.TextInput
+                }
+            }.onChange { row in
+                if let value = row.value {
+                    if let buttonTitle = self.form.rowBy(tag: "textInputButtonTitle") {
+                        buttonTitle.hidden = Condition(booleanLiteral: !value)
+                        buttonTitle.evaluateHidden()
+                    }
+                    if let placeholder = self.form.rowBy(tag: "textInputPlaceholder") {
+                        placeholder.hidden = Condition(booleanLiteral: !value)
+                        placeholder.evaluateHidden()
+                    }
+                }
+            }
+
+            <<< TextRow {
                 $0.tag = "textInputButtonTitle"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
                 $0.hidden = Condition(booleanLiteral: !self.action.TextInput)
@@ -152,7 +146,7 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        <<< TextRow {
+            <<< TextRow {
                 $0.tag = "textInputPlaceholder"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
                 $0.hidden = Condition(booleanLiteral: !self.action.TextInput)
@@ -162,15 +156,15 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section(
-            footer: L10n.NotificationsConfigurator.Action.Rows.Foreground.footer
-        ) {
-            if action.isServerControlled {
-                $0.hidden = true
+            +++ Section(
+                footer: L10n.NotificationsConfigurator.Action.Rows.Foreground.footer
+            ) {
+                if action.isServerControlled {
+                    $0.hidden = true
+                }
             }
-        }
 
-        <<< SwitchRow {
+            <<< SwitchRow {
                 $0.tag = "foreground"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.Foreground.title
                 if !self.newAction {
@@ -178,15 +172,15 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section(
-            footer: L10n.NotificationsConfigurator.Action.Rows.Destructive.footer
-        ) {
-            if action.isServerControlled {
-                $0.hidden = true
+            +++ Section(
+                footer: L10n.NotificationsConfigurator.Action.Rows.Destructive.footer
+            ) {
+                if action.isServerControlled {
+                    $0.hidden = true
+                }
             }
-        }
 
-        <<< SwitchRow {
+            <<< SwitchRow {
                 $0.tag = "destructive"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.Destructive.title
                 if !self.newAction {
@@ -194,14 +188,14 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section(
-            footer: L10n.NotificationsConfigurator.Action.Rows.AuthenticationRequired.footer
-        ) {
-            if action.isServerControlled {
-                $0.hidden = true
+            +++ Section(
+                footer: L10n.NotificationsConfigurator.Action.Rows.AuthenticationRequired.footer
+            ) {
+                if action.isServerControlled {
+                    $0.hidden = true
+                }
             }
-        }
-        <<< SwitchRow {
+            <<< SwitchRow {
                 $0.tag = "authenticationRequired"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.AuthenticationRequired.title
                 if !self.newAction {
@@ -209,22 +203,22 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ YamlSection(
-            tag: "exampleTrigger",
-            header: L10n.ActionsConfigurator.TriggerExample.title,
-            yamlGetter: { [weak form, category] in
-                guard let form = form else { return "" }
+            +++ YamlSection(
+                tag: "exampleTrigger",
+                header: L10n.ActionsConfigurator.TriggerExample.title,
+                yamlGetter: { [weak form, category] in
+                    guard let form = form else { return "" }
 
-                let formVals = form.values(includeHidden: true)
+                    let formVals = form.values(includeHidden: true)
 
-                return NotificationAction.exampleTrigger(
-                    identifier: formVals["identifier"] as? String ?? "",
-                    category: category.Identifier,
-                    textInput: formVals["textInput"] as? Bool ?? false
-                )
-            },
-            present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
-        )
+                    return NotificationAction.exampleTrigger(
+                        identifier: formVals["identifier"] as? String ?? "",
+                        category: category.Identifier,
+                        textInput: formVals["textInput"] as? Bool ?? false
+                    )
+                },
+                present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
+            )
     }
 
     override func didReceiveMemoryWarning() {
@@ -240,10 +234,10 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
     func save(_ sender: Any) {
         Current.Log.verbose("Go back hit, check for validation")
 
-        if self.form.validate().count == 0 {
+        if form.validate().count == 0 {
             Current.Log.verbose("Action form is valid, saving Action")
 
-            let formVals = self.form.values(includeHidden: true)
+            let formVals = form.values(includeHidden: true)
 
             // swiftlint:disable:next force_try
             try! realm.write {

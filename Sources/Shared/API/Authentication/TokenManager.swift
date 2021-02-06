@@ -1,11 +1,3 @@
-//
-//  TokenManager.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 8/11/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Alamofire
 import Foundation
 import PromiseKit
@@ -28,7 +20,7 @@ public class TokenManager {
         private let queueSpecific = DispatchSpecificKey<Bool>()
 
         init() {
-            queue = DispatchQueue(label: "refresh-promise-cache-mutex", qos: .userInitiated)
+            self.queue = DispatchQueue(label: "refresh-promise-cache-mutex", qos: .userInitiated)
             queue.setSpecific(key: queueSpecific, value: true)
         }
 
@@ -45,6 +37,7 @@ public class TokenManager {
             }
         }
     }
+
     private let refreshPromiseCache = RefreshPromiseCache()
 
     public init(tokenInfo: TokenInfo? = nil, forcedConnectionInfo: ConnectionInfo? = nil) {
@@ -61,7 +54,7 @@ public class TokenManager {
     /// an auth token.
     /// - Parameter code: Code acquired by authenticating with an authenticaiton provider.
     public func initialTokenWithCode(_ code: String) -> Promise<TokenInfo> {
-        return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<TokenInfo> in
+        authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<TokenInfo> in
             self.tokenInfo = tokenInfo
             Current.settingsStore.tokenInfo = tokenInfo
             return Promise.value(tokenInfo)
@@ -74,15 +67,15 @@ public class TokenManager {
             return Promise(error: TokenError.tokenUnavailable)
         }
 
-        return self.authenticationAPI.revokeToken(tokenInfo: tokenInfo)
+        return authenticationAPI.revokeToken(tokenInfo: tokenInfo)
     }
 
     public var bearerToken: Promise<String> {
-        return firstly {
+        firstly {
             self.currentToken
         }.recover { [self] error -> Promise<String> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired,
-                self.tokenInfo != nil else {
+                  self.tokenInfo != nil else {
                 Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
@@ -92,7 +85,7 @@ public class TokenManager {
     }
 
     public func authDictionaryForWebView(forceRefresh: Bool) -> Promise<[String: Any]> {
-        return firstly { () -> Promise<String> in
+        firstly { () -> Promise<String> in
             if forceRefresh {
                 Current.Log.info("forcing a refresh of token")
                 return refreshToken().map(\.accessToken)
@@ -102,7 +95,7 @@ public class TokenManager {
             }
         }.map { _ -> [String: Any] in
             // TokenInfo is refreshed at this point.
-            guard let info = self.tokenInfo  else {
+            guard let info = self.tokenInfo else {
                 throw TokenError.tokenUnavailable
             }
 
@@ -124,7 +117,7 @@ public class TokenManager {
     }
 
     private var currentToken: Promise<String> {
-        return Promise<String> { seal in
+        Promise<String> { seal in
             guard let tokenInfo = self.tokenInfo else {
                 throw TokenError.tokenUnavailable
             }
@@ -134,8 +127,11 @@ public class TokenManager {
             if tokenInfo.expiration.addingTimeInterval(-10) > Current.date() {
                 seal.fulfill(tokenInfo.accessToken)
             } else {
-                if let expirationAmount = Calendar.current.dateComponents([.second], from: tokenInfo.expiration,
-                                                                          to: Current.date()).second {
+                if let expirationAmount = Calendar.current.dateComponents(
+                    [.second],
+                    from: tokenInfo.expiration,
+                    to: Current.date()
+                ).second {
                     Current.Log.error("Token is expired by \(expirationAmount) seconds: \(tokenInfo.accessToken)")
                 } else {
                     Current.Log.error("Token is expired by an unknown amount of time: \(tokenInfo.accessToken)")
@@ -169,11 +165,11 @@ public class TokenManager {
                 self.refreshPromiseCache.promise = nil
             }.tap { result in
                 switch result {
-                case .rejected(let error):
+                case let .rejected(error):
                     Current.Log.error("refresh token got error: \(error)")
 
                     if let networkError = error as? AFError, let statusCode = networkError.responseCode,
-                        statusCode == 400 {
+                       statusCode == 400 {
                         /// Server rejected the refresh token. All is lost.
                         let event = ClientEvent(
                             text: "Refresh token is invalid, showing onboarding",
@@ -247,7 +243,7 @@ extension TokenManager: Authenticator {
     }
 
     public func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: TokenInfo) -> Bool {
-         let bearerToken = HTTPHeader.authorization(bearerToken: credential.accessToken).value
-         return urlRequest.headers["Authorization"] == bearerToken
+        let bearerToken = HTTPHeader.authorization(bearerToken: credential.accessToken).value
+        return urlRequest.headers["Authorization"] == bearerToken
     }
 }

@@ -1,17 +1,9 @@
-//
-//  TodayViewController.swift
-//  TodayWidget
-//
-//  Created by Robert Trencheny on 10/8/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
 import NotificationCenter
-import Shared
-import RealmSwift
-import UIColor_Hex_Swift
 import PromiseKit
+import RealmSwift
+import Shared
+import UIColor_Hex_Swift
+import UIKit
 
 class TodayViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, NCWidgetProviding {
     static let sectionInsets = UIEdgeInsets(top: 4, left: 12, bottom: 12, right: 12)
@@ -29,7 +21,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
     }
 
     init() {
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.sectionInset = Self.sectionInsets
         layout.minimumInteritemSpacing = 8.0
         layout.minimumLineSpacing = 8.0
@@ -39,6 +31,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
         super.init(collectionViewLayout: layout)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -87,7 +80,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
         let spacingHeights = CGFloat(numberOfRows - 1) * flowLayout.minimumLineSpacing
         let insetHeights: CGFloat = {
             if numberOfRows < fullyVisibleNumberOfRows {
-                return Self.sectionInsets.top  + flowLayout.minimumLineSpacing
+                return Self.sectionInsets.top + flowLayout.minimumLineSpacing
             } else {
                 return Self.sectionInsets.top + Self.sectionInsets.bottom
             }
@@ -106,7 +99,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
 
         let maximumHeight = extensionContext?.widgetMaximumSize(for: displayMode).height ?? 0
         Current.Log.info("content height \(preferred.height) for \(displayMode.rawValue) with max \(maximumHeight)")
-        self.preferredContentSize = preferred
+        preferredContentSize = preferred
     }
 
     func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
@@ -114,13 +107,14 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return actions.count
+        actions.count
     }
 
-    override func collectionView(_ collectionView: UICollectionView,
-                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        let action = self.actions[indexPath.row]
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let action = actions[indexPath.row]
 
         let cellID = "actionCell"
         // swiftlint:disable:next force_cast
@@ -131,11 +125,14 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         let sectionWidth = collectionView.bounds.inset(by: Self.sectionInsets).width
         let paddingWidth = flowLayout.minimumInteritemSpacing * (CGFloat(Self.itemsPerRow) - 1.0)
-        let itemWidth = (sectionWidth - paddingWidth)/CGFloat(Self.itemsPerRow)
+        let itemWidth = (sectionWidth - paddingWidth) / CGFloat(Self.itemsPerRow)
 
         return CGSize(width: itemWidth, height: Self.heightPerRow)
     }
@@ -148,7 +145,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
 
         cell.imageView.showActivityIndicator()
 
-        let action = self.actions[indexPath.row]
+        let action = actions[indexPath.row]
 
         Current.api.then(on: nil) { api in
             api.HandleAction(actionID: action.ID, source: .Widget)
@@ -170,41 +167,45 @@ class ActionButtonCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        self.layer.cornerRadius = 5.0
+        layer.cornerRadius = 5.0
 
-        self.contentView.layer.cornerRadius = 2.0
-        self.contentView.layer.borderWidth = 1.0
-        self.contentView.layer.borderColor = UIColor.clear.cgColor
-        self.contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = 2.0
+        contentView.layer.borderWidth = 1.0
+        contentView.layer.borderColor = UIColor.clear.cgColor
+        contentView.layer.masksToBounds = true
 
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        self.layer.shadowRadius = 2.0
-        self.layer.shadowOpacity = 0.5
-        self.layer.masksToBounds = false
-        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds,
-                                             cornerRadius: self.contentView.layer.cornerRadius).cgPath
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        layer.shadowRadius = 2.0
+        layer.shadowOpacity = 0.5
+        layer.masksToBounds = false
+        layer.shadowPath = UIBezierPath(
+            roundedRect: bounds,
+            cornerRadius: contentView.layer.cornerRadius
+        ).cgPath
 
-        let centerY = (self.frame.size.height / 2) - 50
+        let centerY = (frame.size.height / 2) - 50
 
-        self.title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
+        title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
 
-        self.title.textAlignment = .natural
-        self.title.clipsToBounds = true
-        self.title.numberOfLines = 1
-        self.title.font = self.title.font.withSize(UIFont.smallSystemFontSize)
+        title.textAlignment = .natural
+        title.clipsToBounds = true
+        title.numberOfLines = 1
+        title.font = title.font.withSize(UIFont.smallSystemFontSize)
 
-        self.contentView.addSubview(self.title)
-        self.contentView.addSubview(self.imageView)
+        contentView.addSubview(title)
+        contentView.addSubview(imageView)
     }
 
     public func setup(_ action: Action) {
         DispatchQueue.main.async {
             self.backgroundColor = UIColor(hex: action.BackgroundColor)
 
-            let icon = MaterialDesignIcons.init(named: action.IconName)
-            self.imageView.image = icon.image(ofSize: self.imageView.bounds.size,
-                                              color: UIColor(hex: action.IconColor))
+            let icon = MaterialDesignIcons(named: action.IconName)
+            self.imageView.image = icon.image(
+                ofSize: self.imageView.bounds.size,
+                color: UIColor(hex: action.IconColor)
+            )
             self.title.text = action.Text
             self.title.textColor = UIColor(hex: action.TextColor)
         }

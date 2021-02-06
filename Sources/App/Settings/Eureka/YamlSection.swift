@@ -1,9 +1,9 @@
-import Foundation
 import Eureka
-import UIKit
+import Foundation
 import Shared
+import UIKit
 
-final public class YamlSection: Section {
+public final class YamlSection: Section {
     private let yamlRow = TextAreaRow { row in
         row.value = ""
         row.textAreaHeight = .dynamic(initialTextViewHeight: 100)
@@ -46,7 +46,7 @@ final public class YamlSection: Section {
                 row.onCellSelection { [yamlRow, present, yamlGetter] cell, _ in
                     // although this could be done via presentationMode, we want to preserve the 'button' look
                     let value = yamlRow.value ?? yamlGetter()
-                    let controller = UIActivityViewController(activityItems: [ value ], applicationActivities: [])
+                    let controller = UIActivityViewController(activityItems: [value], applicationActivities: [])
                     controller.popoverPresentationController?.sourceView = cell
                     controller.popoverPresentationController?.sourceRect = cell.bounds
                     present(controller)

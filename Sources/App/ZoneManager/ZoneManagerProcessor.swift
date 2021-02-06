@@ -1,7 +1,7 @@
-import Foundation
-import Shared
-import PromiseKit
 import CoreLocation
+import Foundation
+import PromiseKit
+import Shared
 
 protocol ZoneManagerProcessorDelegate: AnyObject {
     func processor(_ processor: ZoneManagerProcessor, didLog state: ZoneManagerState)
@@ -23,7 +23,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             switch result {
             case .fulfilled:
                 self.delegate?.processor(self, didLog: .didReceive(event))
-            case .rejected(let error):
+            case let .rejected(error):
                 self.delegate?.processor(self, didLog: .didIgnore(event, error))
             }
         }.then {
@@ -57,7 +57,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     }
 
     private static func ignore(_ error: ZoneManagerIgnoreReason) -> Promise<Void> {
-        return .init(error: error)
+        .init(error: error)
     }
 
     private func evaluate(event: ZoneManagerEvent) -> Promise<Void> {
@@ -67,11 +67,11 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         switch event.eventType {
-        case .locationChange(let locations):
+        case let .locationChange(locations):
             return Self.evaluateLocationChangeEvent(
                 locations: locations
             )
-        case .region(let region, let state):
+        case let .region(region, state):
             return Self.evaluateRegionEvent(
                 region: region,
                 state: state,
@@ -135,7 +135,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
 
     private static func sanitize(location: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
         switch event.eventType {
-        case .region(let region as CLCircularRegion, .inside) where !region.contains(location.coordinate):
+        case let .region(region as CLCircularRegion, .inside) where !region.contains(location.coordinate):
             // if we're getting a region monitoring event saying that we're inside, but we're not inside from GPS
             let centerLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
 

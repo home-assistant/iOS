@@ -1,7 +1,7 @@
-import XCTest
-@testable import Shared
 import PromiseKit
+@testable import Shared
 import Sodium
+import XCTest
 
 class PromiseWebhookJsonTests: XCTestCase {
     private static var secretKey: SecretBox.Key!
@@ -30,7 +30,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
         let json: [String: Any] = [
             "encrypted": true,
-            "encrypted_data": encryptedData.flatMap { sodium.utils.bin2base64($0, variant: .ORIGINAL) } ?? ""
+            "encrypted_data": encryptedData.flatMap { sodium.utils.bin2base64($0, variant: .ORIGINAL) } ?? "",
         ]
 
         print("json: \(json)")
@@ -181,7 +181,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedBadBase64() throws {
         let data = try JSONSerialization.data(withJSONObject: [
             "encrypted": true,
-            "encrypted_data": "moo======"
+            "encrypted_data": "moo======",
         ], options: [])
         let promise = Promise<Data>.value(data)
         let json = promise.webhookJson(statusCode: 200, secretGetter: { "tacos" })

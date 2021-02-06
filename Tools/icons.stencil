@@ -1,4 +1,5 @@
 // swiftlint:disable all
+// swiftformat:disable all
 // Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
 // NOTE: many type declarations are extremely verbose here to improve compile times

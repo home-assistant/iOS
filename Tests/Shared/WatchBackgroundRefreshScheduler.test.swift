@@ -1,6 +1,6 @@
 import Foundation
-import XCTest
 @testable import Shared
+import XCTest
 
 class WatchBackgroundRefreshSchedulerTests: XCTestCase {
     private var scheduler: WatchBackgroundRefreshScheduler!
@@ -19,19 +19,19 @@ class WatchBackgroundRefreshSchedulerTests: XCTestCase {
     private var testCases: [TestCase] {
         var testCases = [TestCase]()
 
-        for minute in 0..<15 {
+        for minute in 0 ..< 15 {
             testCases.append(.init(currentMinute: minute, expectedMinute: 15))
         }
 
-        for minute in 15..<30 {
+        for minute in 15 ..< 30 {
             testCases.append(.init(currentMinute: minute, expectedMinute: 30))
         }
 
-        for minute in 30..<45 {
+        for minute in 30 ..< 45 {
             testCases.append(.init(currentMinute: minute, expectedMinute: 45))
         }
 
-        for minute in 45..<60 {
+        for minute in 45 ..< 60 {
             testCases.append(.init(currentMinute: minute, expectedMinute: 60))
         }
 
@@ -40,7 +40,7 @@ class WatchBackgroundRefreshSchedulerTests: XCTestCase {
 
     func testTestCases() {
         // 2020-10-10 @ 10:00:00 UTC
-        let baseDate = Date(timeIntervalSince1970: 1602324000)
+        let baseDate = Date(timeIntervalSince1970: 1_602_324_000)
 
         let calendar = Calendar.current
         let baseComponents = calendar.dateComponents(

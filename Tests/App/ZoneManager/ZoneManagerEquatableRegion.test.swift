@@ -1,7 +1,7 @@
-import Foundation
-import XCTest
 import CoreLocation
+import Foundation
 @testable import HomeAssistant
+import XCTest
 
 class ZoneManagerEquatableRegionTests: XCTestCase {
     func testMismatchedIdentifierNeverEqual() {
@@ -69,11 +69,14 @@ class ZoneManagerEquatableRegionTests: XCTestCase {
         XCTAssertNotEqual(ZoneManagerEquatableRegion(region: beaconEx), ZoneManagerEquatableRegion(region: beacon1))
         XCTAssertNotEqual(ZoneManagerEquatableRegion(region: beaconEx), ZoneManagerEquatableRegion(region: beacon2))
         XCTAssertEqual(ZoneManagerEquatableRegion(region: beaconEx), ZoneManagerEquatableRegion(region: beacon3))
-        XCTAssertEqual(ZoneManagerEquatableRegion(region: beaconEx).hashValue, ZoneManagerEquatableRegion(region: beacon3).hashValue)
+        XCTAssertEqual(
+            ZoneManagerEquatableRegion(region: beaconEx).hashValue,
+            ZoneManagerEquatableRegion(region: beacon3).hashValue
+        )
     }
 
     func testCircularEquality() {
-        let center: CLLocationCoordinate2D = CLLocationCoordinate2D(
+        let center = CLLocationCoordinate2D(
             latitude: 37.123,
             longitude: -122.456
         )
@@ -87,6 +90,9 @@ class ZoneManagerEquatableRegionTests: XCTestCase {
 
         let circular2 = CLCircularRegion(center: center, radius: radius, identifier: identifier)
         XCTAssertEqual(ZoneManagerEquatableRegion(region: circularEx), ZoneManagerEquatableRegion(region: circular2))
-        XCTAssertEqual(ZoneManagerEquatableRegion(region: circularEx).hashValue, ZoneManagerEquatableRegion(region: circular2).hashValue)
+        XCTAssertEqual(
+            ZoneManagerEquatableRegion(region: circularEx).hashValue,
+            ZoneManagerEquatableRegion(region: circular2).hashValue
+        )
     }
 }

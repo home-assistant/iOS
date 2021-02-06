@@ -25,9 +25,9 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
             return "unknown region id"
         case .zoneDisabled:
             return "zone has tracking disabled"
-        case .ignoredSSID(let ssid):
+        case let .ignoredSSID(ssid):
             return "ignored due to ssid \(ssid)"
-        case .zoneUpdateFailed(let error):
+        case let .zoneUpdateFailed(error):
             return "failed to update realm: \(error.localizedDescription)"
         case .beaconExitIgnored:
             return "beacon exit ignored"

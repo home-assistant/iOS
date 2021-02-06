@@ -1,48 +1,40 @@
-//
-//  Action.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 10/7/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
-import RealmSwift
 import ObjectMapper
+import RealmSwift
+import UIKit
 
 public final class Action: Object, ImmutableMappable, UpdatableModel {
     public enum PositionOffset: Int {
         case manual = 0
-        case synced = 5_000
-        case scene = 10_000
+        case synced = 5000
+        case scene = 10000
     }
 
-    @objc dynamic public var ID: String = UUID().uuidString
-    @objc dynamic public var Name: String = ""
-    @objc dynamic public var Text: String = ""
-    @objc dynamic public var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
-    @objc dynamic public var BackgroundColor: String
-    @objc dynamic public var IconColor: String
-    @objc dynamic public var TextColor: String
-    @objc dynamic public var Position: Int = 0
-    @objc dynamic public var CreatedAt = Date()
-    @objc dynamic public var Scene: RLMScene?
-    @objc dynamic public var isServerControlled: Bool = false
+    @objc public dynamic var ID: String = UUID().uuidString
+    @objc public dynamic var Name: String = ""
+    @objc public dynamic var Text: String = ""
+    @objc public dynamic var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
+    @objc public dynamic var BackgroundColor: String
+    @objc public dynamic var IconColor: String
+    @objc public dynamic var TextColor: String
+    @objc public dynamic var Position: Int = 0
+    @objc public dynamic var CreatedAt = Date()
+    @objc public dynamic var Scene: RLMScene?
+    @objc public dynamic var isServerControlled: Bool = false
 
     override public static func primaryKey() -> String? {
-        return "ID"
+        "ID"
     }
 
-    public required override init() {
+    override public required init() {
         let background = UIColor.randomBackgroundColor()
         BackgroundColor = background.hexString()
         if background.isLight {
-            TextColor = UIColor.black.hexString()
-            IconColor = UIColor.black.hexString()
+            self.TextColor = UIColor.black.hexString()
+            self.IconColor = UIColor.black.hexString()
         } else {
-            TextColor = UIColor.white.hexString()
-            IconColor = UIColor.white.hexString()
+            self.TextColor = UIColor.white.hexString()
+            self.IconColor = UIColor.white.hexString()
         }
 
         super.init()
@@ -71,29 +63,29 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 
     public required init(map: Map) throws {
         // this is used for watch<->app syncing
-        self.ID              = try map.value("ID")
-        self.Name            = try map.value("Name")
-        self.Position        = try map.value("Position")
+        self.ID = try map.value("ID")
+        self.Name = try map.value("Name")
+        self.Position = try map.value("Position")
         self.BackgroundColor = try map.value("BackgroundColor")
-        self.IconName        = try map.value("IconName")
-        self.IconColor       = try map.value("IconColor")
-        self.Text            = try map.value("Text")
-        self.TextColor       = try map.value("TextColor")
-        self.CreatedAt       = try map.value("CreatedAt", using: DateTransform())
+        self.IconName = try map.value("IconName")
+        self.IconColor = try map.value("IconColor")
+        self.Text = try map.value("Text")
+        self.TextColor = try map.value("TextColor")
+        self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         self.isServerControlled = try map.value("isServerControlled")
         super.init()
     }
 
     public func mapping(map: Map) {
-        ID               >>> map["ID"]
-        Name             >>> map["Name"]
-        Position         >>> map["Position"]
-        BackgroundColor  >>> map["BackgroundColor"]
-        IconName         >>> map["IconName"]
-        IconColor        >>> map["IconColor"]
-        Text             >>> map["Text"]
-        TextColor        >>> map["TextColor"]
-        CreatedAt        >>> (map["CreatedAt"], DateTransform())
+        ID >>> map["ID"]
+        Name >>> map["Name"]
+        Position >>> map["Position"]
+        BackgroundColor >>> map["BackgroundColor"]
+        IconName >>> map["IconName"]
+        IconColor >>> map["IconColor"]
+        Text >>> map["Text"]
+        TextColor >>> map["TextColor"]
+        CreatedAt >>> (map["CreatedAt"], DateTransform())
         isServerControlled >>> map["isServerControlled"]
     }
 
@@ -103,9 +95,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
     }
 
-    static func willDelete(objects: [Action], realm: Realm) {
-
-    }
+    static func willDelete(objects: [Action], realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "isServerControlled == YES")
@@ -151,9 +141,9 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 
     #if os(iOS)
     public var uiShortcut: UIApplicationShortcutItem {
-        return UIApplicationShortcutItem(
-            type: self.ID,
-            localizedTitle: self.Text,
+        UIApplicationShortcutItem(
+            type: ID,
+            localizedTitle: Text,
             localizedSubtitle: nil,
             icon: nil,
             userInfo: [:]
@@ -165,6 +155,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         case event
         case scene
     }
+
     public var triggerType: TriggerType {
         // we don't sync the scene information over to the watch, so checking ID which is synced
         if ID.starts(with: "scene.") {
@@ -179,7 +170,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         case .event:
             let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)
             let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
-            let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map { $0.description }.sorted()
+            let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map(\.description).sorted()
 
             let indentation = "\n    "
 
@@ -216,22 +207,22 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         components.host = "perform_action"
         components.path = "/" + ID
         components.queryItems = [
-            .init(name: "source", value: HomeAssistantAPI.ActionSource.Widget.rawValue)
+            .init(name: "source", value: HomeAssistantAPI.ActionSource.Widget.rawValue),
         ]
         return components.url!
     }
 }
 
-extension UIColor {
-    public static func randomBackgroundColor() -> UIColor {
+public extension UIColor {
+    static func randomBackgroundColor() -> UIColor {
         // avoiding:
         // - super gray (low saturation)
         // - super black (low brightness)
         // - super white (high brightness)
         UIColor(
-            hue: CGFloat.random(in: 0...1.0),
-            saturation: CGFloat.random(in: 0.5...1.0),
-            brightness: CGFloat.random(in: 0.25...0.75),
+            hue: CGFloat.random(in: 0 ... 1.0),
+            saturation: CGFloat.random(in: 0.5 ... 1.0),
+            brightness: CGFloat.random(in: 0.25 ... 0.75),
             alpha: 1.0
         )
     }

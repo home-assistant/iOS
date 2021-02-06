@@ -1,19 +1,11 @@
-//
-//  ExtensionDelegate.swift
-//  WatchApp Extension
-//
-//  Created by Robert Trencheny on 9/24/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import WatchKit
 import ClockKit
-import RealmSwift
 import Communicator
-import UserNotifications
-import XCGLogger
-import Shared
 import PromiseKit
+import RealmSwift
+import Shared
+import UserNotifications
+import WatchKit
+import XCGLogger
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     // MARK: Fileprivate
@@ -23,7 +15,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     fileprivate var watchConnectivityWatchdogTimer: Timer?
 
     override init() {
-        (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
+        (self.watchConnectivityBackgroundPromise, self.watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
         super.init()
     }
 
@@ -45,7 +37,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             WKExtension.shared().registerForRemoteNotifications()
         }
 
-        UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options: opts) { granted, error in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
         }
 
@@ -90,8 +82,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }.cauterize()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
-                snapshotTask.setTaskCompleted(restoredDefaultState: true,
-                                              estimatedSnapshotExpiration: Date.distantFuture, userInfo: nil)
+                snapshotTask.setTaskCompleted(
+                    restoredDefaultState: true,
+                    estimatedSnapshotExpiration: Date.distantFuture,
+                    userInfo: nil
+                )
             case let connectivityTask as WKWatchConnectivityRefreshBackgroundTask:
                 enqueueForCompletion(connectivityTask)
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
@@ -137,7 +132,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
-    // swiftlint:disable:next function_body_length
     func setupWatchCommunicator() {
         Communicator.State.observe { state in
             Current.Log.verbose("Activation state changed: \(state)")
@@ -287,9 +281,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 }
 
 extension ExtensionDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
-                                // swiftlint:disable:next line_length
-                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
         completionHandler([.alert, .badge, .sound])
     }
 }

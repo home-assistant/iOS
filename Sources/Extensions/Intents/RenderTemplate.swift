@@ -1,20 +1,14 @@
-//
-//  RenderTemplate.swift
-//  SiriIntents
-//
-//  Created by Robert Trencheny on 2/19/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
-import UIKit
-import Shared
 import Intents
 import PromiseKit
+import Shared
+import UIKit
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
-    func resolveTemplate(for intent: RenderTemplateIntent,
-                         with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolveTemplate(
+        for intent: RenderTemplateIntent,
+        with completion: @escaping (INStringResolutionResult) -> Void
+    ) {
         if let templateStr = intent.template, templateStr.isEmpty == false {
             Current.Log.info("using provided '\(templateStr)'")
             completion(.success(with: templateStr))

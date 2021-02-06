@@ -1,9 +1,9 @@
 import Foundation
 import Intents
 
-extension INImage {
+public extension INImage {
     #if os(iOS)
-    public convenience init(
+    convenience init(
         icon: MaterialDesignIcons,
         foreground: UIColor,
         background: UIColor

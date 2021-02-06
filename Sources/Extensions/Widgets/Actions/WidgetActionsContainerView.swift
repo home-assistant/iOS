@@ -1,6 +1,6 @@
-import WidgetKit
-import SwiftUI
 import Shared
+import SwiftUI
+import WidgetKit
 
 struct WidgetActionsContainerView: View {
     var entry: WidgetActionsEntry
@@ -99,7 +99,7 @@ struct WidgetActionsContainerView_Previews: PreviewProvider {
                 "Twix",
                 "Mr. Goodbar",
                 "Kit Kat",
-                "M&M's"
+                "M&M's",
             ].randomElement()!
         }
     }
@@ -107,16 +107,16 @@ struct WidgetActionsContainerView_Previews: PreviewProvider {
     static var previews: some View {
         WidgetActionsContainerView(entry: .init(actions: [
             action(),
-            action()
+            action(),
         ]))
-        .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
 
         WidgetActionsContainerView(entry: .init(actions: [
             action(),
             action(),
-            action()
+            action(),
         ]))
-        .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
 
 //        WidgetActionsContainerView(entry: .init(actions: [
 //            action(),
@@ -128,25 +128,16 @@ struct WidgetActionsContainerView_Previews: PreviewProvider {
 
         WidgetActionsContainerView(entry: .init(actions: [
             action(),
-            action()
-        ]))
-        .previewContext(WidgetPreviewContext(family: .systemLarge))
-
-        WidgetActionsContainerView(entry: .init(actions: [
             action(),
-            action(),
-            action()
         ]))
-        .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
 
         WidgetActionsContainerView(entry: .init(actions: [
             action(),
             action(),
             action(),
-            action(),
-            action()
         ]))
-        .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
 
         WidgetActionsContainerView(entry: .init(actions: [
             action(),
@@ -154,11 +145,20 @@ struct WidgetActionsContainerView_Previews: PreviewProvider {
             action(),
             action(),
             action(),
-            action(),
-            action(),
-            action()
         ]))
-        .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+
+        WidgetActionsContainerView(entry: .init(actions: [
+            action(),
+            action(),
+            action(),
+            action(),
+            action(),
+            action(),
+            action(),
+            action(),
+        ]))
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }
 #endif

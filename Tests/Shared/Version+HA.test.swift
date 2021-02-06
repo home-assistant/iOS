@@ -1,7 +1,7 @@
 import Foundation
+@testable import Shared
 import Version
 import XCTest
-@testable import Shared
 
 class VersionHATests: XCTestCase {
     func testDevWithoutPatch() throws {

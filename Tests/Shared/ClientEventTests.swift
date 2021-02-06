@@ -1,22 +1,14 @@
-//
-//  ClientEventTests.swift
-//  HomeAssistantTests
-//
-//  Created by Stephan Vanterpool on 6/20/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import XCTest
 import RealmSwift
-import UserNotifications
 @testable import Shared
+import UserNotifications
+import XCTest
 
 class ClientEventTests: XCTestCase {
     var store: ClientEventStore!
     override func setUp() {
         super.setUp()
         Current.realm = Realm.mock
-        self.store = ClientEventStore()
+        store = ClientEventStore()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
@@ -33,7 +25,7 @@ class ClientEventTests: XCTestCase {
         let mutableContent = UNMutableNotificationContent()
         let alert = "House mode changed to away"
         let expectedTitle = "Received a Push Notification: \(alert)"
-        mutableContent.userInfo = [ "aps": ["alert": alert, "sound": "default:"]]
+        mutableContent.userInfo = ["aps": ["alert": alert, "sound": "default:"]]
         let content = mutableContent as UNNotificationContent
         XCTAssertEqual(content.clientEventTitle, expectedTitle)
     }
@@ -61,7 +53,7 @@ class ClientEventTests: XCTestCase {
 
     func testCanWriteClientEvent() {
         let event = ClientEvent(text: "Yo", type: .notification)
-        self.store.addEvent(event)
+        store.addEvent(event)
         XCTAssertEqual(1, store.getEvents().count)
     }
 
@@ -69,8 +61,8 @@ class ClientEventTests: XCTestCase {
         let date = Date()
         Current.date = { date }
         let event = ClientEvent(text: "Yo", type: .notification)
-        self.store.addEvent(event)
-        let retrieved = self.store.getEvents().first
+        store.addEvent(event)
+        let retrieved = store.getEvents().first
         XCTAssertEqual(retrieved?.text, "Yo")
         XCTAssertEqual(retrieved?.type, .notification)
         XCTAssertEqual(retrieved?.date, date)
@@ -78,8 +70,8 @@ class ClientEventTests: XCTestCase {
 
     func testCanClearEvents() {
         let event = ClientEvent(text: "Yo", type: .notification)
-        self.store.addEvent(event)
+        store.addEvent(event)
         XCTAssertEqual(1, store.getEvents().count)
-        self.store.clearAllEvents()
+        store.clearAllEvents()
     }
 }

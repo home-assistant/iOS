@@ -1,14 +1,6 @@
-//
-//  AuthorizationTests.swift
-//  SharedTests
-//
-//  Created by Stephan Vanterpool on 7/21/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import XCTest
 import PromiseKit
 @testable import Shared
+import XCTest
 
 class AuthorizationTests: XCTestCase {
     override func setUp() {
@@ -27,7 +19,7 @@ class AuthorizationTests: XCTestCase {
 //        firstly {
 //            AuthenticationAPI.listProviders()
 //            }.then { providers in
-//AuthenticationAPI.authenticationForm(for: providers.first!)
+    // AuthenticationAPI.authenticationForm(for: providers.first!)
 //            }.then { form in
 //                AuthenticationAPI.postAuthenticationResponses(["username": "stephen", "password":"password"],
 //                                                              flowId: form.flowId)
@@ -48,7 +40,7 @@ class AuthorizationTests: XCTestCase {
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }

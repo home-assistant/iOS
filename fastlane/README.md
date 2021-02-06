@@ -15,9 +15,14 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
-### clean_all_testers
+### lint
 ```
-fastlane clean_all_testers
+fastlane lint
+```
+
+### autocorrect
+```
+fastlane autocorrect
 ```
 
 ### download_provisioning_profiles

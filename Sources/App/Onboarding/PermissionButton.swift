@@ -1,53 +1,43 @@
-//
-//  PermissionButton.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/21/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-//  Slightly modified from SPPermission's button: https://bit.ly/2UMXEtN
-
 import UIKit
 
 @IBDesignable class PermissionButton: UIButton {
-
     var style: Style = .default {
         didSet {
-            self.setTitleColorForTwoState(self.style.textColor)
-            self.setTitle(self.style.title, for: .normal)
+            setTitleColorForTwoState(style.textColor)
+            setTitle(style.title, for: .normal)
 
-            self.backgroundColor = self.style.backgroundColor
-            self.contentEdgeInsets = self.style.insets(self.titleLabel?.text?.count)
+            backgroundColor = style.backgroundColor
+            contentEdgeInsets = style.insets(titleLabel?.text?.count)
 
-            self.sizeToFit()
+            sizeToFit()
         }
     }
 
     init() {
         super.init(frame: .zero)
-        self.sharedInit()
+        sharedInit()
     }
 
-    required override init(frame: CGRect) {
+    override required init(frame: CGRect) {
         super.init(frame: frame)
-        self.sharedInit()
+        sharedInit()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.sharedInit()
+        sharedInit()
     }
 
     override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
-        self.sharedInit()
+        sharedInit()
     }
 
     func sharedInit() {
-        self.style = .default
-        self.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        self.layer.masksToBounds = true
-        self.layer.cornerRadius = self.frame.height / 2
+        style = .default
+        titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        layer.masksToBounds = true
+        layer.cornerRadius = frame.height / 2
     }
 
     override func setTitle(_ title: String?, for state: UIControl.State) {
@@ -55,8 +45,8 @@ import UIKit
     }
 
     private func setTitleColorForTwoState(_ color: UIColor) {
-        self.setTitleColor(color, for: .normal)
-        self.setTitleColor(color.withAlphaComponent(0.7), for: .highlighted)
+        setTitleColor(color, for: .normal)
+        setTitleColor(color.withAlphaComponent(0.7), for: .highlighted)
     }
 
     enum Style {
@@ -82,8 +72,8 @@ import UIKit
         }
 
         func insets(_ characterCount: Int?) -> UIEdgeInsets {
-            if self == .default && characterCount ?? 5 < 4 {
-                return UIEdgeInsets.init(top: 6, left: 22, bottom: 6, right: 22)
+            if self == .default, characterCount ?? 5 < 4 {
+                return UIEdgeInsets(top: 6, left: 22, bottom: 6, right: 22)
             }
             return UIEdgeInsets(top: 6, left: 15, bottom: 6, right: 15)
         }

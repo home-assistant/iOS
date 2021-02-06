@@ -1,35 +1,33 @@
-//
-//  ManualSetupViewController.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 4/20/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-import UIKit
-import Shared
 import PromiseKit
+import Shared
+import UIKit
 
 class ManualSetupViewController: UIViewController {
-
-    @IBOutlet weak var connectButton: UIButton!
-    @IBOutlet weak var urlField: UITextField!
+    @IBOutlet var connectButton: UIButton!
+    @IBOutlet var urlField: UITextField!
 
     public var notOnWifi: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(self.connectButton)
+        if let navVC = navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(connectButton)
         }
 
         // Keyboard avoidance adapted from https://stackoverflow.com/a/27135992/486182
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
-                                               name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
-                                               name: UIResponder.keyboardWillHideNotification, object: nil)
-
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 
     @IBAction func connectButtonTapped(_ sender: UIButton) {
@@ -56,9 +54,11 @@ class ManualSetupViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
         if segueType == .setupManualInstance, let vc = segue.destination as? AuthenticationViewController {
-            guard let fieldVal = self.urlField.text else {
-                // swiftlint:disable:next line_length
-                Current.Log.error("Unable to get text! Field is \(String(describing: self.urlField)), text \(String(describing: self.urlField.text))")
+            guard let fieldVal = urlField.text else {
+                Current.Log
+                    .error(
+                        "Unable to get text! Field is \(String(describing: urlField)), text \(String(describing: urlField.text))"
+                    )
                 return
             }
             guard let url = URL(string: fieldVal) else {
@@ -78,7 +78,7 @@ class ManualSetupViewController: UIViewController {
     }
 
     private func promptForScheme(for string: String) -> Promise<String> {
-        return Promise { seal in
+        Promise { seal in
             let alert = UIAlertController(
                 title: L10n.Onboarding.ManualSetup.NoScheme.title,
                 message: L10n.Onboarding.ManualSetup.NoScheme.message,
@@ -86,7 +86,7 @@ class ManualSetupViewController: UIViewController {
             )
 
             func action(for scheme: String) -> UIAlertAction {
-                return UIAlertAction(title: scheme, style: .default, handler: { _ in
+                UIAlertAction(title: scheme, style: .default, handler: { _ in
                     seal.fulfill(scheme + string)
                 })
             }
@@ -130,17 +130,16 @@ class ManualSetupViewController: UIViewController {
     @objc func keyboardWillShow(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        if self.view.frame.origin.y == 0 {
-            self.view.frame.origin.y -= keyboardSize.cgRectValue.height / 2
+        if view.frame.origin.y == 0 {
+            view.frame.origin.y -= keyboardSize.cgRectValue.height / 2
         }
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y += keyboardSize.cgRectValue.height / 2
+        if view.frame.origin.y != 0 {
+            view.frame.origin.y += keyboardSize.cgRectValue.height / 2
         }
     }
-
 }

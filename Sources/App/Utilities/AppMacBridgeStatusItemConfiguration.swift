@@ -1,5 +1,5 @@
-import UIKit
 import Shared
+import UIKit
 
 class AppMacBridgeStatusItemConfiguration: MacBridgeStatusItemConfiguration {
     init(
@@ -60,9 +60,11 @@ final class AppMacBridgeStatusItemMenuItem: MacBridgeStatusItemMenuItem {
             return nil
         }
     }
+
     var imageSize: CGSize {
         backingImage?.size ?? .zero
     }
+
     var isSeparator: Bool
     var keyEquivalentModifierMask: Int
     var keyEquivalent: String

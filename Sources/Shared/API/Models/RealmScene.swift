@@ -1,13 +1,13 @@
 import Foundation
-import RealmSwift
 import ObjectMapper
+import RealmSwift
 
 public final class RLMScene: Object, UpdatableModel {
-    @objc dynamic private var underlyingSceneData: Data = Data()
+    @objc private dynamic var underlyingSceneData = Data()
 
-    @objc dynamic public var identifier: String = ""
+    @objc public dynamic var identifier: String = ""
 
-    @objc dynamic private var backingPosition: Int = 0
+    @objc private dynamic var backingPosition: Int = 0
     public static var positionKeyPath: String { #keyPath(RLMScene.backingPosition) }
     public var position: Int {
         get {
@@ -19,7 +19,7 @@ public final class RLMScene: Object, UpdatableModel {
         }
     }
 
-    @objc dynamic private var backingActionEnabled: Bool = true
+    @objc private dynamic var backingActionEnabled: Bool = true
     public var actionEnabled: Bool {
         get {
             backingActionEnabled
@@ -31,6 +31,7 @@ public final class RLMScene: Object, UpdatableModel {
             updateAction(realm: realm)
         }
     }
+
     public let actions = LinkingObjects<Action>(fromType: Action.self, property: #keyPath(Action.Scene))
     public var scene: Scene {
         get {
@@ -55,11 +56,11 @@ public final class RLMScene: Object, UpdatableModel {
         self.scene = scene
     }
 
-    required override init() {
+    override required init() {
         super.init()
     }
 
-    public override class func primaryKey() -> String? {
+    override public class func primaryKey() -> String? {
         #keyPath(identifier)
     }
 
@@ -84,7 +85,7 @@ public final class RLMScene: Object, UpdatableModel {
 
     func update(with object: Scene, using realm: Realm) {
         if self.realm == nil {
-            self.identifier = object.ID
+            identifier = object.ID
         } else {
             precondition(identifier == object.ID)
         }
@@ -93,7 +94,7 @@ public final class RLMScene: Object, UpdatableModel {
             object.Icon = "mdi:palette"
         }
 
-        self.scene = object
+        scene = object
         updateAction(realm: realm)
     }
 

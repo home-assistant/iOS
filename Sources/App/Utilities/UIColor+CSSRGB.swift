@@ -7,7 +7,7 @@ public extension UIColor {
             pattern: #"rgb(?:a){0,1}\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9\.]+))*\)"#,
             options: [.caseInsensitive]
         ) else {
-                return nil
+            return nil
         }
 
         guard let match = pattern.firstMatch(
@@ -18,7 +18,7 @@ public extension UIColor {
             return nil
         }
 
-        let values = (1..<match.numberOfRanges)
+        let values = (1 ..< match.numberOfRanges)
             .map { match.range(at: $0) }
             .filter { $0.location != NSNotFound }
             .map { (string as NSString).substring(with: $0) }
@@ -41,13 +41,13 @@ public extension UIColor {
         }
 
         func clamp(_ value: CGFloat) -> CGFloat {
-            return min(1.0, max(0.0, value))
+            min(1.0, max(0.0, value))
         }
 
         self.init(
-            red: clamp(values[0]/255.0),
-            green: clamp(values[1]/255.0),
-            blue: clamp(values[2]/255.0),
+            red: clamp(values[0] / 255.0),
+            green: clamp(values[1] / 255.0),
+            blue: clamp(values[2] / 255.0),
             alpha: values.count == 4 ? clamp(values[3]) : 1.0
         )
     }

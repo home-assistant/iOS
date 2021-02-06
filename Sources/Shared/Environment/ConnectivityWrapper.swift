@@ -18,11 +18,11 @@ public class ConnectivityWrapper {
 
     #if targetEnvironment(macCatalyst)
     init() {
-        hasWiFi = { Current.macBridge.networkConnectivity.hasWiFi }
-        currentWiFiSSID = { Current.macBridge.networkConnectivity.wifi?.ssid }
-        currentWiFiBSSID = { Current.macBridge.networkConnectivity.wifi?.bssid }
-        connectivityDidChangeNotification = { Current.macBridge.networkConnectivityDidChangeNotification }
-        simpleNetworkType = {
+        self.hasWiFi = { Current.macBridge.networkConnectivity.hasWiFi }
+        self.currentWiFiSSID = { Current.macBridge.networkConnectivity.wifi?.ssid }
+        self.currentWiFiBSSID = { Current.macBridge.networkConnectivity.wifi?.bssid }
+        self.connectivityDidChangeNotification = { Current.macBridge.networkConnectivityDidChangeNotification }
+        self.simpleNetworkType = {
             switch Current.macBridge.networkConnectivity.networkType {
             case .ethernet: return .ethernet
             case .wifi: return .wifi
@@ -30,19 +30,20 @@ public class ConnectivityWrapper {
             case .noNetwork: return .noConnection
             }
         }
-        currentNetworkHardwareAddress = { Current.macBridge.networkConnectivity.interface?.hardwareAddress }
-        cellularNetworkType = { .unknown }
-        networkAttributes = {
+        self.currentNetworkHardwareAddress = { Current.macBridge.networkConnectivity.interface?.hardwareAddress }
+        self.cellularNetworkType = { .unknown }
+        self.networkAttributes = {
             if let interface = Current.macBridge.networkConnectivity.interface {
                 return [
                     "Name": interface.name,
-                    "Hardware Address": interface.hardwareAddress
+                    "Hardware Address": interface.hardwareAddress,
                 ]
             } else {
                 return [:]
             }
         }
     }
+
     #elseif os(iOS)
     init() {
         let reachability = try? Reachability()
@@ -52,8 +53,8 @@ public class ConnectivityWrapper {
         } catch {
             Current.Log.error("failed to start reachability notifier: \(error)")
         }
-        hasWiFi = { true }
-        currentWiFiSSID = {
+        self.hasWiFi = { true }
+        self.currentWiFiSSID = {
             guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
             for interface in interfaces {
                 guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {
@@ -63,7 +64,7 @@ public class ConnectivityWrapper {
             }
             return nil
         }
-        currentWiFiBSSID = {
+        self.currentWiFiBSSID = {
             guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
             for interface in interfaces {
                 guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {
@@ -73,22 +74,22 @@ public class ConnectivityWrapper {
             }
             return nil
         }
-        connectivityDidChangeNotification = { .reachabilityChanged }
-        simpleNetworkType = { reachability?.getSimpleNetworkType() ?? .unknown }
-        cellularNetworkType = { reachability?.getNetworkType() ?? .unknown }
-        currentNetworkHardwareAddress = { nil }
-        networkAttributes = { [:] }
+        self.connectivityDidChangeNotification = { .reachabilityChanged }
+        self.simpleNetworkType = { reachability?.getSimpleNetworkType() ?? .unknown }
+        self.cellularNetworkType = { reachability?.getNetworkType() ?? .unknown }
+        self.currentNetworkHardwareAddress = { nil }
+        self.networkAttributes = { [:] }
     }
     #else
     init() {
-        hasWiFi = { true }
-        currentWiFiSSID = { nil }
-        currentWiFiBSSID = { nil }
-        connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
-        simpleNetworkType = { .unknown }
-        cellularNetworkType = { .unknown }
-        currentNetworkHardwareAddress = { nil }
-        networkAttributes = { [:] }
+        self.hasWiFi = { true }
+        self.currentWiFiSSID = { nil }
+        self.currentWiFiBSSID = { nil }
+        self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
+        self.simpleNetworkType = { .unknown }
+        self.cellularNetworkType = { .unknown }
+        self.currentNetworkHardwareAddress = { nil }
+        self.networkAttributes = { [:] }
     }
     #endif
 
@@ -96,6 +97,7 @@ public class ConnectivityWrapper {
     public var telephonyCarriers: () -> [String: CTCarrier]? = {
         CTTelephonyNetworkInfo().serviceSubscriberCellularProviders
     }
+
     public var telephonyRadioAccessTechnology: () -> [String: String]? = {
         CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology
     }

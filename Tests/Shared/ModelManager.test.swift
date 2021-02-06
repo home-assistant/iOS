@@ -1,10 +1,8 @@
 import Foundation
-@testable import Shared
-import RealmSwift
-import XCTest
 import PromiseKit
-
-// swiftlint:disable function_body_length
+import RealmSwift
+@testable import Shared
+import XCTest
 
 class ModelManagerTests: XCTestCase {
     private var realm: Realm!
@@ -101,7 +99,7 @@ class ModelManagerTests: XCTestCase {
         let models = [
             TestDeleteModel1(now.addingTimeInterval(-1)),
             TestDeleteModel1(now.addingTimeInterval(-2)),
-            TestDeleteModel1(now.addingTimeInterval(-3))
+            TestDeleteModel1(now.addingTimeInterval(-3)),
         ]
 
         try testQueue.sync {
@@ -118,7 +116,7 @@ class ModelManagerTests: XCTestCase {
                     model: TestDeleteModel1.self,
                     createdKey: #keyPath(TestDeleteModel1.createdAt),
                     duration: .init(value: 100, unit: .seconds)
-                )
+                ),
             ],
             on: testQueue
         )
@@ -145,7 +143,7 @@ class ModelManagerTests: XCTestCase {
                 TestDeleteModel1(deletedLimit1.addingTimeInterval(-1000)),
                 TestDeleteModel2(deletedLimit2.addingTimeInterval(-1)),
                 TestDeleteModel2(deletedLimit2.addingTimeInterval(-100)),
-                TestDeleteModel2(deletedLimit2.addingTimeInterval(-1000))
+                TestDeleteModel2(deletedLimit2.addingTimeInterval(-1000)),
             ]
 
             let alive = [
@@ -157,7 +155,7 @@ class ModelManagerTests: XCTestCase {
                 TestDeleteModel2(deletedLimit2.addingTimeInterval(10)),
                 TestDeleteModel2(deletedLimit2.addingTimeInterval(100)),
                 // shouldn't be deleted due to not being requested
-                TestDeleteModel3(now.addingTimeInterval(-10000))
+                TestDeleteModel3(now.addingTimeInterval(-10000)),
             ]
 
             try realm.write {
@@ -182,7 +180,7 @@ class ModelManagerTests: XCTestCase {
                     model: TestDeleteModel2.self,
                     createdKey: #keyPath(TestDeleteModel2.createdAt),
                     duration: .init(value: deletedTimeInterval2, unit: .seconds)
-                )
+                ),
             ],
             on: testQueue
         )
@@ -241,7 +239,7 @@ class ModelManagerTests: XCTestCase {
         try testQueue.sync {
             let sources: [TestStoreSource1] = [
                 .init(id: "id1", value: "val1"),
-                .init(id: "id2", value: "val2")
+                .init(id: "id2", value: "val2"),
             ]
 
             try manager.store(type: TestStoreModel1.self, sourceModels: sources)
@@ -272,17 +270,17 @@ class ModelManagerTests: XCTestCase {
             with(TestStoreModel1()) {
                 $0.identifier = "start_id4"
                 $0.value = "start_val4"
-            }
+            },
         ]
 
         let insertedSources = [
             TestStoreSource1(id: "ins_id1", value: "ins_val1"),
-            TestStoreSource1(id: "ins_id2", value: "ins_val2")
+            TestStoreSource1(id: "ins_id2", value: "ins_val2"),
         ]
 
         let updatedSources = [
             TestStoreSource1(id: "start_id1", value: "start_val1-2"),
-            TestStoreSource1(id: "start_id2", value: "start_val2-2")
+            TestStoreSource1(id: "start_id2", value: "start_val2-2"),
         ]
 
         try testQueue.sync {
@@ -354,7 +352,6 @@ class ModelManagerTests: XCTestCase {
             XCTAssertEqual(models[2].identifier, "ins_id1")
             XCTAssertEqual(models[2].value, 100)
         }
-
     }
 }
 
@@ -366,13 +363,13 @@ class TestDeleteModel1: Object {
         self.createdAt = createdAt
     }
 
-    required override init() {
+    override required init() {
         self.createdAt = Date()
         super.init()
     }
 
     override class func primaryKey() -> String? {
-        return #keyPath(TestDeleteModel1.identifier)
+        #keyPath(TestDeleteModel1.identifier)
     }
 }
 
@@ -390,7 +387,7 @@ class TestDeleteModel2: Object {
     }
 
     override class func primaryKey() -> String? {
-        return #keyPath(TestDeleteModel2.identifier)
+        #keyPath(TestDeleteModel2.identifier)
     }
 }
 
@@ -403,13 +400,13 @@ class TestDeleteModel3: Object {
         super.init()
     }
 
-    required override init() {
+    override required init() {
         self.createdAt = Date()
         super.init()
     }
 
     override class func primaryKey() -> String? {
-        return #keyPath(TestDeleteModel3.identifier)
+        #keyPath(TestDeleteModel3.identifier)
     }
 }
 
@@ -419,6 +416,7 @@ final class TestStoreModel1: Object, UpdatableModel {
     static func didUpdate(objects: [TestStoreModel1], realm: Realm) {
         lastDidUpdate = objects
     }
+
     static func willDelete(objects: [TestStoreModel1], realm: Realm) {
         lastWillDeleteIds = objects.compactMap(\.identifier)
     }
@@ -451,13 +449,9 @@ struct TestStoreSource1: UpdatableModelSource {
 }
 
 final class TestStoreModel2: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel2], realm: Realm) {
+    static func didUpdate(objects: [TestStoreModel2], realm: Realm) {}
 
-    }
-
-    static func willDelete(objects: [TestStoreModel2], realm: Realm) {
-
-    }
+    static func willDelete(objects: [TestStoreModel2], realm: Realm) {}
 
     @objc dynamic var identifier: String?
 
@@ -481,13 +475,9 @@ struct TestStoreSource2: UpdatableModelSource {
 }
 
 final class TestStoreModel3: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel3], realm: Realm) {
+    static func didUpdate(objects: [TestStoreModel3], realm: Realm) {}
 
-    }
-
-    static func willDelete(objects: [TestStoreModel3], realm: Realm) {
-
-    }
+    static func willDelete(objects: [TestStoreModel3], realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "value > 5")
@@ -513,6 +503,4 @@ final class TestStoreModel3: Object, UpdatableModel {
     }
 }
 
-private class FakeHomeAssistantAPI: HomeAssistantAPI {
-
-}
+private class FakeHomeAssistantAPI: HomeAssistantAPI {}

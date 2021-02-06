@@ -9,8 +9,9 @@ public struct StreamCameraResponse: Mappable {
             return nil
         }
     }
+
     public init(fallbackEntityID: String) {
-        mjpegPath = "/api/camera_proxy_stream/\(fallbackEntityID)"
+        self.mjpegPath = "/api/camera_proxy_stream/\(fallbackEntityID)"
     }
 
     public var hlsPath: String?

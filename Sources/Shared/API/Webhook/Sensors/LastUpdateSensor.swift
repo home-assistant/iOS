@@ -3,7 +3,7 @@ import PromiseKit
 
 public class LastUpdateSensor: SensorProvider {
     public let request: SensorProviderRequest
-    required public init(request: SensorProviderRequest) {
+    public required init(request: SensorProviderRequest) {
         self.request = request
     }
 
@@ -24,7 +24,7 @@ public class LastUpdateSensor: SensorProvider {
             with(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")) {
                 $0.Icon = icon
                 $0.State = request.lastUpdateReason
-            }
+            },
         ])
     }
 }

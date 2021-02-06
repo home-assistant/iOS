@@ -1,13 +1,13 @@
-import Foundation
-import Shared
 import CallbackURLKit
+import Foundation
 import PromiseKit
+import Shared
 
 class IncomingURLHandler {
     let windowController: WebViewWindowController
     init(windowController: WebViewWindowController) {
         self.windowController = windowController
-        self.registerCallbackURLKitHandlers()
+        registerCallbackURLKitHandlers()
     }
 
     @discardableResult
@@ -30,14 +30,16 @@ class IncomingURLHandler {
         case "perform_action":
             performActionURLHandler(url, serviceData: serviceData)
         case "auth-callback": // homeassistant://auth-callback
-           NotificationCenter.default.post(name: Notification.Name("AuthCallback"), object: nil,
-                                           userInfo: ["url": url])
+            NotificationCenter.default.post(
+                name: Notification.Name("AuthCallback"),
+                object: nil,
+                userInfo: ["url": url]
+            )
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
         }
         return true
-
     }
 
     @discardableResult
@@ -45,7 +47,7 @@ class IncomingURLHandler {
         Current.Log.info(userActivity)
 
         switch Current.tags.handle(userActivity: userActivity) {
-        case .handled(let type):
+        case let .handled(type):
             let (icon, text) = { () -> (MaterialDesignIcons, String) in
                 switch type {
                 case .nfc:
@@ -59,14 +61,14 @@ class IncomingURLHandler {
             return true
         case .unhandled:
             return false
-        case .open(let url):
+        case let .open(url):
             // NFC-based URL
             return handle(url: url)
         }
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
-        return Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+        Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
             Current.api.then(on: nil) { api -> Promise<Void> in
                 if shortcutItem.type == "sendLocation" {
                     return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
@@ -124,7 +126,6 @@ extension IncomingURLHandler {
         }
     }
 
-    // swiftlint:disable:next function_body_length
     private func registerCallbackURLKitHandlers() {
         Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
 
@@ -210,12 +211,18 @@ extension IncomingURLHandler {
         Current.api.then(on: nil) { api in
             api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
         }.done { _ in
-            self.showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
-                           message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
+            self.showAlert(
+                title: L10n.UrlHandler.FireEvent.Success.title,
+                message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1])
+            )
         }.catch { error -> Void in
-            self.showAlert(title: L10n.errorLabel,
-                           message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
-                                                                            error.localizedDescription))
+            self.showAlert(
+                title: L10n.errorLabel,
+                message: L10n.UrlHandler.FireEvent.Error.message(
+                    url.pathComponents[1],
+                    error.localizedDescription
+                )
+            )
         }
     }
 
@@ -227,12 +234,18 @@ extension IncomingURLHandler {
         Current.api.then(on: nil) { api in
             api.CallService(domain: domain, service: service, serviceData: serviceData)
         }.done { _ in
-            self.showAlert(title: L10n.UrlHandler.CallService.Success.title,
-                           message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
+            self.showAlert(
+                title: L10n.UrlHandler.CallService.Success.title,
+                message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1])
+            )
         }.catch { error in
-            self.showAlert(title: L10n.errorLabel,
-                           message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
-                                                                              error.localizedDescription))
+            self.showAlert(
+                title: L10n.errorLabel,
+                message: L10n.UrlHandler.CallService.Error.message(
+                    url.pathComponents[1],
+                    error.localizedDescription
+                )
+            )
         }
     }
 
@@ -241,11 +254,15 @@ extension IncomingURLHandler {
         Current.api.then(on: nil) { api in
             api.GetAndSendLocation(trigger: .URLScheme)
         }.done { _ in
-            self.showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
-                           message: L10n.UrlHandler.SendLocation.Success.message)
+            self.showAlert(
+                title: L10n.UrlHandler.SendLocation.Success.title,
+                message: L10n.UrlHandler.SendLocation.Success.message
+            )
         }.catch { error in
-            self.showAlert(title: L10n.errorLabel,
-                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
+            self.showAlert(
+                title: L10n.errorLabel,
+                message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription)
+            )
         }
     }
 

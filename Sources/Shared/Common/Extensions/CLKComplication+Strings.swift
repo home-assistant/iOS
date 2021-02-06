@@ -1,19 +1,10 @@
-//
-//  CLKComplication+Strings.swift
-//  HomeAssistant
-//
-//  Created by Robert Trencheny on 9/25/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 import UIKit
 #if os(watchOS)
-import WatchKit
 import ClockKit
+import WatchKit
 #endif
 
-// swiftlint:disable cyclomatic_complexity type_body_length file_length
 public enum ComplicationGroup: String, Comparable {
     case circularSmall
     case extraLarge
@@ -62,13 +53,20 @@ public enum ComplicationGroup: String, Comparable {
         case .extraLarge:
             return [ComplicationGroupMember.extraLarge]
         case .graphic:
-            return [ComplicationGroupMember.graphicBezel, ComplicationGroupMember.graphicCircular,
-                    ComplicationGroupMember.graphicCorner, ComplicationGroupMember.graphicRectangular]
+            return [
+                ComplicationGroupMember.graphicBezel,
+                ComplicationGroupMember.graphicCircular,
+                ComplicationGroupMember.graphicCorner,
+                ComplicationGroupMember.graphicRectangular,
+            ]
         case .modular:
             return [ComplicationGroupMember.modularLarge, ComplicationGroupMember.modularSmall]
         case .utilitarian:
-            return [ComplicationGroupMember.utilitarianLarge, ComplicationGroupMember.utilitarianSmall,
-                    ComplicationGroupMember.utilitarianSmallFlat]
+            return [
+                ComplicationGroupMember.utilitarianLarge,
+                ComplicationGroupMember.utilitarianSmall,
+                ComplicationGroupMember.utilitarianSmallFlat,
+            ]
         }
     }
 }
@@ -185,7 +183,7 @@ public enum ComplicationGroupMember: String, Comparable {
         CLKComplicationDescriptor(
             identifier: "placeholder-" + rawValue,
             displayName: L10n.Watch.placeholderComplicationName,
-            supportedFamilies: [ family ]
+            supportedFamilies: [family]
         )
     }
 
@@ -319,14 +317,34 @@ public enum ComplicationGroupMember: String, Comparable {
     public var templates: [ComplicationTemplate] {
         switch self {
         case .circularSmall:
-            return [.CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage,
-                    .CircularSmallRingText, .CircularSmallSimpleText, .CircularSmallStackText]
+            return [
+                .CircularSmallRingImage,
+                .CircularSmallSimpleImage,
+                .CircularSmallStackImage,
+                .CircularSmallRingText,
+                .CircularSmallSimpleText,
+                .CircularSmallStackText,
+            ]
         case .extraLarge:
-            return [.ExtraLargeRingImage, .ExtraLargeSimpleImage, .ExtraLargeStackImage, .ExtraLargeColumnsText,
-                    .ExtraLargeRingText, .ExtraLargeSimpleText, .ExtraLargeStackText]
+            return [
+                .ExtraLargeRingImage,
+                .ExtraLargeSimpleImage,
+                .ExtraLargeStackImage,
+                .ExtraLargeColumnsText,
+                .ExtraLargeRingText,
+                .ExtraLargeSimpleText,
+                .ExtraLargeStackText,
+            ]
         case .modularSmall:
-            return [.ModularSmallRingImage, .ModularSmallSimpleImage, .ModularSmallStackImage,
-                    .ModularSmallColumnsText, .ModularSmallRingText, .ModularSmallSimpleText, .ModularSmallStackText]
+            return [
+                .ModularSmallRingImage,
+                .ModularSmallSimpleImage,
+                .ModularSmallStackImage,
+                .ModularSmallColumnsText,
+                .ModularSmallRingText,
+                .ModularSmallSimpleText,
+                .ModularSmallStackText,
+            ]
         case .modularLarge:
             return [.ModularLargeStandardBody, .ModularLargeTallBody, .ModularLargeColumns, .ModularLargeTable]
         case .utilitarianSmall:
@@ -336,12 +354,22 @@ public enum ComplicationGroupMember: String, Comparable {
         case .utilitarianLarge:
             return [.UtilitarianLargeFlat]
         case .graphicCorner:
-            return [.GraphicCornerCircularImage, .GraphicCornerGaugeImage, .GraphicCornerGaugeText,
-                    .GraphicCornerStackText, .GraphicCornerTextImage]
+            return [
+                .GraphicCornerCircularImage,
+                .GraphicCornerGaugeImage,
+                .GraphicCornerGaugeText,
+                .GraphicCornerStackText,
+                .GraphicCornerTextImage,
+            ]
         case .graphicCircular:
-            return [.GraphicCircularImage, .GraphicCircularClosedGaugeImage, .GraphicCircularOpenGaugeImage,
-                    .GraphicCircularClosedGaugeText, .GraphicCircularOpenGaugeSimpleText,
-                    .GraphicCircularOpenGaugeRangeText]
+            return [
+                .GraphicCircularImage,
+                .GraphicCircularClosedGaugeImage,
+                .GraphicCircularOpenGaugeImage,
+                .GraphicCircularClosedGaugeText,
+                .GraphicCircularOpenGaugeSimpleText,
+                .GraphicCircularOpenGaugeRangeText,
+            ]
         case .graphicBezel:
             return [.GraphicBezelCircularText]
         case .graphicRectangular:
@@ -350,7 +378,6 @@ public enum ComplicationGroupMember: String, Comparable {
     }
 
     #if os(watchOS)
-    // swiftlint:disable:next function_body_length
     public func fallbackTemplate(for identifier: String?) -> CLKComplicationTemplate {
         let logoImage = UIImage(named: "RoundLogo")!
         let templateImage = UIImage(named: "TemplateLogo")!
@@ -475,7 +502,6 @@ public enum ComplicationGroupMember: String, Comparable {
 
 extension ComplicationGroupMember: CaseIterable {}
 
-// swiftlint:disable:next type_body_length
 public enum ComplicationTemplate: String {
     case CircularSmallRingImage
     case CircularSmallSimpleImage
@@ -861,7 +887,6 @@ public enum ComplicationTemplate: String {
     }
 
     #if os(watchOS)
-    // swiftlint:disable:next function_body_length
     public init(_ template: CLKComplicationTemplate) {
         switch template {
         case is CLKComplicationTemplateCircularSmallRingImage:
@@ -1059,138 +1084,138 @@ public enum ComplicationTemplate: String {
                 38: CGSize(width: 40, height: 40),
                 40: CGSize(width: 44, height: 44),
                 42: CGSize(width: 44, height: 44),
-                44: CGSize(width: 48, height: 48)
+                44: CGSize(width: 48, height: 48),
             ],
             .CircularSmallSimpleImage: [
                 38: CGSize(width: 32, height: 32),
                 40: CGSize(width: 36, height: 36),
                 42: CGSize(width: 36, height: 36),
-                44: CGSize(width: 40, height: 40)
+                44: CGSize(width: 40, height: 40),
             ],
             .CircularSmallStackImage: [
                 38: CGSize(width: 32, height: 14),
                 40: CGSize(width: 34, height: 16),
                 42: CGSize(width: 34, height: 16),
-                44: CGSize(width: 38, height: 18)
+                44: CGSize(width: 38, height: 18),
             ],
             .ModularSmallRingImage: [
                 38: CGSize(width: 36, height: 36),
                 40: CGSize(width: 38, height: 38),
                 42: CGSize(width: 38, height: 38),
-                44: CGSize(width: 42, height: 42)
+                44: CGSize(width: 42, height: 42),
             ],
             .ModularSmallSimpleImage: [
                 38: CGSize(width: 52, height: 52),
                 40: CGSize(width: 58, height: 58),
                 42: CGSize(width: 58, height: 58),
-                44: CGSize(width: 64, height: 64)
+                44: CGSize(width: 64, height: 64),
             ],
             .ModularSmallStackImage: [
                 38: CGSize(width: 52, height: 28),
                 40: CGSize(width: 58, height: 30),
                 42: CGSize(width: 58, height: 30),
-                44: CGSize(width: 64, height: 34)
+                44: CGSize(width: 64, height: 34),
             ],
             .ModularLargeColumns: [
                 38: CGSize(width: 64, height: 22),
                 40: CGSize(width: 74, height: 24),
                 42: CGSize(width: 74, height: 24),
-                44: CGSize(width: 84, height: 28)
+                44: CGSize(width: 84, height: 28),
             ],
             .ModularLargeStandardBody: [
                 38: CGSize(width: 64, height: 22),
                 40: CGSize(width: 74, height: 24),
                 42: CGSize(width: 74, height: 24),
-                44: CGSize(width: 84, height: 28)
+                44: CGSize(width: 84, height: 28),
             ],
             .ModularLargeTable: [
                 38: CGSize(width: 64, height: 22),
                 40: CGSize(width: 74, height: 24),
                 42: CGSize(width: 74, height: 24),
-                44: CGSize(width: 84, height: 28)
+                44: CGSize(width: 84, height: 28),
             ],
             .UtilitarianSmallFlat: [
                 38: CGSize(width: 42, height: 18),
                 40: CGSize(width: 44, height: 20),
                 42: CGSize(width: 44, height: 20),
-                44: CGSize(width: 49, height: 22)
+                44: CGSize(width: 49, height: 22),
             ],
             .UtilitarianSmallRingImage: [
                 38: CGSize(width: 28, height: 28),
                 40: CGSize(width: 28, height: 28),
                 42: CGSize(width: 28, height: 28),
-                44: CGSize(width: 32, height: 32)
+                44: CGSize(width: 32, height: 32),
             ],
             .UtilitarianSmallSquare: [
                 38: CGSize(width: 40, height: 40),
                 40: CGSize(width: 44, height: 44),
                 42: CGSize(width: 44, height: 44),
-                44: CGSize(width: 50, height: 50)
+                44: CGSize(width: 50, height: 50),
             ],
             .UtilitarianLargeFlat: [
                 38: CGSize(width: 42, height: 18),
                 40: CGSize(width: 44, height: 20),
                 42: CGSize(width: 44, height: 20),
-                44: CGSize(width: 49, height: 22)
+                44: CGSize(width: 49, height: 22),
             ],
             .ExtraLargeRingImage: [
                 38: CGSize(width: 126, height: 126),
                 40: CGSize(width: 133, height: 133),
                 42: CGSize(width: 133, height: 133),
-                44: CGSize(width: 146, height: 146)
+                44: CGSize(width: 146, height: 146),
             ],
             .ExtraLargeSimpleImage: [
                 38: CGSize(width: 182, height: 182),
                 40: CGSize(width: 203, height: 203),
                 42: CGSize(width: 203, height: 203),
-                44: CGSize(width: 224, height: 224)
+                44: CGSize(width: 224, height: 224),
             ],
             .ExtraLargeStackImage: [
                 38: CGSize(width: 156, height: 84),
                 40: CGSize(width: 174, height: 90),
                 42: CGSize(width: 174, height: 90),
-                44: CGSize(width: 192, height: 102)
+                44: CGSize(width: 192, height: 102),
             ],
             .GraphicCornerCircularImage: [
                 40: CGSize(width: 64, height: 64),
-                44: CGSize(width: 72, height: 72)
+                44: CGSize(width: 72, height: 72),
             ],
             .GraphicCornerGaugeImage: [
                 40: CGSize(width: 40, height: 40),
-                44: CGSize(width: 44, height: 44)
+                44: CGSize(width: 44, height: 44),
             ],
             .GraphicCornerTextImage: [
                 40: CGSize(width: 40, height: 40),
-                44: CGSize(width: 44, height: 44)
+                44: CGSize(width: 44, height: 44),
             ],
             .GraphicCircularImage: [
                 40: CGSize(width: 84, height: 84),
-                44: CGSize(width: 94, height: 94)
+                44: CGSize(width: 94, height: 94),
             ],
             .GraphicCircularClosedGaugeImage: [
                 40: CGSize(width: 28, height: 28),
-                44: CGSize(width: 32, height: 32)
+                44: CGSize(width: 32, height: 32),
             ],
             .GraphicCircularOpenGaugeImage: [
                 40: CGSize(width: 44, height: 44),
-                44: CGSize(width: 48, height: 48)
+                44: CGSize(width: 48, height: 48),
             ],
             .GraphicBezelCircularText: [
                 40: CGSize(width: 84, height: 84),
-                44: CGSize(width: 94, height: 94)
+                44: CGSize(width: 94, height: 94),
             ],
             .GraphicRectangularLargeImage: [
                 40: CGSize(width: 300, height: 94),
-                44: CGSize(width: 342, height: 108)
+                44: CGSize(width: 342, height: 108),
             ],
             .GraphicRectangularStandardBody: [
                 40: CGSize(width: 48, height: 48),
-                44: CGSize(width: 54, height: 54)
+                44: CGSize(width: 54, height: 54),
             ],
             .GraphicRectangularTextGauge: [
                 40: CGSize(width: 24, height: 24),
-                44: CGSize(width: 27, height: 27)
-            ]
+                44: CGSize(width: 27, height: 27),
+            ],
         ]
 
         let deviceSize = WKInterfaceDevice.currentResolution().rawValue
@@ -1382,7 +1407,7 @@ public enum ComplicationTextAreas: String, CaseIterable {
     }
 
     public var slug: String {
-        var cleanLocation = self.rawValue
+        var cleanLocation = rawValue
         cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")
         cleanLocation = cleanLocation.replacingOccurrences(of: ",", with: "")
 

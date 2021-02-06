@@ -1,17 +1,7 @@
-//
-//  Reachability+NetworkType.swift
-//  Shared
-//
-//  Created by Robert Trencheny on 2/20/19.
-//  Copyright © 2019 Robbie Trencheny. All rights reserved.
-//
-
-// From https://gist.github.com/speedoholic/1746ac93be8e26723ce4023f0f4d211a
-
 import Foundation
 #if os(iOS)
-import Reachability
 import CoreTelephony
+import Reachability
 #endif
 
 public enum NetworkType: Int, CaseIterable {
@@ -107,7 +97,6 @@ public enum NetworkType: Int, CaseIterable {
 
 #if os(iOS)
 public extension Reachability {
-
     func getSimpleNetworkType() -> NetworkType {
         try? startNotifier()
 
@@ -133,9 +122,9 @@ public extension Reachability {
             return .wifi
         case .cellular:
             #if !targetEnvironment(macCatalyst)
-                return Reachability.getWWANNetworkType()
+            return Reachability.getWWANNetworkType()
             #else
-                return .cellular
+            return .cellular
             #endif
         case .unavailable:
             return .noConnection

@@ -28,9 +28,9 @@ public class DeviceWrapper {
             .compactMap { $0 as? [String: Any] }
             .map { DeviceBattery(powerSourceDescription: $0) }
         #elseif os(iOS)
-        return [ DeviceBattery(device: UIDevice.current) ]
+        return [DeviceBattery(device: UIDevice.current)]
         #elseif os(watchOS)
-        return [ DeviceBattery(device: WKInterfaceDevice.current()) ]
+        return [DeviceBattery(device: WKInterfaceDevice.current())]
         #endif
     }
 
@@ -40,42 +40,42 @@ public class DeviceWrapper {
 
     public lazy var volumes: () -> [URLResourceKey: Int64]? = {
         #if os(iOS)
-            return try? URL(fileURLWithPath: NSHomeDirectory()).resourceValues(forKeys: [
-                .volumeAvailableCapacityForImportantUsageKey,
-                .volumeAvailableCapacityKey,
-                .volumeAvailableCapacityForOpportunisticUsageKey,
-                .volumeTotalCapacityKey
-            ]).allValues.mapValues {
-                if let int = $0 as? Int64 {
-                    return int
-                }
-                if let int = $0 as? Int {
-                    return Int64(int)
-                }
-                return 0
+        return try? URL(fileURLWithPath: NSHomeDirectory()).resourceValues(forKeys: [
+            .volumeAvailableCapacityForImportantUsageKey,
+            .volumeAvailableCapacityKey,
+            .volumeAvailableCapacityForOpportunisticUsageKey,
+            .volumeTotalCapacityKey,
+        ]).allValues.mapValues {
+            if let int = $0 as? Int64 {
+                return int
             }
+            if let int = $0 as? Int {
+                return Int64(int)
+            }
+            return 0
+        }
         #elseif os(watchOS)
-            return nil
+        return nil
         #endif
     }
 
     public lazy var identifierForVendor: () -> String? = {
         #if os(iOS)
-            return UIDevice.current.identifierForVendor?.uuidString
+        return UIDevice.current.identifierForVendor?.uuidString
         #elseif os(watchOS)
-            if #available(watchOS 6.2, *) {
-                return WKInterfaceDevice.current().identifierForVendor?.uuidString
-            } else {
-                return nil
-            }
+        if #available(watchOS 6.2, *) {
+            return WKInterfaceDevice.current().identifierForVendor?.uuidString
+        } else {
+            return nil
+        }
         #endif
     }
 
     public lazy var inspecificModel: () -> String = {
         #if os(iOS)
-            return UIDevice.current.model
+        return UIDevice.current.model
         #elseif os(watchOS)
-            return WKInterfaceDevice.current().model
+        return WKInterfaceDevice.current().model
         #endif
     }
 
@@ -155,7 +155,7 @@ public class DeviceWrapper {
                  > tablet—specify kCGAnyInputEventType.
                  But kCGAnyInputEventType isn't available in Swift. In Objective-C it's defined as `((CGEventType)(~0))`
                  */
-                return CGEventType(rawValue: ~0)!
+                CGEventType(rawValue: ~0)!
             }()
         )
         return .init(value: seconds, unit: .seconds)

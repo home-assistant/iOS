@@ -1,24 +1,18 @@
-//
-//  Notifications.swift
-//  Shared
-//
-//  Created by Stephan Vanterpool on 9/15/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
 import Foundation
 
 final class Notifications {
     static func installedPushNotificationSounds() -> [String] {
-        let fileManager: FileManager = FileManager()
+        let fileManager = FileManager()
 
         let libraryPath: URL
 
         do {
-            libraryPath = try fileManager.url(for: .libraryDirectory,
-                                              in: FileManager.SearchPathDomainMask.userDomainMask,
-                                              appropriateFor: nil,
-                                              create: false)
+            libraryPath = try fileManager.url(
+                for: .libraryDirectory,
+                in: FileManager.SearchPathDomainMask.userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
         } catch let error as NSError {
             Current.Log.error("Error when building URL for library directory \(error)")
             return [String]()
@@ -26,10 +20,12 @@ final class Notifications {
 
         let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
 
-        let librarySoundsContents = fileManager.enumerator(at: librarySoundsPath,
-                                                           includingPropertiesForKeys: nil,
-                                                           options: FileManager.DirectoryEnumerationOptions(),
-                                                           errorHandler: nil)!
+        let librarySoundsContents = fileManager.enumerator(
+            at: librarySoundsPath,
+            includingPropertiesForKeys: nil,
+            options: FileManager.DirectoryEnumerationOptions(),
+            errorHandler: nil
+        )!
 
         var allSounds = [String]()
 

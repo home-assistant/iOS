@@ -1,21 +1,15 @@
-//
-//  SendLocation.swift
-//  SiriIntents
-//
-//  Created by Robert Trencheny on 9/17/18.
-//  Copyright © 2018 Robbie Trencheny. All rights reserved.
-//
-
-import Foundation
-import UIKit
 import CoreLocation
-import Shared
+import Foundation
 import Intents
 import PromiseKit
+import Shared
+import UIKit
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
-    func resolveLocation(for intent: SendLocationIntent,
-                         with completion: @escaping (INPlacemarkResolutionResult) -> Void) {
+    func resolveLocation(
+        for intent: SendLocationIntent,
+        with completion: @escaping (INPlacemarkResolutionResult) -> Void
+    ) {
         if let loc = intent.location {
             Current.Log.info("using provided \(loc)")
             completion(.success(with: loc))
@@ -44,7 +38,5 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
             completion(resp)
             return
         }
-
     }
-
 }

@@ -1,6 +1,6 @@
+import Eureka
 import Foundation
 import Shared
-import Eureka
 import UIKit
 
 class SensorDetailViewController: FormViewController {
@@ -11,6 +11,7 @@ class SensorDetailViewController: FormViewController {
         super.init(style: .grouped)
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -69,7 +70,7 @@ class SensorDetailViewController: FormViewController {
 
         section.append(contentsOf: settings.map { setting -> BaseRow in
             switch setting.type {
-            case .switch(let getter, let setter):
+            case let .switch(getter, setter):
                 return SwitchRow {
                     $0.title = setting.title
                     $0.value = getter()
@@ -77,7 +78,7 @@ class SensorDetailViewController: FormViewController {
                         setter(row.value ?? false)
                     }
                 }
-            case .stepper(let getter, let setter, let minimum, let maximum, let step, let displayValueFor):
+            case let .stepper(getter, setter, minimum, maximum, step, displayValueFor):
                 return StepperRow {
                     $0.title = setting.title
                     $0.value = getter()
@@ -104,7 +105,7 @@ class SensorDetailViewController: FormViewController {
     }
 
     class func row(attribute: String, value: Any) -> BaseRow {
-        return LabelRow { row in
+        LabelRow { row in
             row.title = attribute
 
             if let value = value as? NSNumber, value === kCFBooleanTrue || value === kCFBooleanFalse {

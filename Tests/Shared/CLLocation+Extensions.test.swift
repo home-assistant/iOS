@@ -1,7 +1,7 @@
-import Foundation
-import XCTest
 import CoreLocation
+import Foundation
 @testable import Shared
+import XCTest
 
 class CLLocationExtensionsTests: XCTestCase {
     private var coordinate: CLLocationCoordinate2D!

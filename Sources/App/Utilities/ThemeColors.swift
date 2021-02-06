@@ -1,6 +1,6 @@
 import Foundation
-import UIKit
 import Shared
+import UIKit
 
 public struct ThemeColors: Codable {
     public enum Color: String, CaseIterable {
@@ -55,7 +55,7 @@ public struct ThemeColors: Codable {
         for traitCollection: UITraitCollection
     ) {
         func rawValue(for key: Color) -> String? {
-            return messageBody[key.rawValue]
+            messageBody[key.rawValue]
                 .flatMap { $0 as? String }?
                 .trimmingCharacters(in: .whitespacesAndNewlines)
         }
