@@ -78,20 +78,10 @@ public class SensorContainer {
 
     private class LastSentSensors {
         public private(set) var queue = DispatchQueue(label: "lastSentSensors-update")
-        private var underlying = [String: WebhookSensor]()
+        private var value = [String: WebhookSensor]()
         private var pendingUUID = UUID()
-        var value: [String: WebhookSensor] {
-            get {
-                dispatchPrecondition(condition: .onQueue(queue))
-                return underlying
-            }
-            set {
-                dispatchPrecondition(condition: .onQueue(queue))
-                underlying = newValue
-            }
-        }
 
-        func nextPendingUUID() -> UUID {
+        private func nextPendingUUID() -> UUID {
             dispatchPrecondition(condition: .onQueue(queue))
 
             let uuid = UUID()
@@ -99,9 +89,28 @@ public class SensorContainer {
             return uuid
         }
 
+        func filter(sensors: [WebhookSensor]) -> ([WebhookSensor], UUID) {
+            dispatchPrecondition(condition: .onQueue(queue))
+
+            let filteredSensors = sensors.filter { sensor in
+                if let uniqueID = sensor.UniqueID {
+                    return value[uniqueID] != sensor
+                } else {
+                    return false
+                }
+            }
+
+            for key in filteredSensors.compactMap(\.UniqueID) {
+                // now that we're about to send up a new value, until we hear back we can't trust our cache
+                value[key] = nil
+            }
+
+            return (filteredSensors, nextPendingUUID())
+        }
+
         func combined(with sensors: [WebhookSensor], ignoringKeys: Set<String> = .init()) -> [String: WebhookSensor] {
             dispatchPrecondition(condition: .onQueue(queue))
-            return sensors.reduce(into: underlying) { result, sensor in
+            return sensors.reduce(into: value) { result, sensor in
                 if let uniqueID = sensor.UniqueID, !ignoringKeys.contains(uniqueID) {
                     result[uniqueID] = sensor
                 }
@@ -113,10 +122,10 @@ public class SensorContainer {
 
             if isOutOfOrder {
                 // don't override anything that's already persisted, but allow things in if they're not already saved
-                underlying = combined(with: sensors, ignoringKeys: Set(underlying.keys))
+                value = combined(with: sensors, ignoringKeys: Set(value.keys))
             } else {
                 // latest update, we can trust all the values are the latest we've sent
-                underlying = combined(with: sensors)
+                value = combined(with: sensors)
             }
         }
     }
@@ -155,17 +164,7 @@ public class SensorContainer {
             let filteredSensors = firstly {
                 generatedSensors
             }.map(on: lastSentSensors.queue) { [self] sensors -> ([WebhookSensor], UUID) in
-                let lastSentValue = lastSentSensors.value
-                return (
-                    sensors.filter { sensor in
-                        if let uniqueID = sensor.UniqueID {
-                            return lastSentValue[uniqueID] != sensor
-                        } else {
-                            return false
-                        }
-                    },
-                    lastSentSensors.nextPendingUUID()
-                )
+                lastSentSensors.filter(sensors: sensors)
             }
 
             // only store when we know we're sending the maximum kind of data

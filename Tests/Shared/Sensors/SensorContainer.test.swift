@@ -321,6 +321,67 @@ class SensorContainerTests: XCTestCase {
 
         result2.didPersist()
     }
+
+    func testChangedFailsButSilentlySucceeded() throws {
+        container.register(provider: MockSensorProvider.self)
+        container.register(provider: MockSensorProvider.self)
+
+        MockSensorProvider.returnedPromises = [
+            .value([
+                WebhookSensor(name: "test1a", uniqueID: "test1a"),
+                WebhookSensor(name: "test1b", uniqueID: "test1b"),
+            ]),
+            .value([
+                WebhookSensor(name: "test2a", uniqueID: "test2a"),
+                WebhookSensor(name: "test2b", uniqueID: "test2b"),
+            ]),
+        ]
+
+        let promise1 = container.sensors(reason: .trigger("unit-test"))
+        let result1 = try hang(Promise(promise1))
+        XCTAssertEqual(Set(result1.sensors.map(\.Name)), Set([
+            "test1a", "test1b", "test2a", "test2b",
+        ]))
+
+        result1.didPersist()
+
+        MockSensorProvider.returnedPromises = [
+            .value([
+                WebhookSensor(name: "test1a_mod", uniqueID: "test1a"),
+                WebhookSensor(name: "test1b", uniqueID: "test1b"),
+            ]),
+            .value([
+                WebhookSensor(name: "test2a", uniqueID: "test2a"),
+                WebhookSensor(name: "test2b", uniqueID: "test2b"),
+            ]),
+        ]
+
+        let promise2 = container.sensors(reason: .trigger("unit-test"))
+        let result2 = try hang(Promise(promise2))
+        XCTAssertEqual(Set(result2.sensors.map(\.Name)), Set([
+            "test1a_mod",
+        ]))
+
+        // not persisting -- this is e.g. an error case, but the error was silently successful
+        // the act of trying to mutate a sensor is going to cause it to need to be re-sent
+
+        MockSensorProvider.returnedPromises = [
+            .value([
+                WebhookSensor(name: "test1a", uniqueID: "test1a"),
+                WebhookSensor(name: "test1b", uniqueID: "test1b"),
+            ]),
+            .value([
+                WebhookSensor(name: "test2a", uniqueID: "test2a"),
+                WebhookSensor(name: "test2b", uniqueID: "test2b"),
+            ]),
+        ]
+
+        let promise3 = container.sensors(reason: .trigger("unit-test"))
+        let result3 = try hang(Promise(promise3))
+        XCTAssertEqual(Set(result3.sensors.map(\.Name)), Set([
+            "test1a",
+        ]))
+    }
 }
 
 private extension WebhookSensor {
