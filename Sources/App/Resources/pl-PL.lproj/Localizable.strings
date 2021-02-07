@@ -447,7 +447,7 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "settings_details.notifications.rate_limits.delivered" = "Dostarczone";
 "settings_details.notifications.rate_limits.errors" = "Błędy";
 "settings_details.notifications.rate_limits.footer" = "Dozwolonych jest 300 powiadomień w ciągu 24 godzin. Limit resetuje się o północy Uniwersalnego Czasu Koordynowanego (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Dozwolonych jest %d powiadomień w ciągu 24 godzin. Limit resetuje się o północy Uniwersalnego Czasu Koordynowanego (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Dozwolonych jest %u powiadomień w ciągu 24 godzin. Limit resetuje się o północy Uniwersalnego Czasu Koordynowanego (UTC).";
 "settings_details.notifications.rate_limits.header" = "Limit prób";
 "settings_details.notifications.rate_limits.resets_in" = "Zeruje się za";
 "settings_details.notifications.rate_limits.total" = "Łącznie";

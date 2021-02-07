@@ -41,7 +41,7 @@
 "FBQiVD" = "Cysylltu gwasanaeth ar fersiwn Home Assistant";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Which action?";
-"FN8zqO" = "Cyrchu ffrâm llonydd sengl o gamera a'i osod ar y clipfwrdd";
+"FN8zqO" = "Cyrchu ffrâm llonydd sengl o gamera a'i osod ar y clipfwrdd ${cameraID}";
 "fnz838" = "Sensors updated.";
 "foI0Fv" = "Wedi methu trawsnewid y templed, nid oes modd cyrchu Home Assistant ar hyn o bryd";
 "FtQqoU" = "Wedi diweddaru'r Lleoliad";
@@ -54,7 +54,7 @@
 "GoLNMt" = "Yn cychwyn digwyddiad o'r enw ${eventName} i Home Assistant bus. gyda ${eventData}.";
 "gv7Gg6" = "Lleoliad";
 "h1xQ53" = "Update Sensors";
-"HCM8Oe" = "Cychwyn Digwyddiad gyda data";
+"HCM8Oe" = "Cychwyn Digwyddiad gyda data ${eventName}";
 "hLFNfv" = "Wedi methu cyrchu delwedd camera gyda gwall: ${error}";
 "HoH8wg" = "Actions";
 "HSLcG7" = "Enw'r Digwyddiad";

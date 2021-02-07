@@ -91,7 +91,7 @@
 "nIl9ET" = "Fires an event named ${eventName} to the Home Assistant event bus. Will send clipboard contents as event data.";
 "NsbUTz" = "Camera Entity";
 "ntnbP2" = "Call Service";
-"nzqmFA" = "Got the latest still from${cameraID}";
+"nzqmFA" = "Got the latest still from ${cameraID}";
 "oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
 "P3EyZ7" = "Render the provided template";
 "pjQR7t" = "Cập nhật Cảm biến";

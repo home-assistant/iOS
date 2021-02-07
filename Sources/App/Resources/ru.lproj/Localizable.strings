@@ -192,7 +192,7 @@
 "notifications_configurator.category.rows.category_summary.default" = "%%u уведомления в %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally use '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
 "notifications_configurator.category.rows.category_summary.header" = "Резюме категории";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "% %u уведомления";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u уведомления";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "This text is only displayed if you have notification previews hidden. Use '%%u' for the number of messages with the same thread identifier.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Hidden Preview Placeholder";
 "notifications_configurator.category.rows.name.title" = "Имя";
@@ -447,7 +447,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.notifications.rate_limits.delivered" = "Доставлены";
 "settings_details.notifications.rate_limits.errors" = "Ошибки";
 "settings_details.notifications.rate_limits.footer" = "Доступно 300 push-уведомлений в сутки. Ограничения обновляются в полночь по UTC (3:00 по Москве).";
-"settings_details.notifications.rate_limits.footer_with_param" = "You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "You are allowed %u push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.header" = "Ограничение количества";
 "settings_details.notifications.rate_limits.resets_in" = "Обнулится через";
 "settings_details.notifications.rate_limits.total" = "Всего";

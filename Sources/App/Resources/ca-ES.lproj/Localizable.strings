@@ -191,11 +191,11 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "notifications_configurator.category.preview_notification.title" = "Notificació de prova";
 "notifications_configurator.category.rows.actions.footer" = "Les categories poden tenir un màxim de 10 accions.";
 "notifications_configurator.category.rows.actions.header" = "Accions";
-"notifications_configurator.category.rows.category_summary.default" = "%u notificacions a %@";
+"notifications_configurator.category.rows.category_summary.default" = "%%u notificacions a %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally use '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
 "notifications_configurator.category.rows.category_summary.header" = "Resum de la categoria";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u notificacions";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Aquest text només es mostra si teniu ocult les previsualitzacions de notificació. Utilitzeu \"%u \" per al nombre de missatges amb el mateix identificador de fil.";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u notificacions";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Aquest text només es mostra si teniu ocult les previsualitzacions de notificació. Utilitzeu \"%%u \" per al nombre de missatges amb el mateix identificador de fil.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Hidden Preview Placeholder";
 "notifications_configurator.category.rows.name.title" = "Nom";
 "notifications_configurator.identifier" = "Identificador";
@@ -449,7 +449,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.rate_limits.delivered" = "Lliurat";
 "settings_details.notifications.rate_limits.errors" = "Errors";
 "settings_details.notifications.rate_limits.footer" = "Se li permeten 300 notificacions push cada 24 hores. Els límits es restableixen a la mitjanit del Temps Universal Coordinat (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Se li permeten %d notificacions push cada 24 hores. Els límits es restableixen a la mitjanit del Temps Universal Coordinat (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Se li permeten %u notificacions push cada 24 hores. Els límits es restableixen a la mitjanit del Temps Universal Coordinat (UTC).";
 "settings_details.notifications.rate_limits.header" = "Límits de taxa";
 "settings_details.notifications.rate_limits.resets_in" = "Restableix En";
 "settings_details.notifications.rate_limits.total" = "Total";

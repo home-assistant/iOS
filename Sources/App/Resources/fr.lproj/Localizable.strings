@@ -92,7 +92,7 @@
 "extensions.notification_content.error.request.auth_failed" = "L'authentification a échoué !";
 "extensions.notification_content.error.request.entity_not_found" = "Entité'%@' introuvable !";
 "extensions.notification_content.error.request.hls_unavailable" = "Le flux HLS n'est pas disponible";
-"extensions.notification_content.error.request.other" = "Code de statut non-200 (%d)";
+"extensions.notification_content.error.request.other" = "Code de statut non-200 (%li)";
 "extensions.notification_content.error.request.unknown" = "Erreur inconnue !";
 "extensions.notification_content.hud.loading" = "Chargement %@…";
 "ha_api.api_error.cant_build_url" = "Impossible de construire l'URL de l'API";
@@ -218,8 +218,8 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.connection_test_result.ssl_untrusted.description" = "Votre certificat SSL n'est pas approuvé. %@ .";
 "onboarding.connection_test_result.too_old.description" = "Vous devez mettre à niveau votre version de Home Assistant.";
 "onboarding.connection_test_result.unknown_error.description" = "Erreur inconnue: %@";
-"onboarding.discovery.results_label.plural" = "Nous avons trouvé %d Home Assistants sur votre réseau.";
-"onboarding.discovery.results_label.singular" = "Nous avons trouvé %d Home Assistant sur votre réseau.";
+"onboarding.discovery.results_label.plural" = "Nous avons trouvé %li Home Assistants sur votre réseau.";
+"onboarding.discovery.results_label.singular" = "Nous avons trouvé %li Home Assistant sur votre réseau.";
 "onboarding.logged_out_from_move.body" = "L'application iOS Home Assistant a récemment changé d'organisation sur l'App Store. Cette modification a malheureusement nécessité votre déconnexion.\
 \
  Vos actions et votre configuration locale seront toujours disponibles après la connexion.";
@@ -281,7 +281,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "sensors.cellular_provider.attributes.mobile_country_code" = "Indicatif du pays";
 "sensors.cellular_provider.attributes.mobile_network_code" = "Code de réseau mobile";
 "sensors.cellular_provider.attributes.radio_tech" = "Technologie radio actuelle";
-"sensors.cellular_provider.name" = "Fournisseur de réseau cellulaire";
+"sensors.cellular_provider.name" = "Fournisseur de réseau cellulaire %@";
 "sensors.cellular_provider.radio_tech.cdma_1x" = "Code Division Multiple Access (CDMA 1X)";
 "sensors.cellular_provider.radio_tech.cdma_evdo_rev_0" = "Code Division Multiple Access Evolution-Data Optimized Révision 0 (CDMA EV-DO Rév. 0)";
 "sensors.cellular_provider.radio_tech.cdma_evdo_rev_a" = "Code Division Multiple Access Evolution-Data Optimized Révision A (CDMA EV-DO Rév.)";
@@ -422,7 +422,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.location.zones.enter_exit_tracked.title" = "Suivi des entrées/sorties";
 "settings_details.location.zones.footer" = "Pour désactiver le suivi de position, ajoutez track_ios: false dans les paramètres de chaque zone ou dans le fichier des personnalisations.";
 "settings_details.location.zones.location.title" = "Emplacement";
-"settings_details.location.zones.radius.label" = "%d m";
+"settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Rayon";
 "settings_details.notifications.badge_section.button.title" = "Remettre le badge à 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Le badge a été réinitialisé à 0.";
@@ -449,13 +449,13 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.rate_limits.delivered" = "Livré";
 "settings_details.notifications.rate_limits.errors" = "Erreurs";
 "settings_details.notifications.rate_limits.footer" = "Vous êtes autorisé à 300 notifications push par 24 heures. Les limites de débit sont réinitialisées à minuit, temps universel (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Vous avez droit à %d notifications push toutes les 24 heures. Les limites de débit sont réinitialisées à minuit, heure universelle coordonnée (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Vous avez droit à %u notifications push toutes les 24 heures. Les limites de débit sont réinitialisées à minuit, heure universelle coordonnée (UTC).";
 "settings_details.notifications.rate_limits.header" = "Taux limite";
 "settings_details.notifications.rate_limits.resets_in" = "Réinitialisation";
 "settings_details.notifications.rate_limits.total" = "Total";
 "settings_details.notifications.sounds_section.button.title" = "Importer des sons";
 "settings_details.notifications.sounds_section.footer" = "Des sons de notification push personnalisés peuvent être ajoutés via iTunes.";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%d sons ont été importés. Veuillez redémarrer votre téléphone pour terminer l'importation.";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%li sons ont été importés. Veuillez redémarrer votre téléphone pour terminer l'importation.";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Sons importés";
 "settings_details.notifications.sounds.bundled" = "Groupé";
 "settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "Impossible de construire le chemin ~/Library/Sounds: %@";
@@ -470,7 +470,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.sounds.import_mac_open_folder" = "Ouvrir le dossier dans le Finder";
 "settings_details.notifications.sounds.import_system" = "Importer les sons du système";
 "settings_details.notifications.sounds.imported" = "Importé(s)";
-"settings_details.notifications.sounds.imported_alert.message" = "%d sons ont été importés. Veuillez redémarrer votre téléphone pour terminer l'importation.";
+"settings_details.notifications.sounds.imported_alert.message" = "%li sons ont été importés. Veuillez redémarrer votre téléphone pour terminer l'importation.";
 "settings_details.notifications.sounds.imported_alert.title" = "Sons importés";
 "settings_details.notifications.sounds.system" = "Système";
 "settings_details.notifications.sounds.title" = "Sons";

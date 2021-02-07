@@ -449,7 +449,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.notifications.rate_limits.delivered" = "Delivered";
 "settings_details.notifications.rate_limits.errors" = "Errors";
 "settings_details.notifications.rate_limits.footer" = "You are allowed 300 push notifications per 24 hours. Rate limits reset at midnight Greenwich Mean Time (GMT).";
-"settings_details.notifications.rate_limits.footer_with_param" = "You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Greenwich Mean Time (GMT).";
+"settings_details.notifications.rate_limits.footer_with_param" = "You are allowed %u push notifications per 24 hours. Rate limits reset at midnight Greenwich Mean Time (GMT).";
 "settings_details.notifications.rate_limits.header" = "Rate Limits";
 "settings_details.notifications.rate_limits.resets_in" = "Resets In";
 "settings_details.notifications.rate_limits.total" = "Total";

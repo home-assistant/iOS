@@ -449,7 +449,7 @@ Vaše akce a místní konfigurace budou po přihlášení stále k dispozici.";
 "settings_details.notifications.rate_limits.delivered" = "Doručeno";
 "settings_details.notifications.rate_limits.errors" = "Chyby";
 "settings_details.notifications.rate_limits.footer" = "You are allowed 300 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Máte povoleno %d push oznámení za 24 hodin. Omezení se vynulují o půlnoci světového koordinovaného času (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Máte povoleno %u push oznámení za 24 hodin. Omezení se vynulují o půlnoci světového koordinovaného času (UTC).";
 "settings_details.notifications.rate_limits.header" = "Omezení oznámení";
 "settings_details.notifications.rate_limits.resets_in" = "Obnoví se v";
 "settings_details.notifications.rate_limits.total" = "Celkem";

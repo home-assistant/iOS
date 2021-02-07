@@ -65,11 +65,11 @@
 "kGB23u" = "Perform Action";
 "khd61N" = "Esegui il rendering del testo contenuto negli appunti";
 "KHH48D" = "Impossibile aggiornare la posizione, Home Assistant non è al momento raggiungibile";
-"KJS2jk" = "Impossibile aggiornare la posizione con errore: ${errore}";
+"KJS2jk" = "Impossibile aggiornare la posizione con errore: ${error}";
 "KM7mXC" = "Action";
 "KNyYFZ" = "Ci sono ${count} opzioni che corrispondono a '${service}'.";
 "KU19Ap" = "Impossibile Lanciare un evento, non è stato possibile analizzare il contenuto degli appunti";
-"KzOHYA" = "Impossibile ottenere l'immagine della telecamera con errore: ${errore}.";
+"KzOHYA" = "Impossibile ottenere l'immagine della telecamera con errore: ${error}.";
 "le6NdS" = "Lancia il servizio ${serviceDomain}.${service} con i dati: ${payload}";
 "lGqSSG" = "Aggiornamento dei sensori fallito.";
 "Lgymq2" = "Quale servizio?";
@@ -107,7 +107,7 @@
 "r32M7N" = "Failed: ${error}";
 "r6LXFe" = "Fallito!";
 "RCQAlr" = "Ottieni immagine della telecamera da ${cameraID}";
-"rFSNpu" = "Chiamato ${dominio}.${servizio}.";
+"rFSNpu" = "Chiamato ${domain}.${service}.";
 "ri4H1h" = "Inviati con successo ${domain}.${service} con il contenuto degli appunti ad Home Assistant";
 "rlOS6H" = "Modello renderizzato con successo dagli appunti";
 "RMQY3r" = "Invia la posizione a Home Assistant";

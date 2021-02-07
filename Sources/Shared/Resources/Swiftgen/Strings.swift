@@ -996,7 +996,7 @@ public enum L10n {
       public static var name: String { return L10n.tr("Localizable", "sensors.bssid.name") }
     }
     public enum CellularProvider {
-      /// Cellular Provider%@
+      /// Cellular Provider %@
       public static func name(_ p1: Any) -> String {
         return L10n.tr("Localizable", "sensors.cellular_provider.name", String(describing: p1))
       }
@@ -1903,7 +1903,7 @@ public enum L10n {
         public static var errors: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.errors") }
         /// You are allowed 300 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer") }
-        /// You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
+        /// You are allowed %u push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
         public static func footerWithParam(_ p1: Int) -> String {
           return L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer_with_param", p1)
         }

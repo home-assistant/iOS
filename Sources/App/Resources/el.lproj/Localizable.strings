@@ -450,7 +450,7 @@ Home Assistant. Πατήστε για αντιγραφή ή κοινή χρήσ�
 "settings_details.notifications.rate_limits.delivered" = "Παραδόθηκε";
 "settings_details.notifications.rate_limits.errors" = "Σφάλματα";
 "settings_details.notifications.rate_limits.footer" = "Επιτρέπονται 300 ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ώρας (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Επιτρέπονται %d ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ώρας (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Επιτρέπονται %u ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ώρας (UTC).";
 "settings_details.notifications.rate_limits.header" = "Όρια τιμών";
 "settings_details.notifications.rate_limits.resets_in" = "Επαναφορά σε";
 "settings_details.notifications.rate_limits.total" = "Σύνολο";

@@ -30,7 +30,7 @@
 "cK9jdK" = "Nie udało się wyrenderować szablonu, wystąpił błąd: ${error}";
 "cLmTme" = "Akcja";
 "CmlkE4" = "shortcut_event";
-"cnzI5h" = "Renderuje ${szablon}";
+"cnzI5h" = "Renderuje ${template}";
 "cuflz3" = "Nie można wyrenderować szablonu, Home Assistant jest obecnie niedostępny";
 "DdnZyl" = "Pobierz obraz z kamery ${cameraID}";
 "dFHPYK" = "Pomyślnie wykonano ${action}.";
@@ -69,7 +69,7 @@
 "KM7mXC" = "Akcja";
 "KNyYFZ" = "Istnieje ${count} opcji pasujących do ‘${service}’.";
 "KU19Ap" = "Nie udało się uruchomić zdarzenia, zawartość schowka nie mogła zostać zinterpretowana";
-"KzOHYA" = "Nie udało się uzyskać obrazu z kamery, błąd: ${błąd}";
+"KzOHYA" = "Nie udało się uzyskać obrazu z kamery, błąd: ${error}";
 "le6NdS" = "Uruchom ${serviceDomain}.${service} z danymi: ${payload}";
 "lGqSSG" = "Nie udało się zaktualizować sensorów.";
 "Lgymq2" = "Która usługa?";
