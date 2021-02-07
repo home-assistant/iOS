@@ -177,6 +177,7 @@
 		119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119A827B252A3C4700D7000D /* NFCNDEFPayload+Additions.swift */; };
 		119C77F825CF166400D41734 /* Bundle+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C77F725CF166400D41734 /* Bundle+Additions.swift */; };
+		119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C786625CF845800D41734 /* LocalizedStrings.test.swift */; };
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
@@ -1087,6 +1088,7 @@
 		11993D2324E78A3700627944 /* WidgetActionsActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsActionView.swift; sourceTree = "<group>"; };
 		119A827B252A3C4700D7000D /* NFCNDEFPayload+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCNDEFPayload+Additions.swift"; sourceTree = "<group>"; };
 		119C77F725CF166400D41734 /* Bundle+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Additions.swift"; sourceTree = "<group>"; };
+		119C786625CF845800D41734 /* LocalizedStrings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.test.swift; sourceTree = "<group>"; };
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
@@ -2677,6 +2679,7 @@
 				11AD2EA7252900AA00FBC437 /* Resources */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 				117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */,
+				119C786625CF845800D41734 /* LocalizedStrings.test.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -4727,6 +4730,7 @@
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */,
+				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
