@@ -6,7 +6,7 @@ import XCTest
 class LocalizedStrings: XCTestCase {
     func testLanguages() throws {
         let expressions: [NSRegularExpression] = [
-            try NSRegularExpression(pattern: "%[+0123456789$.luq]*?[sduiefgcCp@]", options: []),
+            try NSRegularExpression(pattern: "%{1,2}[+0123456789$.luq]*?[sduiefgcCp@]", options: []),
             try NSRegularExpression(pattern: "\\$\\{[^}]+\\}", options: []),
         ]
 
