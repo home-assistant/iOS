@@ -449,7 +449,7 @@
 "settings_details.notifications.rate_limits.delivered" = "推送";
 "settings_details.notifications.rate_limits.errors" = "錯誤";
 "settings_details.notifications.rate_limits.footer" = "每 24 小時允許推送 300 則通知，限制將於世界協調時間（UTC）午夜十二點時重置。";
-"settings_details.notifications.rate_limits.footer_with_param" = "每 24 小時允許推送 %d 則通知，限制將於世界協調時間（UTC）午夜十二點時重置。";
+"settings_details.notifications.rate_limits.footer_with_param" = "每 24 小時允許推送 %u 則通知，限制將於世界協調時間（UTC）午夜十二點時重置。";
 "settings_details.notifications.rate_limits.header" = "頻率限制";
 "settings_details.notifications.rate_limits.resets_in" = "重置時間";
 "settings_details.notifications.rate_limits.total" = "總計";

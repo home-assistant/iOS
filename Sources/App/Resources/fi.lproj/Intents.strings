@@ -70,7 +70,7 @@
 "KNyYFZ" = "There are ${count} options matching ‘${service}’.";
 "KU19Ap" = "Tapahtuman lähettäminen epäonnistui, leikepöydän sisältöä ei voitu jäsentää";
 "KzOHYA" = "Kamerakuvan saaminen epäonnistui virheellä: ${error}";
-"le6NdS" = "Palvelupyyntö ${serviceDomain}.${service} tiedolla:  {payload}";
+"le6NdS" = "Palvelupyyntö ${serviceDomain}.${service} tiedolla: ${payload}";
 "lGqSSG" = "Failed to update sensors.";
 "Lgymq2" = "Which service?";
 "lNmaCR" = "Template";
@@ -92,7 +92,7 @@
 "NsbUTz" = "Camera Entity";
 "ntnbP2" = "Pyydä palvelua";
 "nzqmFA" = "Viimeisin kuva kameralta ${cameraID} kopioitu leikepöydälle";
-"oIWFyR" = "${EventName}-kohdetta lähettämisen Kotiavustajalle epäonnistui virheellä: ${Error}";
+"oIWFyR" = "${eventName}-kohdetta lähettämisen Kotiavustajalle epäonnistui virheellä: ${error}";
 "P3EyZ7" = "Hahmota annettua mallia";
 "pjQR7t" = "Update Sensors";
 "pQhTjo" = "Failed to fire event, Home Assistant is not currently reachable";

@@ -74,7 +74,7 @@
 "lGqSSG" = "Failed to update sensors.";
 "Lgymq2" = "Which service?";
 "lNmaCR" = "自定义模板";
-"lnrohM" = "使用剪贴板数据触发事件：{eventName}";
+"lnrohM" = "使用剪贴板数据触发事件：${eventName}";
 "LVEY3e" = "相机ID";
 "lxHlyQ" = "触发事件";
 "mAibJP" = "无法获取摄像头图像，Home Assistant目前无法访问。";
@@ -91,7 +91,7 @@
 "nIl9ET" = "触发${eventName}事件到Home Assistant事件总线。剪贴板中内容将作为事件数据。";
 "NsbUTz" = "相机实体";
 "ntnbP2" = "调用服务";
-"nzqmFA" = "从「{cameraID}」获取最后一帧并发送到剪贴板";
+"nzqmFA" = "从「${cameraID}」获取最后一帧并发送到剪贴板";
 "oIWFyR" = "向Home Assistant发送${eventName}失败，错误信息：${error}";
 "P3EyZ7" = "呈现提供的模板";
 "pjQR7t" = "Update Sensors";
@@ -116,7 +116,7 @@
 "rwj6u7" = "向 Home Asssiant 报告你的当前位置 ${location}";
 "sbkx4E" = "未能将地理编码 ${pasteboardContents} 转换为有效地址";
 "sfDGvk" = "渲染模板";
-"SGxPSB" = "服务说明{serviceDescription}";
+"SGxPSB" = "${serviceDescription}";
 "sNFoWe" = "Which camera?";
 "sQJAJS" = "错误";
 "tHPm96" = "您当前位置已更新";

@@ -192,10 +192,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notifications_configurator.category.rows.actions.footer" = "Gall categorïau fod ag uchafswm o 10 gweithred.";
 "notifications_configurator.category.rows.actions.header" = "Gweithrediadau";
 "notifications_configurator.category.rows.category_summary.default" = "%%u o hysbysiadau yn%%@";
-"notifications_configurator.category.rows.category_summary.footer" = "Llinyn fformat ar gyfer y disgrifiad cryno a ddefnyddir pan fydd y system yn grwpio hysbysiadau'r categori. Gallwch ddefnyddio '% %u ' yn ddewisol i ddangos nifer yr hysbysiadau yn y grŵp a '% %@ ' i ddangos y ddadl gryno a ddarperir yn y llwyth tâl gwthio.";
+"notifications_configurator.category.rows.category_summary.footer" = "Llinyn fformat ar gyfer y disgrifiad cryno a ddefnyddir pan fydd y system yn grwpio hysbysiadau'r categori. Gallwch ddefnyddio '%%u ' yn ddewisol i ddangos nifer yr hysbysiadau yn y grŵp a '%%@ ' i ddangos y ddadl gryno a ddarperir yn y llwyth tâl gwthio.";
 "notifications_configurator.category.rows.category_summary.header" = "Crynodeb o'r Categori";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u  o hysbysiadau";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Dim ond os oes gennych ragolygon hysbysu wedi'u cuddio y mae'r testun hwn yn cael ei arddangos. Defnyddiwch '% %u ' ar gyfer nifer y negeseuon gyda'r un dynodwr edau.";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Dim ond os oes gennych ragolygon hysbysu wedi'u cuddio y mae'r testun hwn yn cael ei arddangos. Defnyddiwch '%%u ' ar gyfer nifer y negeseuon gyda'r un dynodwr edau.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Deiliad Rhagolwg Cudd";
 "notifications_configurator.category.rows.name.title" = "Enw";
 "notifications_configurator.identifier" = "Dynodwr";
@@ -449,7 +449,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.notifications.rate_limits.delivered" = "Wedi'i anfon";
 "settings_details.notifications.rate_limits.errors" = "Gwallau";
 "settings_details.notifications.rate_limits.footer" = "Caniateir 300 o hysbysiadau gwthio i chi bob 24 awr. Ailosod cyfyngiadau'r cyfradd ar hanner nos Amser Cydgysylltiedig Cyffredinol (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Caniateir %d o hysbysiadau gwthio i chi bob 24 awr. Ailosod cyfyngiadau'r cyfradd ar hanner nos Amser Cydgysylltiedig Cyffredinol (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Caniateir %u o hysbysiadau gwthio i chi bob 24 awr. Ailosod cyfyngiadau'r cyfradd ar hanner nos Amser Cydgysylltiedig Cyffredinol (UTC).";
 "settings_details.notifications.rate_limits.header" = "Cyfyngiadau'r cyfradd ";
 "settings_details.notifications.rate_limits.resets_in" = "Ailosod Yn";
 "settings_details.notifications.rate_limits.total" = "Cyfanswm";

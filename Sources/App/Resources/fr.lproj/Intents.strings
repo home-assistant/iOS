@@ -132,7 +132,7 @@
 "wfPQQQ" = "Déclencher un événement dans le bus d'événement d'Home Assistant";
 "wKnW1P" = "Appel du service ${serviceDomain}.${service} avec les données du Presse-papiers";
 "WXKbGy" = "Envoyez un emplacement à Home Assistant. L'app essayera d'utiliser le contenu du presse-papiers comme emplacement, sinon utilisera l'emplacement actuel.";
-"X02YQ2" = "Action";
+"X02YQ2" = "${action}";
 "X4A8Cc" = "Domaine de service";
 "xhwpj4" = "Fait.";
 "Xq7UuD" = "Rendu du modèle fourni";

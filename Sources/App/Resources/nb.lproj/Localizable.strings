@@ -92,7 +92,7 @@
 "extensions.notification_content.error.request.auth_failed" = "Autentisering mislyktes!";
 "extensions.notification_content.error.request.entity_not_found" = "Enheten %@ ble ikke funnet!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-strøm er ikke tilgjengelig";
-"extensions.notification_content.error.request.other" = "Mottok non-200 statuskode (%d)";
+"extensions.notification_content.error.request.other" = "Mottok non-200 statuskode (%li)";
 "extensions.notification_content.error.request.unknown" = "Ukjent feil!";
 "extensions.notification_content.hud.loading" = "Laster inn %@...";
 "ha_api.api_error.cant_build_url" = "Kan ikke lage API-nettadressen";
@@ -194,8 +194,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "notifications_configurator.category.rows.category_summary.default" = "%%u varsler i %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for sammendragsbeskrivelsen som brukes når systemet grupperer kategoriens varsler. Du kan eventuelt bruke %%u til å vise antall varsler i gruppen og %%@ for å vise sammendragsargumentet som er angitt i push-nyttelasten.";
 "notifications_configurator.category.rows.category_summary.header" = "Sammendrag av kategorien";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u varsler";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne teksten vises bare hvis du har skjult forhåndsvisning av varsling. Bruk %u for antall meldinger med samme trådidentifikator.";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u varsler";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne teksten vises bare hvis du har skjult forhåndsvisning av varsling. Bruk %%u for antall meldinger med samme trådidentifikator.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Skjult forhåndsvisning plassholder";
 "notifications_configurator.category.rows.name.title" = "Navn";
 "notifications_configurator.identifier" = "Identifikator";
@@ -449,13 +449,13 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.rate_limits.delivered" = "Levert";
 "settings_details.notifications.rate_limits.errors" = "Feil";
 "settings_details.notifications.rate_limits.footer" = "Du har lov til 300 push-varslinger per 24 timer. Hastighetsgrenser tilbakestilles ved midnatt Universal Coordinated Time (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Du har lov til %d push-varslinger per 24 timer. Hastighetsgrenser tilbakestilles ved midnatt Universal Coordinated Time (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Du har lov til %u push-varslinger per 24 timer. Hastighetsgrenser tilbakestilles ved midnatt Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.header" = "Varslingsfrekvens begrenset";
 "settings_details.notifications.rate_limits.resets_in" = "Tilbakestiller innen";
 "settings_details.notifications.rate_limits.total" = "Totalt";
 "settings_details.notifications.sounds_section.button.title" = "Importer lyder";
 "settings_details.notifications.sounds_section.footer" = "Egendefinerte push varslingslyder kan legges via iTunes.";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%d lyder ble importert. Vennligst start telefonen på nytt for å fullføre importen.";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%li lyder ble importert. Vennligst start telefonen på nytt for å fullføre importen.";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Lyder importert";
 "settings_details.notifications.sounds.bundled" = "Samlet";
 "settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "Kan ikke bygge ~/Bibliotek/Lyder-bane: %@";

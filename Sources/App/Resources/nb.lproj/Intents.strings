@@ -30,7 +30,7 @@
 "cK9jdK" = "Mislyktes å gjengi mal med feil: ${error}";
 "cLmTme" = "Handling";
 "CmlkE4" = "shortcut_event";
-"cnzI5h" = "Gjengir ${malen}";
+"cnzI5h" = "Gjengir ${template}";
 "cuflz3" = "Kunne ikke generere mal, Home Assistant kan ikke nås for øyeblikket";
 "DdnZyl" = "Hentet stillbilde fra ${cameraID}";
 "dFHPYK" = "${action} utført.";
@@ -107,7 +107,7 @@
 "r32M7N" = "Mislyktes: ${error}";
 "r6LXFe" = "Mislykket!";
 "RCQAlr" = "Hente kamerabilde fra ${cameraID}";
-"rFSNpu" = "Utfør ${serviceDomain}.${service} med data";
+"rFSNpu" = "Utfør ${domain}.${service} med data";
 "ri4H1h" = "Vellykket sendt ${domain}.${service} med utklippstavleinnhold til Home Assistant";
 "rlOS6H" = "Vellykket gjengitt mal fra utklippstavlen";
 "RMQY3r" = "Sende plasseringen til Home Assistant";
@@ -138,7 +138,7 @@
 "Xq7UuD" = "Gjengi den angitte malen";
 "YNQXwq" = "Feil";
 "ypnPyU" = "Utfør ${action}";
-"yS9QV0" = "Start ${Hendelsesnavn} data";
+"yS9QV0" = "Start ${eventName} data";
 "yyjTxO" = "Feil";
 "YyQQL1" = "JSON ble funnet på utklippstavlen, men er ikke gyldig.";
 "ZApPxB" = "Tjenestenavn";

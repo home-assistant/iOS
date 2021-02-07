@@ -41,7 +41,7 @@
 "FBQiVD" = "Rufe einen Dienst in der Home Assistant-Instanz auf";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Welche Aktion?";
-"FN8zqO" = "Letztes Standbild von ${camera} in die Zwischenablage kopieren";
+"FN8zqO" = "Letztes Standbild von ${cameraID} in die Zwischenablage kopieren";
 "fnz838" = "Sensors updated.";
 "foI0Fv" = "Vorlage konnte nicht gerendert werden, Home Assistant ist derzeit nicht erreichbar";
 "FtQqoU" = "Position aktualisiert";
@@ -51,7 +51,7 @@
 "gePUyy" = "Standort";
 "gI3mme" = "Welche Servicedaten möchten Sie senden?";
 "glRCfJ" = "Ereignis konnte nicht ausgelöst werden, da Home Assistant derzeit nicht erreichbar ist";
-"GoLNMt" = "Sendet ein Ereignis namens ${EventName} an den Home Assistant Event Bus mit ${EventData}.";
+"GoLNMt" = "Sendet ein Ereignis namens ${eventName} an den Home Assistant Event Bus mit ${eventData}.";
 "gv7Gg6" = "Standort";
 "h1xQ53" = "Update Sensors";
 "HCM8Oe" = "Ereignis ${eventName} mit Daten auslösen";

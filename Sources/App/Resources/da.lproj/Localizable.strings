@@ -194,7 +194,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "notifications_configurator.category.rows.category_summary.default" = "%%u notifikationer i %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "En formatstreng til den oversigtsbeskrivelse, der bruges, når systemet grupperer kategoriens notifikationer. Du kan valgfrit bruge '%%u' til at vise antallet af notifkationer i gruppen og '%%@' til at vise det resume, der er angivet i push-payload.";
 "notifications_configurator.category.rows.category_summary.header" = "Kategori-resume";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u% notifikationer";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u notifikationer";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne tekst vises kun, hvis du har skjult notifikationseksempler. Brug '%%u' for antallet af meddelelser med samme trådidentifikator.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Skjult forhåndsvisnings-pladsholder";
 "notifications_configurator.category.rows.name.title" = "Navn";
@@ -449,7 +449,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.rate_limits.delivered" = "Leverede";
 "settings_details.notifications.rate_limits.errors" = "Fejl";
 "settings_details.notifications.rate_limits.footer" = "Du har mulighed for 300 push-notifikationer pr. 24 timer. Forbrugsgrænser nulstilles ved midnat Universel koordineret tid (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Du har mulighed for at sende %d push-notifikationer pr. 24 timer. Forbrugstælleren nulstilles ved midnat Universel koordineret tid (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Du har mulighed for at sende %u push-notifikationer pr. 24 timer. Forbrugstælleren nulstilles ved midnat Universel koordineret tid (UTC).";
 "settings_details.notifications.rate_limits.header" = "Forbrugsgrænser";
 "settings_details.notifications.rate_limits.resets_in" = "Nulstiller om";
 "settings_details.notifications.rate_limits.total" = "Total";

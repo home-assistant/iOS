@@ -30,7 +30,7 @@
 "cK9jdK" = "No s'ha pogut processar la plantilla amb l'error: ${error}";
 "cLmTme" = "Acció";
 "CmlkE4" = "Drecere de l'esdeveniment";
-"cnzI5h" = "Processar ${plantilla}";
+"cnzI5h" = "Processar ${template}";
 "cuflz3" = "No s'ha pogut renderitzar la plantilla, el Home Assistant no és accessible actualment";
 "DdnZyl" = "S'ha aconseguit l'última instentania de ${cameraID}";
 "dFHPYK" = "${action} realitzada amb èxit.";
@@ -85,7 +85,7 @@
 "MTPojJ" = "Quin és el nom de l'esdeveniment?";
 "MwEpGz" = "Fet!";
 "mZnRHS" = "S'ha enviat ${eventName} amb èxit al Home Assistant";
-"N4REJz" = "Hi ha ${Count} opcions que coincideixen amb' ${cameraID} '.";
+"N4REJz" = "Hi ha ${count} opcions que coincideixen amb' ${cameraID} '.";
 "N9iJpK" = "Obteniu una imatge de la càmera";
 "NdG9Jz" = "Processar la plantilla de Home Assistant";
 "nIl9ET" = "Fires an event named ${eventName} to the Home Assistant event bus. Will send clipboard contents as event data.";
@@ -108,13 +108,13 @@
 "r6LXFe" = "Sense èxit";
 "RCQAlr" = "Obtenir la imatge de la càmera de ${cameraID}";
 "rFSNpu" = "Cridat ${domain}.${service}";
-"ri4H1h" = "S'ha enviat correctament ${domini}.${service} amb el contingut del porta-retalls al Home Assistant";
+"ri4H1h" = "S'ha enviat correctament ${domain}.${service} amb el contingut del porta-retalls al Home Assistant";
 "rlOS6H" = "Plantilla renderitzada amb èxit des del porta-retalls";
 "RMQY3r" = "Envia la ubicació al Home Assistant";
 "rOlW1x" = "Quina ubicació vols enviar?";
 "RsOw3P" = "Plantilla renderitzada correctament";
 "rwj6u7" = "Reporta teva ubicació actual com ${location} a Home Assistant";
-"sbkx4E" = "No s'ha pogut geocodificar ${clipboardContents} en una ubicació vàlida";
+"sbkx4E" = "No s'ha pogut geocodificar ${pasteboardContents} en una ubicació vàlida";
 "sfDGvk" = "Plantilla processada";
 "SGxPSB" = "${serviceDescription}";
 "sNFoWe" = "Quina càmera?";

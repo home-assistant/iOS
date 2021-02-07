@@ -30,7 +30,7 @@
 "cK9jdK" = "No se pudo procesar plantilla con error: ${error}";
 "cLmTme" = "Action";
 "CmlkE4" = "shortcut_event";
-"cnzI5h" = "Procesar ${plantilla}";
+"cnzI5h" = "Procesar ${template}";
 "cuflz3" = "No se ha podido procesar la plantilla, Home Assistant no está disponible en este momento";
 "DdnZyl" = "Obtenida última imagen de ${cameraID}";
 "dFHPYK" = "Successfully performed ${action}.";
@@ -114,7 +114,7 @@
 "rOlW1x" = "¿Qué ubicación quieres enviar?";
 "RsOw3P" = "Plantilla procesada con éxito";
 "rwj6u7" = "Reporta tu ubicación actual como ${location} a Home Assistant";
-"sbkx4E" = "No se ha podido geocodificar ${clipboardContents} en una ubicación válida";
+"sbkx4E" = "No se ha podido geocodificar ${pasteboardContents} en una ubicación válida";
 "sfDGvk" = "Plantilla procesada";
 "SGxPSB" = "${serviceDescription}";
 "sNFoWe" = "Which camera?";

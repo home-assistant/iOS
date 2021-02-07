@@ -69,7 +69,7 @@
 "KM7mXC" = "Actie";
 "KNyYFZ" = "Er zijn ${count} opties die overeenkomen met '${service} '.";
 "KU19Ap" = "Kan gebeurtenis niet activeren, de inhoud van het klembord kan niet worden geparseerd";
-"KzOHYA" = "Het is niet gelukt om het camerabeeld krijgen, fout: ${fout}.";
+"KzOHYA" = "Het is niet gelukt om het camerabeeld krijgen, fout: ${error}.";
 "le6NdS" = "Call service ${serviceDomain}.${service} met data ${payload}";
 "lGqSSG" = "De sensoren konden niet worden bijgewerkt.";
 "Lgymq2" = "Welke service?";
@@ -100,7 +100,7 @@
 "Q2Qp4a" = "Actie";
 "qayMH6" = "Service aanroepen";
 "qfHa79" = "Succesvol ${eventName} met klembordinhoud naar Home Assistant verzonden";
-"QFNpIx" = "Stuur ${locatie} naar Home Assistant";
+"QFNpIx" = "Stuur ${location} naar Home Assistant";
 "QmGpOH" = "Fout";
 "QVD2lM" = "Servicegegevens";
 "qzje4k" = "Kan service niet aanroepen met fout: ${error}";
@@ -137,7 +137,7 @@
 "xhwpj4" = "Klaar.";
 "Xq7UuD" = "Render de aangeleverde sjabloon";
 "YNQXwq" = "Fout";
-"ypnPyU" = "Voer ${actie} uit";
+"ypnPyU" = "Voer ${action} uit";
 "yS9QV0" = "Start ${eventName} met data";
 "yyjTxO" = "Fout";
 "YyQQL1" = "JSON is gevonden op het klembord maar was ongeldig.";

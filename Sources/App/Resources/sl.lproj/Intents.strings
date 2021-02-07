@@ -108,7 +108,7 @@
 "r6LXFe" = "Neuspešno!";
 "RCQAlr" = "Pridobite sliko kamere iz ${cameraID}";
 "rFSNpu" = "Klicana ${domain}.${service}";
-"ri4H1h" = "Uspešno poslana ${domene}.${service} z vsebino odložišča na Home Assistant";
+"ri4H1h" = "Uspešno poslana ${domain}.${service} z vsebino odložišča na Home Assistant";
 "rlOS6H" = "Uspešno upodobljena predloga iz odložišča";
 "RMQY3r" = "Pošlji lokacijo na Home Assistant";
 "rOlW1x" = "Katero lokacijo želite poslati?";

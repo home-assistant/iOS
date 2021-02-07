@@ -449,7 +449,7 @@
 "settings_details.notifications.rate_limits.delivered" = "Доставлено";
 "settings_details.notifications.rate_limits.errors" = "Помилки";
 "settings_details.notifications.rate_limits.footer" = "Вам дозволено надсилати 300 сповіщень на 24 години. Щоденні ліміти скидаються опівночі за Всесвітнім координованим часом (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Вам дозволено надсилати %d сповіщень на 24 години. Щоденні ліміти скидаються опівночі за Всесвітнім координованим часом (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Вам дозволено надсилати %u сповіщень на 24 години. Щоденні ліміти скидаються опівночі за Всесвітнім координованим часом (UTC).";
 "settings_details.notifications.rate_limits.header" = "Обмеження частоти";
 "settings_details.notifications.rate_limits.resets_in" = "Скидає у";
 "settings_details.notifications.rate_limits.total" = "Всього";
