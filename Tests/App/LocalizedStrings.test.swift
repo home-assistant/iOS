@@ -21,9 +21,11 @@ class LocalizedStrings: XCTestCase {
     }
 
     struct LanguageWithStrings {
+        let file: URL
         let strings: [String: String]
 
         init(url: URL) throws {
+            self.file = url
             self.strings = try XCTUnwrap(NSDictionary(contentsOf: url) as? [String: String])
         }
     }
@@ -84,7 +86,26 @@ class LocalizedStrings: XCTestCase {
         }
     }
 
-    private func matchSet(for expressions: [NSRegularExpression], in string: String) -> NSCountedSet {
+    struct MatchSet: Equatable, CustomStringConvertible {
+        let countedSet: NSCountedSet
+
+        var description: String {
+            guard countedSet.count > 0 else {
+                return "<no matches>"
+            }
+
+            return countedSet.map { value in
+                let count = countedSet.count(for: value)
+                if count == 1 {
+                    return String(describing: value)
+                } else {
+                    return String(format: "%@ (%d)", String(describing: value), count)
+                }
+            }.joined(separator: ", ")
+        }
+    }
+
+    private func matchSet(for expressions: [NSRegularExpression], in string: String) -> MatchSet {
         let matches = expressions.flatMap { expression in
             expression.matches(
                 in: string,
@@ -93,9 +114,9 @@ class LocalizedStrings: XCTestCase {
             )
         }
 
-        return NSCountedSet(array: matches.map { result in
+        return MatchSet(countedSet: NSCountedSet(array: matches.map { result in
             (string as NSString).substring(with: result.range)
-        })
+        }))
     }
 
     private func validate(languageSet: LanguageSet, expressions: [NSRegularExpression]) throws {
