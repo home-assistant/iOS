@@ -9,11 +9,20 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     // swiftlint:disable:next force_try
     let reachability = try! Reachability()
 
+    override var childForStatusBarStyle: UIViewController? {
+        nil
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         if #available(iOS 13.0, *) {
             // Always adopt a light interface style.
             overrideUserInterfaceStyle = .light
+            view.tintColor = .white
         }
     }
 
@@ -36,16 +45,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         dismiss(animated: true, completion: nil)
         onDismissCallback?(self)
     }
-
-    /*
-     // MARK: - Navigation
-
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-         // Get the new view controller using segue.destination.
-         // Pass the selected object to the new view controller.
-     }
-     */
 
     func styleButton(_ button: UIButton) {
         button.layer.cornerRadius = 6.0
