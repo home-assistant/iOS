@@ -91,7 +91,7 @@
 "nIl9ET" = "於 Home Assistant 事件系統匯流排中執行事件 ${eventName}。將會以剪貼簿內容作為事件資料傳送。";
 "NsbUTz" = "攝影機實體";
 "ntnbP2" = "執行服務";
-"nzqmFA" = "from${cameraID} 的靜態圖像，已貼至剪貼簿";
+"nzqmFA" = "已取得 ${cameraID} 最新靜態圖像";
 "oIWFyR" = "傳送 ${eventName} 至 Home Assistant 失敗，錯誤：${error}";
 "P3EyZ7" = "產生提供模板";
 "pjQR7t" = "更新感測器";
