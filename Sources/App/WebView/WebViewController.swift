@@ -223,11 +223,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(updateWebViewSettings),
+            selector: #selector(updateWebViewSettingsForNotification),
             name: SettingsStore.webViewRelatedSettingDidChange,
             object: nil
         )
-        updateWebViewSettings()
+        updateWebViewSettings(reason: .initial)
 
         styleUI()
     }
@@ -384,6 +384,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         // in case the view appears again, don't reload
         initialURL = nil
+
+        updateWebViewSettings(reason: .load)
     }
 
     func webView(
@@ -691,7 +693,19 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         underlyingPreferredStatusBarStyle
     }
 
-    @objc private func updateWebViewSettings() {
+    @objc private func updateWebViewSettingsForNotification() {
+        updateWebViewSettings(reason: .settingChange)
+    }
+
+    private enum WebViewSettingsUpdateReason {
+        case initial
+        case settingChange
+        case load
+    }
+
+    private func updateWebViewSettings(reason: WebViewSettingsUpdateReason) {
+        Current.Log.info("updating web view settings for \(reason)")
+
         // iOS 14's `pageZoom` property is almost this, but not quite - it breaks the layout as well
         // This is quasi-private API that has existed since pre-iOS 10, but the implementation
         // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
@@ -699,6 +713,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         let viewScale = Current.settingsStore.pageZoom.viewScaleValue
         Current.Log.info("setting view scale to \(viewScale)")
         webView.setValue(viewScale, forKey: "viewScale")
+
+        if !Current.isCatalyst {
+            let zoomValue = Current.settingsStore.pinchToZoom ? "true" : "false"
+            webView.evaluateJavaScript("setOverrideZoomEnabled(\(zoomValue))", completionHandler: nil)
+        }
     }
 }
 
