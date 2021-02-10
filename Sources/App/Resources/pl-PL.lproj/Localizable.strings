@@ -372,6 +372,7 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "settings_details.general.open_in_browser.title" = "Otwórz linki w";
 "settings_details.general.page_zoom.default" = "%@ (domyślne)";
 "settings_details.general.page_zoom.title" = "Powiększenie";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Zapamiętywanie ostatniej strony";
 "settings_details.general.title" = "Ogólne";
 "settings_details.general.visibility.options.dock" = "Dock";

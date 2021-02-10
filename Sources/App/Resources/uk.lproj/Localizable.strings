@@ -374,6 +374,7 @@
 "settings_details.general.open_in_browser.title" = "Відкрити посилання у";
 "settings_details.general.page_zoom.default" = "%@ (за замовчуванням)";
 "settings_details.general.page_zoom.title" = "Масштабування сторінки";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Запам'ятовувати останню сторінку";
 "settings_details.general.title" = "Загальні";
 "settings_details.general.visibility.options.dock" = "Dock";

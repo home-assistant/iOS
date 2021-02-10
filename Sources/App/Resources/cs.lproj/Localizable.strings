@@ -374,6 +374,7 @@ Vaše akce a místní konfigurace budou po přihlášení stále k dispozici.";
 "settings_details.general.open_in_browser.title" = "Otevřít odkazy v";
 "settings_details.general.page_zoom.default" = "%@ (výchozí)";
 "settings_details.general.page_zoom.title" = "Zvětšení stránky";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Zapamatovat poslední stránku";
 "settings_details.general.title" = "Obecné";
 "settings_details.general.visibility.options.dock" = "Dock";

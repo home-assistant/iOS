@@ -374,6 +374,7 @@ Uw acties en lokale configuratie zijn nog steeds beschikbaar na het inloggen.";
 "settings_details.general.open_in_browser.title" = "Open links in";
 "settings_details.general.page_zoom.default" = "%@ (Standaard)";
 "settings_details.general.page_zoom.title" = "Pagina Zoom";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Onthoud de laatste pagina";
 "settings_details.general.title" = "Algemene instellingen";
 "settings_details.general.visibility.options.dock" = "Dock";

@@ -374,6 +374,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.general.open_in_browser.title" = "Agor cysylltiadau yn";
 "settings_details.general.page_zoom.default" = "%@ (Diofyn)";
 "settings_details.general.page_zoom.title" = "Chwyddo Tudalen";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Cofio'r dudalen olaf";
 "settings_details.general.title" = "Cyffredinol";
 "settings_details.general.visibility.options.dock" = "Dock";

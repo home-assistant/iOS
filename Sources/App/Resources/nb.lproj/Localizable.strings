@@ -374,6 +374,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.general.open_in_browser.title" = "Åpne koblinger i";
 "settings_details.general.page_zoom.default" = "%@ (standard)";
 "settings_details.general.page_zoom.title" = "Sidezoom";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Husk Siste side";
 "settings_details.general.title" = "Generelle innstillinger";
 "settings_details.general.visibility.options.dock" = "Dock";

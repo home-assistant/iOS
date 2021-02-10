@@ -374,6 +374,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.general.open_in_browser.title" = "Bağlantıları Aç";
 "settings_details.general.page_zoom.default" = "%@ (Varsayılan)";
 "settings_details.general.page_zoom.title" = "Sayfa Yakınlaştırma";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Son Sayfayı Hatırla";
 "settings_details.general.title" = "General";
 "settings_details.general.visibility.options.dock" = "Dock";

@@ -374,6 +374,7 @@
 "settings_details.general.open_in_browser.title" = "開啟連結方式";
 "settings_details.general.page_zoom.default" = "%@（預設）";
 "settings_details.general.page_zoom.title" = "頁面大小";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "記住最後頁面";
 "settings_details.general.title" = "一般設定";
 "settings_details.general.visibility.options.dock" = "Dock";
