@@ -1656,6 +1656,10 @@ public enum L10n {
         /// Page Zoom
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.page_zoom.title") }
       }
+      public enum PinchToZoom {
+        /// Pinch to Zoom
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.pinch_to_zoom.title") }
+      }
       public enum Restoration {
         /// Remember Last Page
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.restoration.title") }

@@ -2,7 +2,7 @@ const notifyThemeColors = () => {
     function doWait() {
         var colors = {};
 
-        let element = document.createElement('div');
+        const element = document.createElement('div');
         document.body.appendChild(element);
         element.style.display = 'none';
 
@@ -46,6 +46,31 @@ const checkForMissingHassConnectionAndReload = () => {
         // this is the action taken by the frontend when the user taps, anyway -- we're just doing it for them
         location.reload();
     });
+};
+
+const setOverrideZoomEnabled = (shouldZoom) => {
+    // we know that the HA frontend creates this meta tag, so we can be lazy
+    const element = document.querySelector('meta[name="viewport"]');
+    if (element === null) {
+        return;
+    }
+
+    const ignoredBits = ['user-scalable', 'minimum-scale', 'maximum-scale'];
+    const elements = element['content']
+        .split(',')
+        .filter(contentItem => {
+            return ignoredBits.every(ignoredBit => !contentItem.includes(ignoredBit));
+        });
+
+    if (shouldZoom) {
+        elements.push('user-scalable=yes');
+    } else {
+        // setting minimum/maximum scale resets existing zoom if there is one
+        elements.push('user-scalable=no', 'minimum-scale=1.0', 'maximum-scale=1.0');
+    }
+
+    element['content'] = elements.join(',');
+    console.log(`adjusted viewport to ${element['content']}`);
 };
 
 waitForHassConnection().then(({ conn }) => {

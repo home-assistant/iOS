@@ -293,6 +293,16 @@ public class SettingsStore {
         }
     }
 
+    public var pinchToZoom: Bool {
+        get {
+            prefs.bool(forKey: "pinchToZoom")
+        }
+        set {
+            prefs.set(newValue, forKey: "pinchToZoom")
+            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+        }
+    }
+
     public var restoreLastURL: Bool {
         get {
             if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {

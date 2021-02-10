@@ -191,6 +191,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                 }
 
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.General.PinchToZoom.title
+                    $0.hidden = .isCatalyst
+                    $0.value = Current.settingsStore.pinchToZoom
+                    $0.onChange { row in
+                        Current.settingsStore.pinchToZoom = row.value ?? false
+                    }
+                }
+
         case "location":
             title = L10n.SettingsDetails.Location.title
             form
