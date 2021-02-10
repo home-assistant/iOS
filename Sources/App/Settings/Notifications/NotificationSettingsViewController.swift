@@ -9,8 +9,6 @@ import UIKit
 class NotificationSettingsViewController: FormViewController {
     public var doneButton: Bool = false
 
-    let utc = TimeZone(identifier: "UTC")!
-
     private var observerTokens: [Any] = []
 
     deinit {
@@ -27,19 +25,8 @@ class NotificationSettingsViewController: FormViewController {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        Timer.scheduledTimer(
-            timeInterval: 1,
-            target: self,
-            selector: #selector(updateTimer),
-            userInfo: nil,
-            repeats: true
-        )
-
-        setupFirestoreRateLimits()
 
         if doneButton {
             let doneButton = UIBarButtonItem(
@@ -56,6 +43,30 @@ class NotificationSettingsViewController: FormViewController {
             +++ Section()
             <<< notificationPermissionRow()
 
+            +++ Section(
+                footer: L10n.SettingsDetails.Notifications.Categories.footer
+            )
+
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Notifications.Categories.header
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    NotificationCategoryListViewController()
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
+                })
+            }
+
+            +++ Section(
+                footer: L10n.SettingsDetails.Notifications.Sounds.footer
+            )
+
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Notifications.Sounds.title
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    NotificationSoundsViewController()
+                }, onDismiss: nil)
+            }
+
             +++ SwitchRow("confirmBeforeOpeningUrl") {
                 $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
                 $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
@@ -63,26 +74,91 @@ class NotificationSettingsViewController: FormViewController {
                 prefs.setValue(row.value, forKey: "confirmBeforeOpeningUrl")
                 prefs.synchronize()
             }
+
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Notifications.BadgeSection.Button.title
+                $0.onCellSelection { cell, _ in
+                    UIApplication.shared.applicationIconBadgeNumber = 0
+                    let title = L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title
+                    let message = L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message
+                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+                }
+            }
+
             +++ Section(
-                header: L10n.SettingsDetails.Notifications.PushIdSection.header,
-                footer: L10n.SettingsDetails.Notifications.PushIdSection.footer
+                header: L10n.debugSectionLabel,
+                footer: nil
             )
-            <<< TextAreaRow {
-                $0.tag = "pushID"
-                $0.placeholder = L10n.SettingsDetails.Notifications.PushIdSection.placeholder
+
+            <<< ButtonRowOf<Int> { row in
+                let value = NotificationRateLimitListViewController.newPromise()
+
+                row.cellStyle = .value1
+
+                func update(for response: RateLimitResponse) {
+                    row.value = response.rateLimits.remaining
+                    row.updateCell()
+                }
+
+                value.done { response in
+                    update(for: response)
+                }.cauterize()
+
+                row.title = L10n.SettingsDetails.Notifications.RateLimits.header
+                row.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    let controller = NotificationRateLimitListViewController(initialPromise: value)
+                    controller.rateLimitDidChange = { rateLimit in
+                        update(for: rateLimit)
+                    }
+                    return controller
+                }, onDismiss: nil)
+
+                row.displayValueFor = { value in
+                    value.map {
+                        NumberFormatter.localizedString(
+                            from: NSNumber(value: $0),
+                            number: .decimal
+                        )
+                    }
+                }
+            }
+
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Location.Notifications.header
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    NotificationDebugNotificationsViewController()
+                }, onDismiss: nil)
+            }
+
+            <<< LabelRow("pushID") {
+                $0.title = L10n.SettingsDetails.Notifications.PushIdSection.header
+
                 if let pushID = Current.settingsStore.pushID {
                     $0.value = pushID
                 } else {
                     $0.value = L10n.SettingsDetails.Notifications.PushIdSection.notRegistered
                 }
-                $0.disabled = true
-                $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
-            }.cellSetup { cell, _ in
-                cell.textView.addGestureRecognizer(UITapGestureRecognizer(
-                    target: self,
-                    action: #selector(self.tapPushID(_:))
-                ))
+
+                $0.cellSetup { cell, _ in
+                    cell.detailTextLabel?.lineBreakMode = .byTruncatingMiddle
+                }
+
+                $0.cellUpdate { cell, _ in
+                    cell.selectionStyle = .default
+                }
+
+                $0.onCellSelection { [weak self] _, row in
+                    guard let id = Current.settingsStore.pushID else { return }
+
+                    let vc = UIActivityViewController(activityItems: [id], applicationActivities: nil)
+                    self?.present(vc, animated: true, completion: nil)
+                    row.deselect(animated: true)
+                }
             }
+
             <<< ButtonRow {
                 $0.tag = "resetPushID"
                 $0.title = L10n.Settings.ResetSection.ResetRow.title
@@ -94,9 +170,11 @@ class NotificationSettingsViewController: FormViewController {
                     self.resetInstanceID()
                 }.done { token in
                     Current.settingsStore.pushID = token
-                    guard let idRow = self.form.rowBy(tag: "pushID") as? TextAreaRow else { return }
+                    guard let idRow = self.form.rowBy(tag: "pushID") as? LabelRow else { return }
                     idRow.value = token
                     idRow.updateCell()
+                }.then { _ in
+                    Current.api.then(on: nil) { $0.Connect(reason: .periodic) }
                 }.catch { error in
                     Current.Log.error("Error resetting push token: \(error)")
                     let alert = UIAlertController(
@@ -111,276 +189,10 @@ class NotificationSettingsViewController: FormViewController {
                     alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
             }
-
-        let localCategories = Current.realm().objects(NotificationCategory.self)
-            .filter("isServerControlled == NO")
-            .sorted(byKeyPath: "Identifier")
-        let serverCategories = Current.realm().objects(NotificationCategory.self)
-            .filter("isServerControlled == YES")
-            .sorted(byKeyPath: "Identifier")
-
-        let mvOpts: MultivaluedOptions = [.Insert, .Delete]
-
-        form +++ MultivaluedSection(
-            multivaluedOptions: mvOpts,
-            header: L10n.SettingsDetails.Notifications.Categories.header,
-            footer: nil
-        ) { section in
-            section.tag = "notification_categories"
-            section.multivaluedRowToInsertAt = { _ in
-                self.getNotificationCategoryRow(nil)
-            }
-            section.addButtonProvider = { _ in
-                ButtonRow {
-                    $0.title = L10n.addButtonLabel
-                    $0.cellStyle = .value1
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                }
-            }
-
-            for category in localCategories {
-                section <<< getNotificationCategoryRow(category)
-            }
-        }
-
-            +++ serverNotificationCategorySection(collection: AnyRealmCollection(serverCategories))
-
-            +++ ButtonRow {
-                $0.title = L10n.SettingsDetails.Notifications.Sounds.title
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    NotificationSoundsViewController()
-                }, onDismiss: nil)
-            }
-
-            +++ ButtonRow {
-                $0.title = L10n.SettingsDetails.Notifications.BadgeSection.Button.title
-            }.onCellSelection { cell, _ in
-                UIApplication.shared.applicationIconBadgeNumber = 0
-                let title = L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title
-                let message = L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message
-                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
-            }
-
-            +++ Section(header: L10n.SettingsDetails.Location.Notifications.header, footer: "")
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.Enter.title
-                $0.value = prefs.bool(forKey: "enterNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "enterNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.Exit.title
-                $0.value = prefs.bool(forKey: "exitNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "exitNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.BeaconEnter.title
-                $0.value = prefs.bool(forKey: "beaconEnterNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "beaconEnterNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.BeaconExit.title
-                $0.value = prefs.bool(forKey: "beaconExitNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "beaconExitNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.LocationChange.title
-                $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "significantLocationChangeNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.BackgroundFetch.title
-                $0.value = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "backgroundFetchLocationChangeNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.PushNotification.title
-                $0.value = prefs.bool(forKey: "pushLocationRequestNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "pushLocationRequestNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.UrlScheme.title
-                $0.value = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
-                }
-            })
-            <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Location.Notifications.XCallbackUrl.title
-                $0.value = prefs.bool(forKey: "xCallbackURLLocationRequestNotifications")
-            }.onChange({ row in
-                if let val = row.value {
-                    prefs.set(val, forKey: "xCallbackURLLocationRequestNotifications")
-                }
-            })
-
-            +++ Section(header: L10n.SettingsDetails.Notifications.RateLimits.header, footer: nil) {
-                $0.tag = "rateLimits"
-            }
-    }
-
-    func setupFirestoreRateLimits() {
-        guard let pushID = Current.settingsStore.pushID else { return }
-
-        firstly {
-            NotificationRateLimitsAPI.rateLimits(pushID: pushID)
-        }.done { [form] response in
-            guard let section = form.sectionBy(tag: "rateLimits") else {
-                return
-            }
-
-            section.footer = HeaderFooterView(
-                title: L10n.SettingsDetails.Notifications.RateLimits.footerWithParam(response.rateLimits.maximum)
-            )
-
-            section.removeAll()
-
-            section
-                <<< response.rateLimits.row(for: \.attempts)
-                <<< response.rateLimits.row(for: \.successful)
-                <<< response.rateLimits.row(for: \.errors)
-                <<< response.rateLimits.row(for: \.total)
-                <<< response.rateLimits.row(for: \.resetsAt)
-        }.catch { [form] error in
-            Current.Log.error("couldn't load rate limit: \(error)")
-            guard let section = form.sectionBy(tag: "rateLimits") else {
-                return
-            }
-
-            section.removeAll()
-
-            section <<< ButtonRow {
-                $0.title = L10n.retryLabel
-                $0.onCellSelection { [weak self] _, _ in
-                    self?.setupFirestoreRateLimits()
-                }
-            }
-        }
-    }
-
-    @objc func updateTimer() {
-        var calendar = Calendar.current
-        calendar.timeZone = utc
-
-        guard let startOfNextDay = calendar.nextDate(
-            after: Date(),
-            matching: DateComponents(hour: 0, minute: 0),
-            matchingPolicy: .nextTimePreservingSmallerComponents
-        ) else {
-            return
-        }
-        guard let row = form.rowBy(tag: "resetsIn") as? LabelRow else { return }
-
-        let formatter = DateComponentsFormatter()
-        formatter.zeroFormattingBehavior = .pad
-        formatter.allowedUnits = [.hour, .minute, .second]
-
-        row.value = formatter.string(from: Date(), to: startOfNextDay)
-        row.updateCell()
     }
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
-    }
-
-    func getNotificationCategoryRow(_ existingCategory: NotificationCategory?) ->
-        ButtonRowWithPresent<NotificationCategoryConfigurator> {
-        var category = existingCategory
-
-        var identifier = "new_category_" + UUID().uuidString
-        var title = L10n.SettingsDetails.Notifications.NewCategory.title
-
-        if let category = category {
-            identifier = category.Identifier
-            title = category.Name
-        }
-
-        return ButtonRowWithPresent<NotificationCategoryConfigurator> { row in
-            row.tag = identifier
-            row.title = title
-            row.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                NotificationCategoryConfigurator(category: category)
-            }, onDismiss: { vc in
-                _ = vc.navigationController?.popViewController(animated: true)
-
-                if let vc = vc as? NotificationCategoryConfigurator {
-                    if vc.shouldSave == false {
-                        Current.Log.verbose("Not saving category to DB and returning early!")
-                        return
-                    }
-
-                    // if the user goes to re-edit the category after saving it, we want to show the same one
-                    category = vc.category
-                    row.tag = vc.category.Identifier
-                    vc.row.title = vc.category.Name
-                    vc.row.updateCell()
-
-                    Current.Log.verbose("Saving category! \(vc.category)")
-
-                    let realm = Current.realm()
-
-                    // swiftlint:disable:next force_try
-                    try! realm.write {
-                        realm.add(vc.category, update: .all)
-                    }
-                }
-            })
-        }
-    }
-
-    @objc func tapPushID(_ sender: Any) {
-        if let row = form.rowBy(tag: "pushID") as? TextAreaRow, let rowValue = row.value {
-            let activityViewController = UIActivityViewController(
-                activityItems: [rowValue],
-                applicationActivities: nil
-            )
-            present(activityViewController, animated: true, completion: {})
-            activityViewController.popoverPresentationController?.sourceView = view
-        }
-    }
-
-    override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
-        super.rowsHaveBeenRemoved(rows, at: indexes)
-
-        let deletedIDs = rows.compactMap(\.tag)
-
-        if deletedIDs.count == 0 { return }
-
-        Current.Log.verbose("Rows removed \(rows), \(deletedIDs)")
-
-        let realm = Current.realm()
-
-        if (rows.first as? ButtonRowWithPresent<NotificationCategoryConfigurator>) != nil {
-            // swiftlint:disable:next force_try
-            try! realm.write {
-                realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", deletedIDs))
-            }
-        }
     }
 
     func deleteInstanceID() -> Promise<Void> {
@@ -465,30 +277,5 @@ class NotificationSettingsViewController: FormViewController {
                 }
             }
         }
-    }
-
-    func serverNotificationCategorySection(collection: AnyRealmCollection<NotificationCategory>) -> Section {
-        RealmSection(
-            header: L10n.SettingsDetails.Notifications.CategoriesSynced.header,
-            footer: nil,
-            collection: collection,
-            emptyRows: [
-                LabelRow {
-                    $0.title = L10n.SettingsDetails.Notifications.CategoriesSynced.empty
-                    $0.disabled = true
-                },
-            ], getter: { [weak self] in self?.getNotificationCategoryRow($0) },
-            didUpdate: { section, collection in
-                if collection.isEmpty {
-                    section.footer = HeaderFooterView(
-                        title: L10n.SettingsDetails.Notifications.CategoriesSynced.footerNoCategories
-                    )
-                } else {
-                    section.footer = HeaderFooterView(
-                        title: L10n.SettingsDetails.Notifications.CategoriesSynced.footer
-                    )
-                }
-            }
-        )
     }
 }

@@ -16,6 +16,8 @@ public enum L10n {
   public static var cancelLabel: String { return L10n.tr("Localizable", "cancel_label") }
   /// Copy
   public static var copyLabel: String { return L10n.tr("Localizable", "copy_label") }
+  /// Debug
+  public static var debugSectionLabel: String { return L10n.tr("Localizable", "debug_section_label") }
   /// Delete
   public static var delete: String { return L10n.tr("Localizable", "delete") }
   /// Done
@@ -1845,6 +1847,8 @@ public enum L10n {
         }
       }
       public enum Categories {
+        /// Actionable notifications are powered by creating categories which define the available actions.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.categories.footer") }
         /// Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories.header") }
       }
@@ -1921,6 +1925,8 @@ public enum L10n {
       public enum Sounds {
         /// Bundled
         public static var bundled: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.bundled") }
+        /// Built-in, system or custom sounds can be used with your notifications.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.footer") }
         /// Import custom sound
         public static var importCustom: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.import_custom") }
         /// Import sounds from iTunes File Sharing
