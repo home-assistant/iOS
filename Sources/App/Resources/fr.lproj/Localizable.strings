@@ -374,6 +374,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.open_in_browser.title" = "Ouvrir les liens dans";
 "settings_details.general.page_zoom.default" = "%@ (par défaut)";
 "settings_details.general.page_zoom.title" = "Zoom sur la page";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Rappelez la dernière page";
 "settings_details.general.title" = "Réglages généraux";
 "settings_details.general.visibility.options.dock" = "Dock";

@@ -374,6 +374,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.general.open_in_browser.title" = "Apri collegamenti con";
 "settings_details.general.page_zoom.default" = "%@ (Predefinito)";
 "settings_details.general.page_zoom.title" = "Zoom Della Pagina";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Ricorda l'ultima pagina";
 "settings_details.general.title" = "Impostazioni generali";
 "settings_details.general.visibility.options.dock" = "Dock";

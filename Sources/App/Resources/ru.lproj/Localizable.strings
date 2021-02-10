@@ -372,6 +372,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.general.open_in_browser.title" = "Открыть ссылки в";
 "settings_details.general.page_zoom.default" = "%@ (По умолчанию)";
 "settings_details.general.page_zoom.title" = "Масштаб страницы";
+"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Запомнить последнюю страницу";
 "settings_details.general.title" = "Общие";
 "settings_details.general.visibility.options.dock" = "Dock";
