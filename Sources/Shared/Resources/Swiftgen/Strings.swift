@@ -1847,7 +1847,7 @@ public enum L10n {
         }
       }
       public enum Categories {
-        /// Actionable notifications are powered by creating categories which define the available actions.
+        /// Actionable notifications are created using categories which define the available actions for the notifications.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.categories.footer") }
         /// Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories.header") }
@@ -1925,7 +1925,7 @@ public enum L10n {
       public enum Sounds {
         /// Bundled
         public static var bundled: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.bundled") }
-        /// Built-in, system or custom sounds can be used with your notifications.
+        /// Built-in, system, or custom sounds can be used with your notifications.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.footer") }
         /// Import custom sound
         public static var importCustom: String { return L10n.tr("Localizable", "settings_details.notifications.sounds.import_custom") }
