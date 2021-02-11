@@ -18,6 +18,13 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
 
         title = L10n.SettingsDetails.Notifications.Sounds.title
 
+        navigationItem.rightBarButtonItems = [
+            with(Constants.helpBarButtonItem) {
+                $0.action = #selector(help)
+                $0.target = self
+            },
+        ]
+
         var importedFileSharingSounds: [URL] = []
 
         do {
@@ -451,6 +458,13 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
         if let view = popoverView {
             alert.popoverPresentationController?.sourceView = view
         }
+    }
+
+    @objc private func help() {
+        openURLInBrowser(
+            URL(string: "https://companion.home-assistant.io/app/ios/notifications-sounds")!,
+            self
+        )
     }
 }
 

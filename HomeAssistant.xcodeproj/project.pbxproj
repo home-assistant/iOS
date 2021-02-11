@@ -319,6 +319,9 @@
 		11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85B24C4295200642676 /* EurekaLocationRow.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListViewController.swift */; };
 		11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */; };
+		11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */; };
+		11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */; };
+		11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */; };
 		11F855D624DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */; };
 		11F855D724DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */; };
 		11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */; };
@@ -1197,6 +1200,9 @@
 		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
 		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
+		11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategoryListViewController.swift; sourceTree = "<group>"; };
+		11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitViewController.swift; sourceTree = "<group>"; };
+		11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDebugNotificationsViewController.swift; sourceTree = "<group>"; };
 		11F855D224DF6C7A0018013E /* MaterialDesignIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialDesignIcons.ttf; path = Tools/MaterialDesignIcons.ttf; sourceTree = SOURCE_ROOT; };
 		11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialDesignIcons.swift; sourceTree = "<group>"; };
 		11F855D424DF6C7A0018013E /* IconDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconDrawable.swift; sourceTree = "<group>"; };
@@ -2141,6 +2147,9 @@
 				B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */,
 				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
 				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
+				11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */,
+				11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */,
+				11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -4617,6 +4626,7 @@
 				B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
+				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */,
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
@@ -4633,6 +4643,7 @@
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
+				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
@@ -4686,6 +4697,7 @@
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
+				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,
