@@ -91,7 +91,7 @@
 "nIl9ET" = "Utfører en hendelse som heter ${eventName} til Home Assistent event buss. Vil sende utklippstavle innholdet som event data.";
 "NsbUTz" = "Kameraenhet";
 "ntnbP2" = "Utfør tjeneste";
-"nzqmFA" = "Hentet det siste stillbildet fra ${cameraID}";
+"nzqmFA" = "Fikk siste stillbilde fra ${cameraID}";
 "oIWFyR" = "Kunne ikke sende ${eventName} til Home Assistant med feil: ${error}";
 "P3EyZ7" = "Gjengi den angitte malen";
 "pjQR7t" = "Oppdater sensorer";

@@ -192,7 +192,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "notifications_configurator.category.rows.actions.footer" = "Kategorier kan ha maksimalt 10 handlinger.";
 "notifications_configurator.category.rows.actions.header" = "Handlinger";
 "notifications_configurator.category.rows.category_summary.default" = "%%u varsler i %%@";
-"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for sammendragsbeskrivelsen som brukes når systemet grupperer kategoriens varsler. Du kan eventuelt bruke %%u til å vise antall varsler i gruppen og %%@ for å vise sammendragsargumentet som er angitt i push-nyttelasten.";
+"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for sammendragsbeskrivelsen som brukes når systemet grupperer kategoriens varsler. Du kan eventuelt bruke '%%u ' for å vise antall varsler i gruppen og '%%@ ' for å vise sammendragsargumentet i push-nyttelasten.";
 "notifications_configurator.category.rows.category_summary.header" = "Sammendrag av kategorien";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u varsler";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne teksten vises bare hvis du har skjult forhåndsvisning av varsling. Bruk %%u for antall meldinger med samme trådidentifikator.";
@@ -374,7 +374,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.general.open_in_browser.title" = "Åpne koblinger i";
 "settings_details.general.page_zoom.default" = "%@ (standard)";
 "settings_details.general.page_zoom.title" = "Sidezoom";
-"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
+"settings_details.general.pinch_to_zoom.title" = "Klyp for å zoome";
 "settings_details.general.restoration.title" = "Husk Siste side";
 "settings_details.general.title" = "Generelle innstillinger";
 "settings_details.general.visibility.options.dock" = "Dock";
@@ -450,7 +450,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.rate_limits.delivered" = "Levert";
 "settings_details.notifications.rate_limits.errors" = "Feil";
 "settings_details.notifications.rate_limits.footer" = "Du har lov til 300 push-varslinger per 24 timer. Hastighetsgrenser tilbakestilles ved midnatt Universal Coordinated Time (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Du har lov til %u push-varslinger per 24 timer. Hastighetsgrenser tilbakestilles ved midnatt Universal Coordinated Time (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Du har tillatelse til %u push-varsler per 24 timer. Hastighetsgrenser tilbakestilt ved midnatt Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.header" = "Varslingsfrekvens begrenset";
 "settings_details.notifications.rate_limits.resets_in" = "Tilbakestiller innen";
 "settings_details.notifications.rate_limits.total" = "Totalt";
