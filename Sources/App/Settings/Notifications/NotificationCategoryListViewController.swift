@@ -8,6 +8,13 @@ class NotificationCategoryListViewController: FormViewController {
 
         title = L10n.SettingsDetails.Notifications.Categories.header
 
+        navigationItem.rightBarButtonItems = [
+            with(Constants.helpBarButtonItem) {
+                $0.action = #selector(help)
+                $0.target = self
+            },
+        ]
+
         let localCategories = Current.realm().objects(NotificationCategory.self)
             .filter("isServerControlled == NO")
             .sorted(byKeyPath: "Identifier")
@@ -126,5 +133,12 @@ class NotificationCategoryListViewController: FormViewController {
                 realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", deletedIDs))
             }
         }
+    }
+
+    @objc private func help() {
+        openURLInBrowser(
+            URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
+            self
+        )
     }
 }
