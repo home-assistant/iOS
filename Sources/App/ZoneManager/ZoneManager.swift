@@ -20,6 +20,7 @@ class ZoneManager {
         processor: ZoneManagerProcessor = ZoneManagerProcessorImpl(),
         regionFilter: ZoneManagerRegionFilter = ZoneManagerRegionFilterImpl()
     ) {
+        self.locationManager = locationManager
         self.collector = collector
         self.processor = processor
         self.regionFilter = regionFilter
@@ -29,30 +30,57 @@ class ZoneManager {
                 .filter("TrackingEnabled == true")
         )
 
-        self.locationManager = with(locationManager) {
-            $0.allowsBackgroundLocationUpdates = true
-            $0.pausesLocationUpdatesAutomatically = false
-        }
-
         self.collector.delegate = self
         self.processor.delegate = self
-        notificationTokens.append(zones.observe { [weak self] change in
-            switch change {
-            case let .initial(collection), .update(let collection, deletions: _, insertions: _, modifications: _):
-                self?.sync(zones: AnyCollection(collection))
-            case let .error(error):
-                Current.Log.error("couldn't sync zones: \(error)")
-            }
-        })
 
         log(state: .initialize)
+
+        updateLocationManager(isInitial: true)
         zones.realm?.refresh()
-        locationManager.delegate = collector
-        locationManager.startMonitoringSignificantLocationChanges()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(locationSettingDidChange),
+            name: SettingsStore.locationRelatedSettingDidChange,
+            object: nil
+        )
     }
 
     deinit {
         Current.Log.info("going away")
+    }
+
+    @objc private func locationSettingDidChange() {
+        updateLocationManager(isInitial: false)
+    }
+
+    private func updateLocationManager(isInitial: Bool) {
+        with(locationManager) {
+            $0.delegate = collector
+            $0.allowsBackgroundLocationUpdates = true
+            $0.pausesLocationUpdatesAutomatically = false
+
+            if Current.settingsStore.locationSources.significantLocationChange {
+                Current.Log.info("started monitoring siglog changes")
+                $0.startMonitoringSignificantLocationChanges()
+            } else {
+                Current.Log.info("not monitoring siglog changes")
+                $0.stopMonitoringSignificantLocationChanges()
+            }
+        }
+
+        if isInitial {
+            notificationTokens.append(zones.observe { [weak self] change in
+                switch change {
+                case let .initial(collection), .update(let collection, deletions: _, insertions: _, modifications: _):
+                    self?.sync(zones: AnyCollection(collection))
+                case let .error(error):
+                    Current.Log.error("couldn't sync zones: \(error)")
+                }
+            })
+        } else {
+            sync(zones: AnyCollection(zones))
+        }
     }
 
     private func log(state: ZoneManagerState) {
@@ -113,7 +141,13 @@ class ZoneManager {
         )
 
         let actual = Set(currentRegions.map(ZoneManagerEquatableRegion.init(region:)))
-        let expected = Set(desiredRegions.map(ZoneManagerEquatableRegion.init(region:)))
+        let expected: Set<ZoneManagerEquatableRegion>
+
+        if Current.settingsStore.locationSources.zone {
+            expected = Set(desiredRegions.map(ZoneManagerEquatableRegion.init(region:)))
+        } else {
+            expected = Set()
+        }
 
         let needsRemoval = actual.subtracting(expected)
         let needsAddition = expected.subtracting(actual)
@@ -152,6 +186,8 @@ class ZoneManager {
 
         Current.Log.info {
             let info = [
+                "available \(zones.count)",
+                "enabled \(Current.settingsStore.locationSources.zone)",
                 "monitoring \(expected.count) (\(counts))",
                 "started \(needsAddition.count)",
                 "ended \(needsRemoval.count)",

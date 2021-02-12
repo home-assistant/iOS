@@ -49,7 +49,8 @@ class NotificationManager: NSObject {
            let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
             switch command {
             case "request_location_update":
-                if prefs.bool(forKey: "locationUpdateOnNotification") == false {
+                guard Current.settingsStore.locationSources.pushNotifications else {
+                    Current.Log.info("ignoring request, location source of notifications is disabled")
                     completionHandler(.noData)
                     return
                 }

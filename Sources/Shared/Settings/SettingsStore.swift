@@ -12,6 +12,7 @@ public class SettingsStore {
     /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
     public static let menuRelatedSettingDidChange: Notification.Name = .init("menuRelatedSettingDidChange")
+    public static let locationRelatedSettingDidChange: Notification.Name = .init("locationRelatedSettingDidChange")
     /// This may be posted on any thread
     public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
 
@@ -418,6 +419,51 @@ public class SettingsStore {
                 object: nil,
                 userInfo: nil
             )
+        }
+    }
+
+    public struct LocationSource {
+        public var zone: Bool
+        public var backgroundFetch: Bool
+        public var significantLocationChange: Bool
+        public var pushNotifications: Bool
+
+        internal static func key(for keyPath: KeyPath<LocationSource, Bool>) -> String {
+            switch keyPath {
+            case \.zone: return "locationUpdateOnZone"
+            case \.backgroundFetch: return "locationUpdateOnBackgroundFetch"
+            case \.significantLocationChange: return "locationUpdateOnSignificant"
+            case \.pushNotifications: return "locationUpdateOnNotification"
+            default: return ""
+            }
+        }
+    }
+
+    public var locationSources: LocationSource {
+        get {
+            func boolValue(for keyPath: KeyPath<LocationSource, Bool>) -> Bool {
+                let key = LocationSource.key(for: keyPath)
+                if prefs.object(forKey: key) == nil {
+                    // default to enabled for location source settings
+                    return true
+                }
+                return prefs.bool(forKey: key)
+            }
+
+            return .init(
+                zone: boolValue(for: \.zone),
+                backgroundFetch: boolValue(for: \.backgroundFetch),
+                significantLocationChange: boolValue(for: \.significantLocationChange),
+                pushNotifications: boolValue(for: \.pushNotifications)
+            )
+        }
+        set {
+            prefs.set(newValue.zone, forKey: LocationSource.key(for: \.zone))
+            prefs.set(newValue.backgroundFetch, forKey: LocationSource.key(for: \.backgroundFetch))
+            prefs.set(newValue.significantLocationChange, forKey: LocationSource.key(for: \.significantLocationChange))
+            prefs.set(newValue.pushNotifications, forKey: LocationSource.key(for: \.pushNotifications))
+            Current.Log.info("location sources updated to \(newValue)")
+            NotificationCenter.default.post(name: Self.locationRelatedSettingDidChange, object: nil)
         }
     }
 
