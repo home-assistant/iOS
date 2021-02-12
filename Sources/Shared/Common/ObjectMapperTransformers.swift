@@ -22,17 +22,19 @@ open class EntityIDToDomainTransform: TransformType {
 
 open class HomeAssistantTimestampTransform: DateFormatterTransform {
     public init() {
+        super.init(dateFormatter: .iso8601Milliseconds)
+    }
+}
+
+public extension DateFormatter {
+    static var iso8601Milliseconds: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        if let HATimezone = Current.settingsStore.timezone {
-            formatter.timeZone = TimeZone(identifier: HATimezone)!
-        } else {
-            formatter.timeZone = TimeZone.autoupdatingCurrent
-        }
+        formatter.timeZone = Current.settingsStore.timezone.map { TimeZone(identifier: $0)! } ?? .autoupdatingCurrent
 
-        super.init(dateFormatter: formatter)
-    }
+        return formatter
+    }()
 }
 
 open class ComponentBoolTransform: TransformType {
