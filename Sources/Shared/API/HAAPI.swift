@@ -331,6 +331,10 @@ public class HomeAssistantAPI {
         request(path: "services", callingFunctionName: "\(#function)")
     }
 
+    public func GetLogbook() -> Promise<[LogbookResponse]> {
+        request(path: "logbook", callingFunctionName: "\(#function)")
+    }
+
     public func CallService(
         domain: String,
         service: String,
