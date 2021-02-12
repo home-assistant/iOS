@@ -73,6 +73,7 @@
 "database.problem.delete" = "Slet database & afslut app";
 "database.problem.quit" = "Afslut app";
 "database.problem.title" = "Fejl i database";
+"debug_section_label" = "Debug";
 "delete" = "Slet";
 "device.generic_name" = "Enhed";
 "devices_map.battery_label" = "Batteri";
@@ -432,6 +433,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.categories_synced.footer" = "Kategorier, der er defineret i .yaml, kan ikke redigeres på enheden.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurationen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserede kategorier";
+"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Kategorierne og handlingerne for pushnotifikationer er blevet importeret fra serveren.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Server push-konfiguration importeret";
@@ -465,6 +467,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.sounds.error.conversion_failed" = "Kunne ikke konvertere lyd til PCM 32 bit 48 kHz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Filen kunne ikke kopieres: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Filen kunne ikke slettes: %@";
+"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
 "settings_details.notifications.sounds.import_custom" = "Importer brugerdefinerede lyde";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer lyde fra iTunes-fildeling";
 "settings_details.notifications.sounds.import_mac_instructions" = "Tilføj brugerdefinerede lyde til Sounds mappen for at bruge dem i notifikationer. Brug lydens filnavn som lydværdi i kald af tjenesten.";

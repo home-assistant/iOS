@@ -73,6 +73,7 @@
 "database.problem.delete" = "Supprimer la base de données et quitter l'application";
 "database.problem.quit" = "Quitter l'application";
 "database.problem.title" = "Erreur de la base de données";
+"debug_section_label" = "Debug";
 "delete" = "Supprimer";
 "device.generic_name" = "Appareil";
 "devices_map.battery_label" = "Batterie";
@@ -432,6 +433,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.categories_synced.footer" = "Les catégories définies dans .yaml ne sont pas modifiables sur l'appareil.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Les catégories peuvent également être définies dans la configuration .yaml.";
 "settings_details.notifications.categories_synced.header" = "Catégories synchronisées";
+"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Catégories";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Les catégories et les actions de notification ont été importées du serveur.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Configuration push du serveur importée";
@@ -465,6 +467,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.sounds.error.conversion_failed" = "Échec de la conversion de l’audio en PCM 32 bits 48khz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Échec de la copie du fichier: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Échec de la suppression du fichier: %@";
+"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
 "settings_details.notifications.sounds.import_custom" = "Importer un son personnalisé";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer des sons à partir du partage de fichiers iTunes";
 "settings_details.notifications.sounds.import_mac_instructions" = "Ajoutez des sons personnalisés à votre dossier Sounds pour les utiliser dans les notifications. Utilisez leur nom de fichier comme valeur de son dans l'appel du service.";

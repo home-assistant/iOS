@@ -73,6 +73,7 @@
 "database.problem.delete" = "Delete Database & Quit App";
 "database.problem.quit" = "Quit App";
 "database.problem.title" = "Database Error";
+"debug_section_label" = "Debug";
 "delete" = "Dileu";
 "device.generic_name" = "Device";
 "devices_map.battery_label" = "Batri";
@@ -432,6 +433,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.notifications.categories_synced.footer" = "Nid oes modd golygu'r categorïau a ddiffinnir yn .yaml ar ddyfais.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Categories may be also defined in the .yaml configuration.";
 "settings_details.notifications.categories_synced.header" = "Categorïau Synced";
+"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categorïau";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Mae'r categorïau a'r gweithredoedd hysbysu gwthio wedi'u mewngludo o'r gweinydd.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Ffurfweddiad gwthio'r gweinydd wedi mewngludo";
@@ -465,6 +467,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.notifications.sounds.error.conversion_failed" = "Wedi methu trawsnewid sain i PCM 32 bit 48khz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Wedi methu copïo'r ffeil: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Wedi methu dileu'r ffeil: %@";
+"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
 "settings_details.notifications.sounds.import_custom" = "Mewngludo sain addasu";
 "settings_details.notifications.sounds.import_file_sharing" = "Mewngludo synau o iTunes File Sharing";
 "settings_details.notifications.sounds.import_mac_instructions" = "Add custom sounds to your Sounds folder to use them in notifications. Use their filename as the sound value in the service call.";
