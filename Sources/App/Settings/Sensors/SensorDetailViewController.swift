@@ -3,8 +3,16 @@ import Foundation
 import Shared
 import UIKit
 
-class SensorDetailViewController: FormViewController {
-    private(set) var sensor: WebhookSensor
+class SensorDetailViewController: FormViewController, SensorObserver {
+    private(set) var sensor: WebhookSensor {
+        didSet {
+            if oldValue != sensor {
+                UIView.performWithoutAnimation {
+                    updateModels()
+                }
+            }
+        }
+    }
 
     init(sensor: WebhookSensor) {
         self.sensor = sensor
@@ -18,7 +26,25 @@ class SensorDetailViewController: FormViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateModels()
+        Current.sensors.register(observer: self)
+
+        if form.isEmpty {
+            updateModels()
+        }
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+        // we don't care about when updates are going to happen
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors
+            .firstValue(where: { [sensor] each in each.UniqueID == sensor.UniqueID })
+            .done { [self] updated in
+                sensor = updated
+            }.catch { _ in
+                Current.Log.info("saw a sensor update that didn't include our sensor")
+            }
     }
 
     private func updateModels() {
@@ -27,9 +53,20 @@ class SensorDetailViewController: FormViewController {
         form.removeAll()
 
         let baseSection = Section()
-        baseSection <<< LabelRow {
-            $0.title = L10n.SettingsSensors.Detail.state
-            $0.value = sensor.StateDescription
+
+        baseSection <<< SwitchRow {
+            $0.title = L10n.SettingsSensors.Detail.enabled
+            $0.value = Current.sensors.isEnabled(sensor: sensor)
+            $0.onChange { [sensor] row in
+                Current.sensors.setEnabled(row.value ?? true, for: sensor)
+            }
+        }
+
+        if Current.sensors.isEnabled(sensor: sensor) {
+            baseSection <<< LabelRow {
+                $0.title = L10n.SettingsSensors.Detail.state
+                $0.value = sensor.StateDescription
+            }
         }
 
         if let deviceClass = sensor.DeviceClass {
