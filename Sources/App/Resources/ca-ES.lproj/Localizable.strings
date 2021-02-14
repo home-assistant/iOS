@@ -511,9 +511,11 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Atributs";
 "settings_sensors.detail.device_class" = "Classe de dispositiu";
+"settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Icona";
 "settings_sensors.detail.state" = "Estat";
 "settings_sensors.detail.unique_id" = "ID únic";
+"settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Darrera actualització %@";
 "settings_sensors.loading_error.title" = "No s'han pogut carregar els sensors";
 "settings_sensors.periodic_update.description" = "Quan està activada, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta en primer pla.";

@@ -73,7 +73,7 @@
 "database.problem.delete" = "刪除資料數據並退出 App";
 "database.problem.quit" = "退出 App";
 "database.problem.title" = "資料數據錯誤";
-"debug_section_label" = "Debug";
+"debug_section_label" = "除錯";
 "delete" = "刪除";
 "device.generic_name" = "裝置";
 "devices_map.battery_label" = "電量";
@@ -433,7 +433,7 @@
 "settings_details.notifications.categories_synced.footer" = "於 .yaml 中定義的類別無法於裝置上編輯。";
 "settings_details.notifications.categories_synced.footer_no_categories" = "也可以於 .yaml 中定義類別。";
 "settings_details.notifications.categories_synced.header" = "已同步類別";
-"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
+"settings_details.notifications.categories.footer" = "使用類別定物可操作之通知、類別定義了通知可用的操作動作。";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.import_legacy_settings.alert.message" = "已由伺服器匯入推播通知類別與動作。";
 "settings_details.notifications.import_legacy_settings.alert.title" = "伺服器推播設定已匯入";
@@ -467,7 +467,7 @@
 "settings_details.notifications.sounds.error.conversion_failed" = "轉換音效至 PCM 32 bit 48khz 失敗：%@";
 "settings_details.notifications.sounds.error.copy_error" = "複製檔案失敗：%@";
 "settings_details.notifications.sounds.error.delete_error" = "刪除檔案失敗：%@";
-"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
+"settings_details.notifications.sounds.footer" = "可以使用於通知的內建、系統或自訂音效。";
 "settings_details.notifications.sounds.import_custom" = "匯入自訂音效";
 "settings_details.notifications.sounds.import_file_sharing" = "由 iTunes 檔案共享匯入音效";
 "settings_details.notifications.sounds.import_mac_instructions" = "新增自訂音效至音效資料夾以於通知中使用。於呼叫服務中、使用音效檔案檔名作為音效設定值。";
@@ -511,9 +511,11 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "屬性";
 "settings_sensors.detail.device_class" = "裝置類別";
+"settings_sensors.detail.enabled" = "已啟用";
 "settings_sensors.detail.icon" = "圖示";
 "settings_sensors.detail.state" = "狀態";
 "settings_sensors.detail.unique_id" = "單一 ID";
+"settings_sensors.disabled_state_replacement" = "已關閉";
 "settings_sensors.last_updated.footer" = "最後更新%@";
 "settings_sensors.loading_error.title" = "傳感器載入失敗";
 "settings_sensors.periodic_update.description" = "開啟後、傳感器將會依設定於 App 於背景開啟時持續更新。";
