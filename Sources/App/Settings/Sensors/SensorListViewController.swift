@@ -79,10 +79,8 @@ class SensorListViewController: FormViewController, SensorObserver {
         }.cauterize()
     }
 
-    func sensorContainerDidSignalForUpdate(
-        _ container: SensorContainer
-    ) {
-        // we don't do anything for this
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+        refresh()
     }
 
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
@@ -98,14 +96,16 @@ class SensorListViewController: FormViewController, SensorObserver {
             sinceFormatter.dateStyle = .none
             sinceFormatter.timeStyle = .medium
 
-            tableView?.beginUpdates()
-            sensorSection.removeAll()
-            sensorSection.append(contentsOf: value)
-            sensorSection.footer = HeaderFooterView(
-                title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: update.on))
-            )
-            sensorSection.reload()
-            tableView?.endUpdates()
+            UIView.performWithoutAnimation {
+                tableView?.beginUpdates()
+                sensorSection.removeAll()
+                sensorSection.append(contentsOf: value)
+                sensorSection.footer = HeaderFooterView(
+                    title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: update.on))
+                )
+                sensorSection.reload()
+                tableView?.endUpdates()
+            }
         }.catch { error in
             let alert = UIAlertController(
                 title: L10n.SettingsSensors.LoadingError.title,
@@ -125,12 +125,37 @@ class SensorListViewController: FormViewController, SensorObserver {
     class func row(for sensor: WebhookSensor) -> BaseRow {
         ButtonRow { row in
             func updateDetails(from sensor: WebhookSensor, isInitial: Bool) {
+                let isEnabled = Current.sensors.isEnabled(sensor: sensor)
+
                 row.title = sensor.Name
-                row.value = sensor.StateDescription
                 row.cellStyle = .value1
+
+                if isEnabled {
+                    row.value = sensor.StateDescription
+                } else {
+                    row.value = L10n.SettingsSensors.disabledStateReplacement
+                }
 
                 row.cellUpdate { cell, _ in
                     cell.detailTextLabel?.text = row.value
+
+                    if isEnabled {
+                        cell.tintColor = nil
+
+                        if #available(iOS 13, *) {
+                            cell.textLabel?.textColor = .label
+                        } else {
+                            cell.textLabel?.textColor = .black
+                        }
+                    } else {
+                        if #available(iOS 13, *) {
+                            cell.textLabel?.textColor = .secondaryLabel
+                            cell.tintColor = .systemFill
+                        } else {
+                            cell.textLabel?.textColor = .darkGray
+                            cell.tintColor = .lightGray
+                        }
+                    }
 
                     cell.imageView?.image =
                         sensor.Icon

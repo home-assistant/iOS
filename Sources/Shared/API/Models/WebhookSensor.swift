@@ -34,6 +34,14 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
 
     public required init?(map: Map) {}
 
+    convenience init(redacting sensor: WebhookSensor) {
+        self.init()
+        self.Name = sensor.Name
+        self.UniqueID = sensor.UniqueID
+        self.State = "unavailable"
+        self.Icon = "mdi:dots-square"
+    }
+
     convenience init(name: String, uniqueID: String) {
         self.init()
         self.Name = name
