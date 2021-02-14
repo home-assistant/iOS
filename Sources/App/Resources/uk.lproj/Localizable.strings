@@ -511,9 +511,11 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Атрибути";
 "settings_sensors.detail.device_class" = "Клас пристрою";
+"settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Значок";
 "settings_sensors.detail.state" = "Стан";
 "settings_sensors.detail.unique_id" = "Унікальний ID";
+"settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Востаннє оновлено %@";
 "settings_sensors.loading_error.title" = "Не вдалося завантажити сенсори";
 "settings_sensors.periodic_update.description" = "Коли увімкнено, ці сенсори будуть оновлюватись поки застосунок відкритий на передньому плані.";

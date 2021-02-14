@@ -4,12 +4,12 @@
 "NSLocalNetworkUsageDescription" = "Zoek en communiceer met je Home Assistant-instantie.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We raden u aan 'Altijd toestaan' te selecteren voor de beste locatie-ervaring. Als u \"Alleen tijdens het gebruik van de app\" selecteert, worden iBeacons en geofences locatie voorzieningen/updates uitgeschakeld.";
 "NSLocationAlwaysUsageDescription" = "We hebben altijd toegang tot uw locatie nodig voor functies zoals iBeacons, geofences, locatie updates (op de achtergrond) voor een nauwkeurige locatie bepaling.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSLocationUsageDescription" = "Als deze optie is ingeschakeld, wordt de locatie van je apparaat als apparaattracker naar de Home Assistant-server gestuurd.";
 "NSLocationWhenInUseUsageDescription" = "Alleen locatie toegang toestaan ​​terwijl de app in gebruik is, zal iBeacons, geofences en locatie voorzieningen/updates uitschakelen.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
+"NSMicrophoneUsageDescription" = "Neem audio op met je Home Assistant frontend.";
 "NSMotionUsageDescription" = "Beweging wordt gebruikt om locatie-updates met het huidige bewegingstype te verbeteren en om basisgegevens van de stappenteller te verstrekken.";
 "NSPhotoLibraryAddUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";
 "NSPhotoLibraryUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";
 "NSSiriUsageDescription" = "We gebruiken Siri om gemaakte snelkoppelingen toe te staan om te communiceren met de app.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Stuur locatie";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Zet exacte locatie aan om uw huidige locatie te gebruiken voor uw apparaattracker";

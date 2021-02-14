@@ -73,7 +73,7 @@
 "database.problem.delete" = "Slett database og avslutt app";
 "database.problem.quit" = "Avslutt appen";
 "database.problem.title" = "Feil i databasen";
-"debug_section_label" = "Debug";
+"debug_section_label" = "Feilsøk";
 "delete" = "Slett";
 "device.generic_name" = "Enhet";
 "devices_map.battery_label" = "Batteri";
@@ -433,7 +433,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.categories_synced.footer" = "Kategorier definert i .yaml kan ikke redigeres på enheten.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurasjonen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserte kategorier";
-"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
+"settings_details.notifications.categories.footer" = "Handlingsvarsler opprettes ved hjelp av kategorier som definerer tilgjengelige handlinger for varslingene.";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Push-varslings kategorier og handlinger er importert fra serveren.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Server push-konfigurasjon importert";
@@ -467,7 +467,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.sounds.error.conversion_failed" = "Kunne ikke konvertere lyd til PCM 32 bit 48 kHz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Kan ikke kopiere filen: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Kunne ikke slette filen: %@";
-"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
+"settings_details.notifications.sounds.footer" = "Innebygde, system- eller egendefinerte lyder kan brukes med varslene dine.";
 "settings_details.notifications.sounds.import_custom" = "Importere egendefinert lyd";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer lyder fra iTunes Fildeling";
 "settings_details.notifications.sounds.import_mac_instructions" = "Legg til egendefinerte lyder i mappen Lyder for å bruke dem i varsler. Bruk filnavnet som lydverdi i tjenesteanropet.";
@@ -511,9 +511,11 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Attributter";
 "settings_sensors.detail.device_class" = "Enhetsklasse";
+"settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.detail.state" = "Tilstand";
 "settings_sensors.detail.unique_id" = "Unik ID";
+"settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Sist oppdatert %@";
 "settings_sensors.loading_error.title" = "Kunne ikke laste sensorer";
 "settings_sensors.periodic_update.description" = "Når disse sensorene er aktivert, oppdateres disse sensorene med denne frekvensen mens appen er åpen i forgrunnen.";

@@ -511,9 +511,11 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Attributs";
 "settings_sensors.detail.device_class" = "Classe d'appareil";
+"settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Icône";
 "settings_sensors.detail.state" = "État";
 "settings_sensors.detail.unique_id" = "Identifiant unique";
+"settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Dernière mise à jour %@";
 "settings_sensors.loading_error.title" = "Impossible de charger les capteurs";
 "settings_sensors.periodic_update.description" = "Lorsqu'ils sont activés, ces capteurs se mettent à jour à cette fréquence pendant que l'application est ouverte au premier plan.";
