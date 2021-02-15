@@ -181,6 +181,7 @@ public class HomeAssistantAPI {
             case .noApi,
                  .unregisteredIdentifier,
                  .unacceptableStatusCode,
+                 .replaced,
                  .none:
                 // not a WebhookError, or not one we think requires reintegration
                 Current.Log.info("not re-registering, but failed to update registration: \(error)")
