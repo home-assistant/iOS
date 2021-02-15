@@ -27,6 +27,9 @@ class ZoneManagerTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
+        Current.settingsStore.locationSources.zone = true
+        Current.settingsStore.locationSources.significantLocationChange = true
+
         let executionIdentifier = UUID().uuidString
 
         realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
@@ -267,6 +270,47 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertTrue(locationManager.delegate === collector)
         XCTAssertTrue(locationManager.allowsBackgroundLocationUpdates)
         XCTAssertFalse(locationManager.pausesLocationUpdatesAutomatically)
+    }
+
+    func testLocationUpdateSource() throws {
+        let zones = try addedZones([
+            with(RLMZone()) {
+                $0.ID = "home"
+                $0.Latitude = 37.1234
+                $0.Longitude = -122.4567
+                $0.Radius = 50.0
+                $0.TrackingEnabled = true
+                $0.BeaconUUID = UUID().uuidString
+                $0.BeaconMajor.value = 123
+                $0.BeaconMinor.value = 456
+            },
+            with(RLMZone()) {
+                $0.ID = "work"
+                $0.Latitude = 37.2345
+                $0.Longitude = -122.5678
+                $0.Radius = 100
+                $0.TrackingEnabled = true
+            },
+        ])
+
+        Current.settingsStore.locationSources.zone = false
+        Current.settingsStore.locationSources.significantLocationChange = false
+
+        let manager = newZoneManager()
+        XCTAssertFalse(locationManager.isMonitoringSigLocChanges)
+        XCTAssertEqual(locationManager.requestedRegions.count, 0)
+
+        Current.settingsStore.locationSources.significantLocationChange = true
+        XCTAssertTrue(locationManager.isMonitoringSigLocChanges)
+        XCTAssertEqual(locationManager.requestedRegions.count, 0)
+
+        Current.settingsStore.locationSources.zone = true
+        XCTAssertTrue(locationManager.isMonitoringSigLocChanges)
+        XCTAssertEqual(locationManager.startMonitoringRegions.count, zones.flatMap(\.regionsForMonitoring).count)
+
+        withExtendedLifetime(manager) {
+            // for managing the location manager
+        }
     }
 
     func testCollectorCollectsSingleRegionZoneAndEventFires() throws {

@@ -73,6 +73,7 @@
 "database.problem.delete" = "Eliminar la base de dades i sortir de l'aplicació";
 "database.problem.quit" = "Surt de l'aplicació";
 "database.problem.title" = "Error de base de dades";
+"debug_section_label" = "Debug";
 "delete" = "Suprimeix";
 "device.generic_name" = "Dispositiu";
 "devices_map.battery_label" = "Bateria";
@@ -432,6 +433,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.categories_synced.footer" = "Les categories definides a .yaml no es poden editar al dispositiu.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Les categories també es poden definir a la configuració .yaml.";
 "settings_details.notifications.categories_synced.header" = "Categories sincronitzades";
+"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Les categories i les accions de notificació push s'han importat del servidor.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Configuració Push del servidor importada";
@@ -465,6 +467,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.sounds.error.conversion_failed" = "No s'ha pogut convertir l'àudio a PCM 32 bit 48khz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "No s'ha pogut copiar el fitxer: %@";
 "settings_details.notifications.sounds.error.delete_error" = "No s'ha pogut suprimir el fitxer: %@";
+"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
 "settings_details.notifications.sounds.import_custom" = "Importar so personalitzat";
 "settings_details.notifications.sounds.import_file_sharing" = "Importar sons des de l’ús compartit d’arxius d’iTunes";
 "settings_details.notifications.sounds.import_mac_instructions" = "Afegiu sons personalitzats a la carpeta Sons per utilitzar-los a les notificacions. Utilitzeu el seu nom de fitxer com a valor de so per la crida del servei.";

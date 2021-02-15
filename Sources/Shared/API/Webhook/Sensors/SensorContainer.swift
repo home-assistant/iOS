@@ -121,8 +121,19 @@ public class SensorContainer {
             let isOutOfOrder = uuid != pendingUUID
 
             if isOutOfOrder {
+                let existingKeys = Set(value.keys)
+
+                // we can't trust our local cache anymore since the out-of-order request may have overwritten
+                // this is similar to how we don't keep a cache around in-between network request start and end
+                sensors.compactMap { sensor in sensor.UniqueID.map { (uniqueID: $0, sensor: sensor) } }
+                    .filter { value[$0.uniqueID] != $0.sensor }
+                    .forEach {
+                        value.removeValue(forKey: $0.uniqueID)
+                    }
+
                 // don't override anything that's already persisted, but allow things in if they're not already saved
-                value = combined(with: sensors, ignoringKeys: Set(value.keys))
+                // we also avoid inserting into the cache anything that may have been overridden
+                value = combined(with: sensors, ignoringKeys: existingKeys)
             } else {
                 // latest update, we can trust all the values are the latest we've sent
                 value = combined(with: sensors)

@@ -265,7 +265,7 @@ class SensorContainerTests: XCTestCase {
             .value([
                 WebhookSensor(name: "test1a", uniqueID: "test1a"),
                 WebhookSensor(name: "test1b", uniqueID: "test1b"),
-                WebhookSensor(name: "test1c", uniqueID: "test1c"), // only in first one
+                WebhookSensor(name: "test1c", uniqueID: "test1c"), // only in first and last one
             ]),
             .value([
                 WebhookSensor(name: "test2a", uniqueID: "test2a"),
@@ -307,7 +307,10 @@ class SensorContainerTests: XCTestCase {
 
         let promise3 = container.sensors(reason: .trigger("unit-test"))
         let result3 = try hang(Promise(promise3))
-        XCTAssertTrue(result3.sensors.isEmpty)
+        // we have to assume result1 cleared away what we sent up, so the new values should be the same
+        XCTAssertEqual(Set(result3.sensors.map(\.Name)), Set([
+            "test1a_mod", "test1b_mod", "test2a_mod", "test2b_mod",
+        ]))
 
         container.register(observer: observer)
         XCTAssertFalse(observer.updates.isEmpty)
@@ -319,7 +322,24 @@ class SensorContainerTests: XCTestCase {
             ]))
         }
 
-        result2.didPersist()
+        result3.didPersist()
+
+        MockSensorProvider.returnedPromises = [
+            .value([
+                WebhookSensor(name: "test1a_mod", uniqueID: "test1a"),
+                WebhookSensor(name: "test1b_mod", uniqueID: "test1b"),
+                WebhookSensor(name: "test1c", uniqueID: "test1c"), // only in first and last one
+            ]),
+            .value([
+                WebhookSensor(name: "test2a_mod", uniqueID: "test2a"),
+                WebhookSensor(name: "test2b_mod", uniqueID: "test2b"),
+            ]),
+        ]
+
+        let promise4 = container.sensors(reason: .trigger("unit-test"))
+        let result4 = try hang(Promise(promise4))
+        // this time we expect nothing new to go up, including the unique one from result1
+        XCTAssertTrue(result4.sensors.isEmpty)
     }
 
     func testChangedFailsButSilentlySucceeded() throws {

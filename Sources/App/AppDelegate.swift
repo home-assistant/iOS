@@ -278,7 +278,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let updatePromise: Promise<Void>
 
                 if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-                   prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+                   Current.settingsStore.locationSources.backgroundFetch {
                     updatePromise = api.GetAndSendLocation(
                         trigger: .BackgroundFetch,
                         maximumBackgroundTime: remaining

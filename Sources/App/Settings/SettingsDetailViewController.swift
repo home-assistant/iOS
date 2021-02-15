@@ -211,16 +211,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 )
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
-                    $0.value = prefs.bool(forKey: "locationUpdateOnZone")
+                    $0.value = Current.settingsStore.locationSources.zone
                     $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
                 }.onChange({ row in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "locationUpdateOnZone")
-                    }
+                    Current.settingsStore.locationSources.zone = row.value ?? true
                 })
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Background.title
-                    $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
+                    $0.value = Current.settingsStore.locationSources.backgroundFetch
                     $0.disabled = .location(conditions: [
                         .permissionNotAlways,
                         .accuracyNotFull,
@@ -228,27 +226,21 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     ])
                     $0.hidden = .isCatalyst
                 }.onChange({ row in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
-                    }
+                    Current.settingsStore.locationSources.backgroundFetch = row.value ?? true
                 })
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
-                    $0.value = prefs.bool(forKey: "locationUpdateOnSignificant")
+                    $0.value = Current.settingsStore.locationSources.significantLocationChange
                     $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
                 }.onChange({ row in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "locationUpdateOnSignificant")
-                    }
+                    Current.settingsStore.locationSources.significantLocationChange = row.value ?? true
                 })
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
-                    $0.value = prefs.bool(forKey: "locationUpdateOnNotification")
+                    $0.value = Current.settingsStore.locationSources.pushNotifications
                     $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
                 }.onChange({ row in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "locationUpdateOnNotification")
-                    }
+                    Current.settingsStore.locationSources.pushNotifications = row.value ?? true
                 })
 
             let zoneEntities = realm.objects(RLMZone.self).map { $0 }

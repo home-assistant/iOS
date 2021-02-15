@@ -73,6 +73,7 @@
 "database.problem.delete" = "Видалити базу даних і вийти з програми";
 "database.problem.quit" = "Закрити додаток";
 "database.problem.title" = "Помилка бази даних";
+"debug_section_label" = "Debug";
 "delete" = "Видалити";
 "device.generic_name" = "Пристрій";
 "devices_map.battery_label" = "Акумулятор";
@@ -432,6 +433,7 @@
 "settings_details.notifications.categories_synced.footer" = "Категорії, визначені у .yaml, не можна редагувати на пристрої.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Категорії також можуть бути визначені в конфігурації .yaml.";
 "settings_details.notifications.categories_synced.header" = "Синхронізовані категорії";
+"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Категорії";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Категорії та дії для push імпортовані з сервера.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Конфігурацію push-сервера імпортовано";
@@ -465,6 +467,7 @@
 "settings_details.notifications.sounds.error.conversion_failed" = "Не вдалося конвертувати аудіо у РСМ 32 біт 48 кГц: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Не вдалося скопіювати файл: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Не вдалося видалити файл: %@";
+"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
 "settings_details.notifications.sounds.import_custom" = "Імпорт власного звуку";
 "settings_details.notifications.sounds.import_file_sharing" = "Імпортувати звуки з iTunes File Sharing";
 "settings_details.notifications.sounds.import_mac_instructions" = "Додайте власні звуки до папки Звуки, щоб використовувати їх у сповіщеннях. Використовуйте їх імена файлів як значення звуку під час виклику служби.";

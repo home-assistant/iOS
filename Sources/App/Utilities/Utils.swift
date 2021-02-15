@@ -81,22 +81,6 @@ func setDefaults() {
         prefs.setValue(true, forKey: "confirmBeforeOpeningUrl")
     }
 
-    if prefs.object(forKey: "locationUpdateOnZone") == nil {
-        prefs.set(true, forKey: "locationUpdateOnZone")
-    }
-
-    if prefs.object(forKey: "locationUpdateOnBackgroundFetch") == nil {
-        prefs.set(true, forKey: "locationUpdateOnBackgroundFetch")
-    }
-
-    if prefs.object(forKey: "locationUpdateOnSignificant") == nil {
-        prefs.set(true, forKey: "locationUpdateOnSignificant")
-    }
-
-    if prefs.object(forKey: "locationUpdateOnNotification") == nil {
-        prefs.set(true, forKey: "locationUpdateOnNotification")
-    }
-
     prefs.synchronize()
 }
 
