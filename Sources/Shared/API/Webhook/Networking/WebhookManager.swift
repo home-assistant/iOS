@@ -405,8 +405,13 @@ public class WebhookManager: NSObject {
         let evaluate = { [self] (session: WebhookSessionInfo, tasks: [URLSessionTask]) in
             tasks.filter { thisTask in
                 guard let (thisType, thisPersisted) = responseInfo(from: thisTask) else {
-                    Current.Log.error("cancelling request without persistence info: \(thisTask)")
-                    thisTask.cancel()
+                    if session.isBackground {
+                        // only some requests on the regular session have info, ephemeral tasks do not for example
+                        // all requests on the background session have persistence info
+                        Current.Log.error("cancelling request without persistence info: \(thisTask)")
+                        thisTask.cancel()
+                    }
+
                     return false
                 }
 
