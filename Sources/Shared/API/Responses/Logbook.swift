@@ -1,24 +1,22 @@
 import Foundation
 import ObjectMapper
 
-public class LogbookResponse: Mappable {
-    public var domain: String?
-    public var entityId: String?
-    public var message: String?
-    public var state: String?
-    public var name: String?
-    public var when: Date?
-    public var iconName: String?
+public struct LogbookResponse: ImmutableMappable {
+    public let entityId: String
+    public let when: Date
+    public let domain: String?
+    public let message: String?
+    public let state: String?
+    public let name: String?
+    public let iconName: String?
 
-    public required init?(map: Map) {}
-
-    public func mapping(map: Map) {
-        domain <- map["domain"]
-        entityId <- map["entity_id"]
-        message <- map["message"]
-        state <- map["state"]
-        name <- map["name"]
-        iconName <- map["icon"]
-        when <- (map["when"], HomeAssistantTimestampTransform())
+    public init(map: Map) throws {
+        self.entityId = try map.value("entity_id")
+        self.when = try map.value("when", using: HomeAssistantTimestampTransform())
+        self.domain = try? map.value("domain")
+        self.message = try? map.value("message")
+        self.state = try? map.value("state")
+        self.name = try? map.value("name")
+        self.iconName = try? map.value("icon")
     }
 }
