@@ -511,9 +511,11 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Egenskaber";
 "settings_sensors.detail.device_class" = "Enhedsklasse";
+"settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.detail.state" = "Tilstand";
 "settings_sensors.detail.unique_id" = "Unikt id";
+"settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Sidst opdateret %@";
 "settings_sensors.loading_error.title" = "Sensorer kunne ikke indlæses";
 "settings_sensors.periodic_update.description" = "Når aktiveret, opdateres disse sensorer, når appen har været konstant åben i så lang tid.";

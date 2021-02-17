@@ -511,9 +511,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Priodoleddau";
 "settings_sensors.detail.device_class" = "Adran Dyfais";
+"settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Eicon";
 "settings_sensors.detail.state" = "Cyflwr";
 "settings_sensors.detail.unique_id" = "ID unigryw";
+"settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Wedi'i ddiweddaru ddiwethaf %@";
 "settings_sensors.loading_error.title" = "Wedi methu llwytho synwyryddion";
 "settings_sensors.periodic_update.description" = "Pan fydd wedi'i alluogi, bydd y synwyryddion hyn yn diweddaru ar ôl i'r ap fod yn agored yn barhaus cyhyd.";

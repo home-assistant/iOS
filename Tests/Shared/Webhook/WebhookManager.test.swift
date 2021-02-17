@@ -406,7 +406,7 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(manager.send(request: expectedRequest)))
     }
 
-    func testSendingPersistentWithExistingCallsBothPromises() throws {
+    func testSendingPersistentWithExistingResolvesBothPromises() throws {
         let request1 = WebhookRequest(type: "webhook_name", data: ["json": true])
         let request2 = WebhookRequest(type: "webhook_name", data: ["elephant": true])
 
@@ -447,7 +447,123 @@ class WebhookManagerTests: XCTestCase {
             return
         }
 
-        XCTAssertNoThrow(try hang(promise1))
+        XCTAssertThrowsError(try hang(promise1)) { error in
+            XCTAssertEqual(error as? WebhookError, .replaced)
+        }
+        XCTAssertNoThrow(try hang(promise2))
+
+        request1Blocking.fulfill()
+
+        XCTAssertEqual(ReplacingTestHandler.createdHandlers.count, 1)
+        let request = try hang(ReplacingTestHandler.createdHandlers[0].request!)
+        let result = try hang(ReplacingTestHandler.createdHandlers[0].result!)
+
+        XCTAssertEqualWebhookRequest(request, request2)
+        XCTAssertEqual((result as? [String: Any])?["result"] as? Int, 2)
+    }
+
+    func testSendingPersistentOnRegularSessionWithExistingDoesntCancelEphemeral() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+
+        let request1 = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let request2 = WebhookRequest(type: "webhook_name", data: ["elephant": true])
+
+        let request1Expectation = expectation(description: "request1")
+        let request1Blocking = expectation(description: "request1-blocking")
+
+        let identifier = WebhookResponseIdentifier(rawValue: "replacing")
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+
+        var pendingPromise1: Promise<[String: Int]>?
+        var pendingPromise2: Promise<Void>?
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+            // second one, the one we want to not be cancelled
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2)
+            return HTTPStubsResponse(jsonObject: ["result": 2], statusCode: 200, headers: nil)
+        })
+
+        var stub1: HTTPStubsDescriptor?
+        stub1 = stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { [manager] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1)
+            HTTPStubs.removeStub(stub1!)
+
+            // first one, the one we want to make sure isn't cancelled
+            pendingPromise2 = manager!.send(identifier: identifier, request: request2)
+            request1Expectation.fulfill()
+
+            self.wait(for: [request1Blocking], timeout: 100.0)
+            return HTTPStubsResponse(jsonObject: ["result": 1], statusCode: 200, headers: nil)
+        })
+
+        pendingPromise1 = manager.sendEphemeral(request: request1)
+
+        wait(for: [request1Expectation], timeout: 10.0)
+
+        guard let promise1 = pendingPromise1, let promise2 = pendingPromise2 else {
+            XCTFail("expected promises")
+            return
+        }
+
+        XCTAssertNoThrow(try hang(promise2))
+        request1Blocking.fulfill()
+
+        XCTAssertEqual(try hang(promise1), ["result": 1])
+
+        XCTAssertEqual(ReplacingTestHandler.createdHandlers.count, 1)
+        let createdRequest = try hang(XCTUnwrap(ReplacingTestHandler.createdHandlers[0].request))
+        let createdResult = try hang(XCTUnwrap(ReplacingTestHandler.createdHandlers[0].result))
+
+        XCTAssertEqualWebhookRequest(request2, createdRequest)
+        XCTAssertEqual((createdResult as? [String: Any])?["result"] as? Int, 2)
+    }
+
+    func testSendingPersistentOnRegularSessionWithExistingResolvesBothPromises() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+
+        let request1 = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let request2 = WebhookRequest(type: "webhook_name", data: ["elephant": true])
+
+        let request1Expectation = expectation(description: "request1")
+        let request1Blocking = expectation(description: "request1-blocking")
+
+        let identifier = WebhookResponseIdentifier(rawValue: "replacing")
+        manager.register(responseHandler: ReplacingTestHandler.self, for: identifier)
+
+        var pendingPromise1: Promise<Void>?
+        var pendingPromise2: Promise<Void>?
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+            // second one, the one we want to not be cancelled
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2)
+            return HTTPStubsResponse(jsonObject: ["result": 2], statusCode: 200, headers: nil)
+        })
+
+        var stub1: HTTPStubsDescriptor?
+        stub1 = stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { [manager] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1)
+            HTTPStubs.removeStub(stub1!)
+
+            // first one, the one we want to cancel
+            pendingPromise2 = manager!.send(identifier: identifier, request: request2)
+            request1Expectation.fulfill()
+
+            self.wait(for: [request1Blocking], timeout: 100.0)
+            return HTTPStubsResponse(jsonObject: ["result": 1], statusCode: 200, headers: nil)
+        })
+
+        pendingPromise1 = manager.send(identifier: identifier, request: request1)
+
+        wait(for: [request1Expectation], timeout: 10.0)
+
+        guard let promise1 = pendingPromise1, let promise2 = pendingPromise2 else {
+            XCTFail("expected promises")
+            return
+        }
+
+        XCTAssertThrowsError(try hang(promise1)) { error in
+            XCTAssertEqual(error as? WebhookError, .replaced)
+        }
         XCTAssertNoThrow(try hang(promise2))
 
         request1Blocking.fulfill()

@@ -181,6 +181,7 @@ public class HomeAssistantAPI {
             case .noApi,
                  .unregisteredIdentifier,
                  .unacceptableStatusCode,
+                 .replaced,
                  .none:
                 // not a WebhookError, or not one we think requires reintegration
                 Current.Log.info("not re-registering, but failed to update registration: \(error)")
@@ -857,7 +858,10 @@ extension HomeAssistantAPI.APIError: LocalizedError {
 }
 
 extension HomeAssistantAPI: SensorObserver {
-    public func sensorContainerDidSignalForUpdate(_ container: SensorContainer) {
+    public func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason
+    ) {
         Current.backgroundTask(withName: "signaled-update-sensors") { _ in
             UpdateSensors(trigger: .Signaled)
         }.cauterize()

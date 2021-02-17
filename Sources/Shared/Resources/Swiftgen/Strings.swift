@@ -2098,6 +2098,8 @@ public enum L10n {
   }
 
   public enum SettingsSensors {
+    /// Disabled
+    public static var disabledStateReplacement: String { return L10n.tr("Localizable", "settings_sensors.disabled_state_replacement") }
     /// Sensors
     public static var title: String { return L10n.tr("Localizable", "settings_sensors.title") }
     public enum Detail {
@@ -2105,6 +2107,8 @@ public enum L10n {
       public static var attributes: String { return L10n.tr("Localizable", "settings_sensors.detail.attributes") }
       /// Device Class
       public static var deviceClass: String { return L10n.tr("Localizable", "settings_sensors.detail.device_class") }
+      /// Enabled
+      public static var enabled: String { return L10n.tr("Localizable", "settings_sensors.detail.enabled") }
       /// Icon
       public static var icon: String { return L10n.tr("Localizable", "settings_sensors.detail.icon") }
       /// State

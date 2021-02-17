@@ -3,12 +3,20 @@ import ObjectMapper
 import PromiseKit
 import UserNotifications
 
-internal enum WebhookError: LocalizedError, Equatable {
+internal enum WebhookError: LocalizedError, Equatable, CancellableError {
     case noApi
     case unregisteredIdentifier(handler: String)
     case unexpectedType(given: String, desire: String)
     case unacceptableStatusCode(Int)
     case unmappableValue
+    case replaced
+
+    var isCancelled: Bool {
+        switch self {
+        case .replaced: return true
+        default: return false
+        }
+    }
 
     var errorDescription: String? {
         switch self {
@@ -22,6 +30,9 @@ internal enum WebhookError: LocalizedError, Equatable {
             return L10n.HaApi.ApiError.unacceptableStatusCode(statusCode)
         case .unmappableValue:
             return L10n.HaApi.ApiError.invalidResponse
+        case .replaced:
+            // this shouldn't be user-facing
+            return "<replaced>"
         }
     }
 }
@@ -391,11 +402,16 @@ public class WebhookManager: NSObject {
         persisted newPersisted: WebhookPersisted,
         with newPromise: Promise<Void>
     ) {
-        currentBackgroundSessionInfo.session.getAllTasks { tasks in
+        let evaluate = { [self] (session: WebhookSessionInfo, tasks: [URLSessionTask]) in
             tasks.filter { thisTask in
-                guard let (thisType, thisPersisted) = self.responseInfo(from: thisTask) else {
-                    Current.Log.error("cancelling request without persistence info: \(thisTask)")
-                    thisTask.cancel()
+                guard let (thisType, thisPersisted) = responseInfo(from: thisTask) else {
+                    if session.isBackground {
+                        // only some requests on the regular session have info, ephemeral tasks do not for example
+                        // all requests on the background session have persistence info
+                        Current.Log.error("cancelling request without persistence info: \(thisTask)")
+                        thisTask.cancel()
+                    }
+
                     return false
                 }
 
@@ -405,12 +421,22 @@ public class WebhookManager: NSObject {
                     return false
                 }
             }.forEach { existingTask in
-                let taskKey = TaskKey(sessionInfo: self.currentBackgroundSessionInfo, task: existingTask)
-                if let existingResolver = self.resolverForTask[taskKey] {
-                    // connect the task we're about to cancel's promise to the replacement
-                    newPromise.pipe { existingResolver.resolve($0) }
+                let taskKey = TaskKey(sessionInfo: session, task: existingTask)
+                if let existingResolver = resolverForTask[taskKey] {
+                    existingResolver.reject(WebhookError.replaced)
                 }
                 existingTask.cancel()
+            }
+        }
+
+        currentRegularSessionInfo.session.getAllTasks { [self] tasks in
+            dataQueue.async {
+                evaluate(currentRegularSessionInfo, tasks)
+            }
+        }
+        currentBackgroundSessionInfo.session.getAllTasks { [self] tasks in
+            dataQueue.async {
+                evaluate(currentBackgroundSessionInfo, tasks)
             }
         }
     }
