@@ -345,8 +345,8 @@
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
-		491E98FF25D543560077BBE3 /* Logbook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* Logbook.swift */; };
-		491E990025D543560077BBE3 /* Logbook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* Logbook.swift */; };
+		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
+		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
@@ -1221,7 +1221,7 @@
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
-		491E98FE25D543560077BBE3 /* Logbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logbook.swift; sourceTree = "<group>"; };
+		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
 		57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationService-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationService-metadata.plist"; sourceTree = "<group>"; };
@@ -2955,7 +2955,7 @@
 				B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */,
 				B6F02BF91CB47F930029ABE7 /* Events.swift */,
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
-				491E98FE25D543560077BBE3 /* Logbook.swift */,
+				491E98FE25D543560077BBE3 /* LogbookEntry.swift */,
 				B6872E652226842100C475D1 /* MobileAppRegistrationResponse.swift */,
 				11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */,
 				119EC3C624D5119300617D51 /* MobileAppConfig.swift */,
@@ -4883,7 +4883,7 @@
 				B67CE8B022200F220034C1D0 /* CLLocation+Extensions.swift in Sources */,
 				B67CE8A822200F220034C1D0 /* MJPEGStreamer.swift in Sources */,
 				B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */,
-				491E990025D543560077BBE3 /* Logbook.swift in Sources */,
+				491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11521BD8254003B7009C5C72 /* SentryLogDestination.swift in Sources */,
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
@@ -5041,7 +5041,7 @@
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
-				491E98FF25D543560077BBE3 /* Logbook.swift in Sources */,
+				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,
 				11F2F27E258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,

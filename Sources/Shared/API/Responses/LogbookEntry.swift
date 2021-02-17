@@ -1,7 +1,7 @@
 import Foundation
 import ObjectMapper
 
-public struct LogbookResponse: ImmutableMappable {
+public struct LogbookEntry: ImmutableMappable {
     public let entityId: String
     public let when: Date
     public let domain: String?
