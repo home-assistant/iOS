@@ -511,11 +511,11 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Attributter";
 "settings_sensors.detail.device_class" = "Enhetsklasse";
-"settings_sensors.detail.enabled" = "Enabled";
+"settings_sensors.detail.enabled" = "Aktivert";
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.detail.state" = "Tilstand";
 "settings_sensors.detail.unique_id" = "Unik ID";
-"settings_sensors.disabled_state_replacement" = "Disabled";
+"settings_sensors.disabled_state_replacement" = "Deaktivert";
 "settings_sensors.last_updated.footer" = "Sist oppdatert %@";
 "settings_sensors.loading_error.title" = "Kunne ikke laste sensorer";
 "settings_sensors.periodic_update.description" = "Når disse sensorene er aktivert, oppdateres disse sensorene med denne frekvensen mens appen er åpen i forgrunnen.";
