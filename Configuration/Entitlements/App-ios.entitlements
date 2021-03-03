@@ -8,6 +8,7 @@
 	<array>
 		<string>applinks:home-assistant.io</string>
 		<string>applinks:*.home-assistant.io</string>
+		<string>applinks:my.home-assistant.io</string>
 	</array>
 	<key>com.apple.developer.networking.wifi-info</key>
 	<true/>

@@ -106,7 +106,7 @@ class WebViewWindowController {
         }
     }
 
-    var presentingViewController: UIViewController? {
+    var presentedViewController: UIViewController? {
         var currentController = window.rootViewController
         while let controller = currentController?.presentedViewController {
             currentController = controller
@@ -145,7 +145,7 @@ class WebViewWindowController {
         }
 
         let triggerOpen = {
-            openURLInBrowser(url, self.presentingViewController)
+            openURLInBrowser(url, self.presentedViewController)
         }
 
         if prefs.bool(forKey: "confirmBeforeOpeningUrl") {

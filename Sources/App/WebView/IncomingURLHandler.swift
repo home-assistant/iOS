@@ -2,6 +2,7 @@ import CallbackURLKit
 import Foundation
 import PromiseKit
 import Shared
+import SafariServices
 
 class IncomingURLHandler {
     let windowController: WebViewWindowController
@@ -35,6 +36,27 @@ class IncomingURLHandler {
                 object: nil,
                 userInfo: ["url": url]
             )
+        case "navigate": // homeassistant://navigate/lovelace/dashboard
+            guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                return false
+            }
+
+            components.scheme = nil
+            components.host = nil
+
+            guard let rawURL = components.url?.absoluteString else {
+                return false
+            }
+
+            Current.sceneManager.webViewWindowControllerPromise.done { controller in
+                controller.open(urlString: rawURL)
+
+                if let presenting = controller.presentedViewController,
+                   presenting is SFSafariViewController {
+                    // Dismiss my.* controller if it's on top - we don't get any other indication
+                    presenting.dismiss(animated: true, completion: nil)
+                }
+            }
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
@@ -59,11 +81,16 @@ class IncomingURLHandler {
 
             Current.sceneManager.showFullScreenConfirm(icon: icon, text: text)
             return true
-        case .unhandled:
-            return false
         case let .open(url):
             // NFC-based URL
             return handle(url: url)
+        case .unhandled:
+            // not a tag
+            if let url = userActivity.webpageURL, url.host == "my.home-assistant.io" {
+                return showMy(for: url)
+            } else {
+                return false
+            }
         }
     }
 
@@ -89,6 +116,28 @@ class IncomingURLHandler {
         windowController.webViewControllerPromise.done {
             $0.present(alert, animated: true, completion: nil)
         }
+    }
+
+    private func showMy(for url: URL) -> Bool {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            Current.Log.info("couldn't create url components out of \(url)")
+            return false
+        }
+
+        var queryItems = components.queryItems ?? []
+        queryItems.append(.init(name: "mobile", value: "1"))
+        components.queryItems = queryItems
+
+        guard let updatedURL = components.url else {
+            return false
+        }
+
+        windowController.webViewControllerPromise.done { controller in
+            // not animated in because it looks weird during the app launch animation
+            controller.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
+        }
+
+        return true
     }
 }
 
