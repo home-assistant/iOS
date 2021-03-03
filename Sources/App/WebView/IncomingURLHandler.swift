@@ -49,13 +49,19 @@ class IncomingURLHandler {
             }
 
             Current.sceneManager.webViewWindowControllerPromise.done { controller in
-                controller.open(urlString: rawURL)
+                let wasPresentingSafari: Bool
 
                 if let presenting = controller.presentedViewController,
                    presenting is SFSafariViewController {
                     // Dismiss my.* controller if it's on top - we don't get any other indication
                     presenting.dismiss(animated: true, completion: nil)
+
+                    wasPresentingSafari = true
+                } else {
+                    wasPresentingSafari = false
                 }
+
+                controller.open(from: .deeplink, urlString: rawURL, skipConfirm: wasPresentingSafari)
             }
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
@@ -132,10 +138,8 @@ class IncomingURLHandler {
             return false
         }
 
-        windowController.webViewControllerPromise.done { controller in
-            // not animated in because it looks weird during the app launch animation
-            controller.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
-        }
+        // not animated in because it looks weird during the app launch animation
+        windowController.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
 
         return true
     }

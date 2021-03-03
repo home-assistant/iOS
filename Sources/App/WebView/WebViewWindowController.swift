@@ -97,7 +97,7 @@ class WebViewWindowController {
     }
 
     func present(_ viewController: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
-        window.rootViewController?.present(viewController, animated: animated, completion: completion)
+        presentedViewController?.present(viewController, animated: animated, completion: completion)
     }
 
     func show(alert: ServerAlert) {
@@ -134,24 +134,38 @@ class WebViewWindowController {
         }
     }
 
-    func open(urlString openUrlRaw: String) {
-        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
-            navigate(to: webviewURL)
+    enum OpenSource {
+        case notification
+        case deeplink
+
+        func message(with urlString: String) -> String {
+            switch self {
+            case .notification: return L10n.Alerts.OpenUrlFromNotification.message(urlString)
+            case .deeplink: return L10n.Alerts.OpenUrlFromDeepLink.message(urlString)
+            }
+        }
+    }
+
+    func open(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+        let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw)
+        let externalURL = webviewURL ?? URL(string: openUrlRaw)
+
+        guard webviewURL != nil || externalURL != nil else {
             return
         }
 
-        guard let url = URL(string: openUrlRaw) else {
-            return
+        let triggerOpen = { [self] in
+            if let webviewURL = webviewURL {
+                navigate(to: webviewURL)
+            } else if let externalURL = externalURL {
+                openURLInBrowser(externalURL, presentedViewController)
+            }
         }
 
-        let triggerOpen = {
-            openURLInBrowser(url, self.presentedViewController)
-        }
-
-        if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+        if prefs.bool(forKey: "confirmBeforeOpeningUrl"), !skipConfirm {
             let alert = UIAlertController(
                 title: L10n.Alerts.OpenUrlFromNotification.title,
-                message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
+                message: from.message(with: openUrlRaw),
                 preferredStyle: UIAlertController.Style.alert
             )
 
@@ -159,6 +173,15 @@ class WebViewWindowController {
                 title: L10n.cancelLabel,
                 style: .cancel,
                 handler: nil
+            ))
+
+            alert.addAction(UIAlertAction(
+                title: L10n.alwaysOpenLabel,
+                style: .default,
+                handler: { _ in
+                    prefs.set(false, forKey: "confirmBeforeOpeningUrl")
+                    triggerOpen()
+                }
             ))
 
             alert.addAction(UIAlertAction(
