@@ -148,7 +148,7 @@ class WebViewWindowController {
 
     func open(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
         let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw)
-        let externalURL = webviewURL ?? URL(string: openUrlRaw)
+        let externalURL = URL(string: openUrlRaw)
 
         guard webviewURL != nil || externalURL != nil else {
             return
