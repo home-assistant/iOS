@@ -170,7 +170,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 prefs.synchronize()
             }
 
-                <<< SwitchRow {
+                <<< SwitchRow("confirmBeforeOpeningUrl") {
+                    $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
+                    $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
+                }.onChange { row in
+                    prefs.setValue(row.value, forKey: "confirmBeforeOpeningUrl")
+                }
+
+                +++ SwitchRow {
                     // mac has a system-level setting for state restoration
                     $0.hidden = .isCatalyst
 

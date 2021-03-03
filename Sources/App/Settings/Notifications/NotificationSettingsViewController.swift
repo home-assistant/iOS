@@ -67,15 +67,7 @@ class NotificationSettingsViewController: FormViewController {
                 }, onDismiss: nil)
             }
 
-            +++ SwitchRow("confirmBeforeOpeningUrl") {
-                $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
-                $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
-            }.onChange { row in
-                prefs.setValue(row.value, forKey: "confirmBeforeOpeningUrl")
-                prefs.synchronize()
-            }
-
-            <<< ButtonRow {
+            +++ ButtonRow {
                 $0.title = L10n.SettingsDetails.Notifications.BadgeSection.Button.title
                 $0.onCellSelection { cell, _ in
                     UIApplication.shared.applicationIconBadgeNumber = 0
