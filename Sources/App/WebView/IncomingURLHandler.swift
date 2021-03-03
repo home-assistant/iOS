@@ -1,8 +1,8 @@
 import CallbackURLKit
 import Foundation
 import PromiseKit
-import Shared
 import SafariServices
+import Shared
 
 class IncomingURLHandler {
     let windowController: WebViewWindowController
