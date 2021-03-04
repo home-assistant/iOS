@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "您必须登录才能继续";
 "alerts.confirm.cancel" = "取消";
 "alerts.confirm.ok" = "确定";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "打开通知中的网址 (%@) ？";
 "alerts.open_url_from_notification.title" = "打开网址？";
 "alerts.prompt.cancel" = "取消";
 "alerts.prompt.ok" = "确定";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Please open this notification for an important update about upcoming changes to Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Notice of upcoming major app change";
 "cancel_label" = "取消";

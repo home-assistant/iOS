@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Rhaid i chi fewngofnodi i barhau";
 "alerts.confirm.cancel" = "Canslo";
 "alerts.confirm.ok" = "Iawn";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Mae URL agored %@ wedi'i ganfod yn yr hysbysiad?";
 "alerts.open_url_from_notification.title" = "Agor URL?";
 "alerts.prompt.cancel" = "Canslo";
 "alerts.prompt.ok" = "Iawn";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Agorwch yr hysbysiad hwn i gael diweddariad pwysig am y newidiadau sydd ar ddod i Home Assistant";
 "app_transfer_warning_notification.title" = "⚠️ Rhybudd o newid ap mawr sydd ar ddod";
 "cancel_label" = "Canslo";

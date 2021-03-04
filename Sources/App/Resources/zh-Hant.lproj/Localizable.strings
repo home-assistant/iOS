@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "必須登入以繼續";
 "alerts.confirm.cancel" = "取消";
 "alerts.confirm.ok" = "好";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "開啟通知訊息中的網址（%@）？";
 "alerts.open_url_from_notification.title" = "是否打開網址?";
 "alerts.prompt.cancel" = "取消";
 "alerts.prompt.ok" = "好";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "請開啟此通知以獲得 Home Assistant Companion 即將推出的重大更新通知";
 "app_transfer_warning_notification.title" = "⚠️ 即將推出的重大 App 更新";
 "cancel_label" = "取消";
@@ -485,8 +487,8 @@
 "settings_details.notifications.update_section.updated_alert.title" = "設定已匯入";
 "settings_details.privacy.alerts.description" = "允許檢查重要警告，例如安全漏洞通報。";
 "settings_details.privacy.alerts.title" = "警告";
-"settings_details.privacy.analytics.description" = "允許收集關於裝置與 App 整合的基本資訊。將不會與 Google 分享任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
-"settings_details.privacy.analytics.generic_description" = "允許收集關於裝置與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.analytics.description" = "允許收集關於裝置與 App 整合的基本資訊。將不會與 Google 分享任何有關於使用者身份資料，包含您的 Home Assistant URL 與權杖等。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.analytics.generic_description" = "允許收集關於裝置與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與權杖等。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.analytics.generic_title" = "分析資料";
 "settings_details.privacy.analytics.title" = "Google Analytics";
 "settings_details.privacy.crash_reporting.description" = "允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本裝置資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
@@ -660,8 +662,8 @@
 "siri_shortcuts.intents.send_location.title" = "傳送座標";
 "success_label" = "成功";
 "token_error.connection_failed" = "連線失敗。";
-"token_error.expired" = "密鑰已過期。";
-"token_error.token_unavailable" = "密鑰不可用。";
+"token_error.expired" = "權杖已過期。";
+"token_error.token_unavailable" = "權杖不可用。";
 "updater.check_for_updates_menu.title" = "檢查更新…";
 "updater.no_updates_available.on_latest_version" = "已經是最新版本！";
 "updater.no_updates_available.title" = "檢查更新";

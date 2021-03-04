@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Heu d'iniciar la sessió per continuar";
 "alerts.confirm.cancel" = "Cancel·lar";
 "alerts.confirm.ok" = "D'acord";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Obrir l'adreça (%@) trobada a la notificació?";
 "alerts.open_url_from_notification.title" = "Obrir adreça?";
 "alerts.prompt.cancel" = "Cancel·lar";
 "alerts.prompt.ok" = "D'acord";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Si us plau, obriu aquesta notificació per a una actualització important sobre els propers canvis a Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Avís dels propers canvis importants a l'aplicació";
 "cancel_label" = "Cancel·lar";

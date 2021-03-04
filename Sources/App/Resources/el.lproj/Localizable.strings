@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Πρέπει να συνδεθείτε για να συνεχίσετε";
 "alerts.confirm.cancel" = "Ακύρωση";
 "alerts.confirm.ok" = "Εντάξει";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Άνοιγμα διεύθυνσης URL ( %@ ) που βρέθηκε στην ειδοποίηση;";
 "alerts.open_url_from_notification.title" = "Άνοιγμα διεύθυνσης URL;";
 "alerts.prompt.cancel" = "Ακύρωση";
 "alerts.prompt.ok" = "Εντάξει";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Ανοίξτε αυτήν την ειδοποίηση για μια σημαντική ενημέρωση σχετικά με τις επικείμενες αλλαγές στο Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Ανακοίνωση για επερχόμενη σημαντική αλλαγή εφαρμογής";
 "cancel_label" = "Ακύρωση";

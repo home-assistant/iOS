@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Du skal logge ind for at fortsætte";
 "alerts.confirm.cancel" = "Annuller";
 "alerts.confirm.ok" = "OK";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Åbn webadresse (%@) der blev fundet i notifikationen?";
 "alerts.open_url_from_notification.title" = "Åbn webadresse?";
 "alerts.prompt.cancel" = "Annuller";
 "alerts.prompt.ok" = "OK";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Åbn denne notifikation for at få en vigtig opdatering om kommende ændringer af Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Varsel om stor kommende app-ændring";
 "cancel_label" = "Annuller";
