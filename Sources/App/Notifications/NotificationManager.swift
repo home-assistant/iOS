@@ -192,7 +192,9 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         if let openURLRaw = userInfo["url"] as? String {
-            Current.sceneManager.webViewWindowControllerPromise.done { $0.open(urlString: openURLRaw) }
+            Current.sceneManager.webViewWindowControllerPromise.done {
+                $0.open(from: .notification, urlString: openURLRaw)
+            }
         } else if let openURLDictionary = userInfo["url"] as? [String: String] {
             let url = openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -206,7 +208,9 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             }.first
 
             if let url = url {
-                Current.sceneManager.webViewWindowControllerPromise.done { $0.open(urlString: url) }
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(from: .notification, urlString: url)
+                }
             } else {
                 Current.Log.error(
                     "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"

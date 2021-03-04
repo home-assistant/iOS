@@ -12,6 +12,8 @@ import Foundation
 public enum L10n {
   /// Add
   public static var addButtonLabel: String { return L10n.tr("Localizable", "addButtonLabel") }
+  /// Always Open
+  public static var alwaysOpenLabel: String { return L10n.tr("Localizable", "always_open_label") }
   /// Cancel
   public static var cancelLabel: String { return L10n.tr("Localizable", "cancel_label") }
   /// Copy
@@ -173,6 +175,12 @@ public enum L10n {
       public static var cancel: String { return L10n.tr("Localizable", "alerts.confirm.cancel") }
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.confirm.ok") }
+    }
+    public enum OpenUrlFromDeepLink {
+      /// Open URL (%@) from deep link?
+      public static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "alerts.open_url_from_deep_link.message", String(describing: p1))
+      }
     }
     public enum OpenUrlFromNotification {
       /// Open URL (%@) found in notification?
