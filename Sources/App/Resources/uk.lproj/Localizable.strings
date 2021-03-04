@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Ви повинні увійти, щоб продовжити";
 "alerts.confirm.cancel" = "Скасувати";
 "alerts.confirm.ok" = "ОК";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Відкрити URL-адресу (%@), знайдену у сповіщенні?";
 "alerts.open_url_from_notification.title" = "Відкрити URL-адресу?";
 "alerts.prompt.cancel" = "Скасувати";
 "alerts.prompt.ok" = "ОК";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Будь ласка, відкрийте це сповіщення про важливе оновлення стосовно майбутнього Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Оголошення про суттєві зміни в застосунку";
 "cancel_label" = "Скасувати";

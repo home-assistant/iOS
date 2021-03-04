@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Vous devez vous connecter pour continuer";
 "alerts.confirm.cancel" = "Annuler";
 "alerts.confirm.ok" = "OK";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Ouvrir l'URL (%@) trouvé dans la notification ?";
 "alerts.open_url_from_notification.title" = "Ouvrir le lien ?";
 "alerts.prompt.cancel" = "Annuler";
 "alerts.prompt.ok" = "OK";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Veuillez ouvrir cette notification pour obtenir une mise à jour importante sur les changements à venir dans Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Avis de changement majeur d'application à venir";
 "cancel_label" = "Annuler";

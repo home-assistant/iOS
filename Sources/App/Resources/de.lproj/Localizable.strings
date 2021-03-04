@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Du musst dich anmelden, um fortzufahren";
 "alerts.confirm.cancel" = "Abbrechen";
 "alerts.confirm.ok" = "OK";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Adresse aus der Notifikation (%@) öffnen?";
 "alerts.open_url_from_notification.title" = "Adresse öffnen?";
 "alerts.prompt.cancel" = "Abbrechen";
 "alerts.prompt.ok" = "OK";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Bitte öffne diese Benachrichtigung für ein wichtiges Update über bevorstehende Änderungen an Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Hinweis auf bevorstehende größere App-Änderungen";
 "cancel_label" = "Abbrechen";

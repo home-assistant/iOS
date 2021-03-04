@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "Chcete-li pokračovat, musíte se přihlásit";
 "alerts.confirm.cancel" = "Zrušit";
 "alerts.confirm.ok" = "OK";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Otevřít URL adresu?";
 "alerts.prompt.cancel" = "Zrušit";
 "alerts.prompt.ok" = "OK";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Otevřete toto oznámení pro důležitou aktualizaci o nadcházejících změnách Home Assistant";
 "app_transfer_warning_notification.title" = "⚠️ Oznámení o nadcházející velké změně aplikace";
 "cancel_label" = "Zrušit";

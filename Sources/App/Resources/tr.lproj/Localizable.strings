@@ -33,10 +33,12 @@
 "alerts.auth_required.title" = "You must sign in to continue";
 "alerts.confirm.cancel" = "İptal";
 "alerts.confirm.ok" = "Tamam";
+"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Bildirimde açık URL ( %@ ) bulundu mu?";
 "alerts.open_url_from_notification.title" = "Open URL?";
 "alerts.prompt.cancel" = "İptal";
 "alerts.prompt.ok" = "Tamam";
+"always_open_label" = "Always Open";
 "app_transfer_warning_notification.body" = "Lütfen Home Assistant Companion'da yapılacak değişikliklerle ilgili önemli bir güncelleme için bu bildirimi açın";
 "app_transfer_warning_notification.title" = "⚠️ Yaklaşan büyük uygulama değişikliği bildirimi";
 "cancel_label" = "Cancel";
