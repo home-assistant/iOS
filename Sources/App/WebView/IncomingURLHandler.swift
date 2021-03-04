@@ -92,7 +92,7 @@ class IncomingURLHandler {
             return handle(url: url)
         case .unhandled:
             // not a tag
-            if let url = userActivity.webpageURL, url.host == "my.home-assistant.io" {
+            if let url = userActivity.webpageURL, url.host?.lowercased() == "my.home-assistant.io" {
                 return showMy(for: url)
             } else {
                 return false
