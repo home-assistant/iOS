@@ -39,7 +39,7 @@
 "EWqRDj" = "Failed to perform action: ${error}";
 "f1KX0Q" = "Visualizza ed esegui azioni";
 "FBQiVD" = "Chiamare un servizio sull'istanza Home Assistant";
-"fkQXDn" = "There are ${count} options matching ‘${action}’.";
+"fkQXDn" = "Ci sono ${count} opzioni che corrispondono a \"${action}\".";
 "flUgtx" = "Quale azione?";
 "FN8zqO" = "Otteni un singolo fotogramma da ${cameraID} e copialo negli appunti";
 "fnz838" = "Sensori aggiornati.";
@@ -47,7 +47,7 @@
 "FtQqoU" = "Posizione aggiornata";
 "fuRWMi" = "Invia ${location} ad Home Assistant";
 "FZ9qkT" = "Render Template";
-"g8g7Af" = "Perform the action";
+"g8g7Af" = "Esegui l'azione";
 "gePUyy" = "Posizione";
 "gI3mme" = "Quali dati vuoi inviare?";
 "glRCfJ" = "Impossibile Lanciare l'evento, Home Assistant non è attualmente raggiungibile";

@@ -33,12 +33,12 @@
 "alerts.auth_required.title" = "必須登入以繼續";
 "alerts.confirm.cancel" = "取消";
 "alerts.confirm.ok" = "好";
-"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
+"alerts.open_url_from_deep_link.message" = "由 deep link 開啟 URL (%@)？";
 "alerts.open_url_from_notification.message" = "開啟通知訊息中的網址（%@）？";
 "alerts.open_url_from_notification.title" = "是否打開網址?";
 "alerts.prompt.cancel" = "取消";
 "alerts.prompt.ok" = "好";
-"always_open_label" = "Always Open";
+"always_open_label" = "總是開放";
 "app_transfer_warning_notification.body" = "請開啟此通知以獲得 Home Assistant Companion 即將推出的重大更新通知";
 "app_transfer_warning_notification.title" = "⚠️ 即將推出的重大 App 更新";
 "cancel_label" = "取消";
