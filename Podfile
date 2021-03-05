@@ -24,7 +24,7 @@ plugin 'cocoapods-acknowledgements'
 system('./Tools/BuildMaterialDesignIconsFont.sh')
 
 pod 'Alamofire', '~> 5.0'
-pod 'Communicator', '~> 4.0'
+pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'

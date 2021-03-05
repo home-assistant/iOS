@@ -6,7 +6,7 @@ PODS:
   - ColorPickerRow (1.3.3):
     - Eureka (>= 5.0.0)
     - UIColor_Hex_Swift (>= 3.0.0)
-  - Communicator (4.0.0)
+  - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.2)
@@ -68,7 +68,7 @@ DEPENDENCIES:
   - Alamofire (~> 5.0)
   - CallbackURLKit
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
-  - Communicator (~> 4.0)
+  - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka
@@ -99,7 +99,6 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - CallbackURLKit
-    - Communicator
     - Eureka
     - KeychainAccess
     - Lokalise
@@ -124,6 +123,9 @@ EXTERNAL SOURCES:
   ColorPickerRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ColorPickerRow
+  Communicator:
+    :branch: observation-memory-direct
+    :git: https://github.com/zacwest/Communicator.git
   CPDAcknowledgements:
     :branch: master
     :git: https://github.com/CocoaPods/CPDAcknowledgements
@@ -148,6 +150,9 @@ CHECKOUT OPTIONS:
   ColorPickerRow:
     :commit: fde095843bb8c08e8818097c51ed140373180790
     :git: https://github.com/EurekaCommunity/ColorPickerRow
+  Communicator:
+    :commit: f5dd96048cbe1e7ebfee85688c23c17c6f71f9e4
+    :git: https://github.com/zacwest/Communicator.git
   CPDAcknowledgements:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
@@ -168,7 +173,7 @@ SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
-  Communicator: d3412680ef84f3aa8a728eed69027b9671e736bf
+  Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: 1c2b8b5892bfb0e972d0fe05f8c09fd89f8625ec
@@ -196,6 +201,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 886ee9e9156c28c493fe7ac11eec28e43231325d
+PODFILE CHECKSUM: c011bb5c7f72d67e414ad83cd924498e7281d800
 
 COCOAPODS: 1.10.1

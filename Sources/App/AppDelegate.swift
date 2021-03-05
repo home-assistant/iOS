@@ -423,21 +423,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        Communicator.State.observe { state in
+        // This directly mutates the data structure for observations to avoid race conditions.
+
+        Communicator.State.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        WatchState.observe { watchState in
+        WatchState.observations.store[.init(queue: .main)] = { watchState in
             Current.Log.verbose("Watch state changed: \(watchState)")
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        Reachability.observe { reachability in
+        Reachability.observations.store[.init(queue: .main)] = { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
-        InteractiveImmediateMessage.observe { message in
+        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received message: \(message.identifier)")
 
             if message.identifier == "ActionRowPressed" {
@@ -461,17 +463,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        Blob.observe { blob in
+        Blob.observations.store[.init(queue: .main)] = { blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
         }
 
-        Context.observe { context in
+        Context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
 
             if let modelIdentifier = context.content["watchModel"] as? String {
                 Current.crashReporter.setUserProperty(value: modelIdentifier, name: "PairedAppleWatch")
             }
         }
+
+        _ = Communicator.shared
     }
 
     func setupiOS12Features() {
