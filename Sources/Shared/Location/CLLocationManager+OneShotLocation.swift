@@ -43,7 +43,14 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
     let quality: Quality
 
     init(location: CLLocation) {
-        self.location = location
+        do {
+            self.location = try location.sanitized()
+        } catch {
+            Current.Log.error("Location \(location.coordinate) couldn't be sanitized: \(error)")
+            self.quality = .invalid
+            self.location = location
+            return
+        }
 
         if location.coordinate.latitude == 0 || location.coordinate.longitude == 0 {
             // iOS 13.5? seems to occasionally report 0 lat/long, so ignore these locations

@@ -471,6 +471,54 @@ class OneShotLocationTests: XCTestCase {
         XCTAssertEqual(try hang(promise), location4)
     }
 
+    func testUnsanitizableLocationInvalid() {
+        let (timeoutPromise, _) = Guarantee<Void>.pending()
+        let location1 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: .infinity, longitude: 2),
+            altitude: 0,
+            horizontalAccuracy: 20, // normally would win
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-20)
+        )
+        let location2 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 2, longitude: 3),
+            altitude: 0,
+            horizontalAccuracy: 100, // normally would lose
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-30)
+        )
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1, location2])
+
+        XCTAssertEqual(try hang(promise), location2)
+    }
+
+    func testSanitizableLocation() throws {
+        let (timeoutPromise, _) = Guarantee<Void>.pending()
+        let location1 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 1, longitude: 2),
+            altitude: 0,
+            horizontalAccuracy: 20,
+            verticalAccuracy: .infinity,
+            timestamp: now.addingTimeInterval(-20)
+        )
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
+
+        let result = try hang(promise)
+        XCTAssertEqual(result.coordinate.latitude, 1)
+        XCTAssertEqual(result.coordinate.longitude, 2)
+        XCTAssertEqual(result.verticalAccuracy, -1)
+    }
+
     struct LocationTestCase {
         let location1: CLLocation
         let location2: CLLocation
