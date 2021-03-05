@@ -133,41 +133,43 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     func setupWatchCommunicator() {
-        Communicator.State.observe { state in
+        // This directly mutates the data structure for observations to avoid race conditions.
+
+        Communicator.State.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
 
             _ = HomeAssistantAPI.SyncWatchContext()
         }
 
-        Reachability.observe { reachability in
+        Reachability.observations.store[.init(queue: .main)] = { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
-        InteractiveImmediateMessage.observe { message in
+        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received message: \(message.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        ImmediateMessage.observe { message in
+        ImmediateMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received message: \(message.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        GuaranteedMessage.observe { message in
+        GuaranteedMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received guaranteed message! \(message)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Blob.observe { blob in
+        Blob.observations.store[.init(queue: .main)] = { blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Context.observe { context in
+        Context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context)")
 
             _ = HomeAssistantAPI.SyncWatchContext()
@@ -214,7 +216,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             }.cauterize()
         }
 
-        ComplicationInfo.observe { complicationInfo in
+        ComplicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
             Current.api.then(on: nil) {
@@ -223,6 +225,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 self.endWatchConnectivityBackgroundTaskIfNecessary()
             }.cauterize()
         }
+
+        _ = Communicator.shared
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {
