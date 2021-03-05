@@ -79,6 +79,9 @@
 		112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensors.swift */; };
 		1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F531253A1E7400F371BE /* ComplicationListViewController.swift */; };
 		1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */; };
+		1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
+		1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
+		1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */; };
 		11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
@@ -1016,6 +1019,8 @@
 		112B705A2526B1C500FEAA76 /* UpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensors.swift; sourceTree = "<group>"; };
 		1130F531253A1E7400F371BE /* ComplicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationListViewController.swift; sourceTree = "<group>"; };
 		1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectViewController.swift; sourceTree = "<group>"; };
+		1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.swift"; sourceTree = "<group>"; };
+		1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.test.swift"; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
 		11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.swift; sourceTree = "<group>"; };
 		113D04E124D76CD3003CE877 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -3050,6 +3055,7 @@
 				11F2F28D2587285300F61F7C /* NotificationAttachment */,
 				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
 				11267D0825BBA9FE00F28E5C /* Updater.test.swift */,
+				1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -3086,6 +3092,7 @@
 			children = (
 				D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */,
 				113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */,
+				1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -4822,6 +4829,7 @@
 				11EE9B5224C62E7800404AF8 /* Scene.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
 				1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */,
+				1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
@@ -4980,6 +4988,7 @@
 				B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
+				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
@@ -5107,6 +5116,7 @@
 				11F2F2A92587288200F61F7C /* NotificationAttachmentParserCamera.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
+				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 				110ED58025A570F100489AF7 /* DisplaySensor.test.swift in Sources */,
 			);
