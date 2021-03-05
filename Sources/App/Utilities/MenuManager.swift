@@ -50,11 +50,33 @@ class MenuManager {
         builder.remove(menu: .format)
 
         builder.replace(menu: .about, with: aboutMenu())
-        builder.insertSibling(preferencesMenu(), afterMenu: .about)
+
+        if builder.menu(for: .preferences) == nil {
+            // macOS prior to 11.3 doesn't have the preferences menu already and 11.3+ doesn't like it being inserted
+            builder.insertSibling(preferencesMenu(), afterMenu: .about)
+        } else {
+            builder.replace(menu: .preferences, with: preferencesMenu())
+        }
+
         builder.replaceChildren(ofMenu: .help) { _ in helpMenus() }
-        builder.insertSibling(actionsMenu(), beforeMenu: .window)
-        builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
-        builder.insertChild(fileMenu(), atStartOfMenu: .file)
+
+        if builder.menu(for: .haActions) == nil {
+            builder.insertSibling(actionsMenu(), beforeMenu: .window)
+        } else {
+            builder.replace(menu: .haActions, with: actionsMenu())
+        }
+
+        if builder.menu(for: .haWebViewActions) == nil {
+            builder.insertSibling(webViewActionsMenu(), beforeMenu: .fullscreen)
+        } else {
+            builder.replace(menu: .haWebViewActions, with: webViewActionsMenu())
+        }
+
+        if builder.menu(for: .haFile) == nil {
+            builder.insertChild(fileMenu(), atStartOfMenu: .file)
+        } else {
+            builder.replace(menu: .haFile, with: fileMenu())
+        }
 
         configureStatusItem()
     }
