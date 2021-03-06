@@ -33,12 +33,12 @@
 "alerts.auth_required.title" = "Du må logge inn for å fortsette";
 "alerts.confirm.cancel" = "Avbryt";
 "alerts.confirm.ok" = "OK";
-"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
+"alerts.open_url_from_deep_link.message" = "Åpne URL-adressen (%@) fra deep koblingen?";
 "alerts.open_url_from_notification.message" = "Åpne URL ( %@ ) funnet i varsel?";
 "alerts.open_url_from_notification.title" = "Åpne URL?";
 "alerts.prompt.cancel" = "Avbryt";
 "alerts.prompt.ok" = "OK";
-"always_open_label" = "Always Open";
+"always_open_label" = "Alltid åpen";
 "app_transfer_warning_notification.body" = "Åpne dette varselet for en viktig oppdatering om kommende endringer i Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Merknad om kommende store appendring";
 "cancel_label" = "Avbryt";
