@@ -33,12 +33,12 @@
 "alerts.auth_required.title" = "Vous devez vous connecter pour continuer";
 "alerts.confirm.cancel" = "Annuler";
 "alerts.confirm.ok" = "OK";
-"alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
+"alerts.open_url_from_deep_link.message" = "Ouvrir l'URL ( %@ ) à partir du lien profond?";
 "alerts.open_url_from_notification.message" = "Ouvrir l'URL (%@) trouvé dans la notification ?";
 "alerts.open_url_from_notification.title" = "Ouvrir le lien ?";
 "alerts.prompt.cancel" = "Annuler";
 "alerts.prompt.ok" = "OK";
-"always_open_label" = "Always Open";
+"always_open_label" = "Toujours ouvert";
 "app_transfer_warning_notification.body" = "Veuillez ouvrir cette notification pour obtenir une mise à jour importante sur les changements à venir dans Home Assistant Companion";
 "app_transfer_warning_notification.title" = "⚠️ Avis de changement majeur d'application à venir";
 "cancel_label" = "Annuler";
@@ -75,7 +75,7 @@
 "database.problem.delete" = "Supprimer la base de données et quitter l'application";
 "database.problem.quit" = "Quitter l'application";
 "database.problem.title" = "Erreur de la base de données";
-"debug_section_label" = "Debug";
+"debug_section_label" = "Déboguer";
 "delete" = "Supprimer";
 "device.generic_name" = "Appareil";
 "devices_map.battery_label" = "Batterie";
@@ -377,7 +377,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.open_in_browser.title" = "Ouvrir les liens dans";
 "settings_details.general.page_zoom.default" = "%@ (par défaut)";
 "settings_details.general.page_zoom.title" = "Zoom sur la page";
-"settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
+"settings_details.general.pinch_to_zoom.title" = "Pincer pour zoomer";
 "settings_details.general.restoration.title" = "Rappelez la dernière page";
 "settings_details.general.title" = "Réglages généraux";
 "settings_details.general.visibility.options.dock" = "Dock";
@@ -435,7 +435,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.categories_synced.footer" = "Les catégories définies dans .yaml ne sont pas modifiables sur l'appareil.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Les catégories peuvent également être définies dans la configuration .yaml.";
 "settings_details.notifications.categories_synced.header" = "Catégories synchronisées";
-"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
+"settings_details.notifications.categories.footer" = "Les notifications exploitables sont créées à l'aide de catégories qui définissent les actions disponibles pour les notifications.";
 "settings_details.notifications.categories.header" = "Catégories";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Les catégories et les actions de notification ont été importées du serveur.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Configuration push du serveur importée";
@@ -469,7 +469,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.sounds.error.conversion_failed" = "Échec de la conversion de l’audio en PCM 32 bits 48khz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Échec de la copie du fichier: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Échec de la suppression du fichier: %@";
-"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
+"settings_details.notifications.sounds.footer" = "Des sons intégrés, système ou personnalisés peuvent être utilisés avec vos notifications.";
 "settings_details.notifications.sounds.import_custom" = "Importer un son personnalisé";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer des sons à partir du partage de fichiers iTunes";
 "settings_details.notifications.sounds.import_mac_instructions" = "Ajoutez des sons personnalisés à votre dossier Sounds pour les utiliser dans les notifications. Utilisez leur nom de fichier comme valeur de son dans l'appel du service.";
@@ -513,11 +513,11 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Attributs";
 "settings_sensors.detail.device_class" = "Classe d'appareil";
-"settings_sensors.detail.enabled" = "Enabled";
+"settings_sensors.detail.enabled" = "Activé";
 "settings_sensors.detail.icon" = "Icône";
 "settings_sensors.detail.state" = "État";
 "settings_sensors.detail.unique_id" = "Identifiant unique";
-"settings_sensors.disabled_state_replacement" = "Disabled";
+"settings_sensors.disabled_state_replacement" = "Désactivée";
 "settings_sensors.last_updated.footer" = "Dernière mise à jour %@";
 "settings_sensors.loading_error.title" = "Impossible de charger les capteurs";
 "settings_sensors.periodic_update.description" = "Lorsqu'ils sont activés, ces capteurs se mettent à jour à cette fréquence pendant que l'application est ouverte au premier plan.";
