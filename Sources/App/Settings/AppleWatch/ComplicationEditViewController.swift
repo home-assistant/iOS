@@ -138,14 +138,14 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
 
             <<< TextRow("name") {
                 $0.title = L10n.Watch.Configurator.Rows.DisplayName.title
-                $0.placeholder = self.config.Family.name
-                $0.value = self.config.name
+                $0.placeholder = config.Family.name
+                $0.value = config.name
             }
 
             <<< PushRow<ComplicationTemplate> {
                 $0.tag = "template"
                 $0.title = L10n.Watch.Configurator.Rows.Template.title
-                $0.options = self.config.Family.templates
+                $0.options = config.Family.templates
                 $0.value = displayTemplate
                 $0.selectorTitle = L10n.Watch.Configurator.Rows.Template.selectorTitle
             }.onPresent { _, to in
@@ -181,7 +181,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
 
             <<< SwitchRow("IsPublic") {
                 $0.title = L10n.Watch.Configurator.Rows.IsPublic.title
-                $0.value = self.config.IsPublic
+                $0.value = config.IsPublic
             }
 
         form.append(contentsOf: textSections)
@@ -208,7 +208,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     }
                 }
                 $0.value = $0.options?.first
-                if let info = self.config.Data["column2alignment"] as? [String: Any],
+                if let info = config.Data["column2alignment"] as? [String: Any],
                    let value = info[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -223,7 +223,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     $0.title = L10n.Watch.Configurator.Rows.Gauge.title
                     $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
                     $0.add(rule: RuleRequired())
-                    if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
+                    if let gaugeDict = config.Data["gauge"] as? [String: Any],
                        let value = gaugeDict[$0.tag!] as? String {
                         $0.value = value
                     }
@@ -241,7 +241,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
-                if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
+                if let gaugeDict = config.Data["gauge"] as? [String: Any],
                    let value = gaugeDict[$0.tag!] as? String {
                     $0.value = UIColor(hex: value)
                 }
@@ -262,7 +262,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     }
                 }
                 $0.value = $0.options?.first
-                if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
+                if let gaugeDict = config.Data["gauge"] as? [String: Any],
                    let value = gaugeDict[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -281,7 +281,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     }
                 }
                 $0.value = $0.options?.first
-                if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
+                if let gaugeDict = config.Data["gauge"] as? [String: Any],
                    let value = gaugeDict[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -296,7 +296,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
                     $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
                     $0.add(rule: RuleRequired())
-                    if let dict = self.config.Data["ring"] as? [String: Any],
+                    if let dict = config.Data["ring"] as? [String: Any],
                        let value = dict[$0.tag!] as? String {
                         $0.value = value
                     }
@@ -323,7 +323,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 }
 
                 $0.value = $0.options?.first
-                if let dict = self.config.Data["ring"] as? [String: Any],
+                if let dict = config.Data["ring"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -334,7 +334,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
-                if let dict = self.config.Data["ring"] as? [String: Any],
+                if let dict = config.Data["ring"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = UIColor(hex: value)
                 }
@@ -360,13 +360,13 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 }
                 $0.selectorTitle = L10n.Watch.Configurator.Rows.Icon.Choose.title
                 $0.tag = "icon"
-                if let dict = self.config.Data["icon"] as? [String: Any],
+                if let dict = config.Data["icon"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = MaterialDesignIcons(named: value)
                 }
-            }.cellUpdate({ cell, row in
+            }.cellUpdate({ [weak self] cell, row in
                 if let value = row.value {
-                    if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
+                    if let iconColorRow = self?.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
                         cell.imageView?.image = value.image(
                             ofSize: CGSize(
                                 width: CGFloat(30),
@@ -377,9 +377,9 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                     }
                 }
             }).onPresent { _, to in
-                to.selectableRowCellUpdate = { cell, row in
+                to.selectableRowCellUpdate = { [weak self] cell, row in
                     if let value = row.selectableValue {
-                        if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
+                        if let iconColorRow = self?.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
                             cell.imageView?.image = value.image(
                                 ofSize: CGSize(
                                     width: CGFloat(30),
@@ -399,13 +399,13 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
-                if let dict = self.config.Data["icon"] as? [String: Any],
+                if let dict = config.Data["icon"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = UIColor(hex: value)
                 }
-            }.onChange { picker in
+            }.onChange { [weak self] picker in
                 Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
-                if let iconRow = self.form.rowBy(tag: "icon") as? SearchPushRow<MaterialDesignIcons> {
+                if let iconRow = self?.form.rowBy(tag: "icon") as? SearchPushRow<MaterialDesignIcons> {
                     if let value = iconRow.value {
                         iconRow.cell.imageView?.image = value.image(
                             ofSize: CGSize(

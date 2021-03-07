@@ -115,6 +115,7 @@
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
 		115EF6A72549152F0048597B /* AccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115EF6A62549152F0048597B /* AccountRow.swift */; };
 		115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */; };
+		115F9D8125F5489100CC6A45 /* ActivityIndicatorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115F9D8025F5489100CC6A45 /* ActivityIndicatorRow.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
@@ -1044,6 +1045,7 @@
 		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
 		115EF6A62549152F0048597B /* AccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRow.swift; sourceTree = "<group>"; };
 		115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateSection.swift; sourceTree = "<group>"; };
+		115F9D8025F5489100CC6A45 /* ActivityIndicatorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorRow.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2117,6 +2119,7 @@
 				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
 				115EF6A62549152F0048597B /* AccountRow.swift */,
 				11C05F2C254919210031D038 /* AccountInitialsImage.swift */,
+				115F9D8025F5489100CC6A45 /* ActivityIndicatorRow.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -4625,6 +4628,7 @@
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
+				115F9D8125F5489100CC6A45 /* ActivityIndicatorRow.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */,
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,

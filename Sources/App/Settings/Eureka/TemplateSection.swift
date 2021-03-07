@@ -17,10 +17,9 @@ public final class TemplateSection: Section {
         super.init(header: header, footer: footer)
 
         append(inputRow)
+        append(loadingRow)
         append(resultRow)
         append(errorRow)
-
-        updateResult(.success(""))
 
         initializeSection(self)
         initializeInput(inputRow)
@@ -29,7 +28,12 @@ public final class TemplateSection: Section {
             self?.updateResultSubscription()
         }
 
-        updateResultSubscription()
+        updateResultSubscription(skipDelay: true)
+    }
+
+    deinit {
+        subscriptionToken?.cancel()
+        updateDebounceTimer?.invalidate()
     }
 
     @available(*, unavailable)
@@ -66,6 +70,8 @@ public final class TemplateSection: Section {
         }
     }
 
+    let loadingRow = ActivityIndicatorRow()
+
     let errorRow = LabelRow {
         $0.cellUpdate { cell, _ in
             cell.textLabel?.numberOfLines = 0
@@ -78,58 +84,85 @@ public final class TemplateSection: Section {
         }
     }
 
-    private func updateResult(_ value: Result<String, Error>) {
+    private func updateResult(with value: Result<String, Error>?) {
         switch value {
-        case let .success(value):
+        case let .some(.success(value)):
             resultRow.title = value
             errorRow.title = nil
             resultRow.hidden = false
             errorRow.hidden = true
-        case let .failure(error):
+            loadingRow.hidden = true
+        case let .some(.failure(error)):
             resultRow.title = nil
             errorRow.title = error.localizedDescription
             resultRow.hidden = true
             errorRow.hidden = false
+            loadingRow.hidden = true
+        case .none:
+            resultRow.title = nil
+            errorRow.title = nil
+            resultRow.hidden = true
+            errorRow.hidden = true
+            loadingRow.hidden = false
         }
 
-        resultRow.updateCell()
-        errorRow.updateCell()
+        UIView.performWithoutAnimation {
+            resultRow.updateCell()
+            errorRow.updateCell()
 
-        resultRow.evaluateHidden()
-        errorRow.evaluateHidden()
+            resultRow.evaluateHidden()
+            errorRow.evaluateHidden()
+            loadingRow.evaluateHidden()
 
-        if let tableView = inputRow.cell?.formViewController()?.tableView {
-            // height may have changed, so we need to re-query. ^ grabs the input row 'cause it is always not hidden
-            UIView.performWithoutAnimation {
+            if let tableView = inputRow.cell?.formViewController()?.tableView {
+                // height may have changed, so we need to re-query. ^ grabs the input row 'cause it is always not hidden
                 tableView.performBatchUpdates(nil, completion: nil)
             }
         }
     }
 
-    private func updateResultSubscription() {
+    private func updateResult(from error: Error) {
+        updateResult(with: .failure(error))
+    }
+
+    private func updateResult(from any: Any) {
+        updateResult(with: .init {
+            try displayResult(any)
+        })
+    }
+
+    private var updateDebounceTimer: Timer? {
+        didSet {
+            oldValue?.invalidate()
+        }
+    }
+    private func updateResultSubscription(skipDelay: Bool = false) {
         subscriptionToken?.cancel()
+        updateDebounceTimer?.invalidate()
 
         guard let template = inputRow.value, !template.isEmpty else {
-            updateResult(.success(""))
+            updateResult(with: .success(""))
             return
         }
 
-        subscriptionToken = Current.apiConnection.subscribe(
-            to: .renderTemplate(inputRow.value ?? ""),
-            initiated: { [weak self] result in
-                switch result {
-                case let .failure(error):
-                    self?.updateResult(.failure(error))
-                case .success: break
-                }
-            },
-            handler: { [weak self] _, result in
-                guard let self = self else { return }
+        guard template.containsJinjaTemplate else {
+            updateResult(from: template)
+            return
+        }
 
-                self.updateResult(.init {
-                    try self.displayResult(result.result)
-                })
-            }
-        )
+        updateResult(with: nil)
+        updateDebounceTimer = Timer.scheduledTimer(withTimeInterval: skipDelay ? 0 : 1.0, repeats: false) { [weak self] _ in
+            self?.subscriptionToken = Current.apiConnection.subscribe(
+                to: .renderTemplate(template),
+                initiated: { result in
+                    if case let .failure(error) = result {
+                        self?.updateResult(from: error)
+                    }
+                },
+                handler: { _, result in
+                    self?.updateResult(from: result.result)
+                }
+            )
+        }
     }
 }
