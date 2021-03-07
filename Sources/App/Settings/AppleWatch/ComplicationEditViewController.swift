@@ -376,8 +376,8 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                         )
                     }
                 }
-            }).onPresent { _, to in
-                to.selectableRowCellUpdate = { [weak self] cell, row in
+            }).onPresent { [weak self] _, to in
+                to.selectableRowCellUpdate = { cell, row in
                     if let value = row.selectableValue {
                         if let iconColorRow = self?.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
                             cell.imageView?.image = value.image(
