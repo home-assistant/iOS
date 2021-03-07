@@ -14,6 +14,7 @@ public class ActivityIndicatorCell: Cell<String>, CellType {
             $0.style = .gray
         }
     }
+
     private var constraintsForPosition = [ActivityIndicatorPosition: [NSLayoutConstraint]]()
 
     override public func setup() {

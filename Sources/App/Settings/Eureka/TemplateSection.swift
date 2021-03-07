@@ -1,6 +1,6 @@
+import Eureka
 import HAKit
 import Shared
-import Eureka
 
 public final class TemplateSection: Section {
     private var subscriptionToken: HACancellable?
@@ -33,7 +33,7 @@ public final class TemplateSection: Section {
 
     deinit {
         subscriptionToken?.cancel()
-        updateDebounceTimer?.invalidate()
+        debounceTimer?.invalidate()
     }
 
     @available(*, unavailable)
@@ -59,7 +59,7 @@ public final class TemplateSection: Section {
     }
 
     let resultRow = LabelRow {
-        $0.cellUpdate { cell, row in
+        $0.cellUpdate { cell, _ in
             cell.textLabel?.numberOfLines = 0
 
             if #available(iOS 13, *) {
@@ -131,14 +131,15 @@ public final class TemplateSection: Section {
         })
     }
 
-    private var updateDebounceTimer: Timer? {
+    private var debounceTimer: Timer? {
         didSet {
             oldValue?.invalidate()
         }
     }
+
     private func updateResultSubscription(skipDelay: Bool = false) {
         subscriptionToken?.cancel()
-        updateDebounceTimer?.invalidate()
+        debounceTimer?.invalidate()
 
         guard let template = inputRow.value, !template.isEmpty else {
             updateResult(with: .success(""))
@@ -151,7 +152,7 @@ public final class TemplateSection: Section {
         }
 
         updateResult(with: nil)
-        updateDebounceTimer = Timer.scheduledTimer(withTimeInterval: skipDelay ? 0 : 1.0, repeats: false) { [weak self] _ in
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: skipDelay ? 0 : 1.0, repeats: false) { [weak self] _ in
             self?.subscriptionToken = Current.apiConnection.subscribe(
                 to: .renderTemplate(template),
                 initiated: { result in
