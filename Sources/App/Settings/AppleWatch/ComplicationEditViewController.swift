@@ -130,11 +130,6 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
 
         let textSections = ComplicationTextAreas.allCases.map({ addComplicationTextAreaFormSection(location: $0) })
 
-        TextAreaRow.defaultCellSetup = { cell, _ in
-            cell.textView.smartQuotesType = .no
-            cell.textView.smartDashesType = .no
-        }
-
         form
 
             +++ Section {
@@ -219,33 +214,27 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 }
             }
 
-            +++ Section(
+            +++ TemplateSection(
                 header: L10n.Watch.Configurator.Sections.Gauge.header,
-                footer: L10n.Watch.Configurator.Sections.Gauge.footer
-            ) {
-                $0.tag = "gauge"
-                $0.hidden = .function([], { [weak self] _ in
-                    self?.displayTemplate.hasGauge == false
-                })
-            }
+                footer: L10n.Watch.Configurator.Sections.Gauge.footer,
+                displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
+                initializeInput: {
+                    $0.tag = "gauge"
+                    $0.title = L10n.Watch.Configurator.Rows.Gauge.title
+                    $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
+                    $0.add(rule: RuleRequired())
+                    if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
+                       let value = gaugeDict[$0.tag!] as? String {
+                        $0.value = value
+                    }
 
-            <<< TextAreaRow {
-                $0.tag = "gauge"
-                $0.title = L10n.Watch.Configurator.Rows.Gauge.title
-                $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
-                $0.add(rule: RuleRequired())
-                if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
-                   let value = gaugeDict[$0.tag!] as? String {
-                    $0.value = value
+                }, initializeSection: {
+                    $0.tag = "gauge"
+                    $0.hidden = .function([], { [weak self] _ in
+                        self?.displayTemplate.hasGauge == false
+                    })
                 }
-            }
-
-            <<< ButtonRow {
-                $0.tag = "gauge_render_template"
-                $0.title = L10n.previewOutput
-            }.onCellSelection({ _, _ in
-                self.renderTemplateForRow(rowTag: "gauge", expectingPercentile: true)
-            })
+            )
 
             <<< InlineColorPickerRow("gauge_color") {
                 $0.title = L10n.Watch.Configurator.Rows.Gauge.Color.title
@@ -298,33 +287,26 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 }
             }
 
-            +++ Section(
+            +++ TemplateSection(
                 header: L10n.Watch.Configurator.Sections.Ring.header,
-                footer: L10n.Watch.Configurator.Sections.Ring.footer
-            ) {
-                $0.tag = "ring"
-                $0.hidden = .function([], { [weak self] _ in
-                    self?.displayTemplate.hasRing == false
-                })
-            }
-
-            <<< TextAreaRow {
-                $0.tag = "ring_value"
-                $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
-                $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
-                $0.add(rule: RuleRequired())
-                if let dict = self.config.Data["ring"] as? [String: Any],
-                   let value = dict[$0.tag!] as? String {
-                    $0.value = value
+                footer: L10n.Watch.Configurator.Sections.Ring.footer,
+                displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
+                initializeInput: {
+                    $0.tag = "ring_value"
+                    $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
+                    $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
+                    $0.add(rule: RuleRequired())
+                    if let dict = self.config.Data["ring"] as? [String: Any],
+                       let value = dict[$0.tag!] as? String {
+                        $0.value = value
+                    }
+                }, initializeSection: {
+                    $0.tag = "ring"
+                    $0.hidden = .function([], { [weak self] _ in
+                        self?.displayTemplate.hasRing == false
+                    })
                 }
-            }
-
-            <<< ButtonRow {
-                $0.tag = "ring_render_template"
-                $0.title = L10n.previewOutput
-            }.onCellSelection({ _, _ in
-                self.renderTemplateForRow(rowTag: "ring_value", expectingPercentile: true)
-            })
+            )
 
             <<< SegmentedRow<String> {
                 $0.tag = "ring_type"
@@ -466,22 +448,6 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
         openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
     }
 
-    func renderTemplateForRow(rowTag: String, expectingPercentile: Bool) {
-        if let row = form.rowBy(tag: rowTag) as? TextAreaRow, let value = row.value {
-            Current.Log.verbose("Render template from \(value)")
-
-            renderTemplateValue(value, row, expectingPercentile: expectingPercentile)
-        }
-    }
-
-    func renderTemplateForRow(row: BaseRow, expectingPercentile: Bool) {
-        if let value = row.baseValue as? String {
-            Current.Log.verbose("Render template from \(value)")
-
-            renderTemplateValue(value, row, expectingPercentile: expectingPercentile)
-        }
-    }
-
     enum RenderValueError: LocalizedError {
         case expectedFloat(value: Any)
         case outOfRange(value: Float)
@@ -489,65 +455,35 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
         var errorDescription: String? {
             switch self {
             case let .expectedFloat(value: value):
-                return L10n.Watch.Configurator.PreviewError.notNumber(type(of: value), value)
+                var displayType = String(describing: type(of: value))
+
+                if displayType.lowercased().contains("string") {
+                    displayType = "string"
+                }
+
+                return L10n.Watch.Configurator.PreviewError.notNumber(displayType, value)
             case let .outOfRange(value: value):
                 return L10n.Watch.Configurator.PreviewError.outOfRange(value)
             }
         }
     }
 
-    func renderTemplateValue(_ value: String, _ row: BaseRow, expectingPercentile: Bool) {
-        Current.api.then(on: nil) {
-            $0.RenderTemplate(templateStr: value)
-        }.get { result in
-            if expectingPercentile {
-                if let number = WatchComplication.percentileNumber(from: result) {
-                    if !(0 ... 1 ~= number) {
-                        throw RenderValueError.outOfRange(value: number)
-                    }
-                } else {
-                    throw RenderValueError.expectedFloat(value: result)
+    static func validate(result: Any, expectingPercentile: Bool) throws -> String {
+        if expectingPercentile {
+            if let number = WatchComplication.percentileNumber(from: result) {
+                if !(0 ... 1 ~= number) {
+                    throw RenderValueError.outOfRange(value: number)
                 }
+            } else {
+                throw RenderValueError.expectedFloat(value: result)
             }
-        }.done { [self] val in
-            Current.Log.verbose("Rendered value is \(val)")
-
-            let alert = UIAlertController(
-                title: L10n.previewOutput,
-                message: String(describing: val),
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(
-                title: L10n.okLabel,
-                style: .default,
-                handler: nil
-            ))
-            present(alert, animated: true, completion: nil)
-        }.catch { [self] renderErr in
-            Current.Log.error("Error rendering template! \(renderErr)")
-            let alert = UIAlertController(
-                title: L10n.errorLabel,
-                message: renderErr.localizedDescription,
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(
-                title: L10n.okLabel,
-                style: .default,
-                handler: nil
-            ))
-            present(alert, animated: true, completion: nil)
         }
+
+        return String(describing: result)
     }
 
     func addComplicationTextAreaFormSection(location: ComplicationTextAreas) -> Section {
         let key = "textarea_" + location.slug
-        let section = Section(header: location.label, footer: location.description) {
-            $0.tag = location.slug
-            $0.hidden = .function([], { [weak self] _ in
-                self?.displayTemplate.textAreas.map(\.slug).contains(location.slug) == false
-            })
-        }
-
         var dataDict = [String: Any]()
 
         if let textAreasDict = config.Data["textAreas"] as? [String: [String: Any]],
@@ -555,23 +491,25 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
             dataDict = slugDict
         }
 
-        let textRow = TextAreaRow {
-            $0.tag = key + "_text"
-            $0.title = location.label
-            $0.add(rule: RuleRequired())
-            $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
-            if let value = dataDict["text"] as? String {
-                $0.value = value
+        let section = TemplateSection(
+            header: location.label,
+            footer: location.description,
+            displayResult: { try Self.validate(result: $0, expectingPercentile: false) },
+            initializeInput: {
+                $0.tag = key + "_text"
+                $0.title = location.label
+                $0.add(rule: RuleRequired())
+                $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
+                if let value = dataDict["text"] as? String {
+                    $0.value = value
+                }
+            }, initializeSection: {
+                $0.tag = location.slug
+                $0.hidden = .function([], { [weak self] _ in
+                    self?.displayTemplate.textAreas.map(\.slug).contains(location.slug) == false
+                })
             }
-        }
-
-        section.append(textRow)
-
-        section.append(ButtonRow {
-            $0.title = L10n.previewOutput
-        }.onCellSelection({ _, _ in
-            self.renderTemplateForRow(row: textRow, expectingPercentile: false)
-        }))
+        )
 
         section.append(InlineColorPickerRow {
             $0.tag = key + "_color"
