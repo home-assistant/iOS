@@ -11,7 +11,7 @@ public final class WebSocketStatusCell: Cell<HAConnectionState>, CellType {
         }
     }
 
-    public override func update() {
+    override public func update() {
         super.update()
 
         switch (row as? WebSocketStatusRow)?.displayStyle ?? .default {
