@@ -70,7 +70,9 @@ public final class TemplateSection: Section {
         }
     }
 
-    let loadingRow = ActivityIndicatorRow()
+    let loadingRow = with(WebSocketStatusRow()) {
+        $0.displayStyle = .loading
+    }
 
     let errorRow = LabelRow {
         $0.cellUpdate { cell, _ in
