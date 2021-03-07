@@ -939,3 +939,14 @@ Thank you.\
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.title" = "Actions";
 "yes_label" = "Yes";
+"settings.connection_section.websocket.title" = "WebSocket";
+"settings.connection_section.websocket.status.connecting" = "Connecting";
+"settings.connection_section.websocket.status.authenticating" = "Authenticating";
+"settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
+"settings.connection_section.websocket.status.connected" = "Connected";
+/* first parameter is an error message */
+"settings.connection_section.websocket.status.disconnected.error" = "Error: %1$@";
+/* first parameter is number of times a retry has been attempted */
+"settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
+/* first parameter is the date of the next retry in absolute, e.g. 2021 Jan 23 04:33 */
+"settings.connection_section.websocket.status.disconnected.next_retry" = "Next Retry: %1$@";

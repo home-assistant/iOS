@@ -162,7 +162,9 @@ public class HomeAssistantAPI {
     }
 
     public func Connect(reason: ConnectReason) -> Promise<Void> {
-        firstly {
+        Current.apiConnection.connect()
+
+        return firstly {
             self.UpdateRegistration()
         }.recover { error -> Promise<MobileAppRegistrationResponse> in
             switch error as? WebhookError {

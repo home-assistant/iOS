@@ -129,6 +129,7 @@
 		1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171508024DFCEC50065E874 /* WidgetActions.swift */; };
 		117318AB25199E1A0013E010 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117318AA25199E1A0013E010 /* AppKit.framework */; };
 		117318AD25199E220013E010 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117318AC25199E220013E010 /* Foundation.framework */; };
+		11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */; };
 		117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
 		117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
 		1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */; };
@@ -1057,6 +1058,7 @@
 		1171508024DFCEC50065E874 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
 		117318AA25199E1A0013E010 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
 		117318AC25199E220013E010 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketStatusRow.swift; sourceTree = "<group>"; };
 		117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateComplications.swift; sourceTree = "<group>"; };
 		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
 		1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProviderDependencies.test.swift; sourceTree = "<group>"; };
@@ -2870,6 +2872,7 @@
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
 				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
+				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -4675,6 +4678,7 @@
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
+				11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
 				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
