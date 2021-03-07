@@ -1329,6 +1329,34 @@ public enum L10n {
         /// Use Anyway
         public static var useAnyway: String { return L10n.tr("Localizable", "settings.connection_section.validate_error.use_anyway") }
       }
+      public enum Websocket {
+        /// WebSocket
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.websocket.title") }
+        public enum Status {
+          /// Authenticating
+          public static var authenticating: String { return L10n.tr("Localizable", "settings.connection_section.websocket.status.authenticating") }
+          /// Connected
+          public static var connected: String { return L10n.tr("Localizable", "settings.connection_section.websocket.status.connected") }
+          /// Connecting
+          public static var connecting: String { return L10n.tr("Localizable", "settings.connection_section.websocket.status.connecting") }
+          public enum Disconnected {
+            /// Error: %1$@
+            public static func error(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.connection_section.websocket.status.disconnected.error", String(describing: p1))
+            }
+            /// Next Retry: %1$@
+            public static func nextRetry(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "settings.connection_section.websocket.status.disconnected.next_retry", String(describing: p1))
+            }
+            /// Retry Count: %1$li
+            public static func retryCount(_ p1: Int) -> String {
+              return L10n.tr("Localizable", "settings.connection_section.websocket.status.disconnected.retry_count", p1)
+            }
+            /// Disconnected
+            public static var title: String { return L10n.tr("Localizable", "settings.connection_section.websocket.status.disconnected.title") }
+          }
+        }
+      }
     }
     public enum DetailsSection {
       public enum EnableLocationRow {

@@ -41,6 +41,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 }
             }
 
+            <<< WebSocketStatusRow()
+
             <<< LabelRow("currentUser") {
                 $0.title = L10n.Settings.ConnectionSection.loggedInAs
                 $0.value = Current.settingsStore.authenticatedUser?.Name

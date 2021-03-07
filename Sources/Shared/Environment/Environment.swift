@@ -1,6 +1,7 @@
 import CoreLocation
 import CoreMotion
 import Foundation
+import HAKit
 import PromiseKit
 import RealmSwift
 import Version
@@ -45,6 +46,9 @@ public class Environment {
                 }
             }
         }
+        HAGlobal.log = { log in
+            Current.Log.info("WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))")
+        }
 
         let crashReporter = CrashReporterImpl()
         self.crashReporter = crashReporter
@@ -86,8 +90,26 @@ public class Environment {
         }
     }
 
+    public var apiConnection: HAConnection = HAKit.connection(configuration: .init(
+        connectionInfo: {
+            if let info = Current.settingsStore.connectionInfo {
+                return .init(url: info.activeURL)
+            } else {
+                return nil
+            }
+        },
+        fetchAuthToken: { completion in
+            Current.api.then(\.tokenManager.bearerToken).done {
+                completion(.success($0))
+            }.catch {
+                completion(.failure($0))
+            }
+        }
+    ))
+
     public func resetAPI() {
         underlyingAPI = nil
+        apiConnection.disconnect()
     }
 
     public var modelManager = ModelManager()
