@@ -2,12 +2,12 @@ import Intents
 import Shared
 
 class IntentHandler: INExtension {
-    private let updateTokenQueue: DispatchQueue = .init(label: "update-token")
+    private static let updateTokenQueue: DispatchQueue = .init(label: "update-token")
 
     override func handler(for intent: INIntent) -> Any {
         // multiple intent handlers can be invoked at once. we want to make sure this is up-to-date, but
         // it causes double-frees if it's mutating the non-atomic property in concurrently.
-        updateTokenQueue.sync {
+        Self.updateTokenQueue.sync {
             if let tokenInfo = Current.settingsStore.tokenInfo {
                 Current.tokenManager = TokenManager(tokenInfo: tokenInfo)
             }
