@@ -80,6 +80,7 @@ public class Environment {
                 return value
             } else if !isRunningTests, let value = HomeAssistantAPI() {
                 underlyingAPI = .value(value)
+                Current.apiConnection.connect()
                 return .value(value)
             } else {
                 return .init(error: HomeAssistantAPI.APIError.notConfigured)
