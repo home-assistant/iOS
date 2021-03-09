@@ -30,7 +30,13 @@ public class LocationHistoryEntry: Object {
     }
 
     public var clLocation: CLLocation {
-        CLLocation(latitude: Latitude, longitude: Longitude)
+        CLLocation(
+            coordinate: .init(latitude: Latitude, longitude: Longitude),
+            altitude: 0,
+            horizontalAccuracy: Accuracy,
+            verticalAccuracy: 0,
+            timestamp: Date()
+        )
     }
 }
 

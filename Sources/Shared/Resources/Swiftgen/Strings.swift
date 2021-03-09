@@ -1504,6 +1504,18 @@ public enum L10n {
       /// General
       public static var title: String { return L10n.tr("Localizable", "settings.general_settings_button.title") }
     }
+    public enum LocationHistory {
+      /// No Location History
+      public static var description: String { return L10n.tr("Localizable", "settings.location_history.description") }
+      /// No Location History
+      public static var empty: String { return L10n.tr("Localizable", "settings.location_history.empty") }
+      /// Location History
+      public static var title: String { return L10n.tr("Localizable", "settings.location_history.title") }
+      public enum Detail {
+        /// The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are addition regions used for sub-100m zones.
+        public static var explanation: String { return L10n.tr("Localizable", "settings.location_history.detail.explanation") }
+      }
+    }
     public enum NavigationBar {
       /// Settings
       public static var title: String { return L10n.tr("Localizable", "settings.navigation_bar.title") }

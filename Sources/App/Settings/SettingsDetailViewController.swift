@@ -212,6 +212,13 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             form
                 +++ locationPermissionsSection()
 
+                +++ ButtonRow {
+                    $0.title = L10n.Settings.LocationHistory.title
+                    $0.presentationMode = .show(controllerProvider: .callback(builder: {
+                        LocationHistoryListViewController()
+                    }), onDismiss: nil)
+                }
+
                 +++ Section(
                     header: L10n.SettingsDetails.Location.Updates.header,
                     footer: L10n.SettingsDetails.Location.Updates.footer
