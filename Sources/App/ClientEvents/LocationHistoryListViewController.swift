@@ -1,7 +1,7 @@
-import UIKit
-import Shared
-import RealmSwift
 import Eureka
+import RealmSwift
+import Shared
+import UIKit
 
 class LocationHistoryListViewController: FormViewController {
     @objc private func clear(_ sender: AnyObject?) {
@@ -22,7 +22,7 @@ class LocationHistoryListViewController: FormViewController {
                 style: .plain,
                 target: self,
                 action: #selector(clear(_:))
-            )
+            ),
         ]
 
         let history = Current.realm()
@@ -42,7 +42,7 @@ class LocationHistoryListViewController: FormViewController {
                 with(InfoLabelRow()) {
                     $0.displayType = .secondary
                     $0.title = L10n.Settings.LocationHistory.empty
-                }
+                },
             ], getter: { entry in
                 with(ButtonRow()) {
                     $0.cellStyle = .subtitle
@@ -59,10 +59,8 @@ class LocationHistoryListViewController: FormViewController {
                     $0.presentationMode = .show(controllerProvider: .callback(builder: {
                         LocationHistoryDetailViewController(entry: entry)
                     }), onDismiss: nil)
-
                 }
             }, didUpdate: { _, _ in
-
             }
         )
     }

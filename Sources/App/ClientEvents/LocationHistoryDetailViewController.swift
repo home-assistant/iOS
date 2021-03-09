@@ -1,7 +1,7 @@
-import UIKit
-import Shared
 import MapKit
 import RealmSwift
+import Shared
+import UIKit
 
 private class RegionCircle: MKCircle {}
 private class ZoneCircle: MKCircle {}
@@ -16,6 +16,7 @@ class LocationHistoryDetailViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
     }
@@ -75,11 +76,11 @@ class LocationHistoryDetailViewController: UIViewController {
 
     @objc private func share(_ sender: AnyObject?) {
         let bounds = CGRect(x: 0, y: 0, width: map.bounds.width, height: map.bounds.height)
-        let snapshot = UIGraphicsImageRenderer(bounds: bounds).image { context in
+        let snapshot = UIGraphicsImageRenderer(bounds: bounds).image { _ in
             map.drawHierarchy(in: bounds, afterScreenUpdates: true)
         }
 
-        let controller = UIActivityViewController(activityItems: [ snapshot, report() ], applicationActivities: nil)
+        let controller = UIActivityViewController(activityItems: [snapshot, report()], applicationActivities: nil)
         present(controller, animated: true, completion: nil)
     }
 
@@ -100,7 +101,7 @@ class LocationHistoryDetailViewController: UIViewController {
 
     private static func overlays(for location: CLLocation) -> [MKOverlay] {
         [
-            GPSCircle(center: location.coordinate, radius: location.horizontalAccuracy)
+            GPSCircle(center: location.coordinate, radius: location.horizontalAccuracy),
         ]
     }
 
@@ -108,7 +109,7 @@ class LocationHistoryDetailViewController: UIViewController {
         [
             with(MKPointAnnotation()) {
                 $0.coordinate = location.coordinate
-            }
+            },
         ]
     }
 
