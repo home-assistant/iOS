@@ -1506,6 +1506,8 @@ public enum L10n {
     }
     public enum LocationHistory {
       /// No Location History
+      public static var description: String { return L10n.tr("Localizable", "settings.location_history.description") }
+      /// No Location History
       public static var empty: String { return L10n.tr("Localizable", "settings.location_history.empty") }
       /// Location History
       public static var title: String { return L10n.tr("Localizable", "settings.location_history.title") }

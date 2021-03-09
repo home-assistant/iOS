@@ -178,7 +178,7 @@ extension LocationHistoryDetailViewController: MKMapViewDelegate {
 
             switch overlay {
             case is ZoneCircle:
-                renderer.fillColor = Constants.tintColor
+                renderer.fillColor = Constants.tintColor.withAlphaComponent(0.75)
             case is RegionCircle:
                 renderer.fillColor = UIColor.orange.withAlphaComponent(0.25)
             case is GPSCircle:
