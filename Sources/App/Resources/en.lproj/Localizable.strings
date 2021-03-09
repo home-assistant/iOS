@@ -950,3 +950,7 @@ Thank you.\
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 /* first parameter is the date of the next retry in absolute, e.g. 2021 Jan 23 04:33 */
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Next Retry: %1$@";
+"settings.location_history.title" = "Location History";
+"settings.location_history.empty" = "No Location History";
+"settings.location_history.description" = "No Location History";
+"settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are addition regions used for sub-100m zones.";

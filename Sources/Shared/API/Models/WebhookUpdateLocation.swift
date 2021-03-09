@@ -116,22 +116,6 @@ public class WebhookUpdateLocation: Mappable {
         VerticalAccuracy = nil
     }
 
-    public var cllocation: CLLocation? {
-        if let location = Location, let altitude = Altitude, let hAccuracy = HorizontalAccuracy,
-           let vAccuracy = VerticalAccuracy {
-            return CLLocation(
-                coordinate: location,
-                altitude: altitude,
-                horizontalAccuracy: hAccuracy,
-                verticalAccuracy: vAccuracy,
-                timestamp: Date()
-            )
-        } else if let location = Location {
-            return CLLocation(latitude: location.latitude, longitude: location.longitude)
-        }
-        return nil
-    }
-
     // Mappable
     public func mapping(map: Map) {
         Battery <- map["battery"]

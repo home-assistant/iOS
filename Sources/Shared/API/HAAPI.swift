@@ -550,7 +550,7 @@ public class HomeAssistantAPI {
 
                 realm.add(LocationHistoryEntry(
                     updateType: updateType,
-                    location: payload.cllocation,
+                    location: location,
                     zone: zone,
                     payload: jsonPayload
                 ))
