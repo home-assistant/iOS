@@ -166,13 +166,6 @@ class SettingsViewController: FormViewController {
             }
 
             <<< ButtonRow {
-                $0.title = L10n.Settings.LocationHistory.title
-                $0.presentationMode = .show(controllerProvider: .callback(builder: {
-                    LocationHistoryListViewController()
-                }), onDismiss: nil)
-            }
-
-            <<< ButtonRow {
                 if Current.isCatalyst {
                     $0.title = L10n.Settings.Developer.ShowLogFiles.title
                 } else {
