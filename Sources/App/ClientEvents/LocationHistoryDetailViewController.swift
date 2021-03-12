@@ -43,7 +43,7 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
         title = DateFormatter.localizedString(
             from: entry.CreatedAt,
             dateStyle: .short,
-            timeStyle: .short
+            timeStyle: .medium
         )
     }
 
