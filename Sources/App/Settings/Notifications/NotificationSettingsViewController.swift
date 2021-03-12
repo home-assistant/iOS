@@ -142,10 +142,14 @@ class NotificationSettingsViewController: FormViewController {
                     cell.selectionStyle = .default
                 }
 
-                $0.onCellSelection { [weak self] _, row in
+                $0.onCellSelection { [weak self] cell, row in
                     guard let id = Current.settingsStore.pushID else { return }
 
                     let vc = UIActivityViewController(activityItems: [id], applicationActivities: nil)
+                    with(vc.popoverPresentationController) {
+                        $0?.sourceView = cell
+                        $0?.sourceRect = cell.bounds
+                    }
                     self?.present(vc, animated: true, completion: nil)
                     row.deselect(animated: true)
                 }
