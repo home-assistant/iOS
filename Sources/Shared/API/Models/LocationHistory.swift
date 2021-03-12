@@ -24,7 +24,7 @@ public class LocationHistoryEntry: Object {
         self.Accuracy = loc.horizontalAccuracy
         self.Latitude = loc.coordinate.latitude
         self.Longitude = loc.coordinate.longitude
-        self.Trigger = String(describing: updateType)
+        self.Trigger = updateType.rawValue
         self.Zone = zone
         self.Payload = payload
     }

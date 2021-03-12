@@ -1,24 +1,66 @@
+import Eureka
 import MapKit
 import RealmSwift
 import Shared
 import UIKit
 
+protocol LocationHistoryDetailMoveDelegate: AnyObject {
+    func detail(
+        _ controller: LocationHistoryDetailViewController,
+        canMove direction: LocationHistoryDetailViewController.MoveDirection
+    ) -> Bool
+    func detail(
+        _ controller: LocationHistoryDetailViewController,
+        move direction: LocationHistoryDetailViewController.MoveDirection
+    )
+}
+
 private class RegionCircle: MKCircle {}
 private class ZoneCircle: MKCircle {}
 private class GPSCircle: MKCircle {}
 
-class LocationHistoryDetailViewController: UIViewController {
+final class LocationHistoryDetailViewController: UIViewController, TypedRowControllerType {
+    typealias RowValue = LocationHistoryDetailViewController
+    var row: RowOf<RowValue>!
+    var onDismissCallback: ((UIViewController) -> Void)?
+
+    enum MoveDirection {
+        case up, down
+    }
+
+    weak var moveDelegate: LocationHistoryDetailMoveDelegate? {
+        didSet {
+            updateButtons()
+        }
+    }
+
     let entry: LocationHistoryEntry
     private let map = MKMapView()
 
     init(entry: LocationHistoryEntry) {
         self.entry = entry
         super.init(nibName: nil, bundle: nil)
+        title = DateFormatter.localizedString(
+            from: entry.CreatedAt,
+            dateStyle: .short,
+            timeStyle: .short
+        )
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onDismissCallback?(self)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.setToolbarHidden(false, animated: animated)
     }
 
     @objc private func center(_ sender: AnyObject?) {
@@ -33,30 +75,62 @@ class LocationHistoryDetailViewController: UIViewController {
     }
 
     private func report() -> String {
-        var value = ""
+        var value = "# Debug Information\n\n"
 
-        value.append("location\n--------\n")
-        value.append("""
-            latitude: \(entry.Latitude)
-            longitude: \(entry.Longitude)
-            accuracy: \(entry.Accuracy)
-            ^ note: accuracy of 65m is from Wi-Fi, 1414m is is from cell tower
-        """)
-        value.append("\n\n")
+        let accuracyNote: String
 
-        value.append("regions\n-------\n")
+        if entry.Accuracy == 65 {
+            accuracyNote = " (from Wi-Fi)"
+        } else if entry.Accuracy == 1414 {
+            accuracyNote = " (from cell tower)"
+        } else {
+            accuracyNote = ""
+        }
+
+        func latLongString(_ value: Double) -> String {
+            String(format: "%.06lf", value)
+        }
+
+        func distanceString(_ value: Double) -> String {
+            String(format: "%04.02lfm", max(0, value))
+        }
+
+        value.append(
+            """
+            ## Payload
+            ```json
+            \(entry.Payload)
+            ```
+
+            ## Location
+            - Center: (\(latLongString(entry.Latitude)), \(latLongString(entry.Longitude)))
+            - Accuracy: \(distanceString(entry.Accuracy))\(accuracyNote)
+
+            ## Regions
+            """ + "\n"
+        )
 
         let allRegions = Current.realm().objects(RLMZone.self)
             .flatMap(\.circularRegionsForMonitoring)
+            .sorted(by: { a, b in
+                a.distanceWithAccuracy(from: entry.clLocation) < b.distanceWithAccuracy(from: entry.clLocation)
+            })
         for region in allRegions {
             let regionLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
-            let distance = regionLocation.distance(from: entry.clLocation)
-            let contains = distance <= (region.radius + entry.Accuracy)
+            let distanceWithoutAccuracy = regionLocation.distance(from: entry.clLocation)
+            let distanceWithAccuracy = region.distanceWithAccuracy(from: entry.clLocation)
+            let contains = region.containsWithAccuracy(entry.clLocation)
 
-            value.append("""
-                \(region.identifier): (\(region.center.latitude), \(region.center.longitude)) \(region.radius)m
-                \(String(format: "%.02lf", distance))m away, \(contains ? "inside" : "outside")
-            """)
+            value.append(
+                """
+                ### \(region.identifier)
+                - Center: (\(latLongString(region.center.latitude)), \(latLongString(region.center.longitude)))
+                - Radius: \(distanceString(region.radius))
+                - Distance From Perimeter: \(distanceString(distanceWithAccuracy))
+                - Distance From Center: \(distanceString(distanceWithoutAccuracy))
+                - Relative State: \(contains ? "inside" : "outside")
+                """
+            )
 
             value.append("\n\n")
         }
@@ -70,7 +144,7 @@ class LocationHistoryDetailViewController: UIViewController {
             message: L10n.Settings.LocationHistory.Detail.explanation,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 
@@ -82,6 +156,14 @@ class LocationHistoryDetailViewController: UIViewController {
 
         let controller = UIActivityViewController(activityItems: [snapshot, report()], applicationActivities: nil)
         present(controller, animated: true, completion: nil)
+    }
+
+    @objc private func moveUp(_ sender: AnyObject?) {
+        moveDelegate?.detail(self, move: .up)
+    }
+
+    @objc private func moveDown(_ sender: AnyObject?) {
+        moveDelegate?.detail(self, move: .down)
     }
 
     private static func overlays<T: Collection>(for zones: T) -> [MKOverlay] where T.Element: RLMZone {
@@ -113,27 +195,50 @@ class LocationHistoryDetailViewController: UIViewController {
         ]
     }
 
+    private func updateButtons() {
+        let upItem = navigationItem.rightBarButtonItems?.first(where: { $0.action == #selector(moveUp(_:)) })
+        let downItem = navigationItem.rightBarButtonItems?.first(where: { $0.action == #selector(moveDown(_:)) })
+
+        upItem?.isEnabled = moveDelegate?.detail(self, canMove: .up) ?? false
+        downItem?.isEnabled = moveDelegate?.detail(self, canMove: .down) ?? false
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(
-                image: MaterialDesignIcons.crosshairsGpsIcon.image(ofSize: CGSize(width: 30, height: 30), color: nil),
-                style: .plain,
+                icon: .arrowDownIcon,
+                target: self,
+                action: #selector(moveDown(_:))
+            ),
+            UIBarButtonItem(
+                icon: .arrowUpIcon,
+                target: self,
+                action: #selector(moveUp(_:))
+            ),
+        ]
+
+        setToolbarItems([
+            UIBarButtonItem(
+                icon: .crosshairsGpsIcon,
                 target: self,
                 action: #selector(center(_:))
             ),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             with(Constants.helpBarButtonItem) {
                 $0.target = self
                 $0.action = #selector(help(_:))
             },
+            with(UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)) {
+                $0.width = 20
+            },
             UIBarButtonItem(
-                image: MaterialDesignIcons.exportVariantIcon.image(ofSize: CGSize(width: 30, height: 30), color: nil),
-                style: .plain,
+                icon: .exportVariantIcon,
                 target: self,
                 action: #selector(share(_:))
             ),
-        ]
+        ], animated: false)
 
         if #available(iOS 13, *) {
             map.pointOfInterestFilter = .excludingAll
@@ -162,6 +267,7 @@ class LocationHistoryDetailViewController: UIViewController {
         map.addAnnotations(Self.annotations(for: entry.clLocation))
 
         center(nil)
+        updateButtons()
     }
 }
 

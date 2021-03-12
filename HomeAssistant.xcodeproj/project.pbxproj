@@ -118,6 +118,8 @@
 		115EF6A72549152F0048597B /* AccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115EF6A62549152F0048597B /* AccountRow.swift */; };
 		115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
+		1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
+		1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -1054,6 +1056,7 @@
 		1164D9FF25FB417E00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		1164DA0025FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1164DA0125FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+Additions.swift"; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -3098,6 +3101,7 @@
 				11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */,
 				1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */,
 				1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */,
+				1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4819,6 +4823,7 @@
 				11F8A53F25A6ADA400BF1D97 /* Reachability+NetworkType.swift in Sources */,
 				110ED59025A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
 				11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
@@ -4978,6 +4983,7 @@
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
+				1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
