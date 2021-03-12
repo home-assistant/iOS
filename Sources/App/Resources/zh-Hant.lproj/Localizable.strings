@@ -588,6 +588,14 @@
 "settings.connection_section.validate_error.edit_url" = "編輯網址";
 "settings.connection_section.validate_error.title" = "儲存 URL 錯誤";
 "settings.connection_section.validate_error.use_anyway" = "依舊使用";
+"settings.connection_section.websocket.status.authenticating" = "認證中";
+"settings.connection_section.websocket.status.connected" = "已連線";
+"settings.connection_section.websocket.status.connecting" = "連線中";
+"settings.connection_section.websocket.status.disconnected.error" = "錯誤：%1$@";
+"settings.connection_section.websocket.status.disconnected.next_retry" = "下次重試：%1$@";
+"settings.connection_section.websocket.status.disconnected.retry_count" = "重試次數：%1$li";
+"settings.connection_section.websocket.status.disconnected.title" = "已斷線";
+"settings.connection_section.websocket.title" = "WebSocket";
 "settings.details_section.enable_location_row.title" = "啟用座標追蹤";
 "settings.details_section.enable_notification_row.title" = "啟用訊息通知";
 "settings.details_section.integrations.header" = "整合";
@@ -626,6 +634,10 @@
 "settings.discovery_section.requiresPassword" = "需要輸入密碼";
 "settings.event_log.title" = "事件紀錄";
 "settings.general_settings_button.title" = "一般設定";
+"settings.location_history.description" = "沒有座標紀錄";
+"settings.location_history.detail.explanation" = "紫色圓圈表示為座標與精準度。藍色圓圈表示為區域。假如紫色與藍色圈圈重疊，表示位於區域內。橙色圓圈則表示為 100m 以內的附加區域。";
+"settings.location_history.empty" = "沒有座標紀錄";
+"settings.location_history.title" = "座標紀錄";
 "settings.navigation_bar.about_button.title" = "關於";
 "settings.navigation_bar.title" = "設定";
 "settings.reset_section.reset_alert.message" = "你的設定將被重置，且此裝置將從推播通知及 Home Assistant 設定中被移除。";

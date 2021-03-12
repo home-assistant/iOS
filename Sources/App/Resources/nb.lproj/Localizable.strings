@@ -588,6 +588,14 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.connection_section.validate_error.edit_url" = "Rediger URL";
 "settings.connection_section.validate_error.title" = "Feil ved lagring av URL";
 "settings.connection_section.validate_error.use_anyway" = "Bruk uansett";
+"settings.connection_section.websocket.status.authenticating" = "Godkjenne";
+"settings.connection_section.websocket.status.connected" = "Tilkoblet";
+"settings.connection_section.websocket.status.connecting" = "Kobler til";
+"settings.connection_section.websocket.status.disconnected.error" = "Feil: %1$@";
+"settings.connection_section.websocket.status.disconnected.next_retry" = "Neste forsøk på nytt: %1$@";
+"settings.connection_section.websocket.status.disconnected.retry_count" = "Prøv på nytt: %1$li";
+"settings.connection_section.websocket.status.disconnected.title" = "Frakoblet";
+"settings.connection_section.websocket.title" = "WebSocket";
 "settings.details_section.enable_location_row.title" = "Aktiver lokasjonssporing";
 "settings.details_section.enable_notification_row.title" = "Aktiver varsler";
 "settings.details_section.integrations.header" = "Integrasjoner";
@@ -626,6 +634,10 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.discovery_section.requiresPassword" = "Krever passord";
 "settings.event_log.title" = "Hendelseslogg";
 "settings.general_settings_button.title" = "Generelle innstillinger";
+"settings.location_history.description" = "Ingen posisjonshistorikk";
+"settings.location_history.detail.explanation" = "Den lilla sirkelen er din plassering og dens nøyaktighet. Blå sirkler er sonene dine. Du er i en sone hvis den lilla sirkelen overlapper en blå sirkel. Oransje sirkler er tilleggsregioner som brukes til soner under 100 meter.";
+"settings.location_history.empty" = "Ingen posisjonshistorikk";
+"settings.location_history.title" = "Posisjonshistorikk";
 "settings.navigation_bar.about_button.title" = "Om";
 "settings.navigation_bar.title" = "Innstillinger";
 "settings.reset_section.reset_alert.message" = "Innstillingene tilbakestilles og denne enheten vil bli avregistrert fra push-varsling samt fjernet fra Home Assistant konfigurasjonen.";
