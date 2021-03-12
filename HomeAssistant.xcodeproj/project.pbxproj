@@ -1050,6 +1050,10 @@
 		115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateSection.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
+		1164D9FE25FB417D00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Intents.strings; sourceTree = "<group>"; };
+		1164D9FF25FB417E00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		1164DA0025FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1164DA0125FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -3781,6 +3785,7 @@
 				"en-GB",
 				cs,
 				el,
+				id,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -5259,6 +5264,7 @@
 				119EC3D924D5395B00617D51 /* en-GB */,
 				B64C5B2B24DCB5390038AB3D /* cs */,
 				1109B6BC25263EEF005D51C2 /* el */,
+				1164DA0025FB41AE00515E8A /* id */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -5293,6 +5299,7 @@
 				119EC3D724D5395B00617D51 /* en-GB */,
 				B64C5B2924DCB5390038AB3D /* cs */,
 				1109B6BA25263EEE005D51C2 /* el */,
+				1164D9FE25FB417D00515E8A /* id */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -5336,6 +5343,7 @@
 				119EC3D824D5395B00617D51 /* en-GB */,
 				B64C5B2A24DCB5390038AB3D /* cs */,
 				1109B6BB25263EEE005D51C2 /* el */,
+				1164D9FF25FB417E00515E8A /* id */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -5377,6 +5385,7 @@
 				119EC3DA24D5395C00617D51 /* en-GB */,
 				B64C5B2C24DCB5390038AB3D /* cs */,
 				1109B6BD25263F1D005D51C2 /* el */,
+				1164DA0125FB41AE00515E8A /* id */,
 			);
 			name = Localizable.strings;
 			path = .;
