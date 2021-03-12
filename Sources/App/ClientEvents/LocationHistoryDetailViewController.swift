@@ -148,13 +148,16 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
         present(alert, animated: true, completion: nil)
     }
 
-    @objc private func share(_ sender: AnyObject?) {
+    @objc private func share(_ sender: UIBarButtonItem?) {
         let bounds = CGRect(x: 0, y: 0, width: map.bounds.width, height: map.bounds.height)
         let snapshot = UIGraphicsImageRenderer(bounds: bounds).image { _ in
             map.drawHierarchy(in: bounds, afterScreenUpdates: true)
         }
 
         let controller = UIActivityViewController(activityItems: [snapshot, report()], applicationActivities: nil)
+        with(controller.popoverPresentationController) {
+            $0?.barButtonItem = sender
+        }
         present(controller, animated: true, completion: nil)
     }
 
