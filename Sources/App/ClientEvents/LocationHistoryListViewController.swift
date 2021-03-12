@@ -52,10 +52,16 @@ class LocationHistoryListViewController: FormViewController {
                 },
             ], getter: { [weak self] entry in
                 with(ButtonRowWithPresent<LocationHistoryDetailViewController>()) {
-                    $0.cellStyle = .value1
-                    $0.title = entry.Trigger
+                    $0.cellStyle = .subtitle
+                    $0.title = formatter.string(from: entry.CreatedAt)
                     $0.cellUpdate { cell, _ in
-                        cell.detailTextLabel?.text = formatter.string(from: entry.CreatedAt)
+                        if #available(iOS 13, *) {
+                             cell.detailTextLabel?.textColor = .secondaryLabel
+                         } else {
+                             cell.detailTextLabel?.textColor = .gray
+                         }
+
+                        cell.detailTextLabel?.text = entry.Trigger
                         cell.accessoryType = .disclosureIndicator
                     }
                     $0.onCellSelection { _, row in
