@@ -69,17 +69,22 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func setUpZones(
-        circular: ((CLCircularRegion, RLMZone) -> Void)? = nil,
-        beacon: ((CLBeaconRegion, RLMZone) -> Void)? = nil
+        circular: (CLCircularRegion, RLMZone) -> Void = { _, _ in },
+        beacon: (CLBeaconRegion, RLMZone) -> Void = { _, _ in }
     ) throws {
         try realm.write {
-            circularRegionZone = RLMZone()
-            circularRegionZone?.ID = circularRegion.identifier
-            circular?(circularRegion, circularRegionZone!)
+            circularRegionZone = with(RLMZone()) { zone in
+                zone.ID = circularRegion.identifier
+                zone.Radius = circularRegion.radius
+                zone.Latitude = circularRegion.center.latitude
+                zone.Longitude = circularRegion.center.longitude
+            }
+            circular(circularRegion, circularRegionZone!)
 
-            beaconRegionZone = RLMZone()
-            beaconRegionZone?.ID = beaconRegion.identifier
-            beacon?(beaconRegion, beaconRegionZone!)
+            beaconRegionZone = with(RLMZone()) { zone in
+                zone.ID = beaconRegion.identifier
+            }
+            beacon(beaconRegion, beaconRegionZone!)
 
             realm.add([circularRegionZone!, beaconRegionZone!])
         }
@@ -565,6 +570,98 @@ class ZoneManagerProcessorTests: XCTestCase {
         XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
 
         // difference! this is the mutated one!
+        if let sentLocation = api.submitLocationInvocation?.location {
+            let regionWithAccuracy = CLCircularRegion(
+                center: circularRegion.center,
+                radius: circularRegion.radius + sentLocation.horizontalAccuracy,
+                identifier: ""
+            )
+
+            XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
+        } else {
+            XCTFail("didn't send a location")
+        }
+
+        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+
+        if let state = delegate.states.first {
+            switch state {
+            case .didReceive(event):
+                // pass
+                break
+            default:
+                XCTFail("incorrect state was logged")
+            }
+        } else {
+            XCTFail("no state but one was expected")
+        }
+    }
+
+    func testRegionEnterProducesOutsideZone() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = false
+
+            // we rely on the zone's values for this scenario's fuzzing
+            XCTAssertTrue(circularRegion.radius > 0 && circularRegion.radius < 100)
+            XCTAssertTrue(zone.Radius > 0 && zone.Radius < 100)
+        })
+
+        // grab the region that's the direction we're going in the one shot location below
+        let region = try XCTUnwrap(
+            circularRegionZone?.circularRegionsForMonitoring
+                .first(where: { $0.identifier.contains("000") })
+        )
+
+        let event = ZoneManagerEvent(
+            eventType: .region(region, .inside),
+            associatedZone: circularRegionZone
+        )
+        let promise = processor.perform(event: event)
+
+        let expectation = self.expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        let distanceOut: CLLocationDistance = 20
+
+        let oneShotLocation = try { () -> CLLocation in
+            // moving toward one of the circle's centers guarantees we're pointed toward the intersection of all zones
+            let coordinate = circularRegion.center.moving(
+                distance: .init(value: circularRegion.radius + distanceOut, unit: .meters),
+                direction: .init(value: 0, unit: .degrees)
+            )
+            let location = CLLocation(
+                coordinate: coordinate,
+                altitude: 0,
+                horizontalAccuracy: distanceOut / 2 - 1,
+                // less than distance to zone, big enough to overlap all 3 other zones
+                verticalAccuracy: 0,
+                timestamp: Date()
+            )
+
+            XCTAssertTrue(try XCTUnwrap(circularRegionZone?.circularRegionsForMonitoring.allSatisfy({ region in
+                // this test case is assuming the location touches _all_ the zones
+                region.containsWithAccuracy(location)
+            })))
+
+            // this test case is assuming this location does _not_ intersect the zone
+            XCTAssertFalse(circularRegion.containsWithAccuracy(location))
+
+            return location
+        }()
+
+        XCTAssertFalse(circularRegion.contains(oneShotLocation.coordinate))
+
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertTrue(circularRegionZone?.inRegion ?? false)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+
         if let sentLocation = api.submitLocationInvocation?.location {
             let regionWithAccuracy = CLCircularRegion(
                 center: circularRegion.center,

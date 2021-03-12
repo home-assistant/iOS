@@ -60,4 +60,48 @@ class CLLocationExtensionsTests: XCTestCase {
             XCTAssertFalse(regionInside.contains(moved))
         }
     }
+
+    func testDistanceWithAccuracy() {
+        let region = CLCircularRegion(center: coordinate, radius: 20, identifier: "")
+        let offsetCoordinate = coordinate.moving(
+            distance: .init(value: 50, unit: .meters),
+            direction: .init(value: 0, unit: .degrees)
+        )
+
+        let locationNoAccuracy = CLLocation(
+            latitude: offsetCoordinate.latitude,
+            longitude: offsetCoordinate.longitude
+        )
+        let locationWithAccuracy = CLLocation(
+            coordinate: offsetCoordinate,
+            altitude: 0,
+            horizontalAccuracy: 10,
+            verticalAccuracy: 0,
+            timestamp: Date()
+        )
+        XCTAssertEqual(region.distanceWithAccuracy(from: locationNoAccuracy), 30, accuracy: 0.1)
+        XCTAssertEqual(region.distanceWithAccuracy(from: locationWithAccuracy), 20, accuracy: 0.1)
+    }
+
+    func testContainsWithAccuracy() {
+        let region = CLCircularRegion(center: coordinate, radius: 20, identifier: "")
+        let offsetCoordinate = coordinate.moving(
+            distance: .init(value: 25, unit: .meters),
+            direction: .init(value: 0, unit: .degrees)
+        )
+
+        let locationNoAccuracy = CLLocation(
+            latitude: offsetCoordinate.latitude,
+            longitude: offsetCoordinate.longitude
+        )
+        let locationWithAccuracy = CLLocation(
+            coordinate: offsetCoordinate,
+            altitude: 0,
+            horizontalAccuracy: 10,
+            verticalAccuracy: 0,
+            timestamp: Date()
+        )
+        XCTAssertFalse(region.containsWithAccuracy(locationNoAccuracy))
+        XCTAssertTrue(region.containsWithAccuracy(locationWithAccuracy))
+    }
 }
