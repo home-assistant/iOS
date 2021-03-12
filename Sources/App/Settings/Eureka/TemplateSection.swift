@@ -48,6 +48,7 @@ public final class TemplateSection: Section {
 
     let inputRow = TextAreaRow {
         $0.cellSetup { cell, _ in
+            cell.textView.configureCodeFont()
             cell.textView.keyboardType = .asciiCapable
             cell.textView.smartQuotesType = .no
             cell.textView.smartDashesType = .no
@@ -154,7 +155,9 @@ public final class TemplateSection: Section {
         }
 
         updateResult(with: nil)
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: skipDelay ? 0 : 1.0, repeats: false) { [weak self] _ in
+
+        let delay: TimeInterval = skipDelay ? 0 : (Current.isCatalyst ? 0.5 : 1.0)
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
             self?.subscriptionToken = Current.apiConnection.subscribe(
                 to: .renderTemplate(template),
                 initiated: { result in

@@ -52,6 +52,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let notificationManager = NotificationManager()
 
     private var zoneManager: ZoneManager?
+    private var titleSubscription: MenuManagerTitleSubscription? {
+        didSet {
+            if oldValue != titleSubscription {
+                oldValue?.cancel()
+            }
+        }
+    }
 
     func application(
         _ application: UIApplication,
@@ -144,7 +151,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @available(iOS 13, *)
     override func buildMenu(with builder: UIMenuBuilder) {
         if builder.system == .main {
-            MenuManager(builder: builder).update()
+            let manager = MenuManager(builder: builder)
+            manager.update()
+
+            #if targetEnvironment(macCatalyst)
+            titleSubscription = manager.subscribeStatusItemTitle(
+                existing: titleSubscription,
+                update: Current.macBridge.configureStatusItem(title:)
+            )
+            #endif
         }
     }
 
