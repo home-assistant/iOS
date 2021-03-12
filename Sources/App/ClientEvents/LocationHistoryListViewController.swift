@@ -38,7 +38,7 @@ class LocationHistoryListViewController: FormViewController {
 
         let formatter = with(DateFormatter()) {
             $0.dateStyle = .short
-            $0.timeStyle = .short
+            $0.timeStyle = .medium
         }
 
         let section = RealmSection(
