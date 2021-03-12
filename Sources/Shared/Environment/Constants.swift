@@ -26,8 +26,11 @@ public enum Constants {
     /// Help icon UIBarButtonItem
     #if os(iOS)
     public static var helpBarButtonItem: UIBarButtonItem {
-        let icon = MaterialDesignIcons.helpCircleOutlineIcon.image(ofSize: CGSize(width: 30, height: 30), color: .blue)
-        return UIBarButtonItem(image: icon, style: .plain, target: nil, action: nil)
+        UIBarButtonItem(
+            icon: .helpCircleOutlineIcon,
+            target: nil,
+            action: nil
+        )
     }
     #endif
 
