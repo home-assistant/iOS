@@ -153,10 +153,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if builder.system == .main {
             let manager = MenuManager(builder: builder)
             manager.update()
+
+            #if targetEnvironment(macCatalyst)
             titleSubscription = manager.subscribeStatusItemTitle(
                 existing: titleSubscription,
                 update: Current.macBridge.configureStatusItem(title:)
             )
+            #endif
         }
     }
 
