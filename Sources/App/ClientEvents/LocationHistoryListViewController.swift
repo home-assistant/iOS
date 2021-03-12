@@ -95,7 +95,7 @@ extension LocationHistoryListViewController: LocationHistoryDetailMoveDelegate {
 
         switch direction {
         case .up where section.startIndex < indexPath.row: nextIndex = section.index(before: indexPath.row)
-        case .down where section.endIndex > indexPath.row: nextIndex = section.index(after: indexPath.row)
+        case .down where section.endIndex - 1 > indexPath.row: nextIndex = section.index(after: indexPath.row)
         default: nextIndex = nil
         }
 
