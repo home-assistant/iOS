@@ -56,10 +56,10 @@ class LocationHistoryListViewController: FormViewController {
                     $0.title = formatter.string(from: entry.CreatedAt)
                     $0.cellUpdate { cell, _ in
                         if #available(iOS 13, *) {
-                             cell.detailTextLabel?.textColor = .secondaryLabel
-                         } else {
-                             cell.detailTextLabel?.textColor = .gray
-                         }
+                            cell.detailTextLabel?.textColor = .secondaryLabel
+                        } else {
+                            cell.detailTextLabel?.textColor = .gray
+                        }
 
                         cell.detailTextLabel?.text = entry.Trigger
                         cell.accessoryType = .disclosureIndicator
