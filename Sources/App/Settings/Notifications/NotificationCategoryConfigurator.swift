@@ -66,8 +66,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         infoBarButtonItem.target = self
 
         let previewButton = UIBarButtonItem(
-            image: MaterialDesignIcons.eyeIcon.image(ofSize: CGSize(width: 25, height: 25), color: .black),
-            style: .plain,
+            icon: .eyeIcon,
             target: self,
             action: #selector(NotificationCategoryConfigurator.preview)
         )
