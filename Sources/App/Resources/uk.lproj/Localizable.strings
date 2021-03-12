@@ -588,6 +588,14 @@
 "settings.connection_section.validate_error.edit_url" = "Редагувати URL-адресу";
 "settings.connection_section.validate_error.title" = "Помилка збереження URL-адреси";
 "settings.connection_section.validate_error.use_anyway" = "Використовувати в будь-якому випадку";
+"settings.connection_section.websocket.status.authenticating" = "Authenticating";
+"settings.connection_section.websocket.status.connected" = "Connected";
+"settings.connection_section.websocket.status.connecting" = "Connecting";
+"settings.connection_section.websocket.status.disconnected.error" = "Error: %1$@";
+"settings.connection_section.websocket.status.disconnected.next_retry" = "Next Retry: %1$@";
+"settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
+"settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
+"settings.connection_section.websocket.title" = "WebSocket";
 "settings.details_section.enable_location_row.title" = "Увімкнути відстеження розташування";
 "settings.details_section.enable_notification_row.title" = "Увімкнути сповіщення";
 "settings.details_section.integrations.header" = "Інтеграції";
@@ -626,6 +634,10 @@
 "settings.discovery_section.requiresPassword" = "Потрібен пароль";
 "settings.event_log.title" = "Журнал подій";
 "settings.general_settings_button.title" = "Загальні";
+"settings.location_history.description" = "No Location History";
+"settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are addition regions used for sub-100m zones.";
+"settings.location_history.empty" = "No Location History";
+"settings.location_history.title" = "Location History";
 "settings.navigation_bar.about_button.title" = "Інформація";
 "settings.navigation_bar.title" = "Налаштування";
 "settings.reset_section.reset_alert.message" = "Ваші налаштування будуть скинуті, надсилання push-сповіщень буде зупинено, а цей пристрій буде видалено з конфігурації Home Assistant.";

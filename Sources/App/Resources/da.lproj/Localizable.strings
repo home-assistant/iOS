@@ -588,6 +588,14 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.connection_section.validate_error.edit_url" = "Rediger webadresse";
 "settings.connection_section.validate_error.title" = "Fejl ved gemning af webadresse";
 "settings.connection_section.validate_error.use_anyway" = "Brug alligevel";
+"settings.connection_section.websocket.status.authenticating" = "Authenticating";
+"settings.connection_section.websocket.status.connected" = "Connected";
+"settings.connection_section.websocket.status.connecting" = "Connecting";
+"settings.connection_section.websocket.status.disconnected.error" = "Error: %1$@";
+"settings.connection_section.websocket.status.disconnected.next_retry" = "Next Retry: %1$@";
+"settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
+"settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
+"settings.connection_section.websocket.title" = "WebSocket";
 "settings.details_section.enable_location_row.title" = "Aktivér sporing af lokalitet";
 "settings.details_section.enable_notification_row.title" = "Aktivér notifikationer";
 "settings.details_section.integrations.header" = "Integrationer";
@@ -626,6 +634,10 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.discovery_section.requiresPassword" = "Kræver adgangskode";
 "settings.event_log.title" = "Hændelseslog";
 "settings.general_settings_button.title" = "Generelt";
+"settings.location_history.description" = "No Location History";
+"settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are addition regions used for sub-100m zones.";
+"settings.location_history.empty" = "No Location History";
+"settings.location_history.title" = "Location History";
 "settings.navigation_bar.about_button.title" = "Om";
 "settings.navigation_bar.title" = "Indstillinger";
 "settings.reset_section.reset_alert.message" = "Dine indstillinger nulstilles, og denne enhed vil blive afregistreret fra push-notifikationer og fjernes fra din Home Assistant-konfiguration.";

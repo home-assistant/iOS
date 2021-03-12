@@ -40,7 +40,7 @@
 "f1KX0Q" = "View and run actions";
 "FBQiVD" = "Call a service on the Home Assistant instance";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
-"flUgtx" = "Which action?";
+"flUgtx" = "Aksi yang mana?";
 "FN8zqO" = "Get a single still frame from ${cameraID} and place it on the clipboard";
 "fnz838" = "Sensors updated.";
 "foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
@@ -117,7 +117,7 @@
 "sbkx4E" = "Failed to geocode ${pasteboardContents} to a valid location";
 "sfDGvk" = "Rendered Template";
 "SGxPSB" = "${serviceDescription}";
-"sNFoWe" = "Which camera?";
+"sNFoWe" = "Kamera yang mana?";
 "sQJAJS" = "Error";
 "tHPm96" = "Location updated to your current location";
 "TRZLwT" = "Which one?";

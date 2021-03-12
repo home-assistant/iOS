@@ -25,7 +25,7 @@
 "B4bXyc" = "Successfully rendered template";
 "boiLEw" = "JSON panoda bulundu ancak geçersizdi.";
 "bqPSU7" = "Kamera görüntüsü alınamadı, Home Assistant'a şu anda ulaşılamıyor";
-"c00c45" = "Fire event";
+"c00c45" = "Olayı Çalıştır";
 "CiB3s6" = "Call service ${serviceDomain}.${service} with clipboard data";
 "cK9jdK" = "Failed to render template with error: ${error}";
 "cLmTme" = "Aksiyon";
