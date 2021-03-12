@@ -55,3 +55,20 @@ public extension CLLocationDegrees {
         }
     }
 }
+
+public extension CLCircularRegion {
+    func distanceWithAccuracy(from location: CLLocation) -> CLLocationDistance {
+        let centerLocation = CLLocation(latitude: center.latitude, longitude: center.longitude)
+        return
+            // how far away from the center we are
+            location.distance(from: centerLocation)
+            // to get to the outer radius (perimeter)
+            - radius
+            // adding the accuracy amount we have already
+            - location.horizontalAccuracy
+    }
+
+    func containsWithAccuracy(_ location: CLLocation) -> Bool {
+        distanceWithAccuracy(from: location) <= 0
+    }
+}
