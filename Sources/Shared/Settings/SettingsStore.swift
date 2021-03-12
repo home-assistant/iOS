@@ -422,6 +422,20 @@ public class SettingsStore {
         }
     }
 
+    public var menuItemTemplate: String {
+        get {
+            prefs.string(forKey: "menuItemTemplate") ?? ""
+        }
+        set {
+            prefs.setValue(newValue, forKey: "menuItemTemplate")
+            NotificationCenter.default.post(
+                name: Self.menuRelatedSettingDidChange,
+                object: nil,
+                userInfo: nil
+            )
+        }
+    }
+
     public struct LocationSource {
         public var zone: Bool
         public var backgroundFetch: Bool

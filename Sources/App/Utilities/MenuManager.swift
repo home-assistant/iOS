@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 import PromiseKit
 import RealmSwift
 import Shared
@@ -11,6 +12,25 @@ private extension UIMenu.Identifier {
     static var haHelp: Self { .init(rawValue: "ha.help") }
     static var haWebViewActions: Self { .init(rawValue: "ha.webViewActions") }
     static var haFile: Self { .init(rawValue: "ha.file") }
+}
+
+public struct MenuManagerTitleSubscription: Equatable {
+    private var uuid = UUID()
+    var template: String
+    var token: HACancellable
+
+    init(template: String, token: HACancellable) {
+        self.template = template
+        self.token = token
+    }
+
+    func cancel() {
+        token.cancel()
+    }
+
+    public static func == (lhs: MenuManagerTitleSubscription, rhs: MenuManagerTitleSubscription) -> Bool {
+        lhs.uuid == rhs.uuid
+    }
 }
 
 @available(iOS 13, *)
@@ -44,6 +64,37 @@ class MenuManager {
 
     private var appName: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Home Assistant"
+    }
+
+    public func subscribeStatusItemTitle(
+        existing: MenuManagerTitleSubscription?,
+        update: @escaping (String) -> Void
+    ) -> MenuManagerTitleSubscription? {
+        let template = Current.settingsStore.menuItemTemplate
+
+        guard Current.settingsStore.locationVisibility.isStatusItemVisible, !template.isEmpty else {
+            update("")
+            return nil
+        }
+
+        guard existing == nil || existing?.template != template else {
+            return existing
+        }
+
+        // if we know it's going to change, reset it for now so it doesn't show the old value
+        update("")
+
+        return .init(template: template, token: Current.apiConnection.subscribe(
+            to: .renderTemplate(template),
+            initiated: { result in
+                switch result {
+                case .success: break
+                case .failure: update(L10n.errorLabel)
+                }
+            }, handler: { _, response in
+                update(String(describing: response.result))
+            }
+        ))
     }
 
     public func update() {

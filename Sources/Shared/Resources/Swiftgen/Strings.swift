@@ -1578,6 +1578,10 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.status_section.version_row.title") }
       }
     }
+    public enum TemplateEdit {
+      /// Edit Template
+      public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
+    }
   }
 
   public enum SettingsDetails {
@@ -1683,6 +1687,10 @@ public enum L10n {
       public enum LaunchOnLogin {
         /// Launch App on Login
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.launch_on_login.title") }
+      }
+      public enum MenuBarText {
+        /// Menu Bar Text
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.menu_bar_text.title") }
       }
       public enum OpenInBrowser {
         /// Google Chrome

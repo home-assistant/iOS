@@ -118,6 +118,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 <<< PushRow<SettingsStore.LocationVisibility> {
+                    $0.tag = "locationVisibility"
                     $0.title = L10n.SettingsDetails.General.Visibility.title
                     $0.options = SettingsStore.LocationVisibility.allCases
                     $0.value = Current.settingsStore.locationVisibility
@@ -131,6 +132,30 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     $0.onChange { row in
                         Current.settingsStore.locationVisibility = row.value ?? .dock
                     }
+                }
+
+                <<< ButtonRow { row in
+                    row.title = L10n.SettingsDetails.General.MenuBarText.title
+                    row.cellStyle = .value1
+                    row.value = Current.settingsStore.menuItemTemplate
+                    row.displayValueFor = { $0 }
+                    row.hidden = .function(["locationVisibility"], { form in
+                        if let row = form
+                            .rowBy(tag: "locationVisibility") as? PushRow<SettingsStore.LocationVisibility> {
+                            return row.value?.isStatusItemVisible == false
+                        } else {
+                            return true
+                        }
+                    })
+                    row.presentationMode = .show(controllerProvider: .callback(builder: {
+                        TemplateEditViewController(
+                            initial: Current.settingsStore.menuItemTemplate,
+                            saveHandler: { Current.settingsStore.menuItemTemplate = $0 }
+                        )
+                    }), onDismiss: { [weak self, row] _ in
+                        row.value = Current.settingsStore.menuItemTemplate
+                        self?.navigationController?.popViewController(animated: true)
+                    })
                 }
 
                 +++ Section {

@@ -84,6 +84,10 @@ import ServiceManagement
         statusItem?.configure(using: configuration)
     }
 
+    func configureStatusItem(title: String) {
+        statusItem?.configure(title: title)
+    }
+
     private static func userDefaultsKey(forLoginItemBundleIdentifier identifier: String) -> String {
         "LoginItemEnabled-\(identifier)"
     }

@@ -6,9 +6,14 @@ class MacBridgeStatusItem: NSObject, NSMenuDelegate {
 
     override init() {
         super.init()
+        statusItem.button?.imagePosition = .imageLeading
         statusItem.button?.target = self
         statusItem.button?.action = #selector(statusItemTapped(_:))
         statusItem.button?.sendAction(on: [.leftMouseUp, .leftMouseDown, .rightMouseDown])
+    }
+
+    func configure(title: String) {
+        statusItem.button?.title = title
     }
 
     func configure(using configuration: MacBridgeStatusItemConfiguration) {

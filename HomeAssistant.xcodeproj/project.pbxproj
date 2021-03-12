@@ -120,6 +120,8 @@
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
 		1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
+		1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */; };
+		1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -1052,11 +1054,13 @@
 		115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateSection.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
+		1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+Additions.swift"; sourceTree = "<group>"; };
 		1164D9FE25FB417D00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Intents.strings; sourceTree = "<group>"; };
 		1164D9FF25FB417E00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		1164DA0025FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1164DA0125FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
-		1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+Additions.swift"; sourceTree = "<group>"; };
+		1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditViewController.swift; sourceTree = "<group>"; };
+		1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+CodeRow.swift"; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -2128,6 +2132,7 @@
 				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
 				115EF6A62549152F0048597B /* AccountRow.swift */,
 				11C05F2C254919210031D038 /* AccountInitialsImage.swift */,
+				1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -2740,6 +2745,7 @@
 				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
+				1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -4720,9 +4726,11 @@
 				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,
+				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
+				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
