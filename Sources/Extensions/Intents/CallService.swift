@@ -1,5 +1,6 @@
 import Foundation
 import Intents
+import HAKit
 import PromiseKit
 import Shared
 import UIKit
@@ -26,24 +27,13 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
-        Current.api.then(on: nil) { api in
-            api.GetServices()
-        }.done { serviceResp in
-            var allServices: [String] = []
-
-            for domainContainer in serviceResp.sorted(by: { (a, b) -> Bool in
-                a.Domain < b.Domain
-            }) {
-                for service in domainContainer.Services.sorted(by: { (a, b) -> Bool in
-                    a.key < b.key
-                }) {
-                    allServices.append("\(domainContainer.Domain).\(service.key)")
-                }
-            }
-            completion(allServices, nil)
-        }.catch { error in
-            completion(nil, error)
+        firstly {
+            Current.apiConnection.send(.getServices()).promise
         }
+        .map(\.all)
+        .mapValues(\.domainServicePair)
+        .done { completion($0, nil) }
+        .catch { completion(nil, $0) }
     }
 
     @available(iOS 14, *)

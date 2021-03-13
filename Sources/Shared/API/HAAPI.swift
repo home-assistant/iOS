@@ -318,20 +318,12 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetEvents() -> Promise<[EventsResponse]> {
-        request(path: "events", callingFunctionName: "\(#function)")
-    }
-
     public func GetStates() -> Promise<[Entity]> {
         request(path: "states", callingFunctionName: "\(#function)")
     }
 
     public func GetScenes() -> Promise<[Scene]> {
         request(path: "states", callingFunctionName: "\(#function)")
-    }
-
-    public func GetServices() -> Promise<[ServicesResponse]> {
-        request(path: "services", callingFunctionName: "\(#function)")
     }
 
     public func GetLogbook() -> Promise<[LogbookEntry]> {
@@ -596,34 +588,6 @@ public class HomeAssistantAPI {
         }.then { location in
             self.SubmitLocation(updateType: updateTrigger, location: location, zone: zone)
         }.asVoid()
-    }
-
-    private func sendLocalNotification(
-        withZone: RLMZone?,
-        updateType: LocationUpdateTrigger,
-        payloadDict: [String: Any]
-    ) {
-        let zoneName = withZone?.Name ?? "Unknown zone"
-        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
-        Current.clientEventStore.addEvent(ClientEvent(
-            text: notificationOptions.body,
-            type: .locationUpdate,
-            payload: payloadDict
-        ))
-        if notificationOptions.shouldNotify {
-            let content = UNMutableNotificationContent()
-            content.title = notificationOptions.title
-            content.body = notificationOptions.body
-            content.sound = UNNotificationSound.default
-
-            let notificationRequest =
-                UNNotificationRequest(
-                    identifier: notificationOptions.identifier ?? "",
-                    content: content,
-                    trigger: nil
-                )
-            UNUserNotificationCenter.current().add(notificationRequest)
-        }
     }
 
     public class var sharedEventDeviceInfo: [String: String] { [
