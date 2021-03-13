@@ -1,6 +1,6 @@
 import Foundation
-import Intents
 import HAKit
+import Intents
 import PromiseKit
 import Shared
 import UIKit
