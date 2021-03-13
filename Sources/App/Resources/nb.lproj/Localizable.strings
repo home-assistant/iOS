@@ -369,6 +369,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.general.chrome.title" = "Åpne koblinger i Chrome";
 "settings_details.general.device_name.title" = "Enhetsnavn";
 "settings_details.general.launch_on_login.title" = "Start appen ved pålogging";
+"settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System standard";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -655,6 +656,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.status_section.notify_platform_loaded_row.title" = "IOS varslingsplattform lastet";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versjon";
+"settings.template_edit.title" = "Edit Template";
 "share_extension.entered_placeholder" = "'angitt' i tilfelle";
 "share_extension.error.title" = "Kunne ikke sende";
 "siri_shortcuts.configurator.fields.section.footer" = "Forslag: %@";

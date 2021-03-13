@@ -369,6 +369,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.chrome.title" = "Ouvrir les liens dans Chrome";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
 "settings_details.general.launch_on_login.title" = "Lancer l'application lors de la connexion";
+"settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Défaut du système";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -655,6 +656,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.status_section.notify_platform_loaded_row.title" = "Plateforme de notification iOS chargée";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
+"settings.template_edit.title" = "Edit Template";
 "share_extension.entered_placeholder" = "\"entré\" dans l'événement";
 "share_extension.error.title" = "Impossible d'envoyer";
 "siri_shortcuts.configurator.fields.section.footer" = "Suggéré: %@";

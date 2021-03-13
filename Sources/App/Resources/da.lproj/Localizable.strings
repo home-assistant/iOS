@@ -369,6 +369,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.general.chrome.title" = "Åbn links i Chrome";
 "settings_details.general.device_name.title" = "Enhedsnavn";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
+"settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System Default";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -655,6 +656,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.status_section.notify_platform_loaded_row.title" = "iOS-notifikationsplatform indlæst";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
+"settings.template_edit.title" = "Edit Template";
 "share_extension.entered_placeholder" = "'indtastet' i hændelse";
 "share_extension.error.title" = "Kunne ikke sende";
 "siri_shortcuts.configurator.fields.section.footer" = "Foreslået: %@";

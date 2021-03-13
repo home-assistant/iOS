@@ -369,6 +369,7 @@
 "settings_details.general.chrome.title" = "Відкрити посилання у Chrome";
 "settings_details.general.device_name.title" = "Ім'я пристрою";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
+"settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System Default";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -655,6 +656,7 @@
 "settings.status_section.notify_platform_loaded_row.title" = "Платформа сповіщень iOS завантажена";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Версія";
+"settings.template_edit.title" = "Edit Template";
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Не вдалося надіслати";
 "siri_shortcuts.configurator.fields.section.footer" = "Рекомендовано: %@";

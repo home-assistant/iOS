@@ -369,6 +369,7 @@
 "settings_details.general.chrome.title" = "使用 Chrome 開啟連結";
 "settings_details.general.device_name.title" = "裝置名稱";
 "settings_details.general.launch_on_login.title" = "登入時啟動 App";
+"settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "系統預設";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -655,6 +656,7 @@
 "settings.status_section.notify_platform_loaded_row.title" = "iOS 通知平台已載入";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "版本";
+"settings.template_edit.title" = "Edit Template";
 "share_extension.entered_placeholder" = "事件中的 'entered'";
 "share_extension.error.title" = "無法傳送";
 "siri_shortcuts.configurator.fields.section.footer" = "建議：%@";
