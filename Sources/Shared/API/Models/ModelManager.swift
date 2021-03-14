@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 import PromiseKit
 import RealmSwift
 
@@ -98,21 +99,27 @@ public final class ModelManager {
     public struct FetchDefinition {
         public var update: (
             _ api: HomeAssistantAPI,
+            _ connection: HAConnection,
             _ queue: DispatchQueue,
             _ modelManager: ModelManager
         ) -> Promise<Void>
 
         public static var defaults: [Self] = [
-            .init(update: { api, queue, manager in
-                api.GetZones()
-                    .done(on: queue) { try manager.store(type: RLMZone.self, sourceModels: $0) }
+            .init(update: { _, connection, queue, manager in
+                firstly {
+                    connection.send(.getStates()).promise
+                }.filterValues { entity in
+                    entity.domain == "zone"
+                }.done(on: queue) {
+                    try manager.store(type: RLMZone.self, sourceModels: $0)
+                }
             }),
-            .init(update: { api, queue, manager in
+            .init(update: { api, _, queue, manager in
                 api.GetStates()
                     .compactMapValues { $0 as? Scene }
                     .done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
             }),
-            .init(update: { api, queue, manager in
+            .init(update: { api, _, queue, manager in
                 api.GetMobileAppConfig()
                     .done(on: queue) {
                         try manager.store(type: NotificationCategory.self, sourceModels: $0.push.categories)
@@ -127,7 +134,7 @@ public final class ModelManager {
         on queue: DispatchQueue = .global(qos: .utility)
     ) -> Promise<Void> {
         Current.api.then(on: nil) { api in
-            when(fulfilled: definitions.map { $0.update(api, queue, self) })
+            when(fulfilled: definitions.map { $0.update(api, Current.apiConnection, queue, self) })
         }
     }
 
@@ -167,7 +174,7 @@ public final class ModelManager {
                 ].joined(separator: " ")
             )
 
-            let updatedModels: [UM] = sourceModels.map { model in
+            let updatedModels: [UM] = sourceModels.compactMap { model in
                 let updating: UM
 
                 if let existing = realm.object(ofType: UM.self, forPrimaryKey: model.primaryKey) {
@@ -177,8 +184,11 @@ public final class ModelManager {
                     updating = UM()
                 }
 
-                updating.update(with: model, using: realm)
-                return updating
+                if updating.update(with: model, using: realm) {
+                    return updating
+                } else {
+                    return nil
+                }
             }
 
             realm.add(updatedModels, update: .all)

@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 import RealmSwift
 
 protocol UpdatableModel {
@@ -9,7 +10,7 @@ protocol UpdatableModel {
 
     static func primaryKey() -> String? // from realm, we use
     static var updateEligiblePredicate: NSPredicate { get }
-    func update(with object: Source, using realm: Realm)
+    func update(with object: Source, using realm: Realm) -> Bool
 }
 
 extension UpdatableModel {
@@ -22,4 +23,8 @@ protocol UpdatableModelSource {
 
 extension Entity: UpdatableModelSource {
     var primaryKey: String { ID }
+}
+
+extension HAEntity: UpdatableModelSource {
+    var primaryKey: String { entityId }
 }

@@ -324,8 +324,6 @@
 		11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
 		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85824C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
-		11F3B85924C4279700642676 /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85624C4279700642676 /* Zone.swift */; };
-		11F3B85A24C4279700642676 /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85624C4279700642676 /* Zone.swift */; };
 		11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85B24C4295200642676 /* EurekaLocationRow.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListViewController.swift */; };
 		11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */; };
@@ -1217,7 +1215,6 @@
 		11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserURL.test.swift; sourceTree = "<group>"; };
 		11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapperBatteryObserver.swift; sourceTree = "<group>"; };
 		11F3B85524C4279700642676 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
-		11F3B85624C4279700642676 /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
 		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
@@ -3121,7 +3118,6 @@
 				B6C0911E2151F90300A326DC /* LocationHistory.swift */,
 				B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */,
 				11F3B85524C4279700642676 /* Entity.swift */,
-				11F3B85624C4279700642676 /* Zone.swift */,
 				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 				11EE9B4824C5116F00404AF8 /* ModelManager.swift */,
 				11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */,
@@ -4884,7 +4880,6 @@
 				11C4628F24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				11F2F26F25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
-				11F3B85A24C4279700642676 /* Zone.swift in Sources */,
 				11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
 				119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */,
@@ -5036,7 +5031,6 @@
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
-				11F3B85924C4279700642676 /* Zone.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,

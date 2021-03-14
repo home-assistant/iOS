@@ -83,7 +83,7 @@ public final class RLMScene: Object, UpdatableModel {
         realm.delete(actions)
     }
 
-    func update(with object: Scene, using realm: Realm) {
+    func update(with object: Scene, using realm: Realm) -> Bool {
         if self.realm == nil {
             identifier = object.ID
         } else {
@@ -96,6 +96,8 @@ public final class RLMScene: Object, UpdatableModel {
 
         scene = object
         updateAction(realm: realm)
+
+        return true
     }
 
     private func updateAction(realm: Realm) {

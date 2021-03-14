@@ -71,8 +71,6 @@ public class Entity: StaticMappable {
 
         let entityType = entityId.components(separatedBy: ".")[0]
         switch entityType {
-        case "zone":
-            return Zone()
         case "scene":
             return Scene()
         default:

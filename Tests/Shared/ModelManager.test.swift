@@ -1,5 +1,6 @@
 import Foundation
 import PromiseKit
+import HAKit
 import RealmSwift
 @testable import Shared
 import XCTest
@@ -9,6 +10,7 @@ class ModelManagerTests: XCTestCase {
     private var testQueue: DispatchQueue!
     private var manager: ModelManager!
     private var api: FakeHomeAssistantAPI!
+    private var apiConnection: HAMockConnection!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -22,8 +24,10 @@ class ModelManagerTests: XCTestCase {
                 expiration: Date()
             )
         )
+        apiConnection = HAMockConnection()
 
         Current.api = .value(api)
+        Current.apiConnection = apiConnection
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {
@@ -39,6 +43,7 @@ class ModelManagerTests: XCTestCase {
         Current.realm = Realm.live
         TestStoreModel1.lastDidUpdate = []
         TestStoreModel1.lastWillDeleteIds = []
+        TestStoreModel1.updateFalseIds = []
     }
 
     func testObserve() throws {
@@ -195,16 +200,18 @@ class ModelManagerTests: XCTestCase {
         let (fetchPromise2, fetchSeal2) = Promise<Void>.pending()
 
         let promise = manager.fetch(definitions: [
-            .init(update: { api, queue, manager -> Promise<Void> in
+            .init(update: { api, connection, queue, manager -> Promise<Void> in
                 XCTAssertTrue(api === self.api)
                 XCTAssertEqual(queue, self.testQueue)
                 XCTAssertTrue(manager === self.manager)
+                XCTAssertTrue(connection === self.apiConnection)
                 return fetchPromise1
             }),
-            .init(update: { api, queue, manager -> Promise<Void> in
+            .init(update: { api, connection, queue, manager -> Promise<Void> in
                 XCTAssertTrue(api === self.api)
                 XCTAssertEqual(queue, self.testQueue)
                 XCTAssertTrue(manager === self.manager)
+                XCTAssertTrue(connection === self.apiConnection)
                 return fetchPromise2
             }),
         ], on: testQueue)
@@ -353,6 +360,24 @@ class ModelManagerTests: XCTestCase {
             XCTAssertEqual(models[2].value, 100)
         }
     }
+
+    func testUpdateFalseSkipsNewCreation() throws {
+        try testQueue.sync {
+            let sources: [TestStoreSource1] = [
+                .init(id: "id1", value: "val1"),
+                .init(id: "id2", value: "val2"),
+            ]
+
+            TestStoreModel1.updateFalseIds = ["id2"]
+
+            try manager.store(type: TestStoreModel1.self, sourceModels: sources)
+            let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
+            XCTAssertEqual(models.count, 1)
+            XCTAssertEqual(models[0].identifier, "id1")
+            XCTAssertEqual(models[0].value, "val1")
+            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdate), Set(models))
+        }
+    }
 }
 
 class TestDeleteModel1: Object {
@@ -411,6 +436,8 @@ class TestDeleteModel3: Object {
 }
 
 final class TestStoreModel1: Object, UpdatableModel {
+    static var updateFalseIds = [String]()
+
     static var lastDidUpdate: [TestStoreModel1] = []
     static var lastWillDeleteIds: [String] = []
     static func didUpdate(objects: [TestStoreModel1], realm: Realm) {
@@ -431,13 +458,19 @@ final class TestStoreModel1: Object, UpdatableModel {
     func update(
         with object: TestStoreSource1,
         using realm: Realm
-    ) {
+    ) -> Bool {
         if self.realm == nil {
             identifier = object.id
         } else {
             XCTAssertEqual(identifier, object.id)
         }
         value = object.value
+
+        if Self.updateFalseIds.contains(object.id) {
+            return false
+        } else {
+            return true
+        }
     }
 }
 
@@ -462,8 +495,9 @@ final class TestStoreModel2: Object, UpdatableModel {
     func update(
         with object: TestStoreSource1,
         using realm: Realm
-    ) {
+    ) -> Bool {
         XCTFail("not expected to be called in error scenario")
+        return false
     }
 }
 
@@ -493,13 +527,14 @@ final class TestStoreModel3: Object, UpdatableModel {
     func update(
         with object: TestStoreSource2,
         using realm: Realm
-    ) {
+    ) -> Bool {
         if self.realm == nil {
             identifier = object.id
         } else {
             XCTAssertEqual(identifier, object.id)
         }
         value = object.value
+        return true
     }
 }
 

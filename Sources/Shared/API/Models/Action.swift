@@ -101,7 +101,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: MobileAppConfigAction, using realm: Realm) {
+    public func update(with object: MobileAppConfigAction, using realm: Realm) -> Bool {
         if self.realm == nil {
             ID = object.name
             Name = object.name
@@ -137,6 +137,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         if let textColor = object.labelColor {
             TextColor = textColor
         }
+
+        return true
     }
 
     #if os(iOS)
