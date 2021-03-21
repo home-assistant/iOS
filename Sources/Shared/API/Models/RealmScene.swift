@@ -72,7 +72,7 @@ public final class RLMScene: Object, UpdatableModel {
         }
 
         name = entity.attributes.friendlyName
-        icon = entity.attributes.icon
+        icon = entity.attributes.icon ?? "mdi:palette"
         backgroundColor = entity.attributes["background_color"] as? String
         textColor = entity.attributes["text_color"] as? String
         iconColor = entity.attributes["icon_color"] as? String
