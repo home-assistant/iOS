@@ -212,7 +212,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             ]
 
             if action.triggerType == .scene {
-                let keys = [Scene.textColorKey, Scene.backgroundColorKey, Scene.iconColorKey]
+                let keys = ["text_color", "background_color", "icon_color"]
                 let list: String
 
                 if #available(iOS 13, *) {

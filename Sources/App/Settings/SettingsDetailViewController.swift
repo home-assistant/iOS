@@ -598,13 +598,12 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             })
         }
 
-        let scene = rlmScene.scene
         _ = with(switchRow) {
-            $0.title = scene.FriendlyName ?? scene.ID
+            $0.title = rlmScene.name ?? rlmScene.identifier
             $0.value = rlmScene.actionEnabled
             $0.cellUpdate { cell, _ in
                 cell.imageView?.image =
-                    scene.Icon
+                    rlmScene.icon
                         .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
                         .image(ofSize: iconSize, color: .black)
                         .withRenderingMode(.alwaysTemplate)

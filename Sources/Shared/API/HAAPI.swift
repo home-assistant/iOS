@@ -318,10 +318,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetStates() -> Promise<[Entity]> {
-        request(path: "states", callingFunctionName: "\(#function)")
-    }
-
     public func GetLogbook() -> Promise<[LogbookEntry]> {
         request(path: "logbook", callingFunctionName: "\(#function)")
     }

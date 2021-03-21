@@ -72,9 +72,10 @@ public extension Realm {
         // 12 - 2020-08-16 v2020.6 (mdi upgrade/migration to 5.x)
         // 13 - 2020-10-17 v2020.7 (allow multiple complications)
         // 14 - 2020-10-29 v2020.8 (complication privacy)
+        // 15 - 2021-03-21 v2021.4 (scene properties)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 14,
+            schemaVersion: 15,
             migrationBlock: { migration, oldVersion in
                 Current.Log.info("migrating from \(oldVersion)")
                 if oldVersion < 9 {
@@ -146,6 +147,20 @@ public extension Realm {
                 if oldVersion < 14 {
                     migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
                         newObject?["IsPublic"] = true
+                    }
+                }
+
+                if oldVersion < 15 {
+                    migration.enumerateObjects(ofType: RLMScene.className()) { oldObject, newObject in
+                        if let data = oldObject?["underlyingSceneData"] as? Data,
+                           let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                           let attributes = json["attributes"] as? [String: Any] {
+                            newObject?["backgroundColor"] = attributes["background_color"] as? String
+                            newObject?["textColor"] = attributes["text_color"] as? String
+                            newObject?["iconColor"] = attributes["icon_color"] as? String
+                            newObject?["icon"] = attributes["icon"] as? String
+                            newObject?["name"] = attributes["friendly_name"] as? String
+                        }
                     }
                 }
             },

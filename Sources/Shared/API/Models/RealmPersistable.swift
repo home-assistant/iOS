@@ -21,10 +21,6 @@ protocol UpdatableModelSource {
     var primaryKey: String { get }
 }
 
-extension Entity: UpdatableModelSource {
-    var primaryKey: String { ID }
-}
-
 extension HAEntity: UpdatableModelSource {
     var primaryKey: String { entityId }
 }

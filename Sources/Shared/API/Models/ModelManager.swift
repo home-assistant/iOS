@@ -106,18 +106,24 @@ public final class ModelManager {
 
         public static var defaults: [Self] = [
             .init(update: { _, connection, queue, manager in
-                firstly {
-                    connection.send(.getStates()).promise
+                firstly { () -> Guarantee<Set<HAEntity>> in
+                    connection.caches.states
+                        .once().promise
+                        .map(\.all)
                 }.filterValues { entity in
                     entity.domain == "zone"
                 }.done(on: queue) {
                     try manager.store(type: RLMZone.self, sourceModels: $0)
                 }
             }),
-            .init(update: { api, _, queue, manager in
-                api.GetStates()
-                    .compactMapValues { $0 as? Scene }
-                    .done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
+            .init(update: { api, connection, queue, manager in
+                firstly { () -> Guarantee<Set<HAEntity>> in
+                    connection.caches.states
+                        .once().promise
+                        .map(\.all)
+                }.filterValues { entity in
+                    entity.domain == "scene"
+                }.done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
             }),
             .init(update: { api, _, queue, manager in
                 api.GetMobileAppConfig()

@@ -296,8 +296,6 @@
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */; };
 		11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */; };
-		11EE9B5124C62E7800404AF8 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5024C62E7800404AF8 /* Scene.swift */; };
-		11EE9B5224C62E7800404AF8 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5024C62E7800404AF8 /* Scene.swift */; };
 		11EE9B5424C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
 		11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
 		11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */; };
@@ -322,8 +320,6 @@
 		11F2F2B8258728B200F61F7C /* NotificationAttachmentParserURL.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */; };
 		11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
 		11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */; };
-		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
-		11F3B85824C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85B24C4295200642676 /* EurekaLocationRow.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListViewController.swift */; };
 		11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */; };
@@ -1195,7 +1191,6 @@
 		11EE9B4824C5116F00404AF8 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
 		11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmPersistable.swift; sourceTree = "<group>"; };
-		11EE9B5024C62E7800404AF8 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		11EE9B5324C62EB300404AF8 /* RealmScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmScene.swift; sourceTree = "<group>"; };
 		11EE9B5624C68F5700404AF8 /* Action+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Observation.swift"; sourceTree = "<group>"; };
 		11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.test.swift; sourceTree = "<group>"; };
@@ -1214,7 +1209,6 @@
 		11F2F2A82587288200F61F7C /* NotificationAttachmentParserCamera.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserCamera.test.swift; sourceTree = "<group>"; };
 		11F2F2B7258728B200F61F7C /* NotificationAttachmentParserURL.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParserURL.test.swift; sourceTree = "<group>"; };
 		11F3847A24FB27FB00CB0D74 /* DeviceWrapperBatteryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapperBatteryObserver.swift; sourceTree = "<group>"; };
-		11F3B85524C4279700642676 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		11F3B85B24C4295200642676 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
 		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
@@ -3117,11 +3111,9 @@
 				B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */,
 				B6C0911E2151F90300A326DC /* LocationHistory.swift */,
 				B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */,
-				11F3B85524C4279700642676 /* Entity.swift */,
 				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 				11EE9B4824C5116F00404AF8 /* ModelManager.swift */,
 				11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */,
-				11EE9B5024C62E7800404AF8 /* Scene.swift */,
 				11EE9B5324C62EB300404AF8 /* RealmScene.swift */,
 				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
 				B6DAC734215F069300727D2A /* NotificationCategory.swift */,
@@ -4828,7 +4820,6 @@
 				11AF4D26249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
 				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
 				119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
-				11EE9B5224C62E7800404AF8 /* Scene.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
 				1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */,
 				1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
@@ -4906,7 +4897,6 @@
 				1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */,
 				B67CE89D22200F220034C1D0 /* Config.swift in Sources */,
-				11F3B85824C4279700642676 /* Entity.swift in Sources */,
 				11F855D924DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */,
 				11AF4D20249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
@@ -4979,7 +4969,6 @@
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
-				11EE9B5124C62E7800404AF8 /* Scene.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
@@ -5065,7 +5054,6 @@
 				D0EEF316214DD7A400D1D360 /* Config.swift in Sources */,
 				11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
-				11F3B85724C4279700642676 /* Entity.swift in Sources */,
 				11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */,
 				11EE9B5424C62EB300404AF8 /* RealmScene.swift in Sources */,
 				11F2F26E25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,

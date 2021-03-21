@@ -180,7 +180,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
-    :commit: 59a18664509b05b93531b6720c01d8d4843ef510
+    :commit: 3ec2886caaf0837b9bfda4eea07555a3735368a9
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -204,7 +204,7 @@ SPEC CHECKSUMS:
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: 1c2b8b5892bfb0e972d0fe05f8c09fd89f8625ec
   Firebase: 0b898049b2691473053d5de73e9725b134556ad2
-  HAKit: 724ba3d25c6aa34d83d9ec9809b7c9e07e68e177
+  HAKit: 1a7e9e629097918061b87119b5ac26b0cc672c73
   KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
