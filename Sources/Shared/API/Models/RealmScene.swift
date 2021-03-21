@@ -1,7 +1,7 @@
 import Foundation
+import HAKit
 import ObjectMapper
 import RealmSwift
-import HAKit
 
 public final class RLMScene: Object, UpdatableModel {
     @objc public dynamic var identifier: String = ""
@@ -33,11 +33,11 @@ public final class RLMScene: Object, UpdatableModel {
 
     public let actions = LinkingObjects<Action>(fromType: Action.self, property: #keyPath(Action.Scene))
 
-    @objc dynamic public var name: String?
-    @objc dynamic public var icon: String?
-    @objc dynamic public var backgroundColor: String?
-    @objc dynamic public var textColor: String?
-    @objc dynamic public var iconColor: String?
+    @objc public dynamic var name: String?
+    @objc public dynamic var icon: String?
+    @objc public dynamic var backgroundColor: String?
+    @objc public dynamic var textColor: String?
+    @objc public dynamic var iconColor: String?
 
     override public class func primaryKey() -> String? {
         #keyPath(identifier)

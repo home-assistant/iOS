@@ -3,7 +3,7 @@ import Foundation
 import HAKit
 import RealmSwift
 
-fileprivate extension HAEntityAttributes {
+private extension HAEntityAttributes {
     // app-specific attributes for zones, always optional
     var isTrackingEnabled: Bool { self["track_ios"] as? Bool ?? true }
     var beaconUUID: String? { beacon["uuid"] as? String }

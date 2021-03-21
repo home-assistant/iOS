@@ -117,7 +117,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             let states = connection.caches.states.once().promise.map { Array($0.all) }
 
             return when(fulfilled: currentUser, states)
-        }.get { [self] user, states in
+        }.get { [self] user, _ in
             Current.Log.verbose("got user from user \(user)")
             cachedUserName = user.name
             updateCell()

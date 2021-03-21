@@ -116,7 +116,7 @@ public final class ModelManager {
                     try manager.store(type: RLMZone.self, sourceModels: $0)
                 }
             }),
-            .init(update: { api, connection, queue, manager in
+            .init(update: { _, connection, queue, manager in
                 firstly { () -> Guarantee<Set<HAEntity>> in
                     connection.caches.states
                         .once().promise

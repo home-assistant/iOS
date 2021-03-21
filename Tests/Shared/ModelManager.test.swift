@@ -1,6 +1,6 @@
 import Foundation
-import PromiseKit
 import HAKit
+import PromiseKit
 import RealmSwift
 @testable import Shared
 import XCTest
