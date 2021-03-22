@@ -105,6 +105,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             oldValue?.cancel()
         }
     }
+
     private var avatarSubscription: HACancellable? {
         didSet {
             oldValue?.cancel()
@@ -149,13 +150,13 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     entity.attributes["entity_picture"] as? String
                 }.compactMap { path -> URL? in
                     let url = Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path)
-                    if let lastTask = lastTask, lastTask.error == nil && lastTask.originalRequest?.url == url {
+                    if let lastTask = lastTask, lastTask.error == nil, lastTask.originalRequest?.url == url {
                         return nil
                     }
                     return url
                 }.then { url -> Promise<Data> in
                     Promise<Data> { seal in
-                        lastTask = URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
+                        lastTask = URLSession.shared.dataTask(with: url, completionHandler: { data, _, error in
                             seal.resolve(data, error)
                         })
                     }
