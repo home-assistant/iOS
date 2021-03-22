@@ -225,7 +225,7 @@ class ModelManagerTests: XCTestCase {
 
     func testSubscribeSubscribes() {
         let handlers: [HAMockCancellable] = [
-            .init({}), .init({}), .init({})
+            .init({}), .init({}), .init({}),
         ]
 
         manager.subscribe(definitions: [

@@ -110,7 +110,10 @@ public final class ModelManager {
         ) -> [HACancellable]
 
         static func states<
-            UM: Object & UpdatableModel>(domain: String, type: UM.Type
+            UM: Object & UpdatableModel
+        >(
+            domain: String,
+            type: UM.Type
         ) -> Self where UM.Source == HAEntity {
             .init(subscribe: { connection, queue, manager in
                 // working around a swift compiler crash, xcode 12.4
@@ -136,7 +139,7 @@ public final class ModelManager {
                                 Current.Log.error("failed to store \(type): \(error)")
                             }
                         }
-                    }
+                    },
                 ]
             })
         }
