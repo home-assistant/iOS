@@ -223,6 +223,32 @@ class ModelManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(promise))
     }
 
+    func testSubscribeSubscribes() {
+        let handlers: [HAMockCancellable] = [
+            .init({}), .init({}), .init({})
+        ]
+
+        manager.subscribe(definitions: [
+            .init(subscribe: { connection, queue, manager -> [HACancellable] in
+                XCTAssertEqual(queue, self.testQueue)
+                XCTAssertTrue(manager === self.manager)
+                XCTAssertTrue(connection === self.apiConnection)
+                return [handlers[0]]
+            }),
+            .init(subscribe: { connection, queue, manager -> [HACancellable] in
+                XCTAssertEqual(queue, self.testQueue)
+                XCTAssertTrue(manager === self.manager)
+                XCTAssertTrue(connection === self.apiConnection)
+                return Array(handlers[1...])
+            }),
+        ], on: testQueue)
+
+        XCTAssertTrue(handlers.allSatisfy { !$0.wasCancelled })
+
+        manager.subscribe(definitions: [], on: testQueue)
+        XCTAssertTrue(handlers.allSatisfy(\.wasCancelled))
+    }
+
     func testStoreWithoutModels() throws {
         try testQueue.sync {
             try manager.store(type: TestStoreModel1.self, sourceModels: [])

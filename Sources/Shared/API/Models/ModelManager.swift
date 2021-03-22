@@ -5,6 +5,12 @@ import RealmSwift
 
 public final class ModelManager {
     private var notificationTokens = [NotificationToken]()
+    private var hakitTokens = [HACancellable]()
+
+    deinit {
+        hakitTokens.forEach { $0.cancel() }
+        notificationTokens.forEach { $0.invalidate() }
+    }
 
     public func observe<T>(
         for collection: AnyRealmCollection<T>,
@@ -96,6 +102,61 @@ public final class ModelManager {
         }
     }
 
+    public struct SubscribeDefinition {
+        public var subscribe: (
+            _ connection: HAConnection,
+            _ queue: DispatchQueue,
+            _ modelManager: ModelManager
+        ) -> [HACancellable]
+
+        static func states<
+            UM: Object & UpdatableModel>(domain: String, type: UM.Type
+        ) -> Self where UM.Source == HAEntity {
+            .init(subscribe: { connection, queue, manager in
+                // working around a swift compiler crash, xcode 12.4
+                let someManager = manager
+
+                var lastEntities = Set<HAEntity>()
+
+                return [
+                    connection.caches.states.subscribe { [weak someManager] token, value in
+                        queue.async {
+                            guard let manager = someManager else {
+                                token.cancel()
+                                return
+                            }
+
+                            do {
+                                let entities = value.all.filter { $0.domain == domain }
+                                if entities != lastEntities {
+                                    try manager.store(type: type, sourceModels: entities)
+                                    lastEntities = entities
+                                }
+                            } catch {
+                                Current.Log.error("failed to store \(type): \(error)")
+                            }
+                        }
+                    }
+                ]
+            })
+        }
+
+        public static var defaults: [Self] = [
+            .states(domain: "zone", type: RLMZone.self),
+            .states(domain: "scene", type: RLMScene.self),
+        ]
+    }
+
+    public func subscribe(
+        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults,
+        on queue: DispatchQueue = .global(qos: .utility)
+    ) {
+        hakitTokens.forEach { $0.cancel() }
+        hakitTokens = definitions.flatMap {
+            $0.subscribe(Current.apiConnection, queue, self)
+        }
+    }
+
     public struct FetchDefinition {
         public var update: (
             _ api: HomeAssistantAPI,
@@ -105,26 +166,6 @@ public final class ModelManager {
         ) -> Promise<Void>
 
         public static var defaults: [Self] = [
-            .init(update: { _, connection, queue, manager in
-                firstly { () -> Guarantee<Set<HAEntity>> in
-                    connection.caches.states
-                        .once().promise
-                        .map(\.all)
-                }.filterValues { entity in
-                    entity.domain == "zone"
-                }.done(on: queue) {
-                    try manager.store(type: RLMZone.self, sourceModels: $0)
-                }
-            }),
-            .init(update: { _, connection, queue, manager in
-                firstly { () -> Guarantee<Set<HAEntity>> in
-                    connection.caches.states
-                        .once().promise
-                        .map(\.all)
-                }.filterValues { entity in
-                    entity.domain == "scene"
-                }.done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
-            }),
             .init(update: { api, _, queue, manager in
                 api.GetMobileAppConfig()
                     .done(on: queue) {
@@ -148,10 +189,10 @@ public final class ModelManager {
         case missingPrimaryKey
     }
 
-    internal func store<UM: Object & UpdatableModel>(
+    internal func store<UM: Object & UpdatableModel, C: Collection>(
         type realmObjectType: UM.Type,
-        sourceModels: [UM.Source]
-    ) throws {
+        sourceModels: C
+    ) throws where C.Element == UM.Source {
         let realm = Current.realm()
         try realm.write {
             guard let realmPrimaryKey = realmObjectType.primaryKey() else {
