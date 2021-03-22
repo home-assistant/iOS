@@ -171,7 +171,7 @@ class SettingsViewController: FormViewController {
                 } else {
                     $0.title = L10n.Settings.Developer.ExportLogFiles.title
                 }
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 Current.Log.verbose("Logs directory is: \(Constants.LogsDirectory)")
 
                 guard !Current.isCatalyst else {
@@ -240,7 +240,7 @@ class SettingsViewController: FormViewController {
                             try? fileManager.removeItem(at: zipDest)
                         }
                     }
-                    self.present(activityViewController, animated: true, completion: {})
+                    self?.present(activityViewController, animated: true, completion: {})
                     if let popOver = activityViewController.popoverPresentationController {
                         popOver.sourceView = cell
                     }
@@ -255,7 +255,7 @@ class SettingsViewController: FormViewController {
                 $0.title = L10n.Settings.ResetSection.ResetRow.title
             }.cellUpdate { cell, _ in
                 cell.textLabel?.textColor = .red
-            }.onCellSelection { cell, row in
+            }.onCellSelection { [weak self] cell, row in
                 let alert = UIAlertController(
                     title: L10n.Settings.ResetSection.ResetAlert.title,
                     message: L10n.Settings.ResetSection.ResetAlert.message,
@@ -270,11 +270,11 @@ class SettingsViewController: FormViewController {
                     handler: { _ in
                         row.hidden = true
                         row.evaluateHidden()
-                        self.ResetApp()
+                        self?.ResetApp()
                     }
                 ))
 
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
 
@@ -313,7 +313,7 @@ class SettingsViewController: FormViewController {
 
             <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.SyncWatchContext.title
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 if let syncError = HomeAssistantAPI.SyncWatchContext() {
                     let alert = UIAlertController(
                         title: L10n.errorLabel,
@@ -323,14 +323,14 @@ class SettingsViewController: FormViewController {
 
                     alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
-                    self.present(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
                     alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
             }
 
             <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.CopyRealm.title
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 guard let backupURL = Realm.backup() else {
                     fatalError("Unable to get Realm backup")
                 }
@@ -366,21 +366,21 @@ class SettingsViewController: FormViewController {
 
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
 
                 alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
 
             <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.DebugStrings.title
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
 
                 let alert = UIAlertController(title: L10n.okLabel, message: nil, preferredStyle: .alert)
 
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
 
                 alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
@@ -396,7 +396,7 @@ class SettingsViewController: FormViewController {
             }
             <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.CrashlyticsTest.NonFatal.title
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 let alert = UIAlertController(
                     title: L10n.Settings.Developer.CrashlyticsTest.NonFatal.Notification.title,
                     message: L10n.Settings.Developer.CrashlyticsTest.NonFatal.Notification.body,
@@ -419,12 +419,12 @@ class SettingsViewController: FormViewController {
                     Current.crashReporter.logError(error)
                 }))
 
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
             <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.CrashlyticsTest.Fatal.title
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 let alert = UIAlertController(
                     title: L10n.Settings.Developer.CrashlyticsTest.Fatal.Notification.title,
                     message: L10n.Settings.Developer.CrashlyticsTest.Fatal.Notification.body,
@@ -435,7 +435,7 @@ class SettingsViewController: FormViewController {
                     SentrySDK.crash()
                 }))
 
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
 

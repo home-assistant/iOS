@@ -93,8 +93,23 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
         self.cellStyle = .subtitle
     }
 
+    deinit {
+        accountSubscription?.cancel()
+        avatarSubscription?.cancel()
+    }
+
     fileprivate var cachedImage: UIImage?
     fileprivate var cachedUserName: String?
+    private var accountSubscription: HACancellable? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
+    private var avatarSubscription: HACancellable? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
 
     override var value: Cell.Value? {
         didSet {
@@ -112,31 +127,48 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        firstly { () -> Promise<(HAResponseCurrentUser, [HAEntity])> in
-            let currentUser = connection.send(.currentUser()).promise
-            let states = connection.caches.states.once().promise.map { Array($0.all) }
-
-            return when(fulfilled: currentUser, states)
-        }.get { [self] user, _ in
+        accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
+            guard let self = self else { return }
             Current.Log.verbose("got user from user \(user)")
-            cachedUserName = user.name
-            updateCell()
-        }.compactMap { user, states in
-            states.first(where: { $0.attributes["user_id"] as? String == user.id })
-        }.compactMap { entity in
-            entity.attributes["entity_picture"] as? String
-        }.compactMap { path in
-            Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path)
-        }.then { url in
-            URLSession.shared.dataTask(.promise, with: url)
-        }.compactMap { response in
-            UIImage(data: response.data)
-        }.done { [self] image in
-            Current.Log.verbose("got image \(image.size)")
-            cachedImage = image
-            updateCell()
-        }.catch { error in
-            Current.Log.error("failed to grab thumbnail: \(error)")
+            self.cachedUserName = user.name
+            self.updateCell()
+
+            var lastTask: URLSessionDataTask? {
+                didSet {
+                    oldValue?.cancel()
+                    lastTask?.resume()
+                }
+            }
+
+            self.avatarSubscription = connection.caches.states.subscribe { [weak self] _, states in
+                firstly { () -> Guarantee<Set<HAEntity>> in
+                    Guarantee.value(states.all)
+                }.compactMap { states in
+                    states.first(where: { $0.attributes["user_id"] as? String == user.id })
+                }.compactMap { entity in
+                    entity.attributes["entity_picture"] as? String
+                }.compactMap { path -> URL? in
+                    let url = Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path)
+                    if let lastTask = lastTask, lastTask.error == nil && lastTask.originalRequest?.url == url {
+                        return nil
+                    }
+                    return url
+                }.then { url -> Promise<Data> in
+                    Promise<Data> { seal in
+                        lastTask = URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
+                            seal.resolve(data, error)
+                        })
+                    }
+                }.compactMap { data in
+                    UIImage(data: data)
+                }.done { [weak self] image in
+                    Current.Log.verbose("got image \(image.size)")
+                    self?.cachedImage = image
+                    self?.updateCell()
+                }.catch { error in
+                    Current.Log.error("failed to grab thumbnail: \(error)")
+                }
+            }
         }
     }
 }
