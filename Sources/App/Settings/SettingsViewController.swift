@@ -62,7 +62,7 @@ class SettingsViewController: FormViewController {
 
         form +++ HomeAssistantAccountRow {
             $0.value = .init(
-                user: Current.settingsStore.authenticatedUser,
+                connection: Current.apiConnection,
                 locationName: prefs.string(forKey: "location_name")
             )
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {

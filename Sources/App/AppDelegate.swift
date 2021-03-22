@@ -614,6 +614,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Realm.live()
 
         Current.modelManager.cleanup().cauterize()
+        Current.modelManager.subscribe()
         Action.setupObserver()
         NotificationCategory.setupObserver()
     }

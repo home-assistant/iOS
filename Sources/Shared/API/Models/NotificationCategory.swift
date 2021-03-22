@@ -98,7 +98,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: MobileAppConfigPushCategory, using realm: Realm) {
+    public func update(with object: MobileAppConfigPushCategory, using realm: Realm) -> Bool {
         if self.realm == nil {
             Identifier = object.identifier.uppercased()
         } else {
@@ -133,5 +133,7 @@ public final class NotificationCategory: Object, UpdatableModel {
                 }
             }
         })
+
+        return true
     }
 }

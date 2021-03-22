@@ -1,6 +1,19 @@
 import CoreLocation
 import Foundation
+import HAKit
 import RealmSwift
+
+private extension HAEntityAttributes {
+    // app-specific attributes for zones, always optional
+    var isTrackingEnabled: Bool { self["track_ios"] as? Bool ?? true }
+    var beaconUUID: String? { beacon["uuid"] as? String }
+    var beaconMajor: Int? { beacon["major"] as? Int }
+    var beaconMinor: Int? { beacon["minor"] as? Int }
+    var ssidTrigger: [String] { self["ssid_trigger"] as? [String] ?? [] }
+    var ssidFilter: [String] { self["ssid_filter"] as? [String] ?? [] }
+
+    private var beacon: [String: Any] { self["beacon"] as? [String: Any] ?? [:] }
+}
 
 public final class RLMZone: Object, UpdatableModel {
     @objc public dynamic var ID: String = ""
@@ -31,30 +44,35 @@ public final class RLMZone: Object, UpdatableModel {
 
     static func willDelete(objects: [RLMZone], realm: Realm) {}
 
-    func update(with zone: Zone, using: Realm) {
-        if realm == nil {
-            ID = zone.ID
-        } else {
-            precondition(zone.ID == ID)
+    func update(with zone: HAEntity, using: Realm) -> Bool {
+        guard let zoneAttributes = zone.attributes.zone else {
+            return false
         }
-        FriendlyName = zone.FriendlyName
-        Latitude = zone.Latitude
-        Longitude = zone.Longitude
-        Radius = zone.Radius
-        TrackingEnabled = zone.TrackingEnabled
-        BeaconUUID = zone.UUID
-        BeaconMajor.value = zone.Major
-        BeaconMinor.value = zone.Minor
-        isPassive = zone.isPassive
+
+        if realm == nil {
+            ID = zone.entityId
+        } else {
+            precondition(zone.entityId == ID)
+        }
+
+        FriendlyName = zone.attributes.friendlyName
+        Latitude = zoneAttributes.latitude
+        Longitude = zoneAttributes.longitude
+        Radius = zoneAttributes.radius.converted(to: .meters).value
+        isPassive = zoneAttributes.isPassive
+
+        // app-specific attributes
+        TrackingEnabled = zone.attributes.isTrackingEnabled
+        BeaconUUID = zone.attributes.beaconUUID
+        BeaconMajor.value = zone.attributes.beaconMajor
+        BeaconMinor.value = zone.attributes.beaconMinor
 
         SSIDTrigger.removeAll()
-        if let ssidTrigger = zone.SSIDTrigger {
-            SSIDTrigger.append(objectsIn: ssidTrigger)
-        }
+        SSIDTrigger.append(objectsIn: zone.attributes.ssidTrigger)
         SSIDFilter.removeAll()
-        if let ssidFilter = zone.SSIDFilter {
-            SSIDFilter.append(objectsIn: ssidFilter)
-        }
+        SSIDFilter.append(objectsIn: zone.attributes.ssidFilter)
+
+        return true
     }
 
     public var center: CLLocationCoordinate2D {

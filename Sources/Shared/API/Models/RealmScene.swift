@@ -1,10 +1,9 @@
 import Foundation
+import HAKit
 import ObjectMapper
 import RealmSwift
 
 public final class RLMScene: Object, UpdatableModel {
-    @objc private dynamic var underlyingSceneData = Data()
-
     @objc public dynamic var identifier: String = ""
 
     @objc private dynamic var backingPosition: Int = 0
@@ -33,32 +32,12 @@ public final class RLMScene: Object, UpdatableModel {
     }
 
     public let actions = LinkingObjects<Action>(fromType: Action.self, property: #keyPath(Action.Scene))
-    public var scene: Scene {
-        get {
-            do {
-                let object = try JSONSerialization.jsonObject(with: underlyingSceneData, options: [])
-                return Mapper<Scene>().map(JSONObject: object)!
-            } catch {
-                fatalError("couldn't deserialize scene: \(underlyingSceneData)")
-            }
-        }
-        set {
-            do {
-                underlyingSceneData = try JSONSerialization.data(withJSONObject: newValue.toJSON(), options: [])
-            } catch {
-                fatalError("couldn't serialize scene: \(scene)")
-            }
-        }
-    }
 
-    init(scene: Scene) {
-        super.init()
-        self.scene = scene
-    }
-
-    override required init() {
-        super.init()
-    }
+    @objc public dynamic var name: String?
+    @objc public dynamic var icon: String?
+    @objc public dynamic var backgroundColor: String?
+    @objc public dynamic var textColor: String?
+    @objc public dynamic var iconColor: String?
 
     override public class func primaryKey() -> String? {
         #keyPath(identifier)
@@ -66,8 +45,8 @@ public final class RLMScene: Object, UpdatableModel {
 
     static func didUpdate(objects: [RLMScene], realm: Realm) {
         let sorted = objects.sorted { lhs, rhs in
-            let lhsText = lhs.scene.FriendlyName ?? lhs.scene.ID
-            let rhsText = rhs.scene.FriendlyName ?? rhs.scene.ID
+            let lhsText = lhs.name ?? lhs.identifier
+            let rhsText = rhs.name ?? rhs.identifier
             return lhsText < rhsText
         }
 
@@ -83,19 +62,23 @@ public final class RLMScene: Object, UpdatableModel {
         realm.delete(actions)
     }
 
-    func update(with object: Scene, using realm: Realm) {
+    func update(with entity: HAEntity, using realm: Realm) -> Bool {
+        precondition(entity.domain == "scene")
+
         if self.realm == nil {
-            identifier = object.ID
+            identifier = entity.entityId
         } else {
-            precondition(identifier == object.ID)
+            precondition(identifier == entity.entityId)
         }
 
-        if object.Icon == nil {
-            object.Icon = "mdi:palette"
-        }
-
-        scene = object
+        name = entity.attributes.friendlyName
+        icon = entity.attributes.icon ?? "mdi:palette"
+        backgroundColor = entity.attributes["background_color"] as? String
+        textColor = entity.attributes["text_color"] as? String
+        iconColor = entity.attributes["icon_color"] as? String
         updateAction(realm: realm)
+
+        return true
     }
 
     private func updateAction(realm: Realm) {
@@ -115,20 +98,20 @@ public final class RLMScene: Object, UpdatableModel {
         } else {
             precondition(action.ID == identifier)
         }
-        action.IconName = (scene.Icon ?? "mdi:alert").normalizingIconString
+        action.IconName = (icon ?? "mdi:alert").normalizingIconString
         action.Position = position
-        action.Name = scene.FriendlyName ?? identifier
-        action.Text = scene.FriendlyName ?? identifier
+        action.Name = name ?? identifier
+        action.Text = name ?? identifier
 
-        if let backgroundColor = scene.backgroundColor {
+        if let backgroundColor = backgroundColor {
             action.BackgroundColor = backgroundColor
         }
 
-        if let textColor = scene.textColor {
+        if let textColor = textColor {
             action.TextColor = textColor
         }
 
-        if let iconColor = scene.iconColor {
+        if let iconColor = iconColor {
             action.IconColor = iconColor
         }
 

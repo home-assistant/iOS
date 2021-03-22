@@ -23,18 +23,15 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         for intent: GetCameraImageIntent,
         with completion: @escaping ([String]?, Error?) -> Void
     ) {
-        Current.api.then(on: nil) { api in
-            api.GetStates()
-        }.compactMapValues { entity -> String? in
-            if entity.Domain == "camera" {
-                return entity.ID
-            }
-            return nil
-        }.done { cameraIDs in
-            completion(cameraIDs.sorted(), nil)
-        }.catch { error in
-            completion(nil, error)
+        firstly {
+            Current.apiConnection.caches.states.once().promise
+                .map(\.all)
         }
+        .filterValues { $0.domain == "camera" }
+        .mapValues(\.entityId)
+        .sortedValues()
+        .done { completion($0, nil) }
+        .catch { completion(nil, $0) }
     }
 
     @available(iOS 14, *)

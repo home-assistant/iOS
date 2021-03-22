@@ -47,11 +47,11 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 
         switch keyPath {
         case \Action.BackgroundColor:
-            return Scene == nil || Scene?.scene.backgroundColor == nil
+            return Scene == nil || Scene?.backgroundColor == nil
         case \Action.TextColor:
-            return Scene == nil || Scene?.scene.textColor == nil
+            return Scene == nil || Scene?.textColor == nil
         case \Action.IconColor:
-            return Scene == nil || Scene?.scene.iconColor == nil
+            return Scene == nil || Scene?.iconColor == nil
         case \Action.IconName,
              \Action.Name,
              \Action.Text:
@@ -101,7 +101,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: MobileAppConfigAction, using realm: Realm) {
+    public func update(with object: MobileAppConfigAction, using realm: Realm) -> Bool {
         if self.realm == nil {
             ID = object.name
             Name = object.name
@@ -137,6 +137,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         if let textColor = object.labelColor {
             TextColor = textColor
         }
+
+        return true
     }
 
     #if os(iOS)

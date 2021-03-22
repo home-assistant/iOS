@@ -318,14 +318,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetStates() -> Promise<[Entity]> {
-        request(path: "states", callingFunctionName: "\(#function)")
-    }
-
-    public func GetScenes() -> Promise<[Scene]> {
-        request(path: "states", callingFunctionName: "\(#function)")
-    }
-
     public func GetLogbook() -> Promise<[LogbookEntry]> {
         request(path: "logbook", callingFunctionName: "\(#function)")
     }
@@ -432,10 +424,6 @@ public class HomeAssistantAPI {
             type: "update_registration",
             data: buildMobileAppUpdateRegistration()
         ))
-    }
-
-    public func GetZones() -> Promise<[Zone]> {
-        Current.webhooks.sendEphemeral(request: .init(type: "get_zones", data: [:]))
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
