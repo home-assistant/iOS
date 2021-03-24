@@ -180,7 +180,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
-    :commit: beee8edf5f3b8c573e9c934fa98f8fc9774ea971
+    :commit: b79e4e094cb6f7ab60b493ede988f602b020955b
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
