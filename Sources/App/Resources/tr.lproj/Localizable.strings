@@ -223,9 +223,9 @@
 "onboarding.connection_test_result.unknown_error.description" = "Bilinmeyen hata: %@";
 "onboarding.discovery.results_label.plural" = "Ağınızda %li Home Assistant bulduk.";
 "onboarding.discovery.results_label.singular" = "Ağınızda %li Home Assistant bulduk.";
-"onboarding.logged_out_from_move.body" = "The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\
+"onboarding.logged_out_from_move.body" = "Home Assistant iOS uygulaması kısa süre önce App Store'daki kuruluşları taşıdı. Bu hareket maalesef oturumunuzu kapatmanızı gerektirdi. \
 \
-Your actions and local configuration will still be available after logging in.";
+ Eylemleriniz ve yerel yapılandırmanız, oturum açtıktan sonra da kullanılabilir durumda olacaktır.";
 "onboarding.logged_out_from_move.continue" = "Devam et";
 "onboarding.logged_out_from_move.duplicate_warning" = "Yinelenen varlıklardan kaçınmak için, oturum açmadan önce bu aygıt için mevcut mobile_app entegrasyonunu tarayıcınızda kaldırmanız gerekir. Oturum açtıktan sonra HA'yı yeniden başlatın, böylece hizmetler güncellenir.";
 "onboarding.logged_out_from_move.learn_more" = "Taşınma hakkında daha fazla bilgi edinin.";
@@ -369,6 +369,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.general.chrome.title" = "Open links in Chrome";
 "settings_details.general.device_name.title" = "Cihaz adı";
 "settings_details.general.launch_on_login.title" = "Girişte Uygulamayı Başlat";
+"settings_details.general.menu_bar_text.title" = "Menü Çubuğu Metni";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Sistem varsayılanı";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -435,7 +436,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.notifications.categories_synced.footer" = ".Yaml olarak tanımlanan kategoriler cihazda düzenlenemez.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategoriler ayrıca .yaml konfigürasyonunda da tanımlanabilir.";
 "settings_details.notifications.categories_synced.header" = "Senkronize Kategoriler";
-"settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
+"settings_details.notifications.categories.footer" = "İşlem yapılabilir bildirimler, bildirimler için mevcut eylemleri tanımlayan kategoriler kullanılarak oluşturulur.";
 "settings_details.notifications.categories.header" = "Kategoriler";
 "settings_details.notifications.import_legacy_settings.alert.message" = "Sunucudan anlık bildirim kategori ve aksiyonları aktarıldı.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Sunucu bildirim ayarları aktarıldı";
@@ -635,7 +636,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.event_log.title" = "Event Log";
 "settings.general_settings_button.title" = "General";
 "settings.location_history.description" = "Konum Geçmişi Yok";
-"settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are addition regions used for sub-100m zones.";
+"settings.location_history.detail.explanation" = "Mor daire, konumunuz ve doğruluğudur. Mavi daireler sizin bölgelerinizdir. Mor daire mavi bir daire ile örtüşüyorsa, bir bölgenin içindesiniz. Turuncu daireler, 100m altı bölgeler için kullanılan ek bölgelerdir.";
 "settings.location_history.empty" = "Konum Geçmişi Yok";
 "settings.location_history.title" = "Konum Geçmişi";
 "settings.navigation_bar.about_button.title" = "About";
@@ -655,6 +656,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.status_section.notify_platform_loaded_row.title" = "iOS Notify Platform Loaded";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
+"settings.template_edit.title" = "Şablonu Düzenle";
 "share_extension.entered_placeholder" = "Etkinliğe 'girildi'";
 "share_extension.error.title" = "Gönderilemedi";
 "siri_shortcuts.configurator.fields.section.footer" = "Önerilen: %@";

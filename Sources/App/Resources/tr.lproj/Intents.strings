@@ -22,7 +22,7 @@
 "8BMgur" = "Successfully sent ${eventName} to Home Assistant";
 "8skKro" = "Hangi eylemler?";
 "AnaTY4" = "Hangisi?";
-"B4bXyc" = "Successfully rendered template";
+"B4bXyc" = "Başarıyla oluşturulmuş şablon";
 "boiLEw" = "JSON panoda bulundu ancak geçersizdi.";
 "bqPSU7" = "Kamera görüntüsü alınamadı, Home Assistant'a şu anda ulaşılamıyor";
 "c00c45" = "Olayı Çalıştır";
@@ -38,7 +38,7 @@
 "DsasVx" = "Hata";
 "EWqRDj" = "Eylem gerçekleştiremedi: ${error}";
 "f1KX0Q" = "Eylemleri görüntüleyin ve çalıştırın";
-"FBQiVD" = "Call a service on the Home Assistant instance";
+"FBQiVD" = "Home Assistant örneğinde bir hizmeti çağırın";
 "fkQXDn" = "${count} seçenekleri '${action}' ile eşleşiyor.";
 "flUgtx" = "Hangi eylem?";
 "FN8zqO" = "Get a single still frame from ${cameraID} and place it on the clipboard";
@@ -46,7 +46,7 @@
 "foI0Fv" = "Şablon oluşturulamadı, Home Assistant'a şu anda ulaşılamıyor";
 "FtQqoU" = "Konum güncellendi";
 "fuRWMi" = "Home Assistant'a ${location} gönder";
-"FZ9qkT" = "Render Template";
+"FZ9qkT" = "Oluşturma Şablonu";
 "g8g7Af" = "Eylemi gerçekleştirin";
 "gePUyy" = "Konum";
 "gI3mme" = "Hangi servis verilerini göndermek istiyorsunuz?";

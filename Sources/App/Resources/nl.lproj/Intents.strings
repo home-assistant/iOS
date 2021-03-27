@@ -123,14 +123,14 @@
 "TRZLwT" = "Welke?";
 "tycImk" = "Voert een actie uit die in de app is gedefinieerd";
 "ULka1b" = "Acties";
-"uUk5RX" = "Call ${serviceDomain}.${service} met data";
+"uUk5RX" = "Roep ${serviceDomain}.${service} aan met data";
 "v7TSD5" = "Stuur locatie";
 "vAIAF2" = "Stuur een sensorupdate naar Home Assistant";
 "VEQtEQ" = "Haal camerabeeld bij ${cameraID}";
 "VGzL7U" = "Kan locatie niet bijwerken, de inhoud van het klembord kan niet worden geparseerd";
 "VP2XpM" = "Evenementgegevens";
 "wfPQQQ" = "Start een evenement op de Home Assistant-gebeurtenisbus";
-"wKnW1P" = "Call service ${serviceDomain}.${service} met klembordgegevens";
+"wKnW1P" = "Roep service ${serviceDomain}.${service} aan met klembordgegevens";
 "WXKbGy" = "Verstuur een locatie naar de thuisassistent. Zal proberen de inhoud van het klembord als locatie te gebruiken, anders gebruikt het de huidige locatie.";
 "X02YQ2" = "${action}";
 "X4A8Cc" = "Servicedomein";
