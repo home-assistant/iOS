@@ -11,7 +11,7 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant på Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant på Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Ta kontroll over hjemme ditt";
+"about.logo.tagline" = "Ta kontroll over hjemmet ditt";
 "about.review.title" = "Legg igjen en anmeldelse";
 "about.title" = "Om";
 "about.website.title" = "Nettsted";
@@ -369,6 +369,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.general.chrome.title" = "Åpne koblinger i Chrome";
 "settings_details.general.device_name.title" = "Enhetsnavn";
 "settings_details.general.launch_on_login.title" = "Start appen ved pålogging";
+"settings_details.general.menu_bar_text.title" = "Tekst på menylinjen";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System standard";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
@@ -635,7 +636,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.event_log.title" = "Hendelseslogg";
 "settings.general_settings_button.title" = "Generelle innstillinger";
 "settings.location_history.description" = "Ingen posisjonshistorikk";
-"settings.location_history.detail.explanation" = "Den lilla sirkelen er din plassering og dens nøyaktighet. Blå sirkler er sonene dine. Du er i en sone hvis den lilla sirkelen overlapper en blå sirkel. Oransje sirkler er tilleggsregioner som brukes til soner under 100 meter.";
+"settings.location_history.detail.explanation" = "Den lilla sirkelen er din plassering og nøyaktighet. Blå sirkler er sonene dine. Du er inne i en sone hvis den lilla sirkelen overlapper en blå sirkel. Oransje sirkler er flere områder som brukes for sub-100m soner.";
 "settings.location_history.empty" = "Ingen posisjonshistorikk";
 "settings.location_history.title" = "Posisjonshistorikk";
 "settings.navigation_bar.about_button.title" = "Om";
@@ -655,6 +656,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.status_section.notify_platform_loaded_row.title" = "IOS varslingsplattform lastet";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versjon";
+"settings.template_edit.title" = "Rediger mal";
 "share_extension.entered_placeholder" = "'angitt' i tilfelle";
 "share_extension.error.title" = "Kunne ikke sende";
 "siri_shortcuts.configurator.fields.section.footer" = "Forslag: %@";
