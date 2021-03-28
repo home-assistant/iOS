@@ -29,20 +29,23 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
         Current.Log.verbose("Rendering template \(templateStr)")
 
-        Current.api.then(on: nil) { api in
-            api.RenderTemplate(templateStr: templateStr)
-        }.done { rendered in
-            Current.Log.verbose("Successfully renderedTemplate")
+        Current.apiConnection.subscribe(
+            to: .renderTemplate(templateStr),
+            initiated: { result in
+                if case let .failure(error) = result {
+                    Current.Log.error("Error when rendering template in intent \(error)")
+                    let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
+                    completion(resp)
+                }
+            }, handler: { token, data in
+                token.cancel()
+                Current.Log.verbose("Successfully renderedTemplate")
 
-            let resp = RenderTemplateIntentResponse(code: .success, userActivity: nil)
-            resp.renderedTemplate = String(describing: rendered)
+                let resp = RenderTemplateIntentResponse(code: .success, userActivity: nil)
+                resp.renderedTemplate = String(describing: data.result)
 
-            completion(resp)
-        }.catch { error in
-            Current.Log.error("Error when rendering template in shortcut \(error)")
-            let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
-            resp.error = "Error during api.RenderTemplate: \(error.localizedDescription)"
-            completion(resp)
-        }
+                completion(resp)
+            }
+        )
     }
 }
