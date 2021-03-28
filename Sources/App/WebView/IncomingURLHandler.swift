@@ -247,14 +247,18 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "template")
             let variablesDict = cleanParamters
 
-            Current.api.then(on: nil) { api in
-                api.RenderTemplate(templateStr: template, variables: variablesDict)
-            }.done { rendered in
-                success(["rendered": String(describing: rendered)])
-            }.catch { error in
-                Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
-                failure(XCallbackError.generalError)
-            }
+            Current.apiConnection.subscribe(
+                to: .renderTemplate(template, variables: variablesDict),
+                initiated: { result in
+                    if case let .failure(error) = result {
+                        Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
+                        failure(XCallbackError.generalError)
+                    }
+                }, handler: { token, data in
+                    token.cancel()
+                    success(["rendered": String(describing: data.result)])
+                }
+            )
         }
     }
 

@@ -341,42 +341,6 @@ public class HomeAssistantAPI {
         )
     }
 
-    public enum TemplateError: LocalizedError {
-        case unknownError
-        case error(String)
-
-        public var errorDescription: String? {
-            switch self {
-            case let .error(error): return error
-            case .unknownError: return L10n.HaApi.ApiError.unknown
-            }
-        }
-    }
-
-    public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<Any> {
-        firstly { () -> Promise<Any> in
-            Current.webhooks.sendEphemeral(
-                request: .init(type: "render_template", data: [
-                    "tpl": [
-                        "template": templateStr,
-                        "variables": variables,
-                    ],
-                ])
-            )
-        }.map { value in
-            if let value = value as? [String: Any], let rendered = value["tpl"] {
-                return rendered
-            } else {
-                throw TemplateError.unknownError
-            }
-        }.get { value in
-            if let value = value as? [String: Any], let error = value["error"] as? String {
-                // the only error response for the template is {"error": "message"}
-                throw TemplateError.error(error)
-            }
-        }
-    }
-
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
             let connectionInfo = try self.connectionInfo()
