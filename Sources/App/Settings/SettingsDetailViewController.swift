@@ -71,7 +71,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 $0.hidden = .isCatalyst
                 $0.title = L10n.SettingsDetails.General.AppIcon.title
                 $0.selectorTitle = $0.title
-                $0.options = AppIcon.allCases
+                $0.options = AppIcon.allCases.sorted { a, b in
+                    switch (a.isDefault, b.isDefault) {
+                    case (true, false): return true
+                    case (false, true): return false
+                    default:
+                        // swift sort isn't stable
+                        return AppIcon.allCases.firstIndex(of: a)! < AppIcon.allCases.firstIndex(of: b)!
+                    }
+                }
                 $0.value = AppIcon.Release
                 if let altIconName = UIApplication.shared.alternateIconName,
                    let icon = AppIcon(rawValue: altIconName) {
@@ -89,10 +97,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     cell.textLabel?.text = newIcon.title
                 }
             }.onChange { row in
-                guard let newAppIconName = row.value else { return }
-                guard UIApplication.shared.alternateIconName != newAppIconName.rawValue else { return }
-
-                UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
+                let iconName = row.value?.iconName
+                UIApplication.shared.setAlternateIconName(iconName) { error in
+                    Current.Log.info("set icon to \(String(describing: iconName)) error: \(String(describing: error))")
+                }
             }
 
                 +++ Section {
@@ -935,6 +943,23 @@ enum AppIcon: String, CaseIterable {
             return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbowInvert
         case .Trans:
             return L10n.SettingsDetails.General.AppIcon.Enum.prideTrans
+        }
+    }
+
+    var isDefault: Bool {
+        switch Current.appConfiguration {
+        case .Debug where self == .Dev: return true
+        case .Beta where self == .Beta: return true
+        case .Release where self == .Release: return true
+        default: return false
+        }
+    }
+
+    var iconName: String? {
+        if isDefault {
+            return nil
+        } else {
+            return rawValue
         }
     }
 }
