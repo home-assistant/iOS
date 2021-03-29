@@ -200,7 +200,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 guard let browserChoice = row.value else { return }
                 prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
-                prefs.synchronize()
             }
 
                 <<< SwitchRow("confirmBeforeOpeningUrl") {

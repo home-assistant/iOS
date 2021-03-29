@@ -12,12 +12,9 @@ func resetStores() {
         Current.Log.error("Error when trying to delete everything from Keychain!")
     }
 
-    if let groupDefaults = UserDefaults(suiteName: Constants.AppGroupID) {
-        for key in groupDefaults.dictionaryRepresentation().keys {
-            groupDefaults.removeObject(forKey: key)
-        }
-        groupDefaults.synchronize()
-    }
+    let bundleId = Bundle.main.bundleIdentifier!
+    UserDefaults.standard.removePersistentDomain(forName: bundleId)
+    UserDefaults.standard.removePersistentDomain(forName: Constants.AppGroupID)
 
     Realm.reset()
 }
@@ -80,8 +77,6 @@ func setDefaults() {
     if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {
         prefs.setValue(true, forKey: "confirmBeforeOpeningUrl")
     }
-
-    prefs.synchronize()
 }
 
 extension UIImage {
