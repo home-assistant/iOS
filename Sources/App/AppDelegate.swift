@@ -33,6 +33,9 @@ extension Environment {
     var sceneManager: SceneManager {
         UIApplication.shared.typedDelegate.sceneManager
     }
+    var notificationManager: NotificationManager {
+        UIApplication.shared.typedDelegate.notificationManager
+    }
 }
 
 @UIApplicationMain

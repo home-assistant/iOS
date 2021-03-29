@@ -163,9 +163,8 @@ class NotificationSettingsViewController: FormViewController {
             }.onCellSelection { cell, _ in
                 Current.Log.verbose("Resetting push token!")
                 firstly {
-                    self.resetInstanceID()
+                    Current.notificationManager.resetPushID()
                 }.done { token in
-                    Current.settingsStore.pushID = token
                     guard let idRow = self.form.rowBy(tag: "pushID") as? LabelRow else { return }
                     idRow.value = token
                     idRow.updateCell()
@@ -189,26 +188,6 @@ class NotificationSettingsViewController: FormViewController {
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
-    }
-
-    func deleteInstanceID() -> Promise<Void> {
-        Promise { seal in
-            Messaging.messaging().deleteToken(completion: seal.resolve)
-        }
-    }
-
-    func createInstanceID() -> Promise<String> {
-        Promise { seal in
-            Messaging.messaging().token(completion: seal.resolve)
-        }
-    }
-
-    func resetInstanceID() -> Promise<String> {
-        firstly {
-            self.deleteInstanceID()
-        }.then { _ in
-            self.createInstanceID()
-        }
     }
 
     private func notificationPermissionRow() -> BaseRow {

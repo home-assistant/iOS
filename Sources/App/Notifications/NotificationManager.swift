@@ -11,6 +11,18 @@ class NotificationManager: NSObject {
         UNUserNotificationCenter.current().delegate = self
     }
 
+    func resetPushID() -> Promise<String> {
+        firstly {
+            Promise<Void> { seal in
+                Messaging.messaging().deleteToken(completion: seal.resolve)
+            }
+        }.then {
+            Promise<String> { seal in
+                Messaging.messaging().token(completion: seal.resolve)
+            }
+        }
+    }
+
     func setupFirebase() {
         Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
         UIApplication.shared.registerForRemoteNotifications()

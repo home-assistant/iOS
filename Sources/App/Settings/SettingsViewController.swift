@@ -475,19 +475,17 @@ class SettingsViewController: FormViewController {
             )
         }.then {
             waitAtLeast
-        }.done {
-            hud.hide(animated: true)
+        }.get {
+            Current.apiConnection.disconnect()
 
             resetStores()
             setDefaults()
-            let bundleId = Bundle.main.bundleIdentifier!
-            UserDefaults.standard.removePersistentDomain(forName: bundleId)
-            UserDefaults.standard.synchronize()
-            prefs.removePersistentDomain(forName: bundleId)
-            prefs.synchronize()
-
+        }.then {
+            Current.notificationManager.resetPushID().asVoid().recover { _ in }
+        }.ensure {
+            hud.hide(animated: true)
             Current.onboardingObservation.needed(.logout)
-        }
+        }.cauterize()
     }
 
     override var canBecomeFirstResponder: Bool {
