@@ -259,7 +259,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
         if let connectionInfo = Current.settingsStore.connectionInfo,
-           let webviewURL = connectionInfo.webviewURL(),
+           let webviewURL = connectionInfo.webviewURL,
            webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false {
             let myRequest: URLRequest
 
@@ -420,7 +420,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             // it's for the restored page, let's load the default url
 
             if let connectionInfo = Current.settingsStore.connectionInfo,
-               let webviewURL = connectionInfo.webviewURL() {
+               let webviewURL = connectionInfo.webviewURL {
                 decisionHandler(.cancel)
                 webView.load(URLRequest(url: webviewURL))
             } else {
@@ -533,7 +533,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     @objc private func loadActiveURLIfNeeded() {
-        guard let desiredURL = Current.settingsStore.connectionInfo?.webviewURL() else {
+        guard let desiredURL = Current.settingsStore.connectionInfo?.webviewURL else {
             return
         }
 
@@ -550,7 +550,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func refresh() {
         // called via menu/keyboard shortcut too
-        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
+        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL {
             if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                 webView.reload()
             } else {
@@ -950,9 +950,9 @@ extension WebViewController: UIScrollViewDelegate {
 }
 
 extension ConnectionInfo {
-    func webviewURL() -> URL? {
+    var webviewURLComponents: URLComponents? {
         if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
-            return URL(string: "https://companion.home-assistant.io/app/ios/demo")!
+            return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
         guard var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
             return nil
@@ -963,16 +963,34 @@ extension ConnectionInfo {
             components.queryItems = [queryItem]
         }
 
-        return try? components.asURL()
+        return components
+    }
+
+    var webviewURL: URL? {
+        webviewURLComponents?.url
     }
 
     func webviewURL(from raw: String) -> URL? {
-        guard let baseURL = webviewURL() else {
+        guard let baseURLComponents = webviewURLComponents, let baseURL = baseURLComponents.url else {
             return nil
         }
 
         if raw.starts(with: "/") {
-            return baseURL.appendingPathComponent(raw)
+            if let rawComponents = URLComponents(string: raw) {
+                var components = baseURLComponents
+                components.path.append(rawComponents.path)
+                components.fragment = rawComponents.fragment
+
+                if let items = rawComponents.queryItems {
+                    var queryItems = components.queryItems ?? []
+                    queryItems.append(contentsOf: items)
+                    components.queryItems = queryItems
+                }
+
+                return components.url
+            } else {
+                return baseURL.appendingPathComponent(raw)
+            }
         } else if let url = URL(string: raw), url.baseIsEqual(to: baseURL) {
             return url
         } else {
