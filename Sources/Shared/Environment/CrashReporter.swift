@@ -17,7 +17,9 @@ public class CrashReporterImpl: CrashReporter {
             return
         }
 
-        environment.Log.add(destination: SentryLogDestination())
+        environment.Log.add(destination: with(SentryLogDestination()) {
+            $0.outputLevel = .warning
+        })
 
         SentrySDK.start { options in
             options.dsn = "https://762c198b86594fa2b6bedf87028db34d@o427061.ingest.sentry.io/5372775"

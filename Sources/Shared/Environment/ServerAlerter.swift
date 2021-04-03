@@ -136,7 +136,7 @@ public class ServerAlerter {
             .decode([FailableServerAlert].self, from: data)
             .compactMap(\.alert)
         }.get { alerts in
-            Current.Log.info("found alerts: \(alerts)")
+            Current.Log.info("found \(alerts.count) alerts")
         }.filterValues { alert in
             if case let version = Current.clientVersion(), alert.ios.shouldTrigger(for: version) {
                 return true

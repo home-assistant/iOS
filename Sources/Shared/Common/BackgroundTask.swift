@@ -51,8 +51,6 @@ public enum HomeAssistantBackgroundTask {
                 seal.reject(BackgroundTaskError.outOfTime)
             }
 
-            Current.Log.debug("started background task \(name) (\(describe(identifier)))")
-
             finished = {
                 seal.fulfill(())
             }
@@ -60,7 +58,6 @@ public enum HomeAssistantBackgroundTask {
             guard let endableIdentifier = identifier else { return }
 
             let endBackgroundTask = {
-                Current.Log.debug("ending background task \(name) (\(describe(endableIdentifier)))")
                 endBackgroundTask(endableIdentifier)
                 identifier = nil
             }
