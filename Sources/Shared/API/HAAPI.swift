@@ -209,8 +209,7 @@ public class HomeAssistantAPI {
         let intent = FireEventIntent(eventName: eventType, payload: eventData)
         INInteraction(intent: intent, response: nil).donate(completion: nil)
 
-        return Current.webhooks.send(
-            identifier: .unhandled,
+        return Current.webhooks.sendEphemeral(
             request: .init(type: "fire_event", data: [
                 "event_type": eventType,
                 "event_data": eventData,

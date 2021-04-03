@@ -142,6 +142,10 @@ class InterfaceController: WKInterfaceController {
                 })
             }
         }.recover { error -> Promise<Void> in
+            guard error == SendError.notImmediate else {
+                throw error
+            }
+            
             Current.Log.error("recovering error \(error) by trying locally")
             return Current.api.then(on: nil) { api -> Promise<Void> in
                 api.HandleAction(actionID: selectedAction.ID, source: .Watch)
