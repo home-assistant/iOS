@@ -31,6 +31,10 @@ final class FrontmostAppSensor: SensorProvider {
         self.request = request
     }
 
+    private static let dateFormatter = with(ISO8601DateFormatter()) {
+        $0.formatOptions = [.withInternetDateTime]
+    }
+
     func sensors() -> Promise<[WebhookSensor]> {
         #if targetEnvironment(macCatalyst)
         var sensors = [WebhookSensor]()
@@ -46,11 +50,7 @@ final class FrontmostAppSensor: SensorProvider {
             var attributes = [String: Any]()
 
             attributes["Bundle Identifier"] = frontmost?.bundleIdentifier ?? "N/A"
-            attributes["Launch Date"] = frontmost?.launchDate.map {
-                ISO8601DateFormatter.string(from: $0, timeZone: .current, formatOptions: [
-                    .withInternetDateTime,
-                ])
-            } ?? "N/A"
+            attributes["Launch Date"] = frontmost?.launchDate.map { Self.dateFormatter.string(from: $0) } ?? "N/A"
             attributes["Is Hidden"] = frontmost?.isHidden ?? "N/A"
             attributes["Owns Menu Bar"] = frontmost?.ownsMenuBar ?? "N/A"
 
