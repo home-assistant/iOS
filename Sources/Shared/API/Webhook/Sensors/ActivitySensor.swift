@@ -33,7 +33,6 @@ public class ActivitySensor: SensorProvider {
 
     private static func latestMotionActivity() -> Promise<CMMotionActivity> {
         guard Current.motion.isAuthorized() else {
-            Current.Log.warning("Activity is not authorized")
             return .init(error: ActivityError.unauthorized)
         }
 

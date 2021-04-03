@@ -33,7 +33,6 @@ public class PedometerSensor: SensorProvider {
 
     private func latestPedometerData() -> Promise<CMPedometerData> {
         guard Current.pedometer.isAuthorized() else {
-            Current.Log.warning("Pedometer is not authorized")
             return .init(error: PedometerError.unauthorized)
         }
 

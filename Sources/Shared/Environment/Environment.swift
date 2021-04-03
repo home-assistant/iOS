@@ -300,7 +300,8 @@ public class Environment {
     public struct Motion {
         private let underlyingManager = CMMotionActivityManager()
         public var isAuthorized: () -> Bool = {
-            CMMotionActivityManager.authorizationStatus() == .authorized
+            guard !Current.isCatalyst else { return false }
+            return CMMotionActivityManager.authorizationStatus() == .authorized
         }
 
         public var isActivityAvailable: () -> Bool = CMMotionActivityManager.isActivityAvailable
@@ -317,7 +318,8 @@ public class Environment {
     public struct Pedometer {
         private let underlyingPedometer = CMPedometer()
         public var isAuthorized: () -> Bool = {
-            CMPedometer.authorizationStatus() == .authorized
+            guard !Current.isCatalyst else { return false }
+            return CMPedometer.authorizationStatus() == .authorized
         }
 
         public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable

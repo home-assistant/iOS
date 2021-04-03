@@ -22,15 +22,6 @@ private extension UIApplication {
             beginBackgroundTask: { name, expirationHandler in
                 let identifier = beginBackgroundTask(withName: name, expirationHandler: expirationHandler)
                 let remaining = backgroundTimeRemaining < 100 ? backgroundTimeRemaining : nil
-
-                Current.Log.info {
-                    if let remaining = remaining {
-                        return "background time remaining \(remaining)"
-                    } else {
-                        return "background time remaining could not be determined"
-                    }
-                }
-
                 return (identifier == .invalid ? nil : identifier, remaining)
             }, endBackgroundTask: { identifier in
                 self.endBackgroundTask(identifier)
