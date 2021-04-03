@@ -6,14 +6,6 @@ import UIKit
 
 @objc(HAShareViewController)
 class ShareViewController: SLComposeServiceViewController {
-    init() {
-        super.init(nibName: nil, bundle: nil)
-
-        if let tokenInfo = Current.settingsStore.tokenInfo {
-            Current.tokenManager = TokenManager(tokenInfo: tokenInfo)
-        }
-    }
-
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

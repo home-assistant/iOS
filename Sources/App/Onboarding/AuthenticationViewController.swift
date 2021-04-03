@@ -11,7 +11,6 @@ class AuthenticationViewController: UIViewController {
 
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo?
-    var tokenManager: TokenManager?
 
     var testResult: Error?
 
@@ -80,7 +79,6 @@ class AuthenticationViewController: UIViewController {
         if segueType == .permissions, let vc = segue.destination as? PermissionsViewController {
             vc.instance = instance
             vc.connectionInfo = connectionInfo
-            vc.tokenManager = tokenManager
         } else if segueType == .showError, let vc = segue.destination as? ConnectionErrorViewController {
             vc.error = testResult
         }
@@ -99,10 +97,6 @@ class AuthenticationViewController: UIViewController {
             return initialTokenManager.initialTokenWithCode(code)
         }.then { tokenInfo -> Promise<ConfigResponse> in
             Current.Log.verbose("Got token info \(tokenInfo)")
-
-            let newTokenManager = TokenManager(tokenInfo: tokenInfo, forcedConnectionInfo: nil)
-            self.tokenManager = newTokenManager
-            Current.tokenManager = newTokenManager
 
             Current.settingsStore.connectionInfo = self.connectionInfo
 

@@ -6,7 +6,6 @@ import UIKit
 class ConnectInstanceViewController: UIViewController {
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo!
-    var tokenManager: TokenManager!
 
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var overallProgress: AnimationView!

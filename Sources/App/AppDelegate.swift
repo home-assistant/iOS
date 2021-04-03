@@ -129,8 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        setupTokens()
-
         if #available(iOS 13, *) {
         } else {
             sceneManager.compatibility.didFinishLaunching()
@@ -142,14 +140,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForAlerts()
 
         return true
-    }
-
-    func setupTokens() {
-        if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
-
-        if let tokenInfo = Current.settingsStore.tokenInfo {
-            Current.tokenManager = TokenManager(tokenInfo: tokenInfo)
-        }
     }
 
     @available(iOS 13, *)
@@ -507,47 +497,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
                 Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
             }
-        }
-    }
-
-    func setupFastlaneSnapshotConfiguration() {
-        #if targetEnvironment(simulator)
-        SDStatusBarManager.sharedInstance()?.enableOverrides()
-        #endif
-
-        UIView.setAnimationsEnabled(false)
-
-        guard let urlStr = prefs.string(forKey: "url"), let url = URL(string: urlStr) else {
-            fatalError("Required fastlane argument 'url' not provided or invalid!")
-        }
-
-        guard let token = prefs.string(forKey: "token") else {
-            fatalError("Required fastlane argument 'token' not provided or invalid!")
-        }
-
-        guard let webhookID = prefs.string(forKey: "webhookID") else {
-            fatalError("Required fastlane argument 'webhookID' not provided or invalid!")
-        }
-
-        let connectionInfo = ConnectionInfo(
-            externalURL: url,
-            internalURL: nil,
-            cloudhookURL: nil,
-            remoteUIURL: nil,
-            webhookID: webhookID,
-            webhookSecret: prefs.string(forKey: "webhookSecret"),
-            internalSSIDs: nil,
-            internalHardwareAddresses: nil
-        )
-
-        let tokenInfo = TokenInfo(accessToken: token, refreshToken: "", expiration: Date.distantFuture)
-
-        Current.settingsStore.tokenInfo = tokenInfo
-        Current.settingsStore.connectionInfo = connectionInfo
-        Current.resetAPI()
-
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
-            Current.Log.verbose("Requested notifications \(granted), \(String(describing: error))")
         }
     }
 
