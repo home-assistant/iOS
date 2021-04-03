@@ -470,7 +470,10 @@ class SettingsViewController: FormViewController {
 
         firstly {
             race(
-                Current.tokenManager?.revokeToken().asVoid().recover { _ in () } ?? .value(()),
+                Current.api
+                    .map(\.tokenManager)
+                    .then { $0.revokeToken() }.asVoid()
+                    .recover { _ in () },
                 after(seconds: 10.0)
             )
         }.then {

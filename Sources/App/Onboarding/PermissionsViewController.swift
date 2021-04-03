@@ -4,7 +4,6 @@ import UIKit
 class PermissionsViewController: UIViewController, PermissionViewChangeDelegate {
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo!
-    var tokenManager: TokenManager!
 
     @IBOutlet var continueButton: UIButton!
     @IBOutlet var locationPermissionView: PermissionLineItemView!
@@ -32,7 +31,6 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         if let vc = segue.destination as? ConnectInstanceViewController {
             vc.instance = instance
             vc.connectionInfo = connectionInfo
-            vc.tokenManager = tokenManager
         }
     }
 

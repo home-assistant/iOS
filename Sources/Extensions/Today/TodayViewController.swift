@@ -49,14 +49,6 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
         })
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        if let tokenInfo = Current.settingsStore.tokenInfo {
-            Current.tokenManager = TokenManager(tokenInfo: tokenInfo)
-        }
-    }
-
     func updatePreferredContentSize() {
         let displayMode: NCWidgetDisplayMode = extensionContext?.widgetActiveDisplayMode ?? .compact
 

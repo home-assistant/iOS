@@ -43,7 +43,7 @@ public class HomeAssistantAPI {
         HomeAssistantAPI.LoadedComponents.contains("mobile_app")
     }
 
-    let tokenManager: TokenManager
+    public let tokenManager: TokenManager
 
     public func connectionInfo() throws -> ConnectionInfo {
         if let connectionInfo = Current.settingsStore.connectionInfo {

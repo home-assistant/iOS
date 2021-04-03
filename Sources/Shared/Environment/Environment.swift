@@ -113,7 +113,6 @@ public class Environment {
     }
 
     public var modelManager = ModelManager()
-    public var tokenManager: TokenManager?
 
     public var settingsStore = SettingsStore()
 

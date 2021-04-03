@@ -756,36 +756,39 @@ extension WebViewController: WKScriptMessageHandler {
             handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
             let force = messageBody["force"] as? Bool ?? false
-            if let tokenManager = Current.tokenManager {
-                Current.Log.verbose("getExternalAuth called, forced: \(force)")
-                tokenManager.authDictionaryForWebView(forceRefresh: force).done { dictionary in
-                    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
-                    if let jsonString = String(data: jsonData!, encoding: .utf8) {
-                        // Current.Log.verbose("Responding to getExternalAuth with: \(callbackName)(true, \(jsonString))")
-                        let script = "\(callbackName)(true, \(jsonString))"
-                        self.webView.evaluateJavaScript(script, completionHandler: { result, error in
-                            if let error = error {
-                                Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
-                            }
 
-                            Current.Log.verbose("Success on getExternalAuth callback: \(String(describing: result))")
-                        })
-                    }
-                }.catch { error in
-                    self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
-                    Current.Log.error("Failed to authenticate webview: \(error)")
+            Current.Log.verbose("getExternalAuth called, forced: \(force)")
+
+            firstly {
+                Current.api.map(\.tokenManager)
+            }.then {
+                $0.authDictionaryForWebView(forceRefresh: force)
+            }.done { dictionary in
+                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+                if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                    // Current.Log.verbose("Responding to getExternalAuth with: \(callbackName)(true, \(jsonString))")
+                    let script = "\(callbackName)(true, \(jsonString))"
+                    self.webView.evaluateJavaScript(script, completionHandler: { result, error in
+                        if let error = error {
+                            Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
+                        }
+
+                        Current.Log.verbose("Success on getExternalAuth callback: \(String(describing: result))")
+                    })
                 }
-            } else {
-                webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
-                Current.Log.error("Failed to authenticate webview. Token Unavailable")
+            }.catch { error in
+                self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
+                Current.Log.error("Failed to authenticate webview: \(error)")
             }
-        } else if message.name == "revokeExternalAuth", let callbackName = messageBody["callback"],
-                  let tokenManager = Current.tokenManager {
+        } else if message.name == "revokeExternalAuth", let callbackName = messageBody["callback"] {
             Current.Log.warning("Revoking access token")
 
-            tokenManager.revokeToken().done { _ in
+            firstly {
+                Current.api
+                    .map(\.tokenManager)
+                    .then { $0.revokeToken() }
+            }.done { _ in
                 Current.resetAPI()
-                Current.tokenManager = nil
                 Current.settingsStore.connectionInfo = nil
                 Current.settingsStore.tokenInfo = nil
                 let script = "\(callbackName)(true)"
