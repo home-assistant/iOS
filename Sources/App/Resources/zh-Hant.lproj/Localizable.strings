@@ -44,7 +44,7 @@
 "cancel_label" = "取消";
 "cl_error.description.deferred_accuracy_too_low" = "所請求的準確度不支援推遲（Deferred）模式。";
 "cl_error.description.deferred_canceled" = "推遲（Deferred）更新請求已被 App 或 Location Manager 所取消。";
-"cl_error.description.deferred_distance_filtered" = "推遲（Deferred）模式不支援距離過濾。";
+"cl_error.description.deferred_distance_filtered" = "推遲（Deferred）模式不支援距離篩選。";
 "cl_error.description.deferred_failed" = "由於未知原因，Location Manager 無法進入推遲（Deferred）模式。";
 "cl_error.description.deferred_not_updating_location" = "由於更新已經設定為關閉/暫停，Manager 無法進入推遲（Deferred）模式。";
 "cl_error.description.denied" = "存取座標服務已遭使用者拒絕。";
@@ -610,14 +610,14 @@
 "settings.developer.copy_realm.alert.message" = "複製範圍 %@ 至 %@";
 "settings.developer.copy_realm.alert.title" = "複製範圍";
 "settings.developer.copy_realm.title" = "由 App 群組複製範圍至文件";
-"settings.developer.crashlytics_test.fatal.notification.body" = "注意：假如連線除錯器，此動作將無法作用。當按下 OK 時，app 將會當機，必須重新開啟 app 並等候約 5 分鐘以於控制介面中顯示當機紀錄。";
+"settings.developer.crashlytics_test.fatal.notification.body" = "注意：假如連線除錯器，此動作將無法作用。當按下 OK 時，app 將會當機，必須重新開啟 app 並等候約 5 分鐘以於控制介面中顯示當機日誌。";
 "settings.developer.crashlytics_test.fatal.notification.title" = "即將當機";
 "settings.developer.crashlytics_test.fatal.title" = "測試 Crashlytics 嚴重錯誤";
 "settings.developer.crashlytics_test.non_fatal.notification.body" = "當按下 OK 時，將會傳送非嚴重錯誤至 Crashlytics。可能需要約 5 分鐘時間才會於控制介面中顯示。";
 "settings.developer.crashlytics_test.non_fatal.notification.title" = "關於傳送非嚴重錯誤";
 "settings.developer.crashlytics_test.non_fatal.title" = "測試 Crashlytics 非嚴重錯誤";
 "settings.developer.debug_strings.title" = "偵錯字串";
-"settings.developer.export_log_files.title" = "事件紀錄匯出";
+"settings.developer.export_log_files.title" = "事件日誌匯出";
 "settings.developer.footer" = "請不要使用此些功能，假設您不確定內容！";
 "settings.developer.header" = "開發人員";
 "settings.developer.lokalise.alert.not_updated.message" = "無更新";
@@ -633,7 +633,7 @@
 "settings.device_id_section.footer" = "裝置 ID 為傳送座標更新至 Home Assistant 時的識別之用，同時可作為推播訊息的傳送目標。";
 "settings.discovery_section.header" = "自動探索到的 Home Assistant";
 "settings.discovery_section.requiresPassword" = "需要輸入密碼";
-"settings.event_log.title" = "事件紀錄";
+"settings.event_log.title" = "事件日誌";
 "settings.general_settings_button.title" = "一般設定";
 "settings.location_history.description" = "沒有座標紀錄";
 "settings.location_history.detail.explanation" = "紫色圓圈表示為座標與精準度。藍色圓圈表示為區域。假如紫色與藍色圈圈重疊，表示位於區域內。橙色圓圈則表示為 100m 以內的附加區域。";

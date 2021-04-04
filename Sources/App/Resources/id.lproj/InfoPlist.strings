@@ -1,5 +1,5 @@
 "NFCReaderUsageDescription" = "Pembacaan dan penulisan tag NFC memungkinkan Anda untuk memicu peristiwa.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NSCameraUsageDescription" = "Ambil foto dan kirimkan ke server Home Assistant Anda";
 "NSCrossWebsiteTrackingUsageDescription" = "Aktifkan pelacakan lintas situs web opsional jika konfigurasi Anda memerlukannya.";
 "NSLocalNetworkUsageDescription" = "Temukan dan terhubung dengan instans Home Assistant Anda.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
@@ -8,8 +8,8 @@
 "NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSMicrophoneUsageDescription" = "Rekam audio menggunakan antarmuka Home Assistant Anda.";
 "NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
-"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
+"NSPhotoLibraryAddUsageDescription" = "Akses Perpustakaan Foto diperlukan agar bisa menyimpan foto dari tampilan web.";
+"NSPhotoLibraryUsageDescription" = "Akses Perpustakaan Foto diperlukan agar bisa menyimpan foto dari tampilan web.";
+"NSSiriUsageDescription" = "Kami menggunakan Siri untuk mengizinkan pintasan yang dibuat untuk berinteraksi dengan aplikasi.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Kirim Lokasi";
+"TemporaryFullAccuracyReasonManualUpdate" = "Izinkan akurasi lokasi tepat untuk menggunakan data lokasi Anda saat ini dalam pelacak perangkat.";
