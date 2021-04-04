@@ -7,8 +7,18 @@ import UserNotifications
 import XCGLogger
 
 class NotificationManager: NSObject {
+    private var localPushManager: LocalPushManager? {
+        didSet {
+            precondition(Current.isCatalyst)
+        }
+    }
+
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
+
+        if Current.isCatalyst {
+            localPushManager = LocalPushManager()
+        }
     }
 
     func resetPushID() -> Promise<String> {

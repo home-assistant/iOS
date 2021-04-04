@@ -195,6 +195,8 @@
 		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
 		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
+		11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
 		11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */; };
 		11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
@@ -1114,6 +1116,7 @@
 		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		11A183B22511BCF300CA326A /* LifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManager.swift; sourceTree = "<group>"; };
+		11A3BD2C26192210005237E6 /* LocalPushManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.swift; sourceTree = "<group>"; };
 		11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.test.swift; sourceTree = "<group>"; };
 		11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCategory+Observation.swift"; sourceTree = "<group>"; };
 		11A48D8224CA9D010021BDD9 /* RealmSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSection.swift; sourceTree = "<group>"; };
@@ -2074,6 +2077,14 @@
 				1194B3EC2519B48500AA01C3 /* Info.plist */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		11A3BD2B261921FC005237E6 /* LocalPush */ = {
+			isa = PBXGroup;
+			children = (
+				11A3BD2C26192210005237E6 /* LocalPushManager.swift */,
+			);
+			path = LocalPush;
 			sourceTree = "<group>";
 		};
 		11A71C6924A463EE00D9565F /* ZoneManager */ = {
@@ -3180,6 +3191,7 @@
 		D0EEF325214DF30D00D1D360 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				11A3BD2B261921FC005237E6 /* LocalPush */,
 				D0EEF326214DF31D00D1D360 /* Notifications.swift */,
 				11F2F21725871C1700F61F7C /* NotificationAttachments */,
 			);
@@ -4828,6 +4840,7 @@
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
+				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
 				11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */,
@@ -4983,6 +4996,7 @@
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
+				11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */,
 				11C4628824B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
