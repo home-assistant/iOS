@@ -373,6 +373,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Private helpers
 
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
+        guard Current.updater.isSupported else { return }
+
         let dueToUserInteraction = sender != nil
 
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
