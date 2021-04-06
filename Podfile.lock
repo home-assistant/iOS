@@ -11,15 +11,15 @@ PODS:
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.2)
   - Firebase (7.4.0)
-  - HAKit (0.1.0):
-    - HAKit/Mocks (= 0.1.0)
-    - HAKit/PromiseKit (= 0.1.0)
+  - HAKit (0.2.1):
+    - HAKit/Core (= 0.2.1)
+  - HAKit/Core (0.2.1):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.1.0):
-    - Starscream (~> 4.0.4)
-  - HAKit/PromiseKit (0.1.0):
+  - HAKit/Mocks (0.2.1):
+    - HAKit/Core
+  - HAKit/PromiseKit (0.2.1):
+    - HAKit/Core
     - PromiseKit (~> 6.13)
-    - Starscream (~> 4.0.4)
   - KeychainAccess (4.2.1)
   - Lokalise (0.10.2)
   - lottie-ios (3.1.9)
@@ -180,7 +180,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
-    :commit: 2cd4623c799060cfb996814cc4c020aa808dce1a
+    :commit: 3af66b53d48b3ab0ae374c229e6edaf44ee24d06
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -204,7 +204,7 @@ SPEC CHECKSUMS:
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: 1c2b8b5892bfb0e972d0fe05f8c09fd89f8625ec
   Firebase: 0b898049b2691473053d5de73e9725b134556ad2
-  HAKit: 1a7e9e629097918061b87119b5ac26b0cc672c73
+  HAKit: fd93334e3270e1ee91cef5bcdded98221d672e7f
   KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
