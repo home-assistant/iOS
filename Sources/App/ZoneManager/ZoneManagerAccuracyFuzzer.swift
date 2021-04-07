@@ -8,6 +8,18 @@ protocol ZoneManagerAccuracyFuzzer {
     ) -> CLLocationDistance?
 }
 
+extension Sequence where Element == ZoneManagerAccuracyFuzzer {
+    func fuzz(location originalLocation: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
+        reduce(originalLocation) { location, fuzzer in
+            if let additional = fuzzer.additionalAccuracy(for: location, for: event) {
+                return location.fuzzingAccuracy(by: additional)
+            } else {
+                return location
+            }
+        }
+    }
+}
+
 /// if we're getting a region monitoring event saying that we're inside, but we're not from GPS perspective
 struct ZoneManagerAccuracyFuzzerRegionEnter: ZoneManagerAccuracyFuzzer {
     func additionalAccuracy(for location: CLLocation, for event: ZoneManagerEvent) -> CLLocationDistance? {

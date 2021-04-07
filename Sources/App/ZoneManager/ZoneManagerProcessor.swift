@@ -44,7 +44,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     }
                 }.map { location in
                     if let location = location {
-                        return Self.fuzz(using: accuracyFuzzers, location: location, for: event)
+                        return accuracyFuzzers.fuzz(location: location, for: event)
                     } else {
                         return nil
                     }
@@ -136,19 +136,5 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         return .value(())
-    }
-
-    private static func fuzz(
-        using fuzzers: [ZoneManagerAccuracyFuzzer],
-        location originalLocation: CLLocation,
-        for event: ZoneManagerEvent
-    ) -> CLLocation {
-        fuzzers.reduce(originalLocation) { location, fuzzer in
-            if let additional = fuzzer.additionalAccuracy(for: location, for: event) {
-                return location.fuzzingAccuracy(by: additional)
-            } else {
-                return location
-            }
-        }
     }
 }
