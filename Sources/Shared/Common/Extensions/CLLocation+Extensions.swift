@@ -72,3 +72,31 @@ public extension CLCircularRegion {
         distanceWithAccuracy(from: location) <= 0
     }
 }
+
+public extension CLLocation {
+    func fuzzingAccuracy(by amount: CLLocationDistance) -> CLLocation {
+        if #available(iOS 13.4, watchOS 6.2, *) {
+            return CLLocation(
+                coordinate: coordinate,
+                altitude: altitude,
+                horizontalAccuracy: horizontalAccuracy + amount + 1,
+                verticalAccuracy: verticalAccuracy,
+                course: course,
+                courseAccuracy: courseAccuracy,
+                speed: speed,
+                speedAccuracy: speedAccuracy,
+                timestamp: timestamp
+            )
+        } else {
+            return CLLocation(
+                coordinate: coordinate,
+                altitude: altitude,
+                horizontalAccuracy: horizontalAccuracy + amount + 1,
+                verticalAccuracy: verticalAccuracy,
+                course: course,
+                speed: speed,
+                timestamp: timestamp
+            )
+        }
+    }
+}

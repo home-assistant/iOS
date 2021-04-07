@@ -16,6 +16,11 @@ protocol ZoneManagerProcessor: AnyObject {
 class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
+    var accuracyFuzzers: [ZoneManagerAccuracyFuzzer] = [
+        ZoneManagerAccuracyFuzzerRegionEnter(),
+        ZoneManagerAccuracyFuzzerMultiRegionOverlap(),
+    ]
+
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
         firstly {
             evaluate(event: event)
@@ -26,7 +31,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             case let .rejected(error):
                 self.delegate?.processor(self, didLog: .didIgnore(event, error))
             }
-        }.then {
+        }.then { [accuracyFuzzers] in
             Current.backgroundTask(withName: event.backgroundTaskDescription) { remaining in
                 let trigger = event.asTrigger()
                 return firstly { () -> Promise<CLLocation?> in
@@ -39,7 +44,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     }
                 }.map { location in
                     if let location = location {
-                        return Self.sanitize(location: location, for: event)
+                        return accuracyFuzzers.fuzz(location: location, for: event)
                     } else {
                         return nil
                     }
@@ -131,55 +136,5 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         return .value(())
-    }
-
-    private static func sanitize(location: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
-        var fuzzedAccuracy: CLLocationDistance = 0
-
-        // if we're getting a region monitoring event saying that we're inside, but we're not from GPS perspective
-        if case let .region(region as CLCircularRegion, .inside) = event.eventType,
-           !region.containsWithAccuracy(location) {
-            fuzzedAccuracy += region.distanceWithAccuracy(from: location)
-        }
-
-        // if we're inside the overlap of the zone's monitored regions, but not in the zone
-        if let zone = event.associatedZone,
-           // convenience so we reuse the region
-           case let zoneRegion = zone.circularRegion,
-           // all of which contain this location
-           zone.circularRegionsForMonitoring.allSatisfy({ $0.containsWithAccuracy(location) }),
-           // but the zone doesn't
-           !zoneRegion.containsWithAccuracy(location) {
-            // from https://github.com/home-assistant/iOS/issues/1520
-            fuzzedAccuracy += zoneRegion.distanceWithAccuracy(from: location)
-        }
-
-        guard fuzzedAccuracy > 0 else {
-            return location
-        }
-
-        if #available(iOS 13.4, *) {
-            return CLLocation(
-                coordinate: location.coordinate,
-                altitude: location.altitude,
-                horizontalAccuracy: location.horizontalAccuracy + fuzzedAccuracy + 1.0,
-                verticalAccuracy: location.verticalAccuracy,
-                course: location.course,
-                courseAccuracy: location.courseAccuracy,
-                speed: location.speed,
-                speedAccuracy: location.speedAccuracy,
-                timestamp: location.timestamp
-            )
-        } else {
-            return CLLocation(
-                coordinate: location.coordinate,
-                altitude: location.altitude,
-                horizontalAccuracy: location.horizontalAccuracy + fuzzedAccuracy + 1.0,
-                verticalAccuracy: location.verticalAccuracy,
-                course: location.course,
-                speed: location.speed,
-                timestamp: location.timestamp
-            )
-        }
     }
 }

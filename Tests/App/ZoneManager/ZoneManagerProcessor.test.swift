@@ -607,13 +607,13 @@ class ZoneManagerProcessorTests: XCTestCase {
         })
 
         // grab the region that's the direction we're going in the one shot location below
-        let region = try XCTUnwrap(
+        let eventRegion = try XCTUnwrap(
             circularRegionZone?.circularRegionsForMonitoring
-                .first(where: { $0.identifier.contains("000") })
+                .first(where: { $0.identifier.contains("240") })
         )
 
         let event = ZoneManagerEvent(
-            eventType: .region(region, .inside),
+            eventType: .region(eventRegion, .inside),
             associatedZone: circularRegionZone
         )
         let promise = processor.perform(event: event)
@@ -623,26 +623,36 @@ class ZoneManagerProcessorTests: XCTestCase {
             expectation.fulfill()
         }.cauterize()
 
-        let distanceOut: CLLocationDistance = 20
+        let distanceOut: CLLocationDistance = 14
 
         let oneShotLocation = try { () -> CLLocation in
             // moving toward one of the circle's centers guarantees we're pointed toward the intersection of all zones
             let coordinate = circularRegion.center.moving(
                 distance: .init(value: circularRegion.radius + distanceOut, unit: .meters),
-                direction: .init(value: 0, unit: .degrees)
+                direction: .init(value: 30, unit: .degrees)
             )
             let location = CLLocation(
                 coordinate: coordinate,
                 altitude: 0,
-                horizontalAccuracy: distanceOut / 2 - 1,
+                horizontalAccuracy: distanceOut / 2.0 - 1,
                 // less than distance to zone, big enough to overlap all 3 other zones
                 verticalAccuracy: 0,
                 timestamp: Date()
             )
 
             XCTAssertTrue(try XCTUnwrap(circularRegionZone?.circularRegionsForMonitoring.allSatisfy({ region in
-                // this test case is assuming the location touches _all_ the zones
-                region.containsWithAccuracy(location)
+                if region == eventRegion {
+                    // we want to both fudge the accuracy for this region _and_ separately for the zone
+                    return !region.containsWithAccuracy(location) &&
+                        !circularRegion.containsWithAccuracy(
+                            location.fuzzingAccuracy(
+                                by: region.distanceWithAccuracy(from: location)
+                            )
+                        )
+                } else {
+                    // this test case is assuming the location touches _all_ the regions except for the one entering
+                    return region.containsWithAccuracy(location)
+                }
             })))
 
             // this test case is assuming this location does _not_ intersect the zone
