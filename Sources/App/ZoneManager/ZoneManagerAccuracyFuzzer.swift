@@ -24,7 +24,7 @@ extension Sequence where Element == ZoneManagerAccuracyFuzzer {
 struct ZoneManagerAccuracyFuzzerRegionEnter: ZoneManagerAccuracyFuzzer {
     func additionalAccuracy(for location: CLLocation, for event: ZoneManagerEvent) -> CLLocationDistance? {
         guard case let .region(region as CLCircularRegion, .inside) = event.eventType,
-           !region.containsWithAccuracy(location) else {
+              !region.containsWithAccuracy(location) else {
             return nil
         }
 
@@ -47,7 +47,7 @@ struct ZoneManagerAccuracyFuzzerMultiRegionOverlap: ZoneManagerAccuracyFuzzer {
         }
 
         guard !zoneRegion.containsWithAccuracy(location) else {
-           // but the zone doesn't
+            // but the zone doesn't
             return nil
         }
 

@@ -645,8 +645,10 @@ class ZoneManagerProcessorTests: XCTestCase {
                     // we want to both fudge the accuracy for this region _and_ separately for the zone
                     return !region.containsWithAccuracy(location) &&
                         !circularRegion.containsWithAccuracy(
-                            location.fuzzingAccuracy(by: region.distanceWithAccuracy(from: location)
-                        ))
+                            location.fuzzingAccuracy(
+                                by: region.distanceWithAccuracy(from: location)
+                            )
+                        )
                 } else {
                     // this test case is assuming the location touches _all_ the regions except for the one entering
                     return region.containsWithAccuracy(location)
