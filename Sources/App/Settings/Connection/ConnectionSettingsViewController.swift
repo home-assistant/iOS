@@ -4,9 +4,32 @@ import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
+import HAKit
 
 class ConnectionSettingsViewController: FormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
+
+    let connection: HAConnection
+
+    init(connection: HAConnection) {
+        self.connection = connection
+
+        if #available(iOS 13, *) {
+            super.init(style: .insetGrouped)
+        } else {
+            super.init(style: .grouped)
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private var tokens: [HACancellable] = []
+
+    deinit {
+        tokens.forEach { $0.cancel() }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,12 +66,25 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
             <<< WebSocketStatusRow()
 
-            <<< LabelRow("currentUser") {
-                $0.title = L10n.Settings.ConnectionSection.loggedInAs
-                $0.value = Current.settingsStore.authenticatedUser?.Name
+            <<< LabelRow { row in
+                row.title = L10n.Settings.ConnectionSection.loggedInAs
+
+                tokens.append(connection.caches.user.subscribe { _, user in
+                    row.value = user.name
+                    row.updateCell()
+                })
             }
 
             +++ Section(L10n.Settings.ConnectionSection.details)
+            <<< TextRow {
+                $0.title = L10n.SettingsDetails.General.DeviceName.title
+                $0.placeholder = Current.device.deviceName()
+                $0.value = Current.settingsStore.overrideDeviceName
+                $0.onChange { row in
+                    Current.settingsStore.overrideDeviceName = row.value
+                }
+            }
+            
             <<< LabelRow("connectionPath") {
                 $0.title = L10n.Settings.ConnectionSection.connectingVia
                 $0.displayValueFor = { _ in Current.settingsStore.connectionInfo?.activeURLType.description }

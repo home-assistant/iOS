@@ -126,7 +126,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         userContentController.add(self, name: "revokeExternalAuth")
         userContentController.add(self, name: "externalBus")
         userContentController.add(self, name: "updateThemeColors")
-        userContentController.add(self, name: "currentUser")
         userContentController.add(self, name: "mediaPlayerCommand")
 
         if let webhookID = Current.settingsStore.connectionInfo?.webhookID {
@@ -148,26 +147,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             injectionTime: .atDocumentEnd,
             forMainFrameOnly: false
         ))
-
-        if Current.appConfiguration == .FastlaneSnapshot {
-            let hideDemoCardScript = WKUserScript(
-                source: "localStorage.setItem('hide_demo_card', '1');",
-                injectionTime: .atDocumentStart,
-                forMainFrameOnly: false
-            )
-            userContentController.addUserScript(hideDemoCardScript)
-
-            if let langCode = Locale.current.languageCode {
-                let setLanguageScript = WKUserScript(
-                    source: "localStorage.setItem('selectedLanguage', '\"\(langCode)\"');",
-                    injectionTime: .atDocumentStart,
-                    forMainFrameOnly: false
-                )
-                userContentController.addUserScript(setLanguageScript)
-            }
-
-            SettingsViewController.showMapContentExtension()
-        }
 
         config.userContentController = userContentController
         // "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
@@ -740,18 +719,8 @@ extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
-        // Current.Log.verbose("Received script message \(message.name) \(message.body)")
-
-        /* if message.name == "mediaPlayerCommand" {
-             guard let cmdStr = messageBody["type"] as? String, let cmd = RemotePlayerCommands(rawValue: cmdStr) else {
-                 Current.Log.error("No command type in payload! \(messageBody)")
-                 return
-             }
-             self.remotePlayer.handleCommand(cmd, messageBody["data"])
-         } else */ if message.name == "externalBus" {
+        if message.name == "externalBus" {
             handleExternalMessage(messageBody)
-        } else if message.name == "currentUser", let user = AuthenticatedUser(messageBody) {
-            Current.settingsStore.authenticatedUser = user
         } else if message.name == "updateThemeColors" {
             handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {

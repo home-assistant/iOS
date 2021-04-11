@@ -17,7 +17,12 @@ enum AccountInitialsImage {
             .joined()
     }
 
-    static func image(for name: String?, size: CGSize) -> UIImage {
+    static var defaultSize: CGSize {
+        let height = min(64, UIFont.preferredFont(forTextStyle: .body).lineHeight * 2.0)
+        return CGSize(width: height, height: height)
+    }
+
+    static func image(for name: String?, size: CGSize = Self.defaultSize) -> UIImage {
         let initials = self.initials(for: name)
 
         let rect = CGRect(origin: .zero, size: size)
@@ -49,5 +54,24 @@ enum AccountInitialsImage {
         }
         image.accessibilityLabel = initials
         return image
+    }
+
+    static func addImage(size: CGSize = Self.defaultSize) -> UIImage {
+        UIGraphicsImageRenderer(size: size).image { context in
+            let rect = CGRect(origin: .zero, size: size)
+
+            let path = UIBezierPath(ovalIn: rect.insetBy(dx: 1.0, dy: 1.0))
+            path.lineWidth = 2.0
+            path.setLineDash([5, 3], count: 2, phase: 0)
+            path.stroke(with: .normal, alpha: 0.4)
+
+            let iconEdge: CGFloat = 24.0
+
+            let image = MaterialDesignIcons.plusIcon
+                .image(ofSize: CGSize(width: iconEdge, height: iconEdge), color: .black)
+
+            let imageOrigin = CGPoint(x: rect.midX - iconEdge/2.0, y: rect.midY - iconEdge/2.0)
+            image.draw(at: imageOrigin)
+        }.withRenderingMode(.alwaysTemplate)
     }
 }

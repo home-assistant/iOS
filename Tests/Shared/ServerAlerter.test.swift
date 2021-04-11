@@ -3,6 +3,7 @@ import PromiseKit
 @testable import Shared
 import Version
 import XCTest
+import HAKit
 
 class ServerAlerterTests: XCTestCase {
     private var alerter: ServerAlerter!
@@ -17,8 +18,15 @@ class ServerAlerterTests: XCTestCase {
         alerter = ServerAlerter()
     }
 
-    private func setUp(response: Swift.Result<[ServerAlert], Error>) {
+    private func setUp(userIsAdmin: Bool = true, response: Swift.Result<[ServerAlert], Error>) throws {
         Current.settingsStore.privacy.alerts = true
+
+        let mock = HAMockConnection()
+        Current.apiConnection = mock
+        _ = mock.caches.user.once { _ in }
+
+        let request = try XCTUnwrap(mock.pendingRequests.first)
+        request.completion(.success(.dictionary(["id": "1", "is_admin": userIsAdmin])))
 
         let url = URL(string: "https://alerts.home-assistant.io/mobile.json")!
         stubDescriptors.append(stub(condition: { $0.url == url }, response: { _ in
@@ -66,13 +74,13 @@ class ServerAlerterTests: XCTestCase {
         )
     }
 
-    func testNoAlerts() {
-        setUp(response: .success([]))
+    func testNoAlerts() throws {
+        try setUp(response: .success([]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testAlertsDisabled() {
-        setUp(response: .success([]))
+    func testAlertsDisabled() throws {
+        try setUp(response: .success([]))
 
         Current.settingsStore.privacy.alerts = false
 
@@ -85,10 +93,10 @@ class ServerAlerterTests: XCTestCase {
         }
     }
 
-    func testNoVersionedAlerts() {
+    func testNoVersionedAlerts() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
-        setUp(response: .success([
+        try setUp(response: .success([
             ServerAlert(
                 id: UUID().uuidString,
                 date: Date(timeIntervalSinceNow: -100),
@@ -102,10 +110,10 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testEarlieriOSDoesntApply() {
+    func testEarlieriOSDoesntApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
-        setUp(response: .success([
+        try setUp(response: .success([
             ServerAlert(
                 id: UUID().uuidString,
                 date: Date(timeIntervalSinceNow: -100),
@@ -119,10 +127,10 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testLateriOSDoesntApply() {
+    func testLateriOSDoesntApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
-        setUp(response: .success([
+        try setUp(response: .success([
             ServerAlert(
                 id: UUID().uuidString,
                 date: Date(timeIntervalSinceNow: -100),
@@ -136,7 +144,7 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testMiddleiOSShouldApply() {
+    func testMiddleiOSShouldApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -149,7 +157,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([alert]))
+        try setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -158,7 +166,7 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testMiddleiOSShouldApplyButNotAdmin() {
+    func testMiddleiOSShouldApplyButNotAdmin() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -171,20 +179,11 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        Current.settingsStore.authenticatedUser = AuthenticatedUser(
-            id: "123",
-            name: "name",
-            isOwner: false,
-            isAdmin: false
-        )
-
-        setUp(response: .success([alert]))
+        try setUp(userIsAdmin: false, response: .success([alert]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
-
-        Current.settingsStore.authenticatedUser = nil
     }
 
-    func testLowerBoundOnlyiOSShouldApply() {
+    func testLowerBoundOnlyiOSShouldApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -197,7 +196,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([alert]))
+        try setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -206,7 +205,7 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testLowerBoundOnlyiOSShouldntApply() {
+    func testLowerBoundOnlyiOSShouldntApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -219,11 +218,11 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([alert]))
+        try setUp(response: .success([alert]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testUpperBoundOnlyiOSShouldApply() {
+    func testUpperBoundOnlyiOSShouldApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -236,7 +235,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([alert]))
+        try setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -245,7 +244,7 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testUpperBoundOnlyiOSShouldntApply() {
+    func testUpperBoundOnlyiOSShouldntApply() throws {
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -258,14 +257,14 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: nil, max: nil)
         )
 
-        setUp(response: .success([alert]))
+        try setUp(response: .success([alert]))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testEarlierCoreDoesntApply() {
+    func testEarlierCoreDoesntApply() throws {
         Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
 
-        setUp(response: .success([
+        try setUp(response: .success([
             ServerAlert(
                 id: UUID().uuidString,
                 date: Date(timeIntervalSinceNow: -100),
@@ -279,10 +278,10 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testLaterCoreDoesntApply() {
+    func testLaterCoreDoesntApply() throws {
         Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
 
-        setUp(response: .success([
+        try setUp(response: .success([
             ServerAlert(
                 id: UUID().uuidString,
                 date: Date(timeIntervalSinceNow: -100),
@@ -296,7 +295,7 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testMiddleCoreShouldApply() {
+    func testMiddleCoreShouldApply() throws {
         Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alert = ServerAlert(
@@ -309,7 +308,7 @@ class ServerAlerterTests: XCTestCase {
             core: .init(min: .init(major: 75), max: .init(major: 125))
         )
 
-        setUp(response: .success([alert]))
+        try setUp(response: .success([alert]))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
         // trying again should still work
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alert)
@@ -318,7 +317,7 @@ class ServerAlerterTests: XCTestCase {
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false)))
     }
 
-    func testMultipleApplyGivesFirst() {
+    func testMultipleApplyGivesFirst() throws {
         Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
@@ -343,15 +342,15 @@ class ServerAlerterTests: XCTestCase {
             ),
         ]
 
-        setUp(response: .success(alerts))
+        try setUp(response: .success(alerts))
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alerts[0])
         alerter.markHandled(alert: alerts[0])
         XCTAssertEqual(try hang(alerter.check(dueToUserInteraction: false)), alerts[1])
     }
 
-    func testErroredRequestsDoesntAlert() {
+    func testErroredRequestsDoesntAlert() throws {
         let expectedError = URLError(.timedOut)
-        setUp(response: .failure(expectedError))
+        try setUp(response: .failure(expectedError))
         XCTAssertThrowsError(try hang(alerter.check(dueToUserInteraction: false))) { error in
             XCTAssertEqual((error as? URLError)?.code, expectedError.code)
         }

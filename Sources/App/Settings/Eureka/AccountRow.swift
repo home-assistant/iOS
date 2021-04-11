@@ -16,43 +16,44 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
         detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body)
 
         selectionStyle = .default
-        accessoryType = .disclosureIndicator
     }
 
     override func update() {
         super.update()
 
-        let userName = accountRow?.cachedUserName
-        let locationName = accountRow?.value?.locationName
+        if let value = accountRow?.value {
+            let userName = accountRow?.cachedUserName
+            let locationName = value.locationName
+            let size = AccountInitialsImage.defaultSize
 
-        let height = min(64, UIFont.preferredFont(forTextStyle: .body).lineHeight * 2.0)
-        let size = CGSize(width: height, height: height)
-
-        if let imageView = imageView {
-            if let image = accountRow?.cachedImage {
-                UIView.transition(
-                    with: imageView,
-                    duration: imageView.image != nil ? 0.25 : 0,
-                    options: [.transitionCrossDissolve]
-                ) {
-                    // scaled down because the cell sizes to fit too much
-                    imageView.image = image.scaledToSize(size)
-                } completion: { _ in
+            if let imageView = imageView {
+                if let image = accountRow?.cachedImage {
+                    UIView.transition(
+                        with: imageView,
+                        duration: imageView.image != nil ? 0.25 : 0,
+                        options: [.transitionCrossDissolve]
+                    ) {
+                        // scaled down because the cell sizes to fit too much
+                        imageView.image = image.scaledToSize(size)
+                    } completion: { _ in
+                    }
+                } else if accountRow?.value != nil {
+                    imageView.image = AccountInitialsImage.image(for: userName ?? "?")
                 }
-            } else {
-                imageView.image = AccountInitialsImage
-                    .image(
-                        for: userName ?? "?",
-                        size: CGSize(width: height, height: height)
-                    )
+
+                imageView.layer.cornerRadius = ceil(size.height / 2.0)
             }
 
-            imageView.layer.cornerRadius = ceil(height / 2.0)
+            accessoryType = .disclosureIndicator
+            textLabel?.text = locationName
+            // default value ensures height even when username isn't loaded yet
+            detailTextLabel?.text = userName ?? " "
+        } else {
+            accessoryType = .none
+            textLabel?.text = L10n.Settings.ConnectionSection.addServer
+            detailTextLabel?.text = "[todo]"
+            imageView?.image = AccountInitialsImage.addImage()
         }
-
-        textLabel?.text = locationName
-        // default value ensures height even when username isn't loaded yet
-        detailTextLabel?.text = userName ?? " "
 
         if #available(iOS 13, *) {
             detailTextLabel?.textColor = .secondaryLabel

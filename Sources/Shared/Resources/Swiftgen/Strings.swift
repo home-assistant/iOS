@@ -26,6 +26,8 @@ public enum L10n {
   public static var doneLabel: String { return L10n.tr("Localizable", "done_label") }
   /// Error
   public static var errorLabel: String { return L10n.tr("Localizable", "error_label") }
+  /// Help
+  public static var helpLabel: String { return L10n.tr("Localizable", "help_label") }
   /// No
   public static var noLabel: String { return L10n.tr("Localizable", "no_label") }
   /// Off
@@ -1177,6 +1179,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings.connection_error_notification.title") }
     }
     public enum ConnectionSection {
+      /// Add Server
+      public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// Cloud Available
       public static var cloudAvailable: String { return L10n.tr("Localizable", "settings.connection_section.cloud_available") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
@@ -1357,6 +1361,10 @@ public enum L10n {
           }
         }
       }
+    }
+    public enum Debugging {
+      /// Debugging
+      public static var title: String { return L10n.tr("Localizable", "settings.debugging.title") }
     }
     public enum DetailsSection {
       public enum EnableLocationRow {
