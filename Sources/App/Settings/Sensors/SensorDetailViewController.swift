@@ -16,7 +16,12 @@ class SensorDetailViewController: FormViewController, SensorObserver {
 
     init(sensor: WebhookSensor) {
         self.sensor = sensor
-        super.init(style: .grouped)
+
+        if #available(iOS 13, *) {
+            super.init(style: .insetGrouped)
+        } else {
+            super.init(style: .grouped)
+        }
     }
 
     @available(*, unavailable)

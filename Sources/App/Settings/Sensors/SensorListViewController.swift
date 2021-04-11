@@ -7,6 +7,19 @@ class SensorListViewController: FormViewController, SensorObserver {
     private let sensorSection = Section()
     private let refreshControl = UIRefreshControl()
 
+    init() {
+        if #available(iOS 13, *) {
+            super.init(style: .insetGrouped)
+        } else {
+            super.init(style: .grouped)
+        }
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

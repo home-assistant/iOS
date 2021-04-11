@@ -29,6 +29,7 @@
 		1101568524D770B2009424C9 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E124D76CD3003CE877 /* NFCReader.swift */; };
 		1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
 		1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
+		1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101D7F82621479200AAE617 /* SettingsButtonRow.swift */; };
 		1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */; };
 		1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */; };
 		1104FCA125323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */; };
@@ -77,6 +78,7 @@
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11267D0825BBA9FE00F28E5C /* Updater.test.swift */; };
+		1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */; };
 		112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensors.swift */; };
 		1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F531253A1E7400F371BE /* ComplicationListViewController.swift */; };
 		1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */; };
@@ -604,8 +606,6 @@
 		B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
 		B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723343225DBACF0031D629 /* AuthRequestMessage.swift */; };
 		B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723343225DBACF0031D629 /* AuthRequestMessage.swift */; };
-		B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723346225DC72A0031D629 /* AuthenticatedUser.swift */; };
-		B6723348225DC72A0031D629 /* AuthenticatedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723346225DC72A0031D629 /* AuthenticatedUser.swift */; };
 		B672334A225DDF410031D629 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723349225DDF410031D629 /* Event.swift */; };
 		B672334B225DDF410031D629 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723349225DDF410031D629 /* Event.swift */; };
 		B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672334C225DE1490031D629 /* SubscribeEvents.swift */; };
@@ -981,6 +981,7 @@
 		1100D51E2496F63400B1073C /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColors.swift; sourceTree = "<group>"; };
 		1100D52024974D6700B1073C /* camera_notification.apns */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = camera_notification.apns; sourceTree = "<group>"; };
 		1101568624D7712F009424C9 /* TagManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagManagerProtocol.swift; sourceTree = "<group>"; };
+		1101D7F82621479200AAE617 /* SettingsButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButtonRow.swift; sourceTree = "<group>"; };
 		1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Additions.swift"; sourceTree = "<group>"; };
 		1104FCA025323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateComplications.test.swift; sourceTree = "<group>"; };
 		1104FCAF25323C2B00B8BE34 /* FakeWebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeWebhookManager.swift; sourceTree = "<group>"; };
@@ -1016,6 +1017,7 @@
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
+		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
 		112B705A2526B1C500FEAA76 /* UpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensors.swift; sourceTree = "<group>"; };
 		1130F531253A1E7400F371BE /* ComplicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationListViewController.swift; sourceTree = "<group>"; };
 		1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectViewController.swift; sourceTree = "<group>"; };
@@ -1575,7 +1577,6 @@
 		B672333D225DB68B0031D629 /* WebSocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketMessage.swift; sourceTree = "<group>"; };
 		B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+JSON.swift"; sourceTree = "<group>"; };
 		B6723343225DBACF0031D629 /* AuthRequestMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestMessage.swift; sourceTree = "<group>"; };
-		B6723346225DC72A0031D629 /* AuthenticatedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedUser.swift; sourceTree = "<group>"; };
 		B6723349225DDF410031D629 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		B672334C225DE1490031D629 /* SubscribeEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribeEvents.swift; sourceTree = "<group>"; };
 		B672AB552216B07500175465 /* gallery.ckcomplication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gallery.ckcomplication; sourceTree = "<group>"; };
@@ -2121,6 +2122,7 @@
 				115EF6A62549152F0048597B /* AccountRow.swift */,
 				11C05F2C254919210031D038 /* AccountInitialsImage.swift */,
 				1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */,
+				1101D7F82621479200AAE617 /* SettingsButtonRow.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -2734,6 +2736,7 @@
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
 				1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */,
+				1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2786,7 +2789,6 @@
 				B672333D225DB68B0031D629 /* WebSocketMessage.swift */,
 				B6723343225DBACF0031D629 /* AuthRequestMessage.swift */,
 				B672334C225DE1490031D629 /* SubscribeEvents.swift */,
-				B6723346225DC72A0031D629 /* AuthenticatedUser.swift */,
 				B6723349225DDF410031D629 /* Event.swift */,
 			);
 			path = WebSocket;
@@ -4643,6 +4645,7 @@
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
+				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
@@ -4655,6 +4658,7 @@
 				117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */,
 				1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
+				1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
@@ -4796,7 +4800,6 @@
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
-				B6723348225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				1104FCC02532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */,
 				B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
@@ -5044,7 +5047,6 @@
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,
 				11F2F27E258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
-				B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */,
 				110ED58F25A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */,

@@ -177,11 +177,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        if Current.appConfiguration == .FastlaneSnapshot &&
-            response.actionIdentifier == UNNotificationDismissActionIdentifier &&
-            response.notification.request.content.categoryIdentifier == "map" {
-            SettingsViewController.showCameraContentExtension()
-        }
         Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
 
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {

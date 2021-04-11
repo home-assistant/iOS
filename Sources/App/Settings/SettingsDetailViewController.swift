@@ -25,6 +25,19 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     private var notificationCenterTokens: [AnyObject] = []
     private var reorderingRows: [String: BaseRow] = [:]
 
+    init() {
+        if #available(iOS 13, *) {
+            super.init(style: .insetGrouped)
+        } else {
+            super.init(style: .grouped)
+        }
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     deinit {
         notificationCenterTokens.forEach(NotificationCenter.default.removeObserver)
     }
@@ -58,14 +71,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             title = L10n.SettingsDetails.General.title
             form
                 +++ Section()
-                <<< TextRow {
-                    $0.title = L10n.SettingsDetails.General.DeviceName.title
-                    $0.placeholder = Current.device.deviceName()
-                    $0.value = Current.settingsStore.overrideDeviceName
-                    $0.onChange { row in
-                        Current.settingsStore.overrideDeviceName = row.value
-                    }
-                }
 
                 <<< PushRow<AppIcon>("appIcon") {
                 $0.hidden = .isCatalyst

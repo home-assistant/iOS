@@ -74,9 +74,6 @@ const setOverrideZoomEnabled = (shouldZoom) => {
 };
 
 waitForHassConnection().then(({ conn }) => {
-    conn.sendMessagePromise({type: 'auth/current_user'}).then((user) => {
-        window.webkit.messageHandlers.currentUser.postMessage(user);
-    });
     conn.subscribeEvents(notifyThemeColors, 'themes_updated');
     conn.sendMessagePromise({type: 'frontend/get_themes'}).then(notifyThemeColors);
 
