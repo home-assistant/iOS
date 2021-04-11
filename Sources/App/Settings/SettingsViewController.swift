@@ -9,7 +9,8 @@ class SettingsViewController: FormViewController {
             super.init(style: .grouped)
         }
     }
-    
+
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -129,7 +130,7 @@ class SettingsViewController: FormViewController {
             $0.title = L10n.helpLabel
             $0.icon = .helpCircleOutlineIcon
             $0.accessoryIcon = .openInNewIcon
-            $0.onCellSelection { [weak self] cell, row in
+            $0.onCellSelection { [weak self] _, row in
                 openURLInBrowser(URL(string: "https://companion.home-assistant.io")!, self)
                 row.deselect(animated: true)
             }
@@ -169,7 +170,7 @@ class SettingsViewController: FormViewController {
                     style: .plain,
                     target: self,
                     action: #selector(openAbout(_:))
-                )
+                ),
             ]
         }
 
@@ -179,7 +180,7 @@ class SettingsViewController: FormViewController {
                     barButtonSystemItem: .done,
                     target: self,
                     action: #selector(closeSettings(_:))
-                )
+                ),
             ]
         }
 

@@ -1,12 +1,12 @@
 import Eureka
-import Shared
-import Sentry
-import XCGLogger
-import WebKit
-import ZIPFoundation
 import MBProgressHUD
-import RealmSwift
 import PromiseKit
+import RealmSwift
+import Sentry
+import Shared
+import WebKit
+import XCGLogger
+import ZIPFoundation
 
 class DebugSettingsViewController: FormViewController {
     private var shakeCount = 0
@@ -22,6 +22,7 @@ class DebugSettingsViewController: FormViewController {
         title = L10n.Settings.Debugging.title
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -257,7 +258,7 @@ class DebugSettingsViewController: FormViewController {
         section <<< SettingsButtonRow {
             $0.isDestructive = true
             $0.title = L10n.Settings.ResetSection.ResetWebCache.title
-            $0.onCellSelection { [weak self] cell, _ in
+            $0.onCellSelection { [weak self] _, _ in
                 guard let self = self else { return }
 
                 let hud = MBProgressHUD.showAdded(to: self.view.window ?? self.view, animated: true)

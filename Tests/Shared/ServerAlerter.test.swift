@@ -1,9 +1,9 @@
+import HAKit
 import OHHTTPStubs
 import PromiseKit
 @testable import Shared
 import Version
 import XCTest
-import HAKit
 
 class ServerAlerterTests: XCTestCase {
     private var alerter: ServerAlerter!

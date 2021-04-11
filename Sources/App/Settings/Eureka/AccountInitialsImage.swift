@@ -57,7 +57,7 @@ enum AccountInitialsImage {
     }
 
     static func addImage(size: CGSize = Self.defaultSize) -> UIImage {
-        UIGraphicsImageRenderer(size: size).image { context in
+        UIGraphicsImageRenderer(size: size).image { _ in
             let rect = CGRect(origin: .zero, size: size)
 
             let path = UIBezierPath(ovalIn: rect.insetBy(dx: 1.0, dy: 1.0))
@@ -70,7 +70,7 @@ enum AccountInitialsImage {
             let image = MaterialDesignIcons.plusIcon
                 .image(ofSize: CGSize(width: iconEdge, height: iconEdge), color: .black)
 
-            let imageOrigin = CGPoint(x: rect.midX - iconEdge/2.0, y: rect.midY - iconEdge/2.0)
+            let imageOrigin = CGPoint(x: rect.midX - iconEdge / 2.0, y: rect.midY - iconEdge / 2.0)
             image.draw(at: imageOrigin)
         }.withRenderingMode(.alwaysTemplate)
     }

@@ -1,10 +1,10 @@
 import Alamofire
 import Eureka
+import HAKit
 import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
-import HAKit
 
 class ConnectionSettingsViewController: FormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -21,6 +21,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
         }
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -84,7 +85,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                     Current.settingsStore.overrideDeviceName = row.value
                 }
             }
-            
+
             <<< LabelRow("connectionPath") {
                 $0.title = L10n.Settings.ConnectionSection.connectingVia
                 $0.displayValueFor = { _ in Current.settingsStore.connectionInfo?.activeURLType.description }

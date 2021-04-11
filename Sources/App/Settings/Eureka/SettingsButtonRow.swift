@@ -4,7 +4,6 @@ import Shared
 public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
-
     }
 
     var isDestructive = false
@@ -12,7 +11,7 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
     var accessoryIcon: MaterialDesignIcons?
     var iconSize = CGSize(width: 24.0, height: 24.0)
 
-    public override func updateCell() {
+    override public func updateCell() {
         super.updateCell()
 
         cell.textLabel?.textAlignment = .natural
@@ -65,4 +64,3 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
         }
     }
 }
-
