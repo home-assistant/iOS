@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "Digwyddodd gwall anhysbys";
 "ha_api.api_error.update_not_possible" = "Operation could not be performed.";
 "ha_api.api_error.webhook_gone" = "Mae integreiddio mobile_app wedi'i ddileu, rhaid i chi ail-ffurfweddu'r app.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Diweddarwyd y lleoliad trwy App Shortcut";
 "location_change_notification.background_fetch.body" = "Cyflenwi lleoliad cyfredol wedi'i sbarduno trwy'r cefndir nôl";
 "location_change_notification.beacon_region_enter.body" = "%@ wedi mynd i mewn trwy iBeacon";
@@ -536,6 +537,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_error.forbidden.message" = "Roedd y dilysiad yn anghywir.";
 "settings.connection_error.invalid_url.message" = "Mae edrych fel eich URL yn annilys. Gwiriwch y fformat a rhoi cynnig arall arni.";
 "settings.connection_error.invalid_url.title" = "Gwall yn dosrannu URL";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "Cyfrinair";
 "settings.connection_section.api_password_row.title" = "Cyfrinair";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Galluogi olrhain lleoliad";
 "settings.details_section.enable_notification_row.title" = "Galluogi hysbysiadau";
 "settings.details_section.integrations.header" = "Integreiddiadau";

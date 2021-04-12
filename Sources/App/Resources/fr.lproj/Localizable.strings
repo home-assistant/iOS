@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "Une erreur inconnue est survenue.";
 "ha_api.api_error.update_not_possible" = "L'opération n'a pas pu être effectuée.";
 "ha_api.api_error.webhook_gone" = "L'intégration mobile_app a été supprimée, vous devez reconfigurer l'application.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Lieu mis à jour via l'App Shortcut";
 "location_change_notification.background_fetch.body" = "L'envoie de l'emplacement actuel a été déclenchée via l'actualisation en arrière-plan";
 "location_change_notification.beacon_region_enter.body" = "%@ entré via iBeacon";
@@ -536,6 +537,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_error.forbidden.message" = "Mot de passe incorrect.";
 "settings.connection_error.invalid_url.message" = "Votre URL ne semble pas valide. Veuillez vérifier le format et réessayer.";
 "settings.connection_error.invalid_url.title" = "Erreur d'analyse de l'URL";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "mot de passe";
 "settings.connection_section.api_password_row.title" = "Mot de passe";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Nombre de tentatives: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Déconnecté";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Activer le suivi de l’emplacement";
 "settings.details_section.enable_notification_row.title" = "Activer les notifications";
 "settings.details_section.integrations.header" = "Intégrations";
