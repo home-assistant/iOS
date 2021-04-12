@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "發生未知錯誤。";
 "ha_api.api_error.update_not_possible" = "動作無法執行。";
 "ha_api.api_error.webhook_gone" = "mobile_app 整合已刪除，需重新設定程式。";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "已透過 App 捷徑更新座標";
 "location_change_notification.background_fetch.body" = "背景取得目前座標";
 "location_change_notification.beacon_region_enter.body" = "已透過 iBeacon 偵測到 %@ 進入";
@@ -536,6 +537,7 @@
 "settings.connection_error.forbidden.message" = "認證錯誤。";
 "settings.connection_error.invalid_url.message" = "提供的網址格式無效，請檢查格式後再試一次。";
 "settings.connection_error.invalid_url.title" = "解析網址發生錯誤";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "密碼";
 "settings.connection_section.api_password_row.title" = "密碼";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "重試次數：%1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "已斷線";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "啟用座標追蹤";
 "settings.details_section.enable_notification_row.title" = "啟用訊息通知";
 "settings.details_section.integrations.header" = "整合";

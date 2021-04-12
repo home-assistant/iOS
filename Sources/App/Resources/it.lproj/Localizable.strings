@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "Si è verificato un errore sconosciuto.";
 "ha_api.api_error.update_not_possible" = "Impossibile eseguire l'operazione.";
 "ha_api.api_error.webhook_gone" = "l'integrazione mobile_app è stata eliminata, è necessario riconfigurare l'App.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Posizione aggiornata tramite App Shortcut";
 "location_change_notification.background_fetch.body" = "Invio della posizione attuale attivata da recupero in background";
 "location_change_notification.beacon_region_enter.body" = "Entrato in %@ tramite iBeacon";
@@ -536,6 +537,7 @@
 "settings.connection_error.forbidden.message" = "Autenticazione non riuscita.";
 "settings.connection_error.invalid_url.message" = "Sembra che il tuo URL non sia valido. Si prega di controllare il formato e riprovare.";
 "settings.connection_error.invalid_url.title" = "Errore nell'URL";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "password";
 "settings.connection_section.api_password_row.title" = "Password";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Numero di tentativi: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnesso";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Abilita il rilevamento della posizione";
 "settings.details_section.enable_notification_row.title" = "Attivare le notifiche";
 "settings.details_section.integrations.header" = "integrazioni";

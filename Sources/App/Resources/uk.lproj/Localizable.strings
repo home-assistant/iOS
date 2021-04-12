@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "Виникла невідома помилка.";
 "ha_api.api_error.update_not_possible" = "Не вдалося виконати операцію.";
 "ha_api.api_error.webhook_gone" = "Інтеграція mobile_app видалена, потрібно налаштувати застосунок заново.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Розташування оновлюється через Команду";
 "location_change_notification.background_fetch.body" = "Отримання поточного розташування ініційоване фоновим оновленням";
 "location_change_notification.beacon_region_enter.body" = "%@ прийдено через iBeacon";
@@ -536,6 +537,7 @@
 "settings.connection_error.forbidden.message" = "Автентифікація неправильна.";
 "settings.connection_error.invalid_url.message" = "Схоже, що URL-адреса недійсна. Будь ласка, перевірте формат і повторіть спробу.";
 "settings.connection_error.invalid_url.title" = "Помилка розбору URL";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "пароль";
 "settings.connection_section.api_password_row.title" = "Пароль";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Увімкнути відстеження розташування";
 "settings.details_section.enable_notification_row.title" = "Увімкнути сповіщення";
 "settings.details_section.integrations.header" = "Інтеграції";

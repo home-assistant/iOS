@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "S'ha produït un error desconegut.";
 "ha_api.api_error.update_not_possible" = "No s'ha pogut realitzar l'operació.";
 "ha_api.api_error.webhook_gone" = "S'ha suprimit la integració mobile_app, heu de tornar a configurar l'aplicació.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Ubicació actualitzada mitjançant drecera d’aplicació";
 "location_change_notification.background_fetch.body" = "Ubicació actual activada en segon pla";
 "location_change_notification.beacon_region_enter.body" = "%@ entrat a través de iBeacon";
@@ -536,6 +537,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_error.forbidden.message" = "L'autenticació és incorrecta.";
 "settings.connection_error.invalid_url.message" = "Sembla que l'URL no és vàlida. Comproveu-ne el format i torneu-ho a provar.";
 "settings.connection_error.invalid_url.title" = "Error en analitzar l'URL";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "contrasenya";
 "settings.connection_section.api_password_row.title" = "Contrasenya";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Nombre d'intents: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Desconnectat";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Activa el seguiment d'ubicacions";
 "settings.details_section.enable_notification_row.title" = "Activa les notificacions";
 "settings.details_section.integrations.header" = "Integracions";

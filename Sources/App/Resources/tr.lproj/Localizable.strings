@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "Bilinmeyen bir hata oluştu.";
 "ha_api.api_error.update_not_possible" = "İşlem gerçekleştirilemedi.";
 "ha_api.api_error.webhook_gone" = "mobile_app entegrasyonu silindi, uygulamayı yeniden yapılandırmalısınız.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Konum Uygulama Kısayolu ile güncellendi";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "location_change_notification.beacon_region_enter.body" = "%@ iBeacon aracılığıyla girildi";
@@ -536,6 +537,7 @@
 "settings.connection_error.forbidden.message" = "The authentication was incorrect.";
 "settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
 "settings.connection_error.invalid_url.title" = "Error parsing URL";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "password";
 "settings.connection_section.api_password_row.title" = "Password";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -597,6 +599,7 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Bağlantı kesildi";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Enable location tracking";
 "settings.details_section.enable_notification_row.title" = "Enable notifications";
 "settings.details_section.integrations.header" = "Entegrasyonlar";

@@ -109,6 +109,7 @@
 "ha_api.api_error.unknown" = "Der opstod en ukendt fejl.";
 "ha_api.api_error.update_not_possible" = "Handlingen kunne ikke udføres.";
 "ha_api.api_error.webhook_gone" = "mobile_app-integrationen er blevet slettet. Du skal konfigurere appen igen.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Lokalitet opdateret via appgenvej";
 "location_change_notification.background_fetch.body" = "Nuværende lokalitetslevering udløst via baggrundshentning";
 "location_change_notification.beacon_region_enter.body" = "ankom til %@ via iBeacon";
@@ -536,6 +537,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.connection_error.forbidden.message" = "Godkendelsen var forkert.";
 "settings.connection_error.invalid_url.message" = "Det ser ud som din webadresse er ugyldig. Kontroller formatet og prøv igen.";
 "settings.connection_error.invalid_url.title" = "Fejl under parsning af webadresse";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.api_password_row.placeholder" = "adgangskode";
 "settings.connection_section.api_password_row.title" = "Adgangskode";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.mithjem.dk";
@@ -597,6 +599,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.enable_location_row.title" = "Aktivér sporing af lokalitet";
 "settings.details_section.enable_notification_row.title" = "Aktivér notifikationer";
 "settings.details_section.integrations.header" = "Integrationer";
