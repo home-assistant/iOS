@@ -121,6 +121,22 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
         }
     }
 
+    enum FetchAvatarError: Error, CancellableError {
+        case missingPerson
+        case missingURL
+        case noActiveUrl
+        case alreadySet
+        case couldntDecode
+
+        var isCancelled: Bool {
+            if self == .alreadySet {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
     private func fetchAvatar() {
         guard let connection = value?.connection else {
             cachedImage = nil
@@ -145,14 +161,24 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             self.avatarSubscription = connection.caches.states.subscribe { [weak self] _, states in
                 firstly { () -> Guarantee<Set<HAEntity>> in
                     Guarantee.value(states.all)
-                }.compactMap { states in
-                    states.first(where: { $0.attributes["user_id"] as? String == user.id })
-                }.compactMap { entity in
-                    entity.attributes["entity_picture"] as? String
-                }.compactMap { path -> URL? in
-                    let url = Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path)
+                }.map { states throws -> HAEntity in
+                    if let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) {
+                        return person
+                    } else {
+                        throw FetchAvatarError.missingPerson
+                    }
+                }.map { entity -> String in
+                    if let urlString = entity.attributes["entity_picture"] as? String {
+                        return urlString
+                    } else {
+                        throw FetchAvatarError.missingURL
+                    }
+                }.map { path throws -> URL in
+                    guard let url = Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path) else {
+                        throw FetchAvatarError.noActiveUrl
+                    }
                     if let lastTask = lastTask, lastTask.error == nil, lastTask.originalRequest?.url == url {
-                        return nil
+                        throw FetchAvatarError.alreadySet
                     }
                     return url
                 }.then { url -> Promise<Data> in
@@ -161,8 +187,12 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                             seal.resolve(data, error)
                         })
                     }
-                }.compactMap { data in
-                    UIImage(data: data)
+                }.map { data throws -> UIImage in
+                    if let image = UIImage(data: data) {
+                        return image
+                    } else {
+                        throw FetchAvatarError.couldntDecode
+                    }
                 }.done { [weak self] image in
                     Current.Log.verbose("got image \(image.size)")
                     self?.cachedImage = image
