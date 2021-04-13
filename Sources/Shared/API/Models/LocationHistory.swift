@@ -10,8 +10,23 @@ public class LocationHistoryEntry: Object {
     @objc public dynamic var Accuracy = 0.0
     @objc public dynamic var Payload: String = ""
     @objc public dynamic var CreatedAt = Date()
+    private let rawAccuracyAuthorization = RealmOptional<CLAccuracyAuthorization.RawValue>()
+    public var accuracyAuthorization: CLAccuracyAuthorization? {
+        get {
+            rawAccuracyAuthorization.value.flatMap(CLAccuracyAuthorization.init(rawValue:))
+        }
+        set {
+            rawAccuracyAuthorization.value = newValue?.rawValue
+        }
+    }
 
-    public convenience init(updateType: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?, payload: String) {
+    public convenience init(
+        updateType: LocationUpdateTrigger,
+        location: CLLocation?,
+        zone: RLMZone?,
+        accuracyAuthorization: CLAccuracyAuthorization,
+        payload: String
+    ) {
         self.init()
 
         var loc = CLLocation()
@@ -27,6 +42,7 @@ public class LocationHistoryEntry: Object {
         self.Trigger = updateType.rawValue
         self.Zone = zone
         self.Payload = payload
+        self.accuracyAuthorization = accuracyAuthorization
     }
 
     public var clLocation: CLLocation {

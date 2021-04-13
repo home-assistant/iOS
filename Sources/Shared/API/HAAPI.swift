@@ -491,10 +491,19 @@ public class HomeAssistantAPI {
                     jsonPayload = p
                 }
 
+                let accuracyAuthorization: CLAccuracyAuthorization
+
+                if #available(iOS 14, watchOS 7, *) {
+                    accuracyAuthorization = CLLocationManager().accuracyAuthorization
+                } else {
+                    accuracyAuthorization = .fullAccuracy
+                }
+
                 realm.add(LocationHistoryEntry(
                     updateType: updateType,
                     location: location,
                     zone: zone,
+                    accuracyAuthorization: accuracyAuthorization,
                     payload: jsonPayload
                 ))
             }
