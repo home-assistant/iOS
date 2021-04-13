@@ -389,6 +389,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.title" = "Background Refresh";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.location_accuracy.full" = "Full";
 "settings_details.location.location_accuracy.reduced" = "Reduced";
 "settings_details.location.location_accuracy.title" = "Location Accuracy";

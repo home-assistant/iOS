@@ -256,6 +256,25 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }), onDismiss: nil)
                 }
 
+                <<< ButtonRowWithLoading {
+                    $0.title = L10n.SettingsDetails.Location.updateLocation
+                    $0.onCellSelection { [weak self] cell, row in
+                        row.value = true
+                        row.updateCell()
+
+                        Current.api.then { api in
+                            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
+                        }.ensure {
+                            row.value = false
+                            row.updateCell()
+                        }.catch { error in
+                            let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+                            self?.present(alert, animated: true, completion: nil)
+                        }
+                    }
+                }
+
                 +++ Section(
                     header: L10n.SettingsDetails.Location.Updates.header,
                     footer: L10n.SettingsDetails.Location.Updates.footer
