@@ -79,14 +79,8 @@ class SensorListViewController: FormViewController, SensorObserver {
     @objc private func refresh() {
         refreshControl.beginRefreshing()
 
-        Current.backgroundTask(withName: "manual-location-update-settings") { _ in
-            Current.api.then(on: nil) { api -> Promise<Void> in
-                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                    return api.GetAndSendLocation(trigger: .Manual).asVoid()
-                } else {
-                    return api.UpdateSensors(trigger: .Manual).asVoid()
-                }
-            }
+        Current.api.then { api in
+            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
         }.cauterize()

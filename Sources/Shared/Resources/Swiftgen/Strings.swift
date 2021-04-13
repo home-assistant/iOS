@@ -1746,6 +1746,8 @@ public enum L10n {
     public enum Location {
       /// Location
       public static var title: String { return L10n.tr("Localizable", "settings_details.location.title") }
+      /// Update Location
+      public static var updateLocation: String { return L10n.tr("Localizable", "settings_details.location.update_location") }
       public enum BackgroundRefresh {
         /// Disabled
         public static var disabled: String { return L10n.tr("Localizable", "settings_details.location.background_refresh.disabled") }

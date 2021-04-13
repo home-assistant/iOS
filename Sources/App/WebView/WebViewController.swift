@@ -340,7 +340,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             }
 
             if !error.isCancelled {
-                openSettingsWithError(error: error)
+                showSwiftMessage(error: error)
             }
         }
     }
@@ -353,7 +353,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             }
 
             if !error.isCancelled {
-                openSettingsWithError(error: error)
+                showSwiftMessage(error: error)
             }
         }
     }
@@ -540,52 +540,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func updateSensors() {
         // called via menu/keyboard shortcut too
-        Current.backgroundTask(withName: "manual-location-update") { remaining in
-            Current.api.then(on: nil) { api -> Promise<HomeAssistantAPI> in
-                guard #available(iOS 14, *) else {
-                    return .value(api)
-                }
-
-                return Promise { seal in
-                    let locationManager = CLLocationManager()
-
-                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                        seal.fulfill(api)
-                        return
-                    }
-
-                    Current.Log.info("requesting full accuracy for manual update")
-                    locationManager.requestTemporaryFullAccuracyAuthorization(
-                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                    ) { error in
-                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                        withExtendedLifetime(locationManager) {
-                            seal.fulfill(api)
-                        }
-                    }
-                }
-            }.then { api -> Promise<Void> in
-                func updateWithoutLocation() -> Promise<Void> {
-                    api.UpdateSensors(trigger: .Manual)
-                }
-
-                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
-                        .recover { error -> Promise<Void> in
-                            if error is CLError {
-                                Current.Log.info("couldn't get location, sending remaining sensor data")
-                                return updateWithoutLocation()
-                            } else {
-                                throw error
-                            }
-                        }
-                } else {
-                    return updateWithoutLocation()
-                }
-            }
-        }.catch { error in
-            self.showSwiftMessageError((error as NSError).localizedDescription)
+        Current.api.then { api in
+            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
+        }.catch { [weak self] error in
+            self?.showSwiftMessage(error: error)
         }
     }
 
@@ -594,9 +552,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         updateSensors()
     }
 
-    func show(alert: ServerAlert) {
-        Current.Log.info("showing alert \(alert)")
-
+    private func swiftMessagesConfig() -> SwiftMessages.Config {
         var config = SwiftMessages.Config()
 
         config.presentationContext = .viewController(self)
@@ -604,6 +560,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         config.presentationStyle = .bottom
         config.dimMode = .gray(interactive: true)
         config.dimModeAccessibilityLabel = L10n.cancelLabel
+
+        return config
+    }
+
+    func show(alert: ServerAlert) {
+        Current.Log.info("showing alert \(alert)")
+
+        var config = swiftMessagesConfig()
         config.eventListeners.append({ event in
             if event == .didHide {
                 Current.serverAlerter.markHandled(alert: alert)
@@ -631,36 +595,31 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         SwiftMessages.show(config: config, view: view)
     }
 
-    func showSwiftMessageError(_ body: String, duration: SwiftMessages.Duration = .automatic) {
-        var config = SwiftMessages.Config()
+    func showSwiftMessage(error: Error, duration: SwiftMessages.Duration = .seconds(seconds: 15)) {
+        Current.Log.error(error)
 
-        config.presentationContext = .window(windowLevel: .statusBar)
+        let nsError = error as NSError
+
+        var config = swiftMessagesConfig()
         config.duration = duration
 
-        let view = MessageView.viewFromNib(layout: .statusLine)
+        let view = MessageView.viewFromNib(layout: .messageView)
         view.configureTheme(.error)
-        view.configureContent(body: body)
+        view.configureContent(
+            title: error.localizedDescription,
+            body: "\(nsError.domain) \(nsError.code)",
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: L10n.okLabel,
+            buttonTapHandler: { _ in
+                SwiftMessages.hide()
+            }
+        )
+        view.titleLabel?.numberOfLines = 0
+        view.bodyLabel?.numberOfLines = 0
 
         SwiftMessages.show(config: config, view: view)
-    }
-
-    func openSettingsWithError(error: Error) {
-        showSwiftMessageError(error.localizedDescription, duration: SwiftMessages.Duration.seconds(seconds: 10))
-        showSwiftMessageError(error.localizedDescription)
-
-//        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
-//                                      preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
-//        self.navigationController?.present(alert, animated: true, completion: nil)
-//        alert.popoverPresentationController?.sourceView = self.webView
-
-        /* let settingsView = SettingsViewController()
-         settingsView.showErrorConnectingMessage = true
-         settingsView.showErrorConnectingMessageError = error
-         settingsView.doneButton = true
-         settingsView.delegate = self
-         let navController = UINavigationController(rootViewController: settingsView)
-         self.navigationController?.present(navController, animated: true, completion: nil) */
     }
 
     @objc func openSettingsView(_ sender: UIButton) {

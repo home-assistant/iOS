@@ -256,6 +256,29 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }), onDismiss: nil)
                 }
 
+                <<< ButtonRowWithLoading {
+                    $0.title = L10n.SettingsDetails.Location.updateLocation
+                    $0.onCellSelection { [weak self] _, row in
+                        row.value = true
+                        row.updateCell()
+
+                        Current.api.then { api in
+                            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
+                        }.ensure {
+                            row.value = false
+                            row.updateCell()
+                        }.catch { error in
+                            let alert = UIAlertController(
+                                title: nil,
+                                message: error.localizedDescription,
+                                preferredStyle: .alert
+                            )
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+                            self?.present(alert, animated: true, completion: nil)
+                        }
+                    }
+                }
+
                 +++ Section(
                     header: L10n.SettingsDetails.Location.Updates.header,
                     footer: L10n.SettingsDetails.Location.Updates.footer
@@ -272,7 +295,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     $0.value = Current.settingsStore.locationSources.backgroundFetch
                     $0.disabled = .location(conditions: [
                         .permissionNotAlways,
-                        .accuracyNotFull,
                         .backgroundRefreshNotAvailable,
                     ])
                     $0.hidden = .isCatalyst
@@ -282,14 +304,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
                     $0.value = Current.settingsStore.locationSources.significantLocationChange
-                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                    $0.disabled = .location(conditions: [.permissionNotAlways])
                 }.onChange({ row in
                     Current.settingsStore.locationSources.significantLocationChange = row.value ?? true
                 })
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
                     $0.value = Current.settingsStore.locationSources.pushNotifications
-                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                    $0.disabled = .location(conditions: [.permissionNotAlways])
                 }.onChange({ row in
                     Current.settingsStore.locationSources.pushNotifications = row.value ?? true
                 })
@@ -338,8 +360,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
             }
             if zoneEntities.count > 0 {
-                form
-                    +++ Section(header: "", footer: L10n.SettingsDetails.Location.Zones.footer)
+                form +++ InfoLabelRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.footer
+                }
             }
 
         case "actions":

@@ -79,6 +79,7 @@
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11267D0825BBA9FE00F28E5C /* Updater.test.swift */; };
 		1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */; };
+		1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */; };
 		112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensors.swift */; };
 		1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F531253A1E7400F371BE /* ComplicationListViewController.swift */; };
 		1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */; };
@@ -1018,6 +1019,7 @@
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
 		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
+		1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonRowWithLoading.swift; sourceTree = "<group>"; };
 		112B705A2526B1C500FEAA76 /* UpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensors.swift; sourceTree = "<group>"; };
 		1130F531253A1E7400F371BE /* ComplicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationListViewController.swift; sourceTree = "<group>"; };
 		1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectViewController.swift; sourceTree = "<group>"; };
@@ -2123,6 +2125,7 @@
 				11C05F2C254919210031D038 /* AccountInitialsImage.swift */,
 				1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */,
 				1101D7F82621479200AAE617 /* SettingsButtonRow.swift */,
+				1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -4647,6 +4650,7 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
+				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
