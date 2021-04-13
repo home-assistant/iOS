@@ -272,7 +272,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     $0.value = Current.settingsStore.locationSources.backgroundFetch
                     $0.disabled = .location(conditions: [
                         .permissionNotAlways,
-                        .accuracyNotFull,
                         .backgroundRefreshNotAvailable,
                     ])
                     $0.hidden = .isCatalyst
@@ -282,14 +281,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
                     $0.value = Current.settingsStore.locationSources.significantLocationChange
-                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                    $0.disabled = .location(conditions: [.permissionNotAlways])
                 }.onChange({ row in
                     Current.settingsStore.locationSources.significantLocationChange = row.value ?? true
                 })
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
                     $0.value = Current.settingsStore.locationSources.pushNotifications
-                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+                    $0.disabled = .location(conditions: [.permissionNotAlways])
                 }.onChange({ row in
                     Current.settingsStore.locationSources.pushNotifications = row.value ?? true
                 })
