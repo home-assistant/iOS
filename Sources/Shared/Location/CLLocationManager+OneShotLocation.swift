@@ -11,9 +11,29 @@ public extension CLLocationManager {
     }
 }
 
-enum OneShotError: Error, Equatable {
+enum OneShotError: Error, Equatable, LocalizedError, CustomNSError {
     case clError(CLError)
     case outOfTime
+
+    var errorDescription: String? {
+        switch self {
+        case let .clError(error):
+            return error.localizedDescription
+        case .outOfTime:
+            return L10n.ClError.Description.locationUnknown
+        }
+    }
+
+    static var errorDomain: String {
+        "OneShotError"
+    }
+
+    var errorCode: Int {
+        switch self {
+        case let .clError(error): return 1000 + error.code.rawValue
+        case .outOfTime: return 1
+        }
+    }
 
     static func == (lhs: OneShotError, rhs: OneShotError) -> Bool {
         switch (lhs, rhs) {
@@ -28,8 +48,20 @@ enum OneShotError: Error, Equatable {
 }
 
 internal struct PotentialLocation: Comparable, CustomStringConvertible {
-    static var desiredAccuracy: CLLocationAccuracy { 100.0 }
-    static var invalidAccuracyThreshold: CLLocationAccuracy { 1500.0 }
+    static func desiredAccuracy(for accuracy: CLAccuracyAuthorization) -> CLLocationAccuracy {
+        switch accuracy {
+        case .fullAccuracy: return 100.0
+        case .reducedAccuracy: return 3000.0
+        @unknown default: return 100.0
+        }
+    }
+    static func invalidAccuracyThreshold(for accuracy: CLAccuracyAuthorization) -> CLLocationAccuracy {
+        switch accuracy {
+        case .fullAccuracy: return 1500.0
+        case .reducedAccuracy: return .greatestFiniteMagnitude
+        @unknown default: return .greatestFiniteMagnitude
+        }
+    }
     static var desiredAge: TimeInterval { 30.0 }
     static var invalidAgeThreshold: TimeInterval { 600.0 }
 
@@ -42,7 +74,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
     let location: CLLocation
     let quality: Quality
 
-    init(location: CLLocation) {
+    init(location: CLLocation, accuracyAuthorization: CLAccuracyAuthorization) {
         do {
             self.location = try location.sanitized()
         } catch {
@@ -61,9 +93,12 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
             // timestamp = 100 seconds ago
             // so age is the positive number of seconds since this update
             let age = Current.date().timeIntervalSince(location.timestamp)
-            if location.horizontalAccuracy <= Self.desiredAccuracy && age <= Self.desiredAge {
+            let desiredAccuracy = Self.desiredAccuracy(for: accuracyAuthorization)
+            let invalidAccuracyThreshold = Self.invalidAccuracyThreshold(for: accuracyAuthorization)
+
+            if location.horizontalAccuracy <= desiredAccuracy && age <= Self.desiredAge {
                 self.quality = .perfect
-            } else if location.horizontalAccuracy > Self.invalidAccuracyThreshold || age > Self.invalidAgeThreshold {
+            } else if location.horizontalAccuracy > invalidAccuracyThreshold || age > Self.invalidAgeThreshold {
                 self.quality = .invalid
             } else {
                 self.quality = .meh
@@ -166,7 +201,15 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         }
 
         if let cachedLocation = locationManager.location {
-            let potentialLocation = PotentialLocation(location: cachedLocation)
+            let authorization: CLAccuracyAuthorization
+
+            if #available(iOS 14, watchOS 7, *) {
+                authorization = locationManager.accuracyAuthorization
+            } else {
+                authorization = .fullAccuracy
+            }
+
+            let potentialLocation = PotentialLocation(location: cachedLocation, accuracyAuthorization: authorization)
             potentialLocations.append(potentialLocation)
         }
     }
@@ -205,7 +248,17 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         precondition(Thread.isMainThread)
 
-        let updatedPotentialLocations = locations.map(PotentialLocation.init(location:))
+        let authorization: CLAccuracyAuthorization
+
+        if #available(iOS 14, watchOS 7, *) {
+            authorization = manager.accuracyAuthorization
+        } else {
+            authorization = .fullAccuracy
+        }
+
+        let updatedPotentialLocations = locations.map {
+            PotentialLocation(location: $0, accuracyAuthorization: authorization)
+        }
         Current.Log.verbose("got potential locations: \(updatedPotentialLocations)")
         potentialLocations.append(contentsOf: updatedPotentialLocations)
         checkPotentialLocations(outOfTime: false)
