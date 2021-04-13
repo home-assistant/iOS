@@ -746,6 +746,57 @@ public class HomeAssistantAPI {
             }
         }
     }
+
+    #if os(iOS)
+    public func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
+        Current.backgroundTask(withName: "manual-location-update") { remaining in
+            firstly { () -> Guarantee<Void> in
+                Guarantee { seal in
+                    guard #available(iOS 14, *) else {
+                        return seal(())
+                    }
+
+                    let locationManager = CLLocationManager()
+
+                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
+                        // already have full accuracy, don't need to request
+                        seal(())
+                        return
+                    }
+
+                    Current.Log.info("requesting full accuracy for manual update")
+                    locationManager.requestTemporaryFullAccuracyAuthorization(
+                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                    ) { error in
+                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
+
+                        withExtendedLifetime(locationManager) {
+                            seal(())
+                        }
+                    }
+                }
+            }.then { [self] () -> Promise<Void> in
+                func updateWithoutLocation() -> Promise<Void> {
+                    UpdateSensors(trigger: .Manual)
+                }
+
+                if Current.settingsStore.isLocationEnabled(for: applicationState) {
+                    return GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
+                        .recover { error -> Promise<Void> in
+                            if error is CLError {
+                                Current.Log.info("couldn't get location, sending remaining sensor data")
+                                return updateWithoutLocation()
+                            } else {
+                                throw error
+                            }
+                        }
+                } else {
+                    return updateWithoutLocation()
+                }
+            }
+        }
+    }
+    #endif
 }
 
 extension HomeAssistantAPI.APIError: LocalizedError {

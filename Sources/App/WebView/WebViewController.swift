@@ -540,52 +540,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func updateSensors() {
         // called via menu/keyboard shortcut too
-        Current.backgroundTask(withName: "manual-location-update") { remaining in
-            Current.api.then(on: nil) { api -> Promise<HomeAssistantAPI> in
-                guard #available(iOS 14, *) else {
-                    return .value(api)
-                }
-
-                return Promise { seal in
-                    let locationManager = CLLocationManager()
-
-                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
-                        seal.fulfill(api)
-                        return
-                    }
-
-                    Current.Log.info("requesting full accuracy for manual update")
-                    locationManager.requestTemporaryFullAccuracyAuthorization(
-                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
-                    ) { error in
-                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
-
-                        withExtendedLifetime(locationManager) {
-                            seal.fulfill(api)
-                        }
-                    }
-                }
-            }.then { api -> Promise<Void> in
-                func updateWithoutLocation() -> Promise<Void> {
-                    api.UpdateSensors(trigger: .Manual)
-                }
-
-                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
-                        .recover { error -> Promise<Void> in
-                            if error is CLError {
-                                Current.Log.info("couldn't get location, sending remaining sensor data")
-                                return updateWithoutLocation()
-                            } else {
-                                throw error
-                            }
-                        }
-                } else {
-                    return updateWithoutLocation()
-                }
-            }
-        }.catch { error in
-            self.showSwiftMessageError((error as NSError).localizedDescription)
+        Current.api.then { api in
+            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
+        }.catch { [weak self] error in
+            self?.showSwiftMessage(error: error)
         }
     }
 
