@@ -418,7 +418,6 @@ class OneShotLocationTests: XCTestCase {
         XCTAssertEqual(try hang(promise), location1)
     }
 
-
     func testInvalidLatOrLongOnlyUntilTimeout() {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let location1 = CLLocation(
