@@ -55,6 +55,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
         @unknown default: return 100.0
         }
     }
+
     static func invalidAccuracyThreshold(for accuracy: CLAccuracyAuthorization) -> CLLocationAccuracy {
         switch accuracy {
         case .fullAccuracy: return 1500.0
@@ -62,6 +63,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
         @unknown default: return .greatestFiniteMagnitude
         }
     }
+
     static var desiredAge: TimeInterval { 30.0 }
     static var invalidAgeThreshold: TimeInterval { 600.0 }
 

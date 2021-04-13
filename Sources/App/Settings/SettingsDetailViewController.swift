@@ -258,7 +258,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
                 <<< ButtonRowWithLoading {
                     $0.title = L10n.SettingsDetails.Location.updateLocation
-                    $0.onCellSelection { [weak self] cell, row in
+                    $0.onCellSelection { [weak self] _, row in
                         row.value = true
                         row.updateCell()
 
@@ -268,7 +268,11 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                             row.value = false
                             row.updateCell()
                         }.catch { error in
-                            let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
+                            let alert = UIAlertController(
+                                title: nil,
+                                message: error.localizedDescription,
+                                preferredStyle: .alert
+                            )
                             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
                             self?.present(alert, animated: true, completion: nil)
                         }
