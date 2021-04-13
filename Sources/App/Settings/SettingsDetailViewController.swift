@@ -356,8 +356,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
             }
             if zoneEntities.count > 0 {
-                form
-                    +++ Section(header: "", footer: L10n.SettingsDetails.Location.Zones.footer)
+                form +++ InfoLabelRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.footer
+                }
             }
 
         case "actions":
