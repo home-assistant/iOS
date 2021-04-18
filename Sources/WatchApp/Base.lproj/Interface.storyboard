@@ -52,7 +52,7 @@
                         </label>
                         <label alignment="left" text="Body" id="zei-SN-eTI"/>
                     </items>
-                    <notificationCategory key="notificationCategory" identifier="map" id="PaD-pF-3Yk"/>
+                    <notificationCategory key="notificationCategory" identifier="MAP" id="PaD-pF-3Yk"/>
                     <connections>
                         <outlet property="notificationAlertLabel" destination="zei-SN-eTI" id="y2W-Nj-YI2"/>
                         <outlet property="notificationSubtitleLabel" destination="R0j-pC-RXg" id="G7N-lL-jkc"/>
@@ -100,7 +100,7 @@
                         </label>
                         <label alignment="left" text="Body" id="yBa-4u-GxD"/>
                     </items>
-                    <notificationCategory key="notificationCategory" identifier="camera" id="reZ-Qf-LhH"/>
+                    <notificationCategory key="notificationCategory" identifier="CAMERA" id="reZ-Qf-LhH"/>
                     <connections>
                         <outlet property="notificationAlertLabel" destination="yBa-4u-GxD" id="Rn5-NL-hCZ"/>
                         <outlet property="notificationSubtitleLabel" destination="xYG-S0-atc" id="gTl-yW-fti"/>
