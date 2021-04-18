@@ -34,7 +34,8 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
 
         public init(map: Map) throws {
             self.title = try map.value("title", default: "Missing title")
-            self.identifier = try map.value("identifier", default: "missing")
+            // we fall back to 'action' for android-style dynamic actions
+            self.identifier = try map.value("identifier", default: try map.value("action", default: "missing"))
             self.authenticationRequired = try map.value("authenticationRequired", default: false)
             self.behavior = try map.value("behavior", default: "default")
             self.activationMode = try map.value("activationMode", default: "background")
