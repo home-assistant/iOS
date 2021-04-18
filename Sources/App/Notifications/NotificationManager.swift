@@ -174,16 +174,17 @@ class NotificationManager: NSObject {
 extension NotificationManager: UNUserNotificationCenterDelegate {
     private func urlString(from response: UNNotificationResponse) -> String? {
         let content = response.notification.request.content
+        let urlValue = ["url", "uri", "clickAction"].compactMap { content.userInfo[$0] }.first
 
         if let action = content.userInfoActionConfigs.first(
             where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
         ), let url = action.url {
             // we only allow the action-specific one to override global if it's set
             return url
-        } else if let openURLRaw = (content.userInfo["url"] ?? content.userInfo["uri"]) as? String {
+        } else if let openURLRaw = urlValue as? String {
             // global url [string], always do it if we aren't picking a specific action
             return openURLRaw
-        } else if let openURLDictionary = (content.userInfo["url"] ?? content.userInfo["uri"]) as? [String: String] {
+        } else if let openURLDictionary = urlValue as? [String: String] {
             // old-style, per-action url -- for before we could define actions in the notification dynamically
             return openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
