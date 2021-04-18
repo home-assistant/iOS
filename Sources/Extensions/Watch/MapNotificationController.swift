@@ -18,6 +18,10 @@ class MapNotificationController: WKUserNotificationInterfaceController {
         notificationSubtitleLabel.setText(notification.request.content.subtitle)
         notificationAlertLabel!.setText(notification.request.content.body)
 
+        if notificationActions.isEmpty {
+            notificationActions = notification.request.content.userInfoActions
+        }
+
         let userInfo = notification.request.content.userInfo
 
         guard let haDict = userInfo["homeassistant"] as? [String: Any] else {

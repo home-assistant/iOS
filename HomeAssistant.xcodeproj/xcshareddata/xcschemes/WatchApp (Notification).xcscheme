@@ -54,7 +54,8 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
-      launchAutomaticallySubstyle = "8">
+      launchAutomaticallySubstyle = "8"
+      notificationPayloadFile = "Sources/Extensions/NotificationContent/Resources/TestNotifications/dynamic_notification.apns">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

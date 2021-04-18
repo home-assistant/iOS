@@ -55,26 +55,13 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         return nil
     }
 
-    public static func actions(for raw: [[String: Any]]) -> [UNNotificationAction] {
-        do {
-            return try Mapper<MobileAppConfigPushCategory.Action>()
-                .mapArray(JSONArray: raw)
-                .map(NotificationAction.init(action:))
-                .map(\.action)
-        } catch {
-            return []
-        }
-    }
-
     func didReceive(_ notification: UNNotification) {
         let catID = notification.request.content.categoryIdentifier.lowercased()
         Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
 
         // we only do it for 'dynamic' or unconfigured existing categories, so we don't stop old configs
-        if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true,
-           let actionsJson = notification.request.content.userInfo["actions"] as? [[String: Any]]
-           {
-            extensionContext?.notificationActions = Self.actions(for: actionsJson)
+        if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true {
+            extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
 
         guard let (controller, promise) = viewController(for: notification) else {

@@ -67,6 +67,9 @@
 		1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */; };
 		1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */; };
 		1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
+		11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B7B262BDE80005EF90A /* DynamicNotificationController.swift */; };
+		11169BC6262BE45F005EF90A /* UNNotificationContent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */; };
+		11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */; };
 		1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111858D324CB5B8900B8CDDC /* PerformAction.swift */; };
@@ -1013,6 +1016,8 @@
 		1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListViewController.swift; sourceTree = "<group>"; };
 		1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryDetailViewController.swift; sourceTree = "<group>"; };
 		11169B3E262BCEE6005EF90A /* dynamic_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = dynamic_notification.apns; sourceTree = "<group>"; };
+		11169B7B262BDE80005EF90A /* DynamicNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationController.swift; sourceTree = "<group>"; };
+		11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+Additions.swift"; sourceTree = "<group>"; };
 		1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
@@ -2944,6 +2949,7 @@
 				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
 				B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */,
 				B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */,
+				11169B7B262BDE80005EF90A /* DynamicNotificationController.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -3188,6 +3194,7 @@
 			isa = PBXGroup;
 			children = (
 				11F2F21725871C1700F61F7C /* NotificationAttachments */,
+				11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -4832,6 +4839,7 @@
 				1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */,
 				1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
+				11169BC6262BE45F005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -4935,6 +4943,7 @@
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */,
+				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
 				B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4985,6 +4994,7 @@
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
+				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
