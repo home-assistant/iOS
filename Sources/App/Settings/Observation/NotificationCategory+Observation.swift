@@ -19,7 +19,7 @@ extension NotificationCategory {
                         identifier: $0,
                         actions: [],
                         intentIdentifiers: [],
-                        options: UNNotificationCategoryOptions([.customDismissAction])
+                        options: []
                     )
                 }
 
@@ -28,11 +28,26 @@ extension NotificationCategory {
                         identifier: $0,
                         actions: [],
                         intentIdentifiers: [],
-                        options: UNNotificationCategoryOptions([.customDismissAction])
+                        options: []
                     )
                 }
 
-                seal.fulfill(Set(camera + map))
+                let dynamic = ["DYNAMIC"].map {
+                    UNNotificationCategory(
+                        identifier: $0,
+                        actions: [
+                            UNNotificationAction(
+                                identifier: "LOADING",
+                                title: L10n.NotificationService.loadingDynamicActions,
+                                options: []
+                            )
+                        ],
+                        intentIdentifiers: [],
+                        options: []
+                    )
+                }
+
+                seal.fulfill(Set(camera + map + dynamic))
             }
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
@@ -44,8 +59,11 @@ extension NotificationCategory {
                 persisted,
             ]).done(on: .main) { unCategories in
                 let provided = unCategories.reduce(into: Set(), { $0.formUnion($1) })
-                Current.Log.verbose("registering \(provided.map(\.identifier))")
+                Current.Log.verbose("registering \(provided.count) categories")
                 UNUserNotificationCenter.current().setNotificationCategories(provided)
+                UNUserNotificationCenter.current().getNotificationCategories { categories in
+                    Current.Log.verbose("registered \(categories.count) categories")
+                }
             }
         }
     }

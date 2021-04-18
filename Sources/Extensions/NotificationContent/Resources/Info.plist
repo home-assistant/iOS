@@ -53,6 +53,7 @@
 				<string>MAP3</string>
 				<string>MAP4</string>
 				<string>MAP5</string>
+				<string>DYNAMIC</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<integer>0</integer>

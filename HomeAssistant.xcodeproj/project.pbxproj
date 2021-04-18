@@ -1012,6 +1012,7 @@
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
 		1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListViewController.swift; sourceTree = "<group>"; };
 		1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryDetailViewController.swift; sourceTree = "<group>"; };
+		11169B3E262BCEE6005EF90A /* dynamic_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = dynamic_notification.apns; sourceTree = "<group>"; };
 		1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
@@ -1885,6 +1886,7 @@
 			children = (
 				110FB4512499DB3A000865B4 /* map_notification.apns */,
 				1100D52024974D6700B1073C /* camera_notification.apns */,
+				11169B3E262BCEE6005EF90A /* dynamic_notification.apns */,
 			);
 			path = TestNotifications;
 			sourceTree = "<group>";
