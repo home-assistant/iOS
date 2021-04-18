@@ -42,15 +42,15 @@ public final class NotificationCategory: Object, UpdatableModel {
 
     #if os(iOS)
     public var categories: [UNNotificationCategory] {
-        return [
+        [
             UNNotificationCategory(
                 identifier: Identifier.uppercased(),
                 actions: Array(Actions.map(\.action)),
                 intentIdentifiers: [],
-                hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
-                categorySummaryFormat: self.CategorySummaryFormat,
-                options: self.options
-            )
+                hiddenPreviewsBodyPlaceholder: HiddenPreviewsBodyPlaceholder,
+                categorySummaryFormat: CategorySummaryFormat,
+                options: options
+            ),
         ]
     }
     #endif

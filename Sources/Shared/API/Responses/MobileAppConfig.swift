@@ -52,7 +52,7 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
                 }
             }
 
-            if self.identifier.lowercased() == "reply" {
+            if identifier.lowercased() == "reply" {
                 // matching Android behavior
                 self.behavior = "textinput"
             }

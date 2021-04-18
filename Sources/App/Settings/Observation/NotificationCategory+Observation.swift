@@ -31,11 +31,11 @@ extension NotificationCategory {
                                 identifier: "LOADING",
                                 title: L10n.NotificationService.loadingDynamicActions,
                                 options: []
-                            )
+                            ),
                         ],
                         intentIdentifiers: [],
                         options: []
-                    )
+                    ),
                 ]
 
                 seal.fulfill(Set(basic + dynamic))

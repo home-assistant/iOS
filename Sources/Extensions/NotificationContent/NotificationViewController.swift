@@ -1,10 +1,10 @@
 import Alamofire
 import KeychainAccess
 import MBProgressHUD
+import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
-import ObjectMapper
 import UserNotifications
 import UserNotificationsUI
 
@@ -41,7 +41,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         MapViewController.self,
     ] }
 
-    private func viewController(for notification: UNNotification) -> (UIViewController & NotificationCategory, Promise<Void>)? {
+    private func viewController(
+        for notification: UNNotification
+    ) -> (UIViewController & NotificationCategory, Promise<Void>)? {
         for controllerType in Self.possibleControllers {
             do {
                 let controller = controllerType.init()

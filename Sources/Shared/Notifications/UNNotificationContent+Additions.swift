@@ -1,5 +1,5 @@
-import UserNotifications
 import ObjectMapper
+import UserNotifications
 
 public extension UNNotificationContent {
     var userInfoActionConfigs: [MobileAppConfigPushCategory.Action] {

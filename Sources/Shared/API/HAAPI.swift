@@ -694,7 +694,7 @@ public class HomeAssistantAPI {
                 category: category,
                 actionData: userInfo["homeassistant"],
                 textInput: userInput
-            )
+            ),
         ]
 
         return Current.api.then(on: nil) { api in

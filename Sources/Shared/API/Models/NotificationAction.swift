@@ -24,22 +24,22 @@ public class NotificationAction: Object {
     public convenience init(action: MobileAppConfigPushCategory.Action) {
         self.init()
 
-        isServerControlled = true
-        Title = action.title
-        Identifier = action.identifier
-        AuthenticationRequired = action.authenticationRequired
-        Foreground = (action.activationMode.lowercased() == "foreground")
-        Destructive = action.destructive
-        TextInput = (action.behavior.lowercased() == "textinput")
+        self.isServerControlled = true
+        self.Title = action.title
+        self.Identifier = action.identifier
+        self.AuthenticationRequired = action.authenticationRequired
+        self.Foreground = (action.activationMode.lowercased() == "foreground")
+        self.Destructive = action.destructive
+        self.TextInput = (action.behavior.lowercased() == "textinput")
         if let title = action.textInputButtonTitle {
-            TextInputButtonTitle = title
+            self.TextInputButtonTitle = title
         } else {
-            TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
+            self.TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
         }
         if let placeholder = action.textInputPlaceholder {
-            TextInputPlaceholder = placeholder
+            self.TextInputPlaceholder = placeholder
         } else {
-            TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
+            self.TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
         }
     }
 
