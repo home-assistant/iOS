@@ -42,19 +42,16 @@ public final class NotificationCategory: Object, UpdatableModel {
 
     #if os(iOS)
     public var categories: [UNNotificationCategory] {
-        let allActions = Array(Actions.map(\.action))
-
-        // both lowercase and uppercase since this is a point of confusion
-        return [Identifier.uppercased(), Identifier.lowercased()].map { anIdentifier in
+        return [
             UNNotificationCategory(
-                identifier: anIdentifier,
-                actions: allActions,
+                identifier: Identifier.uppercased(),
+                actions: Array(Actions.map(\.action)),
                 intentIdentifiers: [],
                 hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
                 categorySummaryFormat: self.CategorySummaryFormat,
                 options: self.options
             )
-        }
+        ]
     }
     #endif
 

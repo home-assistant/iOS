@@ -9,32 +9,23 @@ extension NotificationCategory {
         let categories = Current.realm().objects(NotificationCategory.self)
 
         Current.modelManager.observe(for: AnyRealmCollection(categories)) { collection in
-            let fastlane = Promise<Set<UNNotificationCategory>> { seal in
+            let builtin = Promise<Set<UNNotificationCategory>> { seal in
                 guard Current.appConfiguration == .FastlaneSnapshot else {
                     return seal.fulfill(Set())
                 }
 
-                let camera = ["camera", "CAMERA"].map {
+                let basic = ["CAMERA", "MAP"].map { identifier in
                     UNNotificationCategory(
-                        identifier: $0,
+                        identifier: identifier,
                         actions: [],
                         intentIdentifiers: [],
                         options: []
                     )
                 }
 
-                let map = ["map", "MAP"].map {
+                let dynamic = [
                     UNNotificationCategory(
-                        identifier: $0,
-                        actions: [],
-                        intentIdentifiers: [],
-                        options: []
-                    )
-                }
-
-                let dynamic = ["DYNAMIC"].map {
-                    UNNotificationCategory(
-                        identifier: $0,
+                        identifier: "DYNAMIC",
                         actions: [
                             UNNotificationAction(
                                 identifier: "LOADING",
@@ -45,9 +36,9 @@ extension NotificationCategory {
                         intentIdentifiers: [],
                         options: []
                     )
-                }
+                ]
 
-                seal.fulfill(Set(camera + map + dynamic))
+                seal.fulfill(Set(basic + dynamic))
             }
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
@@ -55,7 +46,7 @@ extension NotificationCategory {
             }
 
             return when(fulfilled: [
-                fastlane,
+                builtin,
                 persisted,
             ]).done(on: .main) { unCategories in
                 let provided = unCategories.reduce(into: Set(), { $0.formUnion($1) })
