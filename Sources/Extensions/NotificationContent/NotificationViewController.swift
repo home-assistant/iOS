@@ -59,7 +59,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         let catID = notification.request.content.categoryIdentifier.lowercased()
         Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
 
-        // we only do it for 'dynamic' or unconfigured existing categories, so we don't stop old configs
+        // we only do it for 'dynamic' or unconfigured existing categories, so we don't stomp old configs
         if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true {
             extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
