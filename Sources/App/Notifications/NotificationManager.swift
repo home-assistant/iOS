@@ -172,6 +172,34 @@ class NotificationManager: NSObject {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
+    private func urlString(from response: UNNotificationResponse) -> String? {
+        let content = response.notification.request.content
+
+        if let action = content.userInfoActionConfigs.first(
+            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
+        ) {
+            // we don't check of the url exists, because we want to not accidentally call the global one if provided
+            return action.url
+        } else if let openURLRaw = (content.userInfo["url"] ?? content.userInfo["uri"]) as? String {
+            // global url [string], always do it if we aren't picking a specific action
+            return openURLRaw
+        } else if let openURLDictionary = (content.userInfo["url"] ?? content.userInfo["uri"]) as? [String: String] {
+            // old-style, per-action url -- for before we could define actions in the notification dynamically
+            return openURLDictionary.compactMap { key, value -> String? in
+                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
+                    return value
+                } else if key.lowercased() == response.actionIdentifier.lowercased() {
+                    return value
+                } else {
+                    return nil
+                }
+            }.first
+        } else {
+            return nil
+        }
+    }
+
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -198,44 +226,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        if let action = response.notification.request.content.userInfoActionConfigs.first(
-            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
-        ) {
-            // note we check url inside -- we don't want to fire the global 'url' for action taps, even if undefined
-            if let url = action.url {
-                Current.sceneManager.webViewWindowControllerPromise.done {
-                    $0.open(from: .notification, urlString: url)
-                }
-            }
-        } else if let openURLRaw = (userInfo["url"] ?? userInfo["uri"]) as? String {
+        if let url = urlString(from: response) {
+            Current.Log.info("launching URL \(url)")
             Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, urlString: openURLRaw)
+                $0.open(from: .notification, urlString: url)
             }
-        } else if let openURLDictionary = (userInfo["url"] ?? userInfo["uri"]) as? [String: String] {
-            let url = openURLDictionary.compactMap { key, value -> String? in
-                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
-                    return value
-                } else if key.lowercased() == response.actionIdentifier.lowercased() {
-                    return value
-                } else {
-                    return nil
-                }
-            }.first
-
-            if let url = url {
-                Current.sceneManager.webViewWindowControllerPromise.done {
-                    $0.open(from: .notification, urlString: url)
-                }
-            } else {
-                Current.Log.error(
-                    "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
-                )
-            }
-        } else if let someUrl = (userInfo["url"] ?? userInfo["uri"]) {
-            Current.Log.error(
-                "couldn't make openable url out of \(type(of: someUrl)): \(String(describing: someUrl))"
-            )
         }
 
         Current.backgroundTask(withName: "handle-push-action") { _ in
