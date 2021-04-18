@@ -47,9 +47,10 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
     }
 
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
-        guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
-            return .init(error: CameraError.missingEntityId)
+    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) throws -> Promise<Void> {
+        guard let entityId = notification.request.content.userInfo["entity_id"] as? String,
+              entityId.starts(with: "camera.") else {
+            throw CameraError.missingEntityId
         }
 
         return Current.api.then(on: nil) { api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
