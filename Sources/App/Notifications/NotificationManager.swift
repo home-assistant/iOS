@@ -177,9 +177,9 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let action = content.userInfoActionConfigs.first(
             where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
-        ) {
-            // we don't check of the url exists, because we want to not accidentally call the global one if provided
-            return action.url
+        ), let url = action.url {
+            // we only allow the action-specific one to override global if it's set
+            return url
         } else if let openURLRaw = (content.userInfo["url"] ?? content.userInfo["uri"]) as? String {
             // global url [string], always do it if we aren't picking a specific action
             return openURLRaw
