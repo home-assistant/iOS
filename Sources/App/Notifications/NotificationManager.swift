@@ -83,10 +83,14 @@ class NotificationManager: NSObject {
             case "clear_badge":
                 Current.Log.verbose("Setting badge to 0 as requested")
                 UIApplication.shared.applicationIconBadgeNumber = 0
+                completionHandler(.newData)
             case "clear_notification":
                 Current.Log.verbose("clearing notification for \(userInfo)")
                 let keys = ["tag", "collapseId"].compactMap { hadict[$0] as? String }
-                UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
+                if !keys.isEmpty {
+                    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
+                }
+                completionHandler(.newData)
             default:
                 Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                 completionHandler(.noData)
