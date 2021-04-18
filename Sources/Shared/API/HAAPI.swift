@@ -601,9 +601,6 @@ public class HomeAssistantAPI {
         var eventData = [String: Any]()
         eventData["action"] = identifier
 
-        if let category = category {
-            eventData["category"] = category
-        }
         if let actionData = actionData {
             eventData["action_data"] = actionData
         }
