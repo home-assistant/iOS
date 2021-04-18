@@ -234,19 +234,21 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             }
         }
 
-        Current.backgroundTask(withName: "handle-push-action") { _ in
-            Current.api.then(on: nil) { api in
-                api.handlePushAction(
-                    identifier: response.actionIdentifier,
-                    category: response.notification.request.content.categoryIdentifier,
-                    userInfo: userInfo,
-                    userInput: userText
-                )
+        if response.actionIdentifier != UNNotificationDefaultActionIdentifier {
+            Current.backgroundTask(withName: "handle-push-action") { _ in
+                Current.api.then(on: nil) { api in
+                    api.handlePushAction(
+                        identifier: response.actionIdentifier,
+                        category: response.notification.request.content.categoryIdentifier,
+                        userInfo: userInfo,
+                        userInput: userText
+                    )
+                }
+            }.ensure {
+                completionHandler()
+            }.catch { err -> Void in
+                Current.Log.error("Error when handling push action: \(err)")
             }
-        }.ensure {
-            completionHandler()
-        }.catch { err -> Void in
-            Current.Log.error("Error when handling push action: \(err)")
         }
     }
 
