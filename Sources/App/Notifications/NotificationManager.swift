@@ -227,6 +227,14 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             Current.Log.error(
                 "couldn't make openable url out of \(type(of: someUrl)): \(String(describing: someUrl))"
             )
+        } else {
+            let action = response.notification.request.content.userInfoActionConfigs
+                .first(where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() })
+            if let url = action?.url {
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(from: .notification, urlString: url)
+                }
+            }
         }
 
         Current.backgroundTask(withName: "handle-push-action") { _ in
