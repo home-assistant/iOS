@@ -198,11 +198,20 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        if let openURLRaw = userInfo["url"] as? String {
+        if let action = response.notification.request.content.userInfoActionConfigs.first(
+            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
+        ) {
+            // note we check url inside -- we don't want to fire the global 'url' for action taps, even if undefined
+            if let url = action.url {
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(from: .notification, urlString: url)
+                }
+            }
+        } else if let openURLRaw = (userInfo["url"] ?? userInfo["uri"]) as? String {
             Current.sceneManager.webViewWindowControllerPromise.done {
                 $0.open(from: .notification, urlString: openURLRaw)
             }
-        } else if let openURLDictionary = userInfo["url"] as? [String: String] {
+        } else if let openURLDictionary = (userInfo["url"] ?? userInfo["uri"]) as? [String: String] {
             let url = openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                    key.lowercased() == NotificationCategory.FallbackActionIdentifier {
@@ -223,18 +232,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                     "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
                 )
             }
-        } else if let someUrl = userInfo["url"] {
+        } else if let someUrl = (userInfo["url"] ?? userInfo["uri"]) {
             Current.Log.error(
                 "couldn't make openable url out of \(type(of: someUrl)): \(String(describing: someUrl))"
             )
-        } else {
-            let action = response.notification.request.content.userInfoActionConfigs
-                .first(where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() })
-            if let url = action?.url {
-                Current.sceneManager.webViewWindowControllerPromise.done {
-                    $0.open(from: .notification, urlString: url)
-                }
-            }
         }
 
         Current.backgroundTask(withName: "handle-push-action") { _ in
