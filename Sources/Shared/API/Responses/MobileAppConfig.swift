@@ -51,6 +51,11 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
                     self.activationMode = "foreground"
                 }
             }
+
+            if self.identifier.lowercased() == "reply" {
+                // matching Android behavior
+                self.behavior = "textinput"
+            }
         }
     }
 
