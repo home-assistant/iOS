@@ -41,6 +41,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 ])
 
                 viewController.didMove(toParent: self)
+            } else {
+                // 0 doesn't adjust size, must be a > check
+                preferredContentSize.height = .leastNonzeroMagnitude
             }
         }
     }

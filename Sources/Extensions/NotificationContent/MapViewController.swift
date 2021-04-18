@@ -25,6 +25,14 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         }
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        NSLayoutConstraint.activate([
+            view.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5625),
+        ])
+    }
+
     func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
         let userInfo = notification.request.content.userInfo
 

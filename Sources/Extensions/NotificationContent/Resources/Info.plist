@@ -55,7 +55,7 @@
 				<string>MAP5</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
-			<real>0.5625</real>
+			<integer>0</integer>
 			<key>UNNotificationExtensionUserInteractionEnabled</key>
 			<true/>
 		</dict>
