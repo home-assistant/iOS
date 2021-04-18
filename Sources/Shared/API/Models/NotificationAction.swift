@@ -21,6 +21,28 @@ public class NotificationAction: Object {
         .TextInputPlaceholder.title
     // swiftlint:enable line_length
 
+    public convenience init(action: MobileAppConfigPushCategory.Action) {
+        self.init()
+
+        isServerControlled = true
+        Title = action.title
+        Identifier = action.identifier
+        AuthenticationRequired = action.authenticationRequired
+        Foreground = (action.activationMode.lowercased() == "foreground")
+        Destructive = action.destructive
+        TextInput = (action.behavior.lowercased() == "textinput")
+        if let title = action.textInputButtonTitle {
+            TextInputButtonTitle = title
+        } else {
+            TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
+        }
+        if let placeholder = action.textInputPlaceholder {
+            TextInputPlaceholder = placeholder
+        } else {
+            TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
+        }
+    }
+
     override public static func primaryKey() -> String? {
         "uuid"
     }
