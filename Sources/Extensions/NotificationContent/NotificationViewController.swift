@@ -72,9 +72,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }
 
             let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-            let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
             hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
-            hud.detailsLabel.text = loadTxt
             return hud
         }()
 
