@@ -175,6 +175,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.write.success_message" = "Tag Written!";
 "no_label" = "Na";
 "notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
 "notification_service.parser.camera.no_entity" = "No entity_id was provided.";
 "notification_service.parser.url.invalid_url" = "The given URL was invalid.";
@@ -415,6 +416,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
 "settings_details.location.title" = "Lleoliad";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Nôl cefndir";
 "settings_details.location.updates.footer" = "Gellir sbarduno diweddariadau lleoliad â llaw bob amser";
 "settings_details.location.updates.header" = "Diweddaru ffynonellau";

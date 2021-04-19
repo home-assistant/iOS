@@ -175,6 +175,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "nfc.write.success_message" = "Data skrevet til tag!";
 "no_label" = "Nej";
 "notification_service.failed_to_load" = "Vedhæftning kunne ikke indlæses";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "Angivet entitets-Id er ugyldig.";
 "notification_service.parser.camera.no_entity" = "Ingen entitets-Id blev angivet.";
 "notification_service.parser.url.invalid_url" = "Den angivne webadresse var ugyldig.";
@@ -415,6 +416,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.location.notifications.visit.title" = "Gå til lokalitetsnotifikationer";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL lokalitetsnotifikationer";
 "settings_details.location.title" = "Lokalitet";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Baggrundshentning";
 "settings_details.location.updates.footer" = "Manuelle lokalitetsopdateringer kan altid udløses";
 "settings_details.location.updates.header" = "Opdater kilder";

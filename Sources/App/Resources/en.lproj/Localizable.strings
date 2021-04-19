@@ -175,6 +175,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.write.success_message" = "Tag Written!";
 "no_label" = "No";
 "notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
 "notification_service.parser.camera.no_entity" = "No entity_id was provided.";
 "notification_service.parser.url.invalid_url" = "The given URL was invalid.";
@@ -389,7 +390,6 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.title" = "Background Refresh";
-"settings_details.location.update_location" = "Update Location";
 "settings_details.location.location_accuracy.full" = "Full";
 "settings_details.location.location_accuracy.reduced" = "Reduced";
 "settings_details.location.location_accuracy.title" = "Location Accuracy";
@@ -416,6 +416,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
 "settings_details.location.title" = "Location";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Background fetch";
 "settings_details.location.updates.footer" = "Manual location updates can always be triggered";
 "settings_details.location.updates.header" = "Update sources";
@@ -957,4 +958,3 @@ Thank you.\
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.title" = "Actions";
 "yes_label" = "Yes";
-"notification_service.loading_dynamic_actions" = "Loading Actions…";

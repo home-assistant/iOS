@@ -109,7 +109,7 @@
 "ha_api.api_error.unknown" = "En ukjent feil oppstod.";
 "ha_api.api_error.update_not_possible" = "Operasjonen kunne ikke utføres.";
 "ha_api.api_error.webhook_gone" = "mobile_app integrasjonen er slettet, du må konfigurere appen på nytt.";
-"help_label" = "Help";
+"help_label" = "Hjelp";
 "location_change_notification.app_shortcut.body" = "Plasseringen oppdatert via App snarvei";
 "location_change_notification.background_fetch.body" = "Nåværende plassering utløst via bakgrunnsinnhenting";
 "location_change_notification.beacon_region_enter.body" = "%@ ankommer via iBeacon";
@@ -175,6 +175,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "nfc.write.success_message" = "Tag Skrevet!";
 "no_label" = "Nei";
 "notification_service.failed_to_load" = "Kunne ikke laste inn vedlegget";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "enhets_id oppgitt var ugyldig.";
 "notification_service.parser.camera.no_entity" = "Ingen enhets_id ble gitt.";
 "notification_service.parser.url.invalid_url" = "Den angitte URL-adressen var ugyldig.";
@@ -415,6 +416,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.location.notifications.visit.title" = "Gå til lokasjonsvarslinger";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Lokasjonsvarslinger";
 "settings_details.location.title" = "Lokasjonsinnstillinger";
+"settings_details.location.update_location" = "Oppdater plassering";
 "settings_details.location.updates.background.title" = "Bakgrunnsoppdatering";
 "settings_details.location.updates.footer" = "Manuell plasseringsoppdateringer kan alltid utløses";
 "settings_details.location.updates.header" = "Oppdater kilder";
@@ -537,7 +539,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.connection_error.forbidden.message" = "Passordet er feil.";
 "settings.connection_error.invalid_url.message" = "Ser ut som din URL-adressen er ugyldig. Vennligst sjekk format, og prøv på nytt.";
 "settings.connection_error.invalid_url.title" = "Feil under analyse av URL";
-"settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.add_server" = "Legg til server";
 "settings.connection_section.api_password_row.placeholder" = "passord";
 "settings.connection_section.api_password_row.title" = "Passord";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -599,7 +601,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Prøv på nytt: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Frakoblet";
 "settings.connection_section.websocket.title" = "WebSocket";
-"settings.debugging.title" = "Debugging";
+"settings.debugging.title" = "Feilsøking";
 "settings.details_section.enable_location_row.title" = "Aktiver lokasjonssporing";
 "settings.details_section.enable_notification_row.title" = "Aktiver varsler";
 "settings.details_section.integrations.header" = "Integrasjoner";

@@ -175,6 +175,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "nfc.write.success_message" = "Tag beschrieben!";
 "no_label" = "Nein";
 "notification_service.failed_to_load" = "Fehler beim Laden des Anhangs";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "Gegebene entity_id ist falsch.";
 "notification_service.parser.camera.no_entity" = "Es wurde keine entity_id angegeben.";
 "notification_service.parser.url.invalid_url" = "Die angegebene URL ist falsch.";
@@ -416,6 +417,7 @@ an dieses Gerät gesschickt.";
 "settings_details.location.notifications.visit.title" = "Gehe zu Standortbenachrichtigungen";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Standortbenachrichtigungen";
 "settings_details.location.title" = "Standorteinstellungen";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Hintergrundaktualisierung";
 "settings_details.location.updates.footer" = "Manuelle Standortaktualisierungen können immer ausgelöst werden";
 "settings_details.location.updates.header" = "Standortquellen";

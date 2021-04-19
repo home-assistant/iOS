@@ -175,6 +175,7 @@
 "nfc.write.success_message" = "Η ετικέτα γράφτηκε!";
 "no_label" = "Όχι";
 "notification_service.failed_to_load" = "Αποτυχία φόρτωσης συνημμένου";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "Το  entity_id που δόθηκε δεν ήταν έγκυρο.";
 "notification_service.parser.camera.no_entity" = "Δεν παρασχέθηκε entity_id.";
 "notification_service.parser.url.invalid_url" = "Η διεύθυνση URL που δόθηκε δεν ήταν έγκυρη.";
@@ -415,6 +416,7 @@
 "settings_details.location.notifications.visit.title" = "Επίσκεψη ειδοποιήσεων τοποθεσίας";
 "settings_details.location.notifications.x_callback_url.title" = "Ειδοποιήσεις τοποθεσίας X-Callback-URL";
 "settings_details.location.title" = "Τοποθεσία";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Ανανέωση background";
 "settings_details.location.updates.footer" = "Οι μη αυτόματες ενημερώσεις τοποθεσίας μπορούν πάντα να ενεργοποιούνται";
 "settings_details.location.updates.header" = "Ενημέρωση πηγών";

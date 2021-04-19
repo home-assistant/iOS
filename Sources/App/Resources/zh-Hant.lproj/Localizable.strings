@@ -109,7 +109,7 @@
 "ha_api.api_error.unknown" = "發生未知錯誤。";
 "ha_api.api_error.update_not_possible" = "動作無法執行。";
 "ha_api.api_error.webhook_gone" = "mobile_app 整合已刪除，需重新設定程式。";
-"help_label" = "Help";
+"help_label" = "說明";
 "location_change_notification.app_shortcut.body" = "已透過 App 捷徑更新座標";
 "location_change_notification.background_fetch.body" = "背景取得目前座標";
 "location_change_notification.beacon_region_enter.body" = "已透過 iBeacon 偵測到 %@ 進入";
@@ -175,6 +175,7 @@
 "nfc.write.success_message" = "標籤已寫入！";
 "no_label" = "否";
 "notification_service.failed_to_load" = "載入附帶檔案失敗";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "所提供的 entity_id 無效。";
 "notification_service.parser.camera.no_entity" = "未提供 entity_id。";
 "notification_service.parser.url.invalid_url" = "所提供的 URL 無效。";
@@ -415,6 +416,7 @@
 "settings_details.location.notifications.visit.title" = "拜訪位置通知";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL 位置通知";
 "settings_details.location.title" = "座標設定";
+"settings_details.location.update_location" = "更新座標";
 "settings_details.location.updates.background.title" = "背景運作";
 "settings_details.location.updates.footer" = "可以隨時手動更新座標";
 "settings_details.location.updates.header" = "更新座標取得來源";
@@ -537,7 +539,7 @@
 "settings.connection_error.forbidden.message" = "認證錯誤。";
 "settings.connection_error.invalid_url.message" = "提供的網址格式無效，請檢查格式後再試一次。";
 "settings.connection_error.invalid_url.title" = "解析網址發生錯誤";
-"settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.add_server" = "新增伺服器";
 "settings.connection_section.api_password_row.placeholder" = "密碼";
 "settings.connection_section.api_password_row.title" = "密碼";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -599,7 +601,7 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "重試次數：%1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "已斷線";
 "settings.connection_section.websocket.title" = "WebSocket";
-"settings.debugging.title" = "Debugging";
+"settings.debugging.title" = "除錯";
 "settings.details_section.enable_location_row.title" = "啟用座標追蹤";
 "settings.details_section.enable_notification_row.title" = "啟用訊息通知";
 "settings.details_section.integrations.header" = "整合";
