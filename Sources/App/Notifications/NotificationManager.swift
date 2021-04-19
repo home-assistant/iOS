@@ -180,6 +180,35 @@ class NotificationManager: NSObject {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
+    private func urlString(from response: UNNotificationResponse) -> String? {
+        let content = response.notification.request.content
+        let urlValue = ["url", "uri", "clickAction"].compactMap { content.userInfo[$0] }.first
+
+        if let action = content.userInfoActionConfigs.first(
+            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
+        ), let url = action.url {
+            // we only allow the action-specific one to override global if it's set
+            return url
+        } else if let openURLRaw = urlValue as? String {
+            // global url [string], always do it if we aren't picking a specific action
+            return openURLRaw
+        } else if let openURLDictionary = urlValue as? [String: String] {
+            // old-style, per-action url -- for before we could define actions in the notification dynamically
+            return openURLDictionary.compactMap { key, value -> String? in
+                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
+                    return value
+                } else if key.lowercased() == response.actionIdentifier.lowercased() {
+                    return value
+                } else {
+                    return nil
+                }
+            }.first
+        } else {
+            return nil
+        }
+    }
+
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -206,50 +235,28 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        if let openURLRaw = userInfo["url"] as? String {
+        if let url = urlString(from: response) {
+            Current.Log.info("launching URL \(url)")
             Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, urlString: openURLRaw)
+                $0.open(from: .notification, urlString: url)
             }
-        } else if let openURLDictionary = userInfo["url"] as? [String: String] {
-            let url = openURLDictionary.compactMap { key, value -> String? in
-                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
-                    return value
-                } else if key.lowercased() == response.actionIdentifier.lowercased() {
-                    return value
-                } else {
-                    return nil
-                }
-            }.first
-
-            if let url = url {
-                Current.sceneManager.webViewWindowControllerPromise.done {
-                    $0.open(from: .notification, urlString: url)
-                }
-            } else {
-                Current.Log.error(
-                    "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
-                )
-            }
-        } else if let someUrl = userInfo["url"] {
-            Current.Log.error(
-                "couldn't make openable url out of \(type(of: someUrl)): \(String(describing: someUrl))"
-            )
         }
 
-        Current.backgroundTask(withName: "handle-push-action") { _ in
-            Current.api.then(on: nil) { api in
-                api.handlePushAction(
-                    identifier: response.actionIdentifier,
-                    category: response.notification.request.content.categoryIdentifier,
-                    userInfo: userInfo,
-                    userInput: userText
-                )
+        if response.actionIdentifier != UNNotificationDefaultActionIdentifier {
+            Current.backgroundTask(withName: "handle-push-action") { _ in
+                Current.api.then(on: nil) { api in
+                    api.handlePushAction(
+                        identifier: response.actionIdentifier,
+                        category: response.notification.request.content.categoryIdentifier,
+                        userInfo: userInfo,
+                        userInput: userText
+                    )
+                }
+            }.ensure {
+                completionHandler()
+            }.catch { err -> Void in
+                Current.Log.error("Error when handling push action: \(err)")
             }
-        }.ensure {
-            completionHandler()
-        }.catch { err -> Void in
-            Current.Log.error("Error when handling push action: \(err)")
         }
     }
 

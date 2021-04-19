@@ -53,9 +53,10 @@
 				<string>MAP3</string>
 				<string>MAP4</string>
 				<string>MAP5</string>
+				<string>DYNAMIC</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
-			<real>0.5625</real>
+			<integer>0</integer>
 			<key>UNNotificationExtensionUserInteractionEnabled</key>
 			<true/>
 		</dict>

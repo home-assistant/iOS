@@ -21,6 +21,28 @@ public class NotificationAction: Object {
         .TextInputPlaceholder.title
     // swiftlint:enable line_length
 
+    public convenience init(action: MobileAppConfigPushCategory.Action) {
+        self.init()
+
+        self.isServerControlled = true
+        self.Title = action.title
+        self.Identifier = action.identifier
+        self.AuthenticationRequired = action.authenticationRequired
+        self.Foreground = (action.activationMode.lowercased() == "foreground")
+        self.Destructive = action.destructive
+        self.TextInput = (action.behavior.lowercased() == "textinput")
+        if let title = action.textInputButtonTitle {
+            self.TextInputButtonTitle = title
+        } else {
+            self.TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
+        }
+        if let placeholder = action.textInputPlaceholder {
+            self.TextInputPlaceholder = placeholder
+        } else {
+            self.TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
+        }
+    }
+
     override public static func primaryKey() -> String? {
         "uuid"
     }
@@ -55,7 +77,7 @@ public class NotificationAction: Object {
         category: String?,
         textInput: Bool
     ) -> String {
-        let data = HomeAssistantAPI.notificationActionEvent(
+        let data = HomeAssistantAPI.legacyNotificationActionEvent(
             identifier: identifier,
             category: category,
             actionData: "# value of action_data in notify call",

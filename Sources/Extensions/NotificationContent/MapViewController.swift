@@ -25,17 +25,25 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         }
     }
 
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        NSLayoutConstraint.activate([
+            view.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5625),
+        ])
+    }
+
+    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) throws -> Promise<Void> {
         let userInfo = notification.request.content.userInfo
 
         guard let haDict = userInfo["homeassistant"] as? [String: Any] else {
-            return .init(error: MapError.missingPayload)
+            throw MapError.missingPayload
         }
         guard let latitude = CLLocationDegrees(templateValue: haDict["latitude"]) else {
-            return .init(error: MapError.missingLatitude)
+            throw MapError.missingLatitude
         }
         guard let longitude = CLLocationDegrees(templateValue: haDict["longitude"]) else {
-            return .init(error: MapError.missingLongitude)
+            throw MapError.missingLongitude
         }
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         mapView = MKMapView()

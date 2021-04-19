@@ -638,6 +638,8 @@ public enum L10n {
   public enum NotificationService {
     /// Failed to load attachment
     public static var failedToLoad: String { return L10n.tr("Localizable", "notification_service.failed_to_load") }
+    /// Loading Actions…
+    public static var loadingDynamicActions: String { return L10n.tr("Localizable", "notification_service.loading_dynamic_actions") }
     public enum Parser {
       public enum Camera {
         /// entity_id provided was invalid.

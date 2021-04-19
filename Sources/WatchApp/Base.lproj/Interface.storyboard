@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="17156" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="17701" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="17034"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="17500"/>
     </dependencies>
     <scenes>
         <!--Home Assistant-->
@@ -44,11 +44,19 @@
             <objects>
                 <notificationController id="h4f-Hf-ll2" userLabel="Map Static Notification Interface Controller">
                     <items>
-                        <label alignment="left" text="Alert Label" numberOfLines="3" id="H5r-Ru-Cy4"/>
+                        <label alignment="left" text="Title" id="p2M-Qe-cqH">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="R0j-pC-RXg">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Body" id="zei-SN-eTI"/>
                     </items>
-                    <notificationCategory key="notificationCategory" identifier="map" id="PaD-pF-3Yk"/>
+                    <notificationCategory key="notificationCategory" identifier="MAP" id="PaD-pF-3Yk"/>
                     <connections>
-                        <outlet property="notificationAlertLabel" destination="H5r-Ru-Cy4" id="ui9-mA-ht9"/>
+                        <outlet property="notificationAlertLabel" destination="zei-SN-eTI" id="y2W-Nj-YI2"/>
+                        <outlet property="notificationSubtitleLabel" destination="R0j-pC-RXg" id="G7N-lL-jkc"/>
+                        <outlet property="notificationTitleLabel" destination="p2M-Qe-cqH" id="SV6-Ul-JsX"/>
                         <segue destination="LrQ-kJ-7bY" kind="relationship" relationship="dynamicNotificationInterface" id="Mj2-HI-URj"/>
                     </connections>
                 </notificationController>
@@ -60,38 +68,43 @@
             <objects>
                 <controller id="LrQ-kJ-7bY" customClass="MapNotificationController" customModule="WatchApp" customModuleProvider="target">
                     <items>
-                        <label alignment="left" text="Title" numberOfLines="2" id="vyJ-v3-IgR">
+                        <label alignment="left" text="Title" id="p2V-Pw-SrF">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="jKU-zr-KKu">
-                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        <label alignment="left" text="Subtitle" id="Luv-KR-F0P">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" numberOfLines="4" id="1Hj-Yc-sZU">
-                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
-                        </label>
+                        <label alignment="left" text="Body" id="FCu-iE-uLc"/>
                         <map height="150" alignment="left" id="Nsd-Pz-t9E"/>
                     </items>
                     <connections>
                         <outlet property="mapView" destination="Nsd-Pz-t9E" id="1LK-sZ-iS5"/>
-                        <outlet property="notificationAlertLabel" destination="1Hj-Yc-sZU" id="PdZ-MY-anT"/>
-                        <outlet property="notificationSubtitleLabel" destination="jKU-zr-KKu" id="ifs-Vq-9iq"/>
-                        <outlet property="notificationTitleLabel" destination="vyJ-v3-IgR" id="zuP-jS-xWO"/>
+                        <outlet property="notificationAlertLabel" destination="FCu-iE-uLc" id="mKC-JZ-RZZ"/>
+                        <outlet property="notificationSubtitleLabel" destination="Luv-KR-F0P" id="6Bk-Nk-ywr"/>
+                        <outlet property="notificationTitleLabel" destination="p2V-Pw-SrF" id="YhH-KP-Jfk"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="335" y="707"/>
+            <point key="canvasLocation" x="313" y="764"/>
         </scene>
         <!--Camera Static Notification Interface Controller-->
         <scene sceneID="jQk-Ce-YAw">
             <objects>
                 <notificationController id="JOO-yq-9Md" userLabel="Camera Static Notification Interface Controller">
                     <items>
-                        <label alignment="left" text="Alert Label" id="Imb-lE-NeQ"/>
+                        <label alignment="left" text="Title" id="jQa-FU-AW7">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="xYG-S0-atc">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Body" id="yBa-4u-GxD"/>
                     </items>
-                    <notificationCategory key="notificationCategory" identifier="camera" id="reZ-Qf-LhH"/>
+                    <notificationCategory key="notificationCategory" identifier="CAMERA" id="reZ-Qf-LhH"/>
                     <connections>
-                        <outlet property="notificationAlertLabel" destination="Imb-lE-NeQ" id="xDD-YX-Cjw"/>
+                        <outlet property="notificationAlertLabel" destination="yBa-4u-GxD" id="Rn5-NL-hCZ"/>
+                        <outlet property="notificationSubtitleLabel" destination="xYG-S0-atc" id="gTl-yW-fti"/>
+                        <outlet property="notificationTitleLabel" destination="jQa-FU-AW7" id="4ik-PQ-Vnx"/>
                         <segue destination="R7r-up-oD1" kind="relationship" relationship="dynamicNotificationInterface" id="S2l-7Q-okt"/>
                     </connections>
                 </notificationController>
@@ -103,27 +116,70 @@
             <objects>
                 <controller id="R7r-up-oD1" customClass="CameraNotificationController" customModule="WatchApp" customModuleProvider="target">
                     <items>
-                        <label alignment="left" text="Title" numberOfLines="2" id="3tx-pE-mk3">
+                        <label alignment="left" text="Title" id="LvM-IN-iYf">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="Cnt-he-fjW">
-                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        <label alignment="left" text="Subtitle" id="MDv-3I-PbQ">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" numberOfLines="4" id="g1t-FY-9bY">
-                            <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
-                        </label>
+                        <label alignment="left" text="Body" id="sYZ-if-ad8"/>
                         <imageView alignment="center" id="abh-Pc-dOV"/>
                     </items>
                     <connections>
                         <outlet property="imageView" destination="abh-Pc-dOV" id="In6-Pl-Ksu"/>
-                        <outlet property="notificationAlertLabel" destination="g1t-FY-9bY" id="epJ-dp-jBr"/>
-                        <outlet property="notificationSubtitleLabel" destination="Cnt-he-fjW" id="fe0-Rc-Avr"/>
-                        <outlet property="notificationTitleLabel" destination="3tx-pE-mk3" id="Qqb-3F-kCI"/>
+                        <outlet property="notificationAlertLabel" destination="sYZ-if-ad8" id="hZq-Sf-6qr"/>
+                        <outlet property="notificationSubtitleLabel" destination="MDv-3I-PbQ" id="7fT-7u-Tkt"/>
+                        <outlet property="notificationTitleLabel" destination="LvM-IN-iYf" id="VrM-fQ-hpd"/>
                     </connections>
                 </controller>
             </objects>
             <point key="canvasLocation" x="334" y="330"/>
+        </scene>
+        <!--Static Notification Interface Controller-->
+        <scene sceneID="gbc-4c-BJh">
+            <objects>
+                <notificationController id="QI5-5x-CEK">
+                    <items>
+                        <label alignment="left" text="Title" id="E7h-tN-FpM">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="RcO-zr-Q0h">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Body" id="qhB-ey-Ock"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="DYNAMIC" id="8b7-DD-rBi"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="qhB-ey-Ock" id="ZLz-D4-kfN"/>
+                        <outlet property="notificationSubtitleLabel" destination="RcO-zr-Q0h" id="zUE-Gz-bls"/>
+                        <outlet property="notificationTitleLabel" destination="E7h-tN-FpM" id="0Dt-7D-Kvh"/>
+                        <segue destination="CnG-yJ-6kl" kind="relationship" relationship="dynamicNotificationInterface" id="HR5-O9-7F0"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="-128" y="1055"/>
+        </scene>
+        <!--Dynamic Notification Controller-->
+        <scene sceneID="Cz7-57-7Ue">
+            <objects>
+                <controller id="CnG-yJ-6kl" customClass="DynamicNotificationController" customModule="WatchExtension_Watch">
+                    <items>
+                        <label alignment="left" text="Title" id="vEF-dD-raf">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="d7N-vP-Xvn">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Body" id="nz5-h3-92S"/>
+                    </items>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="nz5-h3-92S" id="mTD-G5-uoJ"/>
+                        <outlet property="notificationSubtitleLabel" destination="d7N-vP-Xvn" id="Nlg-x6-TPq"/>
+                        <outlet property="notificationTitleLabel" destination="vEF-dD-raf" id="oGw-Zs-TGY"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="172" y="1055"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>

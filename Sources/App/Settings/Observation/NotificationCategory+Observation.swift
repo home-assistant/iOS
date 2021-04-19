@@ -9,30 +9,36 @@ extension NotificationCategory {
         let categories = Current.realm().objects(NotificationCategory.self)
 
         Current.modelManager.observe(for: AnyRealmCollection(categories)) { collection in
-            let fastlane = Promise<Set<UNNotificationCategory>> { seal in
+            let builtin = Promise<Set<UNNotificationCategory>> { seal in
                 guard Current.appConfiguration == .FastlaneSnapshot else {
                     return seal.fulfill(Set())
                 }
 
-                let camera = ["camera", "CAMERA"].map {
+                let basic = ["CAMERA", "MAP"].map { identifier in
                     UNNotificationCategory(
-                        identifier: $0,
+                        identifier: identifier,
                         actions: [],
                         intentIdentifiers: [],
-                        options: UNNotificationCategoryOptions([.customDismissAction])
+                        options: []
                     )
                 }
 
-                let map = ["map", "MAP"].map {
+                let dynamic = [
                     UNNotificationCategory(
-                        identifier: $0,
-                        actions: [],
+                        identifier: "DYNAMIC",
+                        actions: [
+                            UNNotificationAction(
+                                identifier: "LOADING",
+                                title: L10n.NotificationService.loadingDynamicActions,
+                                options: []
+                            ),
+                        ],
                         intentIdentifiers: [],
-                        options: UNNotificationCategoryOptions([.customDismissAction])
-                    )
-                }
+                        options: []
+                    ),
+                ]
 
-                seal.fulfill(Set(camera + map))
+                seal.fulfill(Set(basic + dynamic))
             }
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
@@ -40,12 +46,15 @@ extension NotificationCategory {
             }
 
             return when(fulfilled: [
-                fastlane,
+                builtin,
                 persisted,
             ]).done(on: .main) { unCategories in
                 let provided = unCategories.reduce(into: Set(), { $0.formUnion($1) })
-                Current.Log.verbose("registering \(provided.map(\.identifier))")
+                Current.Log.verbose("registering \(provided.count) categories")
                 UNUserNotificationCenter.current().setNotificationCategories(provided)
+                UNUserNotificationCenter.current().getNotificationCategories { categories in
+                    Current.Log.verbose("registered \(categories.count) categories")
+                }
             }
         }
     }

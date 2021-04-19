@@ -569,7 +569,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public class func notificationActionEvent(
+    public class func legacyNotificationActionEvent(
         identifier: String,
         category: String?,
         actionData: Any?,
@@ -590,6 +590,25 @@ public class HomeAssistantAPI {
         }
 
         return (eventType: "ios.notification_action_fired", eventData: eventData)
+    }
+
+    public class func mobileAppNotificationActionEvent(
+        identifier: String,
+        category: String?,
+        actionData: Any?,
+        textInput: String?
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData = [String: Any]()
+        eventData["action"] = identifier
+
+        if let actionData = actionData {
+            eventData["action_data"] = actionData
+        }
+        if let textInput = textInput {
+            eventData["reply_text"] = textInput
+        }
+
+        return (eventType: "mobile_app_notification_action", eventData: eventData)
     }
 
     public class func actionEvent(
@@ -663,17 +682,26 @@ public class HomeAssistantAPI {
         userInfo: [AnyHashable: Any],
         userInput: String?
     ) -> Promise<Void> {
-        let action = Self.notificationActionEvent(
-            identifier: identifier,
-            category: category,
-            actionData: userInfo["homeassistant"],
-            textInput: userInput
-        )
-
-        Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+        let actions = [
+            Self.legacyNotificationActionEvent(
+                identifier: identifier,
+                category: category,
+                actionData: userInfo["homeassistant"],
+                textInput: userInput
+            ),
+            Self.mobileAppNotificationActionEvent(
+                identifier: identifier,
+                category: category,
+                actionData: userInfo["homeassistant"],
+                textInput: userInput
+            ),
+        ]
 
         return Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
+            when(resolved: actions.map { action -> Promise<Void> in
+                Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+                return api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
+            }).asVoid()
         }
     }
 

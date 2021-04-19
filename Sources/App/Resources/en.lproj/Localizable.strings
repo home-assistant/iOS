@@ -957,3 +957,4 @@ Thank you.\
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.title" = "Actions";
 "yes_label" = "Yes";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";

@@ -1,0 +1,20 @@
+{
+  "aps": {
+    "alert": {
+      "title": "title here",
+      "body": "body here"
+    },
+    "sound": "default",
+    "category": "DYNAMIC"
+  },
+  "actions": [
+    {
+      "identifier": "id1",
+      "title": "id1 title"
+    },
+    {
+      "action": "id2",
+      "title": "id2 title"
+    }
+  ]
+}

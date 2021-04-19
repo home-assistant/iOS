@@ -42,19 +42,16 @@ public final class NotificationCategory: Object, UpdatableModel {
 
     #if os(iOS)
     public var categories: [UNNotificationCategory] {
-        let allActions = Array(Actions.map(\.action))
-
-        // both lowercase and uppercase since this is a point of confusion
-        return [Identifier.uppercased(), Identifier.lowercased()].map { anIdentifier in
+        [
             UNNotificationCategory(
-                identifier: anIdentifier,
-                actions: allActions,
+                identifier: Identifier.uppercased(),
+                actions: Array(Actions.map(\.action)),
                 intentIdentifiers: [],
-                hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
-                categorySummaryFormat: self.CategorySummaryFormat,
-                options: self.options
-            )
-        }
+                hiddenPreviewsBodyPlaceholder: HiddenPreviewsBodyPlaceholder,
+                categorySummaryFormat: CategorySummaryFormat,
+                options: options
+            ),
+        ]
     }
     #endif
 
@@ -113,25 +110,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         Actions.removeAll()
 
         Actions.append(objectsIn: object.actions.map { action in
-            with(NotificationAction()) {
-                $0.isServerControlled = true
-                $0.Title = action.title
-                $0.Identifier = action.identifier
-                $0.AuthenticationRequired = action.authenticationRequired
-                $0.Foreground = (action.activationMode.lowercased() == "foreground")
-                $0.Destructive = action.destructive
-                $0.TextInput = (action.behavior.lowercased() == "textinput")
-                if let title = action.textInputButtonTitle {
-                    $0.TextInputButtonTitle = title
-                } else {
-                    $0.TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
-                }
-                if let placeholder = action.textInputPlaceholder {
-                    $0.TextInputPlaceholder = placeholder
-                } else {
-                    $0.TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
-                }
-            }
+            NotificationAction(action: action)
         })
 
         return true

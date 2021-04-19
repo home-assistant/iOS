@@ -38,7 +38,7 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
         ])
     }
 
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
+    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) throws -> Promise<Void> {
         .value(())
     }
 

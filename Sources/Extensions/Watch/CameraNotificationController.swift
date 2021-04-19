@@ -59,6 +59,10 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
         notificationSubtitleLabel.setText(notification.request.content.subtitle)
         notificationAlertLabel!.setText(notification.request.content.body)
 
+        if notificationActions.isEmpty {
+            notificationActions = notification.request.content.userInfoActions
+        }
+
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
             Current.Log.error(L10n.Extensions.NotificationContent.Error.noEntityId)
             return

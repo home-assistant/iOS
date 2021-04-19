@@ -1,24 +1,12 @@
 import Alamofire
 import KeychainAccess
 import MBProgressHUD
+import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-
-enum NotificationCategories: String {
-    case map
-    case map1
-    case map2
-    case map3
-    case map4
-    case camera
-    case camera1
-    case camera2
-    case camera3
-    case camera4
-}
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
     var activeViewController: (UIViewController & NotificationCategory)? {
@@ -41,26 +29,49 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 ])
 
                 viewController.didMove(toParent: self)
+            } else {
+                // 0 doesn't adjust size, must be a > check
+                preferredContentSize.height = .leastNonzeroMagnitude
             }
         }
     }
 
+    private static var possibleControllers: [(UIViewController & NotificationCategory).Type] { [
+        CameraViewController.self,
+        MapViewController.self,
+    ] }
+
+    private func viewController(
+        for notification: UNNotification
+    ) -> (UIViewController & NotificationCategory, Promise<Void>)? {
+        for controllerType in Self.possibleControllers {
+            do {
+                let controller = controllerType.init()
+                let promise = try controller.didReceive(notification: notification, extensionContext: extensionContext)
+                return (controller, promise)
+            } catch {
+                // not valid
+            }
+        }
+
+        return nil
+    }
+
     func didReceive(_ notification: UNNotification) {
         let catID = notification.request.content.categoryIdentifier.lowercased()
-        guard let category = NotificationCategories(rawValue: catID) else {
-            Current.Log.warning("Unknown category \(notification.request.content.categoryIdentifier)")
+        Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
+
+        // we only do it for 'dynamic' or unconfigured existing categories, so we don't stomp old configs
+        if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true {
+            extensionContext?.notificationActions = notification.request.content.userInfoActions
+        }
+
+        guard let (controller, promise) = viewController(for: notification) else {
+            activeViewController = nil
             return
         }
 
-        Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
-        let controller: UIViewController & NotificationCategory
-
-        switch category {
-        case .camera, .camera1, .camera2, .camera3, .camera4:
-            controller = CameraViewController()
-        case .map, .map1, .map2, .map3, .map4:
-            controller = MapViewController()
-        }
+        activeViewController = controller
 
         let hud: MBProgressHUD? = {
             guard controller.mediaPlayPauseButtonType == .none else {
@@ -69,18 +80,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }
 
             let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-            let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
             hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
-            hud.detailsLabel.text = loadTxt
             return hud
         }()
 
-        activeViewController = controller
-
-        controller.didReceive(
-            notification: notification,
-            extensionContext: extensionContext
-        ).ensure {
+        promise.ensure {
             hud?.hide(animated: true)
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
@@ -118,7 +122,7 @@ protocol NotificationCategory: NSObjectProtocol {
     func didReceive(
         notification: UNNotification,
         extensionContext: NSExtensionContext?
-    ) -> Promise<Void>
+    ) throws -> Promise<Void>
 
     // Implementing this method and returning a button type other that "None" will
     // make the notification attempt to draw a play/pause button correctly styled
