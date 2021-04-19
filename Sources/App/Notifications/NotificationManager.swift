@@ -58,7 +58,7 @@ class NotificationManager: NSObject {
         Messaging.messaging().appDidReceiveMessage(userInfo)
 
         if let userInfoDict = userInfo as? [String: Any],
-           let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
+           let hadict = userInfoDict["homeassistant"] as? [String: Any], let command = hadict["command"] as? String {
             switch command {
             case "request_location_update":
                 guard Current.settingsStore.locationSources.pushNotifications else {
@@ -83,6 +83,14 @@ class NotificationManager: NSObject {
             case "clear_badge":
                 Current.Log.verbose("Setting badge to 0 as requested")
                 UIApplication.shared.applicationIconBadgeNumber = 0
+                completionHandler(.newData)
+            case "clear_notification":
+                Current.Log.verbose("clearing notification for \(userInfo)")
+                let keys = ["tag", "collapseId"].compactMap { hadict[$0] as? String }
+                if !keys.isEmpty {
+                    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
+                }
+                completionHandler(.newData)
             default:
                 Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                 completionHandler(.noData)
