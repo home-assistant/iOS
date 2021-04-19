@@ -175,6 +175,7 @@
 "nfc.write.success_message" = "Тег записаний!";
 "no_label" = "Ні";
 "notification_service.failed_to_load" = "Не вдалося завантажити вкладення";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "Вказаний entity_id недійсний.";
 "notification_service.parser.camera.no_entity" = "Вказаний entity_id недійсний.";
 "notification_service.parser.url.invalid_url" = "Вказана URL-адреса недійсна.";
@@ -415,6 +416,7 @@
 "settings_details.location.notifications.visit.title" = "Сповіщення про відвідування розташувань";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL сповіщення про розташування";
 "settings_details.location.title" = "Розташування";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Фонове оновлення";
 "settings_details.location.updates.footer" = "Оновити розташування завжди можливо вручну";
 "settings_details.location.updates.header" = "Оновлення джерел";

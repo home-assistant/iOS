@@ -175,6 +175,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "nfc.write.success_message" = "Etiqueta escrita!";
 "no_label" = "No";
 "notification_service.failed_to_load" = "No s'ha pogut carregar el fitxer adjunt";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "entity_id proporcionat no era vàlid.";
 "notification_service.parser.camera.no_entity" = "No s'ha proporcionat cap entity_id.";
 "notification_service.parser.url.invalid_url" = "L'adreça URL donada no era vàlida.";
@@ -415,6 +416,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.location.notifications.visit.title" = "Consultar les notificacions d'ubicació";
 "settings_details.location.notifications.x_callback_url.title" = "Notificacions d'ubicació de X-Callback-URL";
 "settings_details.location.title" = "Ubicació";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Actualització en segon pla";
 "settings_details.location.updates.footer" = "Les actualitzacions d'ubicació manuals sempre es poden activar";
 "settings_details.location.updates.header" = "Fonts d’actualització";

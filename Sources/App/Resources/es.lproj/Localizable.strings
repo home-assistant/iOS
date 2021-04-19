@@ -175,6 +175,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.write.success_message" = "Tag Written!";
 "no_label" = "No";
 "notification_service.failed_to_load" = "Failed to load attachment";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "entity_id provided was invalid.";
 "notification_service.parser.camera.no_entity" = "No entity_id was provided.";
 "notification_service.parser.url.invalid_url" = "The given URL was invalid.";
@@ -415,6 +416,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.notifications.visit.title" = "Notificaciones de visita de ubicación";
 "settings_details.location.notifications.x_callback_url.title" = "Notificaciones de ubicación de X-Callback-URL";
 "settings_details.location.title" = "Configuración de ubicación";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Obtención en segundo plano";
 "settings_details.location.updates.footer" = "Las actualizaciones de ubicación siempre se pueden activar manualmente";
 "settings_details.location.updates.header" = "Fuentes de actualización";

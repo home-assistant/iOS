@@ -175,6 +175,7 @@
 "nfc.write.success_message" = "Tag scritto!";
 "no_label" = "No";
 "notification_service.failed_to_load" = "Impossibile caricare l'allegato";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "entity_id fornito non è valido.";
 "notification_service.parser.camera.no_entity" = "Non è stato fornito alcun entity_id.";
 "notification_service.parser.url.invalid_url" = "L'URL inserita non è valida";
@@ -415,6 +416,7 @@
 "settings_details.location.notifications.visit.title" = "Notifiche di posizione di visita";
 "settings_details.location.notifications.x_callback_url.title" = "Aggiornamento posizione tramite X-Callback-URL";
 "settings_details.location.title" = "Impostazioni di posizione";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Aggiornamento in background";
 "settings_details.location.updates.footer" = "Gli aggiornamenti manuali della posizione possono comunque essere attivati.";
 "settings_details.location.updates.header" = "Fonti di aggiornamento";

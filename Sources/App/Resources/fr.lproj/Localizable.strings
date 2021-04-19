@@ -109,7 +109,7 @@
 "ha_api.api_error.unknown" = "Une erreur inconnue est survenue.";
 "ha_api.api_error.update_not_possible" = "L'opération n'a pas pu être effectuée.";
 "ha_api.api_error.webhook_gone" = "L'intégration mobile_app a été supprimée, vous devez reconfigurer l'application.";
-"help_label" = "Help";
+"help_label" = "Aide";
 "location_change_notification.app_shortcut.body" = "Lieu mis à jour via l'App Shortcut";
 "location_change_notification.background_fetch.body" = "L'envoie de l'emplacement actuel a été déclenchée via l'actualisation en arrière-plan";
 "location_change_notification.beacon_region_enter.body" = "%@ entré via iBeacon";
@@ -175,6 +175,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "nfc.write.success_message" = "Tag écrit !";
 "no_label" = "Non";
 "notification_service.failed_to_load" = "Échec du chargement de la pièce jointe";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "l'entity_id fourni n'était pas valide.";
 "notification_service.parser.camera.no_entity" = "Aucun entity_id n'a été fourni.";
 "notification_service.parser.url.invalid_url" = "L'URL indiquée n'était pas valide.";
@@ -415,6 +416,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.location.notifications.visit.title" = "Notifications d'emplacement:";
 "settings_details.location.notifications.x_callback_url.title" = "Emplacement via X-Callback-URL";
 "settings_details.location.title" = "Paramètres d'emplacement";
+"settings_details.location.update_location" = "mettre la localisation à jour";
 "settings_details.location.updates.background.title" = "Actualisation en arrière-plan";
 "settings_details.location.updates.footer" = "Les mises à jour manuelles de l'emplacement peuvent toujours être déclenchées";
 "settings_details.location.updates.header" = "Mis à jour via";
@@ -537,7 +539,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_error.forbidden.message" = "Mot de passe incorrect.";
 "settings.connection_error.invalid_url.message" = "Votre URL ne semble pas valide. Veuillez vérifier le format et réessayer.";
 "settings.connection_error.invalid_url.title" = "Erreur d'analyse de l'URL";
-"settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.add_server" = "Ajouter un serveur";
 "settings.connection_section.api_password_row.placeholder" = "mot de passe";
 "settings.connection_section.api_password_row.title" = "Mot de passe";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -599,7 +601,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Nombre de tentatives: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Déconnecté";
 "settings.connection_section.websocket.title" = "WebSocket";
-"settings.debugging.title" = "Debugging";
+"settings.debugging.title" = "Débogage";
 "settings.details_section.enable_location_row.title" = "Activer le suivi de l’emplacement";
 "settings.details_section.enable_notification_row.title" = "Activer les notifications";
 "settings.details_section.integrations.header" = "Intégrations";
