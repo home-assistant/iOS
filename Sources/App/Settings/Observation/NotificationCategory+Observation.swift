@@ -9,43 +9,42 @@ extension NotificationCategory {
         let categories = Current.realm().objects(NotificationCategory.self)
 
         Current.modelManager.observe(for: AnyRealmCollection(categories)) { collection in
-            let builtin = Promise<Set<UNNotificationCategory>> { seal in
+            let fastlane = Promise<Set<UNNotificationCategory>> { seal in
                 guard Current.appConfiguration == .FastlaneSnapshot else {
                     return seal.fulfill(Set())
                 }
 
-                let basic = ["CAMERA", "MAP"].map { identifier in
+                seal.fulfill(Set(["CAMERA", "MAP"].map { identifier in
                     UNNotificationCategory(
                         identifier: identifier,
                         actions: [],
                         intentIdentifiers: [],
                         options: []
                     )
-                }
-
-                let dynamic = [
-                    UNNotificationCategory(
-                        identifier: "DYNAMIC",
-                        actions: [
-                            UNNotificationAction(
-                                identifier: "LOADING",
-                                title: L10n.NotificationService.loadingDynamicActions,
-                                options: []
-                            ),
-                        ],
-                        intentIdentifiers: [],
-                        options: []
-                    ),
-                ]
-
-                seal.fulfill(Set(basic + dynamic))
+                }))
             }
+
+            let builtin = Promise<Set<UNNotificationCategory>>.value([
+                UNNotificationCategory(
+                    identifier: "DYNAMIC",
+                    actions: [
+                        UNNotificationAction(
+                            identifier: "LOADING",
+                            title: L10n.NotificationService.loadingDynamicActions,
+                            options: []
+                        ),
+                    ],
+                    intentIdentifiers: [],
+                    options: []
+                ),
+            ])
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
                 seal.fulfill(Set(collection.flatMap(\.categories)))
             }
 
             return when(fulfilled: [
+                fastlane,
                 builtin,
                 persisted,
             ]).done(on: .main) { unCategories in
