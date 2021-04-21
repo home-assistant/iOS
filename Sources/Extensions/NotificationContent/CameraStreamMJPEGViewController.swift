@@ -97,7 +97,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
     private var lastSize: CGSize? {
         didSet {
             if oldValue != lastSize, let size = lastSize {
-                aspectRatioConstraint = Self.aspectRatioConstraint(on: imageView, size: size)
+                aspectRatioConstraint = NSLayoutConstraint.aspectRatioConstraint(on: imageView, size: size)
             }
         }
     }

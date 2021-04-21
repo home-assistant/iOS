@@ -89,7 +89,10 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     private var lastSize: CGSize? {
         didSet {
             if oldValue != lastSize, let size = lastSize {
-                aspectRatioConstraint = Self.aspectRatioConstraint(on: playerViewController.view, size: size)
+                aspectRatioConstraint = NSLayoutConstraint.aspectRatioConstraint(
+                    on: playerViewController.view,
+                    size: size
+                )
             }
         }
     }
