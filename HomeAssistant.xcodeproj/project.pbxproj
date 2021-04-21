@@ -72,6 +72,7 @@
 		11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */; };
 		11169CAA262FCE43005EF90A /* ImageAttachmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169CA9262FCE43005EF90A /* ImageAttachmentViewController.swift */; };
 		11169CBB262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */; };
+		11169CEC262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169CEB262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift */; };
 		1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111858D324CB5B8900B8CDDC /* PerformAction.swift */; };
@@ -1022,6 +1023,7 @@
 		11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+Additions.swift"; sourceTree = "<group>"; };
 		11169CA9262FCE43005EF90A /* ImageAttachmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAttachmentViewController.swift; sourceTree = "<group>"; };
 		11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Additions.swift"; sourceTree = "<group>"; };
+		11169CEB262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAudioAttachmentViewController.swift; sourceTree = "<group>"; };
 		1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
@@ -2651,6 +2653,7 @@
 				110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */,
 				110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */,
 				11169CA9262FCE43005EF90A /* ImageAttachmentViewController.swift */,
+				11169CEB262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift */,
 			);
 			path = NotificationContent;
 			sourceTree = "<group>";
@@ -4633,6 +4636,7 @@
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
+				11169CEC262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift in Sources */,
 				110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */,
 				110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */,
 			);

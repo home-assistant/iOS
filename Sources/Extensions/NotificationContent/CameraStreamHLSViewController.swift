@@ -5,9 +5,7 @@ import Shared
 import UIKit
 
 class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
-    let api: HomeAssistantAPI
-    let connectionInfo: ConnectionInfo
-    let response: StreamCameraResponse
+    let url: URL
     let playerViewController: AVPlayerViewController
     let promise: Promise<Void>
     var didUpdateState: (CameraStreamHandlerState) -> Void = { _ in }
@@ -28,14 +26,19 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         }
     }
 
-    required init(api: HomeAssistantAPI, response: StreamCameraResponse) throws {
-        guard response.hlsPath != nil else {
+    required convenience init(api: HomeAssistantAPI, response: StreamCameraResponse) throws {
+        guard let path = response.hlsPath else {
             throw HLSError.noPath
         }
 
-        self.api = api
-        self.connectionInfo = try api.connectionInfo()
-        self.response = response
+        let connectionInfo = try api.connectionInfo()
+        let url = connectionInfo.activeURL.appendingPathComponent(path)
+
+        self.init(url: url)
+    }
+
+    init(url: URL) {
+        self.url = url
         self.playerViewController = AVPlayerViewController()
         (self.promise, self.seal) = Promise<Void>.pending()
         super.init(nibName: nil, bundle: nil)
@@ -98,14 +101,10 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     }
 
     private func setupVideo() {
-        guard let path = response.hlsPath else {
-            fatalError("we checked for a non-nil path on init, this should not be possible")
-        }
+        try? AVAudioSession.sharedInstance().setCategory(.playback)
 
-        let url = connectionInfo.activeURL.appendingPathComponent(path)
         let videoPlayer = AVPlayer(url: url)
         playerViewController.player = videoPlayer
-        videoPlayer.isMuted = true
 
         // assume 16:9
         lastSize = CGSize(width: 16, height: 9)

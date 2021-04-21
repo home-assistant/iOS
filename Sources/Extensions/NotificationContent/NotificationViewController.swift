@@ -40,6 +40,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         CameraViewController.self,
         MapViewController.self,
         ImageAttachmentViewController.self,
+        PlayerAttachmentViewController.self,
     ] }
 
     private func viewController(
