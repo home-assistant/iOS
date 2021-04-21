@@ -101,11 +101,11 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         guard let path = response.hlsPath else {
             fatalError("we checked for a non-nil path on init, this should not be possible")
         }
+        try? AVAudioSession.sharedInstance().setCategory(.playback)
 
         let url = connectionInfo.activeURL.appendingPathComponent(path)
         let videoPlayer = AVPlayer(url: url)
         playerViewController.player = videoPlayer
-        videoPlayer.isMuted = true
 
         // assume 16:9
         lastSize = CGSize(width: 16, height: 9)
