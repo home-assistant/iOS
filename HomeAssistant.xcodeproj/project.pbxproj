@@ -70,6 +70,7 @@
 		11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B7B262BDE80005EF90A /* DynamicNotificationController.swift */; };
 		11169BC6262BE45F005EF90A /* UNNotificationContent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */; };
 		11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */; };
+		11169CBB262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */; };
 		1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */; };
 		111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111858D324CB5B8900B8CDDC /* PerformAction.swift */; };
@@ -1018,6 +1019,7 @@
 		11169B3E262BCEE6005EF90A /* dynamic_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = dynamic_notification.apns; sourceTree = "<group>"; };
 		11169B7B262BDE80005EF90A /* DynamicNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationController.swift; sourceTree = "<group>"; };
 		11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+Additions.swift"; sourceTree = "<group>"; };
+		11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Additions.swift"; sourceTree = "<group>"; };
 		1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
@@ -3104,6 +3106,7 @@
 				1104FC9025322C1800B8BE34 /* Dictionary+Additions.swift */,
 				1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */,
 				1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */,
+				11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4621,6 +4624,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */,
+				11169CBB262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift in Sources */,
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
