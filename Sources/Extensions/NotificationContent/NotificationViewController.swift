@@ -39,6 +39,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     private static var possibleControllers: [(UIViewController & NotificationCategory).Type] { [
         CameraViewController.self,
         MapViewController.self,
+        ImageAttachmentViewController.self,
     ] }
 
     private func viewController(
