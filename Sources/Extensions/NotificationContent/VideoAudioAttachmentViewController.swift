@@ -30,7 +30,7 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
                     videoViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                     videoViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 ])
-                
+
                 videoViewController.didMove(toParent: self)
             }
         }
