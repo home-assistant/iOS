@@ -1,9 +1,9 @@
+import MobileCoreServices
 import PromiseKit
 import Shared
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-import MobileCoreServices
 
 class ImageAttachmentViewController: UIViewController, NotificationCategory {
     let imageView = with(UIImageView()) {
