@@ -228,7 +228,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
         let userInfo = response.notification.request.content.userInfo
 
-        Current.Log.verbose("User info in incoming notification \(userInfo)")
+        Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
 
         if let shortcutDict = userInfo["shortcut"] as? [String: String],
            let shortcutName = shortcutDict["name"] {
@@ -246,7 +246,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             Current.backgroundTask(withName: "handle-push-action") { _ in
                 Current.api.then(on: nil) { api in
                     api.handlePushAction(
-                        identifier: response.actionIdentifier,
+                        identifier: UNNotificationContent.uncombinedAction(from: response.actionIdentifier),
                         category: response.notification.request.content.categoryIdentifier,
                         userInfo: userInfo,
                         userInput: userText
