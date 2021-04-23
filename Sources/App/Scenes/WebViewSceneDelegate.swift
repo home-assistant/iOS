@@ -29,7 +29,11 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         self.urlHandler = urlHandler
 
         with(scene.sizeRestrictions) {
-            $0?.minimumSize = CGSize(width: 300, height: 300)
+            if #available(iOS 14, *), scene.traitCollection.userInterfaceIdiom == .mac {
+                $0?.minimumSize = CGSize(width: 250, height: 250)
+            } else {
+                $0?.minimumSize = CGSize(width: 300, height: 300)
+            }
         }
 
         windowController.setup()

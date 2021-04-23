@@ -1,4 +1,5 @@
 import Foundation
+import Shared
 import UIKit
 
 @available(iOS 13, *)
@@ -24,8 +25,16 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         let config = Self.basicConfig()
 
         scene.title = config.title
-        scene.sizeRestrictions?.maximumSize.width = 800.0
-        scene.sizeRestrictions?.minimumSize.width = 300.0
+
+        with(scene.sizeRestrictions) {
+            if #available(iOS 14, *), scene.traitCollection.userInterfaceIdiom == .mac {
+                $0?.maximumSize = CGSize(width: 600.0, height: 600.0)
+                $0?.minimumSize = CGSize(width: 200.0, height: 200.0)
+            } else {
+                $0?.maximumSize.width = 800.0
+                $0?.minimumSize.width = 300.0
+            }
+        }
 
         // never activate these basic scenes scene for anything incoming
         scene.activationConditions.canActivateForTargetContentIdentifierPredicate = NSPredicate(value: false)
