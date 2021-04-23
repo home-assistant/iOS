@@ -25,8 +25,18 @@ class SensorListViewController: FormViewController, SensorObserver {
 
         title = L10n.SettingsSensors.title
 
-        tableView.refreshControl = refreshControl
-        refreshControl.beginRefreshing()
+        if Current.isCatalyst {
+            navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(
+                    barButtonSystemItem: .refresh,
+                    target: self,
+                    action: #selector(refresh)
+                )
+            ]
+        } else {
+            tableView.refreshControl = refreshControl
+            refreshControl.beginRefreshing()
+        }
 
         Current.sensors.register(observer: self)
 
