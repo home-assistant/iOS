@@ -19,7 +19,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        kind: [mac, ios]
+        kind: [mac]
     steps:
       - uses: actions/checkout@v2
 
