@@ -37,9 +37,7 @@ class NFCTagViewController: FormViewController {
                     cell.imageView?.transform = .identity
                 }
 
-                cell.imageView?.image = icon
-                    .image(ofSize: CGSize(width: 28, height: 28), color: nil)
-                    .withRenderingMode(.alwaysTemplate)
+                cell.imageView?.image = icon.settingsIcon(for: cell.traitCollection)
             }
 
             configure($0)

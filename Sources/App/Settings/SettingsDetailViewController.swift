@@ -18,8 +18,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     var doneButton: Bool = false
 
-    private static let iconSize = CGSize(width: 28, height: 28)
-
     private let realm = Current.realm()
     private var notificationTokens: [NotificationToken] = []
     private var notificationCenterTokens: [AnyObject] = []
@@ -594,7 +592,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             $0.cellUpdate { cell, row in
                 cell.separatorInset = .zero
                 cell.textLabel?.textAlignment = .natural
-                cell.imageView?.image = UIImage(size: iconSize, color: .clear)
+                cell.imageView?.image = UIImage(size: MaterialDesignIcons.settingsIconSize, color: .clear)
                 if #available(iOS 13, *) {
                     cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
                 } else {
@@ -626,8 +624,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 cell.imageView?.image =
                     rlmScene.icon
                         .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
-                        .image(ofSize: iconSize, color: .black)
-                        .withRenderingMode(.alwaysTemplate)
+                        .settingsIcon(for: cell.traitCollection)
             }
             $0.onChange { row in
                 do {
@@ -673,8 +670,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             $0.cellUpdate { cell, _ in
                 guard action == nil || action?.isInvalidated == false else { return }
                 cell.imageView?.image = MaterialDesignIcons(named: action?.IconName ?? "")
-                    .image(ofSize: Self.iconSize, color: .black)
-                    .withRenderingMode(.alwaysTemplate)
+                    .settingsIcon(for: cell.traitCollection)
             }
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 ActionConfigurator(action: action)

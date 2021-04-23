@@ -9,7 +9,6 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
     var isDestructive = false
     var icon: MaterialDesignIcons?
     var accessoryIcon: MaterialDesignIcons?
-    var iconSize = CGSize(width: 24.0, height: 24.0)
 
     override public func updateCell() {
         super.updateCell()
@@ -35,9 +34,7 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
         }
 
         if let icon = icon, !isDestructive {
-            cell.imageView?.image = icon
-                .image(ofSize: iconSize, color: .black)
-                .withRenderingMode(.alwaysTemplate)
+            cell.imageView?.image = icon.settingsIcon(for: cell.traitCollection)
         } else {
             cell.imageView?.image = nil
         }
@@ -51,6 +48,8 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
             } else {
                 color = .lightGray
             }
+
+            let iconSize = MaterialDesignIcons.settingsIconSize
 
             imageView.image = accessoryIcon
                 .image(ofSize: CGSize(width: iconSize.width * 0.85, height: iconSize.height * 0.85), color: color)
