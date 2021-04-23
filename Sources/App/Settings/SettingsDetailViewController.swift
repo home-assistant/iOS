@@ -378,10 +378,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
             navigationItem.rightBarButtonItem = infoBarButtonItem
 
-            let refreshControl = UIRefreshControl()
-            tableView.refreshControl = refreshControl
-            refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
-
             let actionsFooter = Current.isCatalyst ?
                 L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
 
@@ -588,16 +584,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
-    }
-
-    @objc private func refreshScenes(_ sender: UIRefreshControl) {
-        sender.beginRefreshing()
-
-        firstly {
-            Current.modelManager.fetch()
-        }.ensure {
-            sender.endRefreshing()
-        }.cauterize()
     }
 
     static func getSceneRows(_ rlmScene: RLMScene) -> [BaseRow] {
