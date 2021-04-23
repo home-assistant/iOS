@@ -46,10 +46,20 @@ class NotificationRateLimitListViewController: FormViewController {
 
         title = L10n.SettingsDetails.Notifications.RateLimits.header
 
-        tableView.refreshControl = refreshControl
-        refreshControl.addTarget(self, action: #selector(updateRateLimits), for: .valueChanged)
+        if Current.isCatalyst {
+            navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(
+                    barButtonSystemItem: .refresh,
+                    target: self,
+                    action: #selector(refresh)
+                )
+            ]
+        } else {
+            tableView.refreshControl = refreshControl
+            refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        }
 
-        updateRateLimits()
+        refresh()
 
         form +++ Section {
             $0.tag = "rateLimits"
@@ -80,7 +90,7 @@ class NotificationRateLimitListViewController: FormViewController {
         case noPushId
     }
 
-    @objc private func updateRateLimits() {
+    @objc private func refresh() {
         if initialPromise == nil {
             refreshControl.beginRefreshing()
         }
@@ -96,6 +106,8 @@ class NotificationRateLimitListViewController: FormViewController {
             guard let section = form.sectionBy(tag: "rateLimits") else {
                 return
             }
+
+            Current.Log.debug("updated rate limits: \(response)")
 
             section.footer = HeaderFooterView(
                 title: L10n.SettingsDetails.Notifications.RateLimits.footerWithParam(response.rateLimits.maximum)
@@ -128,7 +140,7 @@ class NotificationRateLimitListViewController: FormViewController {
             section <<< ButtonRow {
                 $0.title = L10n.retryLabel
                 $0.onCellSelection { [weak self] _, _ in
-                    self?.updateRateLimits()
+                    self?.refresh()
                 }
             }
         }
