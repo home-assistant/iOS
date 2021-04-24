@@ -358,13 +358,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 .sorted(byKeyPath: "Position")
                 .filter("Scene == nil")
 
-            let infoBarButtonItem = Constants.helpBarButtonItem
-
-            infoBarButtonItem.action = #selector(actionsHelp)
-            infoBarButtonItem.target = self
-
-            navigationItem.rightBarButtonItem = infoBarButtonItem
-
             let actionsFooter = Current.isCatalyst ?
                 L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
 
@@ -435,12 +428,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
 
         case "privacy":
             title = L10n.SettingsDetails.Privacy.title
-            let infoBarButtonItem = Constants.helpBarButtonItem
-
-            infoBarButtonItem.action = #selector(firebasePrivacy)
-            infoBarButtonItem.target = self
-
-            navigationItem.rightBarButtonItem = infoBarButtonItem
 
             form
                 +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Messaging.description)
@@ -480,18 +467,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }
-    }
-
-    @objc func firebasePrivacy(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/firebase-privacy")!, self)
-    }
-
-    @objc func actionsHelp(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/actions")!, self)
-    }
-
-    @objc func watchHelp(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
     }
 
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
