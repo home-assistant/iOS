@@ -2,24 +2,14 @@ import Eureka
 import Foundation
 import Shared
 
-class ComplicationFamilySelectViewController: FormViewController, RowControllerType {
+class ComplicationFamilySelectViewController: HAFormViewController, RowControllerType {
     let allowMultiple: Bool
     let currentFamilies: Set<ComplicationGroupMember>
 
     init(allowMultiple: Bool, currentFamilies: Set<ComplicationGroupMember>) {
         self.allowMultiple = allowMultiple
         self.currentFamilies = currentFamilies
-
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init()
     }
 
     var onDismissCallback: ((UIViewController) -> Void)?

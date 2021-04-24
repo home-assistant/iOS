@@ -6,7 +6,7 @@ import PromiseKit
 import Shared
 import UIKit
 
-class ConnectionSettingsViewController: FormViewController, RowControllerType {
+class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
 
     let connection: HAConnection
@@ -14,16 +14,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
     init(connection: HAConnection) {
         self.connection = connection
 
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init()
     }
 
     private var tokens: [HACancellable] = []

@@ -5,20 +5,7 @@ import RealmSwift
 import Shared
 import Version
 
-class ComplicationListViewController: FormViewController {
-    init() {
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
+class ComplicationListViewController: HAFormViewController {
     @objc private func add(_ sender: UIBarButtonItem) {
         let editListViewController = ComplicationFamilySelectViewController(
             allowMultiple: supportsMultipleComplications,

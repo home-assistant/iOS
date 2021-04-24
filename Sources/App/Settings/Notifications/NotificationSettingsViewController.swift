@@ -6,7 +6,7 @@ import RealmSwift
 import Shared
 import UIKit
 
-class NotificationSettingsViewController: FormViewController {
+class NotificationSettingsViewController: HAFormViewController {
     public var doneButton: Bool = false
 
     private var observerTokens: [Any] = []

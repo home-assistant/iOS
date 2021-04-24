@@ -8,23 +8,14 @@ import WebKit
 import XCGLogger
 import ZIPFoundation
 
-class DebugSettingsViewController: FormViewController {
+class DebugSettingsViewController: HAFormViewController {
     private var shakeCount = 0
     private var maxShakeCount = 3
 
-    init() {
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
+    override init() {
+        super.init()
 
         title = L10n.Settings.Debugging.title
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

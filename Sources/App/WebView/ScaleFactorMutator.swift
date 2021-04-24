@@ -16,6 +16,11 @@ class ScaleFactorMutator {
         guard !hasSwizzled else { return }
         defer { hasSwizzled = true }
 
+        if #available(iOS 14, *), UIDevice.current.userInterfaceIdiom == .mac {
+            // we do not need to swizzle when using the mac idiom on macOS 11
+            return
+        }
+
         #if targetEnvironment(macCatalyst)
         func exchange(for klassString: String, original: Selector, with replacement: Selector) -> Bool {
             guard

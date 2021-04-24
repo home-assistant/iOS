@@ -3,7 +3,7 @@ import Foundation
 import HAKit
 import Shared
 
-class TemplateEditViewController: FormViewController, RowControllerType {
+class TemplateEditViewController: HAFormViewController, RowControllerType {
     var onDismissCallback: ((UIViewController) -> Void)?
     var saveHandler: (String) -> Void
 
@@ -16,18 +16,13 @@ class TemplateEditViewController: FormViewController, RowControllerType {
     ) {
         self.saveHandler = saveHandler
         self.initialValue = initial
-        super.init(style: .grouped)
+        super.init()
 
         if #available(iOS 13, *) {
             isModalInPresentation = true
         }
 
         self.title = L10n.Settings.TemplateEdit.title
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewWillAppear(_ animated: Bool) {

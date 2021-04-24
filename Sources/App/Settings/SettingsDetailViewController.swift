@@ -9,7 +9,7 @@ import Shared
 import UIKit
 import Version
 
-class SettingsDetailViewController: FormViewController, TypedRowControllerType {
+class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -18,25 +18,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     var doneButton: Bool = false
 
-    private static let iconSize = CGSize(width: 28, height: 28)
-
     private let realm = Current.realm()
     private var notificationTokens: [NotificationToken] = []
     private var notificationCenterTokens: [AnyObject] = []
     private var reorderingRows: [String: BaseRow] = [:]
-
-    init() {
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     deinit {
         notificationCenterTokens.forEach(NotificationCenter.default.removeObserver)
@@ -69,8 +54,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         switch detailGroup {
         case "general":
             title = L10n.SettingsDetails.General.title
+
+            if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac, !Current.isDebug {
+                form +++ Section(SettingsViewController.serversContents())
+            }
+
             form
-                +++ Section()
+                +++ Section {
+                    $0.hidden = .isCatalyst
+                }
 
                 <<< PushRow<AppIcon>("appIcon") {
                 $0.hidden = .isCatalyst
@@ -371,17 +363,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 .sorted(byKeyPath: "Position")
                 .filter("Scene == nil")
 
-            let infoBarButtonItem = Constants.helpBarButtonItem
-
-            infoBarButtonItem.action = #selector(actionsHelp)
-            infoBarButtonItem.target = self
-
-            navigationItem.rightBarButtonItem = infoBarButtonItem
-
-            let refreshControl = UIRefreshControl()
-            tableView.refreshControl = refreshControl
-            refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
-
             let actionsFooter = Current.isCatalyst ?
                 L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
 
@@ -452,12 +433,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
         case "privacy":
             title = L10n.SettingsDetails.Privacy.title
-            let infoBarButtonItem = Constants.helpBarButtonItem
-
-            infoBarButtonItem.action = #selector(firebasePrivacy)
-            infoBarButtonItem.target = self
-
-            navigationItem.rightBarButtonItem = infoBarButtonItem
 
             form
                 +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Messaging.description)
@@ -497,18 +472,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }
-    }
-
-    @objc func firebasePrivacy(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/firebase-privacy")!, self)
-    }
-
-    @objc func actionsHelp(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/actions")!, self)
-    }
-
-    @objc func watchHelp(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
     }
 
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
@@ -590,16 +553,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc private func refreshScenes(_ sender: UIRefreshControl) {
-        sender.beginRefreshing()
-
-        firstly {
-            Current.modelManager.fetch()
-        }.ensure {
-            sender.endRefreshing()
-        }.cauterize()
-    }
-
     static func getSceneRows(_ rlmScene: RLMScene) -> [BaseRow] {
         let switchRow = SwitchRow()
         let configure = ButtonRowWithPresent<ActionConfigurator> {
@@ -608,7 +561,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             $0.cellUpdate { cell, row in
                 cell.separatorInset = .zero
                 cell.textLabel?.textAlignment = .natural
-                cell.imageView?.image = UIImage(size: iconSize, color: .clear)
+                cell.imageView?.image = UIImage(size: MaterialDesignIcons.settingsIconSize, color: .clear)
                 if #available(iOS 13, *) {
                     cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
                 } else {
@@ -640,8 +593,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 cell.imageView?.image =
                     rlmScene.icon
                         .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
-                        .image(ofSize: iconSize, color: .black)
-                        .withRenderingMode(.alwaysTemplate)
+                        .settingsIcon(for: cell.traitCollection)
             }
             $0.onChange { row in
                 do {
@@ -687,8 +639,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             $0.cellUpdate { cell, _ in
                 guard action == nil || action?.isInvalidated == false else { return }
                 cell.imageView?.image = MaterialDesignIcons(named: action?.IconName ?? "")
-                    .image(ofSize: Self.iconSize, color: .black)
-                    .withRenderingMode(.alwaysTemplate)
+                    .settingsIcon(for: cell.traitCollection)
             }
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 ActionConfigurator(action: action)
