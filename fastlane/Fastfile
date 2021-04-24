@@ -402,9 +402,9 @@ platform :mac do
       File.expand_path(developer_id_app_path),
       '../build/macos/home-assistant-mac.zip'
     )
-    # upload_binary_to_apple(
-    #   type: 'osx',
-    #   path: app_store_pkg_path
-    # )
+    upload_binary_to_apple(
+      type: 'osx',
+      path: app_store_pkg_path
+    )
   end
 end
