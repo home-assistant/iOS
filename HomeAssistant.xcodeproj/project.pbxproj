@@ -203,6 +203,8 @@
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE913263325790099F7D8 /* IconDrawable+Settings.swift */; };
 		119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE913263325790099F7D8 /* IconDrawable+Settings.swift */; };
+		119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE944263349E50099F7D8 /* HAFormViewController.swift */; };
+		119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */; };
 		119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
@@ -1127,6 +1129,8 @@
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
 		119DE913263325790099F7D8 /* IconDrawable+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IconDrawable+Settings.swift"; sourceTree = "<group>"; };
+		119DE944263349E50099F7D8 /* HAFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAFormViewController.swift; sourceTree = "<group>"; };
+		119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRootDataSource.swift; sourceTree = "<group>"; };
 		119EC3C624D5119300617D51 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		119EC3D724D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Intents.strings"; sourceTree = "<group>"; };
 		119EC3D824D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Onboarding.strings"; sourceTree = "<group>"; };
@@ -2139,6 +2143,7 @@
 				1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */,
 				1101D7F82621479200AAE617 /* SettingsButtonRow.swift */,
 				1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */,
+				119DE944263349E50099F7D8 /* HAFormViewController.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -2756,6 +2761,7 @@
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
 				1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */,
 				1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */,
+				119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -4697,6 +4703,7 @@
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
+				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
 				11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
 				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
@@ -4720,6 +4727,7 @@
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
+				119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
