@@ -11,7 +11,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         var rootViewController: UIViewController
     }
 
-    class func basicConfig() -> BasicConfig {
+    func basicConfig(in traitCollection: UITraitCollection) -> BasicConfig {
         fatalError("must override")
     }
 
@@ -22,7 +22,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         guard let scene = scene as? UIWindowScene else { return }
 
-        let config = Self.basicConfig()
+        let config = basicConfig(in: scene.traitCollection)
 
         scene.title = config.title
 
