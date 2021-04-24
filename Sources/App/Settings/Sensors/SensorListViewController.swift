@@ -12,15 +12,7 @@ class SensorListViewController: HAFormViewController, SensorObserver {
 
         title = L10n.SettingsSensors.title
 
-        if Current.isCatalyst {
-            navigationItem.rightBarButtonItems = [
-                UIBarButtonItem(
-                    barButtonSystemItem: .refresh,
-                    target: self,
-                    action: #selector(refresh)
-                )
-            ]
-        } else {
+        if !Current.isCatalyst {
             tableView.refreshControl = refreshControl
             refreshControl.beginRefreshing()
         }
