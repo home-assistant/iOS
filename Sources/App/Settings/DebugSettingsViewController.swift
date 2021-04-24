@@ -12,7 +12,7 @@ class DebugSettingsViewController: HAFormViewController {
     private var shakeCount = 0
     private var maxShakeCount = 3
 
-    init() {
+    override init() {
         super.init()
 
         title = L10n.Settings.Debugging.title

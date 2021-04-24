@@ -6,7 +6,7 @@ import Shared
 
 @available(iOS 13, *)
 class NFCListViewController: HAFormViewController {
-    init() {
+    override init() {
         super.init()
 
         title = L10n.Nfc.List.title
