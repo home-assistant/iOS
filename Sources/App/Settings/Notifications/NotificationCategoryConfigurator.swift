@@ -20,7 +20,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
     private let realm = Current.realm()
 
     convenience init(category: NotificationCategory?) {
-        self.init(style: .grouped)
+        self.init()
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true

@@ -23,7 +23,7 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
     var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 44))
 
     convenience init(action: Action?) {
-        self.init(style: .grouped)
+        self.init()
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true

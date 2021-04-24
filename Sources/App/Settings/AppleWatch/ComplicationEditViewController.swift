@@ -18,7 +18,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
         self.config = config
         self.displayTemplate = config.Template
 
-        super.init()
+        super.init(style: .grouped)
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true
