@@ -1,7 +1,6 @@
 import Eureka
 
 class HAFormViewController: FormViewController {
-
     init() {
         if #available(iOS 14, *), UIScreen.main.traitCollection.userInterfaceIdiom == .mac {
             super.init(style: .grouped)
