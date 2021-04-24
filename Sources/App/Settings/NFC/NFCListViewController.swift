@@ -5,16 +5,11 @@ import PromiseKit
 import Shared
 
 @available(iOS 13, *)
-class NFCListViewController: FormViewController {
+class NFCListViewController: HAFormViewController {
     init() {
-        super.init(style: .insetGrouped)
+        super.init()
 
         title = L10n.Nfc.List.title
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     private var lastManualIdentifier: String?

@@ -4,7 +4,7 @@ import SafariServices
 import Shared
 import UIKit
 
-class AboutViewController: FormViewController {
+class AboutViewController: HAFormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 

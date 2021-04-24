@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import UIKit
 
-class SensorDetailViewController: FormViewController, SensorObserver {
+class SensorDetailViewController: HAFormViewController, SensorObserver {
     private(set) var sensor: WebhookSensor {
         didSet {
             if oldValue != sensor {
@@ -16,19 +16,10 @@ class SensorDetailViewController: FormViewController, SensorObserver {
 
     init(sensor: WebhookSensor) {
         self.sensor = sensor
-
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
+        
+        super.init()
     }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         Current.sensors.register(observer: self)

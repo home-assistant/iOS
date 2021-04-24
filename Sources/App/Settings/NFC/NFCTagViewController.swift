@@ -3,19 +3,14 @@ import Foundation
 import Shared
 
 @available(iOS 13, *)
-class NFCTagViewController: FormViewController {
+class NFCTagViewController: HAFormViewController {
     let identifier: String
 
     init(identifier: String) {
         self.identifier = identifier
-        super.init(style: .insetGrouped)
+        super.init()
 
         title = L10n.Nfc.Detail.title
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

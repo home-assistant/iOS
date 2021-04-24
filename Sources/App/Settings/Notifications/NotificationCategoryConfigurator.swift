@@ -5,7 +5,7 @@ import Shared
 import UIKit
 import UserNotifications
 
-class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
+class NotificationCategoryConfigurator: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -20,7 +20,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     private let realm = Current.realm()
 
     convenience init(category: NotificationCategory?) {
-        self.init()
+        self.init(style: .grouped)
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true

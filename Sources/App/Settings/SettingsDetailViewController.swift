@@ -9,7 +9,7 @@ import Shared
 import UIKit
 import Version
 
-class SettingsDetailViewController: FormViewController, TypedRowControllerType {
+class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -22,19 +22,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     private var notificationTokens: [NotificationToken] = []
     private var notificationCenterTokens: [AnyObject] = []
     private var reorderingRows: [String: BaseRow] = [:]
-
-    init() {
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     deinit {
         notificationCenterTokens.forEach(NotificationCenter.default.removeObserver)
@@ -68,7 +55,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         case "general":
             title = L10n.SettingsDetails.General.title
             form
-                +++ Section()
+                +++ Section {
+                    $0.hidden = .isCatalyst
+                }
 
                 <<< PushRow<AppIcon>("appIcon") {
                 $0.hidden = .isCatalyst

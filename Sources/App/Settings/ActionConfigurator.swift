@@ -7,7 +7,7 @@ import Shared
 import UIKit
 import ViewRow
 
-class ActionConfigurator: FormViewController, TypedRowControllerType {
+class ActionConfigurator: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -23,7 +23,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
     var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 44))
 
     convenience init(action: Action?) {
-        self.init()
+        self.init(style: .grouped)
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true

@@ -3,7 +3,7 @@ import PromiseKit
 import RealmSwift
 import Shared
 
-class NotificationRateLimitListViewController: FormViewController {
+class NotificationRateLimitListViewController: HAFormViewController {
     let utc = TimeZone(identifier: "UTC")!
     let refreshControl = UIRefreshControl()
 
@@ -19,15 +19,10 @@ class NotificationRateLimitListViewController: FormViewController {
 
     init(initialPromise: Promise<RateLimitResponse>?) {
         self.initialPromise = initialPromise
-        super.init(style: .grouped)
+        super.init()
     }
 
     var rateLimitDidChange: (RateLimitResponse) -> Void = { _ in }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

@@ -8,7 +8,7 @@ import UIKit
 
 private var buttonAssociatedString: String = ""
 
-class NotificationSoundsViewController: FormViewController, UIDocumentPickerDelegate {
+class NotificationSoundsViewController: HAFormViewController, UIDocumentPickerDelegate {
     public var onDismissCallback: ((UIViewController) -> Void)?
 
     var audioPlayer: AVAudioPlayer?

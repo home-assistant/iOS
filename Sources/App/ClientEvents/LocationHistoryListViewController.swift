@@ -3,7 +3,7 @@ import RealmSwift
 import Shared
 import UIKit
 
-class LocationHistoryListViewController: FormViewController {
+class LocationHistoryListViewController: HAFormViewController {
     private var section: RealmSection<LocationHistoryEntry>?
 
     @objc private func clear(_ sender: AnyObject?) {

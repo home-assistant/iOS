@@ -4,7 +4,7 @@ import RealmSwift
 import Shared
 import UIKit
 
-class NotificationActionConfigurator: FormViewController, TypedRowControllerType {
+class NotificationActionConfigurator: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -27,11 +27,6 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
             self.action = action
             self.newAction = false
         }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     // swiftlint:disable:next cyclomatic_complexity
