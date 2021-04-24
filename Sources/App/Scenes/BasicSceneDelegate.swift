@@ -28,8 +28,8 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
 
         with(scene.sizeRestrictions) {
             if #available(iOS 14, *), scene.traitCollection.userInterfaceIdiom == .mac {
-                $0?.maximumSize = CGSize(width: 500.0, height: 600.0)
-                $0?.minimumSize = CGSize(width: 200.0, height: 200.0)
+                $0?.maximumSize = CGSize(width: 600.0, height: 600.0)
+                $0?.minimumSize = CGSize(width: 600.0, height: 200.0)
             } else {
                 $0?.maximumSize.width = 800.0
                 $0?.minimumSize.width = 300.0
