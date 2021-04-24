@@ -2,6 +2,21 @@ import Eureka
 import Shared
 
 enum SettingsRootDataSource {
+    static let buttonRows: [SettingsButtonRow] = {
+        let fakeForm = Form()
+
+        return SettingsRootDataSource.Row
+            .allCases.map(\.row)
+            .filter { row in
+                if case let .function(_, function) = row.hidden {
+                    // the function returns true to hide, so invert
+                    return !function(fakeForm)
+                } else {
+                    return true
+                }
+            }
+    }()
+
     enum Row: String, CaseIterable {
         case general
         case servers
@@ -48,15 +63,15 @@ enum SettingsRootDataSource {
     }
 
     private static func general() -> SettingsButtonRow {
-            SettingsButtonRow {
-                $0.title = L10n.SettingsDetails.General.title
-                $0.icon = .paletteOutlineIcon
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    let view = SettingsDetailViewController()
-                    view.detailGroup = "general"
-                    return view
-                }, onDismiss: nil)
-            }
+        SettingsButtonRow {
+            $0.title = L10n.SettingsDetails.General.title
+            $0.icon = .paletteOutlineIcon
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                let view = SettingsDetailViewController()
+                view.detailGroup = "general"
+                return view
+            }, onDismiss: nil)
+        }
     }
 
     private static func location() -> SettingsButtonRow {
@@ -82,15 +97,15 @@ enum SettingsRootDataSource {
     }
 
     private static func actions() -> SettingsButtonRow {
-            SettingsButtonRow {
-                $0.title = L10n.SettingsDetails.Actions.title
-                $0.icon = .gamepadVariantOutlineIcon
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    let view = SettingsDetailViewController()
-                    view.detailGroup = "actions"
-                    return view
-                }, onDismiss: nil)
-            }
+        SettingsButtonRow {
+            $0.title = L10n.SettingsDetails.Actions.title
+            $0.icon = .gamepadVariantOutlineIcon
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                let view = SettingsDetailViewController()
+                view.detailGroup = "actions"
+                return view
+            }, onDismiss: nil)
+        }
     }
 
     private static func sensors() -> SettingsButtonRow {
