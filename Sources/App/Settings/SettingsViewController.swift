@@ -71,7 +71,7 @@ class SettingsViewController: HAFormViewController {
                 ),
             ]
         }
-        
+
         if contentSections.contains(.servers) || !Current.isDebug {
             form +++ Section(Self.serversContents())
         }

@@ -16,10 +16,10 @@ class SensorDetailViewController: HAFormViewController, SensorObserver {
 
     init(sensor: WebhookSensor) {
         self.sensor = sensor
-        
+
         super.init()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         Current.sensors.register(observer: self)

@@ -24,7 +24,7 @@ class TemplateEditViewController: HAFormViewController, RowControllerType {
 
         self.title = L10n.Settings.TemplateEdit.title
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         _ = templateSection?.inputRow.cell.textView.becomeFirstResponder()

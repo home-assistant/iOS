@@ -47,7 +47,7 @@ class NotificationRateLimitListViewController: HAFormViewController {
                     barButtonSystemItem: .refresh,
                     target: self,
                     action: #selector(refresh)
-                )
+                ),
             ]
         } else {
             tableView.refreshControl = refreshControl
