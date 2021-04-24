@@ -35,6 +35,10 @@ import UIKit
     ) {
         super.scene(scene, willConnectTo: session, options: connectionOptions)
 
+        if let navigationController = window?.rootViewController as? UINavigationController {
+            self.navigationController = navigationController
+        }
+
         guard let scene = scene as? UIWindowScene else { return }
 
         #if targetEnvironment(macCatalyst)
@@ -56,10 +60,6 @@ import UIKit
             }
         }
         #endif
-
-        if let navigationController = window?.rootViewController as? UINavigationController {
-            self.navigationController = navigationController
-        }
     }
 
     func pushActions(animated: Bool) {
