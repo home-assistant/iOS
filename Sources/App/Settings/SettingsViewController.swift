@@ -20,7 +20,7 @@ class SettingsViewController: HAFormViewController {
         super.init()
     }
 
-    private class func serversContents() -> [BaseRow] {
+    class func serversContents() -> [BaseRow] {
         var rows = [BaseRow]()
 
         for connection in [Current.apiConnection] {
@@ -72,7 +72,7 @@ class SettingsViewController: HAFormViewController {
             ]
         }
 
-        if contentSections.contains(.servers) || !Current.isDebug {
+        if contentSections.contains(.servers) {
             form +++ Section(Self.serversContents())
         }
 
