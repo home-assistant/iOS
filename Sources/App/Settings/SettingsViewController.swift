@@ -1,25 +1,30 @@
 import Eureka
 import Shared
 
-class SettingsViewController: FormViewController {
-    init() {
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
+class SettingsViewController: HAFormViewController {
+    struct ContentSection: OptionSet, ExpressibleByIntegerLiteral {
+        let rawValue: Int
+        init(rawValue: Int) { self.rawValue = rawValue }
+        init(integerLiteral value: IntegerLiteralType) { self.init(rawValue: value) }
+
+        static var servers: ContentSection = 0b1
+        static var general: ContentSection = 0b10
+        static var integrations: ContentSection = 0b100
+        static var help: ContentSection = 0b1000
+        static var all = ContentSection(rawValue: ~0b0)
     }
 
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    let contentSections: ContentSection
+    init(contentSections: ContentSection = .all) {
+        self.contentSections = contentSections
+        super.init()
     }
 
-    private func servers() -> Section {
-        let section = Section()
+    private class func serversContents() -> [BaseRow] {
+        var rows = [BaseRow]()
 
         for connection in [Current.apiConnection] {
-            section <<< HomeAssistantAccountRow {
+            rows.append(HomeAssistantAccountRow {
                 $0.value = .init(
                     connection: connection,
                     locationName: prefs.string(forKey: "location_name")
@@ -27,134 +32,17 @@ class SettingsViewController: FormViewController {
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     ConnectionSettingsViewController(connection: connection)
                 }, onDismiss: nil)
-            }
+            })
         }
 
-        section <<< HomeAssistantAccountRow {
+        rows.append(HomeAssistantAccountRow {
             $0.hidden = .isNotDebug
             $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
                 fatalError()
             }), onDismiss: nil)
-        }
+        })
 
-        return section
-    }
-
-    private func general() -> Section {
-        let section = Section()
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.SettingsDetails.General.title
-            $0.icon = .paletteOutlineIcon
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "general"
-                return view
-            }, onDismiss: nil)
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.Settings.DetailsSection.LocationSettingsRow.title
-            $0.icon = .crosshairsGpsIcon
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "location"
-                return view
-            }, onDismiss: nil)
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
-            $0.icon = .bellOutlineIcon
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                NotificationSettingsViewController()
-            }, onDismiss: nil)
-        }
-
-        return section
-    }
-
-    private func integrations() -> Section {
-        let section = Section()
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.SettingsDetails.Actions.title
-            $0.icon = .gamepadVariantOutlineIcon
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "actions"
-                return view
-            }, onDismiss: nil)
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.SettingsSensors.title
-            $0.icon = .formatListBulletedIcon
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                SensorListViewController()
-            }, onDismiss: nil)
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.Settings.DetailsSection.WatchRow.title
-            $0.icon = .watchVariantIcon
-            $0.hidden = .isCatalyst
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                ComplicationListViewController()
-            }, onDismiss: { _ in
-
-            })
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.Nfc.List.title
-            $0.icon = .nfcVariantIcon
-
-            if #available(iOS 13, *) {
-                $0.hidden = .isCatalyst
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    NFCListViewController()
-                }, onDismiss: nil)
-            } else {
-                $0.hidden = true
-            }
-        }
-
-        return section
-    }
-
-    private func help() -> Section {
-        let section = Section()
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.helpLabel
-            $0.icon = .helpCircleOutlineIcon
-            $0.accessoryIcon = .openInNewIcon
-            $0.onCellSelection { [weak self] _, row in
-                openURLInBrowser(URL(string: "https://companion.home-assistant.io")!, self)
-                row.deselect(animated: true)
-            }
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.SettingsDetails.Privacy.title
-            $0.icon = .lockOutlineIcon
-            $0.presentationMode = .show(controllerProvider: .callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "privacy"
-                return view
-            }, onDismiss: nil)
-        }
-
-        section <<< SettingsButtonRow {
-            $0.title = L10n.Settings.Debugging.title
-            $0.icon = .bugIcon
-            $0.presentationMode = .show(controllerProvider: .callback {
-                DebugSettingsViewController()
-            }, onDismiss: nil)
-        }
-
-        return section
+        return rows
     }
 
     override func viewDidLoad() {
@@ -183,13 +71,32 @@ class SettingsViewController: FormViewController {
                 ),
             ]
         }
+        
+        if contentSections.contains(.servers) || !Current.isDebug {
+            form +++ Section(Self.serversContents())
+        }
 
-        form.append(contentsOf: [
-            servers(),
-            general(),
-            integrations(),
-            help(),
-        ])
+        if contentSections.contains(.general) {
+            form +++ Section()
+                <<< SettingsRootDataSource.Row.general.row
+                <<< SettingsRootDataSource.Row.location.row
+                <<< SettingsRootDataSource.Row.notifications.row
+        }
+
+        if contentSections.contains(.integrations) {
+            form +++ Section()
+                <<< SettingsRootDataSource.Row.actions.row
+                <<< SettingsRootDataSource.Row.sensors.row
+                <<< SettingsRootDataSource.Row.complications.row
+                <<< SettingsRootDataSource.Row.nfc.row
+        }
+
+        if contentSections.contains(.help) {
+            form +++ Section()
+                <<< SettingsRootDataSource.Row.help.row
+                <<< SettingsRootDataSource.Row.privacy.row
+                <<< SettingsRootDataSource.Row.debugging.row
+        }
     }
 
     @objc func openAbout(_ sender: UIButton) {

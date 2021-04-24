@@ -540,6 +540,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
 "settings.connection_error.invalid_url.title" = "Error parsing URL";
 "settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.api_password_row.placeholder" = "password";
 "settings.connection_section.api_password_row.title" = "Password";
 "settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
