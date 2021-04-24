@@ -20,7 +20,11 @@ class HAFormViewController: FormViewController {
         case .grouped:
             super.init(style: .grouped)
         case .insetGrouped:
-            super.init(style: .insetGrouped)
+            if #available(iOS 13, *) {
+                super.init(style: .insetGrouped)
+            } else {
+                super.init(style: .grouped)
+            }
         }
     }
 
