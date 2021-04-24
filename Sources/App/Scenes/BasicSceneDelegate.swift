@@ -5,6 +5,7 @@ import UIKit
 @available(iOS 13, *)
 class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
+    var scene: UIWindowScene?
 
     struct BasicConfig {
         var title: String
@@ -21,6 +22,8 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let scene = scene as? UIWindowScene else { return }
+
+        self.scene = scene
 
         let config = basicConfig(in: scene.traitCollection)
 
