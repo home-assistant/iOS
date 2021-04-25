@@ -18,7 +18,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
             withName: "name",
-            beginBackgroundTask: { (inName, inExpire) -> (Int, TimeInterval) in
+            beginBackgroundTask: { inName, inExpire -> (Int, TimeInterval) in
                 XCTAssertEqual(inName, "name")
                 expire = inExpire
                 return (expectedIdentifier, expectedRemaining)
@@ -57,7 +57,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
             withName: "name",
-            beginBackgroundTask: { (inName, _) -> (Int, TimeInterval) in
+            beginBackgroundTask: { inName, _ -> (Int, TimeInterval) in
                 XCTAssertEqual(inName, "name")
                 return (endExpectedIdentifier, expectedRemaining)
             }, endBackgroundTask: { (inIdentifier: Int) in
@@ -94,7 +94,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
             withName: "name",
-            beginBackgroundTask: { (inName, _) -> (Int, TimeInterval) in
+            beginBackgroundTask: { inName, _ -> (Int, TimeInterval) in
                 XCTAssertEqual(inName, "name")
                 return (expectedIdentifier, expectedRemaining)
             }, endBackgroundTask: { (inIdentifier: Int) in

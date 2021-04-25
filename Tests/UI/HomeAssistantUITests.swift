@@ -11,7 +11,7 @@ class HomeAssistantUITests: XCTestCase {
         setupSnapshot(app, waitForAnimations: false)
         app.launch()
 
-        let handler = addUIInterruptionMonitor(withDescription: "System Dialog") { (alert) -> Bool in
+        let handler = addUIInterruptionMonitor(withDescription: "System Dialog") { alert -> Bool in
             alert.buttons.element(boundBy: 1).tap()
             return true
         }

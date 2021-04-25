@@ -191,7 +191,7 @@ class ModelManagerTests: XCTestCase {
         )
 
         XCTAssertNoThrow(try hang(promise))
-        XCTAssertTrue(expectedExpired.allSatisfy { $0.isInvalidated })
+        XCTAssertTrue(expectedExpired.allSatisfy(\.isInvalidated))
         XCTAssertTrue(expectedAlive.allSatisfy { !$0.isInvalidated })
     }
 

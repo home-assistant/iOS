@@ -30,13 +30,11 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
             let resp = SendLocationIntentResponse(code: .success, userActivity: nil)
             resp.location = intent.location
             completion(resp)
-            return
         }.catch { error in
             Current.Log.error("Error sending location during Siri Shortcut call: \(error)")
             let resp = SendLocationIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Error sending location during Siri Shortcut call: \(error.localizedDescription)"
             completion(resp)
-            return
         }
     }
 }

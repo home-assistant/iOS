@@ -62,9 +62,9 @@ class CameraViewController: UIViewController, NotificationCategory {
             }.map {
                 (api, $0)
             }
-        }.then { [weak self] (api, result) -> Promise<Void> in
+        }.then { [weak self] api, result -> Promise<Void> in
             let controllers = Self.possibleControllers
-                .compactMap { (controllerClass) -> () -> Promise<UIViewController & CameraStreamHandler> in
+                .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
                     {
                         do {
                             return .value(try controllerClass.init(api: api, response: result))
@@ -164,7 +164,7 @@ class CameraViewController: UIViewController, NotificationCategory {
             }
         }
 
-        return promise.recover { (nextError) -> Promise<UIViewController & CameraStreamHandler> in
+        return promise.recover { nextError -> Promise<UIViewController & CameraStreamHandler> in
             throw CameraViewControllerError.accumulated(accumulatedErrors + [nextError])
         }
     }

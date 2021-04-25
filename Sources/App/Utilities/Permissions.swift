@@ -204,7 +204,6 @@ public enum PermissionType: Int {
                     return
                 }
                 completionHandler(true, .authorized)
-                return
             })
         case .notification:
             UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
