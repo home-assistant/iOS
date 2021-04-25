@@ -192,7 +192,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     $0.value = .Safari
                 }
                 $0.selectorTitle = $0.title
-                $0.options = OpenInBrowser.allCases.filter { $0.isInstalled }
+                $0.options = OpenInBrowser.allCases.filter(\.isInstalled)
                 $0.displayValueFor = { $0?.title }
             }.onChange { row in
                 guard let browserChoice = row.value else { return }
@@ -487,7 +487,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             return
         }
 
-        let rowsDict = actionsSection.allRows.enumerated().compactMap { (entry) -> (String, Int)? in
+        let rowsDict = actionsSection.allRows.enumerated().compactMap { entry -> (String, Int)? in
             // Current.Log.verbose("Map \(entry.element.indexPath) \(entry.element.tag)")
             guard let tag = entry.element.tag else { return nil }
 

@@ -246,7 +246,7 @@ public class ConnectionInfo: Codable {
         case .remoteUI:
             if let url = remoteUIURL {
                 if let internalURL = self.internalURL, self.isOnInternalNetwork {
-                    self.activeURLType = .internal
+                    activeURLType = .internal
                     return sanitize(internalURL)
                 }
                 return sanitize(url)
@@ -260,7 +260,7 @@ public class ConnectionInfo: Codable {
                 return self.activeURL
             } else if let url = externalURL {
                 if let internalURL = self.internalURL, self.isOnInternalNetwork {
-                    self.activeURLType = .internal
+                    activeURLType = .internal
                     return sanitize(internalURL)
                 }
                 return sanitize(url)

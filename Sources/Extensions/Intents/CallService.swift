@@ -100,7 +100,6 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             resp.domain = domain
             resp.service = service
             completion(resp)
-            return
         }.catch { error in
             Current.Log.error("Error when calling service in shortcut \(error)")
             let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)

@@ -29,7 +29,6 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         Current.api.catch { error in
             Current.Log.error("Can't get a authenticated API \(error)")
             completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
-            return
         }
 
         completion(FireEventIntentResponse(code: .ready, userActivity: nil))
