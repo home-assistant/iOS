@@ -56,7 +56,7 @@ const setOverrideZoomEnabled = (shouldZoom) => {
     }
 
     const ignoredBits = ['user-scalable', 'minimum-scale', 'maximum-scale'];
-    const elements = element['content']
+    let elements = element['content']
         .split(',')
         .filter(contentItem => {
             return ignoredBits.every(ignoredBit => !contentItem.includes(ignoredBit));
@@ -65,8 +65,9 @@ const setOverrideZoomEnabled = (shouldZoom) => {
     if (shouldZoom) {
         elements.push('user-scalable=yes');
     } else {
-        // setting minimum/maximum scale resets existing zoom if there is one
-        elements.push('user-scalable=no', 'minimum-scale=1.0', 'maximum-scale=1.0');
+        // setting minimum/maximum scale resets existing zoom if there is one, but it doesn't play nice with
+        // the overall 'page zoom' scaling that we add. users can generally unpinch 
+        elements.push('user-scalable=no');
     }
 
     element['content'] = elements.join(',');
