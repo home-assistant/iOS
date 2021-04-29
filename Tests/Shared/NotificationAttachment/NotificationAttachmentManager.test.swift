@@ -68,39 +68,6 @@ class NotificationAttachmentManagerTests: XCTestCase {
         XCTAssertFalse(parsers.isEmpty)
     }
 
-    func testSummaryArgumentAlreadySet() throws {
-        let content = with(UNMutableNotificationContent()) {
-            $0.summaryArgument = "things"
-            $0.threadIdentifier = "thread_identifier"
-            $0.categoryIdentifier = "category_identifier"
-        }
-        let promise = manager.content(from: content, api: api)
-        let result = try hang(Promise(promise))
-        XCTAssertEqual(result.summaryArgument, "things")
-    }
-
-    func testSummaryArgumentArgumentFromThreadIdentifier() throws {
-        let content = with(UNMutableNotificationContent()) {
-            $0.summaryArgument = ""
-            $0.threadIdentifier = "thread_identifier"
-            $0.categoryIdentifier = "category_identifier"
-        }
-        let promise = manager.content(from: content, api: api)
-        let result = try hang(Promise(promise))
-        XCTAssertEqual(result.summaryArgument, "thread_identifier")
-    }
-
-    func testSummaryArgumentArgumentFromCategoryIdentifier() throws {
-        let content = with(UNMutableNotificationContent()) {
-            $0.summaryArgument = ""
-            $0.threadIdentifier = ""
-            $0.categoryIdentifier = "category_identifier"
-        }
-        let promise = manager.content(from: content, api: api)
-        let result = try hang(Promise(promise))
-        XCTAssertEqual(result.summaryArgument, "category_identifier")
-    }
-
     func testAllMissing() {
         parser1.result = .missing
         parser2.result = .missing
