@@ -141,10 +141,6 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
-    fastlane-plugin-appicon (0.15.0)
-      json
-      mini_magick (>= 4.9.4, < 5.0.0)
-    fastlane-plugin-clean_testflight_testers (0.3.0)
     ffi (1.14.2)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -227,7 +223,7 @@ GEM
       declarative-option (< 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rouge (2.0.7)
     rubocop (1.9.1)
       parallel (~> 1.10)
@@ -297,8 +293,6 @@ DEPENDENCIES
   cocoapods (>= 1.10.0.beta.1)
   cocoapods-acknowledgements
   fastlane
-  fastlane-plugin-appicon
-  fastlane-plugin-clean_testflight_testers
   rubocop
   synx
 
