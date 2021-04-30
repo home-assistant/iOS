@@ -585,6 +585,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.remote_ui_available" = "UI o bell ar gael";
 "settings.connection_section.remote_ui_url.title" = "URL UI o bell";
 "settings.connection_section.save_button.title" = "Dilysu a chadw gosodiadau'r cysylltiad";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Dangos gosodiadau datblygedig";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";

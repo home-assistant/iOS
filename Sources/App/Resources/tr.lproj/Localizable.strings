@@ -585,6 +585,7 @@
 "settings.connection_section.remote_ui_available" = "Uzak Kullanıcı Arabirimi Kullanılabilir";
 "settings.connection_section.remote_ui_url.title" = "Uzak Kullanıcı Arabirimi URL'si";
 "settings.connection_section.save_button.title" = "Validate and Save Connection Settings";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Gelişmiş ayarları göster";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "SSID'lere arka planda erişmek için 'Her Zaman' konum izni ve 'Tam' konum doğruluğu gerekir. Ayarlarınızı değiştirmek için buraya dokunun.";
 "settings.connection_section.ssid_permission_message" = "SSID'lere arka planda erişmek için 'Her Zaman' konum izni gerekir. Ayarlarınızı değiştirmek için buraya dokunun.";

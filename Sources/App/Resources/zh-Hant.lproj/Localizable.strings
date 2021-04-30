@@ -175,7 +175,7 @@
 "nfc.write.success_message" = "標籤已寫入！";
 "no_label" = "否";
 "notification_service.failed_to_load" = "載入附帶檔案失敗";
-"notification_service.loading_dynamic_actions" = "Loading Actions…";
+"notification_service.loading_dynamic_actions" = "載入動作...";
 "notification_service.parser.camera.invalid_entity" = "所提供的 entity_id 無效。";
 "notification_service.parser.camera.no_entity" = "未提供 entity_id。";
 "notification_service.parser.url.invalid_url" = "所提供的 URL 無效。";
@@ -585,6 +585,7 @@
 "settings.connection_section.remote_ui_available" = "Remote UI 可供使用";
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
 "settings.connection_section.save_button.title" = "已確認並儲存連線設定";
+"settings.connection_section.servers" = "伺服器";
 "settings.connection_section.show_advanced_settings_row.title" = "顯示進階設定";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "於背景存取 SSID 無線網路需要於定位服務權限中開啟 '永遠' 與 '精確位置'。點選此處以變更設定。";
 "settings.connection_section.ssid_permission_message" = "於背景存取 SSID 需要「總是允許」權限。點選以進行設定變更。";

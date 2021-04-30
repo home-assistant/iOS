@@ -175,7 +175,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "nfc.write.success_message" = "Tag Skrevet!";
 "no_label" = "Nei";
 "notification_service.failed_to_load" = "Kunne ikke laste inn vedlegget";
-"notification_service.loading_dynamic_actions" = "Loading Actions…";
+"notification_service.loading_dynamic_actions" = "Laster inn handlinger…";
 "notification_service.parser.camera.invalid_entity" = "enhets_id oppgitt var ugyldig.";
 "notification_service.parser.camera.no_entity" = "Ingen enhets_id ble gitt.";
 "notification_service.parser.url.invalid_url" = "Den angitte URL-adressen var ugyldig.";
@@ -585,6 +585,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.connection_section.remote_ui_available" = "Ekstern UI Tilgjengelig";
 "settings.connection_section.remote_ui_url.title" = "Ekstern UI URL";
 "settings.connection_section.save_button.title" = "Validere og lagre tilkoblingsinnstillinger";
+"settings.connection_section.servers" = "Servere";
 "settings.connection_section.show_advanced_settings_row.title" = "Vis avanserte innstillinger";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "For å få tilgang til SSID-er i bakgrunnen, krever 'Alltid' plasseringstillatelse og 'Full' posisjonsnøyaktighet. Trykk her for å endre innstillingene.";
 "settings.connection_section.ssid_permission_message" = "Tilgang til SSID-er i bakgrunnen krever \"Alltid\" posisjonstillatelse. Trykk her for å endre innstillingene dine.";

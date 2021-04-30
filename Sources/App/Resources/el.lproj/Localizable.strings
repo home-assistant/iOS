@@ -586,6 +586,7 @@ Home Assistant. Πατήστε για αντιγραφή ή κοινή χρήσ�
 "settings.connection_section.remote_ui_available" = "Διαθέσιμο απομακρυσμένο περιβάλλον χρήστη";
 "settings.connection_section.remote_ui_url.title" = "Απομακρυσμένη διεύθυνση URL διεπαφής χρήστη";
 "settings.connection_section.save_button.title" = "Επικύρωση και αποθήκευση ρυθμίσεων σύνδεσης";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Εμφάνιση ρυθμίσεων για προχωρημένους";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";

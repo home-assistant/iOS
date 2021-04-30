@@ -585,6 +585,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.connection_section.remote_ui_available" = "Ekstern UI tilgængelig";
 "settings.connection_section.remote_ui_url.title" = "Web-adresse til ekstern UI";
 "settings.connection_section.save_button.title" = "Valider og gem forbindelsesindstillinger";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Vis avancerede indstillinger";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Adgang til at tilgå SSID'er i baggrunden kræver, at lokalitetstilladelse er sat til 'Altid'  og at 'Præcis lokalitet' er slået til. Tryk her for at ændre dine indstillinger.";
 "settings.connection_section.ssid_permission_message" = "Adgang til SSID'er i baggrunden kræver 'Altid'-lokalitetstilladelse. Tryk her for at ændre dine indstillinger.";
