@@ -51,18 +51,6 @@ public class NotificationAttachmentManager {
                 Current.Log.info("adding attachment \(attachment)")
                 content.attachments.append(attachment)
             }).map { _ in content }
-        }.map { content in
-            #if os(iOS)
-            // Attempt to fill in the summary argument with the thread or category ID if it doesn't exist in payload.
-            if content.summaryArgument.isEmpty {
-                if !content.threadIdentifier.isEmpty {
-                    content.summaryArgument = content.threadIdentifier
-                } else if !content.categoryIdentifier.isEmpty {
-                    content.summaryArgument = content.categoryIdentifier
-                }
-            }
-            #endif
-            return content
         }.get { content in
             Current.Log.info("delivering content \(content)")
 
