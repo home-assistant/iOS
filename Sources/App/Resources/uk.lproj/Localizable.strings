@@ -585,6 +585,7 @@
 "settings.connection_section.remote_ui_available" = "Доступний віддалений інтерфейс користувача";
 "settings.connection_section.remote_ui_url.title" = "URL-адреса віддаленого інтерфейсу";
 "settings.connection_section.save_button.title" = "Перевірити та зберегти параметри підключення";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Показати розширені налаштування";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Для доступу до SSID у фоновому режимі потрібен дозвіл \"Завжди\" розташування та \"Максимальна\" точність розташування. Натисніть тут, щоб змінити налаштування.";
 "settings.connection_section.ssid_permission_message" = "Щоб отримати доступ до SSID у фоновому режимі, потрібен дозвіл до місцезнаходження \"Завжди\". Натисніть тут, щоб змінити налаштування.";

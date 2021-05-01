@@ -175,7 +175,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "nfc.write.success_message" = "Tag écrit !";
 "no_label" = "Non";
 "notification_service.failed_to_load" = "Échec du chargement de la pièce jointe";
-"notification_service.loading_dynamic_actions" = "Loading Actions…";
+"notification_service.loading_dynamic_actions" = "Chargement des actions";
 "notification_service.parser.camera.invalid_entity" = "l'entity_id fourni n'était pas valide.";
 "notification_service.parser.camera.no_entity" = "Aucun entity_id n'a été fourni.";
 "notification_service.parser.url.invalid_url" = "L'URL indiquée n'était pas valide.";
@@ -585,6 +585,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_section.remote_ui_available" = "Interface utilisateur à distance disponible";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
 "settings.connection_section.save_button.title" = "Valider et enregistrer les paramètres de connexion";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Afficher les paramètres avancés";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours» et une précision de localisation «complète». Appuyez ici pour modifier vos paramètres.";
 "settings.connection_section.ssid_permission_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours». Appuyez ici pour modifier vos paramètres.";

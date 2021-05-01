@@ -583,6 +583,7 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "settings.connection_section.remote_ui_available" = "Zdalny dostęp do interfejsu graficznego jest dostępny";
 "settings.connection_section.remote_ui_url.title" = "Adres URL zdalnego interfejsu użytkownika";
 "settings.connection_section.save_button.title" = "Sprawdź i zapisz ustawienia połączenia";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Pokaż ustawienia zaawansowane";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Dostęp do identyfikatorów SSID w tle wymaga, aby ustawienia lokalizacji były ustawione na „Zawsze”. Kliknij tutaj, aby zmienić ustawienia.";

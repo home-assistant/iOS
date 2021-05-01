@@ -583,6 +583,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_section.remote_ui_available" = "Доступен удаленный интерфейс";
 "settings.connection_section.remote_ui_url.title" = "URL внешнего интерфейса";
 "settings.connection_section.save_button.title" = "Проверить и сохранить параметры подключения.";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Показать дополнительные настройки";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Для доступа к SSID в фоновом режиме требуется разрешение на местоположение «Всегда». Нажмите здесь, чтобы изменить настройки.";

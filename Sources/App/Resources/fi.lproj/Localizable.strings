@@ -585,6 +585,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_section.remote_ui_available" = "Remote UI Saatavilla";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.save_button.title" = "Vahvista ja tallenna yhteyden asetukset";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Näytä lisäasetukset";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";

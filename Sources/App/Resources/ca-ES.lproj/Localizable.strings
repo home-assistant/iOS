@@ -585,6 +585,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.remote_ui_available" = "Interfície d'usuari remota disponible";
 "settings.connection_section.remote_ui_url.title" = "URL UI Remota";
 "settings.connection_section.save_button.title" = "Validar i desar la configuració de connexió";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Mostra la configuració avançada";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "L'accés a SSIDs en segon pla requereix el permís de localització establert com a \"Sempre\". Toca aquí per canviar la configuració.";

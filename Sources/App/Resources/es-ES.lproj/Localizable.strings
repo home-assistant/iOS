@@ -585,6 +585,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_section.remote_ui_available" = "Remote UI Available";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.save_button.title" = "Validate and Save Connection Settings";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Show advanced settings";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "El acceso a los SSID en segundo plano requiere permiso de ubicación \"Siempre\" y precisión de ubicación \"Completa\". Toca aquí para cambiar tu configuración.";
 "settings.connection_section.ssid_permission_message" = "El acceso a los SSID en segundo plano requiere el permiso de ubicación \"Siempre\". Toca aquí para cambiar tu configuración.";

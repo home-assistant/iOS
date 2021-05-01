@@ -589,6 +589,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_section.remote_ui_available" = "远程UI可用";
 "settings.connection_section.remote_ui_url.title" = "远程UI URL";
 "settings.connection_section.save_button.title" = "保存";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "显示高级设置";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";

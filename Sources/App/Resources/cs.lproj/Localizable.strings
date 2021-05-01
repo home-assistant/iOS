@@ -585,6 +585,7 @@ Vaše akce a místní konfigurace budou po přihlášení stále k dispozici.";
 "settings.connection_section.remote_ui_available" = "Vzdálené uživ. rozhraní k dispozici";
 "settings.connection_section.remote_ui_url.title" = "Vzdálená adresa UI URL";
 "settings.connection_section.save_button.title" = "Ověřit a uložit nastavení připojení";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Zobrazit pokročilá nastavení";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Přístup k SSID na pozadí vyžaduje ' vždy' oprávnění k umístění. Klepnutím sem změníte nastavení.";

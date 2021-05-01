@@ -585,6 +585,7 @@ Tindakan dan konfigurasi lokal Anda akan tetap tersedia setelah masuk.";
 "settings.connection_section.remote_ui_available" = "Antarmuka Jarak Jauh Tersedia";
 "settings.connection_section.remote_ui_url.title" = "URL Antarmuka Jarak Jauh";
 "settings.connection_section.save_button.title" = "Validate and Save Connection Settings";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.show_advanced_settings_row.title" = "Show advanced settings";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Akses SSID di latar belakang membutuhkan izin lokasi 'Selalu' dan keakuratan lokasi 'Tepat'. Ketuk di sini untuk mengubah pengaturan Anda.";
 "settings.connection_section.ssid_permission_message" = "Akses SSID di latar belakang membutuhkan izin lokasi 'Selalu'. Ketuk di sini untuk mengubah pengaturan Anda.";
