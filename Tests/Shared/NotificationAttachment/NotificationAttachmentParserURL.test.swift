@@ -138,7 +138,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
             "url": "/media/local/file.png",
-            "lazy": true
+            "lazy": true,
         ]
         let promise = parser.attachmentInfo(from: content)
 
@@ -158,7 +158,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         let content = UNMutableNotificationContent()
         content.userInfo["attachment"] = [
             "url": "/media/local/file.png",
-            "lazy": false
+            "lazy": false,
         ]
         let promise = parser.attachmentInfo(from: content)
 

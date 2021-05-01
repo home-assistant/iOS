@@ -22,7 +22,7 @@ class CameraViewController: UIViewController, NotificationCategory {
             }
         }
     }
-    
+
     let entityId: String
 
     required init(notification: UNNotification, attachmentURL: URL?) throws {
@@ -35,6 +35,7 @@ class CameraViewController: UIViewController, NotificationCategory {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -64,7 +65,7 @@ class CameraViewController: UIViewController, NotificationCategory {
     }
 
     func start() -> Promise<Void> {
-        return Current.api.then(on: nil) { [entityId] api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
+        Current.api.then(on: nil) { [entityId] api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
             firstly {
                 api.StreamCamera(entityId: entityId)
             }.recover { error -> Promise<StreamCameraResponse> in

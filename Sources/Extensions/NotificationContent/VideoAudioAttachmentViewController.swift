@@ -18,12 +18,13 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
             throw PlayerAttachmentError.noAttachment
         }
 
-        needsEndSecurityScoped = attachmentURL.startAccessingSecurityScopedResource()
+        self.needsEndSecurityScoped = attachmentURL.startAccessingSecurityScopedResource()
 
         self.attachmentURL = attachmentURL
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

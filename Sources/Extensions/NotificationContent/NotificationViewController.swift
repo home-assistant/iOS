@@ -74,7 +74,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }.then { [self] url in
                 viewController(for: notification, attachmentURL: url, allowDownloads: false)
             }.recover { _ in
-                return .value(nil)
+                .value(nil)
             }
         } else {
             return .value(nil)
