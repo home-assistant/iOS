@@ -32,6 +32,9 @@ public class NotificationAttachmentManager {
 
             if case ServiceError.noAttachment = error {
                 throw error
+            } else if error is URLError {
+                // we'll try loading in the content extension, no need to decorate the thumbnail
+                throw error
             } else {
                 #if os(iOS)
                 return .value(try self.attachment(for: error, api: api))
