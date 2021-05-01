@@ -1,3 +1,4 @@
+import Alamofire
 import Foundation
 import MobileCoreServices
 import PromiseKit
@@ -32,7 +33,7 @@ public class NotificationAttachmentManager {
 
             if case ServiceError.noAttachment = error {
                 throw error
-            } else if error is URLError {
+            } else if error is URLError || error.asAFError?.isSessionTaskError == true {
                 // we'll try loading in the content extension, no need to decorate the thumbnail
                 throw error
             } else {

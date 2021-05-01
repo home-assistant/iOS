@@ -1,3 +1,4 @@
+import Alamofire
 import CoreServices
 import Foundation
 import OHHTTPStubs
@@ -126,9 +127,19 @@ class NotificationAttachmentManagerTests: XCTestCase {
         let error = URLError(.timedOut)
         parser1.result = image1.failureParserResult(failure: .error(error))
 
-        let attachment = try firstAttachment(for: .init())
-        XCTAssertNotEqual(try Data(contentsOf: attachment.url), image1.data)
-        XCTAssertTrue(attachment.accessibilityLabel?.contains(error.localizedDescription) == true)
+        // no attachment to notification
+        XCTAssertThrowsError(try firstAttachment(for: .init()))
+        // but error image when downloading
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
+    }
+
+    func testContentDownloadErrors() throws {
+        let error = AFError.sessionTaskFailed(error: URLError(.timedOut))
+        parser1.result = image1.failureParserResult(failure: .error(error))
+
+        // no attachment to notification
+        XCTAssertThrowsError(try firstAttachment(for: .init()))
+        // but error image when downloading
         XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
