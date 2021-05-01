@@ -60,6 +60,11 @@ Download latest localization files from Lokalize
 fastlane push_strings
 ```
 Upload localized strings to Lokalise
+### unused_strings
+```
+fastlane unused_strings
+```
+Find unused localized strings
 ### update_lokalise_metadata
 ```
 fastlane update_lokalise_metadata
