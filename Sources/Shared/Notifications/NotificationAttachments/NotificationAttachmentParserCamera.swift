@@ -24,12 +24,14 @@ final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
         }
 
         let hideThumbnail = (content.userInfo["attachment"] as? [String: Any])?["hide-thumbnail"] as? Bool
+        let lazy = (content.userInfo["attachment"] as? [String: Any])?["lazy"] as? Bool == true
 
         return .value(.fulfilled(.init(
             url: proxyURL,
             needsAuth: true,
             typeHint: kUTTypeJPEG,
-            hideThumbnail: hideThumbnail
+            hideThumbnail: hideThumbnail,
+            lazy: lazy
         )))
     }
 }

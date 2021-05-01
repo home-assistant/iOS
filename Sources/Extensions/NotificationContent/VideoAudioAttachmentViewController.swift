@@ -8,7 +8,31 @@ import UserNotificationsUI
 class PlayerAttachmentViewController: UIViewController, NotificationCategory {
     enum PlayerAttachmentError: Error {
         case noAttachment
-        case securityFailure
+    }
+
+    let attachmentURL: URL
+    let needsEndSecurityScoped: Bool
+
+    required init(notification: UNNotification, attachmentURL: URL?) throws {
+        guard let attachmentURL = attachmentURL else {
+            throw PlayerAttachmentError.noAttachment
+        }
+
+        self.needsEndSecurityScoped = attachmentURL.startAccessingSecurityScopedResource()
+
+        self.attachmentURL = attachmentURL
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        if needsEndSecurityScoped {
+            videoViewController?.url.stopAccessingSecurityScopedResource()
+        }
     }
 
     var videoViewController: CameraStreamHLSViewController? {
@@ -36,22 +60,10 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
         }
     }
 
-    deinit {
-        videoViewController?.url.stopAccessingSecurityScopedResource()
-    }
-
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) throws -> Promise<Void> {
-        guard let attachment = notification.request.content.attachments.first else {
-            throw PlayerAttachmentError.noAttachment
-        }
-
-        guard attachment.url.startAccessingSecurityScopedResource() else {
-            throw PlayerAttachmentError.securityFailure
-        }
-
-        let controller = with(CameraStreamHLSViewController(url: attachment.url)) {
+    func start() -> Promise<Void> {
+        let controller = with(CameraStreamHLSViewController(url: attachmentURL)) {
             var lastState: CameraStreamHandlerState?
-            $0.didUpdateState = { state in
+            $0.didUpdateState = { [extensionContext] state in
                 guard lastState != state else {
                     return
                 }

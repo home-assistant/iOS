@@ -6,14 +6,49 @@ import UserNotifications
 import UserNotificationsUI
 
 class ImageAttachmentViewController: UIViewController, NotificationCategory {
+    let attachmentURL: URL
+    let needsEndSecurityScoped: Bool
+    let image: UIImage
     let imageView = with(UIImageView()) {
         $0.contentMode = .scaleAspectFit
+    }
+
+    required init(notification: UNNotification, attachmentURL: URL?) throws {
+        guard let attachmentURL = attachmentURL else {
+            throw ImageAttachmentError.noAttachment
+        }
+
+        self.needsEndSecurityScoped = attachmentURL.startAccessingSecurityScopedResource()
+
+        // rather than hard-coding an acceptable list of UTTypes it's probably easier to just try decoding
+        // https://developer.apple.com/documentation/usernotifications/unnotificationattachment
+        // has the full list of what is advertised - at time of writing (iOS 14.5) it's jpeg, gif and png
+        // but iOS 14 also supports webp, so who knows if it'll be added silently or not
+
+        guard let image = UIImage(contentsOfFile: attachmentURL.path) else {
+            attachmentURL.stopAccessingSecurityScopedResource()
+            throw ImageAttachmentError.imageDecodeFailure
+        }
+
+        self.image = image
+        self.attachmentURL = attachmentURL
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        if needsEndSecurityScoped {
+            attachmentURL.stopAccessingSecurityScopedResource()
+        }
     }
 
     enum ImageAttachmentError: Error {
         case noAttachment
         case notImage
-        case securityFailure
         case imageDecodeFailure
     }
 
@@ -32,34 +67,9 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
         }
     }
 
-    deinit {
-        lastAttachmentURL?.stopAccessingSecurityScopedResource()
-    }
-
-    func didReceive(
-        notification: UNNotification,
-        extensionContext: NSExtensionContext?
-    ) throws -> Promise<Void> {
-        guard let attachment = notification.request.content.attachments.first else {
-            throw ImageAttachmentError.noAttachment
-        }
-
-        guard attachment.url.startAccessingSecurityScopedResource() else {
-            throw ImageAttachmentError.securityFailure
-        }
-
-        // rather than hard-coding an acceptable list of UTTypes it's probably easier to just try decoding
-        // https://developer.apple.com/documentation/usernotifications/unnotificationattachment
-        // has the full list of what is advertised - at time of writing (iOS 14.5) it's jpeg, gif and png
-        // but iOS 14 also supports webp, so who knows if it'll be added silently or not
-
-        guard let image = UIImage(contentsOfFile: attachment.url.path) else {
-            attachment.url.stopAccessingSecurityScopedResource()
-            throw ImageAttachmentError.imageDecodeFailure
-        }
-
+    func start() -> Promise<Void> {
         imageView.image = image
-        lastAttachmentURL = attachment.url
+        lastAttachmentURL = attachmentURL
         aspectRatioConstraint = NSLayoutConstraint.aspectRatioConstraint(on: imageView, size: image.size)
 
         return .value(())

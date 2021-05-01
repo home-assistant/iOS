@@ -1,3 +1,4 @@
+import Alamofire
 import Foundation
 import MobileCoreServices
 import PromiseKit
@@ -32,6 +33,9 @@ public class NotificationAttachmentManager {
 
             if case ServiceError.noAttachment = error {
                 throw error
+            } else if error is URLError || error.asAFError?.isSessionTaskError == true {
+                // we'll try loading in the content extension, no need to decorate the thumbnail
+                throw error
             } else {
                 #if os(iOS)
                 return .value(try self.attachment(for: error, api: api))
@@ -56,6 +60,27 @@ public class NotificationAttachmentManager {
 
             withExtendedLifetime(self) {
                 // just in case we're not retained by our caller, keep alive through
+            }
+        }
+    }
+
+    public func downloadAttachment(
+        from originalContent: UNNotificationContent,
+        api: HomeAssistantAPI
+    ) -> Promise<URL> {
+        firstly {
+            attachmentInfo(from: originalContent)
+        }.then { attachmentInfo in
+            api.DownloadDataAt(url: attachmentInfo.url, needsAuth: attachmentInfo.needsAuth)
+        }.recover { error throws -> Promise<URL> in
+            if case ServiceError.noAttachment = error {
+                throw error
+            } else {
+                #if os(iOS)
+                return .value(try self.savedImage(for: error, api: api).0)
+                #else
+                throw error
+                #endif
             }
         }
     }
@@ -87,7 +112,11 @@ public class NotificationAttachmentManager {
         from attachmentInfo: NotificationAttachmentInfo,
         api: HomeAssistantAPI
     ) -> Promise<UNNotificationAttachment> {
-        firstly {
+        guard !attachmentInfo.lazy else {
+            return .init(error: ServiceError.noAttachment)
+        }
+
+        return firstly {
             api.DownloadDataAt(url: attachmentInfo.url, needsAuth: attachmentInfo.needsAuth)
         }.map { url -> UNNotificationAttachment in
             try UNNotificationAttachment(
@@ -99,10 +128,10 @@ public class NotificationAttachmentManager {
     }
 
     #if os(iOS)
-    private func attachment(
+    private func savedImage(
         for error: Error,
         api: HomeAssistantAPI
-    ) throws -> UNNotificationAttachment {
+    ) throws -> (URL, String) {
         guard let temporaryURL = api.temporaryDownloadFileURL() else {
             throw error
         }
@@ -112,9 +141,18 @@ public class NotificationAttachmentManager {
             savingTo: temporaryURL
         )
 
+        return (temporaryURL, localizedString)
+    }
+
+    private func attachment(
+        for error: Error,
+        api: HomeAssistantAPI
+    ) throws -> UNNotificationAttachment {
+        let (url, localizedString) = try savedImage(for: error, api: api)
+
         return with(try UNNotificationAttachment(
             identifier: "error",
-            url: temporaryURL,
+            url: url,
             options: [
                 UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG,
             ]

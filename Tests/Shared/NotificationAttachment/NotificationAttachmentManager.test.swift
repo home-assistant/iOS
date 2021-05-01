@@ -1,3 +1,4 @@
+import Alamofire
 import CoreServices
 import Foundation
 import OHHTTPStubs
@@ -63,6 +64,15 @@ class NotificationAttachmentManagerTests: XCTestCase {
         }
     }
 
+    private func assertDownloadedAttachment(for content: UNNotificationContent, api: HomeAssistantAPI) throws {
+        let promise = manager.downloadAttachment(from: content, api: api)
+        let url = try hang(Promise(promise))
+        if UIImage(contentsOfFile: url.path) == nil {
+            enum NoImageError: Error { case noImage }
+            throw NoImageError.noImage
+        }
+    }
+
     func testDefaultParsers() {
         let parsers = NotificationAttachmentManager().parsers
         XCTAssertFalse(parsers.isEmpty)
@@ -76,6 +86,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
         let content = UNNotificationContent()
         let promise = manager.content(from: content, api: api)
         XCTAssertEqual(try hang(Promise(promise)), content)
+        XCTAssertThrowsError(try hang(Promise(manager.downloadAttachment(from: content, api: api))))
     }
 
     func testOneContentUnauth() throws {
@@ -83,6 +94,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
 
         let attachment = try firstAttachment(for: .init())
         XCTAssertEqual(try Data(contentsOf: attachment.url), image1.data)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testOneContentAuth() throws {
@@ -90,6 +102,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
 
         let attachment = try firstAttachment(for: .init())
         XCTAssertEqual(try Data(contentsOf: attachment.url), image1.data)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testTwoContentUnauth() throws {
@@ -98,6 +111,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
 
         let attachment = try firstAttachment(for: .init())
         XCTAssertEqual(try Data(contentsOf: attachment.url), image1.data)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testTwoContentAuth() throws {
@@ -106,15 +120,27 @@ class NotificationAttachmentManagerTests: XCTestCase {
 
         let attachment = try firstAttachment(for: .init())
         XCTAssertEqual(try Data(contentsOf: attachment.url), image1.data)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testContentTimesOut() throws {
         let error = URLError(.timedOut)
         parser1.result = image1.failureParserResult(failure: .error(error))
 
-        let attachment = try firstAttachment(for: .init())
-        XCTAssertNotEqual(try Data(contentsOf: attachment.url), image1.data)
-        XCTAssertTrue(attachment.accessibilityLabel?.contains(error.localizedDescription) == true)
+        // no attachment to notification
+        XCTAssertThrowsError(try firstAttachment(for: .init()))
+        // but error image when downloading
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
+    }
+
+    func testContentDownloadErrors() throws {
+        let error = AFError.sessionTaskFailed(error: URLError(.timedOut))
+        parser1.result = image1.failureParserResult(failure: .error(error))
+
+        // no attachment to notification
+        XCTAssertThrowsError(try firstAttachment(for: .init()))
+        // but error image when downloading
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testContentNotFound() throws {
@@ -123,6 +149,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
         let attachment = try firstAttachment(for: .init())
         XCTAssertNotEqual(try Data(contentsOf: attachment.url), image1.data)
         XCTAssertTrue(attachment.accessibilityLabel?.contains("404") == true)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testContentType() throws {
@@ -134,6 +161,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
 
         let attachment = try firstAttachment(for: .init())
         XCTAssertEqual(attachment.type, kUTTypeGIF as String)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testHideThumbnailDefault() throws {
@@ -146,6 +174,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
         let attachment = try firstAttachment(for: .init())
         // fragile? yes. lazy? yes. effective? ask me in an iOS release
         XCTAssertTrue(attachment.debugDescription.contains("displayLocation: default"))
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testHideThumbnailTrue() throws {
@@ -158,6 +187,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
         let attachment = try firstAttachment(for: .init())
         // fragile? yes. lazy? yes. effective? ask me in an iOS release
         XCTAssertTrue(attachment.debugDescription.contains("displayLocation: long-look"))
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 
     func testHideThumbnailFalse() throws {
@@ -170,6 +200,21 @@ class NotificationAttachmentManagerTests: XCTestCase {
         let attachment = try firstAttachment(for: .init())
         // fragile? yes. lazy? yes. effective? ask me in an iOS release
         XCTAssertTrue(attachment.debugDescription.contains("displayLocation: default"))
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
+    }
+
+    func testLazy() throws {
+        parser1.result = image1.successParserResult(
+            needsAuth: false,
+            typeHint: nil,
+            hideThumbnail: nil,
+            lazy: true
+        )
+
+        let content = UNNotificationContent()
+        let promise = manager.content(from: content, api: api)
+        XCTAssertEqual(try hang(Promise(promise)), content)
+        XCTAssertNoThrow(try assertDownloadedAttachment(for: .init(), api: api))
     }
 }
 
@@ -202,7 +247,8 @@ private class Image {
     func successParserResult(
         needsAuth: Bool = false,
         typeHint: CFString? = nil,
-        hideThumbnail: Bool? = nil
+        hideThumbnail: Bool? = nil,
+        lazy: Bool = false
     ) -> NotificationAttachmentParserResult {
         let url = Self.newURL()
 
@@ -226,7 +272,8 @@ private class Image {
             url: url,
             needsAuth: needsAuth,
             typeHint: typeHint,
-            hideThumbnail: hideThumbnail
+            hideThumbnail: hideThumbnail,
+            lazy: lazy
         ))
     }
 
@@ -254,7 +301,8 @@ private class Image {
             url: url,
             needsAuth: needsAuth,
             typeHint: nil,
-            hideThumbnail: nil
+            hideThumbnail: nil,
+            lazy: false
         ))
     }
 }
