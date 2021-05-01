@@ -39,8 +39,6 @@
 "alerts.prompt.cancel" = "Cancel·lar";
 "alerts.prompt.ok" = "D'acord";
 "always_open_label" = "Sempre obert";
-"app_transfer_warning_notification.body" = "Si us plau, obriu aquesta notificació per a una actualització important sobre els propers canvis a Home Assistant Companion";
-"app_transfer_warning_notification.title" = "⚠️ Avís dels propers canvis importants a l'aplicació";
 "cancel_label" = "Cancel·lar";
 "cl_error.description.deferred_accuracy_too_low" = "El mode ajornat no es compatible amb l'exactitud sol·licitada.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
@@ -65,7 +63,6 @@
 "client_events.event_type.networkRequest" = "Sol·licitud de xarxa";
 "client_events.event_type.notification" = "Notificació";
 "client_events.event_type.notification.title" = "Ha rebut una notificació push: %@";
-"client_events.event_type.request.log" = "Sol·licitud (SSID: %@ - %@)";
 "client_events.event_type.service_call" = "Crida servei";
 "client_events.event_type.unknown" = "Desconegut";
 "client_events.view.clear" = "Esborrar";
@@ -77,15 +74,8 @@
 "database.problem.title" = "Error de base de dades";
 "debug_section_label" = "Depurar";
 "delete" = "Suprimeix";
-"device.generic_name" = "Dispositiu";
-"devices_map.battery_label" = "Bateria";
-"devices_map.map_types.hybrid" = "Híbrid";
-"devices_map.map_types.satellite" = "Satèl·lit";
-"devices_map.map_types.standard" = "Estàndard";
-"devices_map.title" = "Dispositius i zones";
 "done_label" = "Fet";
 "error_label" = "Error";
-"errors.no_remote_ui_url" = "L'aplicació detectarà automàticament la Nabu Casa Remote UI, no podeu introduir-la manualment.";
 "extensions.map.location.new" = "Nova ubicació";
 "extensions.map.location.original" = "Ubicació original";
 "extensions.map.payload_missing_homeassistant.message" = "Payload didn't contain a homeassistant dictionary!";
@@ -97,7 +87,6 @@
 "extensions.notification_content.error.request.hls_unavailable" = "HLS Stream no disponible";
 "extensions.notification_content.error.request.other" = "S'ha rebut codi d'estat no-200 (%li)";
 "extensions.notification_content.error.request.unknown" = "Error desconegut!";
-"extensions.notification_content.hud.loading" = "Carregant %@…";
 "ha_api.api_error.cant_build_url" = "No es pot crear l'adreça URL de l'API";
 "ha_api.api_error.invalid_response" = "S'ha rebut una resposta invàlida del Home Assistant";
 "ha_api.api_error.manager_not_available" = "El gestor API HA no està disponible";
@@ -108,7 +97,6 @@
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unknown" = "S'ha produït un error desconegut.";
 "ha_api.api_error.update_not_possible" = "No s'ha pogut realitzar l'operació.";
-"ha_api.api_error.webhook_gone" = "S'ha suprimit la integració mobile_app, heu de tornar a configurar l'aplicació.";
 "help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Ubicació actualitzada mitjançant drecera d’aplicació";
 "location_change_notification.background_fetch.body" = "Ubicació actual activada en segon pla";
@@ -128,11 +116,6 @@
 "location_change_notification.url_scheme.body" = "Ubicació actualitzada mitjançant l'Esquema d'URL";
 "location_change_notification.visit.body" = "Ubicació actualitzada mitjançant Visita";
 "location_change_notification.x_callback_url.body" = "Ubicació actualitzada mitjançant X-Callback-URL";
-"location_update_error_notification.title" = "Error en enviar l'actualització de la ubicació %@ al Home Assistant.";
-"manual_location_update_failed_notification.message" = "No s'ha pogut enviar la ubicació actual al servidor. L’error ha estat %@";
-"manual_location_update_failed_notification.title" = "La ubicació no s'ha pogut actualitzar";
-"manual_location_update_notification.message" = "S'ha enviat correctament la ubicació";
-"manual_location_update_notification.title" = "Ubicació actualitzada";
 "menu.actions.configure" = "Configurar…";
 "menu.actions.title" = "Accions";
 "menu.application.about" = "Quant a %@";
@@ -177,7 +160,6 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "notification_service.failed_to_load" = "No s'ha pogut carregar el fitxer adjunt";
 "notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "entity_id proporcionat no era vàlid.";
-"notification_service.parser.camera.no_entity" = "No s'ha proporcionat cap entity_id.";
 "notification_service.parser.url.invalid_url" = "L'adreça URL donada no era vàlida.";
 "notification_service.parser.url.no_url" = "No s'ha proporcionat cap URL.";
 "notifications_configurator.action.rows.authentication_required.footer" = "When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.";
@@ -223,8 +205,6 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.connection_test_result.ssl_untrusted.description" = "El certificat SSL no és de confiança. %@.";
 "onboarding.connection_test_result.too_old.description" = "Heu d'actualitzar la versió del Home Assistant.";
 "onboarding.connection_test_result.unknown_error.description" = "Error desconegut: %@";
-"onboarding.discovery.results_label.plural" = "Hem trobat %li Home Assistants a la vostra xarxa.";
-"onboarding.discovery.results_label.singular" = "Hem trobat %li Home Assistant a la vostra xarxa.";
 "onboarding.logged_out_from_move.body" = "L'aplicació d'iOS de Home Assistant ha mogut recentment les organitzacions a l'App Store. Aquest moviment, per desgràcia, requereix tancar la sessió.\
 \
 Les vostres accions i la configuració local encara estaran disponibles després d'iniciar la sessió.";
@@ -237,99 +217,10 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "onboarding.manual_setup.no_scheme.message" = "Hauríem d'intentar connectar-nos utilitzant http:// o https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL introduïda sense esquema";
 "open_label" = "Obrir";
-"permissions.location.initial.button.allow" = "Permetre";
-"permissions.location.initial.button.deny" = "Negar";
-"permissions.location.initial.message" = "Necessitem permís per permetre informar a \r \ Home Assistant sobre la ubicació i l'estat del dispositiu.";
-"permissions.location.initial.title" = "Vols permetre l'accés a la ubicació?";
-"permissions.location.message" = "Utilitzem això per informar al Home Assistant de la ubicació i l'estat del teu dispositiu.";
-"permissions.location.reenable.button.allow" = "Torna a activar";
-"permissions.location.reenable.button.deny" = "Deixar desactivat";
-"permissions.location.reenable.message" = "Anteriorment teníeu habilitat l'accés a la ubicació, però ara sembla que esta inhabilitat. Voleu tornar a habilitar-lo?";
-"permissions.location.reenable.title" = "Vols reactivar l'accés a la ubicació?";
-"permissions.motion.initial.button.allow" = "Permetre";
-"permissions.motion.initial.button.deny" = "Denegar";
-"permissions.motion.initial.message" = "Podem utilitzar les dades de moviment per millorar les actualitzacions d’ubicació, però necessitem permís per fer-ho.";
-"permissions.motion.initial.title" = "Permetre el moviment?";
-"permissions.motion.reenable.button.allow" = "Torna a activar";
-"permissions.motion.reenable.button.deny" = "Deixar desactivat";
-"permissions.motion.reenable.message" = "Anteriorment teníeu habilitat l'ús de la informació de moviment, però ara sembla que esta inhabilitat. Voleu tornar a habilitar les dades de moviement per millorar les actualitzacions d'ubicació?";
-"permissions.motion.reenable.title" = "Voleu tornar a activar el moviment?";
-"permissions.notification.initial.button.allow" = "Permetre";
-"permissions.notification.initial.button.deny" = "Denegar";
-"permissions.notification.initial.message" = "Necessitem permís per permetre enviar notificacions al seu dispositiu.";
-"permissions.notification.initial.title" = "Vols permetre notificacions?";
-"permissions.notification.message" = "Utilitzem això per permetre-li enviar notificacions al seu dispositiu.";
-"permissions.notification.reenable.button.allow" = "Torna a activar";
-"permissions.notification.reenable.button.deny" = "Deixar desactivat";
-"permissions.notification.reenable.message" = "Anteriorment teníeu habilitades les notificacions, però ara sembla que estan inhabilitades. Voleu tornar a habilitar-les?";
-"permissions.notification.reenable.title" = "Tornar a activar les notificacions?";
 "preview_output" = "Previsualització de la sortida";
-"rate_limit_notification.body" = "Heu enviat més de %@ notificacions avui. No rebrà notificacions noves fins a la mitjanit.";
-"rate_limit_notification.title" = "Taxa de notificacions limitada";
 "retry_label" = "Reintentar";
 "sensors.active.setting.time_until_idle" = "Temps fins que estigui inactiu";
-"sensors.activity.attributes.confidence" = "Confiança";
-"sensors.activity.attributes.types" = "Tipus";
-"sensors.activity.name" = "Activitat";
-"sensors.battery_level.name" = "Nivell de bateria";
-"sensors.battery_state.name" = "Estat de la bateria";
-"sensors.battery.attributes.level" = "Nivell";
-"sensors.battery.attributes.state" = "Estat";
-"sensors.battery.state.charging" = "Carregant";
-"sensors.battery.state.full" = "Ple";
-"sensors.battery.state.not_charging" = "No es carrega";
-"sensors.bssid.name" = "BSSID";
-"sensors.cellular_provider.attributes.allows_voip" = "Permet VoIP";
-"sensors.cellular_provider.attributes.carrier_id" = "ID de la companyia";
-"sensors.cellular_provider.attributes.carrier_name" = "Nom del la companyia";
-"sensors.cellular_provider.attributes.iso_country_code" = "Codi ISO del país";
-"sensors.cellular_provider.attributes.mobile_country_code" = "Codi del país de la xarxa mòbil";
-"sensors.cellular_provider.attributes.mobile_network_code" = "Codi de xarxa mòbil";
-"sensors.cellular_provider.attributes.radio_tech" = "Tecnologia de ràdio actual";
-"sensors.cellular_provider.name" = "Proveïdor de telefonia mòbil %@";
-"sensors.cellular_provider.radio_tech.cdma_1x" = "Code Division Multiple Access (CDMA 1X)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_0" = "Divisió de codi Accés múltiple Evolució de dades optimitzats Revisió 0 (CDMA EV-DO Rev. 0)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_a" = "Divisió de codi Accés múltiple Evolució-Dades optimitzats Revisió A (CDMA EV-DO Rev. A)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_b" = "Divisió de codi Accés múltiple Evolució-Dades optimitzats Revisió B (CDMA EV-DO Rev. B)";
-"sensors.cellular_provider.radio_tech.edge" = "Enhanced Data rates for GSM Evolution (EDGE)";
-"sensors.cellular_provider.radio_tech.ehrpd" = "Dades de paquets d'alta velocitat (HRPD)";
-"sensors.cellular_provider.radio_tech.gprs" = "General Packet Radio Service (GPRS)";
-"sensors.cellular_provider.radio_tech.hsdpa" = "High Speed Downlink Packet Access (HSDPA)";
-"sensors.cellular_provider.radio_tech.hsupa" = "High Speed Uplink Packet Access (HSUPA)";
-"sensors.cellular_provider.radio_tech.lte" = "Evolució a llarg termini (LTE)";
-"sensors.cellular_provider.radio_tech.wcdma" = "Wideband Code Division Multiple Access (WCDMA)";
-"sensors.connection_type.attributes.cell_tech_type" = "Tecnologia mòbil";
-"sensors.connection_type.name" = "Tipus de connexió";
-"sensors.connectivity.not_connected" = "No connectat";
-"sensors.geocoded_location.attributes.administrative_area" = "Àrea Administrativa";
-"sensors.geocoded_location.attributes.areas_of_interest" = "Àrees d'interès";
-"sensors.geocoded_location.attributes.country" = "País";
-"sensors.geocoded_location.attributes.inland_water" = "Aigües interiors";
-"sensors.geocoded_location.attributes.iso_country_code" = "Codi de país ISO";
-"sensors.geocoded_location.attributes.locality" = "Localitat";
-"sensors.geocoded_location.attributes.location" = "Ubicació";
-"sensors.geocoded_location.attributes.name" = "Nom";
-"sensors.geocoded_location.attributes.ocean" = "Oceà";
-"sensors.geocoded_location.attributes.postal_code" = "Codi Postal";
-"sensors.geocoded_location.attributes.sub_administrative_area" = "SubAdministrativeArea";
-"sensors.geocoded_location.attributes.sub_locality" = "Sublocalitat";
-"sensors.geocoded_location.attributes.sub_thoroughfare" = "Subvia";
-"sensors.geocoded_location.attributes.thoroughfare" = "Via";
-"sensors.geocoded_location.attributes.time_zone" = "Zona horària";
-"sensors.geocoded_location.name" = "Ubicació geocodificada";
 "sensors.geocoded_location.setting.use_zones" = "Utilitza el nom de la zona";
-"sensors.not_available_state" = "N/A";
-"sensors.pedometer.average_active_pace.name" = "Ritme actiu mitjà";
-"sensors.pedometer.current_cadence.name" = "Cadència actual";
-"sensors.pedometer.current_pace.name" = "Ritme Actual";
-"sensors.pedometer.distance.name" = "Distància";
-"sensors.pedometer.floors_ascended.name" = "Pisos ascendits";
-"sensors.pedometer.floors_descended.name" = "Pisos descendits";
-"sensors.pedometer.steps.name" = "Passos";
-"sensors.pedometer.unit.meters_per_second" = "m/s";
-"sensors.pedometer.unit.steps_per_second" = "Passos";
-"sensors.ssid.name" = "SSID";
-"sensors.unknown_state" = "Desconegut";
 "settings_details.actions.actions_synced.empty" = "No hi ha accions sincronitzades";
 "settings_details.actions.actions_synced.footer" = "Les accions definides a .yaml no es poden editar al dispositiu.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Les accions també es poden definir a la configuració .yaml.";
@@ -367,8 +258,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.general.app_icon.enum.release" = "Versió";
 "settings_details.general.app_icon.enum.white" = "Blanc";
 "settings_details.general.app_icon.title" = "Icona de l'aplicació";
-"settings_details.general.autohide_toolbar.title" = "Amagar automàticament la barra d'eines";
-"settings_details.general.chrome.title" = "Obriu els enllaços a Chrome";
 "settings_details.general.device_name.title" = "Nom del dispositiu";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.menu_bar_text.title" = "Text de la barra de menús";
@@ -402,8 +291,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.location.motion_permission.enabled" = "Habilitat";
 "settings_details.location.motion_permission.needs_request" = "Desactivat";
 "settings_details.location.motion_permission.title" = "Permís de moviment";
-"settings_details.location.new_one_shot.description" = "Això pot o no pot oferir bons resultats per a les fonts anteriors. La seva resposta és apreciada.";
-"settings_details.location.new_one_shot.title" = "Actualització en desenvolupament";
 "settings_details.location.notifications.background_fetch.title" = "Notificacions d'obtenció en segon pla";
 "settings_details.location.notifications.beacon_enter.title" = "Notificacions d'entrar a zona via iBeacon";
 "settings_details.location.notifications.beacon_exit.title" = "Notificacions de sortir de zona via iBeacon";
@@ -413,7 +300,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.location.notifications.location_change.title" = "Notificacions de canvi d'ubicació significatiu";
 "settings_details.location.notifications.push_notification.title" = "Pushed Location Request Notifications";
 "settings_details.location.notifications.url_scheme.title" = "Notificacions d'ubicació d'esquemes d'URL";
-"settings_details.location.notifications.visit.title" = "Consultar les notificacions d'ubicació";
 "settings_details.location.notifications.x_callback_url.title" = "Notificacions d'ubicació de X-Callback-URL";
 "settings_details.location.title" = "Ubicació";
 "settings_details.location.update_location" = "Update Location";
@@ -441,19 +327,14 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.categories_synced.header" = "Categories sincronitzades";
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categories";
-"settings_details.notifications.import_legacy_settings.alert.message" = "Les categories i les accions de notificació push s'han importat del servidor.";
-"settings_details.notifications.import_legacy_settings.alert.title" = "Configuració Push del servidor importada";
-"settings_details.notifications.import_legacy_settings.button.title" = "Importar la configuració push des del servidor";
 "settings_details.notifications.new_category.title" = "Nova categoria";
 "settings_details.notifications.permission.disabled" = "Denegat";
 "settings_details.notifications.permission.enabled" = "Habilitat";
 "settings_details.notifications.permission.needs_request" = "Desactivat";
 "settings_details.notifications.permission.title" = "Permís";
 "settings_details.notifications.prompt_to_open_urls.title" = "Confirmar abans d'obrir l'URL";
-"settings_details.notifications.push_id_section.footer" = "Aquest és l'objectiu que cal utilitzar a la configuració del Home Assistant. Toca per copiar o compartir.";
 "settings_details.notifications.push_id_section.header" = "Push ID";
 "settings_details.notifications.push_id_section.not_registered" = "No registrat per a notificacions remotes";
-"settings_details.notifications.push_id_section.placeholder" = "Push ID";
 "settings_details.notifications.rate_limits.attempts" = "Intents";
 "settings_details.notifications.rate_limits.delivered" = "Lliurat";
 "settings_details.notifications.rate_limits.errors" = "Errors";
@@ -462,10 +343,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.rate_limits.header" = "Límits de taxa";
 "settings_details.notifications.rate_limits.resets_in" = "Restableix En";
 "settings_details.notifications.rate_limits.total" = "Total";
-"settings_details.notifications.sounds_section.button.title" = "Importar sons";
-"settings_details.notifications.sounds_section.footer" = "Els sons de les notificacions push personalitzades es poden afegir mitjançant iTunes.";
-"settings_details.notifications.sounds_section.imported_alert.message" = "S'han importat %li sons. Reinicieu el telèfon per completar la importació.";
-"settings_details.notifications.sounds_section.imported_alert.title" = "Sons importats";
 "settings_details.notifications.sounds.bundled" = "Agrupat";
 "settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "No es pot construir la ruta ~/Library/Sounds: %@";
 "settings_details.notifications.sounds.error.cant_get_directory_contents" = "No es pot llistar el contingut del directori: %@";
@@ -485,42 +362,24 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.sounds.system" = "Sistema";
 "settings_details.notifications.sounds.title" = "Sons";
 "settings_details.notifications.title" = "Notificacions";
-"settings_details.notifications.update_section.button.title" = "Actualitza la configuració push";
-"settings_details.notifications.update_section.footer" = "A l'actualitzar la configuració push, es sol·licitaran les últimes accions push i categories des de Home Assistant.";
-"settings_details.notifications.update_section.updated_alert.message" = "Configuració push importada des de Home Assistant";
-"settings_details.notifications.update_section.updated_alert.title" = "Configuració importada";
 "settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
 "settings_details.privacy.alerts.title" = "Alertes";
-"settings_details.privacy.analytics.description" = "Permet la recopilació d'informació bàsica sobre el dispositiu i les interaccions amb l'aplicació. No es comparteixen dades identificables de l'usuari amb Google, inclosos les URL i els tokens del Home Assistant. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.analytics.generic_description" = "Permet la recopilació d'informació bàsica sobre el dispositiu i les interaccions amb l'aplicació. No es comparteixen dades identificables de l'usuari, inclosos les URL i els tokens del Home Assistant. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
-"settings_details.privacy.analytics.title" = "Google Analytics";
 "settings_details.privacy.crash_reporting.description" = "Permet un seguiment més profund de bloquejos i altres errors a l'aplicació, cosa que permet publicar solucions amb més rapidesa. No s’envia cap informació identificable de l’usuari, a part de la informació bàsica del dispositiu. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.crash_reporting.sentry" = "Actualment, aquesta característica utilitza Sentry com a destinació de l'informe.";
 "settings_details.privacy.crash_reporting.title" = "Informes d'Errors";
-"settings_details.privacy.crashlytics.description" = "Crashlytics permet un seguiment més profund dels bloquejos i altres errors en l'aplicació, el que porta a la publicació de solucions més ràpides. No s'envia informació d'identificació de l'usuari, a part de la informació bàsica del dispositiu. Ha de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
-"settings_details.privacy.crashlytics.title" = "Crashlytics de Firebase";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging ha d'estar habilitat perquè funcionin les notificacions push.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
-"settings_details.privacy.performance_monitoring.description" = "Firebase Performance Monitoring permet monitoritzar remotament el rendiment general de l'aplicació, permetent fer millores de velocitat amb més facilitat. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
-"settings_details.privacy.performance_monitoring.title" = "Monitorització del rendiment de Firebase";
 "settings_details.privacy.title" = "Privacitat";
-"settings_details.siri.section.existing.title" = "Dreceres existents";
-"settings_details.siri.section.generic.title" = "Dreceres genèriques";
-"settings_details.siri.section.services.title" = "Serveis";
-"settings_details.siri.section.title" = "Dreceres genèriques";
-"settings_details.siri.title" = "Dreceres de Siri";
 "settings_details.updates.check_for_updates.include_betas" = "Incloure Versions Beta";
 "settings_details.updates.check_for_updates.title" = "Comprovar automàticament si hi ha actualitzacions";
-"settings_details.watch.remaining_sends.title" = "Enviaments restants";
-"settings_details.watch.send_now.title" = "Envia ara";
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Atributs";
 "settings_sensors.detail.device_class" = "Classe de dispositiu";
 "settings_sensors.detail.enabled" = "Habilitat";
 "settings_sensors.detail.icon" = "Icona";
 "settings_sensors.detail.state" = "Estat";
-"settings_sensors.detail.unique_id" = "ID únic";
 "settings_sensors.disabled_state_replacement" = "Desactivat";
 "settings_sensors.last_updated.footer" = "Darrera actualització %@";
 "settings_sensors.loading_error.title" = "No s'han pogut carregar els sensors";
@@ -531,36 +390,11 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_sensors.settings.footer" = "Els canvis s'aplicaran a la pròxima actualització.";
 "settings_sensors.settings.header" = "Configuració";
 "settings_sensors.title" = "Sensors";
-"settings.advanced_connection_settings_section.title" = "Configuració avançada de connexió";
-"settings.certificate_error_notification.message" = "S'ha detectat un certificat SSL autosignat o invàlid. Els certificats d'aquest tipus no estan suportats per el Home Assistant Companion. Si us plau, toqueu el botó més informació per a més detalls.";
-"settings.certificate_error_notification.title" = "S'ha detectat un certificat autosignat o invàlid";
-"settings.connection_error_notification.message" = "S'ha produït un error de connexió al Home Assistant. Confirmeu que la configuració és correcta i guardeu-la per intentar tornar a connectar-vos. L’error ha estat: %@";
-"settings.connection_error_notification.title" = "Error de connexió";
-"settings.connection_error.forbidden.message" = "L'autenticació és incorrecta.";
-"settings.connection_error.invalid_url.message" = "Sembla que l'URL no és vàlida. Comproveu-ne el format i torneu-ho a provar.";
-"settings.connection_error.invalid_url.title" = "Error en analitzar l'URL";
 "settings.connection_section.add_server" = "Add Server";
-"settings.connection_section.api_password_row.placeholder" = "contrasenya";
-"settings.connection_section.api_password_row.title" = "Contrasenya";
-"settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.base_url.title" = "URL";
-"settings.connection_section.basic_auth.password.placeholder" = "molt segur";
-"settings.connection_section.basic_auth.password.title" = "Contrasenya";
-"settings.connection_section.basic_auth.title" = "Autenticació bàsica HTTP";
-"settings.connection_section.basic_auth.username.placeholder" = "jo sóc";
-"settings.connection_section.basic_auth.username.title" = "Nom d'usuari";
-"settings.connection_section.cloud_available" = "Núvol disponible";
 "settings.connection_section.cloud_overrides_external" = "Quan es connecti mitjançant el núvol, no s’utilitzarà la URL externa. No cal configurar-ne una tret que vulgueu desactivar el núvol.";
-"settings.connection_section.cloudhook_available" = "Cloudhook disponible";
-"settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.connect_row.title" = "Connectar";
 "settings.connection_section.connecting_via" = "Connectat a través de";
 "settings.connection_section.details" = "Detalls";
-"settings.connection_section.error_enabling_notifications.message" = "S'ha produït un error al activar les notificacions. Siusplau torna-ho a provar.";
-"settings.connection_section.error_enabling_notifications.title" = "S'ha produït un error al habilitar les notificacions";
 "settings.connection_section.errors.cannot_remove_last_url" = "No podeu eliminar només l'URL disponible.";
-"settings.connection_section.errors.cant_disable_cloud" = "L’adreça URL externa s’ha de definir per desactivar el núvol";
-"settings.connection_section.errors.no_cloud_external_url_required" = "No s'ha configurat el Home Assistant Cloud, no pots eliminar la URL externa";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.external_base_url.title" = "URL externa";
 "settings.connection_section.header" = "Connexió";
@@ -571,26 +405,15 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
 "settings.connection_section.internal_url_hardware_addresses.header" = "Hardware Addresses";
 "settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardware addresses must look like aa:bb:cc:dd:ee:ff";
-"settings.connection_section.internal_url_ssids.add_current_ssid" = "Afegeix l'acutal SSID %@";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Afegiu SSID nou";
 "settings.connection_section.internal_url_ssids.footer" = "La URL interna s'utilitzarà quan estigui connectat a algun dels SSIDs de la llista";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "ElMeuNomDeXarxaDivertit";
-"settings.connection_section.invalid_url_scheme_notification.message" = "L'URL ha de començar amb http:// o https://.";
-"settings.connection_section.invalid_url_scheme_notification.title" = "URL invàlida";
-"settings.connection_section.log_out" = "Desconnectar";
 "settings.connection_section.logged_in_as" = "Sessió iniciada com";
-"settings.connection_section.nabu_casa_cloud" = "Nabu Casa Cloud";
-"settings.connection_section.network_name.title" = "Nom de la xarxa actual";
-"settings.connection_section.remote_ui_available" = "Interfície d'usuari remota disponible";
 "settings.connection_section.remote_ui_url.title" = "URL UI Remota";
-"settings.connection_section.save_button.title" = "Validar i desar la configuració de connexió";
 "settings.connection_section.servers" = "Servers";
-"settings.connection_section.show_advanced_settings_row.title" = "Mostra la configuració avançada";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "L'accés a SSIDs en segon pla requereix el permís de localització establert com a \"Sempre\". Toca aquí per canviar la configuració.";
-"settings.connection_section.use_internal_url.title" = "Utilitzeu l’URL interna";
-"settings.connection_section.use_legacy_auth.title" = "Utilitza autenticació heretada";
 "settings.connection_section.validate_error.edit_url" = "Edita l'adreça URL";
 "settings.connection_section.validate_error.title" = "Error al desar l’URL";
 "settings.connection_section.validate_error.use_anyway" = "Utilitza de totes maneres";
@@ -603,12 +426,8 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.websocket.status.disconnected.title" = "Desconnectat";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.title" = "Debugging";
-"settings.details_section.enable_location_row.title" = "Activa el seguiment d'ubicacions";
-"settings.details_section.enable_notification_row.title" = "Activa les notificacions";
-"settings.details_section.integrations.header" = "Integracions";
 "settings.details_section.location_settings_row.title" = "Ubicació";
 "settings.details_section.notification_settings_row.title" = "Notificacions";
-"settings.details_section.siri_shortcuts_row.title" = "Dreceres de Siri";
 "settings.details_section.watch_row.title" = "Apple Watch";
 "settings.developer.annoying_background_notifications.title" = "Informació de fons molesta";
 "settings.developer.camera_notification.notification.body" = "Expandeix això per mostrar l'extensió del contingut de la càmera";
@@ -626,22 +445,11 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.developer.export_log_files.title" = "Exporta els fitxers de registre";
 "settings.developer.footer" = "No les utilitzeu si no sabeu el que feu!";
 "settings.developer.header" = "Desenvolupador";
-"settings.developer.lokalise.alert.not_updated.message" = "No hi ha actualitzacions";
-"settings.developer.lokalise.alert.not_updated.title" = "No hi ha actualitzacions de localització disponibles";
-"settings.developer.lokalise.alert.updated.message" = "Les ubicacions s'han actualitzat";
-"settings.developer.lokalise.alert.updated.title" = "Actualitzat";
-"settings.developer.lokalise.title" = "Actualitzeu les traduccions des de Lokalise!";
 "settings.developer.map_notification.notification.body" = "Expandiu això per mostrar l'extensió del contingut del mapa";
 "settings.developer.map_notification.title" = "Mostra extensió de contingut de notificació de mapa";
 "settings.developer.show_log_files.title" = "Mostra els fitxers de registre al Finder";
 "settings.developer.sync_watch_context.title" = "Context de la sincronització de rellotges";
-"settings.device_id_section.device_id_row.title" = "ID del dispositiu";
-"settings.device_id_section.footer" = "L'identificador de dispositiu és l'identificador que s'utilitza per a l'enviament de les actualitzacions d'ubicació al Home Assistant, així com l'objectiu per a l'enviament de notificacions push.";
-"settings.discovery_section.header" = "Home Assistents trobats";
-"settings.discovery_section.requiresPassword" = "Requereix contrasenya";
 "settings.event_log.title" = "Registre d’esdeveniments";
-"settings.general_settings_button.title" = "General";
-"settings.location_history.description" = "No hi ha historial d'ubicació";
 "settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are additional regions used for sub-100 m zones.";
 "settings.location_history.empty" = "No hi ha historial d'ubicació";
 "settings.location_history.title" = "Historial d'ubicació";
@@ -652,34 +460,14 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.reset_section.reset_alert.title" = "Restablir";
 "settings.reset_section.reset_row.title" = "Restablir";
 "settings.reset_section.reset_web_cache.title" = "Restableix la memòria cau del frontend";
-"settings.status_section.connected_to_sse_row.title" = "Connectat";
-"settings.status_section.device_tracker_component_loaded_row.title" = "S'ha carregat el component Device Tracker";
 "settings.status_section.header" = "Estat";
-"settings.status_section.ios_component_loaded_row.title" = "S'ha carregat el component iOS";
 "settings.status_section.location_name_row.placeholder" = "Mi Home Assistant";
 "settings.status_section.location_name_row.title" = "Nom";
-"settings.status_section.mobile_app_component_loaded_row.title" = "Component de l'aplicació mòbil carregat";
-"settings.status_section.notify_platform_loaded_row.title" = "S'ha carregat la plataforma de notificació iOS";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versió";
 "settings.template_edit.title" = "Editar plantilla";
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "No s'ha pogut enviar";
-"siri_shortcuts.configurator.fields.section.footer" = "Suggerit: %@";
-"siri_shortcuts.configurator.fields.section.header" = "Camps";
-"siri_shortcuts.configurator.fields.use_default_value" = "Utilitza el valor per defecte";
-"siri_shortcuts.configurator.fields.use_suggested_value" = "Utilitza el valor suggerit";
-"siri_shortcuts.configurator.fire_event.configuration.header" = "Configuració";
-"siri_shortcuts.configurator.fire_event.rows.name.title" = "Nom de l’esdeveniment";
-"siri_shortcuts.configurator.fire_event.rows.payload.placeholder" = "Ha de ser JSON vàlid. Si no es proporciona cap missatge, s'utilitzarà el contingut del porta-retalls.";
-"siri_shortcuts.configurator.fire_event.rows.payload.title" = "Dades de l'esdeveniment";
-"siri_shortcuts.configurator.settings.header" = "Configuració";
-"siri_shortcuts.configurator.settings.name.title" = "Nom de la drecera";
-"siri_shortcuts.configurator.settings.notify_on_run.title" = "Enviar notificació quan s'executa";
-"siri_shortcuts.intents.fire_event.title" = "Crida esdeveniment";
-"siri_shortcuts.intents.get_camera_image.title" = "Obteniu una imatge de la càmera";
-"siri_shortcuts.intents.render_template.title" = "Procesa la plantilla";
-"siri_shortcuts.intents.send_location.title" = "Enviar ubicació";
 "success_label" = "Èxit";
 "token_error.connection_failed" = "La connexió ha fallat.";
 "token_error.expired" = "El token ha caducat.";
@@ -693,7 +481,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "url_handler.call_service.success.message" = "S'ha cridat correctament %@";
 "url_handler.call_service.success.title" = "Servei cridat";
 "url_handler.error.action_not_found" = "Acció no trobada";
-"url_handler.error.title" = "Error";
 "url_handler.fire_event.error.message" = "S'ha produït un error al intentar disparar l'esdeveniment %@ : %@";
 "url_handler.fire_event.success.message" = "Esdeveniment %@ disparat correctament";
 "url_handler.fire_event.success.title" = "Esdeveniment disparat";
@@ -720,7 +507,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "watch.configurator.rows.column_2_alignment.options.trailing" = "Arrossegant";
 "watch.configurator.rows.column_2_alignment.title" = "Alineació de la columna 2";
 "watch.configurator.rows.display_name.title" = "Nom de visualització";
-"watch.configurator.rows.fractional_value.title" = "Valor fraccional";
 "watch.configurator.rows.gauge.color.title" = "Color";
 "watch.configurator.rows.gauge.gauge_type.options.closed" = "Tancat/da";
 "watch.configurator.rows.gauge.gauge_type.options.open" = "Obert/a";
@@ -736,12 +522,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "watch.configurator.rows.ring.ring_type.options.closed" = "Tancat";
 "watch.configurator.rows.ring.ring_type.options.open" = "Obert";
 "watch.configurator.rows.ring.ring_type.title" = "Tipus";
-"watch.configurator.rows.ring.title" = "Ring";
 "watch.configurator.rows.ring.value.title" = "Valor fraccional";
-"watch.configurator.rows.row_2_alignment.options.leading" = "Principals";
-"watch.configurator.rows.row_2_alignment.options.trailing" = "Arrossegant";
-"watch.configurator.rows.row_2_alignment.title" = "Alineació de la fila 2";
-"watch.configurator.rows.style.title" = "Estil";
 "watch.configurator.rows.template.selector_title" = "Tria una plantilla";
 "watch.configurator.rows.template.title" = "Plantilla";
 "watch.configurator.sections.gauge.footer" = "L'indicador per mostrar a la complicació.";
@@ -900,61 +681,6 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "watch.labels.complication_text_areas.trailing.label" = "Arrossegant";
 "watch.labels.no_action" = "No s'ha configurat cap acció. Configureu les accions al telèfon per ignorar aquest missatge.";
 "watch.placeholder_complication_name" = "Contenidor";
-"whats_new.buttons.completion.title" = "Som-hi";
-"whats_new.buttons.read_more.title" = "Llegir Més";
-"whats_new.title" = "Què hi ha de nou a\
-Home Assistant Companion %@";
-"whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle" = "El 2.0 va trigar 300 hores a crear i afegir gairebé 35.000 línies de codi nou, de manera que només es podrien presentar tantes funcions aquí. Hi ha moltes millores més importants sota la capa!";
-"whats_new.Two_Dot_Zero.items.and_so_much_more.title" = "I molt més";
-"whats_new.Two_Dot_Zero.items.app_icons.subtitle" = "Una nova icona de l'aplicació, així com alternatives que podeu triar. Ara també podeu activar les automatitzacions amb el 3D Touch sobre l'icona de l'aplicació.";
-"whats_new.Two_Dot_Zero.items.app_icons.title" = "Icones de l'aplicació";
-"whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Quan envieu una notificació com a alerta crítica, s'ignorarà la configuració No Molestar i les opcions de volum.";
-"whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Alertes crítiques";
-"whats_new.Two_Dot_Zero.items.donations.subtitle" = "Després que em demanessin que acceptés donacions durant anys, ¡finalment es pot! Toqueu \"Donar\" a la pantalla \"Quant a\" per obtenir més informació.";
-"whats_new.Two_Dot_Zero.items.donations.title" = "Donacions";
-"whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Suport natiu per a Home Assistant Cloud.";
-"whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Assistència de Home Assistant Cloud";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Gràcies al nou component mobile_app, Home Assistant Companion és un millor … company que mai!";
-"whats_new.Two_Dot_Zero.items.improved_integration.title" = "Integració millorada";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.subtitle" = "Oblideu-vos de YAML, editeu categories a l’aplicació i vegeu resultats en temps real.";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "A l'editor de categories de notificacions de l'aplicació";
-"whats_new.Two_Dot_Zero.items.more_data.subtitle" = "Sensors nous per a passos, distància recorreguda, ritme, informació de connexió i molt més.";
-"whats_new.Two_Dot_Zero.items.more_data.title" = "Més Dades";
-"whats_new.Two_Dot_Zero.items.notification_sounds.subtitle" = "Utilitzeu els sons del sistema per a les vostres notificacions i gestioneu els sons completament a l'aplicació. Ja no hi ha iTunes!";
-"whats_new.Two_Dot_Zero.items.notification_sounds.title" = "Sons de notificació";
-"whats_new.Two_Dot_Zero.items.themes.subtitle" = "L’aplicació ara coincideix amb el vostre tema actiu, en temps real!";
-"whats_new.Two_Dot_Zero.items.themes.title" = "Temes";
-"whats_new.Two_Dot_Zero.items.today_widget.subtitle" = "Permet executar automatitzacions al Home Assistant des de la visualització d'avui.";
-"whats_new.Two_Dot_Zero.items.today_widget.title" = "Widget d'avui";
-"whats_new.Two_Dot_Zero.items.web_view_cleanup.subtitle" = "No hi ha més barres d'eines, l'aplicació ara està estretament integrada amb el frontend. La configuració es pot trobar a la barra lateral i s'ha afegit pull-to-refresh.";
-"whats_new.Two_Dot_Zero.items.web_view_cleanup.title" = "Neteja de visualitzacions web";
-"whats_new.Two_Dot_Zero.thank_you.message" = "Gràcies. \
-\
- Gràcies per utilitzar Home Assistant Companion. \
-\
- Gràcies per utilitzar Home Assistant. \
-\
- Gràcies per posar-me amb els darrers tres anys de treball. \
-\
- Gràcies per presentar-me els darrers 10 mesos de desenvolupament de 2.0. \
-\
- Gràcies per presentar informes d'errors a GitHub. \
-\
- Gràcies per ajudar els altres usuaris quan ho van necessitar i jo no estava disponible. \
-\
- Gràcies per haver-me enviat correus electrònics a les 2 de la nit i descriure amb detall que és com aquest botó està desactivat a 2 píxels. \
-\
- Gràcies per ser tu i recolzar-me. \
-\
- El vostre comentari i estimació constantment positius és el que em continua fent. \
-\
- Realment espero que us agradi el Home Assistant Companion 2.0. \
-\
- Gràcies. \
-\
- --Robbie";
-"whats_new.Two_Dot_Zero.thank_you.ok_button" = "Ets Benvingut!";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Una cosa més…";
 "widgets.actions.description" = "Realitza accions del Home Assistant.";
 "widgets.actions.not_configured" = "No hi ha accions configurades";
 "widgets.actions.title" = "Accions";

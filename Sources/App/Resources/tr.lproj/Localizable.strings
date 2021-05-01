@@ -39,8 +39,6 @@
 "alerts.prompt.cancel" = "İptal";
 "alerts.prompt.ok" = "Tamam";
 "always_open_label" = "Daima açık";
-"app_transfer_warning_notification.body" = "Lütfen Home Assistant Companion'da yapılacak değişikliklerle ilgili önemli bir güncelleme için bu bildirimi açın";
-"app_transfer_warning_notification.title" = "⚠️ Yaklaşan büyük uygulama değişikliği bildirimi";
 "cancel_label" = "Cancel";
 "cl_error.description.deferred_accuracy_too_low" = "Deferred mode is not supported for the requested accuracy.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
@@ -65,7 +63,6 @@
 "client_events.event_type.networkRequest" = "Network Request";
 "client_events.event_type.notification" = "Bildirim";
 "client_events.event_type.notification.title" = "Bir Push Bildirimi aldı: %@";
-"client_events.event_type.request.log" = "İstek (SSID: %@ - %@ )";
 "client_events.event_type.service_call" = "Servis Çağrısı";
 "client_events.event_type.unknown" = "Bilinmeyen";
 "client_events.view.clear" = "Clear";
@@ -77,15 +74,8 @@
 "database.problem.title" = "Veri tabanı hatası";
 "debug_section_label" = "Hata ayıklama";
 "delete" = "Sil";
-"device.generic_name" = "Cihaz";
-"devices_map.battery_label" = "Pil";
-"devices_map.map_types.hybrid" = "Hibrit";
-"devices_map.map_types.satellite" = "Uydu";
-"devices_map.map_types.standard" = "Standart";
-"devices_map.title" = "Cihazlar ve Bölgeler";
 "done_label" = "Bitti";
 "error_label" = "Error";
-"errors.no_remote_ui_url" = "Uygulama, Nabu Casa Remote UI'nizi otomatik olarak algılar, manuel olarak giremezsiniz.";
 "extensions.map.location.new" = "New Location";
 "extensions.map.location.original" = "Original Location";
 "extensions.map.payload_missing_homeassistant.message" = "Payload didn't contain a homeassistant dictionary!";
@@ -97,7 +87,6 @@
 "extensions.notification_content.error.request.hls_unavailable" = "HLS akışı kullanılamıyor";
 "extensions.notification_content.error.request.other" = "200 olmayan durum kodu var ( %li )";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
-"extensions.notification_content.hud.loading" = "%@ yükleniyor…";
 "ha_api.api_error.cant_build_url" = "API URL'si oluşturulamaz";
 "ha_api.api_error.invalid_response" = "Home Assistant'dan geçersiz yanıt alındı";
 "ha_api.api_error.manager_not_available" = "HA API Yöneticisi kullanılamıyor";
@@ -108,7 +97,6 @@
 "ha_api.api_error.unexpected_type" = "%1$@ türünden sonuç alınan ancak beklenen tür %2$@.";
 "ha_api.api_error.unknown" = "Bilinmeyen bir hata oluştu.";
 "ha_api.api_error.update_not_possible" = "İşlem gerçekleştirilemedi.";
-"ha_api.api_error.webhook_gone" = "mobile_app entegrasyonu silindi, uygulamayı yeniden yapılandırmalısınız.";
 "help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Konum Uygulama Kısayolu ile güncellendi";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
@@ -128,11 +116,6 @@
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "location_change_notification.visit.body" = "Ziyaret yoluyla güncellenen konum";
 "location_change_notification.x_callback_url.body" = "Konum X-Callback-URL ile güncellendi";
-"location_update_error_notification.title" = "%@ konum güncellemesi Home Assistant'a gönderilirken hata oluştu.";
-"manual_location_update_failed_notification.message" = "Mevcut konum sunucuya gönderilemedi. Hata %@";
-"manual_location_update_failed_notification.title" = "Location failed to update";
-"manual_location_update_notification.message" = "Successfully sent a one shot location to the server";
-"manual_location_update_notification.title" = "Konum güncellendi";
 "menu.actions.configure" = "Yapılandır…";
 "menu.actions.title" = "Aksiyonlar";
 "menu.application.about" = "Hakkında %@";
@@ -177,7 +160,6 @@
 "notification_service.failed_to_load" = "Ek yüklenemedi";
 "notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "Sağlanan varlık_kimliği geçersizdi.";
-"notification_service.parser.camera.no_entity" = "Entity_id sağlanmadı.";
 "notification_service.parser.url.invalid_url" = "Verilen URL geçersizdi.";
 "notification_service.parser.url.no_url" = "URL sağlanmadı.";
 "notifications_configurator.action.rows.authentication_required.footer" = "When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.";
@@ -223,8 +205,6 @@
 "onboarding.connection_test_result.ssl_untrusted.description" = "SSL sertifikanız güvenilir değil. %@ .";
 "onboarding.connection_test_result.too_old.description" = "Home Assistant sürümünüzü yükseltmelisiniz.";
 "onboarding.connection_test_result.unknown_error.description" = "Bilinmeyen hata: %@";
-"onboarding.discovery.results_label.plural" = "Ağınızda %li Home Assistant bulduk.";
-"onboarding.discovery.results_label.singular" = "Ağınızda %li Home Assistant bulduk.";
 "onboarding.logged_out_from_move.body" = "Home Assistant iOS uygulaması kısa süre önce App Store'daki kuruluşları taşıdı. Bu hareket maalesef oturumunuzu kapatmanızı gerektirdi. \
 \
  Eylemleriniz ve yerel yapılandırmanız, oturum açtıktan sonra da kullanılabilir durumda olacaktır.";
@@ -237,99 +217,10 @@
 "onboarding.manual_setup.no_scheme.message" = "Http: // veya https: // kullanarak bağlanmayı denemeli miyiz?";
 "onboarding.manual_setup.no_scheme.title" = "Şema olmadan girilen URL";
 "open_label" = "Açık";
-"permissions.location.initial.button.allow" = "Izin Ver";
-"permissions.location.initial.button.deny" = "Reddet";
-"permissions.location.initial.message" = "We need permission to allow informing\r\Home Assistant of your device location and state.";
-"permissions.location.initial.title" = "Konum Erişimine İzin Verilsin mi?";
-"permissions.location.message" = "We use this to inform\r\Home Assistant of your device location and state.";
-"permissions.location.reenable.button.allow" = "Yeniden etkinleştir";
-"permissions.location.reenable.button.deny" = "Devre dışı bırak";
-"permissions.location.reenable.message" = "You previously had location access enabled but it now appears disabled. Do you wish to re-enable it?";
-"permissions.location.reenable.title" = "Konum Erişimi yeniden etkinleştirilsin mi?";
-"permissions.motion.initial.button.allow" = "Izin Ver";
-"permissions.motion.initial.button.deny" = "Reddet";
-"permissions.motion.initial.message" = "We can use motion data to enhance location updates but need permission to do so.";
-"permissions.motion.initial.title" = "Harekete İzin Verilsin mi?";
-"permissions.motion.reenable.button.allow" = "Yeniden etkinleştir";
-"permissions.motion.reenable.button.deny" = "Devre dışı bırak";
-"permissions.motion.reenable.message" = "You previously had allowed use of motion data but it now appears to be disabled. Do you wish to re-enable motion data to enhance location updates?";
-"permissions.motion.reenable.title" = "Hareket yeniden etkinleştirilsin mi?";
-"permissions.notification.initial.button.allow" = "Izin Ver";
-"permissions.notification.initial.button.deny" = "Reddet";
-"permissions.notification.initial.message" = "We need permission to allow you\r\send notifications to your device.";
-"permissions.notification.initial.title" = "Bildirimlere İzin Verilsin mi?";
-"permissions.notification.message" = "We use this to let you\r\send notifications to your device.";
-"permissions.notification.reenable.button.allow" = "Yeniden etkinleştir";
-"permissions.notification.reenable.button.deny" = "Devre dışı bırak";
-"permissions.notification.reenable.message" = "Önceden bildirimleri etkinleştirmiştiniz ancak şimdi devre dışı bırakılmış gibi görünüyorlar. Bildirimleri yeniden etkinleştirmek istiyor musunuz?";
-"permissions.notification.reenable.title" = "Bildirimler yeniden etkinleştirilsin mi?";
 "preview_output" = "Önizleme Çıktısı";
-"rate_limit_notification.body" = "Bugün bugün %@ taneden fazla bildirim gönderdiniz. UTC gece yarısına kadar yeni bildirimler almayacaksınız.";
-"rate_limit_notification.title" = "Bildirim Oranı Sınırlı";
 "retry_label" = "Yeniden dene";
 "sensors.active.setting.time_until_idle" = "Boşta Kalana Kadar Geçen Süre";
-"sensors.activity.attributes.confidence" = "Güven";
-"sensors.activity.attributes.types" = "Tipler";
-"sensors.activity.name" = "Aktivite";
-"sensors.battery_level.name" = "Pil seviyesi";
-"sensors.battery_state.name" = "Pil durumu";
-"sensors.battery.attributes.level" = "Düzey";
-"sensors.battery.attributes.state" = "Durum";
-"sensors.battery.state.charging" = "Şarj Oluyor";
-"sensors.battery.state.full" = "Tam";
-"sensors.battery.state.not_charging" = "Şarj olmuyor";
-"sensors.bssid.name" = "BSSID";
-"sensors.cellular_provider.attributes.allows_voip" = "VoIP'ye izin verir";
-"sensors.cellular_provider.attributes.carrier_id" = "Operatör Kimliği";
-"sensors.cellular_provider.attributes.carrier_name" = "Taşıyıcı Adı";
-"sensors.cellular_provider.attributes.iso_country_code" = "ISO Ülke Kodu";
-"sensors.cellular_provider.attributes.mobile_country_code" = "Mobil Ülke Kodu";
-"sensors.cellular_provider.attributes.mobile_network_code" = "Mobil Ağ Kodu";
-"sensors.cellular_provider.attributes.radio_tech" = "Güncel Radyo Teknolojisi";
-"sensors.cellular_provider.name" = "Hücresel Sağlayıcı%@";
-"sensors.cellular_provider.radio_tech.cdma_1x" = "Kod Bölmeli Çoklu Erişim (CDMA 1X)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_0" = "Kod Bölmeli Çoklu Erişim Gelişimi-Veri Optimize Edilmiş Revizyon 0 (CDMA EV-DO Rev. 0)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_a" = "Kod Bölmeli Çoklu Erişim Gelişimi-Veri Optimize Edilmiş Revizyon A (CDMA EV-DO Rev. A)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_b" = "Kod Bölmeli Çoklu Erişim Gelişimi-Veri Optimize Edilmiş Revizyon B (CDMA EV-DO Rev. B)";
-"sensors.cellular_provider.radio_tech.edge" = "GSM Evolution (EDGE) için Gelişmiş Veri hızları";
-"sensors.cellular_provider.radio_tech.ehrpd" = "Yüksek Hızlı Paket Verileri (HRPD)";
-"sensors.cellular_provider.radio_tech.gprs" = "Genel Paket Radyo Servisi (GPRS)";
-"sensors.cellular_provider.radio_tech.hsdpa" = "Yüksek Hızlı Aşağı Bağlantı Paket Erişimi (HSDPA)";
-"sensors.cellular_provider.radio_tech.hsupa" = "Yüksek Hızlı Uplink Paket Erişimi (HSUPA)";
-"sensors.cellular_provider.radio_tech.lte" = "Uzun Vadeli Evrim (LTE)";
-"sensors.cellular_provider.radio_tech.wcdma" = "Geniş Bant Kod Bölmeli Çoklu Erişim (WCDMA)";
-"sensors.connection_type.attributes.cell_tech_type" = "Hücresel Teknoloji";
-"sensors.connection_type.name" = "Bağlantı türü";
-"sensors.connectivity.not_connected" = "Bağlı değil";
-"sensors.geocoded_location.attributes.administrative_area" = "YönetimAlanı";
-"sensors.geocoded_location.attributes.areas_of_interest" = "İlgiAlanları";
-"sensors.geocoded_location.attributes.country" = "Ülke";
-"sensors.geocoded_location.attributes.inland_water" = "İç Su";
-"sensors.geocoded_location.attributes.iso_country_code" = "ISOÜlkeKodu";
-"sensors.geocoded_location.attributes.locality" = "Yer";
-"sensors.geocoded_location.attributes.location" = "Konum";
-"sensors.geocoded_location.attributes.name" = "Ad";
-"sensors.geocoded_location.attributes.ocean" = "Okyanus";
-"sensors.geocoded_location.attributes.postal_code" = "PostaKodu";
-"sensors.geocoded_location.attributes.sub_administrative_area" = "Alt Yönetim Alanı";
-"sensors.geocoded_location.attributes.sub_locality" = "Alt Lokasyon";
-"sensors.geocoded_location.attributes.sub_thoroughfare" = "Alt Ana Yol";
-"sensors.geocoded_location.attributes.thoroughfare" = "Ana yol";
-"sensors.geocoded_location.attributes.time_zone" = "Saat dilimi";
-"sensors.geocoded_location.name" = "Coğrafi Konum";
 "sensors.geocoded_location.setting.use_zones" = "Bölge Adını Kullan";
-"sensors.not_available_state" = "Yok";
-"sensors.pedometer.average_active_pace.name" = "Ortalama Aktif Hız";
-"sensors.pedometer.current_cadence.name" = "Mevcut Kadans";
-"sensors.pedometer.current_pace.name" = "Şu anki hız";
-"sensors.pedometer.distance.name" = "Mesafe";
-"sensors.pedometer.floors_ascended.name" = "Yükselen Katlar";
-"sensors.pedometer.floors_descended.name" = "Alçaltılmış Katlar";
-"sensors.pedometer.steps.name" = "Adımlar";
-"sensors.pedometer.unit.meters_per_second" = "m/s";
-"sensors.pedometer.unit.steps_per_second" = "adımlar/s";
-"sensors.ssid.name" = "SSID";
-"sensors.unknown_state" = "Bilinmeyen";
 "settings_details.actions.actions_synced.empty" = "Eşitlenmiş Eylem Yok";
 "settings_details.actions.actions_synced.footer" = ".Yaml'de tanımlanan eylemler cihazda düzenlenemez.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Eylemler ayrıca .yaml yapılandırmasında da tanımlanabilir.";
@@ -367,8 +258,6 @@
 "settings_details.general.app_icon.enum.release" = "Sürüm";
 "settings_details.general.app_icon.enum.white" = "Beyaz";
 "settings_details.general.app_icon.title" = "Uygulama Simgesi";
-"settings_details.general.autohide_toolbar.title" = "Araç çubuğunu otomatik olarak gizle";
-"settings_details.general.chrome.title" = "Open links in Chrome";
 "settings_details.general.device_name.title" = "Cihaz adı";
 "settings_details.general.launch_on_login.title" = "Girişte Uygulamayı Başlat";
 "settings_details.general.menu_bar_text.title" = "Menü Çubuğu Metni";
@@ -402,8 +291,6 @@
 "settings_details.location.motion_permission.enabled" = "Etkin";
 "settings_details.location.motion_permission.needs_request" = "Devre dışı";
 "settings_details.location.motion_permission.title" = "Hareket İzni";
-"settings_details.location.new_one_shot.description" = "Bu, yukarıdaki kaynaklar için iyi sonuçlar verebilir veya vermeyebilir. Geri bildiriminiz takdir edilmektedir.";
-"settings_details.location.new_one_shot.title" = "Geliştirme Aşamasında Güncelleme";
 "settings_details.location.notifications.background_fetch.title" = "Arka Plan Getirme Bildirimleri";
 "settings_details.location.notifications.beacon_enter.title" = "Enter Zone via iBeacon Notifications";
 "settings_details.location.notifications.beacon_exit.title" = "Exit Zone via iBeacon Notifications";
@@ -413,7 +300,6 @@
 "settings_details.location.notifications.location_change.title" = "Significant Location Change Notifications";
 "settings_details.location.notifications.push_notification.title" = "Pushed Location Request Notifications";
 "settings_details.location.notifications.url_scheme.title" = "URL Scheme Location Notifications";
-"settings_details.location.notifications.visit.title" = "Konum Bildirimlerini Ziyaret Et";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Konum Bildirimleri";
 "settings_details.location.title" = "Location";
 "settings_details.location.update_location" = "Update Location";
@@ -441,19 +327,14 @@
 "settings_details.notifications.categories_synced.header" = "Senkronize Kategoriler";
 "settings_details.notifications.categories.footer" = "İşlem yapılabilir bildirimler, bildirimler için mevcut eylemleri tanımlayan kategoriler kullanılarak oluşturulur.";
 "settings_details.notifications.categories.header" = "Kategoriler";
-"settings_details.notifications.import_legacy_settings.alert.message" = "Sunucudan anlık bildirim kategori ve aksiyonları aktarıldı.";
-"settings_details.notifications.import_legacy_settings.alert.title" = "Sunucu bildirim ayarları aktarıldı";
-"settings_details.notifications.import_legacy_settings.button.title" = "Sunucudan bildirim ayarlarını çek";
 "settings_details.notifications.new_category.title" = "Yeni kategori";
 "settings_details.notifications.permission.disabled" = "Reddedildi";
 "settings_details.notifications.permission.enabled" = "Etkin";
 "settings_details.notifications.permission.needs_request" = "Devre dışı";
 "settings_details.notifications.permission.title" = "İzin";
 "settings_details.notifications.prompt_to_open_urls.title" = "URL'yi açmadan önce onayla";
-"settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
 "settings_details.notifications.push_id_section.header" = "Push ID";
 "settings_details.notifications.push_id_section.not_registered" = "Not registered for remote notifications";
-"settings_details.notifications.push_id_section.placeholder" = "Push ID";
 "settings_details.notifications.rate_limits.attempts" = "Denemeler";
 "settings_details.notifications.rate_limits.delivered" = "Teslim Edildi";
 "settings_details.notifications.rate_limits.errors" = "Hatalar";
@@ -462,10 +343,6 @@
 "settings_details.notifications.rate_limits.header" = "Sayaç Limitleri";
 "settings_details.notifications.rate_limits.resets_in" = "Sıfırlar";
 "settings_details.notifications.rate_limits.total" = "Toplam";
-"settings_details.notifications.sounds_section.button.title" = "Sesleri İçe Aktar";
-"settings_details.notifications.sounds_section.footer" = "İTunes aracılığıyla özel push bildirim sesleri eklenebilir.";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%li ses içe aktarıldı. İçe aktarma işlemini tamamlamak için lütfen telefonunuzu yeniden başlatın.";
-"settings_details.notifications.sounds_section.imported_alert.title" = "Sesler Aktarıldı";
 "settings_details.notifications.sounds.bundled" = "Birlikte";
 "settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "~/Library/Sounds yolu oluşturulamıyor: %@";
 "settings_details.notifications.sounds.error.cant_get_directory_contents" = "Dizin içeriği listelenemiyor: %@";
@@ -485,42 +362,24 @@
 "settings_details.notifications.sounds.system" = "Sistem";
 "settings_details.notifications.sounds.title" = "sesler";
 "settings_details.notifications.title" = "Bildirimler";
-"settings_details.notifications.update_section.button.title" = "Push ayarlarını güncelleyin";
-"settings_details.notifications.update_section.footer" = "Updating push settings will request the latest push actions and categories from Home Assistant.";
-"settings_details.notifications.update_section.updated_alert.message" = "Push settings imported from Home Assistant.";
-"settings_details.notifications.update_section.updated_alert.title" = "Settings Imported";
 "settings_details.privacy.alerts.description" = "Güvenlik açıkları gibi önemli uyarıların kontrol edilmesini sağlar.";
 "settings_details.privacy.alerts.title" = "Uyarılar";
-"settings_details.privacy.analytics.description" = "Cihazınız ve uygulama ile etkileşimleriniz hakkında temel bilgilerin toplanmasına izin verir. Home Assistant URL'leriniz ve simgeleriniz dahil olmak üzere hiçbir kullanıcı tanımlanabilir veri Google ile paylaşılmaz. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmalısınız.";
 "settings_details.privacy.analytics.generic_description" = "Cihazınız ve uygulama ile etkileşimleriniz hakkında temel bilgilerin toplanmasına izin verir. Ev Asistanı URL'leriniz ve belirteçleriniz dahil olmak üzere hiçbir kullanıcı tanımlanabilir veri paylaşılmaz. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmalısınız.";
 "settings_details.privacy.analytics.generic_title" = "Analitik";
-"settings_details.privacy.analytics.title" = "Google Analytics";
 "settings_details.privacy.crash_reporting.description" = "Uygulamadaki kilitlenmelerin ve diğer hataların daha derin bir şekilde izlenmesine izin vererek düzeltmelerin daha hızlı yayınlanmasını sağlar. Temel cihaz bilgileri dışında hiçbir kullanıcı tanımlayıcı bilgi gönderilmez. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmalısınız.";
 "settings_details.privacy.crash_reporting.sentry" = "Bu özellik şu anda rapor hedefi olarak Sentry'yi kullanıyor.";
 "settings_details.privacy.crash_reporting.title" = "Kilitlenme Raporlama";
-"settings_details.privacy.crashlytics.description" = "Crashlytics, uygulamadaki kazaların ve diğer hataların daha derinden izlenmesine olanak sağlayarak daha hızlı düzeltmelerin yapılmasını sağlar. Temel cihaz bilgileri dışında kullanıcı tarafından tanımlanabilecek hiçbir bilgi gönderilmez. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmanız gerekir.";
-"settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
 "settings_details.privacy.messaging.description" = "Push bildirimlerinin çalışabilmesi için Firebase Cloud Messaging etkinleştirilmelidir.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
-"settings_details.privacy.performance_monitoring.description" = "Firebase Performans İzleme, genel uygulama performansının uzaktan izlenmesine ve hız iyileştirmelerinin daha kolay yapılmasına olanak sağlar. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmanız gerekir.";
-"settings_details.privacy.performance_monitoring.title" = "Firebase Performans İzleme";
 "settings_details.privacy.title" = "Gizlilik";
-"settings_details.siri.section.existing.title" = "Mevcut Kısayollar";
-"settings_details.siri.section.generic.title" = "Genel Kısayollar";
-"settings_details.siri.section.services.title" = "Servisler";
-"settings_details.siri.section.title" = "Genel Kısayollar";
-"settings_details.siri.title" = "Siri Kısayolları";
 "settings_details.updates.check_for_updates.include_betas" = "Beta Sürümlerini Dahil Et";
 "settings_details.updates.check_for_updates.title" = "Güncelleştirmeleri Otomatik Olarak Denetle";
-"settings_details.watch.remaining_sends.title" = "Kalan gönderimler";
-"settings_details.watch.send_now.title" = "Şimdi gönder";
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Nitelikler";
 "settings_sensors.detail.device_class" = "Cihaz Sınıfı";
 "settings_sensors.detail.enabled" = "Etkin";
 "settings_sensors.detail.icon" = "Simge";
 "settings_sensors.detail.state" = "Durum";
-"settings_sensors.detail.unique_id" = "Benzersiz kimlik";
 "settings_sensors.disabled_state_replacement" = "Devre dışı";
 "settings_sensors.last_updated.footer" = "Son Güncelleme %@";
 "settings_sensors.loading_error.title" = "Sensörler yüklenemedi";
@@ -531,36 +390,11 @@
 "settings_sensors.settings.footer" = "Değişiklikler bir sonraki güncellemede uygulanacaktır.";
 "settings_sensors.settings.header" = "Ayarlar";
 "settings_sensors.title" = "Sensörler";
-"settings.advanced_connection_settings_section.title" = "Gelişmiş Bağlantı Ayarları";
-"settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant Companion. Please tap the More Info button for further information.";
-"settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
-"settings.connection_error_notification.message" = "Home Assistant'a bağlanan bir hata oluştu. Lütfen ayarların doğru olduğunu onaylayın ve yeniden bağlanmayı denemek için kaydedin. Hata oldu: %@";
-"settings.connection_error_notification.title" = "Connection Error";
-"settings.connection_error.forbidden.message" = "The authentication was incorrect.";
-"settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
-"settings.connection_error.invalid_url.title" = "Error parsing URL";
 "settings.connection_section.add_server" = "Add Server";
-"settings.connection_section.api_password_row.placeholder" = "password";
-"settings.connection_section.api_password_row.title" = "Password";
-"settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.base_url.title" = "URL";
-"settings.connection_section.basic_auth.password.placeholder" = "çok güvenli";
-"settings.connection_section.basic_auth.password.title" = "Parola";
-"settings.connection_section.basic_auth.title" = "HTTP Temel Kimlik Doğrulaması";
-"settings.connection_section.basic_auth.username.placeholder" = "iam";
-"settings.connection_section.basic_auth.username.title" = "Kullanıcı Adı";
-"settings.connection_section.cloud_available" = "Bulut Kullanılabilir";
 "settings.connection_section.cloud_overrides_external" = "Bulut yoluyla bağlanırken, Harici URL kullanılmayacaktır. Bulutu devre dışı bırakmak istemediğiniz sürece bir tane yapılandırmanıza gerek yoktur.";
-"settings.connection_section.cloudhook_available" = "Cloudhook Kullanılabilir";
-"settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.connect_row.title" = "Connect";
 "settings.connection_section.connecting_via" = "Üzerinden bağlandı";
 "settings.connection_section.details" = "Ayrıntılar";
-"settings.connection_section.error_enabling_notifications.message" = "There was an error enabling notifications. Please try again.";
-"settings.connection_section.error_enabling_notifications.title" = "Error enabling notifications";
 "settings.connection_section.errors.cannot_remove_last_url" = "Yalnızca mevcut URL'yi kaldıramazsınız.";
-"settings.connection_section.errors.cant_disable_cloud" = "Bulutu devre dışı bırakmak için harici URL ayarlanmalıdır";
-"settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud kurulmamış, harici URL'yi kaldıramazsınız";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.external_base_url.title" = "Harici bağlantı URL'si";
 "settings.connection_section.header" = "Connection";
@@ -571,26 +405,15 @@
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Dahili URL, birincil ağ arabirimi bu donanım adreslerinden biriyle eşleşen bir MAC adresine sahip olduğunda kullanılacaktır.";
 "settings.connection_section.internal_url_hardware_addresses.header" = "Donanım Adresleri";
 "settings.connection_section.internal_url_hardware_addresses.invalid" = "Donanım adresleri aa: bb: cc: dd: ee: ff gibi görünmelidir";
-"settings.connection_section.internal_url_ssids.add_current_ssid" = "Mevcut SSID %@ ekle";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Yeni SSID ekle";
 "settings.connection_section.internal_url_ssids.footer" = "Listelenen SSID'lere bağlanıldığında dahili URL kullanılacaktır";
 "settings.connection_section.internal_url_ssids.header" = "SSID'lerin";
 "settings.connection_section.internal_url_ssids.placeholder" = "BenimNetworkAdim";
-"settings.connection_section.invalid_url_scheme_notification.message" = "The URL must begin with either http:// or https://.";
-"settings.connection_section.invalid_url_scheme_notification.title" = "Invalid URL";
-"settings.connection_section.log_out" = "Çıkış Yap";
 "settings.connection_section.logged_in_as" = "olarak giriş yaptı";
-"settings.connection_section.nabu_casa_cloud" = "Nabu Casa Cloud";
-"settings.connection_section.network_name.title" = "Mevcut Ağ Adı";
-"settings.connection_section.remote_ui_available" = "Uzak Kullanıcı Arabirimi Kullanılabilir";
 "settings.connection_section.remote_ui_url.title" = "Uzak Kullanıcı Arabirimi URL'si";
-"settings.connection_section.save_button.title" = "Validate and Save Connection Settings";
 "settings.connection_section.servers" = "Servers";
-"settings.connection_section.show_advanced_settings_row.title" = "Gelişmiş ayarları göster";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "SSID'lere arka planda erişmek için 'Her Zaman' konum izni ve 'Tam' konum doğruluğu gerekir. Ayarlarınızı değiştirmek için buraya dokunun.";
 "settings.connection_section.ssid_permission_message" = "SSID'lere arka planda erişmek için 'Her Zaman' konum izni gerekir. Ayarlarınızı değiştirmek için buraya dokunun.";
-"settings.connection_section.use_internal_url.title" = "Dahili URL kullan";
-"settings.connection_section.use_legacy_auth.title" = "Eski kimlik doğrulamasını kullan";
 "settings.connection_section.validate_error.edit_url" = "URL'yi düzenle";
 "settings.connection_section.validate_error.title" = "URL Kaydedilirken Hata Oluştu";
 "settings.connection_section.validate_error.use_anyway" = "Yine de Kullan";
@@ -603,12 +426,8 @@
 "settings.connection_section.websocket.status.disconnected.title" = "Bağlantı kesildi";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.title" = "Debugging";
-"settings.details_section.enable_location_row.title" = "Enable location tracking";
-"settings.details_section.enable_notification_row.title" = "Enable notifications";
-"settings.details_section.integrations.header" = "Entegrasyonlar";
 "settings.details_section.location_settings_row.title" = "Location";
 "settings.details_section.notification_settings_row.title" = "Notifications";
-"settings.details_section.siri_shortcuts_row.title" = "Siri Kısayolları";
 "settings.details_section.watch_row.title" = "Apple Watch";
 "settings.developer.annoying_background_notifications.title" = "Rahatsız Edici Arka Plan Bilgisi";
 "settings.developer.camera_notification.notification.body" = "Kamera içerik uzantısını göstermek için bunu genişletin";
@@ -626,22 +445,11 @@
 "settings.developer.export_log_files.title" = "Günlük dosyalarını dışa aktar";
 "settings.developer.footer" = "Ne yaptığınızı bilmiyorsanız bunları kullanmayın!";
 "settings.developer.header" = "Geliştirici";
-"settings.developer.lokalise.alert.not_updated.message" = "Güncelleme yok";
-"settings.developer.lokalise.alert.not_updated.title" = "Yerelleştirme güncellemesi mevcut değildi";
-"settings.developer.lokalise.alert.updated.message" = "Konumlar güncellendi";
-"settings.developer.lokalise.alert.updated.title" = "Güncellenmiş";
-"settings.developer.lokalise.title" = "Lokalise'den çevirileri güncelleyin!";
 "settings.developer.map_notification.notification.body" = "Harita içeriği uzantısını göstermek için bunu genişletin";
 "settings.developer.map_notification.title" = "Harita bildirimi içerik uzantısını göster";
 "settings.developer.show_log_files.title" = "Finder'da günlük dosyalarını göster";
 "settings.developer.sync_watch_context.title" = "Eşitleme İzleme Bağlamı";
-"settings.device_id_section.device_id_row.title" = "Device ID";
-"settings.device_id_section.footer" = "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.";
-"settings.discovery_section.header" = "Discovered Home Assistants";
-"settings.discovery_section.requiresPassword" = "Requires password";
 "settings.event_log.title" = "Event Log";
-"settings.general_settings_button.title" = "General";
-"settings.location_history.description" = "Konum Geçmişi Yok";
 "settings.location_history.detail.explanation" = "Mor daire, konumunuz ve doğruluğudur. Mavi daireler sizin bölgelerinizdir. Mor daire mavi bir daire ile örtüşüyorsa, bir bölgenin içindesiniz. Turuncu daireler, 100m altı bölgeler için kullanılan ek bölgelerdir.";
 "settings.location_history.empty" = "Konum Geçmişi Yok";
 "settings.location_history.title" = "Konum Geçmişi";
@@ -652,34 +460,14 @@
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_web_cache.title" = "Ön önbelleği sıfırla";
-"settings.status_section.connected_to_sse_row.title" = "Connected";
-"settings.status_section.device_tracker_component_loaded_row.title" = "Device Tracker Component Loaded";
 "settings.status_section.header" = "Status";
-"settings.status_section.ios_component_loaded_row.title" = "iOS Component Loaded";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";
-"settings.status_section.mobile_app_component_loaded_row.title" = "Mobil Uygulama Bileşeni Yüklendi";
-"settings.status_section.notify_platform_loaded_row.title" = "iOS Notify Platform Loaded";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Şablonu Düzenle";
 "share_extension.entered_placeholder" = "Etkinliğe 'girildi'";
 "share_extension.error.title" = "Gönderilemedi";
-"siri_shortcuts.configurator.fields.section.footer" = "Önerilen: %@";
-"siri_shortcuts.configurator.fields.section.header" = "Alanlar";
-"siri_shortcuts.configurator.fields.use_default_value" = "Varsayılan değeri kullan";
-"siri_shortcuts.configurator.fields.use_suggested_value" = "Önerilen değeri kullanın";
-"siri_shortcuts.configurator.fire_event.configuration.header" = "Yapılandırma";
-"siri_shortcuts.configurator.fire_event.rows.name.title" = "Etkinlik Adı";
-"siri_shortcuts.configurator.fire_event.rows.payload.placeholder" = "Geçerli JSON olmalıdır. Yük sağlanmadıysa, pano içeriği kullanılacaktır.";
-"siri_shortcuts.configurator.fire_event.rows.payload.title" = "Olay Yükü";
-"siri_shortcuts.configurator.settings.header" = "Ayarlar";
-"siri_shortcuts.configurator.settings.name.title" = "Kısayol adı";
-"siri_shortcuts.configurator.settings.notify_on_run.title" = "Çalıştırıldığında bildirim gönder";
-"siri_shortcuts.intents.fire_event.title" = "Olayı Çalıştır";
-"siri_shortcuts.intents.get_camera_image.title" = "Kamera Görüntüsü Alın";
-"siri_shortcuts.intents.render_template.title" = "Oluşturma Şablonu";
-"siri_shortcuts.intents.send_location.title" = "Konumu Gönder";
 "success_label" = "Başarılı!";
 "token_error.connection_failed" = "Bağlantı kurulamadı.";
 "token_error.expired" = "Anahtar süresi doldu.";
@@ -693,7 +481,6 @@
 "url_handler.call_service.success.message" = "%@ başarıyla çağrıldı";
 "url_handler.call_service.success.title" = "Çağrılan hizmet";
 "url_handler.error.action_not_found" = "Aksiyon bulunamadı";
-"url_handler.error.title" = "Hata";
 "url_handler.fire_event.error.message" = "%@ olayını tetiklemeye çalışırken bir hata oluştu: %@";
 "url_handler.fire_event.success.message" = "Başarıyla tetiklenen olay %@";
 "url_handler.fire_event.success.title" = "Tetiklenen olay";
@@ -720,7 +507,6 @@
 "watch.configurator.rows.column_2_alignment.options.trailing" = "Izleyen";
 "watch.configurator.rows.column_2_alignment.title" = "Sütun 2 Hizalama";
 "watch.configurator.rows.display_name.title" = "Ekran adı";
-"watch.configurator.rows.fractional_value.title" = "Fractional value";
 "watch.configurator.rows.gauge.color.title" = "Renk";
 "watch.configurator.rows.gauge.gauge_type.options.closed" = "Kapandı";
 "watch.configurator.rows.gauge.gauge_type.options.open" = "Açık";
@@ -736,12 +522,7 @@
 "watch.configurator.rows.ring.ring_type.options.closed" = "Kapalı";
 "watch.configurator.rows.ring.ring_type.options.open" = "Açık";
 "watch.configurator.rows.ring.ring_type.title" = "tip";
-"watch.configurator.rows.ring.title" = "Halka";
 "watch.configurator.rows.ring.value.title" = "Fractional value";
-"watch.configurator.rows.row_2_alignment.options.leading" = "Önde gelen";
-"watch.configurator.rows.row_2_alignment.options.trailing" = "Izleyen";
-"watch.configurator.rows.row_2_alignment.title" = "Row 2 Alignment";
-"watch.configurator.rows.style.title" = "Stil";
 "watch.configurator.rows.template.selector_title" = "Choose a template";
 "watch.configurator.rows.template.title" = "Taslak";
 "watch.configurator.sections.gauge.footer" = "Komplikasyonda görüntülenecek gösterge.";
@@ -900,61 +681,6 @@
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "watch.labels.no_action" = "Yapılandırılan eylem yok. Bu mesajı kapatmak için telefonunuzda eylemleri yapılandırın.";
 "watch.placeholder_complication_name" = "Yer tutucu";
-"whats_new.buttons.completion.title" = "Hadi gidelim";
-"whats_new.buttons.read_more.title" = "Daha fazla oku";
-"whats_new.title" = "Neler Yeni \
-Home Assistant Companion %@";
-"whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle" = "2.0'ın neredeyse 35.000 satırlık yeni kod oluşturması ve eklemesi 300 saatten fazla sürdü, bu nedenle burada yalnızca bu kadar çok özellik sunulabilirdi. Kaputun altında çok daha büyük iyileştirmeler var!";
-"whats_new.Two_Dot_Zero.items.and_so_much_more.title" = "Ve çok daha fazlası";
-"whats_new.Two_Dot_Zero.items.app_icons.subtitle" = "Yepyeni bir uygulama simgesinin yanı sıra seçim yapabileceğiniz alternatifler. Artık, uygulama simgesine 3D dokunarak da otomasyonları tetikleyebilirsiniz.";
-"whats_new.Two_Dot_Zero.items.app_icons.title" = "Uygulama Simgeleri";
-"whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Kritik Uyarı olarak bir bildirim gönderdiğinizde, Rahatsız Etmeyin ve ses seviyesi ayarlarını atlar.";
-"whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritik Uyarılar";
-"whats_new.Two_Dot_Zero.items.donations.subtitle" = "Yıllarca benden bağış yapmam istendi ve şimdi tamam! Hakkında ekranındayken Bağış tuşuna basarak daha fazlasına ulaşabilirsiniz.";
-"whats_new.Two_Dot_Zero.items.donations.title" = "Bağışlar";
-"whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Home Assistant Cloud için tam destek.";
-"whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud Desteği";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Yeni mobile_app bileşeni sayesinde, Home Assistant Companion her zamankinden daha iyi bir arkadaştır!";
-"whats_new.Two_Dot_Zero.items.improved_integration.title" = "Geliştirilmiş entegrasyon";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.subtitle" = "YAML'ı unutun, uygulamadaki kategorileri düzenleyin ve sonuçları gerçek zamanlı olarak görün.";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Uygulama İçi Bildirim Kategori Düzenleyicisi";
-"whats_new.Two_Dot_Zero.items.more_data.subtitle" = "Adımlar, katedilen mesafe, tempo, bağlantı bilgileri ve daha fazlası için yeni eklenen sensörler.";
-"whats_new.Two_Dot_Zero.items.more_data.title" = "Daha Fazla Veri";
-"whats_new.Two_Dot_Zero.items.notification_sounds.subtitle" = "Bildirimleriniz için sistem seslerini kullanın ve uygulamadaki sesleri tamamen yönetin. Artık iTunes yok!";
-"whats_new.Two_Dot_Zero.items.notification_sounds.title" = "Bildirim Sesleri";
-"whats_new.Two_Dot_Zero.items.themes.subtitle" = "Uygulama artık gerçek zamanlı olarak aktif ön uç temanızla eşleşiyor!";
-"whats_new.Two_Dot_Zero.items.themes.title" = "Temalar";
-"whats_new.Two_Dot_Zero.items.today_widget.subtitle" = "Today View'dan Home Assistant'ta otomasyonların çalıştırılmasına izin ver.";
-"whats_new.Two_Dot_Zero.items.today_widget.title" = "Bugün Widget";
-"whats_new.Two_Dot_Zero.items.web_view_cleanup.subtitle" = "Artık araç çubuğu yok, uygulama şimdi ön uçla sıkı bir şekilde bütünleştirildi. Ayarlar Kenar Çubuğunda bulunabilir ve yenilemek için çekme eklendi.";
-"whats_new.Two_Dot_Zero.items.web_view_cleanup.title" = "Web Görünümü Temizleme";
-"whats_new.Two_Dot_Zero.thank_you.message" = "Teşekkür ederim. \
-\
- Home Assistant Companion'ı kullandığınız için teşekkür ederiz. \
-\
- Ev Asistanını kullandığınız için teşekkür ederiz. \
-\
- Son 3 yıldır bana katlandığınız için teşekkür ederim. \
-\
- 2.0'ın son 10 aylık gelişimine katlandığınız için teşekkür ederim. \
-\
- GitHub'da hata raporları gönderdiğiniz için teşekkür ederiz. \
-\
- İhtiyaç duyduklarında diğer kullanıcılara yardım ettiğiniz için teşekkür ederim ve ben müsait değildim. \
-\
- Bana 02: 00'de bu düğmenin nasıl 2 piksel kapalı olduğunu son derece ayrıntılı olarak açıklayan e-postalar gönderdiğiniz için teşekkür ederiz. \
-\
- Kendin olduğun ve beni desteklediğin için teşekkür ederim. \
-\
- Sürekli olumlu geri bildiriminiz ve takdiriniz beni devam ettiren şeydir. \
-\
- Umarım Home Assistant Companion 2.0'ı beğenirsiniz. \
-\
- Teşekkür ederim. \
-\
- --Robbie";
-"whats_new.Two_Dot_Zero.thank_you.ok_button" = "Rica ederim!";
-"whats_new.Two_Dot_Zero.thank_you.title" = "Bir şey daha…";
 "widgets.actions.description" = "Home Assistant eylemlerini gerçekleştirin.";
 "widgets.actions.not_configured" = "Yapılandırılmış aksiyon Yok";
 "widgets.actions.title" = "Aksiyonlar";
