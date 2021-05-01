@@ -46,13 +46,11 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
         }
 
         func message(for state: HAConnectionState) -> String? {
-            let wsL10n = L10n.Settings.ConnectionSection.Websocket.self
-
             switch state {
-            case .connecting: return wsL10n.Status.connecting
-            case .authenticating: return wsL10n.Status.authenticating
+            case .connecting: return L10n.Settings.ConnectionSection.Websocket.Status.connecting
+            case .authenticating: return L10n.Settings.ConnectionSection.Websocket.Status.authenticating
             case let .disconnected(reason):
-                let nonVerboseString = wsL10n.Status.Disconnected.title
+                let nonVerboseString = L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.title
                 let verboseString: String
 
                 switch reason {
@@ -60,11 +58,13 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
                     var components = [String]()
 
                     if let error = error {
-                        components.append(wsL10n.Status.Disconnected.error(error.localizedDescription))
+                        components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.error(
+                            error.localizedDescription
+                        ))
                     }
 
-                    components.append(wsL10n.Status.Disconnected.retryCount(count))
-                    components.append(wsL10n.Status.Disconnected.nextRetry(
+                    components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.retryCount(count))
+                    components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.nextRetry(
                         DateFormatter.localizedString(from: atLatest, dateStyle: .none, timeStyle: .medium)
                     ))
 
