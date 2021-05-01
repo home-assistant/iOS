@@ -60,6 +60,27 @@ public class NotificationAttachmentManager {
         }
     }
 
+    public func downloadAttachment(
+        from originalContent: UNNotificationContent,
+        api: HomeAssistantAPI
+    ) -> Promise<URL> {
+        firstly {
+            attachmentInfo(from: originalContent)
+        }.then { attachmentInfo in
+            api.DownloadDataAt(url: attachmentInfo.url, needsAuth: attachmentInfo.needsAuth)
+        }.recover { error throws -> Promise<URL> in
+            if case ServiceError.noAttachment = error {
+                throw error
+            } else {
+                #if os(iOS)
+                return .value(try self.savedImage(for: error, api: api).0)
+                #else
+                throw error
+                #endif
+            }
+        }
+    }
+
     private enum ServiceError: Error {
         case noAttachment
     }
@@ -103,10 +124,10 @@ public class NotificationAttachmentManager {
     }
 
     #if os(iOS)
-    private func attachment(
+    private func savedImage(
         for error: Error,
         api: HomeAssistantAPI
-    ) throws -> UNNotificationAttachment {
+    ) throws -> (URL, String) {
         guard let temporaryURL = api.temporaryDownloadFileURL() else {
             throw error
         }
@@ -116,9 +137,18 @@ public class NotificationAttachmentManager {
             savingTo: temporaryURL
         )
 
+        return (temporaryURL, localizedString)
+    }
+
+    private func attachment(
+        for error: Error,
+        api: HomeAssistantAPI
+    ) throws -> UNNotificationAttachment {
+        let (url, localizedString) = try savedImage(for: error, api: api)
+
         return with(try UNNotificationAttachment(
             identifier: "error",
-            url: temporaryURL,
+            url: url,
             options: [
                 UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG,
             ]
