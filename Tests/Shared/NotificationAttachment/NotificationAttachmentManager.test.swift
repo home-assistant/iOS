@@ -202,7 +202,8 @@ private class Image {
     func successParserResult(
         needsAuth: Bool = false,
         typeHint: CFString? = nil,
-        hideThumbnail: Bool? = nil
+        hideThumbnail: Bool? = nil,
+        lazy: Bool = false
     ) -> NotificationAttachmentParserResult {
         let url = Self.newURL()
 
@@ -226,7 +227,8 @@ private class Image {
             url: url,
             needsAuth: needsAuth,
             typeHint: typeHint,
-            hideThumbnail: hideThumbnail
+            hideThumbnail: hideThumbnail,
+            lazy: lazy
         ))
     }
 
@@ -254,7 +256,8 @@ private class Image {
             url: url,
             needsAuth: needsAuth,
             typeHint: nil,
-            hideThumbnail: nil
+            hideThumbnail: nil,
+            lazy: false
         ))
     }
 }

@@ -47,6 +47,7 @@ internal struct NotificationAttachmentInfo: Equatable {
     var needsAuth: Bool
     var typeHint: CFString?
     var hideThumbnail: Bool?
+    var lazy: Bool
 
     var attachmentOptions: [String: Any] {
         var options = [String: Any]()

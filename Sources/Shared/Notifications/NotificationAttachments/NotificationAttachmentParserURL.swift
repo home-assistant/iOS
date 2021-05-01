@@ -31,12 +31,14 @@ final class NotificationAttachmentParserURL: NotificationAttachmentParser {
         let needsAuth: Bool = urlString.hasPrefix("/")
         let contentType = (attachment["content-type"] as? String).flatMap(NotificationAttachmentInfo.contentType(for:))
         let hideThumbnail = attachment["hide-thumbnail"] as? Bool
+        let lazy = attachment["lazy"] as? Bool == true
 
         return .value(.fulfilled(.init(
             url: url,
             needsAuth: needsAuth,
             typeHint: contentType,
-            hideThumbnail: hideThumbnail
+            hideThumbnail: hideThumbnail,
+            lazy: lazy
         )))
     }
 }

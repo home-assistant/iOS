@@ -52,6 +52,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         XCTAssertEqual(result.needsAuth, true)
         XCTAssertEqual(result.typeHint, nil)
         XCTAssertEqual(result.hideThumbnail, nil)
+        XCTAssertEqual(result.lazy, false)
     }
 
     func testAbsoluteAttachmentURL() {
@@ -70,6 +71,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         XCTAssertEqual(result.needsAuth, false)
         XCTAssertEqual(result.typeHint, nil)
         XCTAssertEqual(result.hideThumbnail, nil)
+        XCTAssertEqual(result.lazy, false)
     }
 
     func testContentType() {
@@ -89,6 +91,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         XCTAssertEqual(result.needsAuth, true)
         XCTAssertEqual(result.typeHint, kUTTypePNG)
         XCTAssertEqual(result.hideThumbnail, nil)
+        XCTAssertEqual(result.lazy, false)
     }
 
     func testAttachmentHidden() {
@@ -108,6 +111,7 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         XCTAssertEqual(result.needsAuth, true)
         XCTAssertEqual(result.typeHint, nil)
         XCTAssertEqual(result.hideThumbnail, true)
+        XCTAssertEqual(result.lazy, false)
     }
 
     func testAttachmentNotHidden() {
@@ -127,5 +131,46 @@ class NotificationAttachmentParserURLTests: XCTestCase {
         XCTAssertEqual(result.needsAuth, true)
         XCTAssertEqual(result.typeHint, nil)
         XCTAssertEqual(result.hideThumbnail, false)
+        XCTAssertEqual(result.lazy, false)
+    }
+
+    func testLazyTrue() {
+        let content = UNMutableNotificationContent()
+        content.userInfo["attachment"] = [
+            "url": "/media/local/file.png",
+            "lazy": true
+        ]
+        let promise = parser.attachmentInfo(from: content)
+
+        guard let result = promise.wait().attachmentInfo else {
+            XCTFail("not an attachment")
+            return
+        }
+
+        XCTAssertEqual(result.url, URL(string: "/media/local/file.png"))
+        XCTAssertEqual(result.needsAuth, true)
+        XCTAssertEqual(result.typeHint, nil)
+        XCTAssertEqual(result.hideThumbnail, nil)
+        XCTAssertEqual(result.lazy, true)
+    }
+
+    func testLazyFalse() {
+        let content = UNMutableNotificationContent()
+        content.userInfo["attachment"] = [
+            "url": "/media/local/file.png",
+            "lazy": false
+        ]
+        let promise = parser.attachmentInfo(from: content)
+
+        guard let result = promise.wait().attachmentInfo else {
+            XCTFail("not an attachment")
+            return
+        }
+
+        XCTAssertEqual(result.url, URL(string: "/media/local/file.png"))
+        XCTAssertEqual(result.needsAuth, true)
+        XCTAssertEqual(result.typeHint, nil)
+        XCTAssertEqual(result.hideThumbnail, nil)
+        XCTAssertEqual(result.lazy, false)
     }
 }
