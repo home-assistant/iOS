@@ -171,6 +171,19 @@ class NotificationAttachmentManagerTests: XCTestCase {
         // fragile? yes. lazy? yes. effective? ask me in an iOS release
         XCTAssertTrue(attachment.debugDescription.contains("displayLocation: default"))
     }
+
+    func testLazy() throws {
+        parser1.result = image1.successParserResult(
+            needsAuth: false,
+            typeHint: nil,
+            hideThumbnail: nil,
+            lazy: true
+        )
+
+        let content = UNNotificationContent()
+        let promise = manager.content(from: content, api: api)
+        XCTAssertEqual(try hang(Promise(promise)), content)
+    }
 }
 
 private class Image {

@@ -87,7 +87,11 @@ public class NotificationAttachmentManager {
         from attachmentInfo: NotificationAttachmentInfo,
         api: HomeAssistantAPI
     ) -> Promise<UNNotificationAttachment> {
-        firstly {
+        guard !attachmentInfo.lazy else {
+            return .init(error: ServiceError.noAttachment)
+        }
+
+        return firstly {
             api.DownloadDataAt(url: attachmentInfo.url, needsAuth: attachmentInfo.needsAuth)
         }.map { url -> UNNotificationAttachment in
             try UNNotificationAttachment(
