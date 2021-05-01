@@ -3,16 +3,13 @@ import PromiseKit
 import UIKit
 import UserNotificationsUI
 
-class NotificationErrorViewController: UIViewController, NotificationCategory {
-    let label = UILabel()
-
+class NotificationLoadingViewController: UIViewController, NotificationCategory {
     required init(notification: UNNotification, attachmentURL: URL?) throws {
-        fatalError("not meant to be used in the list of potentials, just directly set")
+        super.init(nibName: nil, bundle: nil)
     }
 
-    init(error: Error) {
+    init() {
         super.init(nibName: nil, bundle: nil)
-        label.text = error.localizedDescription
     }
 
     @available(*, unavailable)
@@ -23,23 +20,24 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        label.numberOfLines = 0
-        label.textAlignment = .center
+        let activityIndicator: UIActivityIndicatorView
 
         if #available(iOS 13, *) {
-            label.textColor = .systemRed
+            activityIndicator = UIActivityIndicatorView(style: .medium)
         } else {
-            label.textColor = .red
+            activityIndicator = UIActivityIndicatorView(style: .gray)
         }
 
-        view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            activityIndicator.topAnchor.constraint(equalTo: view.topAnchor),
+            activityIndicator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            activityIndicator.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+
+        activityIndicator.startAnimating()
     }
 
     func start() -> Promise<Void> {

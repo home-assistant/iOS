@@ -44,19 +44,41 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     ] }
 
     private func viewController(
-        for notification: UNNotification
-    ) -> (UIViewController & NotificationCategory, Promise<Void>)? {
+        for notification: UNNotification,
+        attachmentURL: URL?,
+        allowDownloads: Bool = true
+    ) -> Guarantee<(UIViewController & NotificationCategory)?> {
+        // Try based on current info (e.g. entity_id or attached via service extension)
+
         for controllerType in Self.possibleControllers {
             do {
-                let controller = controllerType.init()
-                let promise = try controller.didReceive(notification: notification, extensionContext: extensionContext)
-                return (controller, promise)
+                let controller = try controllerType.init(
+                    notification: notification,
+                    attachmentURL: attachmentURL
+                )
+                return .value(controller)
             } catch {
                 // not valid
             }
         }
 
-        return nil
+        // Try to grab the attachments, in case they failed or were lazy
+
+        if allowDownloads {
+            return firstly {
+                Current.api
+            }.then { api in
+                // potential future optimization: feed the url into e.g. the AVPlayer instance.
+                // not super straightforward because authentication headers may be needed.
+                NotificationAttachmentManager().downloadAttachment(from: notification.request.content, api: api)
+            }.then { [self] url in
+                viewController(for: notification, attachmentURL: url, allowDownloads: false)
+            }.recover { _ in
+                return .value(nil)
+            }
+        } else {
+            return .value(nil)
+        }
     }
 
     func didReceive(_ notification: UNNotification) {
@@ -68,25 +90,31 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
 
-        guard let (controller, promise) = viewController(for: notification) else {
-            activeViewController = nil
-            return
-        }
+        activeViewController = NotificationLoadingViewController()
 
-        activeViewController = controller
+        var hud: MBProgressHUD?
 
-        let hud: MBProgressHUD? = {
-            guard controller.mediaPlayPauseButtonType == .none else {
-                // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
-                return nil
+        viewController(
+            for: notification,
+            attachmentURL: notification.request.content.attachments.first?.url
+        ).then { [weak self] controller -> Promise<Void> in
+            self?.activeViewController = controller
+
+            guard let controller = controller else {
+                return .value(())
             }
 
-            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-            hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
-            return hud
-        }()
+            if controller.mediaPlayPauseButtonType == .none, let view = self?.view {
+                // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
+                hud = {
+                    let hud = MBProgressHUD.showAdded(to: view, animated: true)
+                    hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
+                    return hud
+                }()
+            }
 
-        promise.ensure {
+            return controller.start()
+        }.ensure {
             hud?.hide(animated: true)
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
@@ -117,14 +145,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 }
 
 protocol NotificationCategory: NSObjectProtocol {
-    // This will be called to send the notification to be displayed by
-    // the extension. If the extension is being displayed and more related
-    // notifications arrive (eg. more messages for the same conversation)
-    // the same method will be called for each new notification.
-    func didReceive(
-        notification: UNNotification,
-        extensionContext: NSExtensionContext?
-    ) throws -> Promise<Void>
+    init(notification: UNNotification, attachmentURL: URL?) throws
+    func start() -> Promise<Void>
 
     // Implementing this method and returning a button type other that "None" will
     // make the notification attempt to draw a play/pause button correctly styled
