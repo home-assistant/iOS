@@ -106,7 +106,11 @@ class ComplicationListViewController: HAFormViewController {
                         row.value = false
                         row.updateCell()
                     }.catch { error in
-                        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription, preferredStyle: .alert)
+                        let alert = UIAlertController(
+                            title: L10n.errorLabel,
+                            message: error.localizedDescription,
+                            preferredStyle: .alert
+                        )
                         alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
                         self?.present(alert, animated: true, completion: nil)
                     }
