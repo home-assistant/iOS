@@ -222,10 +222,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
-        var userText: String?
-        if let textInput = response as? UNTextInputNotificationResponse {
-            userText = textInput.userText
-        }
         let userInfo = response.notification.request.content.userInfo
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
@@ -242,21 +238,18 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             }
         }
 
-        if response.actionIdentifier != UNNotificationDefaultActionIdentifier {
+        if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: "handle-push-action") { _ in
                 Current.api.then(on: nil) { api in
-                    api.handlePushAction(
-                        identifier: UNNotificationContent.uncombinedAction(from: response.actionIdentifier),
-                        category: response.notification.request.content.categoryIdentifier,
-                        userInfo: userInfo,
-                        userInput: userText
-                    )
+                    api.handlePushAction(for: info)
                 }
             }.ensure {
                 completionHandler()
             }.catch { err -> Void in
                 Current.Log.error("Error when handling push action: \(err)")
             }
+        } else {
+            completionHandler()
         }
     }
 

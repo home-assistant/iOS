@@ -676,24 +676,51 @@ public class HomeAssistantAPI {
         )
     }
 
-    public func handlePushAction(
-        identifier: String,
-        category: String?,
-        userInfo: [AnyHashable: Any],
-        userInput: String?
-    ) -> Promise<Void> {
+    public struct PushActionInfo: ImmutableMappable {
+        public var identifier: String
+        public var category: String?
+        public var textInput: String?
+        public var actionData: Any?
+
+        public init?(response: UNNotificationResponse) {
+            guard response.actionIdentifier != UNNotificationDefaultActionIdentifier else {
+                return nil
+            }
+
+            self.identifier = UNNotificationContent.uncombinedAction(from: response.actionIdentifier)
+            self.category = response.notification.request.content.categoryIdentifier
+            self.actionData = response.notification.request.content.userInfo["homeassistant"]
+            self.textInput = (response as? UNTextInputNotificationResponse)?.userText
+        }
+
+        public init(map: Map) throws {
+            self.identifier = try map.value("identifier")
+            self.category = try? map.value("category")
+            self.textInput = try? map.value("textInput")
+            self.actionData = try? map.value("actionData")
+        }
+
+        public func mapping(map: Map) {
+            identifier >>> map["identifier"]
+            category >>> map["category"]
+            textInput >>> map["textInput"]
+            actionData >>> map["actionData"]
+        }
+    }
+
+    public func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
         let actions = [
             Self.legacyNotificationActionEvent(
-                identifier: identifier,
-                category: category,
-                actionData: userInfo["homeassistant"],
-                textInput: userInput
+                identifier: info.identifier,
+                category: info.category,
+                actionData: info.actionData,
+                textInput: info.textInput
             ),
             Self.mobileAppNotificationActionEvent(
-                identifier: identifier,
-                category: category,
-                actionData: userInfo["homeassistant"],
-                textInput: userInput
+                identifier: info.identifier,
+                category: info.category,
+                actionData: info.actionData,
+                textInput: info.textInput
             ),
         ]
 
