@@ -44,13 +44,13 @@
             <objects>
                 <notificationController id="h4f-Hf-ll2" userLabel="Map Static Notification Interface Controller">
                     <items>
-                        <label alignment="left" text="Title" id="p2M-Qe-cqH">
+                        <label alignment="left" text="Title" numberOfLines="0" id="p2M-Qe-cqH">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="R0j-pC-RXg">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="R0j-pC-RXg">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" id="zei-SN-eTI"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="zei-SN-eTI"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="MAP" id="PaD-pF-3Yk"/>
                     <connections>
@@ -68,13 +68,13 @@
             <objects>
                 <controller id="LrQ-kJ-7bY" customClass="MapNotificationController" customModule="WatchApp" customModuleProvider="target">
                     <items>
-                        <label alignment="left" text="Title" id="p2V-Pw-SrF">
+                        <label alignment="left" text="Title" numberOfLines="0" id="p2V-Pw-SrF">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="Luv-KR-F0P">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="Luv-KR-F0P">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" id="FCu-iE-uLc"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="FCu-iE-uLc"/>
                         <map height="150" alignment="left" id="Nsd-Pz-t9E"/>
                     </items>
                     <connections>
@@ -92,13 +92,13 @@
             <objects>
                 <notificationController id="JOO-yq-9Md" userLabel="Camera Static Notification Interface Controller">
                     <items>
-                        <label alignment="left" text="Title" id="jQa-FU-AW7">
+                        <label alignment="left" text="Title" numberOfLines="0" id="jQa-FU-AW7">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="xYG-S0-atc">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="xYG-S0-atc">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" id="yBa-4u-GxD"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="yBa-4u-GxD"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="CAMERA" id="reZ-Qf-LhH"/>
                     <connections>
@@ -116,13 +116,13 @@
             <objects>
                 <controller id="R7r-up-oD1" customClass="CameraNotificationController" customModule="WatchApp" customModuleProvider="target">
                     <items>
-                        <label alignment="left" text="Title" id="LvM-IN-iYf">
+                        <label alignment="left" text="Title" numberOfLines="0" id="LvM-IN-iYf">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="MDv-3I-PbQ">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="MDv-3I-PbQ">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" id="sYZ-if-ad8"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="sYZ-if-ad8"/>
                         <imageView alignment="center" id="abh-Pc-dOV"/>
                     </items>
                     <connections>
@@ -140,13 +140,13 @@
             <objects>
                 <notificationController id="QI5-5x-CEK">
                     <items>
-                        <label alignment="left" text="Title" id="E7h-tN-FpM">
+                        <label alignment="left" text="Title" numberOfLines="0" id="E7h-tN-FpM">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="RcO-zr-Q0h">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="RcO-zr-Q0h">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" id="qhB-ey-Ock"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="qhB-ey-Ock"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="DYNAMIC" id="8b7-DD-rBi"/>
                     <connections>
@@ -164,13 +164,13 @@
             <objects>
                 <controller id="CnG-yJ-6kl" customClass="DynamicNotificationController" customModule="WatchExtension_Watch">
                     <items>
-                        <label alignment="left" text="Title" id="vEF-dD-raf">
+                        <label alignment="left" text="Title" numberOfLines="0" id="vEF-dD-raf">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Subtitle" id="d7N-vP-Xvn">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="d7N-vP-Xvn">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" text="Body" id="nz5-h3-92S"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="nz5-h3-92S"/>
                     </items>
                     <connections>
                         <outlet property="notificationAlertLabel" destination="nz5-h3-92S" id="mTD-G5-uoJ"/>
