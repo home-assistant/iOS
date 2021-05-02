@@ -1,4 +1,5 @@
 import CallbackURLKit
+import Communicator
 import FirebaseMessaging
 import Foundation
 import PromiseKit
@@ -7,6 +8,10 @@ import UserNotifications
 import XCGLogger
 
 class NotificationManager: NSObject {
+    static var didUpdateComplicationsNotification: Notification.Name {
+        .init(rawValue: "didUpdateComplicationsNotification")
+    }
+
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
     }
@@ -91,12 +96,33 @@ class NotificationManager: NSObject {
                     UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
                 }
                 completionHandler(.newData)
+            case "update_complications":
+                updateComplications().done {
+                    Current.Log.info("successfully updated complications from notification")
+                    completionHandler(.newData)
+                }.catch { error in
+                    Current.Log.error("failed to update complications from notification: \(error)")
+                    completionHandler(.failed)
+                }
             default:
                 Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                 completionHandler(.noData)
             }
         } else {
             completionHandler(.failed)
+        }
+    }
+
+    func updateComplications() -> Promise<Void> {
+        Promise { seal in
+            Communicator.shared.transfer(.init(content: [:])) { result in
+                switch result {
+                case .success: seal.fulfill(())
+                case let .failure(error): seal.reject(error)
+                }
+            }
+        }.get {
+            NotificationCenter.default.post(name: Self.didUpdateComplicationsNotification, object: nil)
         }
     }
 
