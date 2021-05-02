@@ -14,9 +14,9 @@ class MapNotificationController: WKUserNotificationInterfaceController {
     // MARK: - WKUserNotificationInterfaceController
 
     override func didReceive(_ notification: UNNotification) {
-        notificationTitleLabel.setText(notification.request.content.title)
-        notificationSubtitleLabel.setText(notification.request.content.subtitle)
-        notificationAlertLabel!.setText(notification.request.content.body)
+        notificationTitleLabel.setTextAndHideIfEmpty(notification.request.content.title)
+        notificationSubtitleLabel.setTextAndHideIfEmpty(notification.request.content.subtitle)
+        notificationAlertLabel.setTextAndHideIfEmpty(notification.request.content.body)
 
         if notificationActions.isEmpty {
             notificationActions = notification.request.content.userInfoActions
