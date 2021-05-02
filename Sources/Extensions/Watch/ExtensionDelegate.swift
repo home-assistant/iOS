@@ -209,21 +209,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
-            Current.api.then(on: nil) {
-                $0.updateComplications(passively: true)
-            }.ensure {
-                self.endWatchConnectivityBackgroundTaskIfNecessary()
-            }.cauterize()
+            self.updateComplications()
         }
 
         ComplicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
-            Current.api.then(on: nil) {
-                $0.updateComplications(passively: true)
-            }.ensure {
-                self.endWatchConnectivityBackgroundTaskIfNecessary()
-            }.cauterize()
+            self.updateComplications()
         }
 
         _ = Communicator.shared
@@ -272,6 +264,22 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             // and set up a new one for the next chain of updates
             (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
         }
+    }
+
+    private var isUpdatingComplications = false
+    private func updateComplications() {
+        // avoid double-updating due to e.g. complication info update request
+        guard !isUpdatingComplications else { return }
+
+        isUpdatingComplications = true
+
+        Current.api.then(on: nil) {
+            $0.updateComplications(passively: true)
+        }.ensure { [self] in
+            isUpdatingComplications = false
+        }.ensure { [self] in
+            endWatchConnectivityBackgroundTaskIfNecessary()
+        }.cauterize()
     }
 
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
