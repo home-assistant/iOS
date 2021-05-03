@@ -292,4 +292,43 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
     ) {
         completionHandler([.alert, .badge, .sound])
     }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        guard let info = HomeAssistantAPI.PushActionInfo(response: response) else {
+            completionHandler()
+            return
+        }
+
+        firstly { () -> Promise<Void> in
+            let (promise, seal) = Promise<Void>.pending()
+
+            if Communicator.shared.currentReachability == .immediatelyReachable {
+                Current.Log.info("sending via phone")
+                Communicator.shared.send(.init(
+                    identifier: "PushAction",
+                    content: ["PushActionInfo": info.toJSON()],
+                    reply: { message in
+                        Current.Log.verbose("Received reply dictionary \(message)")
+                        seal.fulfill(())
+                    }
+                ), errorHandler: { error in
+                    Current.Log.error("Received error when sending immediate message \(error)")
+                    seal.reject(error)
+                })
+            } else {
+                Current.Log.info("sending via local")
+                Current.api.then(on: nil) { api in
+                    api.handlePushAction(for: info)
+                }.pipe(to: seal.resolve)
+            }
+
+            return promise
+        }.ensure {
+            completionHandler()
+        }.cauterize()
+    }
 }
