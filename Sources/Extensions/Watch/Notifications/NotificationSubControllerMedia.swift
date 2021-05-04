@@ -1,5 +1,6 @@
 import Foundation
 import PromiseKit
+import Shared
 import UserNotifications
 import WatchKit
 
@@ -22,8 +23,21 @@ final class NotificationSubControllerMedia: NotificationSubController {
 
     init?(url: URL) {
         let didStartSecurityScope = url.startAccessingSecurityScopedResource()
+        let data: Data
 
-        if let image = UIImage(contentsOfFile: url.path) {
+        do {
+            // FB9096214 watchOS will give us a url which fails security scoped access and errors with
+            // Error Domain=NSCocoaErrorDomain Code=257
+            // so we unfortunately have to pretend like no attachment existed if we can't _read_ it
+            data = try Data(contentsOf: url, options: .alwaysMapped)
+        } catch {
+            Current.Log.error("failed to open data: \(error) security scope happened \(didStartSecurityScope)")
+            return nil
+        }
+
+        Current.Log.info("creating with url \(url) data size \(data.count)")
+
+        if let image = UIImage(data: data) {
             self.media = .image(image)
         } else {
             self.media = .playable(url)
