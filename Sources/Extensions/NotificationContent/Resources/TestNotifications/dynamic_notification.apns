@@ -9,7 +9,7 @@
   },
   "actions": [
     {
-      "identifier": "id1",
+      "identifier": "REPLY",
       "title": "Lectus Magna",
     },
     {

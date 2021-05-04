@@ -85,7 +85,7 @@ public class NotificationAttachmentManager {
         }
     }
 
-    private enum ServiceError: Error {
+    public enum ServiceError: Error {
         case noAttachment
     }
 
