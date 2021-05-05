@@ -42,14 +42,9 @@ class ComplicationListViewController: HAFormViewController {
             $0.title = L10n.Watch.Configurator.List.description
             $0.displayType = .primary
         }
-            <<< ButtonRow {
-                $0.title = L10n.Watch.Configurator.List.learnMore
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .natural
-                }
-                $0.onCellSelection { [weak self] _, _ in
-                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
-                }
+
+            <<< LearnMoreButtonRow {
+                $0.value = URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!
             }
 
         let allComplications = Current.realm()
