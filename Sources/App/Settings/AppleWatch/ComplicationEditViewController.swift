@@ -494,7 +494,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 $0.tag = key + "_text"
                 $0.title = location.label
                 $0.add(rule: RuleRequired())
-                $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
+                $0.placeholder = "{{ states(\"weather.temperature\") }}"
                 if let value = dataDict["text"] as? String {
                     $0.value = value
                 }
