@@ -65,6 +65,7 @@
 		110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */; };
 		1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
 		1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
+		11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11108D622634C8FE009DAB0F /* LearnMoreButtonRow.swift */; };
 		1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */; };
 		1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */; };
 		1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
@@ -1025,6 +1026,7 @@
 		110FB4512499DB3A000865B4 /* map_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = map_notification.apns; sourceTree = "<group>"; };
 		110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationErrorViewController.swift; sourceTree = "<group>"; };
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
+		11108D622634C8FE009DAB0F /* LearnMoreButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreButtonRow.swift; sourceTree = "<group>"; };
 		1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListViewController.swift; sourceTree = "<group>"; };
 		1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryDetailViewController.swift; sourceTree = "<group>"; };
 		11169B3E262BCEE6005EF90A /* dynamic_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = dynamic_notification.apns; sourceTree = "<group>"; };
@@ -2152,6 +2154,7 @@
 				1101D7F82621479200AAE617 /* SettingsButtonRow.swift */,
 				1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */,
 				119DE944263349E50099F7D8 /* HAFormViewController.swift */,
+				11108D622634C8FE009DAB0F /* LearnMoreButtonRow.swift */,
 			);
 			path = Eureka;
 			sourceTree = "<group>";
@@ -4765,6 +4768,7 @@
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,
+				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,

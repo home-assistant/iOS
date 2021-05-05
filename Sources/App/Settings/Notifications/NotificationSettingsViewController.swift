@@ -41,19 +41,15 @@ class NotificationSettingsViewController: HAFormViewController {
 
         form
             +++ Section()
+            <<< InfoLabelRow {
+                $0.title = L10n.SettingsDetails.Notifications.info
+                $0.displayType = .primary
+            }
+
             <<< notificationPermissionRow()
 
-            +++ Section(
-                footer: L10n.SettingsDetails.Notifications.Categories.footer
-            )
-
-            <<< ButtonRow {
-                $0.title = L10n.SettingsDetails.Notifications.Categories.header
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    NotificationCategoryListViewController()
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-                })
+            <<< LearnMoreButtonRow {
+                $0.value = URL(string: "https://companion.home-assistant.io/app/ios/notifications")!
             }
 
             +++ Section(
@@ -78,6 +74,21 @@ class NotificationSettingsViewController: HAFormViewController {
                     self.present(alert, animated: true, completion: nil)
                     alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
+            }
+
+            +++ Section()
+
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Notifications.Categories.header
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    NotificationCategoryListViewController()
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
+                })
+            }
+
+            <<< InfoLabelRow {
+                $0.title = L10n.SettingsDetails.Notifications.Categories.deprecatedNote
             }
 
             +++ Section(

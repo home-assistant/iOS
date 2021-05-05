@@ -1343,6 +1343,8 @@ public enum L10n {
       }
     }
     public enum Notifications {
+      /// Use the mobile_app notify service to send notifications to your device.
+      public static var info: String { return L10n.tr("Localizable", "settings_details.notifications.info") }
       /// Notifications
       public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.title") }
       public enum BadgeSection {
@@ -1358,6 +1360,8 @@ public enum L10n {
         }
       }
       public enum Categories {
+        /// Categories are no longer required for actionable notifications and will be removed in a future release.
+        public static var deprecatedNote: String { return L10n.tr("Localizable", "settings_details.notifications.categories.deprecated_note") }
         /// Actionable notifications are created using categories which define the available actions for the notifications.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.categories.footer") }
         /// Categories
