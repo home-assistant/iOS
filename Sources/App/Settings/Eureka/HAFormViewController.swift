@@ -15,4 +15,14 @@ class HAFormViewController: FormViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        tableView.keyboardDismissMode = .interactive
+    }
+
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // don't end editing automatically
+    }
 }

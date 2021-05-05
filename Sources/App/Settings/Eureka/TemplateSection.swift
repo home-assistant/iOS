@@ -47,6 +47,7 @@ public final class TemplateSection: Section {
     }
 
     let inputRow = TextAreaRow {
+        $0.textAreaHeight = .dynamic(initialTextViewHeight: 100.0)
         $0.cellSetup { cell, _ in
             cell.textView.configureCodeFont()
             cell.textView.keyboardType = .asciiCapable
