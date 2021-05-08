@@ -29,6 +29,6 @@
 "TEX-zW-Byk.text" = "För bästa upplevelse av Home Assistant Companion, ge följande behörigheter:";
 "Tqw-iY-A2S.normalTitle" = "Mer information";
 "UKm-Ju-0Yr.text" = "Vi upptäckte ett fel vid anslutning till din instans. SSL-certifikatet är ogiltigt. På grund av iOS-begränsningar kommer du inte att kunna fortsätta med konfigurationen förrän ett giltigt SSL-certifikat har installerats. Vi rekommenderar Let's Encrypt  eller NABU Casa Remote UI.";
-"wsC-f5-jbO.text" = "Vi är nu redo att ansluta till din Home Assistant och göra den första autentiseringen. Knacka på Anslut-knappen nedan så öppnas en webbläsare för inloggning. ";
+"wsC-f5-jbO.text" = "Vi är nu redo att ansluta till din Home Assistant och göra den första autentiseringen. Knacka på Anslut-knappen nedan så öppnas en webbläsare för inloggning.";
 "xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
 "XyQ-gy-yHY.text" = "Ansluten";

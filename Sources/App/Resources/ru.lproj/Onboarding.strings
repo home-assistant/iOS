@@ -30,5 +30,5 @@
 "Tqw-iY-A2S.normalTitle" = "Подробнее";
 "UKm-Ju-0Yr.text" = "Подключение не удалось, потому что ваш SSL-сертификат недействителен. iOS не позволяет подключиться к серверу с неверным сертификатом. Попробуйте использовать Lets Encrypt или Nabu Casa Remote UI.";
 "wsC-f5-jbO.text" = "Всё готово для авторизации в Home Assistant. Нажмите «Подключиться» и войдите в систему в открывшемся браузере.";
-"xO0-K1-GJX.placeholder" = "Например http: //homeassistant.local: 8123";
+"xO0-K1-GJX.placeholder" = "Например http://homeassistant.local: 8123";
 "XyQ-gy-yHY.text" = "Подключено";

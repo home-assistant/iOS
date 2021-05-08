@@ -30,5 +30,5 @@
 "Tqw-iY-A2S.normalTitle" = "Meer informatie";
 "UKm-Ju-0Yr.text" = "Er is een fout opgetreden bij het verbinden met uw instantie. Uw SSL-certificaat is ongeldig. Vanwege iOS-beperkingen kunt u niet doorgaan met de installatie totdat een geldig SSL-certificaat is geïnstalleerd. We raden Lets Encrypt of Nabu Casa Remote UI aan.";
 "wsC-f5-jbO.text" = "We zijn nu klaar om verbinding te maken met uw Home Assistant en de eerste authenticatie te doen. Als u op de knop Verbinden hieronder tikt, wordt er een browser geopend waarop u zich kunt aanmelden.";
-"xO0-K1-GJX.placeholder" = "bijv. http: //homeassistant.local:8123/";
+"xO0-K1-GJX.placeholder" = "bijv. http://homeassistant.local:8123/";
 "XyQ-gy-yHY.text" = "Verbonden";

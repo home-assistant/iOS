@@ -323,8 +323,10 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "settings_details.notifications.categories_synced.footer" = "In .yaml definierte Kategorien können auf dem Gerät nicht bearbeitet werden.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorien können auch in der .yaml-Konfiguration definiert werden.";
 "settings_details.notifications.categories_synced.header" = "Synchronisierte Kategorien";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "Anklickbare Mitteilungen werden durch Kategorien erstellt, welche die verfügbaren Aktionen der Mitteilung definieren.";
 "settings_details.notifications.categories.header" = "Kategorien";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Neue Kategorie";
 "settings_details.notifications.permission.disabled" = "Verweigert";
 "settings_details.notifications.permission.enabled" = "Aktiviert";

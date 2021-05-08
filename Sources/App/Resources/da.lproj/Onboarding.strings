@@ -29,6 +29,6 @@
 "TEX-zW-Byk.text" = "For at opnå den bedste oplevelse, når du bruger Home Assistant Companion, bør du give følgende tilladelser:";
 "Tqw-iY-A2S.normalTitle" = "Mere information";
 "UKm-Ju-0Yr.text" = "Vi stødte på en fejl under oprettelse af forbindelse til din installation. Dit SSL-certifikat er ugyldigt. På grund af begrænsninger i iOS, kan du ikke fortsætte opsætningen, før der er installeret et gyldigt SSL-certifikat. Vi anbefaler Lets Encrypt eller Nabu Casa Remote UI.";
-"wsC-f5-jbO.text" = "Vi er nu klar til at oprette forbindelse til din Home Assistant og foretage den indledende godkendelse. Hvis du trykker på Opret forbindelse-knappen nedenfor, åbner en browser så du kan logge på. ";
+"wsC-f5-jbO.text" = "Vi er nu klar til at oprette forbindelse til din Home Assistant og foretage den indledende godkendelse. Hvis du trykker på Opret forbindelse-knappen nedenfor, åbner en browser så du kan logge på.";
 "xO0-K1-GJX.placeholder" = "fx http://homeassistant.local:8123";
 "XyQ-gy-yHY.text" = "Forbundet";

@@ -325,8 +325,10 @@
 "settings_details.notifications.categories_synced.footer" = "於 .yaml 中定義的類別無法於裝置上編輯。";
 "settings_details.notifications.categories_synced.footer_no_categories" = "也可以於 .yaml 中定義類別。";
 "settings_details.notifications.categories_synced.header" = "已同步類別";
+"settings_details.notifications.categories.deprecated_note" = "可回應動作通知將不再想要類別、將於未來的版本移除。";
 "settings_details.notifications.categories.footer" = "使用類別定物可操作之通知、類別定義了通知可用的操作動作。";
 "settings_details.notifications.categories.header" = "Categories";
+"settings_details.notifications.info" = "使用 mobile_app 通知服務以傳送通知至您的裝置。";
 "settings_details.notifications.new_category.title" = "新類別";
 "settings_details.notifications.permission.disabled" = "已拒絕";
 "settings_details.notifications.permission.enabled" = "已啟用";

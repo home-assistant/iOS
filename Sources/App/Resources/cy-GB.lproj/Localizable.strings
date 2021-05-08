@@ -243,8 +243,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.general.app_icon.enum.fire_orange" = "Oren Tân";
 "settings_details.general.app_icon.enum.green" = "Gwyrdd";
 "settings_details.general.app_icon.enum.ha_blue" = "Glas Home Assistant";
-"settings_details.general.app_icon.enum.old_beta" = " Hen fersiwn beta";
-"settings_details.general.app_icon.enum.old_dev" = " Hen fersiwn datblygwr ";
+"settings_details.general.app_icon.enum.old_beta" = "Hen fersiwn beta";
+"settings_details.general.app_icon.enum.old_dev" = "Hen fersiwn datblygwr";
 "settings_details.general.app_icon.enum.old_release" = "Wedi'i cyhoeddi yn y gorffennol";
 "settings_details.general.app_icon.enum.orange" = "Oren";
 "settings_details.general.app_icon.enum.pink" = "Pinc";
@@ -325,8 +325,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.notifications.categories_synced.footer" = "Nid oes modd golygu'r categorïau a ddiffinnir yn .yaml ar ddyfais.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Categories may be also defined in the .yaml configuration.";
 "settings_details.notifications.categories_synced.header" = "Categorïau Synced";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categorïau";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Categori Newydd";
 "settings_details.notifications.permission.disabled" = "Wedi'i wrthod";
 "settings_details.notifications.permission.enabled" = "Wedi'i alluogi";
@@ -340,7 +342,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.notifications.rate_limits.errors" = "Gwallau";
 "settings_details.notifications.rate_limits.footer" = "Caniateir 300 o hysbysiadau gwthio i chi bob 24 awr. Ailosod cyfyngiadau'r cyfradd ar hanner nos Amser Cydgysylltiedig Cyffredinol (UTC).";
 "settings_details.notifications.rate_limits.footer_with_param" = "Caniateir %u o hysbysiadau gwthio i chi bob 24 awr. Ailosod cyfyngiadau'r cyfradd ar hanner nos Amser Cydgysylltiedig Cyffredinol (UTC).";
-"settings_details.notifications.rate_limits.header" = "Cyfyngiadau'r cyfradd ";
+"settings_details.notifications.rate_limits.header" = "Cyfyngiadau'r cyfradd";
 "settings_details.notifications.rate_limits.resets_in" = "Ailosod Yn";
 "settings_details.notifications.rate_limits.total" = "Cyfanswm";
 "settings_details.notifications.sounds.bundled" = "Wedi'u casglu";
@@ -482,7 +484,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "url_handler.call_service.success.title" = "Wedi galw gwasanaeth";
 "url_handler.error.action_not_found" = "Action Not Found";
 "url_handler.fire_event.error.message" = "Mae gwall wedi digwydd wrth geisio cychwyn digwyddiad %@:%@";
-"url_handler.fire_event.success.message" = "Digwyddiad %@ wedi'i cychwyn yn llwyddiannus ";
+"url_handler.fire_event.success.message" = "Digwyddiad %@ wedi'i cychwyn yn llwyddiannus";
 "url_handler.fire_event.success.title" = "Wedi cychwyn Digwyddiad";
 "url_handler.no_service.message" = "Nid yw %@ yn llwybr dilys";
 "url_handler.send_location.error.message" = "Digwyddodd gwall anhysbys wrth geisio anfon lleoliad: %@";

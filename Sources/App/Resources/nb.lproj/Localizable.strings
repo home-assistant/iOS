@@ -325,8 +325,10 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.categories_synced.footer" = "Kategorier definert i .yaml kan ikke redigeres på enheten.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurasjonen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserte kategorier";
+"settings_details.notifications.categories.deprecated_note" = "Kategorier er ikke lenger nødvendige for handlingsrettet varslinger og vil bli fjernet i en fremtidig versjon.";
 "settings_details.notifications.categories.footer" = "Handlingsvarsler opprettes ved hjelp av kategorier som definerer tilgjengelige handlinger for varslingene.";
 "settings_details.notifications.categories.header" = "Kategorier";
+"settings_details.notifications.info" = "Bruk varslingstjenesten mobile_app til å sende varsler til enheten din.";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.notifications.permission.disabled" = "Nektet";
 "settings_details.notifications.permission.enabled" = "Aktivert";
@@ -522,7 +524,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "watch.configurator.rows.ring.ring_type.options.closed" = "Lukket";
 "watch.configurator.rows.ring.ring_type.options.open" = "Åpen";
 "watch.configurator.rows.ring.ring_type.title" = "Type";
-"watch.configurator.rows.ring.value.title" = "Fractional value";
+"watch.configurator.rows.ring.value.title" = "Brøkverdi";
 "watch.configurator.rows.template.selector_title" = "Velg en mal";
 "watch.configurator.rows.template.title" = "Mal";
 "watch.configurator.sections.gauge.footer" = "Måleren som skal vises i komplikasjonen.";

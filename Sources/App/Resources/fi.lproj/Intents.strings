@@ -113,7 +113,7 @@
 "RMQY3r" = "Lähetä sijaintia Kotiavustajalle";
 "rOlW1x" = "What location do you want to send?";
 "RsOw3P" = "Successfully rendered template";
-"rwj6u7" = "Ilmoita ${location} Kotiavustajalle nykyisenä sijaintiana ";
+"rwj6u7" = "Ilmoita ${location} Kotiavustajalle nykyisenä sijaintiana";
 "sbkx4E" = "${pasteboardContents} geokoodaaminen kelvolliseen sijaintiin epäonnistui";
 "sfDGvk" = "Rendered Template";
 "SGxPSB" = "${serviceDescription}";

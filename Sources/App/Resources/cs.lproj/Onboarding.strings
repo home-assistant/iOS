@@ -12,8 +12,8 @@
 "gld-QQ-oTD.normalTitle" = "Připojit";
 "jrL-9x-fFX.normalTitle" = "Pokračovat";
 "Kj7-hM-8gN.text" = "Připojení k mému Home Assistant";
-"Kwy-Pt-nws.text" = "HTTP základní uživatelské jméno ";
-"LCc-oP-eTO.text" = "HTTP základní heslo ";
+"Kwy-Pt-nws.text" = "HTTP základní uživatelské jméno";
+"LCc-oP-eTO.text" = "HTTP základní heslo";
 "lM3-aA-jqO.text" = "Ověřování";
 "mse-YA-DiV.text" = "Vítejte v Home Assistant Companion!";
 "N4h-WC-wIw.normalTitle" = "Pokračovat";
@@ -29,6 +29,6 @@
 "TEX-zW-Byk.text" = "Chcete-li získat co nejlepší možnosti při používání Home Assistant Companion, povolte prosím následující oprávnění:";
 "Tqw-iY-A2S.normalTitle" = "Více informací";
 "UKm-Ju-0Yr.text" = "Při připojování k vaší instanci došlo k chybě. Váš certifikát SSL je neplatný. Z důvodu omezení systému iOS nebudete moci pokračovat v instalaci, dokud nebude nainstalován platný certifikát SSL. Doporučujeme používat Nabu Casa Remote UI.";
-"wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. ";
+"wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to.";
 "xO0-K1-GJX.placeholder" = "např. http://homeassistant.local:8123";
 "XyQ-gy-yHY.text" = "Připojeno";
