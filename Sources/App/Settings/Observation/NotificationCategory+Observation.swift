@@ -24,20 +24,32 @@ extension NotificationCategory {
                 }))
             }
 
-            let builtin = Promise<Set<UNNotificationCategory>>.value([
-                UNNotificationCategory(
-                    identifier: "DYNAMIC",
-                    actions: [
+            let builtin = Promise<Set<UNNotificationCategory>> { seal in
+                var categories = Set<UNNotificationCategory>()
+
+                let dynamicActions: [UNNotificationAction]
+
+                if Current.isCatalyst {
+                    dynamicActions = []
+                } else {
+                    dynamicActions = [
                         UNNotificationAction(
                             identifier: "LOADING",
                             title: L10n.NotificationService.loadingDynamicActions,
                             options: []
                         ),
-                    ],
+                    ]
+                }
+
+                categories.insert(UNNotificationCategory(
+                    identifier: "DYNAMIC",
+                    actions: dynamicActions,
                     intentIdentifiers: [],
                     options: []
-                ),
-            ])
+                ))
+
+                seal.fulfill(categories)
+            }
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
                 seal.fulfill(Set(collection.flatMap(\.categories)))
