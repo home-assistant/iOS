@@ -122,7 +122,7 @@
 		11521BD8254003B7009C5C72 /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
 		11521BD9254003B8009C5C72 /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
 		1155DD09250F4100003405C0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DD08250F4100003405C0 /* ShareViewController.swift */; };
-		1155DD10250F4101003405C0 /* Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1155DD10250F4101003405C0 /* HomeAssistant-Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
@@ -142,7 +142,7 @@
 		1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506C24DFCDE60065E874 /* SwiftUI.framework */; };
 		1171507024DFCDE60065E874 /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171506F24DFCDE60065E874 /* Widgets.swift */; };
 		1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1171507124DFCDEE0065E874 /* Assets.xcassets */; };
-		1171507624DFCDEE0065E874 /* Extensions-Widgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1171506924DFCDE60065E874 /* Extensions-Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1171507624DFCDEE0065E874 /* HomeAssistant-Extensions-Widgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171508024DFCEC50065E874 /* WidgetActions.swift */; };
 		117318AB25199E1A0013E010 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117318AA25199E1A0013E010 /* AppKit.framework */; };
@@ -195,7 +195,7 @@
 		11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11948E8824DA5D50006F5657 /* InfoLabelRow.swift */; };
 		1194B4162519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1194B4152519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift */; };
 		11993D2424E78A3700627944 /* WidgetActionsActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11993D2324E78A3700627944 /* WidgetActionsActionView.swift */; };
-		119A172524D74DA800D1B66D /* WatchExtension-Watch.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		119A172524D74DA800D1B66D /* HomeAssistant-WatchExtension-Watch.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		119A7DF32529761800D7000D /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
@@ -531,7 +531,7 @@
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
-		B627CB151D83C87B0057173E /* Extensions-NotificationContent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B627CB151D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplate.swift */; };
 		B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
 		B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
@@ -609,13 +609,13 @@
 		B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */; };
 		B661FC8F226D606600E541DD /* 5401-loading-19-satellite-dish.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
-		B66C58AC215086F0004AB261 /* Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66C58B12150891B004AB261 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallService.swift */; };
 		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
 		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
 		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
 		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
-		B66F9F2E216B1E61000CAA0F /* Extensions-Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66F9F2E216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
@@ -675,7 +675,7 @@
 		B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */; };
 		B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
-		B6AAD7A81D827DD40090B220 /* Extensions-NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B6AAD7A81D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E69F216A940700D39A26 /* ActionRow.swift */; };
 		B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */; };
 		B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */; };
@@ -695,7 +695,7 @@
 		B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */; };
 		B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D972159D10E00833E5D /* ComplicationController.swift */; };
 		B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D992159D10F00833E5D /* Assets.xcassets */; };
-		B6CC5D9E2159D10F00833E5D /* WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B6CC5D822159D10D00833E5D /* WatchApp.app */; platformFilter = ios; };
+		B6CC5D9E2159D10F00833E5D /* HomeAssistant-WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B6CC5D822159D10D00833E5D /* HomeAssistant-WatchApp.app */; platformFilter = ios; };
 		B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D8A3262271448900FA765D /* empty-list.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3252271448900FA765D /* empty-list.json */; };
@@ -919,7 +919,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				119A172524D74DA800D1B66D /* WatchExtension-Watch.appex in Embed App Extensions */,
+				119A172524D74DA800D1B66D /* HomeAssistant-WatchExtension-Watch.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -963,12 +963,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1155DD10250F4101003405C0 /* Extensions-Share.appex in Embed App Extensions */,
-				B6AAD7A81D827DD40090B220 /* Extensions-NotificationService.appex in Embed App Extensions */,
-				B627CB151D83C87B0057173E /* Extensions-NotificationContent.appex in Embed App Extensions */,
-				1171507624DFCDEE0065E874 /* Extensions-Widgets.appex in Embed App Extensions */,
-				B66F9F2E216B1E61000CAA0F /* Extensions-Today.appex in Embed App Extensions */,
-				B66C58AC215086F0004AB261 /* Extensions-Intents.appex in Embed App Extensions */,
+				1155DD10250F4101003405C0 /* HomeAssistant-Extensions-Share.appex in Embed App Extensions */,
+				B6AAD7A81D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex in Embed App Extensions */,
+				B627CB151D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex in Embed App Extensions */,
+				1171507624DFCDEE0065E874 /* HomeAssistant-Extensions-Widgets.appex in Embed App Extensions */,
+				B66F9F2E216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex in Embed App Extensions */,
+				B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -979,7 +979,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				B6CC5D9E2159D10F00833E5D /* WatchApp.app in Embed Watch Content */,
+				B6CC5D9E2159D10F00833E5D /* HomeAssistant-WatchApp.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1061,7 +1061,7 @@
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
-		1155DD06250F4100003405C0 /* Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ManualPodLicenses.plist; sourceTree = "<group>"; };
@@ -1082,7 +1082,7 @@
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
 		11684B79263F994600B48EC3 /* NotificationSubControllerMJPEG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMJPEG.swift; sourceTree = "<group>"; };
 		1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Eureka.swift"; sourceTree = "<group>"; };
-		1171506924DFCDE60065E874 /* Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1171506A24DFCDE60065E874 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1171506C24DFCDE60065E874 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		1171506F24DFCDE60065E874 /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
@@ -1465,7 +1465,7 @@
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
-		B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-NotificationContent.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-NotificationContent.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -1568,9 +1568,9 @@
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B657A8FC1CA646EB00121384 /* Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A9021CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B657A9071CA646EB00121384 /* Tests-UI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests-UI.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-UI.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1592,14 +1592,14 @@
 		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
 		B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInstanceViewController.swift; sourceTree = "<group>"; };
 		B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "5401-loading-19-satellite-dish.json"; sourceTree = "<group>"; };
-		B66C58A5215086F0004AB261 /* Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B66C58B02150891B004AB261 /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B66C58B22150892A004AB261 /* FireEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireEvent.swift; sourceTree = "<group>"; };
 		B66C58B42150898A004AB261 /* SendLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLocation.swift; sourceTree = "<group>"; };
 		B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHelpers.swift; sourceTree = "<group>"; };
-		B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-Today.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Today.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 		B66F9F2B216B1E61000CAA0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1632,7 +1632,7 @@
 		B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+EncryptedResponses.swift"; sourceTree = "<group>"; };
 		B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.swift; sourceTree = "<group>"; };
 		B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiriIntents+ConvenienceInits.swift"; sourceTree = "<group>"; };
-		B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Extensions-NotificationService.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-NotificationService.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		B6AAD7A51D827DD40090B220 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6B2E69F216A940700D39A26 /* ActionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRow.swift; sourceTree = "<group>"; };
@@ -1653,11 +1653,11 @@
 		B6C2A5E82276C29A00A85ECA /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLError+DebugDescription.swift"; sourceTree = "<group>"; };
 		B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.swift"; sourceTree = "<group>"; };
-		B6CC5D822159D10D00833E5D /* WatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6CC5D822159D10D00833E5D /* HomeAssistant-WatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HomeAssistant-WatchApp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CC5D852159D10D00833E5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		B6CC5D872159D10E00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CC5D892159D10E00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WatchExtension-Watch.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-WatchExtension-Watch.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CC5D932159D10E00833E5D /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
 		B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		B6CC5D972159D10E00833E5D /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
@@ -1714,7 +1714,7 @@
 		D03D891920E0A85300D4F28D /* Shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared.h; sourceTree = "<group>"; };
 		D03D891A20E0A85300D4F28D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D03D893A20E0B2E300D4F28D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		D03D894220E0BC1800D4F28D /* Tests-Shared.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests-Shared.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-Shared.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D03D894620E0BC1800D4F28D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MJPEGStreamer.swift; sourceTree = "<group>"; };
 		D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventCell.swift; sourceTree = "<group>"; };
@@ -2707,19 +2707,19 @@
 			isa = PBXGroup;
 			children = (
 				B657A8E61CA646EB00121384 /* Home Assistant Δ.app */,
-				B657A8FC1CA646EB00121384 /* Tests-App.xctest */,
-				B657A9071CA646EB00121384 /* Tests-UI.xctest */,
-				B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */,
-				B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */,
+				B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */,
+				B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */,
+				B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */,
+				B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */,
 				D03D891720E0A85200D4F28D /* Shared.framework */,
-				D03D894220E0BC1800D4F28D /* Tests-Shared.xctest */,
-				B66C58A5215086F0004AB261 /* Extensions-Intents.appex */,
-				B6CC5D822159D10D00833E5D /* WatchApp.app */,
-				B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */,
-				B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */,
+				D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */,
+				B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */,
+				B6CC5D822159D10D00833E5D /* HomeAssistant-WatchApp.app */,
+				B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */,
+				B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */,
 				B67CE82422200D420034C1D0 /* Shared.framework */,
-				1171506924DFCDE60065E874 /* Extensions-Widgets.appex */,
-				1155DD06250F4100003405C0 /* Extensions-Share.appex */,
+				1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */,
+				1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */,
 				1167402225198F9A00F51626 /* MacBridge.bundle */,
 				11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */,
 			);
@@ -3310,7 +3310,7 @@
 			);
 			name = "Extensions-Share";
 			productName = ShareExtension;
-			productReference = 1155DD06250F4100003405C0 /* Extensions-Share.appex */;
+			productReference = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		1167402125198F9A00F51626 /* MacBridge */ = {
@@ -3346,7 +3346,7 @@
 			);
 			name = "Extensions-Widgets";
 			productName = WidgetsExtension;
-			productReference = 1171506924DFCDE60065E874 /* Extensions-Widgets.appex */;
+			productReference = 1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		11DE9D8225B6103C0081C0ED /* Launcher */ = {
@@ -3382,7 +3382,7 @@
 			);
 			name = "Extensions-NotificationContent";
 			productName = NotificationContentExtension;
-			productReference = B627CB071D83C87B0057173E /* Extensions-NotificationContent.appex */;
+			productReference = B627CB071D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B657A8E51CA646EB00121384 /* App */ = {
@@ -3436,7 +3436,7 @@
 			);
 			name = "Tests-App";
 			productName = HomeAssistantTests;
-			productReference = B657A8FC1CA646EB00121384 /* Tests-App.xctest */;
+			productReference = B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		B657A9061CA646EB00121384 /* Tests-UI */ = {
@@ -3454,7 +3454,7 @@
 			);
 			name = "Tests-UI";
 			productName = HomeAssistantUITests;
-			productReference = B657A9071CA646EB00121384 /* Tests-UI.xctest */;
+			productReference = B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		B66C58A4215086F0004AB261 /* Extensions-Intents */ = {
@@ -3472,7 +3472,7 @@
 			);
 			name = "Extensions-Intents";
 			productName = Intents;
-			productReference = B66C58A5215086F0004AB261 /* Extensions-Intents.appex */;
+			productReference = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B66F9F21216B1E61000CAA0F /* Extensions-Today */ = {
@@ -3490,7 +3490,7 @@
 			);
 			name = "Extensions-Today";
 			productName = TodayWidget;
-			productReference = B66F9F22216B1E61000CAA0F /* Extensions-Today.appex */;
+			productReference = B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B67CE82322200D420034C1D0 /* Shared-watchOS */ = {
@@ -3528,7 +3528,7 @@
 			);
 			name = "Extensions-NotificationService";
 			productName = APNSAttachmentService;
-			productReference = B6AAD7A11D827DD40090B220 /* Extensions-NotificationService.appex */;
+			productReference = B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B6CC5D812159D10D00833E5D /* WatchApp */ = {
@@ -3546,7 +3546,7 @@
 			);
 			name = WatchApp;
 			productName = WatchApp;
-			productReference = B6CC5D822159D10D00833E5D /* WatchApp.app */;
+			productReference = B6CC5D822159D10D00833E5D /* HomeAssistant-WatchApp.app */;
 			productType = "com.apple.product-type.application.watchapp2";
 		};
 		B6CC5D8D2159D10E00833E5D /* WatchExtension-Watch */ = {
@@ -3567,7 +3567,7 @@
 			);
 			name = "WatchExtension-Watch";
 			productName = "WatchApp Extension";
-			productReference = B6CC5D8E2159D10E00833E5D /* WatchExtension-Watch.appex */;
+			productReference = B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
 		D03D891620E0A85200D4F28D /* Shared-iOS */ = {
@@ -3609,7 +3609,7 @@
 			);
 			name = "Tests-Shared";
 			productName = SharedTests;
-			productReference = D03D894220E0BC1800D4F28D /* Tests-Shared.xctest */;
+			productReference = D03D894220E0BC1800D4F28D /* HomeAssistant-Tests-Shared.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -5492,7 +5492,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5510,7 +5509,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5528,7 +5526,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .ShareExtension;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5606,7 +5603,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5628,7 +5624,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5650,7 +5645,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Widgets;
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5705,7 +5699,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -5723,7 +5716,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -5783,7 +5775,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .HomeAssistantTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
@@ -5798,7 +5789,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
 				TEST_TARGET_NAME = HomeAssistant;
 			};
@@ -5816,7 +5806,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5834,7 +5823,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .NotificationContentExtension;
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -5857,6 +5845,7 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
+				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
@@ -5874,7 +5863,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .SharedTests;
 			};
 			name = Beta;
@@ -5900,7 +5888,6 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -5917,7 +5904,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -5936,7 +5922,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp.watchkitextension;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6045,7 +6030,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .HomeAssistantTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
@@ -6057,7 +6041,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/App/Resources/Info.plist;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .HomeAssistantTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
@@ -6072,7 +6055,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
 				TEST_TARGET_NAME = HomeAssistant;
 			};
@@ -6087,7 +6069,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .HomeAssistantUITests;
 				TEST_TARGET_NAME = HomeAssistant;
 			};
@@ -6114,7 +6095,6 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -6141,7 +6121,6 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .Intents;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -6160,7 +6139,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6180,7 +6158,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6200,7 +6177,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .TodayWidget;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6224,6 +6200,7 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
+				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
@@ -6249,6 +6226,7 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
+				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
@@ -6274,6 +6252,7 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
+				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
@@ -6294,7 +6273,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -6312,7 +6290,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .APNSAttachmentService;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -6329,7 +6306,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6347,7 +6323,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6366,7 +6341,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp.watchkitextension;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6385,7 +6359,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .watchkitapp.watchkitextension;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -6409,6 +6382,7 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
+				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
@@ -6433,6 +6407,7 @@
 					"@loader_path/Frameworks",
 				);
 				OTHER_CODE_SIGN_FLAGS = "--deep";
+				PRODUCT_MODULE_NAME = Shared;
 				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				PROVISIONING_SUFFIX = .Shared;
@@ -6450,7 +6425,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .SharedTests;
 			};
 			name = Debug;
@@ -6465,7 +6439,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_SUFFIX = .SharedTests;
 			};
 			name = Release;

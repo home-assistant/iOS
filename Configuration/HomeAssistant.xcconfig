@@ -41,6 +41,10 @@ COPY_PHASE_STRIP = NO
 // overridden on just the main .app target, since it's the only thing we want in archives
 SKIP_INSTALL = YES
 
+// makes the executable more HA-specific so it is in crash logs sorted nicely
+PRODUCT_NAME = HomeAssistant-$(TARGET_NAME)
+PRODUCT_MODULE_NAME = $(TARGET_NAME:c99extidentifier)
+
 // Catalyst-specific
 ENABLE_HARDENED_RUNTIME[sdk=macosx*] = YES
 
