@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
-               BuildableName = "WatchApp.app"
+               BuildableName = "HomeAssistant-WatchApp.app"
                BlueprintName = "WatchApp"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
-            BuildableName = "WatchApp.app"
+            BuildableName = "HomeAssistant-WatchApp.app"
             BlueprintName = "WatchApp"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
@@ -78,7 +78,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B6CC5D812159D10D00833E5D"
-            BuildableName = "WatchApp.app"
+            BuildableName = "HomeAssistant-WatchApp.app"
             BlueprintName = "WatchApp"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
