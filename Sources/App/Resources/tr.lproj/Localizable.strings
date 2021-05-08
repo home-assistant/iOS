@@ -325,8 +325,10 @@
 "settings_details.notifications.categories_synced.footer" = ".Yaml olarak tanımlanan kategoriler cihazda düzenlenemez.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategoriler ayrıca .yaml konfigürasyonunda da tanımlanabilir.";
 "settings_details.notifications.categories_synced.header" = "Senkronize Kategoriler";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "İşlem yapılabilir bildirimler, bildirimler için mevcut eylemleri tanımlayan kategoriler kullanılarak oluşturulur.";
 "settings_details.notifications.categories.header" = "Kategoriler";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Yeni kategori";
 "settings_details.notifications.permission.disabled" = "Reddedildi";
 "settings_details.notifications.permission.enabled" = "Etkin";

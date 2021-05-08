@@ -23,7 +23,7 @@
 "actions_configurator.rows.text.title" = "Tekst";
 "actions_configurator.title" = "Nieuwe actie";
 "actions_configurator.trigger_example.share" = "Inhoud delen";
-"actions_configurator.trigger_example.title" = "Voorbeeld ";
+"actions_configurator.trigger_example.title" = "Voorbeeld";
 "actions_configurator.visual_section.scene_defined" = "Het uiterlijk van deze actie wordt bepaald door de scenarioconfiguratie.";
 "actions_configurator.visual_section.scene_hint_footer" = "U deze ook wijzigen door de scènekenmerken aan te brengen: %@";
 "actions_configurator.visual_section.server_defined" = "Het uiterlijk van deze actie wordt bepaald door de serverconfiguratie.";
@@ -75,7 +75,7 @@
 "debug_section_label" = "Debug";
 "delete" = "Verwijder";
 "done_label" = "Klaar";
-"error_label" = "Error";
+"error_label" = "Fout";
 "extensions.map.location.new" = "Nieuwe locatie";
 "extensions.map.location.original" = "Oorspronkelijke locatie";
 "extensions.map.payload_missing_homeassistant.message" = "Payload bevatte geen homeassistent woordenboek!";
@@ -325,8 +325,10 @@ Uw acties en lokale configuratie zijn nog steeds beschikbaar na het inloggen.";
 "settings_details.notifications.categories_synced.footer" = "Categorieën gedefinieerd in .yaml kunnen niet worden bewerkt op het apparaat.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Categorieën kunnen ook worden gedefinieerd in de .yaml-configuratie.";
 "settings_details.notifications.categories_synced.header" = "Gesynchroniseerde categorieën";
+"settings_details.notifications.categories.deprecated_note" = "Categorieën zijn niet langer vereist voor actiegerichte meldingen en zullen in een toekomstige release worden verwijderd.";
 "settings_details.notifications.categories.footer" = "Actiegerichte meldingen worden gemaakt met behulp van categorieën die de beschikbare acties voor de meldingen definiëren.";
 "settings_details.notifications.categories.header" = "Categorieën";
+"settings_details.notifications.info" = "Gebruik de mobile_app notify service om meldingen naar uw toestel te sturen.";
 "settings_details.notifications.new_category.title" = "Nieuwe categorie";
 "settings_details.notifications.permission.disabled" = "Geweigerd";
 "settings_details.notifications.permission.enabled" = "Ingeschakeld";

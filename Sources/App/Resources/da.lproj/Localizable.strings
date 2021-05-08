@@ -325,8 +325,10 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.categories_synced.footer" = "Kategorier, der er defineret i .yaml, kan ikke redigeres på enheden.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurationen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserede kategorier";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Kategorier";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.notifications.permission.disabled" = "Nægtet";
 "settings_details.notifications.permission.enabled" = "Aktiveret";

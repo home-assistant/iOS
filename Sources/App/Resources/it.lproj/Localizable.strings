@@ -325,8 +325,10 @@
 "settings_details.notifications.categories_synced.footer" = "Le categorie definite in .yaml non sono modificabili sul dispositivo.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Le categorie possono essere anche definite nella configurazione .yaml.";
 "settings_details.notifications.categories_synced.header" = "Categorie sincronizzate";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "Le notifiche attivabili vengono create utilizzando categorie che definiscono le azioni disponibili per le notifiche.";
 "settings_details.notifications.categories.header" = "Categorie";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Nuova categoria";
 "settings_details.notifications.permission.disabled" = "Negato";
 "settings_details.notifications.permission.enabled" = "Abilitato";

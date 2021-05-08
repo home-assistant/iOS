@@ -325,8 +325,10 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.categories_synced.footer" = "Les catégories définies dans .yaml ne sont pas modifiables sur l'appareil.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Les catégories peuvent également être définies dans la configuration .yaml.";
 "settings_details.notifications.categories_synced.header" = "Catégories synchronisées";
+"settings_details.notifications.categories.deprecated_note" = "Les catégories ne sont plus requises pour les notifications exécutoires et seront supprimées dans une version future.";
 "settings_details.notifications.categories.footer" = "Les notifications exploitables sont créées à l'aide de catégories qui définissent les actions disponibles pour les notifications.";
 "settings_details.notifications.categories.header" = "Catégories";
+"settings_details.notifications.info" = "Utilisez le service de notification mobile_app pour envoyer des notifications à votre appareil.";
 "settings_details.notifications.new_category.title" = "Nouvelle catégorie";
 "settings_details.notifications.permission.disabled" = "Refusé";
 "settings_details.notifications.permission.enabled" = "Activé";
@@ -411,7 +413,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_section.internal_url_ssids.placeholder" = "MonNomDeReseauSympa";
 "settings.connection_section.logged_in_as" = "Connecté en tant que";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
-"settings.connection_section.servers" = "Servers";
+"settings.connection_section.servers" = "Serveurs";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours» et une précision de localisation «complète». Appuyez ici pour modifier vos paramètres.";
 "settings.connection_section.ssid_permission_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours». Appuyez ici pour modifier vos paramètres.";
 "settings.connection_section.validate_error.edit_url" = "Modifier l'URL";
@@ -440,7 +442,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.developer.crashlytics_test.fatal.title" = "Erreur fatale de test Crashlytics";
 "settings.developer.crashlytics_test.non_fatal.notification.body" = "Lorsque vous appuyez sur OK, une erreur non fatale sera envoyée à Crashlytics. Cela peut prendre jusqu'à 5 minutes pour apparaître dans la console.";
 "settings.developer.crashlytics_test.non_fatal.notification.title" = "Sur le point de soumettre une erreur non fatale";
-"settings.developer.crashlytics_test.non_fatal.title" = "Test d'erreur Crashlytics non fatale ";
+"settings.developer.crashlytics_test.non_fatal.title" = "Test d'erreur Crashlytics non fatale";
 "settings.developer.debug_strings.title" = "Déboguer les chaînes de caractères";
 "settings.developer.export_log_files.title" = "Exporter les fichiers de log";
 "settings.developer.footer" = "Ne pas utiliser si vous ne savez pas ce que vous faites!";

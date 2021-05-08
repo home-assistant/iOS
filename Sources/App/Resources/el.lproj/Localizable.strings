@@ -325,8 +325,10 @@
 "settings_details.notifications.categories_synced.footer" = "Οι κατηγορίες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Οι κατηγορίες μπορούν επίσης να οριστούν στη ρύθμιση παραμέτρων .yaml.";
 "settings_details.notifications.categories_synced.header" = "Συγχρονισμένες κατηγορίες";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "Οι ενεργές ειδοποιήσεις δημιουργούνται χρησιμοποιώντας κατηγορίες που καθορίζουν τις διαθέσιμες ενέργειες για τις ειδοποιήσεις.";
 "settings_details.notifications.categories.header" = "Κατηγορίες";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Νέα κατηγορία";
 "settings_details.notifications.permission.disabled" = "Απορρίφθηκε";
 "settings_details.notifications.permission.enabled" = "Ενεργοποιημένο";
