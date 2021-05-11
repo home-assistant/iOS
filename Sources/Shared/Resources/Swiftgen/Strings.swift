@@ -1694,6 +1694,24 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "watch.configurator.list.description") }
         /// Learn More
         public static var learnMore: String { return L10n.tr("Localizable", "watch.configurator.list.learn_more") }
+        public enum ManualUpdates {
+          /// Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.
+          public static var footer: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.footer") }
+          /// Update Complications
+          public static var manuallyUpdate: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.manually_update") }
+          /// Remaining
+          public static var remaining: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.remaining") }
+          /// Manual Updates
+          public static var title: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.title") }
+          public enum State {
+            /// Not Enabled
+            public static var notEnabled: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.state.not_enabled") }
+            /// Not Installed
+            public static var notInstalled: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.state.not_installed") }
+            /// No Device
+            public static var notPaired: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.state.not_paired") }
+          }
+        }
       }
       public enum New {
         /// Adding another Complication for the same type as an existing one requires watchOS 7 or newer.
