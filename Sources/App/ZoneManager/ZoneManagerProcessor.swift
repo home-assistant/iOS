@@ -13,6 +13,20 @@ protocol ZoneManagerProcessor: AnyObject {
     func perform(event: ZoneManagerEvent) -> Promise<Void>
 }
 
+private struct ZoneManagerProcessorQueue {
+    private var queue: [(ZoneManagerEvent, Resolver<Void>)] = []
+
+    mutating func add(event: ZoneManagerEvent) -> Promise<Void> {
+        let (promise, resolver) = Promise<Void>.pending()
+        queue.insert((event, resolver), at: 0)
+        return promise
+    }
+
+    mutating func pop() -> (ZoneManagerEvent, Resolver<Void>)? {
+        queue.popLast()
+    }
+}
+
 class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
@@ -21,7 +35,24 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         ZoneManagerAccuracyFuzzerMultiRegionOverlap(),
     ]
 
+    private var queue = ZoneManagerProcessorQueue()
+    private var currentEvent: ZoneManagerEvent?
+    private var lastUpdate: Date = .distantPast
+
+    var onCompletedEvent: (() -> Void)?
+
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
+        let promise = queue.add(event: event)
+        processNextEvent()
+        return promise
+    }
+
+    private func processNextEvent() {
+        guard currentEvent == nil else { return }
+        guard let (event, resolver) = queue.pop() else { return }
+
+        currentEvent = event
+
         firstly {
             evaluate(event: event)
         }.tap { result in
@@ -58,7 +89,18 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     }
                 }
             }
-        }
+        }.tap { [self] result in
+            if result.isFulfilled {
+                // only considered an update if it happened
+                lastUpdate = Current.date()
+            }
+
+            onCompletedEvent?()
+            currentEvent = nil
+            processNextEvent()
+        }.pipe(
+            to: resolver.resolve
+        )
     }
 
     private static func ignore(_ error: ZoneManagerIgnoreReason) -> Promise<Void> {
@@ -74,7 +116,8 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         switch event.eventType {
         case let .locationChange(locations):
             return Self.evaluateLocationChangeEvent(
-                locations: locations
+                locations: locations,
+                lastUpdate: lastUpdate
             )
         case let .region(region, state):
             return Self.evaluateRegionEvent(
@@ -85,9 +128,13 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
     }
 
-    private static func evaluateLocationChangeEvent(locations: [CLLocation]) -> Promise<Void> {
+    private static func evaluateLocationChangeEvent(locations: [CLLocation], lastUpdate: Date) -> Promise<Void> {
         if locations.isEmpty {
             return ignore(.locationMissingEntries)
+        }
+
+        if Current.date().timeIntervalSince(lastUpdate) < 30.0 {
+            return ignore(.recentlyUpdated)
         }
 
         if let lastLocation = locations.last,
