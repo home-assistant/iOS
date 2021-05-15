@@ -22,7 +22,7 @@ extension Sequence where Element == ZoneManagerAccuracyFuzzer {
             if let change = fuzzer.fuzz(for: location, for: event) {
                 switch change {
                 case let .accuracy(additional):
-                return location.fuzzingAccuracy(by: additional)
+                    return location.fuzzingAccuracy(by: additional)
                 case let .coordinate(coordinate):
                     return location.changingCoordinate(to: coordinate)
                 }
@@ -66,5 +66,45 @@ struct ZoneManagerAccuracyFuzzerMultiRegionOverlap: ZoneManagerAccuracyFuzzer {
 
         // from https://github.com/home-assistant/iOS/issues/1520
         return .accuracy(zoneRegion.distanceWithAccuracy(from: location))
+    }
+}
+
+/// if we're entering a zone that's contained within another zone, the gps coordinates may need shifting
+/// because core requires gps inside if this overlap occurs - https://github.com/home-assistant/iOS/issues/1627
+struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
+    func fuzz(for location: CLLocation, for event: ZoneManagerEvent) -> ZoneManagerAccuracyFuzzerChange? {
+        guard let zone = event.associatedZone, case .region(_, .inside) = event.eventType else {
+            return nil
+        }
+
+        let coordinate = location.coordinate
+        let distance = zone.location.distance(from: location) - zone.Radius
+
+        guard !zone.circularRegion.contains(coordinate), distance > 0 else {
+            // this fuzzing is only necessary if the region doesn't contain without accuracy
+            // this matches the core behavior of this edge case
+            return nil
+        }
+
+        let containedZones = Set(Current.realm()
+            .objects(RLMZone.self)
+            .filter {
+                // ignoring accuracy because that is not what matters for this case
+                // allowing the zone we're entering since we know we're not in it but we should be
+                $0.circularRegion.contains(coordinate) || $0 == zone
+            }
+        )
+
+        guard containedZones.count > 1 else {
+            // no overlapping zones for this location, no change is necessary
+            return nil
+        }
+
+        let movedCoordinate = coordinate.moving(
+            distance: .init(value: distance + 1.0, unit: .meters),
+            direction: coordinate.bearing(to: zone.center)
+        )
+
+        return .coordinate(movedCoordinate)
     }
 }
