@@ -135,8 +135,6 @@ class CLLocationExtensionsTests: XCTestCase {
                 longitude: recomputedCoordinate.longitude
             )
 
-            print("\(name) bearing \(bearing.converted(to: .degrees)) distance \(distance)")
-
             // the locations i picked aren't exactly cardinal directions, so there's a small fuzz, but they are close
             XCTAssertEqual(bearing.converted(to: .degrees).value, roughBearing, accuracy: 4, name)
             // it should be good enough to get us back to very close accuracy-wise to the location
