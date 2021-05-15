@@ -31,6 +31,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
     var accuracyFuzzers: [ZoneManagerAccuracyFuzzer] = [
+        ZoneManagerAccuracyFuzzerMultiZone(),
         ZoneManagerAccuracyFuzzerRegionEnter(),
         ZoneManagerAccuracyFuzzerMultiRegionOverlap(),
     ]

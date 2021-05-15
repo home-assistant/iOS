@@ -104,4 +104,41 @@ class CLLocationExtensionsTests: XCTestCase {
         XCTAssertFalse(region.containsWithAccuracy(locationNoAccuracy))
         XCTAssertTrue(region.containsWithAccuracy(locationWithAccuracy))
     }
+
+    func testBearing() {
+        // old mint is our starting point
+        let start = CLLocation(latitude: 37.78319463773435, longitude: -122.40664036682519)
+
+        XCTAssertEqual(start.coordinate.bearing(to: start.coordinate).value, 0)
+
+        for (name, destination, roughBearing) in [
+            // basically north
+            ("mister jius", CLLocation(latitude: 37.793855824513756, longitude: -122.40657738553836), 0.0),
+            // basically east
+            ("21st amendment", CLLocation(latitude: 37.783090295994604, longitude: -122.39266797412634), 90.0),
+            // basically south
+            ("deli board", CLLocation(latitude: 37.77781029169787, longitude: -122.4070094340342), 180.0),
+            // basically west
+            ("brendas", CLLocation(latitude: 37.78313519107828, longitude: -122.41904411931317), 270.0),
+            // hotel right nearby
+            ("hotel zetta", CLLocation(latitude: 37.78345931149641, longitude: -122.4070579074126), 309),
+        ] {
+            let bearing = start.coordinate.bearing(to: destination.coordinate)
+            let distance = start.distance(from: destination)
+
+            let recomputedCoordinate = start.coordinate.moving(
+                distance: .init(value: distance, unit: .meters),
+                direction: bearing
+            )
+            let recomputedLocation = CLLocation(
+                latitude: recomputedCoordinate.latitude,
+                longitude: recomputedCoordinate.longitude
+            )
+
+            // the locations i picked aren't exactly cardinal directions, so there's a small fuzz, but they are close
+            XCTAssertEqual(bearing.converted(to: .degrees).value, roughBearing, accuracy: 4, name)
+            // it should be good enough to get us back to very close accuracy-wise to the location
+            XCTAssertEqual(recomputedLocation.distance(from: destination), 0, accuracy: 0.005 * distance, name)
+        }
+    }
 }
