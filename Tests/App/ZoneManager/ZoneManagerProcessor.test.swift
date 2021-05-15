@@ -775,7 +775,6 @@ class ZoneManagerProcessorTests: XCTestCase {
         } else {
             XCTFail("no state but one was expected")
         }
-
     }
 
     func testNotOneShot() throws {

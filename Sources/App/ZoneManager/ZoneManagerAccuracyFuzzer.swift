@@ -86,14 +86,13 @@ struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
             return nil
         }
 
-        let containedZones = Set(Current.realm()
+        let containedZones = Current.realm()
             .objects(RLMZone.self)
             .filter {
                 // ignoring accuracy because that is not what matters for this case
                 // allowing the zone we're entering since we know we're not in it but we should be
                 $0.circularRegion.contains(coordinate) || $0 == zone
             }
-        )
 
         guard containedZones.count > 1 else {
             // no overlapping zones for this location, no change is necessary
