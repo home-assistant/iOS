@@ -115,6 +115,7 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             ```
 
             ## Location
+            - Trigger: \(entry.Trigger ?? "(unknown)")
             - Center: (\(latLongString(entry.Latitude)), \(latLongString(entry.Longitude)))
             - Accuracy: \(distanceString(entry.Accuracy))\(accuracyNote)
             - Accuracy Authorization: \(accuracyAuthorization)

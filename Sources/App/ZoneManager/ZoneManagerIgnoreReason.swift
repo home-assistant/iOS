@@ -10,6 +10,7 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
     case ignoredSSID(String)
     case zoneUpdateFailed(NSError) // NSError so Equatable for laziness
     case beaconExitIgnored
+    case recentlyUpdated
 
     var errorDescription: String? {
         switch self {
@@ -31,6 +32,8 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
             return "failed to update realm: \(error.localizedDescription)"
         case .beaconExitIgnored:
             return "beacon exit ignored"
+        case .recentlyUpdated:
+            return "recent location update already occurred"
         }
     }
 }
