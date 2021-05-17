@@ -10,6 +10,7 @@ import XCGLogger
 class NotificationManager: NSObject {
     static var didUpdateComplicationsNotification: Notification.Name {
         .init(rawValue: "didUpdateComplicationsNotification")
+    }
 
     private var localPushManager: LocalPushManager? {
         didSet {
