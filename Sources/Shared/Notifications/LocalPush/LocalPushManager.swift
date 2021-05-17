@@ -2,28 +2,76 @@ import UserNotifications
 import HAKit
 import PromiseKit
 
+struct PushMessage: HADataDecodable {
+    enum PushMessageError: Error {
+        case invalidType
+    }
+
+    // todo: strongly type, keep sanitization in one place
+    var data: [String: Any]
+
+    init(data: HAData) throws {
+        switch data {
+        case let .dictionary(value): self.data = value
+        default: throw PushMessageError.invalidType
+        }
+    }
+}
+
 public class LocalPushManager {
-    var subscription: HACancellable?
+    struct SubscriptionInstance {
+        let token: HACancellable
+        let webhookID: String
+
+        func cancel() {
+            token.cancel()
+        }
+    }
+
+    private var subscription: SubscriptionInstance?
 
     public init() {
-        subscription = Current.apiConnection.subscribe(to: .events(.callService)) { [weak self] _, event in
-            self?.handle(event: event)
-        }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateSubscription),
+            name: SettingsStore.connectionInfoDidChange,
+            object: nil
+        )
+
+        updateSubscription()
     }
 
     deinit {
         subscription?.cancel()
     }
 
-    private func handle(event: HAResponseEvent) {
-        guard event.type == .callService,
-              event.data["domain"] as? String == "notify",
-              (event.data["service"] as? String)?.starts(with: "mobile_app_") == true,
-              let serviceData = event.data["service_data"] as? [String: Any]
-        else {
+    @objc private func updateSubscription() {
+        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
+            // webhook is invalid, if there is a subscription we remove it
+            subscription?.cancel()
+            subscription = nil
             return
         }
 
+        guard webhookID != subscription?.webhookID else {
+            // webhookID hasn't changed, so we don't need to reset
+            return
+        }
+
+        let request = HATypedSubscription<PushMessage>(request: .init(
+            type: "mobile_app/push_notification_channel",
+            data: ["webhook_id": webhookID]
+        ))
+
+        subscription = .init(
+            token: Current.apiConnection.subscribe(to: request) { [weak self] _, value in
+                self?.handle(event: value.data)
+            },
+            webhookID: webhookID
+        )
+    }
+
+    private func handle(event serviceData: [String: Any]) {
         let content = Self.content(from: serviceData)
         let identifier = Self.identifier(from: serviceData)
 
