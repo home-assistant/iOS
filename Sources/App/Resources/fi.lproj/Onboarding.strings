@@ -29,6 +29,6 @@
 "TEX-zW-Byk.text" = "Saat parhaat käyttökokemukset Kotiavustajan kumppanilta antamalla seuraavat oikeudet:";
 "Tqw-iY-A2S.normalTitle" = "Lisätietoja";
 "UKm-Ju-0Yr.text" = "Kohtasimme virheen muodostettaessa yhteyttä instanssiin. SSL-varmenne ei kelpaa. IOS:n rajoitusten vuoksi asennusta ei voi jatkaa, ennen kuin kelvollinen SSL-varmenne on asennettu. Suosittelemme Let's encrypt tai NABU Casa Remote UI.";
-"wsC-f5-jbO.text" = "Olemme nyt valmiita muodostamaan yhteyden Kotiavustajaan ja ensimmäiseen todennukseen. Kun napautat alla olevaa Yhdistä-painiketta, selain avautuu, jotta voit kirjautua sisään. ";
+"wsC-f5-jbO.text" = "Olemme nyt valmiita muodostamaan yhteyden Kotiavustajaan ja ensimmäiseen todennukseen. Kun napautat alla olevaa Yhdistä-painiketta, selain avautuu, jotta voit kirjautua sisään.";
 "xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
 "XyQ-gy-yHY.text" = "Yhdistetty";

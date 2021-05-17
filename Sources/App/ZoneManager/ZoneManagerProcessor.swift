@@ -13,10 +13,47 @@ protocol ZoneManagerProcessor: AnyObject {
     func perform(event: ZoneManagerEvent) -> Promise<Void>
 }
 
+private struct ZoneManagerProcessorQueue {
+    private var queue: [(ZoneManagerEvent, Resolver<Void>)] = []
+
+    mutating func add(event: ZoneManagerEvent) -> Promise<Void> {
+        let (promise, resolver) = Promise<Void>.pending()
+        queue.insert((event, resolver), at: 0)
+        return promise
+    }
+
+    mutating func pop() -> (ZoneManagerEvent, Resolver<Void>)? {
+        queue.popLast()
+    }
+}
+
 class ZoneManagerProcessorImpl: ZoneManagerProcessor {
     weak var delegate: ZoneManagerProcessorDelegate?
 
+    var accuracyFuzzers: [ZoneManagerAccuracyFuzzer] = [
+        ZoneManagerAccuracyFuzzerMultiZone(),
+        ZoneManagerAccuracyFuzzerRegionEnter(),
+        ZoneManagerAccuracyFuzzerMultiRegionOverlap(),
+    ]
+
+    private var queue = ZoneManagerProcessorQueue()
+    private var currentEvent: ZoneManagerEvent?
+    private var lastUpdate: Date = .distantPast
+
+    var onCompletedEvent: (() -> Void)?
+
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
+        let promise = queue.add(event: event)
+        processNextEvent()
+        return promise
+    }
+
+    private func processNextEvent() {
+        guard currentEvent == nil else { return }
+        guard let (event, resolver) = queue.pop() else { return }
+
+        currentEvent = event
+
         firstly {
             evaluate(event: event)
         }.tap { result in
@@ -26,7 +63,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             case let .rejected(error):
                 self.delegate?.processor(self, didLog: .didIgnore(event, error))
             }
-        }.then {
+        }.then { [accuracyFuzzers] in
             Current.backgroundTask(withName: event.backgroundTaskDescription) { remaining in
                 let trigger = event.asTrigger()
                 return firstly { () -> Promise<CLLocation?> in
@@ -39,7 +76,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     }
                 }.map { location in
                     if let location = location {
-                        return Self.sanitize(location: location, for: event)
+                        return accuracyFuzzers.fuzz(location: location, for: event)
                     } else {
                         return nil
                     }
@@ -53,7 +90,18 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                     }
                 }
             }
-        }
+        }.tap { [self] result in
+            if result.isFulfilled {
+                // only considered an update if it happened
+                lastUpdate = Current.date()
+            }
+
+            onCompletedEvent?()
+            currentEvent = nil
+            processNextEvent()
+        }.pipe(
+            to: resolver.resolve
+        )
     }
 
     private static func ignore(_ error: ZoneManagerIgnoreReason) -> Promise<Void> {
@@ -69,7 +117,8 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         switch event.eventType {
         case let .locationChange(locations):
             return Self.evaluateLocationChangeEvent(
-                locations: locations
+                locations: locations,
+                lastUpdate: lastUpdate
             )
         case let .region(region, state):
             return Self.evaluateRegionEvent(
@@ -80,9 +129,13 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
     }
 
-    private static func evaluateLocationChangeEvent(locations: [CLLocation]) -> Promise<Void> {
+    private static func evaluateLocationChangeEvent(locations: [CLLocation], lastUpdate: Date) -> Promise<Void> {
         if locations.isEmpty {
             return ignore(.locationMissingEntries)
+        }
+
+        if Current.date().timeIntervalSince(lastUpdate) < 30.0 {
+            return ignore(.recentlyUpdated)
         }
 
         if let lastLocation = locations.last,
@@ -131,55 +184,5 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         return .value(())
-    }
-
-    private static func sanitize(location: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
-        var fuzzedAccuracy: CLLocationDistance = 0
-
-        // if we're getting a region monitoring event saying that we're inside, but we're not from GPS perspective
-        if case let .region(region as CLCircularRegion, .inside) = event.eventType,
-           !region.containsWithAccuracy(location) {
-            fuzzedAccuracy += region.distanceWithAccuracy(from: location)
-        }
-
-        // if we're inside the overlap of the zone's monitored regions, but not in the zone
-        if let zone = event.associatedZone,
-           // convenience so we reuse the region
-           case let zoneRegion = zone.circularRegion,
-           // all of which contain this location
-           zone.circularRegionsForMonitoring.allSatisfy({ $0.containsWithAccuracy(location) }),
-           // but the zone doesn't
-           !zoneRegion.containsWithAccuracy(location) {
-            // from https://github.com/home-assistant/iOS/issues/1520
-            fuzzedAccuracy += zoneRegion.distanceWithAccuracy(from: location)
-        }
-
-        guard fuzzedAccuracy > 0 else {
-            return location
-        }
-
-        if #available(iOS 13.4, *) {
-            return CLLocation(
-                coordinate: location.coordinate,
-                altitude: location.altitude,
-                horizontalAccuracy: location.horizontalAccuracy + fuzzedAccuracy + 1.0,
-                verticalAccuracy: location.verticalAccuracy,
-                course: location.course,
-                courseAccuracy: location.courseAccuracy,
-                speed: location.speed,
-                speedAccuracy: location.speedAccuracy,
-                timestamp: location.timestamp
-            )
-        } else {
-            return CLLocation(
-                coordinate: location.coordinate,
-                altitude: location.altitude,
-                horizontalAccuracy: location.horizontalAccuracy + fuzzedAccuracy + 1.0,
-                verticalAccuracy: location.verticalAccuracy,
-                course: location.course,
-                speed: location.speed,
-                timestamp: location.timestamp
-            )
-        }
     }
 }

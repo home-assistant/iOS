@@ -35,6 +35,10 @@ BUNDLE_ID_PREFIX = some.bundle.prefix
 
 Xcode should generate provisioning profiles in your Team ID and our configuration will disable features your team doesn't have like Critical Alerts. You can find your Team ID on Apple's [developer portal](https://developer.apple.com/account); it looks something like `ABCDEFG123`.
 
+## Watch Development
+
+To develop any of the Watch Extensions, you must remove the `Launcher` dependency from the App target. It's not clear what's breaking the project that necessitates this, but otherwise it will attempt to launch that target in the Watch Simulator or fail to launch and just hang.
+
 ## Code style
 
 Linters run as part of Pull Request checks. Additionally, some linting requirements can be autocorrected.

@@ -2,7 +2,7 @@ import Eureka
 import RealmSwift
 import Shared
 
-class NotificationDebugNotificationsViewController: FormViewController {
+class NotificationDebugNotificationsViewController: HAFormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 

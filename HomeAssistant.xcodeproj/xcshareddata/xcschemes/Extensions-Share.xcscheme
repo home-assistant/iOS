@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1155DD05250F4100003405C0"
-               BuildableName = "Extensions-Share.appex"
+               BuildableName = "HomeAssistant-Extensions-Share.appex"
                BlueprintName = "Extensions-Share"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>

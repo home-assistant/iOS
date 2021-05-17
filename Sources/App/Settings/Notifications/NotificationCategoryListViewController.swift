@@ -2,7 +2,7 @@ import Eureka
 import RealmSwift
 import Shared
 
-class NotificationCategoryListViewController: FormViewController {
+class NotificationCategoryListViewController: HAFormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 

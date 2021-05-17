@@ -1,4 +1,5 @@
 import CallbackURLKit
+import Communicator
 import FirebaseMessaging
 import Foundation
 import PromiseKit
@@ -7,6 +8,9 @@ import UserNotifications
 import XCGLogger
 
 class NotificationManager: NSObject {
+    static var didUpdateComplicationsNotification: Notification.Name {
+        .init(rawValue: "didUpdateComplicationsNotification")
+
     private var localPushManager: LocalPushManager? {
         didSet {
             precondition(Current.isCatalyst)
@@ -68,7 +72,7 @@ class NotificationManager: NSObject {
         Messaging.messaging().appDidReceiveMessage(userInfo)
 
         if let userInfoDict = userInfo as? [String: Any],
-           let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
+           let hadict = userInfoDict["homeassistant"] as? [String: Any], let command = hadict["command"] as? String {
             switch command {
             case "request_location_update":
                 guard Current.settingsStore.locationSources.pushNotifications else {
@@ -93,12 +97,41 @@ class NotificationManager: NSObject {
             case "clear_badge":
                 Current.Log.verbose("Setting badge to 0 as requested")
                 UIApplication.shared.applicationIconBadgeNumber = 0
+                completionHandler(.newData)
+            case "clear_notification":
+                Current.Log.verbose("clearing notification for \(userInfo)")
+                let keys = ["tag", "collapseId"].compactMap { hadict[$0] as? String }
+                if !keys.isEmpty {
+                    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
+                }
+                completionHandler(.newData)
+            case "update_complications":
+                updateComplications().done {
+                    Current.Log.info("successfully updated complications from notification")
+                    completionHandler(.newData)
+                }.catch { error in
+                    Current.Log.error("failed to update complications from notification: \(error)")
+                    completionHandler(.failed)
+                }
             default:
                 Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                 completionHandler(.noData)
             }
         } else {
             completionHandler(.failed)
+        }
+    }
+
+    func updateComplications() -> Promise<Void> {
+        Promise { seal in
+            Communicator.shared.transfer(.init(content: [:])) { result in
+                switch result {
+                case .success: seal.fulfill(())
+                case let .failure(error): seal.reject(error)
+                }
+            }
+        }.get {
+            NotificationCenter.default.post(name: Self.didUpdateComplicationsNotification, object: nil)
         }
     }
 
@@ -182,43 +215,21 @@ class NotificationManager: NSObject {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
-    public func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse,
-        withCompletionHandler completionHandler: @escaping () -> Void
-    ) {
-        if Current.appConfiguration == .FastlaneSnapshot &&
-            response.actionIdentifier == UNNotificationDismissActionIdentifier &&
-            response.notification.request.content.categoryIdentifier == "map" {
-            SettingsViewController.showCameraContentExtension()
-        }
-        Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
+    private func urlString(from response: UNNotificationResponse) -> String? {
+        let content = response.notification.request.content
+        let urlValue = ["url", "uri", "clickAction"].compactMap { content.userInfo[$0] }.first
 
-        guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
-            Current.Log.info("ignoring dismiss action for notification")
-            completionHandler()
-            return
-        }
-
-        var userText: String?
-        if let textInput = response as? UNTextInputNotificationResponse {
-            userText = textInput.userText
-        }
-        let userInfo = response.notification.request.content.userInfo
-
-        Current.Log.verbose("User info in incoming notification \(userInfo)")
-
-        if let shortcutDict = userInfo["shortcut"] as? [String: String],
-           let shortcutName = shortcutDict["name"] {
-            handleShortcutNotification(shortcutName, shortcutDict)
-        }
-
-        if let openURLRaw = userInfo["url"] as? String {
-            Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, urlString: openURLRaw)
-            }
-        } else if let openURLDictionary = userInfo["url"] as? [String: String] {
-            let url = openURLDictionary.compactMap { key, value -> String? in
+        if let action = content.userInfoActionConfigs.first(
+            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
+        ), let url = action.url {
+            // we only allow the action-specific one to override global if it's set
+            return url
+        } else if let openURLRaw = urlValue as? String {
+            // global url [string], always do it if we aren't picking a specific action
+            return openURLRaw
+        } else if let openURLDictionary = urlValue as? [String: String] {
+            // old-style, per-action url -- for before we could define actions in the notification dynamically
+            return openURLDictionary.compactMap { key, value -> String? in
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                    key.lowercased() == NotificationCategory.FallbackActionIdentifier {
                     return value
@@ -228,35 +239,52 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                     return nil
                 }
             }.first
+        } else {
+            return nil
+        }
+    }
 
-            if let url = url {
-                Current.sceneManager.webViewWindowControllerPromise.done {
-                    $0.open(from: .notification, urlString: url)
-                }
-            } else {
-                Current.Log.error(
-                    "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
-                )
-            }
-        } else if let someUrl = userInfo["url"] {
-            Current.Log.error(
-                "couldn't make openable url out of \(type(of: someUrl)): \(String(describing: someUrl))"
-            )
+    public func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
+
+        guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
+            Current.Log.info("ignoring dismiss action for notification")
+            completionHandler()
+            return
         }
 
-        Current.backgroundTask(withName: "handle-push-action") { _ in
-            Current.api.then(on: nil) { api in
-                api.handlePushAction(
-                    identifier: response.actionIdentifier,
-                    category: response.notification.request.content.categoryIdentifier,
-                    userInfo: userInfo,
-                    userInput: userText
-                )
+        let userInfo = response.notification.request.content.userInfo
+
+        Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
+
+        if let shortcutDict = userInfo["shortcut"] as? [String: String],
+           let shortcutName = shortcutDict["name"] {
+            handleShortcutNotification(shortcutName, shortcutDict)
+        }
+
+        if let url = urlString(from: response) {
+            Current.Log.info("launching URL \(url)")
+            Current.sceneManager.webViewWindowControllerPromise.done {
+                $0.open(from: .notification, urlString: url)
             }
-        }.ensure {
+        }
+
+        if let info = HomeAssistantAPI.PushActionInfo(response: response) {
+            Current.backgroundTask(withName: "handle-push-action") { _ in
+                Current.api.then(on: nil) { api in
+                    api.handlePushAction(for: info)
+                }
+            }.ensure {
+                completionHandler()
+            }.catch { err -> Void in
+                Current.Log.error("Error when handling push action: \(err)")
+            }
+        } else {
             completionHandler()
-        }.catch { err -> Void in
-            Current.Log.error("Error when handling push action: \(err)")
         }
     }
 

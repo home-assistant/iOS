@@ -6,7 +6,7 @@ import PromiseKit
 import Shared
 import UIKit
 
-class ComplicationEditViewController: FormViewController, TypedRowControllerType {
+class ComplicationEditViewController: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -18,16 +18,11 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
         self.config = config
         self.displayTemplate = config.Template
 
-        super.init(style: .grouped)
+        super.init()
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true
         }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     @objc private func cancel() {
@@ -499,7 +494,7 @@ class ComplicationEditViewController: FormViewController, TypedRowControllerType
                 $0.tag = key + "_text"
                 $0.title = location.label
                 $0.add(rule: RuleRequired())
-                $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
+                $0.placeholder = "{{ states(\"weather.temperature\") }}"
                 if let value = dataDict["text"] as? String {
                     $0.value = value
                 }

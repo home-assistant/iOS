@@ -26,11 +26,13 @@ public enum Constants {
     /// Help icon UIBarButtonItem
     #if os(iOS)
     public static var helpBarButtonItem: UIBarButtonItem {
-        UIBarButtonItem(
+        with(UIBarButtonItem(
             icon: .helpCircleOutlineIcon,
             target: nil,
             action: nil
-        )
+        )) {
+            $0.accessibilityLabel = L10n.helpLabel
+        }
     }
     #endif
 

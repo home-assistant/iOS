@@ -3,19 +3,14 @@ import Foundation
 import Shared
 
 @available(iOS 13, *)
-class NFCTagViewController: FormViewController {
+class NFCTagViewController: HAFormViewController {
     let identifier: String
 
     init(identifier: String) {
         self.identifier = identifier
-        super.init(style: .insetGrouped)
+        super.init()
 
         title = L10n.Nfc.Detail.title
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -37,9 +32,7 @@ class NFCTagViewController: FormViewController {
                     cell.imageView?.transform = .identity
                 }
 
-                cell.imageView?.image = icon
-                    .image(ofSize: CGSize(width: 28, height: 28), color: nil)
-                    .withRenderingMode(.alwaysTemplate)
+                cell.imageView?.image = icon.settingsIcon(for: cell.traitCollection)
             }
 
             configure($0)

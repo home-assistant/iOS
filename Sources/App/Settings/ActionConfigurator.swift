@@ -7,7 +7,7 @@ import Shared
 import UIKit
 import ViewRow
 
-class ActionConfigurator: FormViewController, TypedRowControllerType {
+class ActionConfigurator: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?

@@ -18,7 +18,7 @@
 "7NpJ76-0cl84c" = "Location updated to contents of clipboard that were parsed as Stored value";
 "7NpJ76-50P1YJ" = "Location updated to contents of clipboard that were parsed as Address";
 "7NpJ76-dC8g33" = "Location updated to contents of clipboard that were parsed as Coordinates";
-"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
+"7NpJ76-F708zM" = "Lokasi diperbarui ke konten papan klip yang diuraikan sebagai Lokasi Saat Ini";
 "8BMgur" = "Successfully sent ${eventName} to Home Assistant";
 "8skKro" = "Aksi yang mana?";
 "AnaTY4" = "Yang mana?";
@@ -38,7 +38,7 @@
 "DsasVx" = "Kesalahan";
 "EWqRDj" = "Gagal menjalankan aksi: ${error}";
 "f1KX0Q" = "Lihat dan jalankan aksi";
-"FBQiVD" = "Call a service on the Home Assistant instance";
+"FBQiVD" = "Panggil layanan pada instans Home Assistant";
 "fkQXDn" = "Ada ${count} opsi yang cocok dengan ‘${action}’.";
 "flUgtx" = "Aksi yang mana?";
 "FN8zqO" = "Get a single still frame from ${cameraID} and place it on the clipboard";
@@ -46,7 +46,7 @@
 "foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
 "FtQqoU" = "Lokasi diperbarui";
 "fuRWMi" = "Kirim ${location} ke Home Assistant";
-"FZ9qkT" = "Render Template";
+"FZ9qkT" = "Render Templat";
 "g8g7Af" = "Jalankan aksinya";
 "gePUyy" = "Lokasi";
 "gI3mme" = "Data layanan apa yang ingin Anda kirim?";
@@ -100,7 +100,7 @@
 "Q2Qp4a" = "Aksi";
 "qayMH6" = "Call Service";
 "qfHa79" = "Successfully sent ${eventName} with clipboard contents to Home Assistant";
-"QFNpIx" = "Send ${location} to Home Assistant";
+"QFNpIx" = "Kirim ${location} ke Home Assistant";
 "QmGpOH" = "Kesalahan";
 "QVD2lM" = "Data Layanan";
 "qzje4k" = "Failed to call service with error: ${error}";

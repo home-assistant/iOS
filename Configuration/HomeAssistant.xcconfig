@@ -27,7 +27,7 @@ ENABLE_CRITICAL_ALERTS[sdk=iphoneos*] = $(ENABLE_CRITICAL_ALERTS_$(DEVELOPMENT_T
 // Baseline information
 SDKROOT = iphoneos
 SWIFT_VERSION = 5.0
-TARGETED_DEVICE_FAMILY = 1,2
+TARGETED_DEVICE_FAMILY = 1,2,6
 IPHONEOS_DEPLOYMENT_TARGET = 12.0
 MACOSX_DEPLOYMENT_TARGET = 10.15
 WATCHOS_DEPLOYMENT_TARGET = 5.0
@@ -40,6 +40,10 @@ CLANG_CXX_LANGUAGE_STANDARD = gnu++14
 COPY_PHASE_STRIP = NO
 // overridden on just the main .app target, since it's the only thing we want in archives
 SKIP_INSTALL = YES
+
+// makes the executable more HA-specific so it is in crash logs sorted nicely
+PRODUCT_NAME = HomeAssistant-$(TARGET_NAME)
+PRODUCT_MODULE_NAME = $(TARGET_NAME:c99extidentifier)
 
 // Catalyst-specific
 ENABLE_HARDENED_RUNTIME[sdk=macosx*] = YES

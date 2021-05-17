@@ -8,6 +8,7 @@ import Lokalise
 #endif
 import FirebaseCore
 import MBProgressHUD
+import ObjectMapper
 import PromiseKit
 import RealmSwift
 import SafariServices
@@ -185,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc internal func openActionsPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
-        delegate.done { $0.pushDetail(group: "actions", animated: true) }
+        delegate.done { $0.pushActions(animated: true) }
     }
 
     @objc internal func openHelp() {
@@ -373,6 +374,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Private helpers
 
     @objc func checkForUpdate(_ sender: AnyObject? = nil) {
+        guard Current.updater.isSupported else { return }
+
         let dueToUserInteraction = sender != nil
 
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
@@ -451,6 +454,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
             Current.Log.verbose("Received message: \(message.identifier)")
 
+            // TODO: move all these to something more strongly typed
+
             if message.identifier == "ActionRowPressed" {
                 Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
                 let responseIdentifier = "ActionRowPressedResponse"
@@ -468,6 +473,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }.catch { err -> Void in
                     Current.Log.error("Error during action event fire: \(err)")
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                }
+            } else if message.identifier == "PushAction" {
+                Current.Log.verbose("Received PushAction \(message) \(message.content)")
+                let responseIdentifier = "PushActionResponse"
+
+                if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
+                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON) {
+                    Current.backgroundTask(withName: "watch-push-action") { _ in
+                        Current.api.then(on: nil) { api in
+                            api.handlePushAction(for: info)
+                        }.ensure {
+                            message.reply(.init(identifier: responseIdentifier))
+                        }
+                    }.catch { error in
+                        Current.Log.error("error handling push action: \(error)")
+                    }
                 }
             }
         }

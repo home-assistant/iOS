@@ -120,8 +120,12 @@ public class ServerAlerter {
         }
 
         return firstly {
-            URLSession.shared.dataTask(.promise, with: apiUrl)
-        }.map { data, _ -> [ServerAlert] in
+            when(
+                fulfilled:
+                URLSession.shared.dataTask(.promise, with: apiUrl).map(\.data),
+                Current.apiConnection.caches.user.once().promise
+            )
+        }.map { data, user -> [ServerAlert] in
             // allows individual alerts to fail to parse, in case e.g. somebody typos something
             struct FailableServerAlert: Decodable {
                 var alert: ServerAlert?
@@ -135,26 +139,25 @@ public class ServerAlerter {
             }
             .decode([FailableServerAlert].self, from: data)
             .compactMap(\.alert)
-        }.get { alerts in
-            Current.Log.info("found \(alerts.count) alerts")
-        }.filterValues { alert in
-            if case let version = Current.clientVersion(), alert.ios.shouldTrigger(for: version) {
-                return true
-            }
+            .filter { [self] alert in
+                guard !isHandled(alert: alert) else {
+                    return false
+                }
 
-            if let version = Current.serverVersion(), alert.core.shouldTrigger(for: version) {
-                return true
-            }
+                guard !alert.adminOnly || user.isAdmin else {
+                    return false
+                }
 
-            return false
-        }.filterValues {
-            if $0.adminOnly {
-                return Current.settingsStore.authenticatedUser?.IsAdmin == true
-            } else {
-                return true
+                if case let version = Current.clientVersion(), alert.ios.shouldTrigger(for: version) {
+                    return true
+                }
+
+                if let version = Current.serverVersion(), alert.core.shouldTrigger(for: version) {
+                    return true
+                }
+
+                return false
             }
-        }.filterValues { [self] alert in
-            !isHandled(alert: alert)
         }.firstValue
     }
 

@@ -17,7 +17,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A9061CA646EB00121384"
-               BuildableName = "Tests-UI.xctest"
+               BuildableName = "HomeAssistant-Tests-UI.xctest"
                BlueprintName = "Tests-UI"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>

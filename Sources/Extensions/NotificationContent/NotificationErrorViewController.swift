@@ -6,6 +6,10 @@ import UserNotificationsUI
 class NotificationErrorViewController: UIViewController, NotificationCategory {
     let label = UILabel()
 
+    required init(notification: UNNotification, attachmentURL: URL?) throws {
+        fatalError("not meant to be used in the list of potentials, just directly set")
+    }
+
     init(error: Error) {
         super.init(nibName: nil, bundle: nil)
         label.text = error.localizedDescription
@@ -38,7 +42,7 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
         ])
     }
 
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
+    func start() -> Promise<Void> {
         .value(())
     }
 

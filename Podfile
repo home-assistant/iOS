@@ -68,12 +68,7 @@ abstract_target 'iOS' do
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka'
 
-    if ENV['COMPILE_FIREBASE']
-      # the xcframework version of Firebase/Messaging doesn't support arm catalyst builds yet
-      pod 'Firebase/Messaging', '7.4.0'
-    else
-      pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
-    end
+    pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'

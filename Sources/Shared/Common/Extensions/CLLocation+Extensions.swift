@@ -1,9 +1,37 @@
 import CoreLocation
 import Foundation
 
-extension CLLocationCoordinate2D {
+public extension CLLocationCoordinate2D {
     func toArray() -> [Double] {
         [latitude, longitude]
+    }
+
+    func bearing(to destination: CLLocationCoordinate2D) -> Measurement<UnitAngle> {
+        let sourceLatitude: Measurement<UnitAngle> = .init(value: latitude, unit: .degrees)
+        let sourceLongitude: Measurement<UnitAngle> = .init(value: longitude, unit: .degrees)
+        let destinationLatitude: Measurement<UnitAngle> = .init(value: destination.latitude, unit: .degrees)
+        let destinationLongitude: Measurement<UnitAngle> = .init(value: destination.longitude, unit: .degrees)
+
+        // tanθ = sinΔλ⋅cosφ2 / cosφ1⋅sinφ2 − sinφ1⋅cosφ2⋅cosΔλ
+        // see mathforum.org/library/drmath/view/55417.html for derivation
+        // https://www.movable-type.co.uk/scripts/latlong.html
+
+        let φ1 = sourceLatitude.converted(to: .radians).value
+        let φ2 = destinationLatitude.converted(to: .radians).value
+        let Δλ = (destinationLongitude - sourceLongitude).converted(to: .radians).value
+
+        // everything in here is now in radians
+
+        let x = cos(φ1) * sin(φ2) - sin(φ1) * cos(φ2) * cos(Δλ)
+        let y = sin(Δλ) * cos(φ2)
+        var θ = atan2(y, x)
+
+        while θ < 0 {
+            // normalize to positive -- doesn't change the math, but makes logging/tests easier
+            θ += 2.0 * Double.pi
+        }
+
+        return .init(value: θ, unit: .radians)
     }
 
     func moving(
@@ -70,5 +98,59 @@ public extension CLCircularRegion {
 
     func containsWithAccuracy(_ location: CLLocation) -> Bool {
         distanceWithAccuracy(from: location) <= 0
+    }
+}
+
+public extension CLLocation {
+    func fuzzingAccuracy(by amount: CLLocationDistance) -> CLLocation {
+        if #available(iOS 13.4, watchOS 6.2, *) {
+            return CLLocation(
+                coordinate: coordinate,
+                altitude: altitude,
+                horizontalAccuracy: horizontalAccuracy + amount + 1,
+                verticalAccuracy: verticalAccuracy,
+                course: course,
+                courseAccuracy: courseAccuracy,
+                speed: speed,
+                speedAccuracy: speedAccuracy,
+                timestamp: timestamp
+            )
+        } else {
+            return CLLocation(
+                coordinate: coordinate,
+                altitude: altitude,
+                horizontalAccuracy: horizontalAccuracy + amount + 1,
+                verticalAccuracy: verticalAccuracy,
+                course: course,
+                speed: speed,
+                timestamp: timestamp
+            )
+        }
+    }
+
+    func changingCoordinate(to fuzzedCoordinate: CLLocationCoordinate2D) -> CLLocation {
+        if #available(iOS 13.4, watchOS 6.2, *) {
+            return CLLocation(
+                coordinate: fuzzedCoordinate,
+                altitude: altitude,
+                horizontalAccuracy: horizontalAccuracy,
+                verticalAccuracy: verticalAccuracy,
+                course: course,
+                courseAccuracy: courseAccuracy,
+                speed: speed,
+                speedAccuracy: speedAccuracy,
+                timestamp: timestamp
+            )
+        } else {
+            return CLLocation(
+                coordinate: fuzzedCoordinate,
+                altitude: altitude,
+                horizontalAccuracy: horizontalAccuracy,
+                verticalAccuracy: verticalAccuracy,
+                course: course,
+                speed: speed,
+                timestamp: timestamp
+            )
+        }
     }
 }

@@ -46,8 +46,13 @@ public class Environment {
                 }
             }
         }
-        HAGlobal.log = { log in
-            Current.Log.info("WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))")
+        HAGlobal.log = { level, log in
+            let string = "WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))"
+
+            switch level {
+            case .info: Current.Log.info(string)
+            case .error: Current.Log.error(string)
+            }
         }
 
         let crashReporter = CrashReporterImpl()
@@ -93,7 +98,7 @@ public class Environment {
     public var apiConnection: HAConnection = HAKit.connection(configuration: .init(
         connectionInfo: {
             if let info = Current.settingsStore.connectionInfo {
-                return .init(url: info.activeURL)
+                return .init(url: info.activeURL, userAgent: HomeAssistantAPI.userAgent)
             } else {
                 return nil
             }

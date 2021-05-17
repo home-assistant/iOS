@@ -209,21 +209,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
-            Current.api.then(on: nil) {
-                $0.updateComplications(passively: true)
-            }.ensure {
-                self.endWatchConnectivityBackgroundTaskIfNecessary()
-            }.cauterize()
+            self.updateComplications()
         }
 
         ComplicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
-            Current.api.then(on: nil) {
-                $0.updateComplications(passively: true)
-            }.ensure {
-                self.endWatchConnectivityBackgroundTaskIfNecessary()
-            }.cauterize()
+            self.updateComplications()
         }
 
         _ = Communicator.shared
@@ -274,6 +266,22 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
+    private var isUpdatingComplications = false
+    private func updateComplications() {
+        // avoid double-updating due to e.g. complication info update request
+        guard !isUpdatingComplications else { return }
+
+        isUpdatingComplications = true
+
+        Current.api.then(on: nil) {
+            $0.updateComplications(passively: true)
+        }.ensure { [self] in
+            isUpdatingComplications = false
+        }.ensure { [self] in
+            endWatchConnectivityBackgroundTaskIfNecessary()
+        }.cauterize()
+    }
+
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
@@ -291,5 +299,44 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         completionHandler([.alert, .badge, .sound])
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        guard let info = HomeAssistantAPI.PushActionInfo(response: response) else {
+            completionHandler()
+            return
+        }
+
+        firstly { () -> Promise<Void> in
+            let (promise, seal) = Promise<Void>.pending()
+
+            if Communicator.shared.currentReachability == .immediatelyReachable {
+                Current.Log.info("sending via phone")
+                Communicator.shared.send(.init(
+                    identifier: "PushAction",
+                    content: ["PushActionInfo": info.toJSON()],
+                    reply: { message in
+                        Current.Log.verbose("Received reply dictionary \(message)")
+                        seal.fulfill(())
+                    }
+                ), errorHandler: { error in
+                    Current.Log.error("Received error when sending immediate message \(error)")
+                    seal.reject(error)
+                })
+            } else {
+                Current.Log.info("sending via local")
+                Current.api.then(on: nil) { api in
+                    api.handlePushAction(for: info)
+                }.pipe(to: seal.resolve)
+            }
+
+            return promise
+        }.ensure {
+            completionHandler()
+        }.cauterize()
     }
 }

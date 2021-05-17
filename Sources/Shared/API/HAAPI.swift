@@ -491,10 +491,19 @@ public class HomeAssistantAPI {
                     jsonPayload = p
                 }
 
+                let accuracyAuthorization: CLAccuracyAuthorization
+
+                if #available(iOS 14, watchOS 7, *) {
+                    accuracyAuthorization = CLLocationManager().accuracyAuthorization
+                } else {
+                    accuracyAuthorization = .fullAccuracy
+                }
+
                 realm.add(LocationHistoryEntry(
                     updateType: updateType,
                     location: location,
                     zone: zone,
+                    accuracyAuthorization: accuracyAuthorization,
                     payload: jsonPayload
                 ))
             }
@@ -560,7 +569,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public class func notificationActionEvent(
+    public class func legacyNotificationActionEvent(
         identifier: String,
         category: String?,
         actionData: Any?,
@@ -581,6 +590,25 @@ public class HomeAssistantAPI {
         }
 
         return (eventType: "ios.notification_action_fired", eventData: eventData)
+    }
+
+    public class func mobileAppNotificationActionEvent(
+        identifier: String,
+        category: String?,
+        actionData: Any?,
+        textInput: String?
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData = [String: Any]()
+        eventData["action"] = identifier
+
+        if let actionData = actionData {
+            eventData["action_data"] = actionData
+        }
+        if let textInput = textInput {
+            eventData["reply_text"] = textInput
+        }
+
+        return (eventType: "mobile_app_notification_action", eventData: eventData)
     }
 
     public class func actionEvent(
@@ -648,23 +676,59 @@ public class HomeAssistantAPI {
         )
     }
 
-    public func handlePushAction(
-        identifier: String,
-        category: String?,
-        userInfo: [AnyHashable: Any],
-        userInput: String?
-    ) -> Promise<Void> {
-        let action = Self.notificationActionEvent(
-            identifier: identifier,
-            category: category,
-            actionData: userInfo["homeassistant"],
-            textInput: userInput
-        )
+    public struct PushActionInfo: ImmutableMappable {
+        public var identifier: String
+        public var category: String?
+        public var textInput: String?
+        public var actionData: Any?
 
-        Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+        public init?(response: UNNotificationResponse) {
+            guard response.actionIdentifier != UNNotificationDefaultActionIdentifier else {
+                return nil
+            }
+
+            self.identifier = UNNotificationContent.uncombinedAction(from: response.actionIdentifier)
+            self.category = response.notification.request.content.categoryIdentifier
+            self.actionData = response.notification.request.content.userInfo["homeassistant"]
+            self.textInput = (response as? UNTextInputNotificationResponse)?.userText
+        }
+
+        public init(map: Map) throws {
+            self.identifier = try map.value("identifier")
+            self.category = try? map.value("category")
+            self.textInput = try? map.value("textInput")
+            self.actionData = try? map.value("actionData")
+        }
+
+        public func mapping(map: Map) {
+            identifier >>> map["identifier"]
+            category >>> map["category"]
+            textInput >>> map["textInput"]
+            actionData >>> map["actionData"]
+        }
+    }
+
+    public func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
+        let actions = [
+            Self.legacyNotificationActionEvent(
+                identifier: info.identifier,
+                category: info.category,
+                actionData: info.actionData,
+                textInput: info.textInput
+            ),
+            Self.mobileAppNotificationActionEvent(
+                identifier: info.identifier,
+                category: info.category,
+                actionData: info.actionData,
+                textInput: info.textInput
+            ),
+        ]
 
         return Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
+            when(resolved: actions.map { action -> Promise<Void> in
+                Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+                return api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
+            }).asVoid()
         }
     }
 
@@ -730,7 +794,7 @@ public class HomeAssistantAPI {
                 shouldIncludeNilValues: false
             )
             return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
-        }.then { (sensorResponse, payload) -> Promise<Void> in
+        }.then { sensorResponse, payload -> Promise<Void> in
             firstly { () -> Promise<Void> in
                 if payload.isEmpty {
                     Current.Log.info("skipping network request for unchanged sensor update")
@@ -746,6 +810,57 @@ public class HomeAssistantAPI {
             }
         }
     }
+
+    #if os(iOS)
+    public func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
+        Current.backgroundTask(withName: "manual-location-update") { remaining in
+            firstly { () -> Guarantee<Void> in
+                Guarantee { seal in
+                    guard #available(iOS 14, *) else {
+                        return seal(())
+                    }
+
+                    let locationManager = CLLocationManager()
+
+                    guard locationManager.accuracyAuthorization != .fullAccuracy else {
+                        // already have full accuracy, don't need to request
+                        seal(())
+                        return
+                    }
+
+                    Current.Log.info("requesting full accuracy for manual update")
+                    locationManager.requestTemporaryFullAccuracyAuthorization(
+                        withPurposeKey: "TemporaryFullAccuracyReasonManualUpdate"
+                    ) { error in
+                        Current.Log.info("got temporary full accuracy result: \(String(describing: error))")
+
+                        withExtendedLifetime(locationManager) {
+                            seal(())
+                        }
+                    }
+                }
+            }.then { [self] () -> Promise<Void> in
+                func updateWithoutLocation() -> Promise<Void> {
+                    UpdateSensors(trigger: .Manual)
+                }
+
+                if Current.settingsStore.isLocationEnabled(for: applicationState) {
+                    return GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
+                        .recover { error -> Promise<Void> in
+                            if error is CLError {
+                                Current.Log.info("couldn't get location, sending remaining sensor data")
+                                return updateWithoutLocation()
+                            } else {
+                                throw error
+                            }
+                        }
+                } else {
+                    return updateWithoutLocation()
+                }
+            }
+        }
+    }
+    #endif
 }
 
 extension HomeAssistantAPI.APIError: LocalizedError {

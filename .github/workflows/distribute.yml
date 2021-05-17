@@ -30,7 +30,7 @@ jobs:
         run: bundle install --jobs 4 --retry 3
 
       - name: Install Pods
-        run: COMPILE_FIREBASE=1 bundle exec pod install --repo-update
+        run: bundle exec pod install --repo-update
 
       - name: Build ${{ matrix.kind }}
         run: |

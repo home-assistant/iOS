@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import UIKit
 
-class SensorDetailViewController: FormViewController, SensorObserver {
+class SensorDetailViewController: HAFormViewController, SensorObserver {
     private(set) var sensor: WebhookSensor {
         didSet {
             if oldValue != sensor {
@@ -16,12 +16,8 @@ class SensorDetailViewController: FormViewController, SensorObserver {
 
     init(sensor: WebhookSensor) {
         self.sensor = sensor
-        super.init(style: .grouped)
-    }
 
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init()
     }
 
     override func viewDidLoad() {
@@ -116,22 +112,48 @@ class SensorDetailViewController: FormViewController, SensorObserver {
                     }
                 }
             case let .stepper(getter, setter, minimum, maximum, step, displayValueFor):
-                return StepperRow {
-                    $0.title = setting.title
-                    $0.value = getter()
-                    $0.onChange { row in
-                        setter(row.value ?? 0)
-                    }
+                if #available(iOS 14, *), UIDevice.current.userInterfaceIdiom == .mac {
+                    return DecimalRow {
+                        $0.title = setting.title
+                        $0.value = getter()
+                        $0.onChange { row in
+                            if let value = row.value {
+                                if value < minimum {
+                                    row.value = minimum
+                                }
 
-                    if let displayValueFor = displayValueFor {
-                        $0.displayValueFor = displayValueFor
-                    }
+                                if value > maximum {
+                                    row.value = maximum
+                                }
 
-                    $0.cellSetup { cell, _ in
-                        with(cell.stepper) {
-                            $0?.minimumValue = minimum
-                            $0?.maximumValue = maximum
-                            $0?.stepValue = step
+                                row.value = (value / step).rounded(.down) * step
+                            }
+
+                            setter(row.value ?? 0)
+                        }
+
+                        if let displayValueFor = displayValueFor {
+                            $0.displayValueFor = displayValueFor
+                        }
+                    }
+                } else {
+                    return StepperRow {
+                        $0.title = setting.title
+                        $0.value = getter()
+                        $0.onChange { row in
+                            setter(row.value ?? 0)
+                        }
+
+                        if let displayValueFor = displayValueFor {
+                            $0.displayValueFor = displayValueFor
+                        }
+
+                        $0.cellSetup { cell, _ in
+                            with(cell.stepper) {
+                                $0?.minimumValue = minimum
+                                $0?.maximumValue = maximum
+                                $0?.stepValue = step
+                            }
                         }
                     }
                 }

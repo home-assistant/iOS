@@ -1,0 +1,20 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Massa placerat duis ultricies lacus",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. In nulla posuere sollicitudin aliquam."
+    },
+    "sound": "default",
+    "category": "DYNAMIC"
+  },
+  "actions": [
+    {
+      "identifier": "REPLY",
+      "title": "Lectus Magna",
+    },
+    {
+      "action": "id2",
+      "title": "Bibendum Est",
+    }
+  ]
+}

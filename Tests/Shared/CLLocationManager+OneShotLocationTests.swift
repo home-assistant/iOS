@@ -386,6 +386,38 @@ class OneShotLocationTests: XCTestCase {
         }
     }
 
+    @available(iOS 14, *)
+    func testInvalidAccuracyOnlyUntilTimeoutWhenReducedAccuracy() {
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        let location1 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 12, longitude: -12),
+            altitude: 0,
+            horizontalAccuracy: 1501,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-30)
+        )
+        let location2 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: -123),
+            altitude: 0,
+            horizontalAccuracy: 2500,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-5)
+        )
+
+        locationManager.overrideAccuracyAuthorization = .reducedAccuracy
+
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location1])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [location2])
+        timeoutSeal(())
+
+        XCTAssertEqual(try hang(promise), location1)
+    }
+
     func testInvalidLatOrLongOnlyUntilTimeout() {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let location1 = CLLocation(
@@ -555,8 +587,8 @@ class OneShotLocationTests: XCTestCase {
             self.location2 = location2
             // cheating a little so it's not constants hard-coded in two places
             self.hasPerfect =
-                PotentialLocation(location: location1).quality == .perfect ||
-                PotentialLocation(location: location2).quality == .perfect
+                PotentialLocation(location: location1, accuracyAuthorization: .fullAccuracy).quality == .perfect ||
+                PotentialLocation(location: location2, accuracyAuthorization: .fullAccuracy).quality == .perfect
             self.reason = reason
             self.file = file
             self.line = line
@@ -667,6 +699,16 @@ private class FakeLocationManager: CLLocationManager {
         set {
             overrideDelegate = newValue
         }
+    }
+
+    var overrideAccuracyAuthorization: CLAccuracyAuthorization = .fullAccuracy
+    override var accuracyAuthorization: CLAccuracyAuthorization {
+        overrideAccuracyAuthorization
+    }
+
+    var overrideAuthorizationStatus: CLAuthorizationStatus = .authorizedAlways
+    override var authorizationStatus: CLAuthorizationStatus {
+        overrideAuthorizationStatus
     }
 
     var isUpdatingLocation = false

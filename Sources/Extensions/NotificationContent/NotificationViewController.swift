@@ -1,24 +1,12 @@
 import Alamofire
 import KeychainAccess
 import MBProgressHUD
+import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-
-enum NotificationCategories: String {
-    case map
-    case map1
-    case map2
-    case map3
-    case map4
-    case camera
-    case camera1
-    case camera2
-    case camera3
-    case camera4
-}
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
     var activeViewController: (UIViewController & NotificationCategory)? {
@@ -41,46 +29,92 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 ])
 
                 viewController.didMove(toParent: self)
+            } else {
+                // 0 doesn't adjust size, must be a > check
+                preferredContentSize.height = .leastNonzeroMagnitude
             }
+        }
+    }
+
+    private static var possibleControllers: [(UIViewController & NotificationCategory).Type] { [
+        CameraViewController.self,
+        MapViewController.self,
+        ImageAttachmentViewController.self,
+        PlayerAttachmentViewController.self,
+    ] }
+
+    private func viewController(
+        for notification: UNNotification,
+        attachmentURL: URL?,
+        allowDownloads: Bool = true
+    ) -> Guarantee<(UIViewController & NotificationCategory)?> {
+        // Try based on current info (e.g. entity_id or attached via service extension)
+
+        for controllerType in Self.possibleControllers {
+            do {
+                let controller = try controllerType.init(
+                    notification: notification,
+                    attachmentURL: attachmentURL
+                )
+                return .value(controller)
+            } catch {
+                // not valid
+            }
+        }
+
+        // Try to grab the attachments, in case they failed or were lazy
+
+        if allowDownloads {
+            return firstly {
+                Current.api
+            }.then { api in
+                // potential future optimization: feed the url into e.g. the AVPlayer instance.
+                // not super straightforward because authentication headers may be needed.
+                NotificationAttachmentManager().downloadAttachment(from: notification.request.content, api: api)
+            }.then { [self] url in
+                viewController(for: notification, attachmentURL: url, allowDownloads: false)
+            }.recover { _ in
+                .value(nil)
+            }
+        } else {
+            return .value(nil)
         }
     }
 
     func didReceive(_ notification: UNNotification) {
         let catID = notification.request.content.categoryIdentifier.lowercased()
-        guard let category = NotificationCategories(rawValue: catID) else {
-            Current.Log.warning("Unknown category \(notification.request.content.categoryIdentifier)")
-            return
+        Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
+
+        // we only do it for 'dynamic' or unconfigured existing categories, so we don't stomp old configs
+        if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true {
+            extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
 
-        Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
-        let controller: UIViewController & NotificationCategory
+        activeViewController = NotificationLoadingViewController()
 
-        switch category {
-        case .camera, .camera1, .camera2, .camera3, .camera4:
-            controller = CameraViewController()
-        case .map, .map1, .map2, .map3, .map4:
-            controller = MapViewController()
-        }
+        var hud: MBProgressHUD?
 
-        let hud: MBProgressHUD? = {
-            guard controller.mediaPlayPauseButtonType == .none else {
-                // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
-                return nil
+        viewController(
+            for: notification,
+            attachmentURL: notification.request.content.attachments.first?.url
+        ).then { [weak self] controller -> Promise<Void> in
+            self?.activeViewController = controller
+
+            guard let controller = controller else {
+                return .value(())
             }
 
-            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-            let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
-            hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
-            hud.detailsLabel.text = loadTxt
-            return hud
-        }()
+            if controller.mediaPlayPauseButtonType == .none, let view = self?.view {
+                // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
+                hud = {
+                    let hud = MBProgressHUD.showAdded(to: view, animated: true)
+                    hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
+                    return hud
+                }()
+            }
 
-        activeViewController = controller
-
-        controller.didReceive(
-            notification: notification,
-            extensionContext: extensionContext
-        ).ensure {
+            return controller.start()
+        }.ensure {
             hud?.hide(animated: true)
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
@@ -111,14 +145,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 }
 
 protocol NotificationCategory: NSObjectProtocol {
-    // This will be called to send the notification to be displayed by
-    // the extension. If the extension is being displayed and more related
-    // notifications arrive (eg. more messages for the same conversation)
-    // the same method will be called for each new notification.
-    func didReceive(
-        notification: UNNotification,
-        extensionContext: NSExtensionContext?
-    ) -> Promise<Void>
+    init(notification: UNNotification, attachmentURL: URL?) throws
+    func start() -> Promise<Void>
 
     // Implementing this method and returning a button type other that "None" will
     // make the notification attempt to draw a play/pause button correctly styled

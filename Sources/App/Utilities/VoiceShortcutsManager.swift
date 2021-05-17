@@ -11,7 +11,7 @@ public class VoiceShortcutsManager {
     }
 
     public func voiceShortcut(for identifier: String) -> INVoiceShortcut? {
-        voiceShortcuts.first { (voiceShortcut) -> Bool in
+        voiceShortcuts.first { voiceShortcut -> Bool in
             if let uuid = UUID(uuidString: identifier) {
                 return voiceShortcut.identifier == uuid
             }

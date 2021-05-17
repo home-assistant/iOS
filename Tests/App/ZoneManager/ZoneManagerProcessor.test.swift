@@ -607,13 +607,13 @@ class ZoneManagerProcessorTests: XCTestCase {
         })
 
         // grab the region that's the direction we're going in the one shot location below
-        let region = try XCTUnwrap(
+        let eventRegion = try XCTUnwrap(
             circularRegionZone?.circularRegionsForMonitoring
-                .first(where: { $0.identifier.contains("000") })
+                .first(where: { $0.identifier.contains("240") })
         )
 
         let event = ZoneManagerEvent(
-            eventType: .region(region, .inside),
+            eventType: .region(eventRegion, .inside),
             associatedZone: circularRegionZone
         )
         let promise = processor.perform(event: event)
@@ -623,26 +623,36 @@ class ZoneManagerProcessorTests: XCTestCase {
             expectation.fulfill()
         }.cauterize()
 
-        let distanceOut: CLLocationDistance = 20
+        let distanceOut: CLLocationDistance = 14
 
         let oneShotLocation = try { () -> CLLocation in
             // moving toward one of the circle's centers guarantees we're pointed toward the intersection of all zones
             let coordinate = circularRegion.center.moving(
                 distance: .init(value: circularRegion.radius + distanceOut, unit: .meters),
-                direction: .init(value: 0, unit: .degrees)
+                direction: .init(value: 30, unit: .degrees)
             )
             let location = CLLocation(
                 coordinate: coordinate,
                 altitude: 0,
-                horizontalAccuracy: distanceOut / 2 - 1,
+                horizontalAccuracy: distanceOut / 2.0 - 1,
                 // less than distance to zone, big enough to overlap all 3 other zones
                 verticalAccuracy: 0,
                 timestamp: Date()
             )
 
             XCTAssertTrue(try XCTUnwrap(circularRegionZone?.circularRegionsForMonitoring.allSatisfy({ region in
-                // this test case is assuming the location touches _all_ the zones
-                region.containsWithAccuracy(location)
+                if region == eventRegion {
+                    // we want to both fudge the accuracy for this region _and_ separately for the zone
+                    return !region.containsWithAccuracy(location) &&
+                        !circularRegion.containsWithAccuracy(
+                            location.fuzzingAccuracy(
+                                by: region.distanceWithAccuracy(from: location)
+                            )
+                        )
+                } else {
+                    // this test case is assuming the location touches _all_ the regions except for the one entering
+                    return region.containsWithAccuracy(location)
+                }
             })))
 
             // this test case is assuming this location does _not_ intersect the zone
@@ -670,6 +680,84 @@ class ZoneManagerProcessorTests: XCTestCase {
             )
 
             XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
+        } else {
+            XCTFail("didn't send a location")
+        }
+
+        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+
+        if let state = delegate.states.first {
+            switch state {
+            case .didReceive(event):
+                // pass
+                break
+            default:
+                XCTFail("incorrect state was logged")
+            }
+        } else {
+            XCTFail("no state but one was expected")
+        }
+    }
+
+    func testRegionEnterInsideAnotherZone() throws {
+        var outerRegion: CLCircularRegion!
+        var outerZone: RLMZone!
+
+        try setUpZones(circular: { region, zone in
+            zone.inRegion = false
+
+            outerZone = with(RLMZone()) {
+                $0.ID = region.identifier + "-outer"
+                $0.Radius = region.radius * 2.0
+                $0.Latitude = region.center.latitude
+                $0.Longitude = region.center.longitude
+            }
+            outerRegion = outerZone.circularRegion
+            realm.add(outerZone)
+
+            // we rely on the zone's values for this scenario's fuzzing
+            XCTAssertTrue(circularRegion.radius > 0 && circularRegion.radius < 100)
+            XCTAssertTrue(zone.Radius > 0 && zone.Radius < 100)
+        })
+
+        XCTAssertNotNil(outerZone)
+
+        let event = ZoneManagerEvent(
+            eventType: .region(circularRegion, .inside),
+            associatedZone: circularRegionZone
+        )
+        let promise = processor.perform(event: event)
+
+        let oneShotLocationCoordinate = circularRegion.center.moving(
+            distance: .init(value: circularRegion.radius + 10, unit: .meters),
+            direction: .init(value: 0, unit: .degrees)
+        )
+        let oneShotLocation = CLLocation(
+            coordinate: oneShotLocationCoordinate,
+            altitude: -1,
+            horizontalAccuracy: 20,
+            verticalAccuracy: 0,
+            timestamp: Date()
+        )
+
+        XCTAssertFalse(circularRegion.contains(oneShotLocationCoordinate))
+        XCTAssertTrue(outerRegion.contains(oneShotLocationCoordinate))
+
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        let expectation = self.expectation(description: "promise")
+        promise.ensure { expectation.fulfill() }.cauterize()
+
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertTrue(circularRegionZone?.inRegion ?? false)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+
+        if let sentLocation = api.submitLocationInvocation?.location {
+            XCTAssertTrue(circularRegion.contains(sentLocation.coordinate))
+            XCTAssertNotEqual(sentLocation.coordinate.toArray(), oneShotLocationCoordinate.toArray())
         } else {
             XCTFail("didn't send a location")
         }
@@ -725,6 +813,274 @@ class ZoneManagerProcessorTests: XCTestCase {
         } else {
             XCTFail("no state but one was expected")
         }
+    }
+
+    func testNotRecentlyUpdated() throws {
+        let now = Date()
+        Current.date = { now.addingTimeInterval(-60) }
+
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = true
+        })
+        let event1 = ZoneManagerEvent(
+            eventType: .region(circularRegion, .outside),
+            associatedZone: circularRegionZone
+        )
+        let promise1 = processor.perform(event: event1)
+        let event2 = ZoneManagerEvent(eventType: .locationChange([CLLocation(latitude: 1.22, longitude: 2.11)]))
+        let promise2 = processor.perform(event: event2)
+
+        let expectation1 = expectation(description: "promise1")
+        let expectation2 = expectation(description: "promise2")
+        promise1.ensure {
+            expectation1.fulfill()
+        }.cauterize()
+        promise2.ensure {
+            expectation2.fulfill()
+        }.cauterize()
+
+        let oneShotLocation = CLLocation(latitude: 3.33, longitude: 4.44)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        processor.onCompletedEvent = {
+            Current.date = { now }
+        }
+
+        wait(for: [expectation1, expectation2], timeout: 10.0)
+
+        XCTAssertFalse(circularRegionZone?.inRegion ?? true)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
+        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+        XCTAssertEqual(api.submitLocationInvocation?.zone, nil)
+
+        guard delegate.states.count == 2 else {
+            XCTFail("should have had 2 states")
+            return
+        }
+
+        let state1 = delegate.states[0]
+        let state2 = delegate.states[1]
+
+        switch state1 {
+        case .didReceive(event1): break // pass
+        default: XCTFail("incorrect type \(state1)")
+        }
+
+        switch state2 {
+        case .didReceive(event2): break // pass
+        default: XCTFail("incorrect type \(state2)")
+        }
+    }
+
+    func testRecentlyUpdatedSuccessfullyThenLocation() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = true
+        })
+        let event1 = ZoneManagerEvent(
+            eventType: .region(circularRegion, .outside),
+            associatedZone: circularRegionZone
+        )
+        let promise1 = processor.perform(event: event1)
+        let event2 = ZoneManagerEvent(eventType: .locationChange([CLLocation(latitude: 1.22, longitude: 2.11)]))
+        let promise2 = processor.perform(event: event2)
+
+        let expectation1 = expectation(description: "promise1")
+        let expectation2 = expectation(description: "promise2")
+        promise1.ensure {
+            expectation1.fulfill()
+        }.cauterize()
+        promise2.ensure {
+            expectation2.fulfill()
+        }.cauterize()
+
+        let oneShotLocation = CLLocation(latitude: 3.33, longitude: 4.44)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation1, expectation2], timeout: 10.0)
+
+        XCTAssertFalse(circularRegionZone?.inRegion ?? true)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event1.asTrigger())
+        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+
+        guard delegate.states.count == 2 else {
+            XCTFail("should have had 2 states")
+            return
+        }
+
+        let state1 = delegate.states[0]
+        let state2 = delegate.states[1]
+
+        switch state1 {
+        case .didReceive(event1): break // pass
+        default: XCTFail("incorrect type \(state1)")
+        }
+
+        switch state2 {
+        case .didIgnore(event2, ZoneManagerIgnoreReason.recentlyUpdated): break // pass
+        default: XCTFail("incorrect type \(state2)")
+        }
+    }
+
+    func testRecentlyUpdatedSuccessfullyThenZone() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = true
+        })
+        let event1 = ZoneManagerEvent(
+            eventType: .region(circularRegion, .outside),
+            associatedZone: circularRegionZone
+        )
+        let promise1 = processor.perform(event: event1)
+        let event2 = ZoneManagerEvent(
+            eventType: .region(circularRegion, .outside),
+            associatedZone: circularRegionZone
+        )
+        let promise2 = processor.perform(event: event2)
+
+        let expectation1 = expectation(description: "promise1")
+        let expectation2 = expectation(description: "promise2")
+        promise1.ensure {
+            expectation1.fulfill()
+        }.cauterize()
+        promise2.ensure {
+            expectation2.fulfill()
+        }.cauterize()
+
+        let oneShotLocation = CLLocation(latitude: 3.33, longitude: 4.44)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation1, expectation2], timeout: 10.0)
+
+        XCTAssertFalse(circularRegionZone?.inRegion ?? true)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
+        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+
+        guard delegate.states.count == 2 else {
+            XCTFail("should have had 2 states")
+            return
+        }
+
+        let state1 = delegate.states[0]
+        let state2 = delegate.states[1]
+
+        switch state1 {
+        case .didReceive(event1): break // pass
+        default: XCTFail("incorrect type \(state1)")
+        }
+
+        switch state2 {
+        case .didReceive(event2): break // pass
+        default: XCTFail("incorrect type \(state2)")
+        }
+    }
+
+    func testRecentlyUpdatedFailed() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = true
+        })
+        let event1 = ZoneManagerEvent(
+            eventType: .region(circularRegion, .outside),
+            associatedZone: circularRegionZone
+        )
+        let promise1 = processor.perform(event: event1)
+
+        let oneShotLocation = CLLocation(latitude: 3.33, longitude: 4.44)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        enum FakeError: Error { case error }
+        submitLocationSeal.reject(FakeError.error)
+
+        (submitLocationPromise, submitLocationSeal) = Promise<Void>.pending()
+        submitLocationSeal.fulfill(())
+
+        XCTAssertNil(api.submitLocationInvocation)
+
+        let event2 = ZoneManagerEvent(eventType: .locationChange([CLLocation(latitude: 1.22, longitude: 2.11)]))
+        let promise2 = processor.perform(event: event2)
+
+        let expectation1 = expectation(description: "promise1")
+        let expectation2 = expectation(description: "promise2")
+        promise1.ensure {
+            expectation1.fulfill()
+        }.cauterize()
+        promise2.ensure {
+            expectation2.fulfill()
+        }.cauterize()
+
+        wait(for: [expectation1, expectation2], timeout: 10.0)
+
+        XCTAssertFalse(circularRegionZone?.inRegion ?? true)
+
+        XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
+        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+        XCTAssertEqual(api.submitLocationInvocation?.zone, nil)
+
+        guard delegate.states.count == 2 else {
+            XCTFail("should have had 2 states")
+            return
+        }
+
+        let state1 = delegate.states[0]
+        let state2 = delegate.states[1]
+
+        switch state1 {
+        case .didReceive(event1): break // pass
+        default: XCTFail("incorrect type \(state1)")
+        }
+
+        switch state2 {
+        case .didReceive(event2): break // pass
+        default: XCTFail("incorrect type \(state2)")
+        }
+    }
+
+    func testConcurrentQueued() throws {
+        try setUpZones(circular: { _, zone in
+            zone.inRegion = true
+        })
+        let event1 = ZoneManagerEvent(
+            eventType: .region(circularRegion, .outside),
+            associatedZone: circularRegionZone
+        )
+        let promise1 = processor.perform(event: event1)
+        let event2 = ZoneManagerEvent(
+            eventType: .locationChange([.init(latitude: 1.22, longitude: 3.44)])
+        )
+        let promise2 = processor.perform(event: event2)
+
+        var onCompletedEventCount = 0
+
+        processor.onCompletedEvent = { [delegate] in
+            onCompletedEventCount += 1
+            XCTAssertEqual(delegate!.states.count, onCompletedEventCount)
+        }
+
+        let oneShotLocation = CLLocation(latitude: 3.33, longitude: 4.44)
+        oneShotLocationSeal.fulfill(oneShotLocation)
+        enum FakeError: Error { case error }
+        submitLocationSeal.reject(FakeError.error)
+
+        (submitLocationPromise, submitLocationSeal) = Promise<Void>.pending()
+        submitLocationSeal.fulfill(())
+
+        XCTAssertNil(api.submitLocationInvocation)
+
+        let expectation1 = expectation(description: "promise1")
+        let expectation2 = expectation(description: "promise2")
+        promise1.ensure {
+            expectation1.fulfill()
+        }.cauterize()
+        promise2.ensure {
+            expectation2.fulfill()
+        }.cauterize()
+
+        wait(for: [expectation1, expectation2], timeout: 10.0)
     }
 
     // MARK: -

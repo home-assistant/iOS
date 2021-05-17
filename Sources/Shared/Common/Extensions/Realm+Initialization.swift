@@ -73,9 +73,10 @@ public extension Realm {
         // 13 - 2020-10-17 v2020.7 (allow multiple complications)
         // 14 - 2020-10-29 v2020.8 (complication privacy)
         // 15 - 2021-03-21 v2021.4 (scene properties)
+        // 16 - 2021-04-12 v2021.5 (accuracy authorization on location history entries)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 15,
+            schemaVersion: 16,
             migrationBlock: { migration, oldVersion in
                 Current.Log.info("migrating from \(oldVersion)")
                 if oldVersion < 9 {
@@ -162,6 +163,10 @@ public extension Realm {
                             newObject?["name"] = attributes["friendly_name"] as? String
                         }
                     }
+                }
+
+                if oldVersion < 16 {
+                    // nothing, it added an optional
                 }
             },
             deleteRealmIfMigrationNeeded: false

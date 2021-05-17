@@ -46,7 +46,6 @@ public class AuthenticationAPI {
                 case let .success(value):
                     seal.fulfill(value)
                 }
-                return
             }
         }
     }
@@ -66,7 +65,6 @@ public class AuthenticationAPI {
                 // The request will always respond with an empty body and HTTP status 200,
                 // regardless if the request was successful.
                 seal.fulfill(true)
-                return
             }
         }
     }
@@ -106,7 +104,6 @@ public class AuthenticationAPI {
                 case let .success(value):
                     seal.fulfill(value)
                 }
-                return
             }
         }
     }

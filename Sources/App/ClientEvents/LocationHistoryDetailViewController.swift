@@ -87,6 +87,18 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             accuracyNote = ""
         }
 
+        let accuracyAuthorization: String
+
+        if let authorization = entry.accuracyAuthorization {
+            switch authorization {
+            case .fullAccuracy: accuracyAuthorization = "full"
+            case .reducedAccuracy: accuracyAuthorization = "reduced"
+            @unknown default: accuracyAuthorization = "unknown"
+            }
+        } else {
+            accuracyAuthorization = "missing"
+        }
+
         func latLongString(_ value: Double) -> String {
             String(format: "%.06lf", value)
         }
@@ -103,8 +115,10 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             ```
 
             ## Location
+            - Trigger: \(entry.Trigger ?? "(unknown)")
             - Center: (\(latLongString(entry.Latitude)), \(latLongString(entry.Longitude)))
             - Accuracy: \(distanceString(entry.Accuracy))\(accuracyNote)
+            - Accuracy Authorization: \(accuracyAuthorization)
 
             ## Regions
             """ + "\n"

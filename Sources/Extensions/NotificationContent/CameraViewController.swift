@@ -9,6 +9,37 @@ import UserNotifications
 import UserNotificationsUI
 
 class CameraViewController: UIViewController, NotificationCategory {
+    enum CameraError: LocalizedError {
+        case missingEntityId
+        case missingAPI
+
+        var errorDescription: String? {
+            switch self {
+            case .missingEntityId:
+                return L10n.Extensions.NotificationContent.Error.noEntityId
+            case .missingAPI:
+                return HomeAssistantAPI.APIError.notConfigured.localizedDescription
+            }
+        }
+    }
+
+    let entityId: String
+
+    required init(notification: UNNotification, attachmentURL: URL?) throws {
+        guard let entityId = notification.request.content.userInfo["entity_id"] as? String,
+              entityId.starts(with: "camera.") else {
+            throw CameraError.missingEntityId
+        }
+
+        self.entityId = entityId
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     var activeViewController: (UIViewController & CameraStreamHandler)? {
         willSet {
             activeViewController?.willMove(toParent: nil)
@@ -33,26 +64,8 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
     }
 
-    enum CameraError: LocalizedError {
-        case missingEntityId
-        case missingAPI
-
-        var errorDescription: String? {
-            switch self {
-            case .missingEntityId:
-                return L10n.Extensions.NotificationContent.Error.noEntityId
-            case .missingAPI:
-                return HomeAssistantAPI.APIError.notConfigured.localizedDescription
-            }
-        }
-    }
-
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
-        guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
-            return .init(error: CameraError.missingEntityId)
-        }
-
-        return Current.api.then(on: nil) { api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
+    func start() -> Promise<Void> {
+        Current.api.then(on: nil) { [entityId] api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
             firstly {
                 api.StreamCamera(entityId: entityId)
             }.recover { error -> Promise<StreamCameraResponse> in
@@ -61,9 +74,9 @@ class CameraViewController: UIViewController, NotificationCategory {
             }.map {
                 (api, $0)
             }
-        }.then { [weak self] (api, result) -> Promise<Void> in
+        }.then { [weak self] api, result -> Promise<Void> in
             let controllers = Self.possibleControllers
-                .compactMap { (controllerClass) -> () -> Promise<UIViewController & CameraStreamHandler> in
+                .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
                     {
                         do {
                             return .value(try controllerClass.init(api: api, response: result))
@@ -163,7 +176,7 @@ class CameraViewController: UIViewController, NotificationCategory {
             }
         }
 
-        return promise.recover { (nextError) -> Promise<UIViewController & CameraStreamHandler> in
+        return promise.recover { nextError -> Promise<UIViewController & CameraStreamHandler> in
             throw CameraViewControllerError.accumulated(accumulatedErrors + [nextError])
         }
     }

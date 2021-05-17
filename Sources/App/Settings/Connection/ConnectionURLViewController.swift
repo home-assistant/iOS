@@ -4,7 +4,7 @@ import Foundation
 import PromiseKit
 import Shared
 
-final class ConnectionURLViewController: FormViewController, TypedRowControllerType {
+final class ConnectionURLViewController: HAFormViewController, TypedRowControllerType {
     typealias RowValue = ConnectionURLViewController
     var row: RowOf<RowValue>!
     var onDismissCallback: ((UIViewController) -> Void)?
@@ -14,22 +14,13 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         self.urlType = urlType
         self.row = row
 
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
+        super.init()
 
         self.title = urlType.description
 
         if #available(iOS 13, *) {
             self.isModalInPresentation = true
         }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     enum SaveError: LocalizedError {

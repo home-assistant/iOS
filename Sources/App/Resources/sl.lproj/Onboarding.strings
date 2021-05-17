@@ -29,6 +29,6 @@
 "TEX-zW-Byk.text" = "Za najboljšo izkušnjo uporabe programa Home Assistant Companion potrdite naslednja dovoljenja:";
 "Tqw-iY-A2S.normalTitle" = "Več informacij";
 "UKm-Ju-0Yr.text" = "Med povezavo z vašim primerkom smo naleteli na napako. Vaše potrdilo SSL ni veljavno. Zaradi omejitev iOS-a ne boste mogli nadaljevati z nastavitvijo, dokler ne namestite veljavnega SSL potrdila. Priporočamo Lets Encrypt ali Nabu Casa Remote UI.";
-"wsC-f5-jbO.text" = "Zdaj smo pripravljeni vzpostaviti povezavo z vašim Home Assistant-om in narediti začetno preverjanje pristnosti. Če tapnete spodnji gumb Poveži, se odpre brskalnik, s katerim se boste prijavili. ";
+"wsC-f5-jbO.text" = "Zdaj smo pripravljeni vzpostaviti povezavo z vašim Home Assistant-om in narediti začetno preverjanje pristnosti. Če tapnete spodnji gumb Poveži, se odpre brskalnik, s katerim se boste prijavili.";
 "xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";
 "XyQ-gy-yHY.text" = "Povezani";

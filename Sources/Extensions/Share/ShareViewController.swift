@@ -6,11 +6,6 @@ import UIKit
 
 @objc(HAShareViewController)
 class ShareViewController: SLComposeServiceViewController {
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     enum EventError: LocalizedError {
         case invalidExtensionContext
     }

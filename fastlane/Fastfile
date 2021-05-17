@@ -175,6 +175,27 @@ lane :push_strings do
   end
 end
 
+desc 'Find unused localized strings'
+lane :unused_strings do
+  files = [
+    '../Sources/App/Resources/en.lproj/Localizable.strings'
+  ]
+  files.each do |file|
+    puts "Looking at #{file}"
+    unused_strings = File.read(file)
+                         # grab the keys only
+                         .scan(/"([^"]+)" = [^;]+;/)
+                         # replace _ in the keys with nothing, which is what swiftgen does
+                         .map { |s| [s[0], s[0].gsub('_', '')] }
+                         # ignore any keys at the root level (aka like ok_label)
+                         .select { |full, _key| full.include?('.') }
+                         # find any strings that don't have matches in code
+                         .select { |_full, key| system("git grep --ignore-case --quiet #{key} -- ../*.swift") == false }
+    unused_strings.each { |full, _key| puts full }
+    puts "- Found #{unused_strings.count} unused strings"
+  end
+end
+
 desc 'Upload App Store Connect metadata to Lokalise'
 lane :update_lokalise_metadata do
   lokalise_metadata(action: 'update_lokalise', override_translation: true)

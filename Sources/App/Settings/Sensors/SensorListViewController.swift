@@ -3,7 +3,7 @@ import Foundation
 import PromiseKit
 import Shared
 
-class SensorListViewController: FormViewController, SensorObserver {
+class SensorListViewController: HAFormViewController, SensorObserver {
     private let sensorSection = Section()
     private let refreshControl = UIRefreshControl()
 
@@ -12,8 +12,10 @@ class SensorListViewController: FormViewController, SensorObserver {
 
         title = L10n.SettingsSensors.title
 
-        tableView.refreshControl = refreshControl
-        refreshControl.beginRefreshing()
+        if !Current.isCatalyst {
+            tableView.refreshControl = refreshControl
+            refreshControl.beginRefreshing()
+        }
 
         Current.sensors.register(observer: self)
 
@@ -66,14 +68,8 @@ class SensorListViewController: FormViewController, SensorObserver {
     @objc private func refresh() {
         refreshControl.beginRefreshing()
 
-        Current.backgroundTask(withName: "manual-location-update-settings") { _ in
-            Current.api.then(on: nil) { api -> Promise<Void> in
-                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                    return api.GetAndSendLocation(trigger: .Manual).asVoid()
-                } else {
-                    return api.UpdateSensors(trigger: .Manual).asVoid()
-                }
-            }
+        Current.api.then { api in
+            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
         }.cauterize()
@@ -160,8 +156,7 @@ class SensorListViewController: FormViewController, SensorObserver {
                     cell.imageView?.image =
                         sensor.Icon
                             .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
-                            .image(ofSize: CGSize(width: 28, height: 28), color: .black)
-                            .withRenderingMode(.alwaysTemplate)
+                            .settingsIcon(for: cell.traitCollection)
                 }
 
                 if !isInitial {

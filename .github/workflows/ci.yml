@@ -72,8 +72,6 @@ jobs:
             Tools/MaterialDesignIcons.ttf
             Tools/MaterialDesignIcons.json
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
 
       - uses: actions/cache@v2
         name: "Cache: Gems"

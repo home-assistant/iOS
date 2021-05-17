@@ -128,7 +128,7 @@ class OnboardingAuthenticationController: NSObject, SFSafariViewControllerDelega
             return
         }
 
-        let parameter = components.queryItems?.first(where: { (item) -> Bool in
+        let parameter = components.queryItems?.first(where: { item -> Bool in
             item.name == "code"
         })
 

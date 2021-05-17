@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1171506824DFCDE60065E874"
-               BuildableName = "Extensions-Widgets.appex"
+               BuildableName = "HomeAssistant-Extensions-Widgets.appex"
                BlueprintName = "Extensions-Widgets"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
@@ -63,7 +63,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1171506824DFCDE60065E874"
-            BuildableName = "Extensions-Widgets.appex"
+            BuildableName = "HomeAssistant-Extensions-Widgets.appex"
             BlueprintName = "Extensions-Widgets"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>

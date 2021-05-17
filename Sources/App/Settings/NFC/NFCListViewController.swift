@@ -5,16 +5,11 @@ import PromiseKit
 import Shared
 
 @available(iOS 13, *)
-class NFCListViewController: FormViewController {
-    init() {
-        super.init(style: .insetGrouped)
+class NFCListViewController: HAFormViewController {
+    override init() {
+        super.init()
 
         title = L10n.Nfc.List.title
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     private var lastManualIdentifier: String?
@@ -27,14 +22,9 @@ class NFCListViewController: FormViewController {
                 $0.title = L10n.Nfc.List.description
                 $0.displayType = .primary
             }
-            <<< ButtonRow {
-                $0.title = L10n.Nfc.List.learnMore
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .natural
-                }
-                $0.onCellSelection { [weak self] _, _ in
-                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/nfc")!, self)
-                }
+
+            <<< LearnMoreButtonRow {
+                $0.value = URL(string: "https://companion.home-assistant.io/app/ios/nfc")!
             }
 
         if Current.tags.isNFCAvailable {

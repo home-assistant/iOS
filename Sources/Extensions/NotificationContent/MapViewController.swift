@@ -6,7 +6,29 @@ import UserNotifications
 import UserNotificationsUI
 
 class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
-    private var mapView: MKMapView!
+    let location: CLLocationCoordinate2D
+    let haDict: [String: Any]
+
+    required init(notification: UNNotification, attachmentURL: URL?) throws {
+        guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
+            throw MapError.missingPayload
+        }
+        guard let latitude = CLLocationDegrees(templateValue: haDict["latitude"]) else {
+            throw MapError.missingLatitude
+        }
+        guard let longitude = CLLocationDegrees(templateValue: haDict["longitude"]) else {
+            throw MapError.missingLongitude
+        }
+
+        self.haDict = haDict
+        self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     enum MapError: LocalizedError {
         case missingPayload
@@ -25,25 +47,28 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         }
     }
 
-    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
-        let userInfo = notification.request.content.userInfo
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-        guard let haDict = userInfo["homeassistant"] as? [String: Any] else {
-            return .init(error: MapError.missingPayload)
-        }
-        guard let latitude = CLLocationDegrees(templateValue: haDict["latitude"]) else {
-            return .init(error: MapError.missingLatitude)
-        }
-        guard let longitude = CLLocationDegrees(templateValue: haDict["longitude"]) else {
-            return .init(error: MapError.missingLongitude)
-        }
-        let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        mapView = MKMapView()
+        NSLayoutConstraint.activate([
+            view.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5625),
+        ])
+    }
+
+    func start() -> Promise<Void> {
+        let mapView = MKMapView()
+        view.addSubview(mapView)
+
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mapView.topAnchor.constraint(equalTo: view.topAnchor),
+            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
 
         mapView.delegate = self
         mapView.mapType = .standard
-        mapView.frame = view.frame
-
         mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
         mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
         mapView.showsCompass = (haDict["shows_compass"] != nil)
@@ -55,7 +80,6 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: true)
-        view.addSubview(mapView)
 
         let dropPin = MKPointAnnotation()
         dropPin.coordinate = location

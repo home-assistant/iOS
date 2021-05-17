@@ -1,24 +1,12 @@
 import Communicator
 import Eureka
 import Foundation
+import PromiseKit
 import RealmSwift
 import Shared
 import Version
 
-class ComplicationListViewController: FormViewController {
-    init() {
-        if #available(iOS 13, *) {
-            super.init(style: .insetGrouped)
-        } else {
-            super.init(style: .grouped)
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
+class ComplicationListViewController: HAFormViewController {
     @objc private func add(_ sender: UIBarButtonItem) {
         let editListViewController = ComplicationFamilySelectViewController(
             allowMultiple: supportsMultipleComplications,
@@ -55,13 +43,72 @@ class ComplicationListViewController: FormViewController {
             $0.title = L10n.Watch.Configurator.List.description
             $0.displayType = .primary
         }
-            <<< ButtonRow {
-                $0.title = L10n.Watch.Configurator.List.learnMore
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .natural
+
+            <<< LearnMoreButtonRow {
+                $0.value = URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!
+            }
+
+        form +++ Section(
+            header: L10n.Watch.Configurator.List.ManualUpdates.title,
+            footer: L10n.Watch.Configurator.List.ManualUpdates.footer
+        )
+
+            <<< LabelRow { row in
+                row.title = L10n.Watch.Configurator.List.ManualUpdates.remaining
+
+                func updateRow(for state: WatchState) {
+                    switch state {
+                    case .notPaired:
+                        row.value = L10n.Watch.Configurator.List.ManualUpdates.State.notPaired
+                    case .paired(.notInstalled):
+                        row.value = L10n.Watch.Configurator.List.ManualUpdates.State.notInstalled
+                    case .paired(.installed(.notEnabled, _)):
+                        row.value = L10n.Watch.Configurator.List.ManualUpdates.State.notEnabled
+                    case let .paired(.installed(.enabled(numberOfUpdatesAvailableToday: remaining), _)):
+                        row.value = NumberFormatter.localizedString(from: NSNumber(value: remaining), number: .none)
+                    }
+
+                    row.updateCell()
                 }
-                $0.onCellSelection { [weak self] _, _ in
-                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
+
+                updateRow(for: Communicator.shared.currentWatchState)
+
+                let stateObserver = WatchState.observe { watchState in
+                    updateRow(for: watchState)
+                }
+
+                let updateToken = NotificationCenter.default.addObserver(
+                    forName: NotificationManager.didUpdateComplicationsNotification,
+                    object: nil,
+                    queue: .main
+                ) { _ in
+                    updateRow(for: Communicator.shared.currentWatchState)
+                }
+
+                after(life: self).done {
+                    NotificationCenter.default.removeObserver(updateToken)
+                    WatchState.unobserve(stateObserver)
+                }
+            }
+
+            <<< ButtonRowWithLoading {
+                $0.title = L10n.Watch.Configurator.List.ManualUpdates.manuallyUpdate
+                $0.onCellSelection { [weak self] _, row in
+                    row.value = true
+                    row.updateCell()
+
+                    Current.notificationManager.updateComplications().ensure {
+                        row.value = false
+                        row.updateCell()
+                    }.catch { error in
+                        let alert = UIAlertController(
+                            title: L10n.errorLabel,
+                            message: error.localizedDescription,
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+                        self?.present(alert, animated: true, completion: nil)
+                    }
                 }
             }
 

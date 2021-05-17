@@ -3,7 +3,7 @@ import PromiseKit
 import RealmSwift
 import Shared
 
-class NotificationRateLimitListViewController: FormViewController {
+class NotificationRateLimitListViewController: HAFormViewController {
     let utc = TimeZone(identifier: "UTC")!
     let refreshControl = UIRefreshControl()
 
@@ -19,15 +19,10 @@ class NotificationRateLimitListViewController: FormViewController {
 
     init(initialPromise: Promise<RateLimitResponse>?) {
         self.initialPromise = initialPromise
-        super.init(style: .grouped)
+        super.init()
     }
 
     var rateLimitDidChange: (RateLimitResponse) -> Void = { _ in }
-
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -46,10 +41,20 @@ class NotificationRateLimitListViewController: FormViewController {
 
         title = L10n.SettingsDetails.Notifications.RateLimits.header
 
-        tableView.refreshControl = refreshControl
-        refreshControl.addTarget(self, action: #selector(updateRateLimits), for: .valueChanged)
+        if Current.isCatalyst {
+            navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(
+                    barButtonSystemItem: .refresh,
+                    target: self,
+                    action: #selector(refresh)
+                ),
+            ]
+        } else {
+            tableView.refreshControl = refreshControl
+            refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        }
 
-        updateRateLimits()
+        refresh()
 
         form +++ Section {
             $0.tag = "rateLimits"
@@ -80,7 +85,7 @@ class NotificationRateLimitListViewController: FormViewController {
         case noPushId
     }
 
-    @objc private func updateRateLimits() {
+    @objc private func refresh() {
         if initialPromise == nil {
             refreshControl.beginRefreshing()
         }
@@ -96,6 +101,8 @@ class NotificationRateLimitListViewController: FormViewController {
             guard let section = form.sectionBy(tag: "rateLimits") else {
                 return
             }
+
+            Current.Log.debug("updated rate limits: \(response)")
 
             section.footer = HeaderFooterView(
                 title: L10n.SettingsDetails.Notifications.RateLimits.footerWithParam(response.rateLimits.maximum)
@@ -128,7 +135,7 @@ class NotificationRateLimitListViewController: FormViewController {
             section <<< ButtonRow {
                 $0.title = L10n.retryLabel
                 $0.onCellSelection { [weak self] _, _ in
-                    self?.updateRateLimits()
+                    self?.refresh()
                 }
             }
         }

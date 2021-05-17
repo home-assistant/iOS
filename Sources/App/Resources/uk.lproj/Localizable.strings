@@ -39,8 +39,6 @@
 "alerts.prompt.cancel" = "Скасувати";
 "alerts.prompt.ok" = "ОК";
 "always_open_label" = "Always Open";
-"app_transfer_warning_notification.body" = "Будь ласка, відкрийте це сповіщення про важливе оновлення стосовно майбутнього Home Assistant Companion";
-"app_transfer_warning_notification.title" = "⚠️ Оголошення про суттєві зміни в застосунку";
 "cancel_label" = "Скасувати";
 "cl_error.description.deferred_accuracy_too_low" = "Для заданої точності відкладений режим не підтримується.";
 "cl_error.description.deferred_canceled" = "Запит на відкладені оновлення було скасовано вашим застосунком або менеджером розташування.";
@@ -65,7 +63,6 @@
 "client_events.event_type.networkRequest" = "Мережевий запит";
 "client_events.event_type.notification" = "Сповіщення";
 "client_events.event_type.notification.title" = "Отримано push-сповіщення: %@";
-"client_events.event_type.request.log" = "Запит (SSID: %@ - %@)";
 "client_events.event_type.service_call" = "Виклик сервісу";
 "client_events.event_type.unknown" = "Невідомо";
 "client_events.view.clear" = "Очистити";
@@ -77,15 +74,8 @@
 "database.problem.title" = "Помилка бази даних";
 "debug_section_label" = "Debug";
 "delete" = "Видалити";
-"device.generic_name" = "Пристрій";
-"devices_map.battery_label" = "Акумулятор";
-"devices_map.map_types.hybrid" = "Гібридний";
-"devices_map.map_types.satellite" = "Супутниковий";
-"devices_map.map_types.standard" = "Стандартний";
-"devices_map.title" = "Пристрої та зони";
 "done_label" = "Готово.";
 "error_label" = "Помилка";
-"errors.no_remote_ui_url" = "Додаток автоматично виявить ваш віддалений інтерфейс Nabu Casa, ви не можете вводити його вручну.";
 "extensions.map.location.new" = "Нове розташування";
 "extensions.map.location.original" = "Оригінальне розташування";
 "extensions.map.payload_missing_homeassistant.message" = "Вміст не містить не містить словник homeassistant!";
@@ -97,7 +87,6 @@
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-потік недоступний";
 "extensions.notification_content.error.request.other" = "Отримано статус-код помилки (%li)";
 "extensions.notification_content.error.request.unknown" = "Невідома помилка!";
-"extensions.notification_content.hud.loading" = "Завантаження %@ …";
 "ha_api.api_error.cant_build_url" = "Не вдається побудувати API URL";
 "ha_api.api_error.invalid_response" = "Отримано хибну відповідь від Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager недоступний";
@@ -108,7 +97,7 @@
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unknown" = "Виникла невідома помилка.";
 "ha_api.api_error.update_not_possible" = "Не вдалося виконати операцію.";
-"ha_api.api_error.webhook_gone" = "Інтеграція mobile_app видалена, потрібно налаштувати застосунок заново.";
+"help_label" = "Help";
 "location_change_notification.app_shortcut.body" = "Розташування оновлюється через Команду";
 "location_change_notification.background_fetch.body" = "Отримання поточного розташування ініційоване фоновим оновленням";
 "location_change_notification.beacon_region_enter.body" = "%@ прийдено через iBeacon";
@@ -127,11 +116,6 @@
 "location_change_notification.url_scheme.body" = "Розташування оновлено за допомогою URL-схеми";
 "location_change_notification.visit.body" = "Розташування оновлено через Visit";
 "location_change_notification.x_callback_url.body" = "Розташування оновлено через X-Callback-URL";
-"location_update_error_notification.title" = "Помилка надсилання оновленого розташування %@ у Home Assistant.";
-"manual_location_update_failed_notification.message" = "Не вдалося надіслати поточне розташування на сервер. Сталась помилка %@";
-"manual_location_update_failed_notification.title" = "Не вдалося оновити розташування";
-"manual_location_update_notification.message" = "Успішно надіслано один знімок розташування на сервер";
-"manual_location_update_notification.title" = "Розташування оновлено";
 "menu.actions.configure" = "Налаштувати …";
 "menu.actions.title" = "Дії";
 "menu.application.about" = "Про %@";
@@ -174,8 +158,8 @@
 "nfc.write.success_message" = "Тег записаний!";
 "no_label" = "Ні";
 "notification_service.failed_to_load" = "Не вдалося завантажити вкладення";
+"notification_service.loading_dynamic_actions" = "Loading Actions…";
 "notification_service.parser.camera.invalid_entity" = "Вказаний entity_id недійсний.";
-"notification_service.parser.camera.no_entity" = "Вказаний entity_id недійсний.";
 "notification_service.parser.url.invalid_url" = "Вказана URL-адреса недійсна.";
 "notification_service.parser.url.no_url" = "URL-адреса не вказана.";
 "notifications_configurator.action.rows.authentication_required.footer" = "Коли користувач вибирає дію з цією опцією, система пропонує користувачеві розблокувати пристрій. Після розблокування Home Assistant буде повідомлений про вибрану дію.";
@@ -221,8 +205,6 @@
 "onboarding.connection_test_result.ssl_untrusted.description" = "Ваш сертифікат SSL ненадійний. %@ .";
 "onboarding.connection_test_result.too_old.description" = "Потрібно оновити версію Home Assistant.";
 "onboarding.connection_test_result.unknown_error.description" = "Невідома помилка: %@";
-"onboarding.discovery.results_label.plural" = "Ми знайшли %li декілька Home Assistant у вашій мережі.";
-"onboarding.discovery.results_label.singular" = "Ми знайшли %li Home Assistant у вашій мережі.";
 "onboarding.logged_out_from_move.body" = "Застосунок Home Assistant для iOS нещодавно змінив організацію в App Store. На жаль, така зміна вимагає, щоб ви увійшли у застосунок заново.\
 \
  Ваші дії та локальна конфігурація будуть доступні після входу як і раніше.";
@@ -235,99 +217,10 @@
 "onboarding.manual_setup.no_scheme.message" = "Чи варто спробувати підключитися за допомогою http: // або https: //?";
 "onboarding.manual_setup.no_scheme.title" = "URL-адреса введена без схеми";
 "open_label" = "Відкрити";
-"permissions.location.initial.button.allow" = "Дозволити";
-"permissions.location.initial.button.deny" = "Заборонити";
-"permissions.location.initial.message" = "Нам потрібен дозвіл, щоб інформувати\r\Home Assistant щодо розташування та стану вашого пристрою.";
-"permissions.location.initial.title" = "Дозволити доступ до розташування?";
-"permissions.location.message" = "Ми використовуємо це, щоб інформувати\r\Home Assistant про розташування та стан вашого пристрою.";
-"permissions.location.reenable.button.allow" = "Повторно ввімкнути";
-"permissions.location.reenable.button.deny" = "Залишити вимкнутий";
-"permissions.location.reenable.message" = "Раніше ви надавали дозвіл на доступ до розташування, однак тепер його немає. Хочете надати його знову?";
-"permissions.location.reenable.title" = "Повторно увімкнути доступ до розташування?";
-"permissions.motion.initial.button.allow" = "Дозволити";
-"permissions.motion.initial.button.deny" = "Заборонити";
-"permissions.motion.initial.message" = "Ми можемо використовувати дані руху для покращення оновлень місцеположення, але для цього потрібен дозвіл.";
-"permissions.motion.initial.title" = "Дозволити рух?";
-"permissions.motion.reenable.button.allow" = "Повторно ввімкнути";
-"permissions.motion.reenable.button.deny" = "Залишити вимкнутий";
-"permissions.motion.reenable.message" = "Раніше ви надавали доступ до даних про рух, однак тепер його немає. Хочете надати його знову, щоб покращити оновлення про розташування?";
-"permissions.motion.reenable.title" = "Повторно ввімкнути рух?";
-"permissions.notification.initial.button.allow" = "Дозволити";
-"permissions.notification.initial.button.deny" = "Заборонити";
-"permissions.notification.initial.message" = "Нам потрібен дозвіл, щоб мати можливість\r\надсилати сповіщення на ваш пристрій.";
-"permissions.notification.initial.title" = "Дозволити сповіщення?";
-"permissions.notification.message" = "Ми використовуємо це, щоб ви могли\r\надіслати сповіщення на пристрої.";
-"permissions.notification.reenable.button.allow" = "Повторно ввімкнути";
-"permissions.notification.reenable.button.deny" = "Залишити вимкнутий";
-"permissions.notification.reenable.message" = "Раніше ви надавали дозвіл на надсилання сповіщення, однак тепер його немає. Хочете надати його знову?";
-"permissions.notification.reenable.title" = "Повторно ввімкнути сповіщення?";
 "preview_output" = "Попередній перегляд";
-"rate_limit_notification.body" = "Ви надіслали понад %@ сповіщень за сьогодні. Ви не отримаєте нових сповіщень до опівночі за Всесвітнім координованим часом (UTC).";
-"rate_limit_notification.title" = "Кількість сповіщень обмежена";
 "retry_label" = "Повторити";
 "sensors.active.setting.time_until_idle" = "Час до простою";
-"sensors.activity.attributes.confidence" = "Впевненість";
-"sensors.activity.attributes.types" = "Типи";
-"sensors.activity.name" = "Діяльність";
-"sensors.battery_level.name" = "Рівень акумулятора";
-"sensors.battery_state.name" = "Стан акумулятора";
-"sensors.battery.attributes.level" = "Рівень";
-"sensors.battery.attributes.state" = "Стан";
-"sensors.battery.state.charging" = "Заряджається";
-"sensors.battery.state.full" = "Повний";
-"sensors.battery.state.not_charging" = "Не заряджається";
-"sensors.bssid.name" = "BSSID";
-"sensors.cellular_provider.attributes.allows_voip" = "Дозволяє VoIP";
-"sensors.cellular_provider.attributes.carrier_id" = "ID оператора";
-"sensors.cellular_provider.attributes.carrier_name" = "Назва оператора";
-"sensors.cellular_provider.attributes.iso_country_code" = "ISO код країни";
-"sensors.cellular_provider.attributes.mobile_country_code" = "Мобільний код країни";
-"sensors.cellular_provider.attributes.mobile_network_code" = "Код мобільної мережі";
-"sensors.cellular_provider.attributes.radio_tech" = "Поточна радіотехнологія";
-"sensors.cellular_provider.name" = "Постачальник стільникового зв’язку %@";
-"sensors.cellular_provider.radio_tech.cdma_1x" = "Code Division Multiple Access (CDMA 1X)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_0" = "Code Division Multiple Access Evolution-Data Optimized Revision 0 (CDMA EV-DO Rev. 0)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_a" = "Code Division Multiple Access Evolution-Data Optimized Revision A (CDMA EV-DO Rev. A)";
-"sensors.cellular_provider.radio_tech.cdma_evdo_rev_b" = "Code Division Multiple Access Evolution-Data Optimized Revision B (CDMA EV-DO Rev. B)";
-"sensors.cellular_provider.radio_tech.edge" = "Enhanced Data rates for GSM Evolution (EDGE)";
-"sensors.cellular_provider.radio_tech.ehrpd" = "High Rate Packet Data (HRPD)";
-"sensors.cellular_provider.radio_tech.gprs" = "General Packet Radio Service (GPRS)";
-"sensors.cellular_provider.radio_tech.hsdpa" = "High Speed Downlink Packet Access (HSDPA)";
-"sensors.cellular_provider.radio_tech.hsupa" = "High Speed Uplink Packet Access (HSUPA)";
-"sensors.cellular_provider.radio_tech.lte" = "Long-Term Evolution (LTE)";
-"sensors.cellular_provider.radio_tech.wcdma" = "Wideband Code Division Multiple Access (WCDMA)";
-"sensors.connection_type.attributes.cell_tech_type" = "Стільникова технологія";
-"sensors.connection_type.name" = "Тип підключення";
-"sensors.connectivity.not_connected" = "Не підключений";
-"sensors.geocoded_location.attributes.administrative_area" = "AdministrativeArea";
-"sensors.geocoded_location.attributes.areas_of_interest" = "AreasOfInterest";
-"sensors.geocoded_location.attributes.country" = "Country";
-"sensors.geocoded_location.attributes.inland_water" = "InlandWater";
-"sensors.geocoded_location.attributes.iso_country_code" = "ISOCountryCode";
-"sensors.geocoded_location.attributes.locality" = "Місцевість";
-"sensors.geocoded_location.attributes.location" = "Розташування";
-"sensors.geocoded_location.attributes.name" = "Назва";
-"sensors.geocoded_location.attributes.ocean" = "Океан";
-"sensors.geocoded_location.attributes.postal_code" = "PostalCode";
-"sensors.geocoded_location.attributes.sub_administrative_area" = "SubAdministrativeArea";
-"sensors.geocoded_location.attributes.sub_locality" = "SubLocality";
-"sensors.geocoded_location.attributes.sub_thoroughfare" = "SubThoroughfare";
-"sensors.geocoded_location.attributes.thoroughfare" = "Thoroughfare";
-"sensors.geocoded_location.attributes.time_zone" = "TimeZone";
-"sensors.geocoded_location.name" = "Геокодоване розташування";
 "sensors.geocoded_location.setting.use_zones" = "Використовувати назву зони";
-"sensors.not_available_state" = "Недоступно";
-"sensors.pedometer.average_active_pace.name" = "Середній активний темп";
-"sensors.pedometer.current_cadence.name" = "Поточна каденція";
-"sensors.pedometer.current_pace.name" = "Поточний темп";
-"sensors.pedometer.distance.name" = "Відстань";
-"sensors.pedometer.floors_ascended.name" = "Подолано поверхів";
-"sensors.pedometer.floors_descended.name" = "Зійдено поверхів";
-"sensors.pedometer.steps.name" = "Кроки";
-"sensors.pedometer.unit.meters_per_second" = "м/с";
-"sensors.pedometer.unit.steps_per_second" = "кроки/с";
-"sensors.ssid.name" = "SSID";
-"sensors.unknown_state" = "Невідомо";
 "settings_details.actions.actions_synced.empty" = "Немає синхронізованих дій";
 "settings_details.actions.actions_synced.footer" = "Дії, визначені у .yaml, не можна редагувати на пристрої.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Дії також можуть бути визначені в конфігурації .yaml.";
@@ -365,8 +258,6 @@
 "settings_details.general.app_icon.enum.release" = "Реліз";
 "settings_details.general.app_icon.enum.white" = "Білий";
 "settings_details.general.app_icon.title" = "Значок застосунку";
-"settings_details.general.autohide_toolbar.title" = "Автоматично приховувати панель інструментів";
-"settings_details.general.chrome.title" = "Відкрити посилання у Chrome";
 "settings_details.general.device_name.title" = "Ім'я пристрою";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";
@@ -400,8 +291,6 @@
 "settings_details.location.motion_permission.enabled" = "Дозволено";
 "settings_details.location.motion_permission.needs_request" = "Відключено";
 "settings_details.location.motion_permission.title" = "Доступ до руху";
-"settings_details.location.new_one_shot.description" = "Це може надати хороші результати для перерахованих вище джерел, а може і не надати. Будемо вдячні за відгук.";
-"settings_details.location.new_one_shot.title" = "Розробницькі оновлення";
 "settings_details.location.notifications.background_fetch.title" = "Сповіщення про фонові оновлення";
 "settings_details.location.notifications.beacon_enter.title" = "Сповіщення про вхід у зони через iBeacon";
 "settings_details.location.notifications.beacon_exit.title" = "Сповіщення про вихід із зони через iBeacon";
@@ -411,9 +300,9 @@
 "settings_details.location.notifications.location_change.title" = "Сповіщення про значні зміни розташування";
 "settings_details.location.notifications.push_notification.title" = "Pushed Location Request сповіщення";
 "settings_details.location.notifications.url_scheme.title" = "Сповіщення URL-схеми про розташування";
-"settings_details.location.notifications.visit.title" = "Сповіщення про відвідування розташувань";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL сповіщення про розташування";
 "settings_details.location.title" = "Розташування";
+"settings_details.location.update_location" = "Update Location";
 "settings_details.location.updates.background.title" = "Фонове оновлення";
 "settings_details.location.updates.footer" = "Оновити розташування завжди можливо вручну";
 "settings_details.location.updates.header" = "Оновлення джерел";
@@ -436,21 +325,18 @@
 "settings_details.notifications.categories_synced.footer" = "Категорії, визначені у .yaml, не можна редагувати на пристрої.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Категорії також можуть бути визначені в конфігурації .yaml.";
 "settings_details.notifications.categories_synced.header" = "Синхронізовані категорії";
+"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Категорії";
-"settings_details.notifications.import_legacy_settings.alert.message" = "Категорії та дії для push імпортовані з сервера.";
-"settings_details.notifications.import_legacy_settings.alert.title" = "Конфігурацію push-сервера імпортовано";
-"settings_details.notifications.import_legacy_settings.button.title" = "Імпортувати push-конфігурацію з сервера";
+"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
 "settings_details.notifications.new_category.title" = "Нова категорія";
 "settings_details.notifications.permission.disabled" = "Заборонено";
 "settings_details.notifications.permission.enabled" = "Дозволено";
 "settings_details.notifications.permission.needs_request" = "Відключено";
 "settings_details.notifications.permission.title" = "Дозвіл";
 "settings_details.notifications.prompt_to_open_urls.title" = "Підтвердження перед відкриттям URL-адреси";
-"settings_details.notifications.push_id_section.footer" = "Це ціль для використання у конфігурації вашого Home Assistant. Торкніться, щоб скопіювати або поділитися.";
 "settings_details.notifications.push_id_section.header" = "Push ID";
 "settings_details.notifications.push_id_section.not_registered" = "Не зареєстровано для віддалених сповіщень";
-"settings_details.notifications.push_id_section.placeholder" = "Push ID";
 "settings_details.notifications.rate_limits.attempts" = "Спроби";
 "settings_details.notifications.rate_limits.delivered" = "Доставлено";
 "settings_details.notifications.rate_limits.errors" = "Помилки";
@@ -459,10 +345,6 @@
 "settings_details.notifications.rate_limits.header" = "Обмеження частоти";
 "settings_details.notifications.rate_limits.resets_in" = "Скидає у";
 "settings_details.notifications.rate_limits.total" = "Всього";
-"settings_details.notifications.sounds_section.button.title" = "Імпорт звуків";
-"settings_details.notifications.sounds_section.footer" = "Користувальницькі звуки для сповіщень можуть бути додані через iTunes.";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%li звуків імпортовано. Перезавантажте телефон, щоб завершити імпорт.";
-"settings_details.notifications.sounds_section.imported_alert.title" = "Звуки імпортовано";
 "settings_details.notifications.sounds.bundled" = "У комплекті";
 "settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "Неможливо побудувати шлях ~/Library/Sounds: %@";
 "settings_details.notifications.sounds.error.cant_get_directory_contents" = "Не вдається показати вміст каталогу: %@";
@@ -482,42 +364,24 @@
 "settings_details.notifications.sounds.system" = "Система";
 "settings_details.notifications.sounds.title" = "Звуки";
 "settings_details.notifications.title" = "Сповіщення";
-"settings_details.notifications.update_section.button.title" = "Оновлення налаштувань сповіщень";
-"settings_details.notifications.update_section.footer" = "Оновлення налаштувань push зробить запит останніх дії та категорії з Home Assistant.";
-"settings_details.notifications.update_section.updated_alert.message" = "Налаштування push імпортовані з Home Assistant";
-"settings_details.notifications.update_section.updated_alert.title" = "Налаштування імпортовано";
 "settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
 "settings_details.privacy.alerts.title" = "Alerts";
-"settings_details.privacy.analytics.description" = "Дозволяє збирати основну інформацію про ваш пристрій та взаємодію із застосунком. Ми не надаємо Google ідентифікаційних даних про користувача, URL-адреси чи токени Home Assistant. Щоб зміни цього параметру набули чинності, необхідно перезапустити застосунок.";
 "settings_details.privacy.analytics.generic_description" = "Дозволяє збирати основну інформацію про ваш пристрій та взаємодію з додатком. Не надаються ідентифікаційні дані користувача, включаючи URL-адреси та маркери Home Assistant. Потрібно перезапустити програму, щоб зміни цього параметра набрали чинності.";
 "settings_details.privacy.analytics.generic_title" = "Аналітика";
-"settings_details.privacy.analytics.title" = "Google Analytics";
 "settings_details.privacy.crash_reporting.description" = "Дозволяє глибше відстежувати збої та інші помилки в додатку, що призводить до швидшого опублікування виправлень. Не надсилається інформація, що ідентифікує користувача, окрім базової інформації про пристрій. Потрібно перезапустити програму, щоб зміни цього параметра набрали чинності.";
 "settings_details.privacy.crash_reporting.sentry" = "Ця функція наразі використовує Sentry як місце призначення звіту.";
 "settings_details.privacy.crash_reporting.title" = "Звіти про аварійне завершення роботи";
-"settings_details.privacy.crashlytics.description" = "Crashlytics дозволяє поглиблено відстежувати збої та інші помилки застосунку і тим самим скоріше випускати версії з виправленнями. Окрім узагальненої інформації про пристрій, жодні дані, що ідентифікують користувача, не надсилаються. Щоб зміни цього параметру набули чинності, необхідно перезапустити застосунок.";
-"settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging повинен бути увімкненим для функціонування сповіщень";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
-"settings_details.privacy.performance_monitoring.description" = "Firebase Performance Monitoring надає можливість віддалено моніторити загальну швидкодію застосунка і тим самим полегшити внесення змін для її покращення. Щоб зміни цього параметру набули чинності, необхідно перезапустити застосунок.";
-"settings_details.privacy.performance_monitoring.title" = "Firebase Performance Monitoring";
 "settings_details.privacy.title" = "Конфіденційність";
-"settings_details.siri.section.existing.title" = "Існуючі Команди";
-"settings_details.siri.section.generic.title" = "Загальні Команди";
-"settings_details.siri.section.services.title" = "Сервіси";
-"settings_details.siri.section.title" = "Загальні Команди";
-"settings_details.siri.title" = "Команди Siri";
 "settings_details.updates.check_for_updates.include_betas" = "Include Beta Releases";
 "settings_details.updates.check_for_updates.title" = "Automatically Check for Updates";
-"settings_details.watch.remaining_sends.title" = "Залишилось надсилань";
-"settings_details.watch.send_now.title" = "Надіслати зараз";
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Атрибути";
 "settings_sensors.detail.device_class" = "Клас пристрою";
 "settings_sensors.detail.enabled" = "Enabled";
 "settings_sensors.detail.icon" = "Значок";
 "settings_sensors.detail.state" = "Стан";
-"settings_sensors.detail.unique_id" = "Унікальний ID";
 "settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.last_updated.footer" = "Востаннє оновлено %@";
 "settings_sensors.loading_error.title" = "Не вдалося завантажити сенсори";
@@ -528,35 +392,11 @@
 "settings_sensors.settings.footer" = "Зміни набудуть чинності у наступному оновленні.";
 "settings_sensors.settings.header" = "Налаштування";
 "settings_sensors.title" = "Сенсори";
-"settings.advanced_connection_settings_section.title" = "Розширені налаштування підключення";
-"settings.certificate_error_notification.message" = "Виявлено самопідписаний або недійсний сертифікат SSL. Сертифікати подібного типу не підтримуються Home Assistant Companion. Для отримання додаткової інформації натисніть кнопку \"Більше інформації\".";
-"settings.certificate_error_notification.title" = "Виявлено самопідписаний або недійсний сертифікат";
-"settings.connection_error_notification.message" = "Під час підключення до Home Assistant виникла помилка. Для того, що спробувати підключитись повторно, підтвердьте правильність налаштувань та збережіть їх. Помилка: %@";
-"settings.connection_error_notification.title" = "Помилка з'єднання";
-"settings.connection_error.forbidden.message" = "Автентифікація неправильна.";
-"settings.connection_error.invalid_url.message" = "Схоже, що URL-адреса недійсна. Будь ласка, перевірте формат і повторіть спробу.";
-"settings.connection_error.invalid_url.title" = "Помилка розбору URL";
-"settings.connection_section.api_password_row.placeholder" = "пароль";
-"settings.connection_section.api_password_row.title" = "Пароль";
-"settings.connection_section.base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.base_url.title" = "URL";
-"settings.connection_section.basic_auth.password.placeholder" = "дуже безпечно";
-"settings.connection_section.basic_auth.password.title" = "Пароль";
-"settings.connection_section.basic_auth.title" = "Базова автентифікація HTTP";
-"settings.connection_section.basic_auth.username.placeholder" = "ім’я";
-"settings.connection_section.basic_auth.username.title" = "Ім'я користувача";
-"settings.connection_section.cloud_available" = "Доступна хмара";
+"settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.cloud_overrides_external" = "При підключенні через хмару зовнішня URL-адреса не використовуватиметься. Вам не потрібно налаштовувати її, якщо ви не будете користуватись віддаленим доступом.";
-"settings.connection_section.cloudhook_available" = "Доступний Cloudhook";
-"settings.connection_section.cloudhook_url.title" = "URL-адреса Cloudhook";
-"settings.connection_section.connect_row.title" = "Підключення";
 "settings.connection_section.connecting_via" = "Підключено через";
 "settings.connection_section.details" = "Деталі";
-"settings.connection_section.error_enabling_notifications.message" = "Під час ввімкнення сповіщень сталася помилка. Будь ласка, спробуйте ще раз.";
-"settings.connection_section.error_enabling_notifications.title" = "Помилка при ввімкненні сповіщень";
 "settings.connection_section.errors.cannot_remove_last_url" = "Ви не можете видалити єдину доступну URL-адресу.";
-"settings.connection_section.errors.cant_disable_cloud" = "Для вимкнення хмари необхідно встановити зовнішню URL-адресу";
-"settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud не налаштовано, ви не можете видалити зовнішню URL-адресу";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.external_base_url.title" = "Зовнішній URL";
 "settings.connection_section.header" = "Підключення";
@@ -567,25 +407,15 @@
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
 "settings.connection_section.internal_url_hardware_addresses.header" = "Hardware Addresses";
 "settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardware addresses must look like aa:bb:cc:dd:ee:ff";
-"settings.connection_section.internal_url_ssids.add_current_ssid" = "Додати поточний SSID %@";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Додати новий SSID";
 "settings.connection_section.internal_url_ssids.footer" = "Внутрішня URL-адреса використовуватиметься при підключенні до перелічених SSID";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "МояКумендаНазваМережі";
-"settings.connection_section.invalid_url_scheme_notification.message" = "URL-адреса має починатися з http://або https://.";
-"settings.connection_section.invalid_url_scheme_notification.title" = "Хибна URL-адреса";
-"settings.connection_section.log_out" = "Вийти";
 "settings.connection_section.logged_in_as" = "Ви увійшли як";
-"settings.connection_section.nabu_casa_cloud" = "Nabu Casa Cloud";
-"settings.connection_section.network_name.title" = "Поточна назва мережі";
-"settings.connection_section.remote_ui_available" = "Доступний віддалений інтерфейс користувача";
 "settings.connection_section.remote_ui_url.title" = "URL-адреса віддаленого інтерфейсу";
-"settings.connection_section.save_button.title" = "Перевірити та зберегти параметри підключення";
-"settings.connection_section.show_advanced_settings_row.title" = "Показати розширені налаштування";
+"settings.connection_section.servers" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Для доступу до SSID у фоновому режимі потрібен дозвіл \"Завжди\" розташування та \"Максимальна\" точність розташування. Натисніть тут, щоб змінити налаштування.";
 "settings.connection_section.ssid_permission_message" = "Щоб отримати доступ до SSID у фоновому режимі, потрібен дозвіл до місцезнаходження \"Завжди\". Натисніть тут, щоб змінити налаштування.";
-"settings.connection_section.use_internal_url.title" = "Використовувати внутрішню URL-адресу";
-"settings.connection_section.use_legacy_auth.title" = "Використовувати застарілу автентифікацію";
 "settings.connection_section.validate_error.edit_url" = "Редагувати URL-адресу";
 "settings.connection_section.validate_error.title" = "Помилка збереження URL-адреси";
 "settings.connection_section.validate_error.use_anyway" = "Використовувати в будь-якому випадку";
@@ -597,12 +427,9 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
-"settings.details_section.enable_location_row.title" = "Увімкнути відстеження розташування";
-"settings.details_section.enable_notification_row.title" = "Увімкнути сповіщення";
-"settings.details_section.integrations.header" = "Інтеграції";
+"settings.debugging.title" = "Debugging";
 "settings.details_section.location_settings_row.title" = "Розташування";
 "settings.details_section.notification_settings_row.title" = "Сповіщення";
-"settings.details_section.siri_shortcuts_row.title" = "Команди Siri";
 "settings.details_section.watch_row.title" = "Apple Watch";
 "settings.developer.annoying_background_notifications.title" = "Набридлива фонова інформація";
 "settings.developer.camera_notification.notification.body" = "Розгорніть це, щоб відобразити розширення вмісту камери";
@@ -620,22 +447,11 @@
 "settings.developer.export_log_files.title" = "Експорт файлів журналу";
 "settings.developer.footer" = "Якщо ви не знаєте, що робите — краще нічого не чіпайте!";
 "settings.developer.header" = "Розробник";
-"settings.developer.lokalise.alert.not_updated.message" = "Немає оновлень";
-"settings.developer.lokalise.alert.not_updated.title" = "Немає доступних оновлень локалізації";
-"settings.developer.lokalise.alert.updated.message" = "Локалізації було оновлено";
-"settings.developer.lokalise.alert.updated.title" = "Оновлено";
-"settings.developer.lokalise.title" = "Оновити переклади з Lokalise!";
 "settings.developer.map_notification.notification.body" = "Розгорніть це, щоб відобразити розширення вмісту карти";
 "settings.developer.map_notification.title" = "Показати розширення вміст сповіщень карти";
 "settings.developer.show_log_files.title" = "Показувати файли журналів у Finder";
 "settings.developer.sync_watch_context.title" = "Синхронізація контексту годинника";
-"settings.device_id_section.device_id_row.title" = "ID пристрою";
-"settings.device_id_section.footer" = "ID пристрою — це ідентифікатор, який використовується під час надсилання оновлень розташування у Home Assistant, а також для надсилання push-сповіщень.";
-"settings.discovery_section.header" = "Виявлені Home Assistant";
-"settings.discovery_section.requiresPassword" = "Потрібен пароль";
 "settings.event_log.title" = "Журнал подій";
-"settings.general_settings_button.title" = "Загальні";
-"settings.location_history.description" = "No Location History";
 "settings.location_history.detail.explanation" = "The purple circle is your location and its accuracy. Blue circles are your zones. You are inside a zone if the purple circle overlaps a blue circle. Orange circles are additional regions used for sub-100 m zones.";
 "settings.location_history.empty" = "No Location History";
 "settings.location_history.title" = "Location History";
@@ -646,34 +462,14 @@
 "settings.reset_section.reset_alert.title" = "Скинути";
 "settings.reset_section.reset_row.title" = "Скинути";
 "settings.reset_section.reset_web_cache.title" = "Очистити кеш інтерфейсу";
-"settings.status_section.connected_to_sse_row.title" = "Підключено";
-"settings.status_section.device_tracker_component_loaded_row.title" = "Компонент відстеження пристроїв завантажений";
 "settings.status_section.header" = "Статус";
-"settings.status_section.ios_component_loaded_row.title" = "iOS-компонент завантажено";
 "settings.status_section.location_name_row.placeholder" = "Мій Home Assistant";
 "settings.status_section.location_name_row.title" = "Назва";
-"settings.status_section.mobile_app_component_loaded_row.title" = "Компонент мобільного застосунку завантажено";
-"settings.status_section.notify_platform_loaded_row.title" = "Платформа сповіщень iOS завантажена";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Версія";
 "settings.template_edit.title" = "Edit Template";
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Не вдалося надіслати";
-"siri_shortcuts.configurator.fields.section.footer" = "Рекомендовано: %@";
-"siri_shortcuts.configurator.fields.section.header" = "Поля";
-"siri_shortcuts.configurator.fields.use_default_value" = "Використовувати значення за замовчуванням";
-"siri_shortcuts.configurator.fields.use_suggested_value" = "Використовувати пропоноване значення";
-"siri_shortcuts.configurator.fire_event.configuration.header" = "Конфігурація";
-"siri_shortcuts.configurator.fire_event.rows.name.title" = "Назва події";
-"siri_shortcuts.configurator.fire_event.rows.payload.placeholder" = "JSON повинен бути правильним. Якщо не задати вміст, будуть використані дані з буфера обміну.";
-"siri_shortcuts.configurator.fire_event.rows.payload.title" = "Вміст події";
-"siri_shortcuts.configurator.settings.header" = "Налаштування";
-"siri_shortcuts.configurator.settings.name.title" = "Назва команди";
-"siri_shortcuts.configurator.settings.notify_on_run.title" = "Надсилати сповіщення під час запуску";
-"siri_shortcuts.intents.fire_event.title" = "Опублікувати подію";
-"siri_shortcuts.intents.get_camera_image.title" = "Отримати зображення камери";
-"siri_shortcuts.intents.render_template.title" = "Відобразити шаблон";
-"siri_shortcuts.intents.send_location.title" = "Надіслати розташування";
 "success_label" = "Успішно";
 "token_error.connection_failed" = "Не вдалося підключитися.";
 "token_error.expired" = "Токен застарів";
@@ -687,7 +483,6 @@
 "url_handler.call_service.success.message" = "Успішний виклик %@";
 "url_handler.call_service.success.title" = "Викликаний сервіс";
 "url_handler.error.action_not_found" = "Дію не знайдено";
-"url_handler.error.title" = "Помилка";
 "url_handler.fire_event.error.message" = "Сталася помилка під час спроби опублікувати подію %@: %@";
 "url_handler.fire_event.success.message" = "Подія успішно опублікована %@";
 "url_handler.fire_event.success.title" = "Опублікована подія";
@@ -714,7 +509,6 @@
 "watch.configurator.rows.column_2_alignment.options.trailing" = "Закривання";
 "watch.configurator.rows.column_2_alignment.title" = "Column 2 Alignment";
 "watch.configurator.rows.display_name.title" = "Відображуване ім’я";
-"watch.configurator.rows.fractional_value.title" = "Дробове значення";
 "watch.configurator.rows.gauge.color.title" = "Колір";
 "watch.configurator.rows.gauge.gauge_type.options.closed" = "Закрито";
 "watch.configurator.rows.gauge.gauge_type.options.open" = "Відкрито";
@@ -730,12 +524,7 @@
 "watch.configurator.rows.ring.ring_type.options.closed" = "Закрито";
 "watch.configurator.rows.ring.ring_type.options.open" = "Відкрити";
 "watch.configurator.rows.ring.ring_type.title" = "Тип";
-"watch.configurator.rows.ring.title" = "Кільце";
 "watch.configurator.rows.ring.value.title" = "Дробове значення";
-"watch.configurator.rows.row_2_alignment.options.leading" = "Відкриваючий";
-"watch.configurator.rows.row_2_alignment.options.trailing" = "Закривання";
-"watch.configurator.rows.row_2_alignment.title" = "Вирівнювання Рядка 2";
-"watch.configurator.rows.style.title" = "Стиль";
 "watch.configurator.rows.template.selector_title" = "Оберіть шаблон";
 "watch.configurator.rows.template.title" = "Шаблон";
 "watch.configurator.sections.gauge.footer" = "Шкала для відображення у циферблаті.";
@@ -894,61 +683,6 @@
 "watch.labels.complication_text_areas.trailing.label" = "Закривання";
 "watch.labels.no_action" = "Не налаштовано жодних дій. Налаштуйте дії на своєму телефоні, щоб приховати це повідомлення.";
 "watch.placeholder_complication_name" = "Заповнювач";
-"whats_new.buttons.completion.title" = "Почнімо";
-"whats_new.buttons.read_more.title" = "Читати далі";
-"whats_new.title" = "Що нового в\
-Home Assistant Companion %@";
-"whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle" = "На створення 2.0 знадобилось понад 300 годин та майже 35000 рядків нового коду, тому тут можливо розповісти лише про деякі з нових функцій. Поряд з ними є ще багато інших вдосконалень!";
-"whats_new.Two_Dot_Zero.items.and_so_much_more.title" = "І дуже багато іншого";
-"whats_new.Two_Dot_Zero.items.app_icons.subtitle" = "Новий значок застосунка та його альтернативні версії, які можна змінити в налаштуванняї. Окрім цього, ви можете запустити автоматизацію за допомогою глибокого натискання на значок застосунку.";
-"whats_new.Two_Dot_Zero.items.app_icons.title" = "Значки застосунку";
-"whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Надсилання критичних сповіщень ігноруватиме режим \"Не турбувати\" та налаштування гучності.";
-"whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Критичні оповіщення";
-"whats_new.Two_Dot_Zero.items.donations.subtitle" = "Після багаторічних прохань додати можливість надіслати пожертви, вони нарешті доступні! Щоб отримати докладнішу інформацію, натисніть Пожертвувати на екрані Інформація.";
-"whats_new.Two_Dot_Zero.items.donations.title" = "Пожертвування";
-"whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle" = "Вбудована підтримка Home Assistant Cloud.";
-"whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Підтримка Home Assistant Cloud";
-"whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Завдяки новому компоненту mobile_app, Home Assistant Companion став кращим …компаньйоном, ніж будь-коли раніше!";
-"whats_new.Two_Dot_Zero.items.improved_integration.title" = "Поліпшена інтеграція";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.subtitle" = "Забудьте про YAML, редагуйте категорії в додатку та переглядайте результати в режимі реального часу.";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Вбудований редактор категорій для сповіщень";
-"whats_new.Two_Dot_Zero.items.more_data.subtitle" = "Нещодавно додані сенсори для кроків, пройденої відстані, темпу, інформації про з'єднання та багато іншого.";
-"whats_new.Two_Dot_Zero.items.more_data.title" = "Більше даних";
-"whats_new.Two_Dot_Zero.items.notification_sounds.subtitle" = "Використовуйте системні звуки для своїх сповіщень і керуйте звуками повністю в додатку. Більше ніякого iTunes!";
-"whats_new.Two_Dot_Zero.items.notification_sounds.title" = "Звуки сповіщень";
-"whats_new.Two_Dot_Zero.items.themes.subtitle" = "Застосунок тепер відповідає вашій активній темі інтерфейсу, в режимі реального часу!";
-"whats_new.Two_Dot_Zero.items.themes.title" = "Теми";
-"whats_new.Two_Dot_Zero.items.today_widget.subtitle" = "Дозволити запуск автоматизації у Home Assistant з подання «Cьогодні».";
-"whats_new.Two_Dot_Zero.items.today_widget.title" = "Віджет \"Сьогодні\"";
-"whats_new.Two_Dot_Zero.items.web_view_cleanup.subtitle" = "Більше немає панелей інструментів, додаток тепер тісно інтегровано з фронтендом. Налаштування можна знайти на бічній панелі. Додано функцію \"потягнути вниз для оновлення\".";
-"whats_new.Two_Dot_Zero.items.web_view_cleanup.title" = "Очищення веб-перегляду";
-"whats_new.Two_Dot_Zero.thank_you.message" = "Дякую. \
-\
-Дякую, що користуєтесь компаньйоном для Home Assistant. \
-\
-Дякую, що користуєтесь Home Assistant. \
-\
-Дякую, що мирилися зі мною протягом останніх 3 років роботи. \
-\
-Дякую, що мирилися зі мною протягом останніх 10 місяців розробки версії 2.0. \
-\
-Дякую, що подавали звіти про помилки на GitHub. \
-\
-Дякую за те, що допомагаєте іншим користувачам, коли це було потрібно і мене не було поруч. \
-\
-Дякую, що надсилаєте мені електронні листи о 2 ранку, де дуже детально описуєте, як ця кнопка розташована криво на 2 пікселі.\
-\
-Дякую за те, що ви є і підтримуєте мене. \
-\
-Ваші постійні позитивні відгуки та вдячність - це те, що підтримує мене. \
-\
- Я дуже сподіваюся, що вам подобається Home Assistant Companion 2.0. \
-\
- Дякую. \
-\
--- Робі (Robbie)";
-"whats_new.Two_Dot_Zero.thank_you.ok_button" = "Ласкаво просимо!";
-"whats_new.Two_Dot_Zero.thank_you.title" = "І ще одна річ…";
 "widgets.actions.description" = "Виконайте дії Home Assistant.";
 "widgets.actions.not_configured" = "Жодних дій не налаштовано";
 "widgets.actions.title" = "Дії";
