@@ -500,6 +500,13 @@
 "watch.configurator.delete.title" = "Видалити Complication?";
 "watch.configurator.list.description" = "Налаштуйте нове Complication за допомогою кнопки Додати. Після збереження ви можете вибрати його на своєму Apple Watch або в додатку Watch.";
 "watch.configurator.list.learn_more" = "Дізнатися більше";
+"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Update Complications";
+"watch.configurator.list.manual_updates.remaining" = "Remaining";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
+"watch.configurator.list.manual_updates.state.not_installed" = "Not Installed";
+"watch.configurator.list.manual_updates.state.not_paired" = "No Device";
+"watch.configurator.list.manual_updates.title" = "Manual Updates";
 "watch.configurator.new.multiple_complication_info" = "Додавання іншого Complication для того ж типу, що і існуючий, вимагає watchOS 7 або новішої версії.";
 "watch.configurator.new.title" = "Новий Complication";
 "watch.configurator.preview_error.not_number" = "Очікувалося число, але отримано %1$@: '%2$@'";

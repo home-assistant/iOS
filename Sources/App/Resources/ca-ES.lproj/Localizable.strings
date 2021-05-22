@@ -97,7 +97,7 @@
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unknown" = "S'ha produït un error desconegut.";
 "ha_api.api_error.update_not_possible" = "No s'ha pogut realitzar l'operació.";
-"help_label" = "Help";
+"help_label" = "Ajuda";
 "location_change_notification.app_shortcut.body" = "Ubicació actualitzada mitjançant drecera d’aplicació";
 "location_change_notification.background_fetch.body" = "Ubicació actual activada en segon pla";
 "location_change_notification.beacon_region_enter.body" = "%@ entrat a través de iBeacon";
@@ -158,7 +158,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "nfc.write.success_message" = "Etiqueta escrita!";
 "no_label" = "No";
 "notification_service.failed_to_load" = "No s'ha pogut carregar el fitxer adjunt";
-"notification_service.loading_dynamic_actions" = "Loading Actions…";
+"notification_service.loading_dynamic_actions" = "Carregant Accions...";
 "notification_service.parser.camera.invalid_entity" = "entity_id proporcionat no era vàlid.";
 "notification_service.parser.url.invalid_url" = "L'adreça URL donada no era vàlida.";
 "notification_service.parser.url.no_url" = "No s'ha proporcionat cap URL.";
@@ -302,7 +302,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.location.notifications.url_scheme.title" = "Notificacions d'ubicació d'esquemes d'URL";
 "settings_details.location.notifications.x_callback_url.title" = "Notificacions d'ubicació de X-Callback-URL";
 "settings_details.location.title" = "Ubicació";
-"settings_details.location.update_location" = "Update Location";
+"settings_details.location.update_location" = "Actualitza la ubicació";
 "settings_details.location.updates.background.title" = "Actualització en segon pla";
 "settings_details.location.updates.footer" = "Les actualitzacions d'ubicació manuals sempre es poden activar";
 "settings_details.location.updates.header" = "Fonts d’actualització";
@@ -325,10 +325,10 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.categories_synced.footer" = "Les categories definides a .yaml no es poden editar al dispositiu.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Les categories també es poden definir a la configuració .yaml.";
 "settings_details.notifications.categories_synced.header" = "Categories sincronitzades";
-"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
+"settings_details.notifications.categories.deprecated_note" = "Les categories ja no són necessàries per a notificacions accionables i s'eliminaran en una futura versió.";
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categories";
-"settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
+"settings_details.notifications.info" = "Utilitzeu el servei de notificacions \"mobile_app\" per enviar notificacions al vostre dispositiu.";
 "settings_details.notifications.new_category.title" = "Nova categoria";
 "settings_details.notifications.permission.disabled" = "Denegat";
 "settings_details.notifications.permission.enabled" = "Habilitat";
@@ -364,11 +364,11 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.sounds.system" = "Sistema";
 "settings_details.notifications.sounds.title" = "Sons";
 "settings_details.notifications.title" = "Notificacions";
-"settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
+"settings_details.privacy.alerts.description" = "Permet comprovar si hi ha alertes importants, com ara vulnerabilitats de seguretat.";
 "settings_details.privacy.alerts.title" = "Alertes";
 "settings_details.privacy.analytics.generic_description" = "Permet la recopilació d'informació bàsica sobre el dispositiu i les interaccions amb l'aplicació. No es comparteixen dades identificables de l'usuari, inclosos les URL i els tokens del Home Assistant. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
-"settings_details.privacy.crash_reporting.description" = "Permet un seguiment més profund de bloquejos i altres errors a l'aplicació, cosa que permet publicar solucions amb més rapidesa. No s’envia cap informació identificable de l’usuari, a part de la informació bàsica del dispositiu. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
+"settings_details.privacy.crash_reporting.description" = "Permet un seguiment més profund de bloquejos i altres errors de l'aplicació, cosa que permet publicar solucions amb més rapidesa. No s’envia cap informació identificable de l’usuari, a part de la informació bàsica del dispositiu. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.crash_reporting.sentry" = "Actualment, aquesta característica utilitza Sentry com a destinació de l'informe.";
 "settings_details.privacy.crash_reporting.title" = "Informes d'Errors";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging ha d'estar habilitat perquè funcionin les notificacions push.";
@@ -392,7 +392,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_sensors.settings.footer" = "Els canvis s'aplicaran a la pròxima actualització.";
 "settings_sensors.settings.header" = "Configuració";
 "settings_sensors.title" = "Sensors";
-"settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.add_server" = "Afegir Servidor";
 "settings.connection_section.cloud_overrides_external" = "Quan es connecti mitjançant el núvol, no s’utilitzarà la URL externa. No cal configurar-ne una tret que vulgueu desactivar el núvol.";
 "settings.connection_section.connecting_via" = "Connectat a través de";
 "settings.connection_section.details" = "Detalls";
@@ -413,7 +413,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.internal_url_ssids.placeholder" = "ElMeuNomDeXarxaDivertit";
 "settings.connection_section.logged_in_as" = "Sessió iniciada com";
 "settings.connection_section.remote_ui_url.title" = "URL UI Remota";
-"settings.connection_section.servers" = "Servers";
+"settings.connection_section.servers" = "Servidors";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "L'accés a SSIDs en segon pla requereix el permís de localització establert com a \"Sempre\". Toca aquí per canviar la configuració.";
 "settings.connection_section.validate_error.edit_url" = "Edita l'adreça URL";
@@ -427,7 +427,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Nombre d'intents: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Desconnectat";
 "settings.connection_section.websocket.title" = "WebSocket";
-"settings.debugging.title" = "Debugging";
+"settings.debugging.title" = "Depuració";
 "settings.details_section.location_settings_row.title" = "Ubicació";
 "settings.details_section.notification_settings_row.title" = "Notificacions";
 "settings.details_section.watch_row.title" = "Apple Watch";
@@ -500,6 +500,13 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "watch.configurator.delete.title" = "Voleu suprimir la complicació?";
 "watch.configurator.list.description" = "Configureu una nova complicació mitjançant el botó Afegeix. Un cop desat, podeu triar-lo al vostre Apple Watch o a l'aplicació Watch.";
 "watch.configurator.list.learn_more" = "Més informació";
+"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Update Complications";
+"watch.configurator.list.manual_updates.remaining" = "Restant";
+"watch.configurator.list.manual_updates.state.not_enabled" = "No activat";
+"watch.configurator.list.manual_updates.state.not_installed" = "No està instal·lat";
+"watch.configurator.list.manual_updates.state.not_paired" = "Cap dispositiu";
+"watch.configurator.list.manual_updates.title" = "Actualitzacions Manuals";
 "watch.configurator.new.multiple_complication_info" = "Afegir una altra complicació per al mateix tipus que un existent requereix watchOS 7 o més recent.";
 "watch.configurator.new.title" = "Nova complicació";
 "watch.configurator.preview_error.not_number" = "S'esperava un número però s'ha obtingut %1$@: '%2$@'";

@@ -500,6 +500,13 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "watch.configurator.delete.title" = "Slette komplikasjon?";
 "watch.configurator.list.description" = "Konfigurer en ny komplikasjon ved hjelp av Legg til-knappen. Når den er lagret, kan du velge den på Apple Watch eller i Watch-appen.";
 "watch.configurator.list.learn_more" = "Lære mer";
+"watch.configurator.list.manual_updates.footer" = "Automatiske oppdateringer skjer 4 ganger i timen. Manuelle oppdateringer kan også gjøres ved hjelp av varsler.";
+"watch.configurator.list.manual_updates.manually_update" = "Oppdater komplikasjoner";
+"watch.configurator.list.manual_updates.remaining" = "Gjenstående";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Ikke aktivert";
+"watch.configurator.list.manual_updates.state.not_installed" = "Ikke installert";
+"watch.configurator.list.manual_updates.state.not_paired" = "Ingen enhet";
+"watch.configurator.list.manual_updates.title" = "Manuelle oppdateringer";
 "watch.configurator.new.multiple_complication_info" = "Legge til en annen komplikasjon for samme type som en eksisterende krever watchOS 7 eller nyere.";
 "watch.configurator.new.title" = "Ny komplikasjon";
 "watch.configurator.preview_error.not_number" = "Forventet et tall, men fikk %1$@ : '%2$@'";
