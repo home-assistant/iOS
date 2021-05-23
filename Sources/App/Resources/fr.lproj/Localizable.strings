@@ -500,6 +500,13 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "watch.configurator.delete.title" = "Supprimer la complication ?";
 "watch.configurator.list.description" = "Configurez une nouvelle complication à l'aide du bouton Ajouter. Une fois enregistré, vous pouvez le choisir sur votre Apple Watch ou dans l'application Watch.";
 "watch.configurator.list.learn_more" = "En savoir plus";
+"watch.configurator.list.manual_updates.footer" = "Les mises à jour automatiques se produisent 4 fois par heure. Les mises à jour manuelles peuvent également être effectuées à l'aide de notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Mettre à jour les complications";
+"watch.configurator.list.manual_updates.remaining" = "Restant";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
+"watch.configurator.list.manual_updates.state.not_installed" = "Not Installed";
+"watch.configurator.list.manual_updates.state.not_paired" = "Aucun appareil";
+"watch.configurator.list.manual_updates.title" = "Mises à jour manuelles";
 "watch.configurator.new.multiple_complication_info" = "L'ajout d'une autre complication du même type qu'une complication existante nécessite watchOS 7 ou plus récent.";
 "watch.configurator.new.title" = "Nouvelle complication";
 "watch.configurator.preview_error.not_number" = "Attendu un nombre mais obtenu %1$@ : ' %2$@ '";

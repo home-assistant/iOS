@@ -500,6 +500,13 @@
 "watch.configurator.delete.title" = "Komplikasyon Silinsin mi?";
 "watch.configurator.list.description" = "Ekle düğmesini kullanarak yeni bir Komplikasyon yapılandırın. Kaydedildikten sonra Apple Watch'unuzda veya Watch uygulamasında seçebilirsiniz.";
 "watch.configurator.list.learn_more" = "Daha fazla bilgi edinin";
+"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Update Complications";
+"watch.configurator.list.manual_updates.remaining" = "Remaining";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
+"watch.configurator.list.manual_updates.state.not_installed" = "Not Installed";
+"watch.configurator.list.manual_updates.state.not_paired" = "No Device";
+"watch.configurator.list.manual_updates.title" = "Manual Updates";
 "watch.configurator.new.multiple_complication_info" = "Mevcut olanla aynı tür için başka bir Komplikasyon eklemek, watchOS 7 veya daha yenisini gerektirir.";
 "watch.configurator.new.title" = "Yeni Komplikasyon";
 "watch.configurator.preview_error.not_number" = "Bir sayı bekleniyordu ancak %1$@ : ' %2$@ '";

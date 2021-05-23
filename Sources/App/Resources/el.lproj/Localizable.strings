@@ -500,6 +500,13 @@
 "watch.configurator.delete.title" = "Διαγραφή επιπλοκής;";
 "watch.configurator.list.description" = "Ρυθμίστε τις παραμέτρους μιας νέας επιπλοκής χρησιμοποιώντας το κουμπί Προσθήκη. Αφού αποθηκεύσετε, μπορείτε να το επιλέξετε στο Apple Watch ή στην εφαρμογή Watch.";
 "watch.configurator.list.learn_more" = "Μάθε περισσότερα";
+"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Update Complications";
+"watch.configurator.list.manual_updates.remaining" = "Remaining";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
+"watch.configurator.list.manual_updates.state.not_installed" = "Not Installed";
+"watch.configurator.list.manual_updates.state.not_paired" = "No Device";
+"watch.configurator.list.manual_updates.title" = "Manual Updates";
 "watch.configurator.new.multiple_complication_info" = "Η προσθήκη μιας άλλης επιπλοκής για τον ίδιο τύπο με μια υπάρχουσα απαιτεί watchOS 7 ή νεότερη έκδοση.";
 "watch.configurator.new.title" = "Νέα επιπλοκή";
 "watch.configurator.preview_error.not_number" = "Αναμενόταν ένας αριθμός αλλά πήρε %1$@: '%2$@'";

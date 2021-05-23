@@ -500,6 +500,13 @@
 "watch.configurator.delete.title" = "刪除複雜功能？";
 "watch.configurator.list.description" = "使用新增按鈕新增複雜功能，可以於 Apple Watch 或 Watch App 中選擇。";
 "watch.configurator.list.learn_more" = "了解更多";
+"watch.configurator.list.manual_updates.footer" = "自動更新每小時執行 4 次、手動更新也能使用通知來完成。";
+"watch.configurator.list.manual_updates.manually_update" = "更新合集";
+"watch.configurator.list.manual_updates.remaining" = "剩餘";
+"watch.configurator.list.manual_updates.state.not_enabled" = "未啟用";
+"watch.configurator.list.manual_updates.state.not_installed" = "未安裝";
+"watch.configurator.list.manual_updates.state.not_paired" = "無裝置";
+"watch.configurator.list.manual_updates.title" = "手動更新";
 "watch.configurator.new.multiple_complication_info" = "使用現有相同類型新增另一個複雜功能需要 watchOS 7 或更新版本。";
 "watch.configurator.new.title" = "新增複雜功能";
 "watch.configurator.preview_error.not_number" = "預期為數字。但收到%1$@：'%2$@'";

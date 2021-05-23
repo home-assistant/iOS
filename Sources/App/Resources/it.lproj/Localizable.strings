@@ -500,6 +500,13 @@
 "watch.configurator.delete.title" = "Eliminare la complicazione?";
 "watch.configurator.list.description" = "Configurare una nuova complicazione utilizzando il pulsante Aggiungi. Una volta salvato, puoi sceglierlo sul tuo Apple Watch o nell'app Watch.";
 "watch.configurator.list.learn_more" = "Per saperne di più";
+"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Update Complications";
+"watch.configurator.list.manual_updates.remaining" = "Remaining";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
+"watch.configurator.list.manual_updates.state.not_installed" = "Not Installed";
+"watch.configurator.list.manual_updates.state.not_paired" = "No Device";
+"watch.configurator.list.manual_updates.title" = "Manual Updates";
 "watch.configurator.new.multiple_complication_info" = "L'aggiunta di un'altra complicazione per lo stesso tipo di una esistente richiede watchOS 7 o più recente.";
 "watch.configurator.new.title" = "Nuova complicazione";
 "watch.configurator.preview_error.not_number" = "Previsto un numero ma ottenuto %1$@: '%2$@'";

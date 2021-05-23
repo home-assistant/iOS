@@ -501,6 +501,13 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "watch.configurator.delete.title" = "Komplikation löschen?";
 "watch.configurator.list.description" = "Konfiguriere eine neue Komplikation mit dem Hinzufügen Button. Wenn es gespeichert wurde, kannst du es auf deiner Apple Watch oder in der Watch-App auswählen.";
 "watch.configurator.list.learn_more" = "Mehr Informationen";
+"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.manually_update" = "Update Complications";
+"watch.configurator.list.manual_updates.remaining" = "Remaining";
+"watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
+"watch.configurator.list.manual_updates.state.not_installed" = "Not Installed";
+"watch.configurator.list.manual_updates.state.not_paired" = "No Device";
+"watch.configurator.list.manual_updates.title" = "Manual Updates";
 "watch.configurator.new.multiple_complication_info" = "Das Hinzufügen einer weiteren Komplikation für denselben Typ wie bereits vorhanden erfordert watchOS 7 oder neuer.";
 "watch.configurator.new.title" = "Neue Komplikation";
 "watch.configurator.preview_error.not_number" = "Es wurde eine Zahl erwartet, aber gegeben wurde %1$@: %2$@";
