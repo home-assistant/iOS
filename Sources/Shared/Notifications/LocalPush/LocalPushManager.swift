@@ -64,11 +64,26 @@ public class LocalPushManager {
         ))
 
         subscription = .init(
-            token: Current.apiConnection.subscribe(to: request) { [weak self] _, value in
-                self?.handle(event: value.data)
-            },
+            token: Current.apiConnection.subscribe(
+                to: request,
+                initiated: { [weak self] result in
+                    self?.handle(initiated: result.map { _ in () })
+                }, handler: { [weak self] _, value in
+                    self?.handle(event: value.data)
+                }
+            ),
             webhookID: webhookID
         )
+    }
+
+    private func handle(initiated result: Swift.Result<Void, HAError>) {
+        switch result {
+        case let .failure(error):
+            Current.Log.error("failed to subscribe to notifications: \(error)")
+            subscription = nil
+        case .success:
+            Current.Log.info("started")
+        }
     }
 
     private func handle(event serviceData: [String: Any]) {
