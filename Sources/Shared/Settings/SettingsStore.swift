@@ -313,6 +313,18 @@ public class SettingsStore {
             default: return ""
             }
         }
+
+        internal static func `default`(for keyPath: KeyPath<Privacy, Bool>) -> Bool {
+            switch keyPath {
+            case \.messaging: return true
+            case \.crashes: return false
+            case \.analytics: return false
+            case \.alerts: return true
+            case \.updates: return true
+            case \.updatesIncludeBetas: return true
+            default: return false
+            }
+        }
     }
 
     public var privacy: Privacy {
@@ -320,8 +332,8 @@ public class SettingsStore {
             func boolValue(for keyPath: KeyPath<Privacy, Bool>) -> Bool {
                 let key = Privacy.key(for: keyPath)
                 if prefs.object(forKey: key) == nil {
-                    // default to enabled for privacy settings
-                    return true
+                    // value never set, use the default for this one
+                    return Privacy.default(for: keyPath)
                 }
                 return prefs.bool(forKey: key)
             }

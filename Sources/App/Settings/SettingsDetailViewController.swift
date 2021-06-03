@@ -443,6 +443,13 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     Current.settingsStore.privacy.messaging = row.value ?? true
                     Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
                 }
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Alerts.description)
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Privacy.Alerts.title
+                    $0.value = Current.settingsStore.privacy.alerts
+                }.onChange { row in
+                    Current.settingsStore.privacy.alerts = row.value ?? true
+                }
                 +++ Section(
                     header: nil,
                     footer: L10n.SettingsDetails.Privacy.CrashReporting.description
@@ -460,13 +467,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     $0.value = Current.settingsStore.privacy.analytics
                 }.onChange { row in
                     Current.settingsStore.privacy.analytics = row.value ?? true
-                }
-                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Alerts.description)
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Privacy.Alerts.title
-                    $0.value = Current.settingsStore.privacy.alerts
-                }.onChange { row in
-                    Current.settingsStore.privacy.alerts = row.value ?? true
                 }
 
         default:
