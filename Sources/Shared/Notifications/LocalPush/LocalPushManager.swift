@@ -1,6 +1,6 @@
-import UserNotifications
 import HAKit
 import PromiseKit
+import UserNotifications
 
 public class LocalPushManager {
     public init() {

@@ -1,7 +1,7 @@
 import Foundation
-import XCTest
 import ObjectMapper
 import Shared
+import XCTest
 
 class NotificationParserLegacyTests: XCTestCase {
     private struct NotificationCase: ImmutableMappable {
@@ -13,7 +13,7 @@ class NotificationParserLegacyTests: XCTestCase {
 
         var expected: [String: Any] { [
             "headers": headers,
-            "payload": payload
+            "payload": payload,
         ] }
 
         init(map: Map) throws {
@@ -36,11 +36,13 @@ class NotificationParserLegacyTests: XCTestCase {
     override func setUpWithError() throws {
         super.setUp()
 
-        let container = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "notification_test_cases", withExtension: "bundle"))
+        let container = try XCTUnwrap(
+            Bundle(for: Self.self)
+                .url(forResource: "notification_test_cases", withExtension: "bundle")
+        )
         let enumerator = try XCTUnwrap(FileManager.default.enumerator(at: container, includingPropertiesForKeys: nil))
 
         let mapper = Mapper<NotificationCase>()
-
 
         notificationCases = try enumerator.allObjects
             .map { try XCTUnwrap($0 as? URL) }

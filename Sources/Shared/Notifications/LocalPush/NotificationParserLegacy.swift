@@ -6,11 +6,11 @@ public enum NotificationParserLegacy {
     public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
         let registrationInfo = input["registration_info"] as? [String: String] ?? [
             "os_version": Current.device.systemVersion(),
-            "app_id": Constants.BundleID
+            "app_id": Constants.BundleID,
         ]
         let data = input["data"] as? [String: Any] ?? [:]
         var headers: [String: Any] = [
-            "apns-push-type": "alert"
+            "apns-push-type": "alert",
         ]
         if let apnsHeaders = data["apns_headers"] as? [String: Any] {
             headers.merge(apnsHeaders, uniquingKeysWith: { _, b in b })
@@ -23,7 +23,7 @@ public enum NotificationParserLegacy {
                 homeassistant: [String: Any] = [:]
             ) -> [String: Any] { [
                 "aps": ["contentAvailable": true].merging(aps, uniquingKeysWith: { a, _ in a }),
-                "homeassistant": ["command": name].merging(homeassistant, uniquingKeysWith: { a, _ in a })
+                "homeassistant": ["command": name].merging(homeassistant, uniquingKeysWith: { a, _ in a }),
             ] }
 
             switch input["message"] as? String {
@@ -61,8 +61,8 @@ public enum NotificationParserLegacy {
                 "alert": [
                     "body": input["message"],
                 ],
-                "sound": "default"
-            ]
+                "sound": "default",
+            ],
         ]
 
         guard registrationInfo["app_id"]?.contains("io.robbie.HomeAssistant") == true else {
@@ -192,7 +192,7 @@ private extension Dictionary where Value == Any {
         _ key: Key,
         _ type: SomeValue.Type? = nil,
         default: SomeValue? = nil,
-        with transform: (inout SomeValue) -> ()
+        with transform: (inout SomeValue) -> Void
     ) {
         guard let baseReplacement = self[key] ?? `default` else {
             return
@@ -206,7 +206,7 @@ private extension Dictionary where Value == Any {
         self[key] = replacement
     }
 
-    mutating func mutateInside(_ key: Key, with transform: (inout [String: Any]) -> ()) {
+    mutating func mutateInside(_ key: Key, with transform: (inout [String: Any]) -> Void) {
         mutate(key, [String: Any].self, default: [String: Any](), with: transform)
     }
 }
