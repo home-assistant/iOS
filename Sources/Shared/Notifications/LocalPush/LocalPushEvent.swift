@@ -1,5 +1,6 @@
 import Foundation
 import HAKit
+import UserNotifications
 
 struct LocalPushEvent: HADataDecodable {
     enum LocalPushEventError: Error {
