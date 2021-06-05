@@ -12,12 +12,8 @@ class NotificationParserLegacyTests: XCTestCase {
         var rateLimit: Bool // unused in tests
 
         var expected: [String: Any] { [
-            "payload": [
-                "apns": [
-                    "headers": headers,
-                    "payload": payload
-                ]
-            ]
+            "headers": headers,
+            "payload": payload
         ] }
 
         init(map: Map) throws {
@@ -66,7 +62,8 @@ class NotificationParserLegacyTests: XCTestCase {
                 return try XCTUnwrap(String(data: data, encoding: .utf8))
             }
 
-            let result = NotificationParserLegacy.result(from: data.input)
+            let (headers, payload) = NotificationParserLegacy.result(from: data.input)
+            let result = ["headers": headers, "payload": payload]
             let resultString = try prettyString(from: result)
             let expected = data.expected
             let expectedString = try prettyString(from: expected)
