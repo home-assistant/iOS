@@ -65,6 +65,7 @@ public class LocalPushManager {
             data: ["webhook_id": webhookID]
         ))
 
+        subscription?.cancel()
         subscription = .init(
             token: Current.apiConnection.subscribe(
                 to: request,
@@ -141,7 +142,7 @@ public class LocalPushManager {
             content.subtitle = subtitle
         }
         if let body = alert["body"] as? String {
-            content.body = "[LOCAL] \(body)"
+            content.body = body
         }
         if let threadId = aps["thread-id"] as? String {
             content.threadIdentifier = threadId
@@ -152,8 +153,9 @@ public class LocalPushManager {
         if let category = aps["category"] as? String {
             content.categoryIdentifier = category
         }
-
-        content.sound = Self.sound(for: aps["sound"] as Any)
+        if let sound = aps["sound"] {
+            content.sound = Self.sound(for: sound)
+        }
     }
 
     private static func sound(for sound: Any) -> UNNotificationSound? {
@@ -189,12 +191,9 @@ private struct Sound {
     }
 
     init(name: String) {
-        switch name.lowercased() {
-        case "none":
-            self.soundType = .silent
-        case "default":
+        if name.lowercased() == "default" {
             self.soundType = .default
-        default:
+        } else {
             self.soundType = .named(.init(rawValue: name))
         }
 
