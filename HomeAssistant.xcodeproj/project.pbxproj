@@ -260,6 +260,8 @@
 		11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
+		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
+		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
@@ -1189,6 +1191,7 @@
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
+		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
@@ -2121,6 +2124,7 @@
 			children = (
 				11A3BD2C26192210005237E6 /* LocalPushManager.swift */,
 				11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */,
+				11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */,
 			);
 			path = LocalPush;
 			sourceTree = "<group>";
@@ -4967,6 +4971,7 @@
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
+				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
 				113E73112518457C004006D8 /* LocalizedManager.swift in Sources */,
@@ -5128,6 +5133,7 @@
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
+				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
