@@ -89,13 +89,16 @@ public class LocalPushManager {
     }
 
     private func handle(event pushMessage: PushMessage) {
+        Current.Log.debug("handling \(pushMessage)")
+
         let content = Self.content(from: pushMessage)
         let identifier = Self.identifier(from: pushMessage)
+        let attachmentManager = NotificationAttachmentManager()
 
         firstly {
             Current.api
         }.then { api in
-            NotificationAttachmentManager().content(from: content, api: api)
+            attachmentManager.content(from: content, api: api)
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(content)
@@ -129,14 +132,16 @@ public class LocalPushManager {
     }
 
     private static func update(content: UNMutableNotificationContent, for aps: [String: Any]) {
-        if let title = aps["title"] as? String {
+        let alert = aps["alert"] as? [String: Any] ?? [:]
+
+        if let title = alert["title"] as? String {
             content.title = title
         }
-        if let subtitle = aps["subtitle"] as? String {
+        if let subtitle = alert["subtitle"] as? String {
             content.subtitle = subtitle
         }
-        if let body = aps["body"] as? String {
-            content.body = body
+        if let body = alert["body"] as? String {
+            content.body = "[LOCAL] \(body)"
         }
         if let threadId = aps["thread-id"] as? String {
             content.threadIdentifier = threadId

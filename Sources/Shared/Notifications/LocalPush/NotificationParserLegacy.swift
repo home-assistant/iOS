@@ -4,7 +4,10 @@ import Foundation
 
 public enum NotificationParserLegacy {
     public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
-        let registrationInfo = input["registration_info"] as? [String: String] ?? [:]
+        let registrationInfo = input["registration_info"] as? [String: String] ?? [
+            "os_version": Current.device.systemVersion(),
+            "app_id": Constants.BundleID
+        ]
         let data = input["data"] as? [String: Any] ?? [:]
         var headers: [String: Any] = [
             "apns-push-type": "alert"
