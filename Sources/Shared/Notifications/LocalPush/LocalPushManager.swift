@@ -2,7 +2,7 @@ import UserNotifications
 import HAKit
 import PromiseKit
 
-struct PushMessage: HADataDecodable {
+struct LocalPushMessage: HADataDecodable {
     enum PushMessageError: Error {
         case invalidType
     }
@@ -60,7 +60,7 @@ public class LocalPushManager {
             return
         }
 
-        let request = HATypedSubscription<PushMessage>(request: .init(
+        let request = HATypedSubscription<LocalPushMessage>(request: .init(
             type: "mobile_app/push_notification_channel",
             data: ["webhook_id": webhookID]
         ))
@@ -89,10 +89,10 @@ public class LocalPushManager {
         }
     }
 
-    private func handle(event pushMessage: PushMessage) {
+    private func handle(event pushMessage: LocalPushMessage) {
         Current.Log.debug("handling \(pushMessage)")
 
-        let content = Self.content(from: pushMessage)
+        let content = UNNotificationContent.content(from: pushMessage)
         let identifier = Self.identifier(from: pushMessage)
         let attachmentManager = NotificationAttachmentManager()
 
@@ -117,66 +117,54 @@ public class LocalPushManager {
         }
     }
 
-    private static func identifier(from pushMessage: PushMessage) -> String {
+    private static func identifier(from pushMessage: LocalPushMessage) -> String {
         if let collapseId = pushMessage.headers["apns-collapse-id"] as? String {
             return collapseId
         } else {
             return UUID().uuidString
         }
     }
+}
 
-    private static func content(from pushMessage: PushMessage) -> UNNotificationContent {
+extension UNNotificationContent {
+    static func content(from pushMessage: LocalPushMessage) -> UNNotificationContent {
         let content = UNMutableNotificationContent()
-        update(content: content, for: pushMessage.payload["aps"] as? [String: Any] ?? [:])
+        if let aps = pushMessage.payload["aps"] as? [String: Any] {
+            if let alert = aps["alert"] as? [String: Any] {
+                if let title = alert["title"] as? String {
+                    content.title = title
+                }
+                if let subtitle = alert["subtitle"] as? String {
+                    content.subtitle = subtitle
+                }
+                if let body = alert["body"] as? String {
+                    content.body = body
+                }
+            }
+            if let threadIdentifier = aps["thread-id"] as? String {
+                content.threadIdentifier = threadIdentifier
+            }
+            if let badge = aps["badge"] as? Int {
+                content.badge = NSNumber(value: badge)
+            }
+            if let categoryIdentifier = aps["category"] as? String {
+                content.categoryIdentifier = categoryIdentifier
+            }
+            if let sound = aps["sound"] as? String {
+                content.sound = Sound(name: sound).asSound()
+            }
+            if let sound = aps["sound"] as? [String: Any] {
+                content.sound = Sound(dictionary: sound).asSound()
+            }
+        }
         content.userInfo = pushMessage.payload
         return content
-    }
-
-    private static func update(content: UNMutableNotificationContent, for aps: [String: Any]) {
-        let alert = aps["alert"] as? [String: Any] ?? [:]
-
-        if let title = alert["title"] as? String {
-            content.title = title
-        }
-        if let subtitle = alert["subtitle"] as? String {
-            content.subtitle = subtitle
-        }
-        if let body = alert["body"] as? String {
-            content.body = body
-        }
-        if let threadId = aps["thread-id"] as? String {
-            content.threadIdentifier = threadId
-        }
-        if let badge = aps["badge"] as? Int {
-            content.badge = NSNumber(value: badge)
-        }
-        if let category = aps["category"] as? String {
-            content.categoryIdentifier = category
-        }
-        if let sound = aps["sound"] {
-            content.sound = Self.sound(for: sound)
-        }
-    }
-
-    private static func sound(for sound: Any) -> UNNotificationSound? {
-        let soundType: Sound
-
-        if let sound = sound as? String {
-            soundType = .init(name: sound)
-        } else if let sound = sound as? [String: Any] {
-            soundType = .init(dictionary: sound)
-        } else {
-            soundType = .init()
-        }
-
-        return soundType.asSound()
     }
 }
 
 private struct Sound {
     enum SoundType {
         case `default`
-        case silent
         case named(UNNotificationSoundName)
     }
 
@@ -222,40 +210,34 @@ private struct Sound {
     }
 
     func asSound() -> UNNotificationSound? {
+        let defaultSound: UNNotificationSound = {
+            if critical {
+                if let level = level {
+                    return .defaultCriticalSound(withAudioVolume: level)
+                } else {
+                    return .defaultCritical
+                }
+            } else {
+                return .default
+            }
+        }()
+
         switch soundType {
-        case .silent: return nil
-        case .default:
-            if critical {
-                if let level = level {
-                    return .defaultCriticalSound(withAudioVolume: level)
-                } else {
-                    return .defaultCritical
-                }
-            } else {
-                return .default
-            }
+        case .default: return defaultSound
         case let .named(name):
+            #if os(watchOS)
+            return defaultSound
+            #else
             if critical {
                 if let level = level {
-                    #if os(iOS)
                     return .criticalSoundNamed(name, withAudioVolume: level)
-                    #else
-                    return .defaultCriticalSound(withAudioVolume: level)
-                    #endif
                 } else {
-                    #if os(iOS)
                     return .criticalSoundNamed(name)
-                    #else
-                    return .defaultCritical
-                    #endif
                 }
             } else {
-                #if os(iOS)
                 return .init(named: name)
-                #else
-                return .default
-                #endif
             }
+            #endif
         }
     }
 }
