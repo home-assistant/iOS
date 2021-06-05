@@ -9,7 +9,7 @@ class NotificationParserLegacyTests: XCTestCase {
         var input: [String: Any]
         var headers: [String: Any]
         var payload: [String: Any]
-        var rateLimit: Bool
+        var rateLimit: Bool // unused in tests
 
         var expected: [String: Any] { [
             "payload": [
@@ -17,8 +17,7 @@ class NotificationParserLegacyTests: XCTestCase {
                     "headers": headers,
                     "payload": payload
                 ]
-            ],
-            "updateRateLimits": rateLimit
+            ]
         ] }
 
         init(map: Map) throws {
