@@ -238,12 +238,24 @@ private struct Sound {
         case let .named(name):
             if critical {
                 if let level = level {
+                    #if os(iOS)
                     return .criticalSoundNamed(name, withAudioVolume: level)
+                    #else
+                    return .defaultCriticalSound(withAudioVolume: level)
+                    #endif
                 } else {
+                    #if os(iOS)
                     return .criticalSoundNamed(name)
+                    #else
+                    return .defaultCritical
+                    #endif
                 }
             } else {
+                #if os(iOS)
                 return .init(named: name)
+                #else
+                return .default
+                #endif
             }
         }
     }
