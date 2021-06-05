@@ -7,13 +7,15 @@ struct PushMessage: HADataDecodable {
         case invalidType
     }
 
-    // todo: strongly type, keep sanitization in one place
-    var data: [String: Any]
+    var headers: [String: Any]
+    var payload: [String: Any]
 
     init(data: HAData) throws {
         switch data {
-        case let .dictionary(value): self.data = value
-        default: throw PushMessageError.invalidType
+        case let .dictionary(value):
+            (self.headers, self.payload) = NotificationParserLegacy.result(from: value)
+        default:
+            throw PushMessageError.invalidType
         }
     }
 }
@@ -69,7 +71,7 @@ public class LocalPushManager {
                 initiated: { [weak self] result in
                     self?.handle(initiated: result.map { _ in () })
                 }, handler: { [weak self] _, value in
-                    self?.handle(event: value.data)
+                    self?.handle(event: value)
                 }
             ),
             webhookID: webhookID
@@ -86,9 +88,9 @@ public class LocalPushManager {
         }
     }
 
-    private func handle(event serviceData: [String: Any]) {
-        let content = Self.content(from: serviceData)
-        let identifier = Self.identifier(from: serviceData)
+    private func handle(event pushMessage: PushMessage) {
+        let content = Self.content(from: pushMessage)
+        let identifier = Self.identifier(from: pushMessage)
 
         firstly {
             Current.api
@@ -111,49 +113,42 @@ public class LocalPushManager {
         }
     }
 
-    private static func identifier(from serviceData: [String: Any]) -> String {
-        if let data = serviceData["data"] as? [String: Any],
-           let headers = data["apns_headers"] as? [String: Any],
-           let collapseId = headers["apns-collapse-id"] as? String {
+    private static func identifier(from pushMessage: PushMessage) -> String {
+        if let collapseId = pushMessage.headers["apns-collapse-id"] as? String {
             return collapseId
         } else {
             return UUID().uuidString
         }
     }
 
-    private static func content(from serviceData: [String: Any]) -> UNNotificationContent {
+    private static func content(from pushMessage: PushMessage) -> UNNotificationContent {
         let content = UNMutableNotificationContent()
-        content.title = serviceData["title"] as? String ?? ""
-        content.body = serviceData["message"] as? String ?? ""
-
-        if let data = serviceData["data"] as? [String: Any] {
-            content.userInfo = data
-
-            if let actionData = data["action_data"] as? [String: Any] {
-                content.userInfo["homeassistant"] = actionData
-            }
-
-            update(content: content, for: data["push"] as? [String: Any] ?? [:])
-        }
-
+        update(content: content, for: pushMessage.payload["aps"] as? [String: Any] ?? [:])
+        content.userInfo = pushMessage.payload
         return content
     }
 
-    private static func update(content: UNMutableNotificationContent, for push: [String: Any]) {
-        if let threadId = push["thread-id"] as? String {
-            content.threadIdentifier = threadId
+    private static func update(content: UNMutableNotificationContent, for aps: [String: Any]) {
+        if let title = aps["title"] as? String {
+            content.title = title
         }
-        if let badge = push["badge"] as? Int {
-            content.badge = NSNumber(value: badge)
-        }
-        if let category = push["category"] as? String {
-            content.categoryIdentifier = category
-        }
-        if let subtitle = push["subtitle"] as? String {
+        if let subtitle = aps["subtitle"] as? String {
             content.subtitle = subtitle
         }
+        if let body = aps["body"] as? String {
+            content.body = body
+        }
+        if let threadId = aps["thread-id"] as? String {
+            content.threadIdentifier = threadId
+        }
+        if let badge = aps["badge"] as? Int {
+            content.badge = NSNumber(value: badge)
+        }
+        if let category = aps["category"] as? String {
+            content.categoryIdentifier = category
+        }
 
-        content.sound = Self.sound(for: push["sound"] as Any)
+        content.sound = Self.sound(for: aps["sound"] as Any)
     }
 
     private static func sound(for sound: Any) -> UNNotificationSound? {
