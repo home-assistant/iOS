@@ -2,7 +2,16 @@ import HAKit
 import PromiseKit
 import UserNotifications
 
+public protocol LocalPushManagerDelegate: AnyObject {
+    func localPushManager(
+        _ manager: LocalPushManager,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    )
+}
+
 public class LocalPushManager {
+    public weak var delegate: LocalPushManagerDelegate?
+
     public init() {
         NotificationCenter.default.addObserver(
             self,
@@ -79,6 +88,8 @@ public class LocalPushManager {
 
     private func handle(event: LocalPushEvent) {
         Current.Log.debug("handling \(event)")
+
+        delegate?.localPushManager(self, didReceiveRemoteNotification: event.content.userInfo)
 
         firstly {
             Current.api

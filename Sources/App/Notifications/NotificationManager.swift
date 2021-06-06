@@ -7,7 +7,7 @@ import Shared
 import UserNotifications
 import XCGLogger
 
-class NotificationManager: NSObject {
+class NotificationManager: NSObject, LocalPushManagerDelegate {
     static var didUpdateComplicationsNotification: Notification.Name {
         .init(rawValue: "didUpdateComplicationsNotification")
     }
@@ -22,7 +22,9 @@ class NotificationManager: NSObject {
         UNUserNotificationCenter.current().delegate = self
 
         if Current.isCatalyst {
-            localPushManager = LocalPushManager()
+            localPushManager = with(LocalPushManager()) {
+                $0.delegate = self
+            }
         }
     }
 
@@ -68,9 +70,26 @@ class NotificationManager: NSObject {
         userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-        Current.Log.verbose("Received remote notification in completion handler!")
-
         Messaging.messaging().appDidReceiveMessage(userInfo)
+
+        firstly {
+            handleRemoteNotification(userInfo: userInfo)
+        }.done(
+            completionHandler
+        )
+    }
+
+    func localPushManager(
+        _ manager: LocalPushManager,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    ) {
+        handleRemoteNotification(userInfo: userInfo).cauterize()
+    }
+
+    private func handleRemoteNotification(userInfo: [AnyHashable: Any]) -> Guarantee<UIBackgroundFetchResult> {
+        let (promise, seal) = Guarantee<UIBackgroundFetchResult>.pending()
+
+        Current.Log.verbose("remote notification: \(userInfo)")
 
         if let userInfoDict = userInfo as? [String: Any],
            let hadict = userInfoDict["homeassistant"] as? [String: Any], let command = hadict["command"] as? String {
@@ -78,8 +97,8 @@ class NotificationManager: NSObject {
             case "request_location_update":
                 guard Current.settingsStore.locationSources.pushNotifications else {
                     Current.Log.info("ignoring request, location source of notifications is disabled")
-                    completionHandler(.noData)
-                    return
+                    seal(.noData)
+                    return promise
                 }
 
                 Current.Log.verbose("Received remote request to provide a location update")
@@ -88,39 +107,41 @@ class NotificationManager: NSObject {
                     Current.api.then(on: nil) { api in
                         api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                     }
-                }.done { success in
-                    Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
-                    completionHandler(.newData)
-                }.catch { error in
-                    Current.Log.error("Error when attempting to submit location update: \(error)")
-                    completionHandler(.failed)
-                }
+                }.map {
+                    UIBackgroundFetchResult.newData
+                }.recover { _ in
+                    Guarantee<UIBackgroundFetchResult>.value(.failed)
+                }.done(seal)
             case "clear_badge":
                 Current.Log.verbose("Setting badge to 0 as requested")
                 UIApplication.shared.applicationIconBadgeNumber = 0
-                completionHandler(.newData)
+                seal(.newData)
             case "clear_notification":
                 Current.Log.verbose("clearing notification for \(userInfo)")
                 let keys = ["tag", "collapseId"].compactMap { hadict[$0] as? String }
                 if !keys.isEmpty {
                     UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
                 }
-                completionHandler(.newData)
+                seal(.newData)
             case "update_complications":
-                updateComplications().done {
+                firstly {
+                    updateComplications()
+                }.map {
                     Current.Log.info("successfully updated complications from notification")
-                    completionHandler(.newData)
-                }.catch { error in
+                    return UIBackgroundFetchResult.newData
+                }.recover { error in
                     Current.Log.error("failed to update complications from notification: \(error)")
-                    completionHandler(.failed)
-                }
+                    return Guarantee<UIBackgroundFetchResult>.value(.failed)
+                }.done(seal)
             default:
                 Current.Log.warning("Received unknown command via APNS! \(userInfo)")
-                completionHandler(.noData)
+                seal(.noData)
             }
         } else {
-            completionHandler(.failed)
+            seal(.noData)
         }
+
+        return promise
     }
 
     func updateComplications() -> Promise<Void> {
