@@ -149,6 +149,7 @@ public class Environment {
 
     public var updater = Updater()
     public var serverAlerter = ServerAlerter()
+    public var notificationAttachmentManager: NotificationAttachmentManager = NotificationAttachmentManagerImpl()
 
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()

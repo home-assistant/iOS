@@ -70,7 +70,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }.then { api in
                 // potential future optimization: feed the url into e.g. the AVPlayer instance.
                 // not super straightforward because authentication headers may be needed.
-                NotificationAttachmentManager().downloadAttachment(from: notification.request.content, api: api)
+                Current.notificationAttachmentManager.downloadAttachment(from: notification.request.content, api: api)
             }.then { [self] url in
                 viewController(for: notification, attachmentURL: url, allowDownloads: false)
             }.recover { _ in

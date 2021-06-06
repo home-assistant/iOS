@@ -83,7 +83,7 @@ public class LocalPushManager {
         firstly {
             Current.api
         }.then { api in
-            NotificationAttachmentManager().content(from: event.content, api: api)
+            Current.notificationAttachmentManager.content(from: event.content, api: api)
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(event.content)
