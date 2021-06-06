@@ -1,6 +1,6 @@
+import HAKit
 @testable import Shared
 import XCTest
-import HAKit
 
 class LocalPushEventTests: XCTestCase {
     func testInvalid() {
@@ -14,8 +14,8 @@ class LocalPushEventTests: XCTestCase {
         let dataWithTag = HAData.dictionary([
             "message": "some_message",
             "data": [
-                "tag": "some_tag"
-            ]
+                "tag": "some_tag",
+            ],
         ])
         let dataWithoutTag = HAData.dictionary([
             "message": "some_message",
@@ -62,7 +62,7 @@ class LocalPushEventTests: XCTestCase {
                     "badge": 3,
                     "category": "some_category",
                 ],
-                "extra": true
+                "extra": true,
             ]
         )
         let content = event.content
@@ -163,7 +163,7 @@ class LocalPushEventTests: XCTestCase {
         for var sound in possibleSounds {
             for level in stride(from: 0.0, through: 1.0, by: 0.1) {
                 sound["volume"] = level
-                
+
                 let event = LocalPushEvent(
                     headers: [:],
                     payload: [

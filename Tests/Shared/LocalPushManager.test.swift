@@ -1,7 +1,7 @@
-import XCTest
 import HAKit
 import PromiseKit
 @testable import Shared
+import XCTest
 
 class LocalPushManagerTests: XCTestCase {
     private var manager: LocalPushManager!
@@ -137,7 +137,7 @@ class LocalPushManagerTests: XCTestCase {
             "message": "test_message",
             "data": [
                 "tag": "test_tag",
-            ]
+            ],
         ]))
 
         let expectation1 = expectation(description: "contentRequestsChanged")
@@ -182,7 +182,7 @@ class LocalPushManagerTests: XCTestCase {
             "message": "test_message",
             "data": [
                 "tag": "test_tag",
-            ]
+            ],
         ]))
 
         waitForExpectations(timeout: 10.0)
@@ -201,7 +201,7 @@ class LocalPushManagerTests: XCTestCase {
             "message": "test_message",
             "data": [
                 "tag": "test_tag",
-            ]
+            ],
         ]))
 
         let expectation1 = expectation(description: "contentRequestsChanged")
@@ -236,7 +236,10 @@ private class FakeNotificationAttachmentManager: NotificationAttachmentManager {
     var contentRequests: [(UNNotificationContent, (UNNotificationContent) -> Void)] = []
     var contentRequestsChanged: (() -> Void)?
 
-    func content(from originalContent: UNNotificationContent, api: HomeAssistantAPI) -> Guarantee<UNNotificationContent> {
+    func content(
+        from originalContent: UNNotificationContent,
+        api: HomeAssistantAPI
+    ) -> Guarantee<UNNotificationContent> {
         let (guarantee, seal) = Guarantee<UNNotificationContent>.pending()
         contentRequests.append((originalContent, seal))
         DispatchQueue.main.async { [contentRequestsChanged] in
