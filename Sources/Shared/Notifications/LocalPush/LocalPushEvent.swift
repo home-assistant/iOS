@@ -3,7 +3,7 @@ import HAKit
 import UserNotifications
 
 struct LocalPushEvent: HADataDecodable {
-    enum LocalPushEventError: Error {
+    enum LocalPushEventError: Error, Equatable {
         case invalidType
     }
 
@@ -16,6 +16,10 @@ struct LocalPushEvent: HADataDecodable {
         }
 
         let (headers, payload) = NotificationParserLegacy.result(from: value)
+        self.init(headers: headers, payload: payload)
+    }
+
+    init(headers: [String: Any], payload: [String: Any]) {
         if let collapseId = headers["apns-collapse-id"] as? String {
             self.identifier = collapseId
         } else {
@@ -24,7 +28,7 @@ struct LocalPushEvent: HADataDecodable {
         self.content = Self.content(from: payload)
     }
 
-    static func content(from payload: [String: Any]) -> UNNotificationContent {
+    private static func content(from payload: [String: Any]) -> UNNotificationContent {
         let content = UNMutableNotificationContent()
         if let aps = payload["aps"] as? [String: Any] {
             if let alert = aps["alert"] as? [String: Any] {

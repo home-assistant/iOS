@@ -6,7 +6,7 @@ public enum NotificationParserLegacy {
     public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
         let registrationInfo = input["registration_info"] as? [String: String] ?? [
             "os_version": Current.device.systemVersion(),
-            "app_id": Constants.BundleID,
+            "app_id": "io.robbie.HomeAssistant",
         ]
         let data = input["data"] as? [String: Any] ?? [:]
         var headers: [String: Any] = [
