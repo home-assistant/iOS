@@ -66,6 +66,48 @@ class LocalPushManagerTests: XCTestCase {
         }
     }
 
+    func testStateInitialUnavailable() {
+        setUpManager(webhookID: nil)
+        XCTAssertEqual(manager.state, .unavailable)
+    }
+
+    func testStateInitialSuccessful() throws {
+        setUpManager(webhookID: "webhook1")
+        XCTAssertEqual(manager.state, .establishing)
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.initiated(.success(.empty))
+        XCTAssertEqual(manager.state, .available(received: 0))
+
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+        ]))
+        XCTAssertEqual(manager.state, .available(received: 1))
+
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+        ]))
+        XCTAssertEqual(manager.state, .available(received: 2))
+    }
+
+    func testStateInitialFailure() throws {
+        setUpManager(webhookID: "webhook1")
+        XCTAssertEqual(manager.state, .establishing)
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.initiated(.failure(.internal(debugDescription: "unit-test")))
+        XCTAssertEqual(manager.state, .unavailable)
+
+        // pretend like a future connection made it work
+        sub.initiated(.success(.empty))
+        XCTAssertEqual(manager.state, .available(received: 0))
+
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+        ]))
+        XCTAssertEqual(manager.state, .available(received: 1))
+    }
+
     func testSubscriptionAtStart() throws {
         setUpManager(webhookID: "webhook1")
 
@@ -98,7 +140,6 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(sub2.request.data["webhook_id"] as? String, "webhook2")
 
         // fail the subscription
-        apiConnection.pendingSubscriptions.removeAll()
         sub2.initiated(.failure(.internal(debugDescription: "unit-test")))
         NotificationCenter.default.post(
             name: SettingsStore.connectionInfoDidChange,
@@ -106,11 +147,8 @@ class LocalPushManagerTests: XCTestCase {
             userInfo: nil
         )
 
-        let sub3 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
-        XCTAssertEqual(sub3.request.type, "mobile_app/push_notification_channel")
-        XCTAssertEqual(sub3.request.data["webhook_id"] as? String, "webhook2")
-
-        sub3.initiated(.success(.empty))
+        // now succeed it (e.g. reconnect happened)
+        sub2.initiated(.success(.empty))
 
         // kill off the connection info
         apiConnection.pendingSubscriptions.removeAll()
@@ -121,7 +159,7 @@ class LocalPushManagerTests: XCTestCase {
             userInfo: nil
         )
 
-        XCTAssertTrue(sub3.cancellable.wasCancelled)
+        XCTAssertTrue(sub2.cancellable.wasCancelled)
     }
 
     func testNoSubscriptionAtStart() throws {

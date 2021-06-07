@@ -2,6 +2,17 @@ import Foundation
 import HAKit
 import UserNotifications
 
+extension HATypedSubscription {
+    static func localPush(
+        webhookID: String
+    ) -> HATypedSubscription<LocalPushEvent> {
+        HATypedSubscription<LocalPushEvent>(request: .init(
+            type: "mobile_app/push_notification_channel",
+            data: ["webhook_id": webhookID]
+        ))
+    }
+}
+
 struct LocalPushEvent: HADataDecodable {
     enum LocalPushEventError: Error, Equatable {
         case invalidType

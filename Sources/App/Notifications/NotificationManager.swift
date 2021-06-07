@@ -12,7 +12,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         .init(rawValue: "didUpdateComplicationsNotification")
     }
 
-    private var localPushManager: LocalPushManager? {
+    var localPushManager: LocalPushManager? {
         didSet {
             precondition(Current.isCatalyst)
         }

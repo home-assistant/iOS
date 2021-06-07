@@ -1377,6 +1377,20 @@ public enum L10n {
         /// Synced Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.header") }
       }
+      public enum LocalPush {
+        /// Local Push
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.title") }
+        public enum Status {
+          /// Available (%1$@)
+          public static func available(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.local_push.status.available", String(describing: p1))
+          }
+          /// Establishing
+          public static var establishing: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.status.establishing") }
+          /// Unavailable
+          public static var unavailable: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.status.unavailable") }
+        }
+      }
       public enum NewCategory {
         /// New Category
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.new_category.title") }

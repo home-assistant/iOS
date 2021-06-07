@@ -12,6 +12,29 @@ public protocol LocalPushManagerDelegate: AnyObject {
 public class LocalPushManager {
     public weak var delegate: LocalPushManagerDelegate?
 
+    public static var stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
+
+    public enum State: Equatable {
+        case establishing
+        case unavailable
+        case available(received: Int)
+
+        mutating func increment(by count: Int = 1) {
+            switch self {
+            case .establishing, .unavailable:
+                self = .available(received: count)
+            case let .available(received: originalCount):
+                self = .available(received: originalCount + count)
+            }
+        }
+    }
+
+    public var state: State = .establishing {
+        didSet {
+            NotificationCenter.default.post(name: Self.stateDidChange, object: self)
+        }
+    }
+
     public init() {
         NotificationCenter.default.addObserver(
             self,
@@ -49,6 +72,7 @@ public class LocalPushManager {
             // webhook is invalid, if there is a subscription we remove it
             subscription?.cancel()
             subscription = nil
+            state = .unavailable
             return
         }
 
@@ -57,15 +81,10 @@ public class LocalPushManager {
             return
         }
 
-        let request = HATypedSubscription<LocalPushEvent>(request: .init(
-            type: "mobile_app/push_notification_channel",
-            data: ["webhook_id": webhookID]
-        ))
-
         subscription?.cancel()
         subscription = .init(
             token: Current.apiConnection.subscribe(
-                to: request,
+                to: .localPush(webhookID: webhookID),
                 initiated: { [weak self] result in
                     self?.handle(initiated: result.map { _ in () })
                 }, handler: { [weak self] _, value in
@@ -80,14 +99,17 @@ public class LocalPushManager {
         switch result {
         case let .failure(error):
             Current.Log.error("failed to subscribe to notifications: \(error)")
-            subscription = nil
+            state = .unavailable
         case .success:
             Current.Log.info("started")
+            state = .available(received: 0)
         }
     }
 
     private func handle(event: LocalPushEvent) {
         Current.Log.debug("handling \(event)")
+
+        state.increment()
 
         delegate?.localPushManager(self, didReceiveRemoteNotification: event.content.userInfo)
 

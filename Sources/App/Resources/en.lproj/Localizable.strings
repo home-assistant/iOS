@@ -318,6 +318,11 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.zones.location.title" = "Location";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
+"settings_details.notifications.local_push.title" = "Local Push";
+"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
+/* parameter is a count, the number of received notifications */
+"settings_details.notifications.local_push.status.available" = "Available (%1$@)";
 "settings_details.notifications.badge_section.button.title" = "Reset badge to 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "The badge has been reset to 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Badge reset";
