@@ -148,7 +148,10 @@ class NotificationSettingsViewController: HAFormViewController {
                     case .establishing:
                         row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.establishing
                     case let .available(received: received):
-                        let formatted = NumberFormatter.localizedString(from: NSNumber(value: received), number: .decimal)
+                        let formatted = NumberFormatter.localizedString(
+                            from: NSNumber(value: received),
+                            number: .decimal
+                        )
                         row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.available(formatted)
                     }
 
