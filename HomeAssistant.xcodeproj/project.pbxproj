@@ -271,6 +271,7 @@
 		11B92913266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11B9297E266F15B500786588 /* PushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B9296B266F15A800786588 /* PushProvider.swift */; };
 		11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
+		11B92AF2266F23DA00786588 /* NotificationAppPushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B92A7F266F23CD00786588 /* NotificationAppPushHandler.swift */; };
 		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
 		11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */; };
 		11BD7B2D25B52E8D001826F0 /* MacBridgeStatusItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */; };
@@ -1223,6 +1224,7 @@
 		11B9290A266F145000786588 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		11B9296A266F15A800786588 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11B9296B266F15A800786588 /* PushProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushProvider.swift; sourceTree = "<group>"; };
+		11B92A7F266F23CD00786588 /* NotificationAppPushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAppPushHandler.swift; sourceTree = "<group>"; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
 		11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.test.swift; sourceTree = "<group>"; };
 		11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeStatusItem.swift; sourceTree = "<group>"; };
@@ -2123,6 +2125,7 @@
 			isa = PBXGroup;
 			children = (
 				117EB15B2569AD4600049541 /* NotificationManager.swift */,
+				11B92A7F266F23CD00786588 /* NotificationAppPushHandler.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -3449,8 +3452,8 @@
 			buildPhases = (
 				53D3FBBE96A99C3DA7040194 /* [CP] Check Pods Manifest.lock */,
 				11B92905266F145000786588 /* Sources */,
-				115AB9EB266F3D0A00E0DA64 /* Enable Special Entitlements */,
 				11B92906266F145000786588 /* Frameworks */,
+				115AB9EB266F3D0A00E0DA64 /* Enable Special Entitlements */,
 				11B92907266F145000786588 /* Resources */,
 			);
 			buildRules = (
@@ -4936,6 +4939,7 @@
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
+				11B92AF2266F23DA00786588 /* NotificationAppPushHandler.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,

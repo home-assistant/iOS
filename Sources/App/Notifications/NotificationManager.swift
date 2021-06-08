@@ -8,6 +8,10 @@ import UserNotifications
 import XCGLogger
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
+    // Any because iOS 14+ requirement
+    private var appPushHandlers = [Any]()
+
+
     static var didUpdateComplicationsNotification: Notification.Name {
         .init(rawValue: "didUpdateComplicationsNotification")
     }
@@ -25,6 +29,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             localPushManager = with(LocalPushManager()) {
                 $0.delegate = self
             }
+        }
+
+        if #available(iOS 14, *) {
+            appPushHandlers.append(NotificationAppPushHandler())
         }
     }
 
