@@ -5869,9 +5869,11 @@
 			baseConfigurationReference = 6CB9BB87D256D071215B4FF4 /* Pods-iOS-Extensions-PushProvider.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushprovider.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_STYLE[sdk=iphoneos*]" = Manual;
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Local Developer: Push Provider";
 				PROVISIONING_SUFFIX = .PushProvider;
 			};
 			name = Debug;
@@ -5881,7 +5883,6 @@
 			baseConfigurationReference = 574F428FD5AD613411644AE4 /* Pods-iOS-Extensions-PushProvider.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushprovider.entitlements";
-				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				PROVISIONING_SUFFIX = .PushProvider;
@@ -5893,7 +5894,6 @@
 			baseConfigurationReference = F0954F3919DBD03AC16B0391 /* Pods-iOS-Extensions-PushProvider.beta.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushprovider.entitlements";
-				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				PROVISIONING_SUFFIX = .PushProvider;
