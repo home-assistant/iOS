@@ -1223,7 +1223,6 @@
 		11B9290A266F145000786588 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		11B9296A266F15A800786588 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11B9296B266F15A800786588 /* PushProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushProvider.swift; sourceTree = "<group>"; };
-		11B9298F266F163600786588 /* Extension-ios-pushprovider.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-ios-pushprovider.entitlements"; sourceTree = "<group>"; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
 		11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.test.swift; sourceTree = "<group>"; };
 		11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeStatusItem.swift; sourceTree = "<group>"; };
@@ -2332,7 +2331,6 @@
 			isa = PBXGroup;
 			children = (
 				11AF1EC62528FB2300AAE364 /* Extension-ios.entitlements */,
-				11B9298F266F163600786588 /* Extension-ios-pushprovider.entitlements */,
 				11AF1EC72528FB2300AAE364 /* Extension-catalyst.entitlements */,
 				11AF1EC82528FB2300AAE364 /* WatchApp.entitlements */,
 				11AF1EC92528FB2300AAE364 /* App-catalyst.entitlements */,
@@ -3451,6 +3449,7 @@
 			buildPhases = (
 				53D3FBBE96A99C3DA7040194 /* [CP] Check Pods Manifest.lock */,
 				11B92905266F145000786588 /* Sources */,
+				115AB9EB266F3D0A00E0DA64 /* Enable Special Entitlements */,
 				11B92906266F145000786588 /* Frameworks */,
 				11B92907266F145000786588 /* Resources */,
 			);
@@ -3511,7 +3510,7 @@
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
 				11DE9FBD25B6184E0081C0ED /* Embed Mac Launcher */,
-				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
+				9C08D123229F187E001B4F73 /* Enable Special Entitlements */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
 				110EC9FF251708D5009C9A1B /* Embed Frameworks */,
 				11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */,
@@ -4350,6 +4349,26 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/SwiftGen/bin/swiftgen\"\n";
 		};
+		115AB9EB266F3D0A00E0DA64 /* Enable Special Entitlements */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Enable Special Entitlements";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/bin/sh -e";
+			shellScript = "exec Configuration/Entitlements/activate_special_entitlements.sh\n";
+			showEnvVarsInLog = 0;
+		};
 		115CF89325B29B64001DAECE /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -4676,8 +4695,9 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9C08D123229F187E001B4F73 /* Enable Critical Alerts */ = {
+		9C08D123229F187E001B4F73 /* Enable Special Entitlements */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4685,14 +4705,14 @@
 			);
 			inputPaths = (
 			);
-			name = "Enable Critical Alerts";
+			name = "Enable Special Entitlements";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh -e";
-			shellScript = "if [[ $CI && $CONFIGURATION != \"Release\" ]]; then\n  echo \"warning: Critical alerts disabled for CI\"\nelif [[ ${ENABLE_CRITICAL_ALERTS} -eq 1 ]]; then\n    entitlements_file=\"${TARGET_TEMP_DIR}/${FULL_PRODUCT_NAME}.xcent\"\n    /usr/libexec/PlistBuddy -c \"add com.apple.developer.usernotifications.critical-alerts bool true\" \"$entitlements_file\"\nelse\n    echo \"warning: Critical alerts disabled\"\nfi\n";
+			shellScript = "exec Configuration/Entitlements/activate_special_entitlements.sh\n";
 			showEnvVarsInLog = 0;
 		};
 		B8028AFF323FD2C0483872EB /* [CP] Check Pods Manifest.lock */ = {
@@ -5868,7 +5888,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6CB9BB87D256D071215B4FF4 /* Pods-iOS-Extensions-PushProvider.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushprovider.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_STYLE[sdk=iphoneos*]" = Manual;
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
@@ -5882,7 +5902,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 574F428FD5AD613411644AE4 /* Pods-iOS-Extensions-PushProvider.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushprovider.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				PROVISIONING_SUFFIX = .PushProvider;
@@ -5893,7 +5913,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F0954F3919DBD03AC16B0391 /* Pods-iOS-Extensions-PushProvider.beta.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios-pushprovider.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				PROVISIONING_SUFFIX = .PushProvider;
