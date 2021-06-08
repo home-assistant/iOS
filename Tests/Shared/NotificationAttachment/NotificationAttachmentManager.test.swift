@@ -7,7 +7,7 @@ import PromiseKit
 import XCTest
 
 class NotificationAttachmentManagerTests: XCTestCase {
-    private var manager: NotificationAttachmentManager!
+    private var manager: NotificationAttachmentManagerImpl!
     private var api: FakeHomeAssistantAPI!
     private var parser1: FakeNotificationParser1.Type!
     private var parser2: FakeNotificationParser2.Type!
@@ -50,7 +50,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
         parser3 = FakeNotificationParser3.self
         parser3.reset()
 
-        manager = NotificationAttachmentManager(parsers: [parser1, parser2, parser3])
+        manager = NotificationAttachmentManagerImpl(parsers: [parser1, parser2, parser3])
     }
 
     private func firstAttachment(for content: UNNotificationContent) throws -> UNNotificationAttachment {
@@ -74,7 +74,7 @@ class NotificationAttachmentManagerTests: XCTestCase {
     }
 
     func testDefaultParsers() {
-        let parsers = NotificationAttachmentManager().parsers
+        let parsers = NotificationAttachmentManagerImpl().parsers
         XCTAssertFalse(parsers.isEmpty)
     }
 

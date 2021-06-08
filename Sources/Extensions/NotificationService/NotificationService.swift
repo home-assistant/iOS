@@ -10,7 +10,7 @@ final class NotificationService: UNNotificationServiceExtension {
         Current.Log.info("didReceive \(request), user info \(request.content.userInfo)")
 
         Current.api.then(on: nil) { api in
-            NotificationAttachmentManager().content(from: request.content, api: api)
+            Current.notificationAttachmentManager.content(from: request.content, api: api)
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(request.content)

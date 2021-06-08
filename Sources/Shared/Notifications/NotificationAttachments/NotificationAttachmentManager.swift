@@ -5,10 +5,25 @@ import PromiseKit
 import UIKit
 import UserNotifications
 
-public class NotificationAttachmentManager {
+public enum NotificationAttachmentManagerServiceError: Error {
+    case noAttachment
+}
+
+public protocol NotificationAttachmentManager {
+    func content(
+        from originalContent: UNNotificationContent,
+        api: HomeAssistantAPI
+    ) -> Guarantee<UNNotificationContent>
+    func downloadAttachment(
+        from originalContent: UNNotificationContent,
+        api: HomeAssistantAPI
+    ) -> Promise<URL>
+}
+
+class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
     let parsers: [NotificationAttachmentParser.Type]
 
-    public convenience init() {
+    convenience init() {
         self.init(parsers: [
             NotificationAttachmentParserURL.self,
             NotificationAttachmentParserCamera.self,
@@ -31,7 +46,7 @@ public class NotificationAttachmentManager {
         }.recover { [self] error -> Promise<UNNotificationAttachment> in
             Current.Log.error("failed at getting attachment info: \(error)")
 
-            if case ServiceError.noAttachment = error {
+            if case NotificationAttachmentManagerServiceError.noAttachment = error {
                 throw error
             } else if error is URLError || error.asAFError?.isSessionTaskError == true {
                 // we'll try loading in the content extension, no need to decorate the thumbnail
@@ -73,7 +88,7 @@ public class NotificationAttachmentManager {
         }.then { attachmentInfo in
             api.DownloadDataAt(url: attachmentInfo.url, needsAuth: attachmentInfo.needsAuth)
         }.recover { error throws -> Promise<URL> in
-            if case ServiceError.noAttachment = error {
+            if case NotificationAttachmentManagerServiceError.noAttachment = error {
                 throw error
             } else {
                 #if os(iOS)
@@ -83,10 +98,6 @@ public class NotificationAttachmentManager {
                 #endif
             }
         }
-    }
-
-    public enum ServiceError: Error {
-        case noAttachment
     }
 
     private func attachmentInfo(from content: UNNotificationContent) -> Promise<NotificationAttachmentInfo> {
@@ -103,7 +114,7 @@ public class NotificationAttachmentManager {
                 return firstSuccess
             } else {
                 // importantly not using 'missing' for values here
-                throw results.compactMap(\.error).first ?? ServiceError.noAttachment
+                throw results.compactMap(\.error).first ?? NotificationAttachmentManagerServiceError.noAttachment
             }
         }
     }
@@ -113,7 +124,7 @@ public class NotificationAttachmentManager {
         api: HomeAssistantAPI
     ) -> Promise<UNNotificationAttachment> {
         guard !attachmentInfo.lazy else {
-            return .init(error: ServiceError.noAttachment)
+            return .init(error: NotificationAttachmentManagerServiceError.noAttachment)
         }
 
         return firstly {

@@ -213,6 +213,8 @@
 		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
 		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
+		11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
 		11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */; };
 		11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
@@ -233,6 +235,9 @@
 		11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */; };
 		11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */; };
 		11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */; };
+		11AA9977266B0CEC00B829E1 /* NotificationParserLegacy.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA9976266B0CEC00B829E1 /* NotificationParserLegacy.test.swift */; };
+		11AA9A8A266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */; };
+		11AA9A8B266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */; };
 		11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
@@ -255,6 +260,10 @@
 		11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
+		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
+		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
+		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
+		11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */; };
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
@@ -1146,6 +1155,7 @@
 		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		11A183B22511BCF300CA326A /* LifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManager.swift; sourceTree = "<group>"; };
+		11A3BD2C26192210005237E6 /* LocalPushManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.swift; sourceTree = "<group>"; };
 		11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.test.swift; sourceTree = "<group>"; };
 		11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCategory+Observation.swift"; sourceTree = "<group>"; };
 		11A48D8224CA9D010021BDD9 /* RealmSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSection.swift; sourceTree = "<group>"; };
@@ -1161,6 +1171,8 @@
 		11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerCollector.test.swift; sourceTree = "<group>"; };
 		11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCLLocationManager.swift; sourceTree = "<group>"; };
 		11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.test.swift; sourceTree = "<group>"; };
+		11AA9976266B0CEC00B829E1 /* NotificationParserLegacy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationParserLegacy.test.swift; sourceTree = "<group>"; };
+		11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationParserLegacy.swift; sourceTree = "<group>"; };
 		11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.swift; sourceTree = "<group>"; };
 		11AF1EC62528FB2300AAE364 /* Extension-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-ios.entitlements"; sourceTree = "<group>"; };
 		11AF1EC72528FB2300AAE364 /* Extension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-catalyst.entitlements"; sourceTree = "<group>"; };
@@ -1181,6 +1193,9 @@
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
+		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
+		11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.test.swift; sourceTree = "<group>"; };
+		11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.test.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
@@ -2106,6 +2121,16 @@
 				1194B3EC2519B48500AA01C3 /* Info.plist */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		11A3BD2B261921FC005237E6 /* LocalPush */ = {
+			isa = PBXGroup;
+			children = (
+				11A3BD2C26192210005237E6 /* LocalPushManager.swift */,
+				11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */,
+				11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */,
+			);
+			path = LocalPush;
 			sourceTree = "<group>";
 		};
 		11A71C6924A463EE00D9565F /* ZoneManager */ = {
@@ -3117,6 +3142,9 @@
 				110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */,
 				11267D0825BBA9FE00F28E5C /* Updater.test.swift */,
 				1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */,
+				11AA9976266B0CEC00B829E1 /* NotificationParserLegacy.test.swift */,
+				11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */,
+				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -3235,6 +3263,7 @@
 		D0EEF325214DF30D00D1D360 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				11A3BD2B261921FC005237E6 /* LocalPush */,
 				11F2F21725871C1700F61F7C /* NotificationAttachments */,
 				11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */,
 			);
@@ -3428,6 +3457,7 @@
 				B657A8F91CA646EB00121384 /* Frameworks */,
 				B657A8FA1CA646EB00121384 /* Resources */,
 				1F6238791B6D41EEC4B95BE3 /* [CP] Embed Pods Frameworks */,
+				6CDC4278FFAEA13E6D0830A3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3601,6 +3631,7 @@
 				D03D893F20E0BC1800D4F28D /* Frameworks */,
 				D03D894020E0BC1800D4F28D /* Resources */,
 				F6F1EAA08C3E5179B7848A38 /* [CP] Embed Pods Frameworks */,
+				7ED0335954F3108C40A2B11E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -4429,6 +4460,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		6CDC4278FFAEA13E6D0830A3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		7E148D7357216F7E4E7108F6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4449,6 +4497,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7ED0335954F3108C40A2B11E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */ = {
@@ -4880,6 +4945,7 @@
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
 				11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				11AF4D1D249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
+				11AA9A8B266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */,
 				B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */,
 				11AF4D26249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
 				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
@@ -4893,6 +4959,7 @@
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
+				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
 				11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */,
@@ -4910,6 +4977,7 @@
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
+				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
 				113E73112518457C004006D8 /* LocalizedManager.swift in Sources */,
@@ -5039,6 +5107,7 @@
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
+				11AA9A8A266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
 				B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
@@ -5053,6 +5122,7 @@
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
+				11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */,
 				11C4628824B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -5069,6 +5139,7 @@
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
+				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
@@ -5139,6 +5210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
+				11AA9977266B0CEC00B829E1 /* NotificationParserLegacy.test.swift in Sources */,
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
 				11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */,
@@ -5150,6 +5222,7 @@
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
 				11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */,
 				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
+				11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
 				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,
@@ -5162,6 +5235,7 @@
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
 				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,
 				1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */,
+				11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */,
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
 				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
 				11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */,

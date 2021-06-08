@@ -138,7 +138,7 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
             isLoading = true
 
             Current.api.then(on: nil) { api in
-                NotificationAttachmentManager().downloadAttachment(from: notification.request.content, api: api)
+                Current.notificationAttachmentManager.downloadAttachment(from: notification.request.content, api: api)
             }.tap { [self] result in
                 if case .rejected = result {
                     // we don't stop loading on success 'cause it's just gonna turn it on again
@@ -151,7 +151,7 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
             }.catch { [self] error in
                 Current.Log.info("no attachments downloaded: \(error)")
 
-                if error as? NotificationAttachmentManager.ServiceError == .noAttachment {
+                if error as? NotificationAttachmentManagerServiceError == .noAttachment {
                     // can make the above != but it doesn't clearly indicate
                 } else {
                     show(error: error)

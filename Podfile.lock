@@ -24,6 +24,7 @@ PODS:
   - Lokalise (0.10.2)
   - lottie-ios (3.2.1)
   - MBProgressHUD (1.2.0)
+  - NotificationTestCases (0.2)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
@@ -90,6 +91,7 @@ DEPENDENCIES:
   - Lokalise (~> 0.10.0)
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
+  - NotificationTestCases (from `Configuration/Podspecs/NotificationTestCases.podspec.json`)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit
@@ -151,6 +153,8 @@ EXTERNAL SOURCES:
   HAKit:
     :branch: main
     :git: https://github.com/home-assistant/HAKit.git
+  NotificationTestCases:
+    :podspec: Configuration/Podspecs/NotificationTestCases.podspec.json
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -182,6 +186,9 @@ CHECKOUT OPTIONS:
   HAKit:
     :commit: 0e3e01850f6d6aea0b0d8b9ba5332403acba673f
     :git: https://github.com/home-assistant/HAKit.git
+  NotificationTestCases:
+    :commit: f01bf06e0a3088d9eee1281df3fb08355093bc51
+    :git: https://github.com/home-assistant/mobile-apps-fcm-push.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -209,6 +216,7 @@ SPEC CHECKSUMS:
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  NotificationTestCases: d93e754ce3a45afee1067319f067b6276468ebed
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
@@ -229,6 +237,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: fdbb9d7c234dab46d76bb1a5d5f120f8eb6cacac
+PODFILE CHECKSUM: 565ae2488ea48f50f86bba946972ddc0faaeded5
 
 COCOAPODS: 1.10.1
