@@ -16,6 +16,7 @@ import Shared
                 completionHandler(nil)
             }
             .catch { error in
+                // TODO: also error for state transitioning to error before this is completed
                 completionHandler(error)
             }
 

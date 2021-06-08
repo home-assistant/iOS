@@ -126,14 +126,7 @@ class NotificationAppPushHandler: NSObject, NEAppPushDelegate {
 
         return Promise { seal in
             manager.saveToPreferences { error in
-                if let nsError = error as NSError?,
-                   nsError.domain == "NEConfigurationErrorDomain",
-                   nsError.code == 9 {
-                    // no change - assume success
-                    seal.fulfill(())
-                } else {
-                    seal.resolve(error)
-                }
+                seal.resolve(error)
             }
         }
     }
