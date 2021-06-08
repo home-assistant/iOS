@@ -10,7 +10,53 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.3)
-  - Firebase (7.11.0)
+  - Firebase/CoreOnly (8.1.0):
+    - FirebaseCore (= 8.1.0)
+  - Firebase/Messaging (8.1.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.1.0)
+  - FirebaseCore (8.1.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+  - FirebaseCoreDiagnostics (8.1.0):
+    - GoogleDataTransport (~> 9.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInstallations (8.1.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
+    - PromisesObjC (~> 1.2)
+  - FirebaseMessaging (8.1.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Reachability (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
+  - GoogleDataTransport (9.0.1):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.4.1):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.4.1):
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/Logger (7.4.1):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/Network (7.4.1):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.4.1)"
+  - GoogleUtilities/Reachability (7.4.1):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.4.1):
+    - GoogleUtilities/Logger
   - HAKit (0.2.2):
     - HAKit/Core (= 0.2.2)
   - HAKit/Core (0.2.2):
@@ -24,6 +70,11 @@ PODS:
   - Lokalise (0.10.2)
   - lottie-ios (3.2.1)
   - MBProgressHUD (1.2.0)
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
   - NotificationTestCases (0.2)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
@@ -51,8 +102,13 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.13.1):
     - PromiseKit/CorePromise
+  - PromisesObjC (1.2.12)
   - ReachabilitySwift (5.0.0)
-  - RealmSwift (10.7.3)
+  - Realm (10.7.6):
+    - Realm/Headers (= 10.7.6)
+  - Realm/Headers (10.7.6)
+  - RealmSwift (10.7.6):
+    - Realm (= 10.7.6)
   - Sentry (6.2.1):
     - Sentry/Core (= 6.2.1)
   - Sentry/Core (6.2.1)
@@ -83,7 +139,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka
-  - Firebase (from `Configuration/Podspecs/Firebase.podspec.json`)
+  - Firebase/Messaging
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
@@ -96,7 +152,7 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift (from `Configuration/Podspecs/Realm.podspec.json`)
+  - RealmSwift
   - Sentry
   - SimulatorStatusMagic
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
@@ -116,14 +172,25 @@ SPEC REPOS:
     - Alamofire
     - CallbackURLKit
     - Eureka
+    - Firebase
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - GoogleDataTransport
+    - GoogleUtilities
     - KeychainAccess
     - Lokalise
     - lottie-ios
     - MBProgressHUD
+    - nanopb
     - ObjcExceptionBridging
     - OHHTTPStubs
     - PromiseKit
+    - PromisesObjC
     - ReachabilitySwift
+    - Realm
+    - RealmSwift
     - Sentry
     - SimulatorStatusMagic
     - SwiftFormat
@@ -148,8 +215,6 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  Firebase:
-    :podspec: Configuration/Podspecs/Firebase.podspec.json
   HAKit:
     :branch: main
     :git: https://github.com/home-assistant/HAKit.git
@@ -158,8 +223,6 @@ EXTERNAL SOURCES:
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
-  RealmSwift:
-    :podspec: Configuration/Podspecs/Realm.podspec.json
   Sodium:
     :branch: master
     :git: https://github.com/jedisct1/swift-sodium.git
@@ -210,19 +273,28 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: e6d720290c56bb23333ad1a0e020b2a98a0e9a43
-  Firebase: 66bbe5265aab94801e85a4ad26ee3c2d03116b5e
+  Firebase: b5956acddaaa53a6c292bec00649fadd18367344
+  FirebaseCore: 389c4ce9a7cce4a7e25eb22326b4bee0050557b2
+  FirebaseCoreDiagnostics: 3e249cee3de5c5f9cfd6cc2a19997231286fec11
+  FirebaseInstallations: 7f31798a8198c354eadcb87176d2090b62edc187
+  FirebaseMessaging: c8871b0907dcf4e76de81241eb6a62be6d657d2f
+  GoogleDataTransport: 04c3e9a480bbcaa2ec3f5d27f1cdeb6a92f20c8d
+  GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
   HAKit: 2fefcc8028f78611408a70f5bb37c01e776bfcae
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   NotificationTestCases: d93e754ce3a45afee1067319f067b6276468ebed
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
+  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  RealmSwift: 4ffd07b8342dab6ccad6bab923ea0027eab1b8f9
+  Realm: ed860452717c8db8f4bf832b6807f7f2ce708839
+  RealmSwift: e31c4ddbcc42ac879313d656b86f9ca539f6f4f4
   Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
   SimulatorStatusMagic: 71cfcea1df017e8f0fa8e48bc182d86976376f84
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
@@ -237,6 +309,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 6836fe729551cf0245f63ad5dd4c9d9b63d29266
+PODFILE CHECKSUM: b2b7e58b556570cceb179dfb1e75e898aa799e02
 
 COCOAPODS: 1.10.1
