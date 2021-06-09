@@ -120,7 +120,6 @@ class NotificationAppPushHandler: NSObject, NEAppPushDelegate {
         }
 
         manager.isEnabled = true
-        manager.localizedDescription = "Where does this show up? 222"
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
 
