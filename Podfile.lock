@@ -10,7 +10,7 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.3)
-  - Firebase (7.11.0)
+  - Firebase (8.1.0)
   - HAKit (0.2.2):
     - HAKit/Core (= 0.2.2)
   - HAKit/Core (0.2.2):
@@ -22,7 +22,7 @@ PODS:
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
   - Lokalise (0.10.2)
-  - lottie-ios (3.2.1)
+  - lottie-ios (3.2.3)
   - MBProgressHUD (1.2.0)
   - NotificationTestCases (0.2)
   - ObjcExceptionBridging (1.0.1):
@@ -52,14 +52,14 @@ PODS:
   - PromiseKit/UIKit (6.13.1):
     - PromiseKit/CorePromise
   - ReachabilitySwift (5.0.0)
-  - RealmSwift (10.7.3)
-  - Sentry (6.2.1):
-    - Sentry/Core (= 6.2.1)
-  - Sentry/Core (6.2.1)
+  - RealmSwift (10.7.6)
+  - Sentry (7.1.3):
+    - Sentry/Core (= 7.1.3)
+  - Sentry/Core (7.1.3)
   - SimulatorStatusMagic (2.5)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.48.0)
+  - SwiftFormat/CLI (0.48.4)
   - SwiftGen (6.4.0)
   - SwiftLint (0.43.1)
   - SwiftMessages (9.0.2):
@@ -210,11 +210,11 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: e6d720290c56bb23333ad1a0e020b2a98a0e9a43
-  Firebase: 66bbe5265aab94801e85a4ad26ee3c2d03116b5e
+  Firebase: bd494ca54f975ea92931aaa187a4e6650d7f121c
   HAKit: 2fefcc8028f78611408a70f5bb37c01e776bfcae
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
-  lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
+  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   NotificationTestCases: d93e754ce3a45afee1067319f067b6276468ebed
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -222,12 +222,12 @@ SPEC CHECKSUMS:
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  RealmSwift: 4ffd07b8342dab6ccad6bab923ea0027eab1b8f9
-  Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
+  RealmSwift: 3148a9d240366898ab55a4bfdd1d11eda8605aa5
+  Sentry: 6d963d64804dd06d96e778be729613f481394312
   SimulatorStatusMagic: 71cfcea1df017e8f0fa8e48bc182d86976376f84
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 48a96bf55d167e44b8eb825f3dbda0e1204e549a
+  SwiftFormat: c6f52d7e4a91b01d7941172135ef7761d7e36615
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftMessages: 77b847d1405f99046ffbd0d856bc7d73e6892686
