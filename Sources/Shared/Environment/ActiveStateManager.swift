@@ -207,10 +207,10 @@ public class ActiveStateManager {
         let minimumTime = minimumIdleTime
         let shouldBeIdle = currentTime >= minimumTime
 
-        if shouldBeIdle && !states.isIdle {
+        if shouldBeIdle, !states.isIdle {
             Current.Log.info("idle time of \(currentTime) exceeds \(minimumTime)")
             handle(updateType: .idleStart)
-        } else if !shouldBeIdle && states.isIdle {
+        } else if !shouldBeIdle, states.isIdle {
             Current.Log.info("idle time of \(currentTime) is less than \(minimumTime)")
             handle(updateType: .idleEnd)
         }
