@@ -165,6 +165,8 @@ class ConnectInstanceViewController: UIViewController {
             )
 
             self.setAnimationStatus(self.sensorsConfigured, state: .success)
+        }.get { _ in
+            Current.apiConnection.connect()
         }
     }
 }
