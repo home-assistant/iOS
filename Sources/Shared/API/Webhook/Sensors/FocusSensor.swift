@@ -21,8 +21,8 @@ final class FocusSensor: SensorProvider {
 
         if let isFocused = focusState.isFocused {
             sensors.append(with(WebhookSensor(
-                name: "Is Focused",
-                uniqueID: "is_focused",
+                name: "Focus",
+                uniqueID: "focus",
                 icon: "mdi:moon-waning-crescent",
                 state: isFocused
             )) {
