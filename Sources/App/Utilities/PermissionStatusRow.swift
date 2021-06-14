@@ -67,6 +67,25 @@ public final class MotionPermissionRow: Row<LabelCellOf<CMAuthorizationStatus>>,
     }
 }
 
+public final class FocusPermissionRow: Row<LabelCellOf<FocusStatusWrapper.AuthorizationStatus>>, RowType {
+    public required init(tag: String?) {
+        super.init(tag: tag)
+
+        displayValueFor = { value in
+            guard let value = value else { return nil }
+
+            switch value {
+            case .authorized:
+                return L10n.SettingsDetails.Location.MotionPermission.enabled
+            case .denied, .restricted:
+                return L10n.SettingsDetails.Location.MotionPermission.denied
+            case .notDetermined:
+                return L10n.SettingsDetails.Location.MotionPermission.needsRequest
+            }
+        }
+    }
+}
+
 public final class BackgroundRefreshStatusRow: Row<LabelCellOf<UIBackgroundRefreshStatus>>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)

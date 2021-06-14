@@ -1,3 +1,4 @@
+import CoreMotion
 import Eureka
 import Foundation
 import PromiseKit
@@ -30,6 +31,8 @@ class SensorListViewController: HAFormViewController, SensorObserver {
         }
 
         form +++ Section(header: nil, footer: periodicDescription)
+            <<< motionPermissionRow()
+            <<< focusPermissionRow()
             <<< PushRow<TimeInterval?> {
                 $0.title = L10n.SettingsSensors.PeriodicUpdate.title
                 $0.options = {
@@ -73,6 +76,78 @@ class SensorListViewController: HAFormViewController, SensorObserver {
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
         }.cauterize()
+    }
+
+    private func motionPermissionRow() -> BaseRow {
+        MotionPermissionRow { row in
+            func update(isInitial: Bool) {
+                row.value = CMMotionActivityManager.authorizationStatus()
+
+                if !isInitial {
+                    row.updateCell()
+                }
+            }
+
+            row.hidden = .init(booleanLiteral: !Current.motion.isActivityAvailable())
+
+            row.title = L10n.SettingsDetails.Location.MotionPermission.title
+            update(isInitial: true)
+
+            row.cellUpdate { cell, _ in
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+
+            let manager = CMMotionActivityManager()
+            row.onCellSelection { _, row in
+                if CMMotionActivityManager.authorizationStatus() == .notDetermined {
+                    let now = Date()
+                    manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { _, _ in
+                        update(isInitial: false)
+                    })
+                } else {
+                    // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
+                    UIApplication.shared.openSettings(destination: .motion)
+                }
+
+                row.deselect(animated: true)
+            }
+        }
+    }
+
+    private func focusPermissionRow() -> BaseRow {
+        FocusPermissionRow { row in
+            func update(isInitial: Bool) {
+                row.value = Current.focusStatus.authorizationStatus()
+
+                if !isInitial {
+                    row.updateCell()
+                }
+            }
+
+            row.hidden = .init(booleanLiteral: !Current.focusStatus.isAvailable())
+
+            row.title = L10n.SettingsSensors.FocusPermission.title
+            update(isInitial: true)
+
+            row.cellUpdate { cell, _ in
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+
+            row.onCellSelection { _, row in
+                if Current.focusStatus.authorizationStatus() == .notDetermined {
+                    Current.focusStatus.requestAuthorization().done {
+                        update(isInitial: false)
+                    }
+                } else {
+                    // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
+                    UIApplication.shared.openSettings(destination: .focus)
+                }
+
+                row.deselect(animated: true)
+            }
+        }
     }
 
     func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
