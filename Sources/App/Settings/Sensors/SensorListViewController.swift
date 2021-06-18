@@ -31,8 +31,6 @@ class SensorListViewController: HAFormViewController, SensorObserver {
         }
 
         form +++ Section(header: nil, footer: periodicDescription)
-            <<< motionPermissionRow()
-            <<< focusPermissionRow()
             <<< PushRow<TimeInterval?> {
                 $0.title = L10n.SettingsSensors.PeriodicUpdate.title
                 $0.options = {
@@ -63,6 +61,15 @@ class SensorListViewController: HAFormViewController, SensorObserver {
                 }
             }
 
+        let permissionRows = [
+            motionPermissionRow(),
+            focusPermissionRow(),
+        ].compactMap { $0 }
+
+        if !permissionRows.isEmpty {
+            form +++ Section(permissionRows)
+        }
+
         form +++ sensorSection
 
         refreshControl.addTarget(self, action: #selector(refresh), for: .primaryActionTriggered)
@@ -78,8 +85,12 @@ class SensorListViewController: HAFormViewController, SensorObserver {
         }.cauterize()
     }
 
-    private func motionPermissionRow() -> BaseRow {
-        MotionPermissionRow { row in
+    private func motionPermissionRow() -> BaseRow? {
+        guard Current.motion.isActivityAvailable() else {
+            return nil
+        }
+
+        return MotionPermissionRow { row in
             func update(isInitial: Bool) {
                 row.value = CMMotionActivityManager.authorizationStatus()
 
@@ -87,8 +98,6 @@ class SensorListViewController: HAFormViewController, SensorObserver {
                     row.updateCell()
                 }
             }
-
-            row.hidden = .init(booleanLiteral: !Current.motion.isActivityAvailable())
 
             row.title = L10n.SettingsDetails.Location.MotionPermission.title
             update(isInitial: true)
@@ -115,8 +124,12 @@ class SensorListViewController: HAFormViewController, SensorObserver {
         }
     }
 
-    private func focusPermissionRow() -> BaseRow {
-        FocusPermissionRow { row in
+    private func focusPermissionRow() -> BaseRow? {
+        guard Current.focusStatus.isAvailable() else {
+            return nil
+        }
+
+        return FocusPermissionRow { row in
             func update(isInitial: Bool) {
                 row.value = Current.focusStatus.authorizationStatus()
 
@@ -124,8 +137,6 @@ class SensorListViewController: HAFormViewController, SensorObserver {
                     row.updateCell()
                 }
             }
-
-            row.hidden = .init(booleanLiteral: !Current.focusStatus.isAvailable())
 
             row.title = L10n.SettingsSensors.FocusPermission.title
             update(isInitial: true)
