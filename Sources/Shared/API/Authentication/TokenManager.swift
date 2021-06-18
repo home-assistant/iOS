@@ -168,12 +168,15 @@ public class TokenManager {
                 case let .rejected(error):
                     Current.Log.error("refresh token got error: \(error)")
 
-                    if let networkError = error as? AFError, let statusCode = networkError.responseCode,
-                       statusCode == 400 {
+                    if let underlying = (error as? AFError)?.underlyingError as? AuthenticationAPI.AuthenticationError,
+                       case .serverError(400 ... 403, _, _) = underlying {
                         /// Server rejected the refresh token. All is lost.
                         let event = ClientEvent(
                             text: "Refresh token is invalid, showing onboarding",
-                            type: .networkRequest
+                            type: .networkRequest,
+                            payload: [
+                                "error": String(describing: underlying),
+                            ]
                         )
                         Current.clientEventStore.addEvent(event)
 
