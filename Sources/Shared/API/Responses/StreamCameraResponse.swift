@@ -3,7 +3,7 @@ import ObjectMapper
 
 public struct StreamCameraResponse: Mappable {
     public init?(map: Map) {
-        if map.JSON["hls_path"] == nil && map.JSON["mjpeg_path"] == nil {
+        if map.JSON["hls_path"] == nil, map.JSON["mjpeg_path"] == nil {
             // an error masquerading as a 200
             Current.Log.info("stream camera response wasn't available")
             return nil

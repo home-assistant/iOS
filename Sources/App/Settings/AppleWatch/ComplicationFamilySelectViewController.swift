@@ -44,7 +44,7 @@ class ComplicationFamilySelectViewController: HAFormViewController, RowControlle
                     $0.title = family.shortName
                     $0.cellStyle = .subtitle
 
-                    if !allowMultiple && currentFamilies.contains(family) {
+                    if !allowMultiple, currentFamilies.contains(family) {
                         $0.disabled = true
                     }
 

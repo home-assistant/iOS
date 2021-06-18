@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_12.5.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
@@ -34,7 +34,7 @@ jobs:
         run: bundle exec rubocop --format github
 
   SwiftLint:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
 
@@ -58,7 +58,7 @@ jobs:
         run: Pods/SwiftFormat/CommandLineTool/swiftformat --lint --config .swiftformat .
 
   test:
-    runs-on: macos-latest
+    runs-on: macos-11
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
