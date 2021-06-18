@@ -1,7 +1,7 @@
 import PromiseKit
 @testable import Shared
-import XCTest
 import SwiftUI
+import XCTest
 
 class FocusSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
@@ -12,7 +12,6 @@ class FocusSensorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
     }
 
     private func setUp(
@@ -27,7 +26,7 @@ class FocusSensorTests: XCTestCase {
 
     func testNotAuthorized() throws {
         for state: FocusStatusWrapper.AuthorizationStatus in [
-            .restricted, .denied, .notDetermined
+            .restricted, .denied, .notDetermined,
         ] {
             setUp(authorization: state)
 
@@ -71,5 +70,3 @@ class FocusSensorTests: XCTestCase {
         XCTAssertEqual(focusSensor.State as? Bool, false)
     }
 }
-
-
