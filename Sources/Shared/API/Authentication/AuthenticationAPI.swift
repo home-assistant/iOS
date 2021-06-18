@@ -6,11 +6,17 @@ import PromiseKit
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
 public class AuthenticationAPI {
-    public enum AuthenticationError: Error {
-        case unexepectedType
-        case unexpectedResponse
-        case invalidCode
+    public enum AuthenticationError: LocalizedError {
         case noConnectionInfo
+        case serverError(statusCode: Int, errorCode: String?, error: String?)
+
+        public var errorDescription: String? {
+            switch self {
+            case .noConnectionInfo: return L10n.HaApi.ApiError.notConfigured
+            case let .serverError(statusCode: statusCode, errorCode: errorCode, error: error):
+                return [String(describing: statusCode), errorCode, error].compactMap { $0 }.joined(separator: ", ")
+            }
+        }
     }
 
     private let forcedConnectionInfo: ConnectionInfo?
@@ -39,8 +45,8 @@ public class AuthenticationAPI {
             let request = Session.default.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
-            request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo, AFError>) in
-                switch dataresponse.result {
+            request.validateAuth().responseObject(context: context) { (response: DataResponse<TokenInfo, AFError>) in
+                switch response.result {
                 case let .failure(error):
                     seal.reject(error)
                 case let .success(value):
@@ -59,7 +65,7 @@ public class AuthenticationAPI {
             )
             let request = Session.default.request(routeInfo)
 
-            request.validate().response { _ in
+            request.validateAuth().response { _ in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
                 //
                 // The request will always respond with an empty body and HTTP status 200,
@@ -77,33 +83,45 @@ public class AuthenticationAPI {
             )
             let request = Session.default.request(routeInfo)
 
-            request.validate().responseObject { (dataresponse: DataResponse<TokenInfo, AFError>) in
+            request.validateAuth().responseObject { (dataresponse: DataResponse<TokenInfo, AFError>) in
                 switch dataresponse.result {
-                case let .failure(networkError):
-
-                    guard case let AFError.responseValidationFailed(reason: reason) = networkError,
-                          case let AFError.ResponseValidationFailureReason.unacceptableStatusCode(code: code)
-                          = reason, code == 400, let errorData = dataresponse.data else {
-                        seal.reject(networkError)
-                        return
-                    }
-                    do {
-                        let jsonObject = try JSONSerialization.jsonObject(
-                            with: errorData,
-                            options: .allowFragments
-                        )
-                        if let errorDictionary = jsonObject as? [String: AnyObject],
-                           let errorString = errorDictionary["error_description"] as? String,
-                           errorString == "Invalid code" {
-                            seal.reject(AuthenticationError.invalidCode)
-                            return
-                        }
-                    } catch {
-                        Current.Log.error("Error deserializing failure json response: \(error)")
-                    }
+                case let .failure(error):
+                    seal.reject(error)
                 case let .success(value):
                     seal.fulfill(value)
                 }
+            }
+        }
+    }
+}
+
+extension DataRequest {
+    @discardableResult
+    func validateAuth() -> Self {
+        validate { _, response, data in
+            if case 200 ..< 300 = response.statusCode {
+                return .success(())
+            } else if let data = data {
+                let errorCode: String?
+                let error: String?
+
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    errorCode = json["error"] as? String
+                    error = json["error_description"] as? String
+                } else {
+                    errorCode = nil
+                    error = String(data: data, encoding: .utf8)
+                }
+
+                return .failure(AuthenticationAPI.AuthenticationError.serverError(
+                    statusCode: response.statusCode,
+                    errorCode: errorCode,
+                    error: error
+                ))
+            } else {
+                return .failure(AFError.responseValidationFailed(
+                    reason: .unacceptableStatusCode(code: response.statusCode)
+                ))
             }
         }
     }

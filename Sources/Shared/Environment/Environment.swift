@@ -98,7 +98,12 @@ public class Environment {
     public var apiConnection: HAConnection = HAKit.connection(configuration: .init(
         connectionInfo: {
             if let info = Current.settingsStore.connectionInfo {
-                return .init(url: info.activeURL, userAgent: HomeAssistantAPI.userAgent)
+                do {
+                    return try .init(url: info.activeURL, userAgent: HomeAssistantAPI.userAgent)
+                } catch {
+                    Current.Log.error("couldn't create connection info: \(error)")
+                    return nil
+                }
             } else {
                 return nil
             }
