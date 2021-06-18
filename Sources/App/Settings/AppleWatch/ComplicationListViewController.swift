@@ -78,7 +78,7 @@ class ComplicationListViewController: HAFormViewController {
                 }
 
                 let updateToken = NotificationCenter.default.addObserver(
-                    forName: NotificationManager.didUpdateComplicationsNotification,
+                    forName: NotificationCommandManager.didUpdateComplicationsNotification,
                     object: nil,
                     queue: .main
                 ) { _ in
@@ -97,7 +97,7 @@ class ComplicationListViewController: HAFormViewController {
                     row.value = true
                     row.updateCell()
 
-                    Current.notificationManager.updateComplications().ensure {
+                    Current.notificationManager.commandManager.updateComplications().ensure {
                         row.value = false
                         row.updateCell()
                     }.catch { error in

@@ -7,6 +7,7 @@ import PromiseKit
 
 @objc class PushProvider: NEAppPushProvider, LocalPushManagerDelegate {
     private var localPushManager: LocalPushManager?
+    private let commandManager = NotificationCommandManager()
 
     override func start(completionHandler: @escaping (Error?) -> Void) {
         Current.Log.notify("starting", log: true)
@@ -68,7 +69,11 @@ import PromiseKit
     }
 
     func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        // todo: ugh
+        commandManager.handle(userInfo).done {
+            Current.Log.notify("handled command: \(userInfo)", log: true)
+        }.catch { error in
+            Current.Log.notify("failed: \(error)", log: true)
+        }
     }
 }
 

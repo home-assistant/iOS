@@ -11,16 +11,13 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     // Any because iOS 14+ requirement
     private var appPushHandlers = [Any]()
 
-
-    static var didUpdateComplicationsNotification: Notification.Name {
-        .init(rawValue: "didUpdateComplicationsNotification")
-    }
-
     var localPushManager: LocalPushManager? {
         didSet {
             precondition(Current.isCatalyst)
         }
     }
+
+    var commandManager = NotificationCommandManager()
 
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
@@ -95,73 +92,12 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     private func handleRemoteNotification(userInfo: [AnyHashable: Any]) -> Guarantee<UIBackgroundFetchResult> {
-        let (promise, seal) = Guarantee<UIBackgroundFetchResult>.pending()
-
         Current.Log.verbose("remote notification: \(userInfo)")
 
-        if let userInfoDict = userInfo as? [String: Any],
-           let hadict = userInfoDict["homeassistant"] as? [String: Any], let command = hadict["command"] as? String {
-            switch command {
-            case "request_location_update":
-                guard Current.settingsStore.locationSources.pushNotifications else {
-                    Current.Log.info("ignoring request, location source of notifications is disabled")
-                    seal(.noData)
-                    return promise
-                }
-
-                Current.Log.verbose("Received remote request to provide a location update")
-
-                Current.backgroundTask(withName: "push-location-request") { remaining in
-                    Current.api.then(on: nil) { api in
-                        api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
-                    }
-                }.map {
-                    UIBackgroundFetchResult.newData
-                }.recover { _ in
-                    Guarantee<UIBackgroundFetchResult>.value(.failed)
-                }.done(seal)
-            case "clear_badge":
-                Current.Log.verbose("Setting badge to 0 as requested")
-                UIApplication.shared.applicationIconBadgeNumber = 0
-                seal(.newData)
-            case "clear_notification":
-                Current.Log.verbose("clearing notification for \(userInfo)")
-                let keys = ["tag", "collapseId"].compactMap { hadict[$0] as? String }
-                if !keys.isEmpty {
-                    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
-                }
-                seal(.newData)
-            case "update_complications":
-                firstly {
-                    updateComplications()
-                }.map {
-                    Current.Log.info("successfully updated complications from notification")
-                    return UIBackgroundFetchResult.newData
-                }.recover { error in
-                    Current.Log.error("failed to update complications from notification: \(error)")
-                    return Guarantee<UIBackgroundFetchResult>.value(.failed)
-                }.done(seal)
-            default:
-                Current.Log.warning("Received unknown command via APNS! \(userInfo)")
-                seal(.noData)
-            }
-        } else {
-            seal(.noData)
-        }
-
-        return promise
-    }
-
-    func updateComplications() -> Promise<Void> {
-        Promise { seal in
-            Communicator.shared.transfer(.init(content: [:])) { result in
-                switch result {
-                case .success: seal.fulfill(())
-                case let .failure(error): seal.reject(error)
-                }
-            }
-        }.get {
-            NotificationCenter.default.post(name: Self.didUpdateComplicationsNotification, object: nil)
+        return commandManager.handle(userInfo).map {
+            UIBackgroundFetchResult.newData
+        }.recover { _ in
+            Guarantee<UIBackgroundFetchResult>.value(.failed)
         }
     }
 

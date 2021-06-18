@@ -245,6 +245,8 @@
 		11AA9A8A266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */; };
 		11AA9A8B266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */; };
 		11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */; };
+		11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */; };
+		11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D16249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
@@ -1206,6 +1208,7 @@
 		11AA9976266B0CEC00B829E1 /* NotificationParserLegacy.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationParserLegacy.test.swift; sourceTree = "<group>"; };
 		11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationParserLegacy.swift; sourceTree = "<group>"; };
 		11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.swift; sourceTree = "<group>"; };
+		11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCommandManager.swift; sourceTree = "<group>"; };
 		11AF1EC62528FB2300AAE364 /* Extension-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-ios.entitlements"; sourceTree = "<group>"; };
 		11AF1EC72528FB2300AAE364 /* Extension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Extension-catalyst.entitlements"; sourceTree = "<group>"; };
 		11AF1EC82528FB2300AAE364 /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
@@ -2340,6 +2343,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		11ADF93D267D34A20040A7E3 /* NotificationCommands */ = {
+			isa = PBXGroup;
+			children = (
+				11ADF93E267D34AD0040A7E3 /* NotificationsCommandManager.swift */,
+			);
+			path = NotificationCommands;
+			sourceTree = "<group>";
+		};
 		11AF1EC52528FB2300AAE364 /* Entitlements */ = {
 			isa = PBXGroup;
 			children = (
@@ -3345,6 +3356,7 @@
 		D0EEF325214DF30D00D1D360 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				11ADF93D267D34A20040A7E3 /* NotificationCommands */,
 				11A3BD2B261921FC005237E6 /* LocalPush */,
 				11F2F21725871C1700F61F7C /* NotificationAttachments */,
 				11169B9A262BE3E1005EF90A /* UNNotificationContent+Additions.swift */,
@@ -5147,6 +5159,7 @@
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
+				11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
 				113E73112518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295724F30E2500C8A7D1 /* Updater.swift in Sources */,
@@ -5311,6 +5324,7 @@
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
 				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
+				11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
 				D03D893620E0AEFA00D4F28D /* Environment.swift in Sources */,

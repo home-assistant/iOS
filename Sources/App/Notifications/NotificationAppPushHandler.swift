@@ -120,11 +120,13 @@ class NotificationAppPushHandler: NSObject, NEAppPushDelegate {
         }
 
         manager.isEnabled = true
+        manager.localizedDescription = "HomeAssistant"
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
 
         return Promise { seal in
             manager.saveToPreferences { error in
+                Current.Log.info("manager updated, error: \(String(describing: error))")
                 seal.resolve(error)
             }
         }
