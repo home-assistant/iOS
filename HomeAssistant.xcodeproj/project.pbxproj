@@ -6025,7 +6025,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DA2CE827B2DBBDBFB11559DF /* Pods-iOS-App.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
@@ -6240,7 +6239,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 675CE4281FE5F1920B13D553 /* Pods-iOS-App.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
@@ -6282,7 +6280,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7D94AB7BD65F15C8FEE0912E /* Pods-iOS-App.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/App-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/App-catalyst.entitlements";
