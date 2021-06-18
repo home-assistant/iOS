@@ -45,7 +45,11 @@ public class NotificationCommandManager {
     }
 
     public func updateComplications() -> Promise<Void> {
+        #if os(iOS)
         HandlerUpdateComplications().handle([:])
+        #else
+        return .value(())
+        #endif
     }
 }
 
