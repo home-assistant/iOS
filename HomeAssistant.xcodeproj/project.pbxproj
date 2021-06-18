@@ -5913,8 +5913,6 @@
 			baseConfigurationReference = 6CB9BB87D256D071215B4FF4 /* Pods-iOS-Extensions-PushProvider.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_STYLE[sdk=iphoneos*]" = Manual;
 				INFOPLIST_FILE = Sources/Extensions/PushProvider/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Local Developer: Push Provider";
@@ -6271,6 +6269,7 @@
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Local Developer: Main App";
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
