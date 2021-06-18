@@ -83,7 +83,11 @@ abstract_target 'iOS' do
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'SimulatorStatusMagic', configurations: ['Debug']
-    pod 'SwiftMessages'
+    if ENV['XCODE_BETA']
+      pod 'SwiftMessages', git: 'https://github.com/zacwest/SwiftMessages', branch: 'temp-hack-xcode-13'
+    else
+      pod 'SwiftMessages'
+    end
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
     pod 'ZIPFoundation', '~> 0.9'
 
