@@ -28,7 +28,12 @@ pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'
-pod 'RealmSwift', podspec: 'Configuration/Podspecs/Realm.podspec.json'
+
+if ENV['XCODE_BETA']
+  pod 'RealmSwift', '10.7.6'
+else
+  pod 'RealmSwift', podspec: 'Configuration/Podspecs/Realm.podspec.json'
+end
 pod 'Sentry'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
@@ -69,7 +74,11 @@ abstract_target 'iOS' do
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka'
 
-    pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
+    if ENV['XCODE_BETA']
+      pod 'Firebase/Messaging', '8.1.0'
+    else
+      pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
+    end
 
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
