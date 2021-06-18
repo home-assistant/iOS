@@ -6,6 +6,7 @@ extension UIApplication {
         case location
         case motion
         case notification
+        case focus
         case backgroundRefresh
 
         var url: URL? {
@@ -20,7 +21,7 @@ extension UIApplication {
                 case .motion:
                     bundleIdentifier = nil
                     query = nil
-                case .notification:
+                case .notification, .focus:
                     bundleIdentifier = "com.apple.preference.notifications"
                     query = nil
                 case .backgroundRefresh:

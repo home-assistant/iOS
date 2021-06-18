@@ -684,8 +684,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             section <<< locationAccuracyRow()
         }
 
-        section <<< motionPermissionRow()
-
         section <<< backgroundRefreshRow()
 
         return section
@@ -766,43 +764,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             }
             $0.onCellSelection { _, row in
                 UIApplication.shared.openSettings(destination: .location)
-                row.deselect(animated: true)
-            }
-        }
-    }
-
-    private func motionPermissionRow() -> BaseRow {
-        MotionPermissionRow { row in
-            func update(isInitial: Bool) {
-                row.value = CMMotionActivityManager.authorizationStatus()
-
-                if !isInitial {
-                    row.updateCell()
-                }
-            }
-
-            row.hidden = .init(booleanLiteral: !Current.motion.isActivityAvailable())
-
-            row.title = L10n.SettingsDetails.Location.MotionPermission.title
-            update(isInitial: true)
-
-            row.cellUpdate { cell, _ in
-                cell.accessoryType = .disclosureIndicator
-                cell.selectionStyle = .default
-            }
-
-            let manager = CMMotionActivityManager()
-            row.onCellSelection { _, row in
-                if CMMotionActivityManager.authorizationStatus() == .notDetermined {
-                    let now = Date()
-                    manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { _, _ in
-                        update(isInitial: false)
-                    })
-                } else {
-                    // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
-                    UIApplication.shared.openSettings(destination: .motion)
-                }
-
                 row.deselect(animated: true)
             }
         }

@@ -162,7 +162,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
             <<< TextAreaRow {
                 $0.tag = "hiddenPreviewsBodyPlaceholder"
                 $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
-                if !newCategory && self.category.HiddenPreviewsBodyPlaceholder != "" {
+                if !newCategory, self.category.HiddenPreviewsBodyPlaceholder != "" {
                     $0.value = self.category.HiddenPreviewsBodyPlaceholder
                 } else {
                     $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
@@ -188,7 +188,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
 
             <<< TextAreaRow {
                 $0.tag = "categorySummaryFormat"
-                if !newCategory && self.category.CategorySummaryFormat != "" {
+                if !newCategory, self.category.CategorySummaryFormat != "" {
                     $0.value = self.category.CategorySummaryFormat
                 } else {
                     $0.value = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default

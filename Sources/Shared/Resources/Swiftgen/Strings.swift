@@ -1553,6 +1553,10 @@ public enum L10n {
       /// State
       public static var state: String { return L10n.tr("Localizable", "settings_sensors.detail.state") }
     }
+    public enum FocusPermission {
+      /// Focus Permission
+      public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
+    }
     public enum LastUpdated {
       /// Last Updated %@
       public static func footer(_ p1: Any) -> String {

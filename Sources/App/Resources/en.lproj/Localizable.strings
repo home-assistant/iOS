@@ -397,6 +397,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
 "settings_sensors.settings.header" = "Settings";
 "settings_sensors.title" = "Sensors";
+"settings_sensors.focus_permission.title" = "Focus Permission";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "settings.connection_section.connecting_via" = "Connected via";
