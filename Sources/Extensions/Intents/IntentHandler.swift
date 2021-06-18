@@ -25,6 +25,11 @@ class IntentHandler: INExtension {
             if intent is UpdateSensorsIntent {
                 return UpdateSensorsIntentHandler()
             }
+            #if compiler(>=5.5)
+            if #available(iOS 15, *), intent is INShareFocusStatusIntent {
+                return FocusStatusIntentHandler()
+            }
+            #endif
             if #available(iOS 14, *), intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
             }

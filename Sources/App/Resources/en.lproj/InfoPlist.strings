@@ -13,3 +13,4 @@
 "NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
 "TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
+"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";

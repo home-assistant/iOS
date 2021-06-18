@@ -145,6 +145,7 @@ public class Environment {
         $0.register(provider: DisplaySensor.self)
         $0.register(provider: ActiveSensor.self)
         $0.register(provider: FrontmostAppSensor.self)
+        $0.register(provider: FocusSensor.self)
         $0.register(provider: LastUpdateSensor.self)
     }
 
@@ -361,4 +362,6 @@ public class Environment {
     public var location = Location()
 
     public var connectivity = ConnectivityWrapper()
+
+    public var focusStatus = FocusStatusWrapper()
 }

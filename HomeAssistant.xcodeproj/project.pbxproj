@@ -125,6 +125,12 @@
 		1155DD10250F4101003405C0 /* HomeAssistant-Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */; };
+		115AD72D267C57DA0090B243 /* FocusSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115AD72C267C57DA0090B243 /* FocusSensor.test.swift */; };
+		115BC8282676F44E00452430 /* FocusSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC8272676F44E00452430 /* FocusSensor.swift */; };
+		115BC8292676F44E00452430 /* FocusSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC8272676F44E00452430 /* FocusSensor.swift */; };
+		115BC82B267704E300452430 /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
+		115BC82E2677093900452430 /* FocusStatusWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82C267708CA00452430 /* FocusStatusWrapper.swift */; };
+		115BC82F2677093A00452430 /* FocusStatusWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82C267708CA00452430 /* FocusStatusWrapper.swift */; };
 		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
 		115EF6A72549152F0048597B /* AccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115EF6A62549152F0048597B /* AccountRow.swift */; };
 		115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */; };
@@ -1074,6 +1080,10 @@
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ManualPodLicenses.plist; sourceTree = "<group>"; };
+		115AD72C267C57DA0090B243 /* FocusSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSensor.test.swift; sourceTree = "<group>"; };
+		115BC8272676F44E00452430 /* FocusSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSensor.swift; sourceTree = "<group>"; };
+		115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusStatusIntentHandler.swift; sourceTree = "<group>"; };
+		115BC82C267708CA00452430 /* FocusStatusWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusStatusWrapper.swift; sourceTree = "<group>"; };
 		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
 		115EF6A62549152F0048597B /* AccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRow.swift; sourceTree = "<group>"; };
 		115F9D6F25F4B7B700CC6A45 /* TemplateSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateSection.swift; sourceTree = "<group>"; };
@@ -2336,6 +2346,7 @@
 				118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
 				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
+				115BC8272676F44E00452430 /* FocusSensor.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -2354,6 +2365,7 @@
 				1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */,
 				11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */,
 				110ED57F25A570F100489AF7 /* DisplaySensor.test.swift */,
+				115AD72C267C57DA0090B243 /* FocusSensor.test.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -2844,6 +2856,7 @@
 				111858D324CB5B8900B8CDDC /* PerformAction.swift */,
 				11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */,
 				112B705A2526B1C500FEAA76 /* UpdateSensors.swift */,
+				115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -3070,6 +3083,7 @@
 				11521BBB25400284009C5C72 /* CrashReporter.swift */,
 				110ED58E25A6743900489AF7 /* ConnectivityWrapper.swift */,
 				110AA55B25B36630005061A0 /* ServerAlerter.swift */,
+				115BC82C267708CA00452430 /* FocusStatusWrapper.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -4894,6 +4908,7 @@
 				11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
+				115BC82B267704E300452430 /* FocusStatusIntentHandler.swift in Sources */,
 				112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */,
 				111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */,
 			);
@@ -4995,6 +5010,7 @@
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
+				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
@@ -5008,6 +5024,7 @@
 				11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
 				119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */,
+				115BC82F2677093A00452430 /* FocusStatusWrapper.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */,
 				1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */,
@@ -5157,6 +5174,7 @@
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
+				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
@@ -5170,6 +5188,7 @@
 				1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
+				115BC82E2677093900452430 /* FocusStatusWrapper.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
@@ -5226,6 +5245,7 @@
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
 				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,
+				115AD72D267C57DA0090B243 /* FocusSensor.test.swift in Sources */,
 				11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */,
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
 				1104FCA125323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift in Sources */,
