@@ -4,7 +4,7 @@ import Shared
 import PromiseKit
 
 @available(iOS 14, *)
-class NotificationAppPushHandler: NSObject, NEAppPushDelegate {
+class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
     private var tokens: [NSKeyValueObservation] = []
     private var manager: NEAppPushManager? {
         didSet {
@@ -119,14 +119,14 @@ class NotificationAppPushHandler: NSObject, NEAppPushDelegate {
             configureManager(manager: manager)
         }
 
-        manager.isEnabled = true
+        manager.isEnabled = connectionInfo.isLocalPushEnabled
         manager.localizedDescription = "HomeAssistant"
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
 
         return Promise { seal in
             manager.saveToPreferences { error in
-                Current.Log.info("manager updated, error: \(String(describing: error))")
+                Current.Log.info("manager \(manager) updated, error: \(String(describing: error))")
                 seal.resolve(error)
             }
         }

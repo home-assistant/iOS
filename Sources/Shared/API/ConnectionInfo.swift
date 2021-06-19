@@ -107,6 +107,14 @@ public class ConnectionInfo: Codable {
         }
     }
 
+    public var isLocalPushEnabled = true {
+        didSet {
+            guard oldValue != isLocalPushEnabled else { return }
+            Current.Log.verbose("updated local push from \(oldValue) to \(isLocalPushEnabled)")
+            Current.settingsStore.connectionInfo = self
+        }
+    }
+
     public init(
         externalURL: URL?,
         internalURL: URL?,
@@ -115,7 +123,8 @@ public class ConnectionInfo: Codable {
         webhookID: String,
         webhookSecret: String?,
         internalSSIDs: [String]?,
-        internalHardwareAddresses: [String]?
+        internalHardwareAddresses: [String]?,
+        isLocalPushEnabled: Bool
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -125,6 +134,7 @@ public class ConnectionInfo: Codable {
         self.webhookSecret = webhookSecret
         self.internalSSIDs = internalSSIDs
         self.internalHardwareAddresses = internalHardwareAddresses
+        self.isLocalPushEnabled = isLocalPushEnabled
 
         if self.internalURL != nil, self.internalSSIDs != nil, isOnInternalNetwork {
             self.activeURLType = .internal
@@ -151,6 +161,7 @@ public class ConnectionInfo: Codable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.activeURLType = try container.decode(URLType.self, forKey: .activeURLType)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
+        self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -198,6 +209,13 @@ public class ConnectionInfo: Codable {
             switch self {
             case .internal: return Current.isCatalyst
             case .remoteUI, .external: return false
+            }
+        }
+
+        public var hasLocalPush: Bool {
+            switch self {
+            case .internal: return !Current.isCatalyst
+            default: return false
             }
         }
     }

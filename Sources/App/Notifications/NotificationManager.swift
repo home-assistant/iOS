@@ -8,28 +8,24 @@ import UserNotifications
 import XCGLogger
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
-    // Any because iOS 14+ requirement
-    private var appPushHandlers = [Any]()
-
-    var localPushManager: LocalPushManager? {
-        didSet {
-            precondition(Current.isCatalyst)
-        }
+    enum PushManager {
+        // Xcode 13 beta 1 doesn't like this being typed
+        case settings(AnyObject)
+        case direct(LocalPushManager)
     }
-
+    
+    var localPushManagers = [PushManager]()
     var commandManager = NotificationCommandManager()
 
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
 
         if Current.isCatalyst {
-            localPushManager = with(LocalPushManager()) {
+            localPushManagers.append(.direct(with(LocalPushManager()) {
                 $0.delegate = self
-            }
-        }
-
-        if #available(iOS 14, *) {
-            appPushHandlers.append(NotificationAppPushHandler())
+            }))
+        } else if #available(iOS 14, *) {
+            localPushManagers.append(.settings(NotificationLocalPushSettingsManager()))
         }
     }
 

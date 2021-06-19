@@ -63,12 +63,17 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
     @objc private func save() {
         let givenURL = (form.rowBy(tag: RowTag.url.rawValue) as? URLRow)?.value
         let useCloud = (form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow)?.value
+        let localPush = (form.rowBy(tag: RowTag.localPush.rawValue) as? SwitchRow)?.value
 
         func commit() {
             Current.settingsStore.connectionInfo?.setAddress(givenURL, urlType)
 
             if let useCloud = useCloud {
                 Current.settingsStore.connectionInfo?.useCloud = useCloud
+            }
+
+            if let localPush = localPush {
+                Current.settingsStore.connectionInfo?.isLocalPushEnabled = localPush
             }
 
             if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
@@ -144,6 +149,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         case ssids
         case hardwareAddresses
         case useCloud
+        case localPush
     }
 
     private func updateNavigationItems(isChecking: Bool) {
@@ -253,6 +259,13 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 existingValues: Current.settingsStore.connectionInfo?.internalHardwareAddresses ?? [],
                 valueRules: rules
             )
+        }
+
+        if urlType.hasLocalPush {
+            form +++ SwitchRow(RowTag.localPush.rawValue) {
+                $0.title = L10n.SettingsDetails.Notifications.LocalPush.title
+                $0.value = Current.settingsStore.connectionInfo?.isLocalPushEnabled
+            }
         }
     }
 
