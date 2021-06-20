@@ -29,7 +29,8 @@ class WebhookManagerTests: XCTestCase {
             webhookID: "given_id",
             webhookSecret: nil,
             internalSSIDs: nil,
-            internalHardwareAddresses: nil
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: true
         )
         webhookURL = connectionInfo.webhookURL
 
@@ -177,7 +178,8 @@ class WebhookManagerTests: XCTestCase {
             webhookID: "given_id",
             webhookSecret: nil,
             internalSSIDs: nil,
-            internalHardwareAddresses: nil
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: true
         )
 
         let nextAPI = FakeHassAPI(

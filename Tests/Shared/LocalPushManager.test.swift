@@ -51,7 +51,8 @@ class LocalPushManagerTests: XCTestCase {
                 webhookID: webhookID,
                 webhookSecret: "webhooksecret",
                 internalSSIDs: nil,
-                internalHardwareAddresses: nil
+                internalHardwareAddresses: nil,
+                isLocalPushEnabled: true
             )
         } else {
             Current.settingsStore.connectionInfo = nil
