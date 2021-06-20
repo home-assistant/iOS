@@ -46,6 +46,11 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertTrue(content.categoryIdentifier.isEmpty)
         XCTAssertNil(content.sound)
         XCTAssertEqual(Set(content.userInfo.keys), Set(["aps"]))
+        #if compiler(>=5.5)
+        if #available(iOS 15, watchOS 8, *) {
+            XCTAssertEqual(content.interruptionLevel, .active)
+        }
+        #endif
     }
 
     func testFullWithoutSound() {
@@ -61,6 +66,7 @@ class LocalPushEventTests: XCTestCase {
                     "thread-id": "some_thread_id",
                     "badge": 3,
                     "category": "some_category",
+                    "interruption-level": "time-sensitive",
                 ],
                 "extra": true,
             ]
@@ -73,6 +79,11 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertEqual(content.badge, 3)
         XCTAssertEqual(content.categoryIdentifier, "some_category")
         XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "extra"]))
+        #if compiler(>=5.5)
+        if #available(iOS 15, watchOS 8, *) {
+            XCTAssertEqual(content.interruptionLevel, .timeSensitive)
+        }
+        #endif
     }
 
     func testSoundNonCriticalNamed() {
@@ -213,4 +224,36 @@ class LocalPushEventTests: XCTestCase {
             }
         }
     }
+
+    #if compiler(>=5.5)
+    func testInterruptionLevels() throws {
+        guard #available(iOS 15, watchOS 8, *) else {
+            throw XCTSkip("not valid on this OS")
+        }
+
+        let levels: [String: UNNotificationInterruptionLevel] = [
+            "passive": .passive,
+            "active": .active,
+            "time-sensitive": .timeSensitive,
+            "critical": .critical,
+            "random_value": .active,
+        ]
+
+        for (value, level) in levels {
+            let event = LocalPushEvent(
+                headers: [:],
+                payload: [
+                    "aps": [
+                        "alert": [
+                            "body": "some_body",
+                        ],
+                        "interruption-level": value,
+                    ],
+                ]
+            )
+            let content = event.content
+            XCTAssertEqual(content.interruptionLevel, level)
+        }
+    }
+    #endif
 }
