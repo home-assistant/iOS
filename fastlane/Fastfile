@@ -318,6 +318,7 @@ private_lane :provisioning_profile_specifiers do |options|
 
   settings_result = sh([
     'xcodebuild',
+    '2>/dev/null', # this command started outputting warnings in Xcode 12.5
     '-json',
     '-showBuildSettings',
     '-sdk', options[:sdk],
