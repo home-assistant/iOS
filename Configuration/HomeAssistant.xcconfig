@@ -3,6 +3,10 @@ VERSIONING_SYSTEM = apple-generic
 
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
+ENABLE_CRITICAL_ALERTS_QMQYCKL255 = 1
+ENABLE_PUSH_PROVIDER_QMQYCKL255 = 1
+CODE_SIGN_STYLE_QMQYCKL255_App = Manual
+CODE_SIGN_STYLE_QMQYCKL255_Extensions_PushProvider = Manual
 
 // cascades down
 PRODUCT_BUNDLE_IDENTIFIER = ${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}${PROVISIONING_SUFFIX}
@@ -15,7 +19,7 @@ DEAD_CODE_STRIPPING[sdk=watchos*] = NO
 
 // release builds override this
 CODE_SIGN_IDENTITY = Apple Development
-CODE_SIGN_STYLE = Automatic
+CODE_SIGN_STYLE_DEFAULT = Automatic
 
 // Create this file to override configuration. It's ignored by git
 #include? "HomeAssistant.overrides.xcconfig"
@@ -23,6 +27,13 @@ CODE_SIGN_STYLE = Automatic
 // set after overrides in case the team is changed by them - this is customized in e.g. the Release xcconfig
 // only iOS, not catalyst, because no critical alerts provisioning for us exists on mac
 ENABLE_CRITICAL_ALERTS[sdk=iphoneos*] = $(ENABLE_CRITICAL_ALERTS_$(DEVELOPMENT_TEAM))
+ENABLE_PUSH_PROVIDER[sdk=iphoneos*] = $(ENABLE_PUSH_PROVIDER_$(DEVELOPMENT_TEAM))
+
+// We mutate the entitlements at build time to support other development teams
+CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES
+// Mutate certain targets' default signing style because we need manual on ios sdk
+CODE_SIGN_STYLE = $(CODE_SIGN_STYLE_DEFAULT)
+CODE_SIGN_STYLE[sdk=iphoneos*] = $(CODE_SIGN_STYLE_$(DEVELOPMENT_TEAM)_$(TARGET_NAME:c99extidentifier):default=$CODE_SIGN_STYLE_DEFAULT)
 
 // Baseline information
 SDKROOT = iphoneos

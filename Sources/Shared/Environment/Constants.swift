@@ -47,6 +47,7 @@ public enum Constants {
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".watchkitapp", with: "")
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".Widgets", with: "")
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".ShareExtension", with: "")
+        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".PushProvider", with: "")
 
         return removeBundleSuffix
     }

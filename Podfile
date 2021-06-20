@@ -102,6 +102,7 @@ abstract_target 'iOS' do
   target 'Extensions-Intents'
   target 'Extensions-NotificationContent'
   target 'Extensions-NotificationService'
+  target 'Extensions-PushProvider'
   target 'Extensions-Share'
   target 'Extensions-Today'
   target 'Extensions-Widgets'

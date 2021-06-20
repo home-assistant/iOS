@@ -320,6 +320,8 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
 "settings_details.notifications.local_push.status.unavailable" = "Unavailable";
 /* parameter is a count, the number of received notifications */
 "settings_details.notifications.local_push.status.available" = "Available (%1$@)";
@@ -422,6 +424,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_section.servers" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
 "settings.connection_section.validate_error.title" = "Error Saving URL";
 "settings.connection_section.validate_error.use_anyway" = "Use Anyway";
