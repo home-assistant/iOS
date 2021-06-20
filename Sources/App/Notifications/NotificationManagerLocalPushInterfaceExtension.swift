@@ -8,7 +8,7 @@ import Shared
 final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface,
     NEAppPushDelegate {
     var status: NotificationManagerLocalPushStatus {
-        if let manager = manager, let value = stateSync.value {
+        if let manager = manager, manager.isActive, let value = stateSync.value {
             return .allowed(value)
         } else {
             return .disabled
