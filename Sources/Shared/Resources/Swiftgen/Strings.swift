@@ -810,6 +810,8 @@ public enum L10n {
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
+      /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
+      public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
       /// Logged in as
       public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Servers
@@ -1385,10 +1387,14 @@ public enum L10n {
           public static func available(_ p1: Any) -> String {
             return L10n.tr("Localizable", "settings_details.notifications.local_push.status.available", String(describing: p1))
           }
+          /// Disabled
+          public static var disabled: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.status.disabled") }
           /// Establishing
           public static var establishing: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.status.establishing") }
           /// Unavailable
           public static var unavailable: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.status.unavailable") }
+          /// Unsupported
+          public static var unsupported: String { return L10n.tr("Localizable", "settings_details.notifications.local_push.status.unsupported") }
         }
       }
       public enum NewCategory {

@@ -144,9 +144,9 @@ class NotificationSettingsViewController: HAFormViewController {
                     guard let row = row else { return }
                     switch manager.status {
                     case .disabled:
-                        row.value = "Disabled"
+                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.disabled
                     case .unsupported:
-                        row.value = "Unsupported"
+                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.unsupported
                     case let .allowed(state):
                         switch state {
                         case .unavailable:
