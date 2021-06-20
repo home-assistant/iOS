@@ -2,13 +2,36 @@ import Foundation
 import NetworkExtension
 import Shared
 import PromiseKit
+import HAKit
 
 @available(iOS 14, *)
-final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
-    static let settingsKey = "LocalPush:Main"
+final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface, NEAppPushDelegate {
+    var status: NotificationManagerLocalPushStatus {
+        if let manager = manager, let value = stateSync.value {
+            return .allowed(value)
+        } else {
+            return .inactive
+        }
+    }
 
-    var isActive: Bool { manager?.isActive ?? false }
-    let stateSync = LocalPushStateSync(settingsKey: NotificationLocalPushSettingsManager.settingsKey)
+    func addObserver(_ handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable {
+        let identifier = UUID()
+        observers.append((identifier: identifier, handler: handler))
+        return HABlockCancellable { [weak self] in
+            self?.observers.removeAll(where: { $0.identifier == identifier })
+        }
+    }
+
+    private var observers = [(identifier: UUID, handler: (NotificationManagerLocalPushStatus) -> Void)]()
+    private func notifyObservers() {
+        let status = status
+        for observer in observers {
+            observer.handler(status)
+        }
+    }
+
+    static let settingsKey = "LocalPush:Main"
+    private let stateSync = LocalPushStateSync(settingsKey: NotificationManagerLocalPushInterfaceExtension.settingsKey)
     
     private var tokens: [NSKeyValueObservation] = []
     private var manager: NEAppPushManager? {
@@ -20,6 +43,7 @@ final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
                 } else {
                     tokens = []
                 }
+                notifyObservers()
             }
         }
     }
@@ -27,33 +51,9 @@ final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
     override init() {
         super.init()
 
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // CHECK LOCATION PERMISSION
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-
+        _ = stateSync.observe { [weak self] (state: LocalPushManager.State) in
+            self?.notifyObservers()
+        }
 
         // future multi-server: move this to container
         NEAppPushManager.loadAllFromPreferences { [self] managers, error in
@@ -86,8 +86,9 @@ final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
 
     private func setupObservation(manager: NEAppPushManager) -> [NSKeyValueObservation] {
         [
-            manager.observe(\.isActive) { manager, _ in
+            manager.observe(\.isActive) { [weak self] manager, _ in
                 Current.Log.info("manager is active: \(manager.isActive)")
+                self?.notifyObservers()
             },
         ]
     }
@@ -96,16 +97,17 @@ final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
         guard
             let connectionInfo = Current.settingsStore.connectionInfo,
             connectionInfo.internalSSIDs?.isEmpty == false,
-            connectionInfo.internalURL != nil
+            connectionInfo.internalURL != nil,
+            connectionInfo.isLocalPushEnabled
         else {
             return Promise { seal in
                 guard let manager = self.manager else {
-                    Current.Log.info("no local push - no internal info")
+                    Current.Log.info("no local push - no internal info or not enabled")
                     seal.fulfill(())
                     return
                 }
 
-                Current.Log.info("removing manager \(manager) due to no internal info")
+                Current.Log.info("removing manager \(manager) due to no internal info or not enabled")
                 manager.removeFromPreferences { error in
                     Current.Log.info("remove from preferences: \(String(describing: error))")
                     seal.resolve(error)
@@ -123,7 +125,9 @@ final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
             configureManager(manager: manager)
         }
 
-        manager.isEnabled = connectionInfo.isLocalPushEnabled
+        // just toggling isEnabled doesn't seem to kill off the extension reliably
+        manager.isEnabled = true
+
         manager.localizedDescription = "HomeAssistant"
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []

@@ -83,6 +83,11 @@
 		111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */; };
 		111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */; };
 		111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
+		11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6A267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift */; };
+		11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */; };
+		11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */; };
+		11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
+		11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11267D0825BBA9FE00F28E5C /* Updater.test.swift */; };
@@ -281,7 +286,7 @@
 		11B92913266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11B9297E266F15B500786588 /* PushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B9296B266F15A800786588 /* PushProvider.swift */; };
 		11B92A5B266F17AA00786588 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
-		11B92AF2266F23DA00786588 /* NotificationLocalPushSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B92A7F266F23CD00786588 /* NotificationLocalPushSettingsManager.swift */; };
+		11B92AF2266F23DA00786588 /* NotificationManagerLocalPushInterfaceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B92A7F266F23CD00786588 /* NotificationManagerLocalPushInterfaceExtension.swift */; };
 		11BC9E5524FDB88200B9FBF7 /* ActiveStateManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */; };
 		11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */; };
 		11BD7B2D25B52E8D001826F0 /* MacBridgeStatusItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */; };
@@ -1078,6 +1083,10 @@
 		11169CEB262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAudioAttachmentViewController.swift; sourceTree = "<group>"; };
 		1117FB4B250C5F7C00895C13 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
+		11195F6A267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterface.swift; sourceTree = "<group>"; };
+		11195F6C267EFC15003DF674 /* HACancellable+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HACancellable+App.swift"; sourceTree = "<group>"; };
+		11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceDirect.swift; sourceTree = "<group>"; };
+		11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceUnsupported.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
 		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
@@ -1240,7 +1249,7 @@
 		11B9290A266F145000786588 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		11B9296A266F15A800786588 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11B9296B266F15A800786588 /* PushProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushProvider.swift; sourceTree = "<group>"; };
-		11B92A7F266F23CD00786588 /* NotificationLocalPushSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationLocalPushSettingsManager.swift; sourceTree = "<group>"; };
+		11B92A7F266F23CD00786588 /* NotificationManagerLocalPushInterfaceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceExtension.swift; sourceTree = "<group>"; };
 		11BC9E5424FDB88200B9FBF7 /* ActiveStateManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.test.swift; sourceTree = "<group>"; };
 		11BC9E5624FDC1C900B9FBF7 /* ActiveSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.test.swift; sourceTree = "<group>"; };
 		11BD7B2C25B52E8D001826F0 /* MacBridgeStatusItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeStatusItem.swift; sourceTree = "<group>"; };
@@ -2141,7 +2150,10 @@
 			isa = PBXGroup;
 			children = (
 				117EB15B2569AD4600049541 /* NotificationManager.swift */,
-				11B92A7F266F23CD00786588 /* NotificationLocalPushSettingsManager.swift */,
+				11195F6A267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift */,
+				11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */,
+				11B92A7F266F23CD00786588 /* NotificationManagerLocalPushInterfaceExtension.swift */,
+				11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -3185,6 +3197,7 @@
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 				D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */,
+				11195F6C267EFC15003DF674 /* HACancellable+App.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -4938,6 +4951,7 @@
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				B616B299227ED68E00828165 /* Bonjour.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
+				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
 				1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
@@ -4949,6 +4963,7 @@
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
+				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
@@ -4964,12 +4979,13 @@
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
+				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
-				11B92AF2266F23DA00786588 /* NotificationLocalPushSettingsManager.swift in Sources */,
+				11B92AF2266F23DA00786588 /* NotificationManagerLocalPushInterfaceExtension.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
@@ -5158,6 +5174,7 @@
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
+				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
@@ -5324,6 +5341,7 @@
 				119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
+				11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */,
 				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,

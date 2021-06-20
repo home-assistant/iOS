@@ -15,14 +15,13 @@ public class LocalPushManager {
     public static var stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
 
     public enum State: Equatable, Codable {
-        case inactive
         case establishing
         case unavailable
         case available(received: Int)
 
         mutating func increment(by count: Int = 1) {
             switch self {
-            case .establishing, .unavailable, .inactive:
+            case .establishing, .unavailable:
                 self = .available(received: count)
             case let .available(received: originalCount):
                 self = .available(received: originalCount + count)
@@ -30,7 +29,6 @@ public class LocalPushManager {
         }
 
         private enum PrimitiveState: String, Codable {
-            case inactive
             case establishing
             case unavailable
             case available
@@ -38,7 +36,6 @@ public class LocalPushManager {
 
         private var primitiveState: PrimitiveState {
             switch self {
-            case .inactive: return .inactive
             case .establishing: return .establishing
             case .unavailable: return .unavailable
             case .available: return .available
@@ -48,7 +45,7 @@ public class LocalPushManager {
         private var primitiveCount: Int? {
             switch self {
             case let .available(received: count): return count
-            case .unavailable, .establishing, .inactive: return nil
+            case .unavailable, .establishing: return nil
             }
         }
 
@@ -69,7 +66,6 @@ public class LocalPushManager {
             let primitiveCount = try container.decode(Int?.self, forKey: .count)
 
             switch primitiveState {
-            case .inactive: self = .inactive
             case .establishing: self = .establishing
             case .unavailable: self = .unavailable
             case .available: self = .available(received: primitiveCount ?? 0)

@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 
 public class LocalPushStateSync: UserDefaultsValueSync<LocalPushManager.State> {
     public static let settingsKey = "LocalPushSettingsKey"
@@ -45,9 +46,13 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
         }
     }
 
-    private var observers = [(ValueType) -> Void]()
-    public func observe(_ handler: @escaping (ValueType) -> Void) {
-        observers.append(handler)
+    private var observers = [(identifier: UUID, handler: (ValueType) -> Void)]()
+    public func observe(_ handler: @escaping (ValueType) -> Void) -> HACancellable {
+        let identifier = UUID()
+        observers.append((identifier: identifier, handler: handler))
+        return HABlockCancellable { [weak self] in
+            self?.observers.removeAll(where: { $0.identifier == identifier })
+        }
     }
 
     // swiftlint:disable:next block_based_kvo
@@ -60,7 +65,7 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
         guard let value = value else { return }
 
         for observer in observers {
-            observer(value)
+            observer.handler(value)
         }
     }
 }

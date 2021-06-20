@@ -214,7 +214,15 @@ public class ConnectionInfo: Codable {
 
         public var hasLocalPush: Bool {
             switch self {
-            case .internal: return !Current.isCatalyst
+            case .internal:
+                if Current.isCatalyst {
+                    return false
+                }
+                if #available(iOS 14, *) {
+                    return true
+                } else {
+                    return false
+                }
             default: return false
             }
         }

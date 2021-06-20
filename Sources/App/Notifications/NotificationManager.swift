@@ -8,66 +8,20 @@ import UserNotifications
 import XCGLogger
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
-    enum LocalPushManagerWrapper {
-        // Xcode 13 beta 1 doesn't like this being typed
-        case settings(AnyObject)
-        case direct(LocalPushManager)
-
-        var state: LocalPushManager.State {
-            switch self {
-            case let .direct(pushManager): return pushManager.state
-            case let .settings(settingsWithoutType):
-                guard #available(iOS 14, *) else {
-                    fatalError("settings should not be accessible pre-iOS 14")
-                }
-
-                // swiftlint:disable:next force_cast
-                let settings = settingsWithoutType as! NotificationLocalPushSettingsManager
-                if settings.isActive, let value = settings.stateSync.value {
-                    return value
-                } else {
-                    return .inactive
-                }
-            }
+    lazy var localPushManager: NotificationManagerLocalPushInterface = {
+        if Current.isCatalyst {
+            return NotificationManagerLocalPushInterfaceDirect(delegate: self)
+        } else if #available(iOS 14, *) {
+            return NotificationManagerLocalPushInterfaceExtension()
+        } else {
+            return NotificationManagerLocalPushInterfaceDisallowed()
         }
-
-        func observeState(_ handler: @escaping (LocalPushManager.State) -> Void) -> () -> Void {
-            switch self {
-            case let .direct(pushManager):
-                let token = NotificationCenter.default.addObserver(
-                    forName: LocalPushManager.stateDidChange,
-                    object: pushManager,
-                    queue: .main
-                ) { _ in
-                    handler(pushManager.state)
-                }
-                return { NotificationCenter.default.removeObserver(token) }
-            case let .settings(settingsWithoutType):
-                guard #available(iOS 14, *) else {
-                    fatalError("settings should not be accessible pre-iOS 14")
-                }
-
-                // swiftlint:disable:next force_cast
-                let settings = settingsWithoutType as! NotificationLocalPushSettingsManager
-                settings.stateSync.observe(handler)
-                return { }
-            }
-        }
-    }
-    
-    var localPushManager: LocalPushManagerWrapper?
+    }()
     var commandManager = NotificationCommandManager()
 
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
-
-        if Current.isCatalyst {
-            localPushManager = .direct(with(LocalPushManager()) {
-                $0.delegate = self
-            })
-        } else if #available(iOS 14, *) {
-            localPushManager = .settings(NotificationLocalPushSettingsManager())
-        }
+        _ = localPushManager
     }
 
     func resetPushID() -> Promise<String> {

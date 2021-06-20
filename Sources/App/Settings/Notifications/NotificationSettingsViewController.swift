@@ -138,36 +138,37 @@ class NotificationSettingsViewController: HAFormViewController {
 
             <<< LabelRow { row in
                 row.title = L10n.SettingsDetails.Notifications.LocalPush.title
-
-                guard let manager = Current.notificationManager.localPushManager else {
-                    row.hidden = true
-                    return
-                }
+                let manager = Current.notificationManager.localPushManager
 
                 let updateValue = { [weak row] in
                     guard let row = row else { return }
-                    switch manager.state {
-                    case .inactive:
-                        row.value = "Inactive"
-                    case .unavailable:
-                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.unavailable
-                    case .establishing:
-                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.establishing
-                    case let .available(received: received):
-                        let formatted = NumberFormatter.localizedString(
-                            from: NSNumber(value: received),
-                            number: .decimal
-                        )
-                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.available(formatted)
+                    switch manager.status {
+                    case .disabled:
+                        row.value = "Disabled"
+                    case .unsupported:
+                        row.value = "Unsupported"
+                    case let .allowed(state):
+                        switch state {
+                        case .unavailable:
+                            row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.unavailable
+                        case .establishing:
+                            row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.establishing
+                        case let .available(received: received):
+                            let formatted = NumberFormatter.localizedString(
+                                from: NSNumber(value: received),
+                                number: .decimal
+                            )
+                            row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.available(formatted)
+                        }
                     }
 
                     row.updateCell()
                 }
 
-                let cancel = manager.observeState { _ in
+                let cancel = manager.addObserver { _ in
                     updateValue()
                 }
-                after(life: self).done(cancel)
+                after(life: self).done(cancel.cancel)
                 updateValue()
             }
 
