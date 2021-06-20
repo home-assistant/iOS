@@ -329,6 +329,12 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categorïau";
 "settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
+"settings_details.notifications.local_push.status.available" = "Available (%1$@)";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.new_category.title" = "Categori Newydd";
 "settings_details.notifications.permission.disabled" = "Wedi'i wrthod";
 "settings_details.notifications.permission.enabled" = "Wedi'i alluogi";
@@ -383,6 +389,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_sensors.detail.icon" = "Eicon";
 "settings_sensors.detail.state" = "Cyflwr";
 "settings_sensors.disabled_state_replacement" = "Disabled";
+"settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Wedi'i ddiweddaru ddiwethaf %@";
 "settings_sensors.loading_error.title" = "Wedi methu llwytho synwyryddion";
 "settings_sensors.periodic_update.description" = "Pan fydd wedi'i alluogi, bydd y synwyryddion hyn yn diweddaru ar ôl i'r ap fod yn agored yn barhaus cyhyd.";
@@ -411,6 +418,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.internal_url_ssids.footer" = "Bydd URL mewnol yn cael ei ddefnyddio pan fydd wedi'i gysylltu â SSIDs rhestredig";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.logged_in_as" = "Wedi mewngofnodi fel";
 "settings.connection_section.remote_ui_url.title" = "URL UI o bell";
 "settings.connection_section.servers" = "Servers";

@@ -329,6 +329,12 @@
 "settings_details.notifications.categories.footer" = "İşlem yapılabilir bildirimler, bildirimler için mevcut eylemleri tanımlayan kategoriler kullanılarak oluşturulur.";
 "settings_details.notifications.categories.header" = "Kategoriler";
 "settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
+"settings_details.notifications.local_push.status.available" = "Available (%1$@)";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.new_category.title" = "Yeni kategori";
 "settings_details.notifications.permission.disabled" = "Reddedildi";
 "settings_details.notifications.permission.enabled" = "Etkin";
@@ -383,6 +389,7 @@
 "settings_sensors.detail.icon" = "Simge";
 "settings_sensors.detail.state" = "Durum";
 "settings_sensors.disabled_state_replacement" = "Devre dışı";
+"settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Son Güncelleme %@";
 "settings_sensors.loading_error.title" = "Sensörler yüklenemedi";
 "settings_sensors.periodic_update.description" = "Etkinleştirildiğinde, bu sensörler, uygulama ön planda açıkken bu sıklıkta güncellenir.";
@@ -411,6 +418,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Listelenen SSID'lere bağlanıldığında dahili URL kullanılacaktır";
 "settings.connection_section.internal_url_ssids.header" = "SSID'lerin";
 "settings.connection_section.internal_url_ssids.placeholder" = "BenimNetworkAdim";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.logged_in_as" = "olarak giriş yaptı";
 "settings.connection_section.remote_ui_url.title" = "Uzak Kullanıcı Arabirimi URL'si";
 "settings.connection_section.servers" = "Servers";
