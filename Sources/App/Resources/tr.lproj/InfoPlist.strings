@@ -1,6 +1,7 @@
 "NFCReaderUsageDescription" = "NFC etiketlerini okumak ve yazmak, olayları tetiklemenizi sağlar.";
 "NSCameraUsageDescription" = "Fotoğraf çekin ve bunları Home Assistant sunucunuza gönderin.";
 "NSCrossWebsiteTrackingUsageDescription" = "Yapılandırmanız gerektiriyorsa, isteğe bağlı olarak web siteleri arası izlemeyi etkinleştirin.";
+"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
 "NSLocalNetworkUsageDescription" = "Home Assistant örneğinizi bulun ve onunla iletişim kurun.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";

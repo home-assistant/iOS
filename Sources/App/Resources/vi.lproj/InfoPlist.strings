@@ -1,6 +1,7 @@
 "NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
 "NSCameraUsageDescription" = "Chụp ảnh và gửi chúng đến máy chủ Trợ lý gia đình của bạn.";
 "NSCrossWebsiteTrackingUsageDescription" = "Tùy chọn cho phép theo dõi trang web chéo nếu cấu hình của bạn yêu cầu.";
+"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";

@@ -1,6 +1,7 @@
 "NFCReaderUsageDescription" = "Å lese og skrive NFC-tagger lar deg utløse hendelser.";
 "NSCameraUsageDescription" = "Ta bilder og send dem til Home Assistant-serveren.";
 "NSCrossWebsiteTrackingUsageDescription" = "Du kan eventuelt aktivere sporing på tvers av nettsteder hvis konfigurasjonen krever det.";
+"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
 "NSLocalNetworkUsageDescription" = "Finn og kommuniser med Home Assistant-forekomsten.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Vi foreslår at du velger \"Alltid tillat\" for den beste opplevelsen. Hvis du velger \"Kun mens du bruker appen\", deaktiveres iBeacons, geofences, oppdateringer for bakgrunnsplassering og nøyaktig rapportering.";
 "NSLocationAlwaysUsageDescription" = "Vi trenger tilgang til posisjonen din for funksjoner som iBeacons, geofences, oppdateringer for bakgrunnssteder og nøyaktig rapportering.";

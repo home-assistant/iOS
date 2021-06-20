@@ -106,7 +106,7 @@
 "location_change_notification.manual.body" = "使用者觸發座標更新";
 "location_change_notification.periodic.body" = "已透過週期更新更新座標";
 "location_change_notification.push_notification.body" = "已透過推送通知更新座標";
-"location_change_notification.region_enter.body" = "%@ 進入";
+"location_change_notification.region_enter.body" = "進入 %@";
 "location_change_notification.region_exit.body" = "%@ 離開";
 "location_change_notification.signaled.body" = "透過更新訊號更新座標";
 "location_change_notification.significant_location_update.body" = "偵測到座標變化";
@@ -313,7 +313,7 @@
 "settings_details.location.zones.beacon_minor.title" = "次要 iBeacon";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.beacon.prop_not_set.value" = "未設定";
-"settings_details.location.zones.enter_exit_tracked.title" = "進入或離開 追蹤裝置功能";
+"settings_details.location.zones.enter_exit_tracked.title" = "進入或離開追蹤裝置功能";
 "settings_details.location.zones.footer" = "如果想要關閉座標追蹤功能，請加入 track_ios: false 至每個區域設定或是在 customize 內加入參數。";
 "settings_details.location.zones.location.title" = "座標";
 "settings_details.location.zones.radius.label" = "%li 公尺";
@@ -329,6 +329,12 @@
 "settings_details.notifications.categories.footer" = "使用類別定物可操作之通知、類別定義了通知可用的操作動作。";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.info" = "使用 mobile_app 通知服務以傳送通知至您的裝置。";
+"settings_details.notifications.local_push.status.available" = "可用（%1$@）";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.establishing" = "建立連線中";
+"settings_details.notifications.local_push.status.unavailable" = "不可用";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.title" = "本地推送";
 "settings_details.notifications.new_category.title" = "新類別";
 "settings_details.notifications.permission.disabled" = "已拒絕";
 "settings_details.notifications.permission.enabled" = "已啟用";
@@ -383,6 +389,7 @@
 "settings_sensors.detail.icon" = "圖示";
 "settings_sensors.detail.state" = "狀態";
 "settings_sensors.disabled_state_replacement" = "已關閉";
+"settings_sensors.focus_permission.title" = "專注權限";
 "settings_sensors.last_updated.footer" = "最後更新%@";
 "settings_sensors.loading_error.title" = "傳感器載入失敗";
 "settings_sensors.periodic_update.description" = "開啟後、傳感器將會依設定於 App 於背景開啟時持續更新。";
@@ -411,6 +418,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.logged_in_as" = "登入帳號：";
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
 "settings.connection_section.servers" = "伺服器";

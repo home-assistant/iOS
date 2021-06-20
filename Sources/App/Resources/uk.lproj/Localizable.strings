@@ -329,6 +329,12 @@
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Категорії";
 "settings_details.notifications.info" = "Use the mobile_app notify service to send notifications to your device.";
+"settings_details.notifications.local_push.status.available" = "Available (%1$@)";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.new_category.title" = "Нова категорія";
 "settings_details.notifications.permission.disabled" = "Заборонено";
 "settings_details.notifications.permission.enabled" = "Дозволено";
@@ -383,6 +389,7 @@
 "settings_sensors.detail.icon" = "Значок";
 "settings_sensors.detail.state" = "Стан";
 "settings_sensors.disabled_state_replacement" = "Disabled";
+"settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Востаннє оновлено %@";
 "settings_sensors.loading_error.title" = "Не вдалося завантажити сенсори";
 "settings_sensors.periodic_update.description" = "Коли увімкнено, ці сенсори будуть оновлюватись поки застосунок відкритий на передньому плані.";
@@ -411,6 +418,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Внутрішня URL-адреса використовуватиметься при підключенні до перелічених SSID";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "МояКумендаНазваМережі";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.logged_in_as" = "Ви увійшли як";
 "settings.connection_section.remote_ui_url.title" = "URL-адреса віддаленого інтерфейсу";
 "settings.connection_section.servers" = "Servers";

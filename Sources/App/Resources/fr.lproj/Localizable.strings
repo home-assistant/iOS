@@ -329,6 +329,12 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.notifications.categories.footer" = "Les notifications exploitables sont créées à l'aide de catégories qui définissent les actions disponibles pour les notifications.";
 "settings_details.notifications.categories.header" = "Catégories";
 "settings_details.notifications.info" = "Utilisez le service de notification mobile_app pour envoyer des notifications à votre appareil.";
+"settings_details.notifications.local_push.status.available" = "Available (%1$@)";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.new_category.title" = "Nouvelle catégorie";
 "settings_details.notifications.permission.disabled" = "Refusé";
 "settings_details.notifications.permission.enabled" = "Activé";
@@ -383,6 +389,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_sensors.detail.icon" = "Icône";
 "settings_sensors.detail.state" = "État";
 "settings_sensors.disabled_state_replacement" = "Désactivée";
+"settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Dernière mise à jour %@";
 "settings_sensors.loading_error.title" = "Impossible de charger les capteurs";
 "settings_sensors.periodic_update.description" = "Lorsqu'ils sont activés, ces capteurs se mettent à jour à cette fréquence pendant que l'application est ouverte au premier plan.";
@@ -411,6 +418,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_section.internal_url_ssids.footer" = "L'URL interne sera utilisée lors de la connexion au SSID répertoriés";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MonNomDeReseauSympa";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.logged_in_as" = "Connecté en tant que";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
 "settings.connection_section.servers" = "Serveurs";

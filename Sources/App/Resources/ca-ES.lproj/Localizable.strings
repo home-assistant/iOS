@@ -329,6 +329,12 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_details.notifications.categories.footer" = "Actionable notifications are created using categories which define the available actions for the notifications.";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.info" = "Utilitzeu el servei de notificacions \"mobile_app\" per enviar notificacions al vostre dispositiu.";
+"settings_details.notifications.local_push.status.available" = "Available (%1$@)";
+"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
+"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.title" = "Local Push";
 "settings_details.notifications.new_category.title" = "Nova categoria";
 "settings_details.notifications.permission.disabled" = "Denegat";
 "settings_details.notifications.permission.enabled" = "Habilitat";
@@ -383,6 +389,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings_sensors.detail.icon" = "Icona";
 "settings_sensors.detail.state" = "Estat";
 "settings_sensors.disabled_state_replacement" = "Desactivat";
+"settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Darrera actualització %@";
 "settings_sensors.loading_error.title" = "No s'han pogut carregar els sensors";
 "settings_sensors.periodic_update.description" = "Quan està activada, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta en primer pla.";
@@ -411,6 +418,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "settings.connection_section.internal_url_ssids.footer" = "La URL interna s'utilitzarà quan estigui connectat a algun dels SSIDs de la llista";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "ElMeuNomDeXarxaDivertit";
+"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.logged_in_as" = "Sessió iniciada com";
 "settings.connection_section.remote_ui_url.title" = "URL UI Remota";
 "settings.connection_section.servers" = "Servidors";

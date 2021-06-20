@@ -29,6 +29,6 @@
 "TEX-zW-Byk.text" = "Per una migliore esperienza durante l'utilizzo di Home Assistant Companion, puoi concedere le seguenti autorizzazioni:";
 "Tqw-iY-A2S.normalTitle" = "Più info";
 "UKm-Ju-0Yr.text" = "Si è verificato un errore durante la connessione alla tua istanza di Home Assistant. Il certificato SSL non è valido. A causa di limitazioni di iOS, non sarà possibile continuare con l'installazione fino a quando non viene installato un certificato SSL valido. Si consiglia di utilizzare Lets Encrypt o Nabu casa Remote UI.";
-"wsC-f5-jbO.text" = "Siamo pronti per la connessione al tuo Home Assistant e l'autenticazione iniziale. Toccando il pulsante Connetti qui sotto, si aprirà una pagina per farti effettuare l'accesso.";
+"wsC-f5-jbO.text" = "Siamo pronti per la connessione al tuo Home Assistant e per l'autenticazione iniziale. Toccando il pulsante Connetti qui sotto, si aprirà una pagina del browser per farti effettuare l'accesso.";
 "xO0-K1-GJX.placeholder" = "ad es. http://homeassistant.local:8123";
 "XyQ-gy-yHY.text" = "Connesso";
