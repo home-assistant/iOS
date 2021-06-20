@@ -14,6 +14,6 @@ public class HABlockCancellable: HACancellable {
 }
 
 public class HANoopCancellable: HACancellable {
-    public init() { }
-    public func cancel() { }
+    public init() {}
+    public func cancel() {}
 }

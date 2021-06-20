@@ -1,11 +1,12 @@
 import Foundation
-import NetworkExtension
-import Shared
-import PromiseKit
 import HAKit
+import NetworkExtension
+import PromiseKit
+import Shared
 
 @available(iOS 14, *)
-final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface, NEAppPushDelegate {
+final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface,
+    NEAppPushDelegate {
     var status: NotificationManagerLocalPushStatus {
         if let manager = manager, let value = stateSync.value {
             return .allowed(value)
@@ -32,7 +33,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     static let settingsKey = "LocalPush:Main"
     private let stateSync = LocalPushStateSync(settingsKey: NotificationManagerLocalPushInterfaceExtension.settingsKey)
-    
+
     private var tokens: [NSKeyValueObservation] = []
     private var manager: NEAppPushManager? {
         didSet {
@@ -51,7 +52,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     override init() {
         super.init()
 
-        _ = stateSync.observe { [weak self] (state: LocalPushManager.State) in
+        _ = stateSync.observe { [weak self] (_: LocalPushManager.State) in
             self?.notifyObservers()
         }
 
@@ -98,8 +99,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             let connectionInfo = Current.settingsStore.connectionInfo,
             connectionInfo.internalSSIDs?.isEmpty == false,
             connectionInfo.internalURL != nil,
-            connectionInfo.isLocalPushEnabled
-        else {
+            connectionInfo.isLocalPushEnabled else {
             return Promise { seal in
                 guard let manager = self.manager else {
                     Current.Log.info("no local push - no internal info or not enabled")
@@ -132,7 +132,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
         manager.providerConfiguration = [
-            LocalPushStateSync.settingsKey: Self.settingsKey
+            LocalPushStateSync.settingsKey: Self.settingsKey,
         ]
 
         return Promise { seal in

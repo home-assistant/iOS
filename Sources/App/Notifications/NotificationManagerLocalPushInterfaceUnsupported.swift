@@ -1,5 +1,5 @@
-import Shared
 import HAKit
+import Shared
 
 class NotificationManagerLocalPushInterfaceDisallowed: NotificationManagerLocalPushInterface {
     var status: NotificationManagerLocalPushStatus {

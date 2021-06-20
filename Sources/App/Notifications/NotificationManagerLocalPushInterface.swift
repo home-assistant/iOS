@@ -1,5 +1,5 @@
-import Shared
 import HAKit
+import Shared
 
 enum NotificationManagerLocalPushStatus {
     case allowed(LocalPushManager.State)

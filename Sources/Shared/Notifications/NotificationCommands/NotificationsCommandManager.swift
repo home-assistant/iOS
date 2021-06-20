@@ -1,5 +1,5 @@
-import PromiseKit
 import Communicator
+import PromiseKit
 import UserNotifications
 
 public protocol NotificationCommandHandler {
@@ -58,7 +58,7 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
         case notEnabled
     }
 
-    func handle(_ payload: [String : Any]) -> Promise<Void> {
+    func handle(_ payload: [String: Any]) -> Promise<Void> {
         guard Current.settingsStore.locationSources.pushNotifications else {
             Current.Log.info("ignoring request, location source of notifications is disabled")
             return .init(error: LocationUpdateError.notEnabled)
@@ -75,7 +75,7 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
 }
 
 private struct HandlerClearNotification: NotificationCommandHandler {
-    func handle(_ payload: [String : Any]) -> Promise<Void> {
+    func handle(_ payload: [String: Any]) -> Promise<Void> {
         Current.Log.verbose("clearing notification for \(payload)")
         let keys = ["tag", "collapseId"].compactMap { payload[$0] as? String }
         if !keys.isEmpty {
@@ -87,7 +87,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
 
 #if os(iOS)
 private struct HandlerUpdateComplications: NotificationCommandHandler {
-    func handle(_ payload: [String : Any]) -> Promise<Void> {
+    func handle(_ payload: [String: Any]) -> Promise<Void> {
         Promise<Void> { seal in
             Communicator.shared.transfer(ComplicationInfo(content: [:])) { result in
                 switch result {
@@ -96,7 +96,10 @@ private struct HandlerUpdateComplications: NotificationCommandHandler {
                 }
             }
         }.get {
-            NotificationCenter.default.post(name: NotificationCommandManager.didUpdateComplicationsNotification, object: nil)
+            NotificationCenter.default.post(
+                name: NotificationCommandManager.didUpdateComplicationsNotification,
+                object: nil
+            )
         }
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
-import Shared
 import HAKit
+import Shared
 
 class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushInterface {
     var status: NotificationManagerLocalPushStatus {
@@ -10,7 +10,7 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
     let localPushManager: LocalPushManager
 
     init(delegate: LocalPushManagerDelegate) {
-        localPushManager = with(LocalPushManager()) {
+        self.localPushManager = with(LocalPushManager()) {
             $0.delegate = delegate
         }
 

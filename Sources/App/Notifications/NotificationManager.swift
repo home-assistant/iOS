@@ -17,6 +17,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             return NotificationManagerLocalPushInterfaceDisallowed()
         }
     }()
+
     var commandManager = NotificationCommandManager()
 
     func setupNotifications() {

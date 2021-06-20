@@ -59,7 +59,7 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
     override public func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
+        change: [NSKeyValueChangeKey: Any]?,
         context: UnsafeMutableRawPointer?
     ) {
         guard let value = value else { return }

@@ -1,9 +1,9 @@
 import Foundation
-import NetworkExtension
 import HAKit
-import UserNotifications
-import Shared
+import NetworkExtension
 import PromiseKit
+import Shared
+import UserNotifications
 
 @objc class PushProvider: NEAppPushProvider, LocalPushManagerDelegate {
     private var localPushManager: LocalPushManager?
@@ -65,7 +65,11 @@ import PromiseKit
                 switch Current.apiConnection.state {
                 case .ready(version: _):
                     seal.fulfill(())
-                case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
+                case let .disconnected(reason: .waitingToReconnect(
+                    lastError: .some(error),
+                    atLatest: _,
+                    retryCount: _
+                )):
                     seal.reject(error)
                 case .authenticating,
                      .connecting,
@@ -106,7 +110,7 @@ import PromiseKit
         Current.apiConnection.connect()
     }
 
-    func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+    func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         commandManager.handle(userInfo).done {
             Current.Log.notify("handled command: \(userInfo)", log: .info)
         }.catch { error in
@@ -114,4 +118,3 @@ import PromiseKit
         }
     }
 }
-
