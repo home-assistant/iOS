@@ -3509,6 +3509,7 @@
 				B66C58A1215086F0004AB261 /* Sources */,
 				B66C58A2215086F0004AB261 /* Frameworks */,
 				B66C58A3215086F0004AB261 /* Resources */,
+				11C03007267F22BC0095AD58 /* Enable Xcode 13-requiring intents */,
 			);
 			buildRules = (
 			);
@@ -4283,6 +4284,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    # swiftlint as of 2021-01-21 (0.42.0) can't handle spaces in paths\n    # for the config arg, so we rely on relative here\n    # https://github.com/realm/SwiftLint/issues/3471\n    \"${SRCROOT}/Pods/SwiftLint/swiftlint\" \\\n       --config \".swiftlint.yml\" \\\n       --quiet \\\n       \"${SRCROOT}\"\nfi\n";
+		};
+		11C03007267F22BC0095AD58 /* Enable Xcode 13-requiring intents */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Enable Xcode 13-requiring intents";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ $XCODE_VERSION_MAJOR != \"1200\" ]]; then\n    /usr/libexec/PlistBuddy -c \"add NSExtension:NSExtensionAttributes:IntentsSupported:0 string 'INShareFocusStatusIntent'\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 		11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */ = {
 			isa = PBXShellScriptBuildPhase;
