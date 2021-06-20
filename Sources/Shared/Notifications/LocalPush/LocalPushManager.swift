@@ -14,17 +14,65 @@ public class LocalPushManager {
 
     public static var stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
 
-    public enum State: Equatable {
+    public enum State: Equatable, Codable {
+        case inactive
         case establishing
         case unavailable
         case available(received: Int)
 
         mutating func increment(by count: Int = 1) {
             switch self {
-            case .establishing, .unavailable:
+            case .establishing, .unavailable, .inactive:
                 self = .available(received: count)
             case let .available(received: originalCount):
                 self = .available(received: originalCount + count)
+            }
+        }
+
+        private enum PrimitiveState: String, Codable {
+            case inactive
+            case establishing
+            case unavailable
+            case available
+        }
+
+        private var primitiveState: PrimitiveState {
+            switch self {
+            case .inactive: return .inactive
+            case .establishing: return .establishing
+            case .unavailable: return .unavailable
+            case .available: return .available
+            }
+        }
+
+        private var primitiveCount: Int? {
+            switch self {
+            case let .available(received: count): return count
+            case .unavailable, .establishing, .inactive: return nil
+            }
+        }
+
+        private enum CodingKeys: CodingKey {
+            case primitive
+            case count
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(primitiveState, forKey: .primitive)
+            try container.encode(primitiveCount, forKey: .count)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let primitiveState = try container.decode(PrimitiveState.self, forKey: .primitive)
+            let primitiveCount = try container.decode(Int?.self, forKey: .count)
+
+            switch primitiveState {
+            case .inactive: self = .inactive
+            case .establishing: self = .establishing
+            case .unavailable: self = .unavailable
+            case .available: self = .available(received: primitiveCount ?? 0)
             }
         }
     }

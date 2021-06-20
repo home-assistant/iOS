@@ -4,7 +4,12 @@ import Shared
 import PromiseKit
 
 @available(iOS 14, *)
-class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
+final class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
+    static let settingsKey = "LocalPush:Main"
+
+    var isActive: Bool { manager?.isActive ?? false }
+    let stateSync = LocalPushStateSync(settingsKey: NotificationLocalPushSettingsManager.settingsKey)
+    
     private var tokens: [NSKeyValueObservation] = []
     private var manager: NEAppPushManager? {
         didSet {
@@ -18,7 +23,6 @@ class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
             }
         }
     }
-
 
     override init() {
         super.init()
@@ -123,6 +127,9 @@ class NotificationLocalPushSettingsManager: NSObject, NEAppPushDelegate {
         manager.localizedDescription = "HomeAssistant"
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
+        manager.providerConfiguration = [
+            LocalPushStateSync.settingsKey: Self.settingsKey
+        ]
 
         return Promise { seal in
             manager.saveToPreferences { error in

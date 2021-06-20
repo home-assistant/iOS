@@ -9,11 +9,49 @@ import PromiseKit
     private var localPushManager: LocalPushManager?
     private let commandManager = NotificationCommandManager()
 
-    override func start(completionHandler: @escaping (Error?) -> Void) {
-        Current.Log.notify("starting", log: true)
+    private var stateObserver: NSObjectProtocol? {
+        willSet {
+            if let stateObserver = stateObserver, stateObserver !== newValue {
+                NotificationCenter.default.removeObserver(stateObserver)
+            }
+        }
+    }
 
-        localPushManager = with(LocalPushManager()) {
+    override init() {
+        super.init()
+        Current.Log.notify("initialized", log: .info)
+    }
+
+    deinit {
+        if let stateObserver = stateObserver {
+            NotificationCenter.default.removeObserver(stateObserver)
+        }
+    }
+
+    override func start(completionHandler: @escaping (Error?) -> Void) {
+        Current.Log.notify("starting", log: .info)
+
+        guard let settingsKey = providerConfiguration?[LocalPushStateSync.settingsKey] as? String else {
+            Current.Log.notify("aborting due to missing settings key", log: .error)
+            stop(with: .configurationFailed, completionHandler: {
+                Current.Log.notify("finished failing due to no settings key", log: .info)
+            })
+            return
+        }
+
+        let localPushManager = with(LocalPushManager()) {
             $0.delegate = self
+        }
+        self.localPushManager = localPushManager
+
+        let valueSync = LocalPushStateSync(settingsKey: settingsKey)
+        valueSync.value = localPushManager.state
+        stateObserver = NotificationCenter.default.addObserver(
+            forName: LocalPushManager.stateDidChange,
+            object: localPushManager,
+            queue: nil
+        ) { [localPushManager] _ in
+            valueSync.value = localPushManager.state
         }
 
         Current.apiConnection.connect()
@@ -50,16 +88,16 @@ import PromiseKit
             return promise
                 .ensure { NotificationCenter.default.removeObserver(token) }
         }.done {
-            Current.Log.notify("reporting we connected", log: true)
+            Current.Log.notify("reporting we connected", log: .info)
             completionHandler(nil)
         }.catch { error in
-            Current.Log.notify("reporting we errored", log: true)
+            Current.Log.notify("reporting we errored", log: .info)
             completionHandler(error)
         }
     }
 
     override func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        Current.Log.notify("stopping with reason \(reason)", log: true)
+        Current.Log.notify("stopping with reason \(reason)", log: .error)
         localPushManager = nil
     }
 
@@ -70,9 +108,9 @@ import PromiseKit
 
     func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
         commandManager.handle(userInfo).done {
-            Current.Log.notify("handled command: \(userInfo)", log: true)
+            Current.Log.notify("handled command: \(userInfo)", log: .info)
         }.catch { error in
-            Current.Log.notify("failed: \(error)", log: true)
+            Current.Log.notify("failed: \(error)", log: .info)
         }
     }
 }

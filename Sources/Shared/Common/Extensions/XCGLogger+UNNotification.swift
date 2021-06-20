@@ -10,14 +10,14 @@ public extension XCGLogger {
         functionName: StaticString = #function,
         fileName: StaticString = #fileID,
         lineNumber: Int = #line,
-        log: Bool = false
+        log logLevel: XCGLogger.Level? = nil
     ) {
         guard !Current.isRunningTests else {
             return
         }
 
-        if log {
-            info(closure, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+        if let level = logLevel {
+            logln(closure, level: level, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
         }
 
         guard Current.settingsStore.prefs.bool(forKey: Self.shouldNotifyUserDefaultsKey) else {

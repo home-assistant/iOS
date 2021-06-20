@@ -138,12 +138,18 @@ class NotificationSettingsViewController: HAFormViewController {
 
             <<< LabelRow { row in
                 row.title = L10n.SettingsDetails.Notifications.LocalPush.title
-                row.hidden = .isNotCatalyst
+
+                guard let manager = Current.notificationManager.localPushManager else {
+                    row.hidden = true
+                    return
+                }
 
                 let updateValue = { [weak row] in
                     guard let row = row else { return }
-                    switch Current.notificationManager.localPushManager?.state {
-                    case .none, .unavailable:
+                    switch manager.state {
+                    case .inactive:
+                        row.value = "Inactive"
+                    case .unavailable:
                         row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.unavailable
                     case .establishing:
                         row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.establishing
@@ -158,16 +164,10 @@ class NotificationSettingsViewController: HAFormViewController {
                     row.updateCell()
                 }
 
-                let token = NotificationCenter.default.addObserver(
-                    forName: LocalPushManager.stateDidChange,
-                    object: Current.notificationManager.localPushManager,
-                    queue: .main
-                ) { _ in
+                let cancel = manager.observeState { _ in
                     updateValue()
                 }
-                after(life: self).done {
-                    NotificationCenter.default.removeObserver(token)
-                }
+                after(life: self).done(cancel)
                 updateValue()
             }
 
