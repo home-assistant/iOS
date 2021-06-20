@@ -5,9 +5,16 @@ final class InfoLabelRow: _LabelRow, RowType {
     enum DisplayType {
         case primary
         case secondary
+        case important
 
         var textColor: UIColor {
             switch self {
+            case .important:
+                if #available(iOS 13, *) {
+                    return .systemRed
+                } else {
+                    return .red
+                }
             case .primary:
                 if #available(iOS 13, *) {
                     return .label

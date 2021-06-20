@@ -323,6 +323,8 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 $0.title = L10n.Settings.ConnectionSection.ssidPermissionMessage
             }
 
+            $0.displayType = .important
+
             $0.cellUpdate { cell, _ in
                 cell.accessibilityTraits.insert(.button)
                 cell.selectionStyle = .default
