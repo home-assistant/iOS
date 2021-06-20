@@ -32,6 +32,7 @@ ENABLE_PUSH_PROVIDER[sdk=iphoneos*] = $(ENABLE_PUSH_PROVIDER_$(DEVELOPMENT_TEAM)
 // We mutate the entitlements at build time to support other development teams
 CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES
 // Mutate certain targets' default signing style because we need manual on ios sdk
+CODE_SIGN_STYLE = $(CODE_SIGN_STYLE_DEFAULT)
 CODE_SIGN_STYLE[sdk=iphoneos*] = $(CODE_SIGN_STYLE_$(DEVELOPMENT_TEAM)_$(TARGET_NAME:c99extidentifier):default=$CODE_SIGN_STYLE_DEFAULT)
 
 // Baseline information

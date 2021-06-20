@@ -5508,6 +5508,7 @@
 		};
 		11B92912266F145000786588 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 11B92908266F145000786588 /* Extensions-PushProvider */;
 			targetProxy = 11B92911266F145000786588 /* PBXContainerItemProxy */;
 		};
