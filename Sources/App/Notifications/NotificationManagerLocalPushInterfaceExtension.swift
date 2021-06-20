@@ -11,7 +11,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         if let manager = manager, let value = stateSync.value {
             return .allowed(value)
         } else {
-            return .inactive
+            return .disabled
         }
     }
 

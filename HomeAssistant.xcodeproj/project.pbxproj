@@ -3783,7 +3783,7 @@
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Original;
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1220;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Home Assistant";
 				TargetAttributes = {
 					111711E425B29ACB003C149E = {
