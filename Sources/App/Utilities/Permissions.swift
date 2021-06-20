@@ -233,6 +233,13 @@ public extension UNAuthorizationOptions {
             opts.insert(.announcement)
         }
 
+        #if compiler(>=5.5)
+        if #available(iOS 15, *) {
+            // this is also deprecated in iOS 15 in favor of the entitlement, but it does seem to be required in b1
+            opts.insert(.timeSensitive)
+        }
+        #endif
+
         return opts
     }
 }

@@ -39,6 +39,7 @@ struct LocalPushEvent: HADataDecodable {
         self.content = Self.content(from: payload)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private static func content(from payload: [String: Any]) -> UNNotificationContent {
         let content = UNMutableNotificationContent()
         if let aps = payload["aps"] as? [String: Any] {
@@ -68,6 +69,11 @@ struct LocalPushEvent: HADataDecodable {
             if let sound = aps["sound"] as? [String: Any] {
                 content.sound = Sound(dictionary: sound).asSound()
             }
+            #if compiler(>=5.5)
+            if #available(iOS 15, watchOS 8, *), let level = aps["interruption-level"] as? String {
+                content.interruptionLevel = .init(apsValue: level)
+            }
+            #endif
         }
         content.userInfo = payload
         // swiftlint:disable:next force_cast
@@ -154,3 +160,18 @@ private struct Sound {
         }
     }
 }
+
+#if compiler(>=5.5)
+@available(iOS 15, watchOS 8, *)
+private extension UNNotificationInterruptionLevel {
+    init(apsValue: String) {
+        switch apsValue.lowercased() {
+        case "passive": self = .passive
+        case "active": self = .active
+        case "time-sensitive": self = .timeSensitive
+        case "critical": self = .critical
+        default: self = .active
+        }
+    }
+}
+#endif
