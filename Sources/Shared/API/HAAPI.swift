@@ -436,6 +436,14 @@ public class HomeAssistantAPI {
                     "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
                     "push_token": pushID,
                 ]
+                $0.PushConfig = [
+                    [
+                        "platform": Current.device.systemName(),
+                        "push_token": pushID,
+                        "push_url": "http://localhost:5000/home-assistant-mobile-apps/us-central1/encryptedV1",
+                        "supports_encryption": true,
+                    ],
+                ]
             }
 
             $0.AppIdentifier = Constants.BundleID
@@ -456,6 +464,7 @@ public class HomeAssistantAPI {
 
         let ident = with(MobileAppUpdateRegistrationRequest()) {
             $0.AppData = registerRequest.AppData
+            $0.PushConfig = registerRequest.PushConfig
             $0.AppVersion = registerRequest.AppVersion
             $0.DeviceName = registerRequest.DeviceName
             $0.Manufacturer = registerRequest.Manufacturer

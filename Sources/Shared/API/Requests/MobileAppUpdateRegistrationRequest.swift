@@ -3,6 +3,7 @@ import ObjectMapper
 
 class MobileAppUpdateRegistrationRequest: Mappable {
     var AppData: [String: Any]?
+    var PushConfig: [[String: Any]]?
     var AppVersion: String?
     var DeviceName: String?
     var Manufacturer: String?
@@ -20,5 +21,6 @@ class MobileAppUpdateRegistrationRequest: Mappable {
         Manufacturer <- map["manufacturer"]
         Model <- map["model"]
         OSVersion <- map["os_version"]
+        PushConfig <- map["push_config"]
     }
 }

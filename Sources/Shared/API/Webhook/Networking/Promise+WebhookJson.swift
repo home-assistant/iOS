@@ -7,6 +7,7 @@ enum WebhookJsonParseError: Error, Equatable {
     case base64
     case missingKey
     case decrypt
+    case notEncrypted
 }
 
 extension Promise where T == Data? {
@@ -81,10 +82,31 @@ extension Promise where T == Data {
             } else {
                 return try JSONSerialization.jsonObject(with: data, options: options)
             }
-        }.map { object in
+        }.decrypted(
+            on: queue,
+            sodium: sodium,
+            secretGetter: secretGetter,
+            options: options
+        )
+    }
+}
+
+extension Promise {
+    func decrypted(
+        on queue: DispatchQueue? = nil,
+        requireEncryption: Bool = false,
+        sodium: Sodium = Sodium(),
+        secretGetter: @escaping () -> String? = { Current.settingsStore.connectionInfo?.webhookSecret },
+        options: JSONSerialization.ReadingOptions = [.allowFragments]
+    ) -> Promise<Any> {
+        map(on: queue) { object throws -> Any in
             guard let dictionary = object as? [String: Any],
                   let encoded = dictionary["encrypted_data"] as? String else {
-                return object
+                if requireEncryption {
+                    throw WebhookJsonParseError.notEncrypted
+                } else {
+                    return object
+                }
             }
 
             guard let secret = secretGetter() else {

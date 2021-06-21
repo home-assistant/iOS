@@ -3,6 +3,7 @@ import ObjectMapper
 
 class MobileAppRegistrationRequest: Mappable {
     var AppData: [String: Any]?
+    var PushConfig: [[String: Any]]?
     var AppIdentifier: String?
     var AppName: String?
     var AppVersion: String?
@@ -21,6 +22,7 @@ class MobileAppRegistrationRequest: Mappable {
 
     func mapping(map: Map) {
         AppData <- map["app_data"]
+        PushConfig <- map["push_config"]
         AppIdentifier <- map["app_id"]
         AppName <- map["app_name"]
         AppVersion <- map["app_version"]
