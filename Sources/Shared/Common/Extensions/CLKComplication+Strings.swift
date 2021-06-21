@@ -1193,12 +1193,12 @@ public enum ComplicationTemplate: String {
                 44: CGSize(width: 94, height: 94),
             ],
             .GraphicCircularClosedGaugeImage: [
-                40: CGSize(width: 28, height: 28),
-                44: CGSize(width: 32, height: 32),
+                40: CGSize(width: 54, height: 54),
+                44: CGSize(width: 62, height: 62),
             ],
             .GraphicCircularOpenGaugeImage: [
-                40: CGSize(width: 44, height: 44),
-                44: CGSize(width: 48, height: 48),
+                40: CGSize(width: 22, height: 22),
+                44: CGSize(width: 24, height: 24),
             ],
             .GraphicBezelCircularText: [
                 40: CGSize(width: 84, height: 84),
@@ -1209,8 +1209,8 @@ public enum ComplicationTemplate: String {
                 44: CGSize(width: 342, height: 108),
             ],
             .GraphicRectangularStandardBody: [
-                40: CGSize(width: 48, height: 48),
-                44: CGSize(width: 54, height: 54),
+                40: CGSize(width: 24, height: 24),
+                44: CGSize(width: 27, height: 27),
             ],
             .GraphicRectangularTextGauge: [
                 40: CGSize(width: 24, height: 24),
