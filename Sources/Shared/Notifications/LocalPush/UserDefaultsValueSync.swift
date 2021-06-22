@@ -7,15 +7,26 @@ public class LocalPushStateSync: UserDefaultsValueSync<LocalPushManager.State> {
 
 public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
     public let settingsKey: String
-    public init(settingsKey: String) {
+    public let userDefaults: UserDefaults
+
+    public init(settingsKey: String, userDefaults: UserDefaults) {
         self.settingsKey = settingsKey
+        self.userDefaults = userDefaults
         super.init()
-        Current.settingsStore.prefs.addObserver(
+        userDefaults.addObserver(
             self,
             forKeyPath: settingsKey,
-            options: [.initial],
+            options: [],
             context: nil
         )
+    }
+
+    public convenience init(settingsKey: String) {
+        self.init(settingsKey: settingsKey, userDefaults: Current.settingsStore.prefs)
+    }
+
+    deinit {
+        userDefaults.removeObserver(self, forKeyPath: settingsKey)
     }
 
     public var value: ValueType? {
@@ -23,16 +34,16 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
             do {
                 if let state = newValue {
                     let json = try JSONEncoder().encode(state)
-                    Current.settingsStore.prefs.set(json, forKey: settingsKey)
+                    userDefaults.set(json, forKey: settingsKey)
                 } else {
-                    Current.settingsStore.prefs.removeObject(forKey: settingsKey)
+                    userDefaults.removeObject(forKey: settingsKey)
                 }
             } catch {
                 Current.Log.error("failed to encode: \(error)")
             }
         }
         get {
-            guard let data = Current.settingsStore.prefs.data(forKey: settingsKey) else {
+            guard let data = userDefaults.data(forKey: settingsKey) else {
                 return nil
             }
 

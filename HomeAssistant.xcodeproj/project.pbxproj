@@ -161,6 +161,7 @@
 		117318AB25199E1A0013E010 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117318AA25199E1A0013E010 /* AppKit.framework */; };
 		117318AD25199E220013E010 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117318AC25199E220013E010 /* Foundation.framework */; };
 		11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */; };
+		11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */; };
 		117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
 		117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
 		1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178AAFF263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift */; };
@@ -1147,6 +1148,7 @@
 		117318AA25199E1A0013E010 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
 		117318AC25199E220013E010 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketStatusRow.swift; sourceTree = "<group>"; };
+		11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.test.swift; sourceTree = "<group>"; };
 		117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateComplications.swift; sourceTree = "<group>"; };
 		1178AAFF263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKInterfaceLabel+Additions.swift"; sourceTree = "<group>"; };
 		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
@@ -3255,6 +3257,7 @@
 				11AA9976266B0CEC00B829E1 /* NotificationParserLegacy.test.swift */,
 				11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */,
 				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
+				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -5477,6 +5480,7 @@
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,
 				110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */,
 				1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */,
+				11764A6C26817FC3007D47F3 /* UserDefaultsValueSync.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 				110ED58025A570F100489AF7 /* DisplaySensor.test.swift in Sources */,
 			);
