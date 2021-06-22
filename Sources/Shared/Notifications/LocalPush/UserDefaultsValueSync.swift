@@ -18,6 +18,10 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
         )
     }
 
+    deinit {
+        Current.settingsStore.prefs.removeObserver(self, forKeyPath: settingsKey)
+    }
+
     public var value: ValueType? {
         set {
             do {
