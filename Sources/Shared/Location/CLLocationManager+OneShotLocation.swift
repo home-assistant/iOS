@@ -183,7 +183,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         super.init()
 
-        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.allowsBackgroundLocationUpdates = !Current.isAppExtension
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
 
