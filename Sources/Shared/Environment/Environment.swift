@@ -271,7 +271,10 @@ public class Environment {
         })
         #endif
 
-        let logPath = Constants.LogsDirectory.appendingPathComponent("log.txt", isDirectory: false)
+        let logPath = Constants.LogsDirectory.appendingPathComponent(
+            ProcessInfo.processInfo.processName + ".txt",
+            isDirectory: false
+        )
 
         // Create a file log destination
         let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
