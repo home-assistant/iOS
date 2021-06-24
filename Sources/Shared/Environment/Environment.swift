@@ -191,6 +191,7 @@ public class Environment {
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public var isAppExtension = Constants.BundleID != Bundle.main.bundleIdentifier
     public var isAppStore: Bool = {
         do {
             // https://developer.apple.com/library/archive/technotes/tn2259/_index.html suggested method

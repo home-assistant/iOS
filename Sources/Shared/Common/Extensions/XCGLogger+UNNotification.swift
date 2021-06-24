@@ -17,7 +17,7 @@ public extension XCGLogger {
         }
 
         if let level = logLevel {
-            logln(closure, level: level, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+            logln(closure(), level: level, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
         }
 
         guard Current.settingsStore.prefs.bool(forKey: Self.shouldNotifyUserDefaultsKey) else {
