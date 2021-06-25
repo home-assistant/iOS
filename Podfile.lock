@@ -59,7 +59,7 @@ PODS:
   - SimulatorStatusMagic (2.5)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.48.4)
+  - SwiftFormat/CLI (0.48.6)
   - SwiftGen (6.4.0)
   - SwiftLint (0.43.1)
   - SwiftMessages (9.0.2):
@@ -184,7 +184,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
-    :commit: 76fb9453cb0def48a9204abfaf7794dd83f47690
+    :commit: 9e87261d849d743e59ac496a1ae6502169af41e8
     :git: https://github.com/home-assistant/HAKit.git
   NotificationTestCases:
     :commit: f01bf06e0a3088d9eee1281df3fb08355093bc51
@@ -227,7 +227,7 @@ SPEC CHECKSUMS:
   SimulatorStatusMagic: 71cfcea1df017e8f0fa8e48bc182d86976376f84
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: c6f52d7e4a91b01d7941172135ef7761d7e36615
+  SwiftFormat: 835d432cbffc8916d3def6e37a01a10c516d8e24
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   SwiftMessages: 77b847d1405f99046ffbd0d856bc7d73e6892686
