@@ -1350,8 +1350,14 @@ public enum L10n {
       /// Notifications
       public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.title") }
       public enum BadgeSection {
+        public enum AutomaticSetting {
+          /// Resets the badge to 0 every time you launch the app.
+          public static var description: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.automatic_setting.description") }
+          /// Automatically
+          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.automatic_setting.title") }
+        }
         public enum Button {
-          /// Reset badge to 0
+          /// Reset Badge
           public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.button.title") }
         }
         public enum ResetAlert {
