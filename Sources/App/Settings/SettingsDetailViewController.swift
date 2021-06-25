@@ -65,40 +65,41 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
 
                 <<< PushRow<AppIcon>("appIcon") {
-                $0.hidden = .isCatalyst
-                $0.title = L10n.SettingsDetails.General.AppIcon.title
-                $0.selectorTitle = $0.title
-                $0.options = AppIcon.allCases.sorted { a, b in
-                    switch (a.isDefault, b.isDefault) {
-                    case (true, false): return true
-                    case (false, true): return false
-                    default:
-                        // swift sort isn't stable
-                        return AppIcon.allCases.firstIndex(of: a)! < AppIcon.allCases.firstIndex(of: b)!
+                    $0.hidden = .isCatalyst
+                    $0.title = L10n.SettingsDetails.General.AppIcon.title
+                    $0.selectorTitle = $0.title
+                    $0.options = AppIcon.allCases.sorted { a, b in
+                        switch (a.isDefault, b.isDefault) {
+                        case (true, false): return true
+                        case (false, true): return false
+                        default:
+                            // swift sort isn't stable
+                            return AppIcon.allCases.firstIndex(of: a)! < AppIcon.allCases.firstIndex(of: b)!
+                        }
+                    }
+                    $0.value = AppIcon.Release
+                    if let altIconName = UIApplication.shared.alternateIconName,
+                       let icon = AppIcon(rawValue: altIconName) {
+                        $0.value = icon
+                    }
+                    $0.displayValueFor = { $0?.title }
+                }.onPresent { _, to in
+                    to.selectableRowCellUpdate = { cell, row in
+                        cell.height = { 72 }
+                        cell.imageView?.layer.masksToBounds = true
+                        cell.imageView?.layer.cornerRadius = 12.63
+                        guard let newIcon = row.selectableValue else { return }
+                        cell.imageView?.image = UIImage(named: newIcon.rawValue)
+
+                        cell.textLabel?.text = newIcon.title
+                    }
+                }.onChange { row in
+                    let iconName = row.value?.iconName
+                    UIApplication.shared.setAlternateIconName(iconName) { error in
+                        Current.Log
+                            .info("set icon to \(String(describing: iconName)) error: \(String(describing: error))")
                     }
                 }
-                $0.value = AppIcon.Release
-                if let altIconName = UIApplication.shared.alternateIconName,
-                   let icon = AppIcon(rawValue: altIconName) {
-                    $0.value = icon
-                }
-                $0.displayValueFor = { $0?.title }
-            }.onPresent { _, to in
-                to.selectableRowCellUpdate = { cell, row in
-                    cell.height = { 72 }
-                    cell.imageView?.layer.masksToBounds = true
-                    cell.imageView?.layer.cornerRadius = 12.63
-                    guard let newIcon = row.selectableValue else { return }
-                    cell.imageView?.image = UIImage(named: newIcon.rawValue)
-
-                    cell.textLabel?.text = newIcon.title
-                }
-            }.onChange { row in
-                let iconName = row.value?.iconName
-                UIApplication.shared.setAlternateIconName(iconName) { error in
-                    Current.Log.info("set icon to \(String(describing: iconName)) error: \(String(describing: error))")
-                }
-            }
 
                 +++ Section {
                     $0.hidden = .isNotCatalyst
@@ -182,22 +183,22 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
 
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
-                $0.hidden = .isCatalyst
-                $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
+                    $0.hidden = .isCatalyst
+                    $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
 
-                if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
-                   value.isInstalled {
-                    $0.value = value
-                } else {
-                    $0.value = .Safari
+                    if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
+                       value.isInstalled {
+                        $0.value = value
+                    } else {
+                        $0.value = .Safari
+                    }
+                    $0.selectorTitle = $0.title
+                    $0.options = OpenInBrowser.allCases.filter(\.isInstalled)
+                    $0.displayValueFor = { $0?.title }
+                }.onChange { row in
+                    guard let browserChoice = row.value else { return }
+                    prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
                 }
-                $0.selectorTitle = $0.title
-                $0.options = OpenInBrowser.allCases.filter(\.isInstalled)
-                $0.displayValueFor = { $0?.title }
-            }.onChange { row in
-                guard let browserChoice = row.value else { return }
-                prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
-            }
 
                 <<< SwitchRow("confirmBeforeOpeningUrl") {
                     $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
