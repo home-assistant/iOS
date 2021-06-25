@@ -20,9 +20,25 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
 
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
         _ = localPushManager
+    }
+
+    @objc private func didBecomeActive() {
+        if Current.settingsStore.clearBadgeAutomatically {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
     }
 
     func resetPushID() -> Promise<String> {

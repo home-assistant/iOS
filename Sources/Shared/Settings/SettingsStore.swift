@@ -451,6 +451,19 @@ public class SettingsStore {
         }
     }
 
+    public var clearBadgeAutomatically: Bool {
+        get {
+            if let value = prefs.object(forKey: "clearBadgeAutomatically") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "clearBadgeAutomatically")
+        }
+    }
+
     // MARK: - Private helpers
 
     private var defaultDeviceID: String {

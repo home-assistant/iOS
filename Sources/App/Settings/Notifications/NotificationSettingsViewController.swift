@@ -63,16 +63,61 @@ class NotificationSettingsViewController: HAFormViewController {
                 }, onDismiss: nil)
             }
 
-            +++ ButtonRow {
+            +++ Section(footer: L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.description)
+
+            <<< ButtonRow {
                 $0.title = L10n.SettingsDetails.Notifications.BadgeSection.Button.title
-                $0.onCellSelection { cell, _ in
+                $0.cellStyle = .value1
+
+                var lastValue: Int?
+                let update = { [weak row = $0] in
+                    guard let row = row else { return }
+
+                    let value = UIApplication.shared.applicationIconBadgeNumber
+                    guard value != lastValue else { return }
+
+                    row.value = NumberFormatter.localizedString(
+                        from: NSNumber(value: value),
+                        number: .decimal
+                    )
+                    row.updateCell()
+
+                    lastValue = value
+                }
+
+                // timer because kvo only works on manually changing it, and this is easiest/cheap
+                let timer = Timer.scheduledTimer(
+                    withTimeInterval: 1.0,
+                    repeats: true,
+                    block: { _ in update() }
+                )
+                // kvo so internally setting it updates instantly
+                let token = UIApplication.shared.observe(
+                    \.applicationIconBadgeNumber,
+                    changeHandler: { _, _ in update() }
+                )
+
+                update()
+
+                after(life: self).done {
+                    token.invalidate()
+                    timer.invalidate()
+                }
+
+                $0.cellUpdate { cell, row in
+                    cell.textLabel?.textAlignment = .natural
+                    cell.detailTextLabel?.text = row.value
+                }
+                $0.onCellSelection { _, _ in
                     UIApplication.shared.applicationIconBadgeNumber = 0
-                    let title = L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title
-                    let message = L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message
-                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+                }
+            }
+
+            <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title
+                $0.value = Current.settingsStore.clearBadgeAutomatically
+                $0.onChange { row in
+                    Current.settingsStore.clearBadgeAutomatically = row.value ?? true
                 }
             }
 
@@ -207,12 +252,13 @@ class NotificationSettingsViewController: HAFormViewController {
                 $0.title = L10n.Settings.ResetSection.ResetRow.title
             }.cellUpdate { cell, _ in
                 cell.textLabel?.textColor = .red
-            }.onCellSelection { cell, _ in
+            }.onCellSelection { [weak self] cell, _ in
                 Current.Log.verbose("Resetting push token!")
+
                 firstly {
                     Current.notificationManager.resetPushID()
                 }.done { token in
-                    guard let idRow = self.form.rowBy(tag: "pushID") as? LabelRow else { return }
+                    guard let idRow = self?.form.rowBy(tag: "pushID") as? LabelRow else { return }
                     idRow.value = token
                     idRow.updateCell()
                 }.then { _ in
@@ -227,7 +273,7 @@ class NotificationSettingsViewController: HAFormViewController {
 
                     alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
-                    self.present(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
                     alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
             }
