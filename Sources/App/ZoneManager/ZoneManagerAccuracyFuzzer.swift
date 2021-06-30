@@ -20,6 +20,8 @@ extension Sequence where Element == ZoneManagerAccuracyFuzzer {
     func fuzz(location originalLocation: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
         reduce(originalLocation) { location, fuzzer in
             if let change = fuzzer.fuzz(for: location, for: event) {
+                Current.Log.info("fuzzing from \(fuzzer) with \(change)")
+
                 switch change {
                 case let .accuracy(additional):
                     return location.fuzzingAccuracy(by: additional)
