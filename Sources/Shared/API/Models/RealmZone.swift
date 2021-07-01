@@ -175,6 +175,10 @@ public final class RLMZone: Object, UpdatableModel {
     }
     #endif
 
+    public func containsInRegions(_ location: CLLocation) -> Bool {
+        circularRegionsForMonitoring.allSatisfy { $0.containsWithAccuracy(location) }
+    }
+
     public var circularRegionsForMonitoring: [CLCircularRegion] {
         if Radius >= 100 {
             // zone is big enough to not have false-enters

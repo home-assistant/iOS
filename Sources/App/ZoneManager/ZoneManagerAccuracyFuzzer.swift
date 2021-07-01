@@ -56,7 +56,7 @@ struct ZoneManagerAccuracyFuzzerMultiRegionOverlap: ZoneManagerAccuracyFuzzer {
 
         let zoneRegion = zone.circularRegion
 
-        guard zone.circularRegionsForMonitoring.allSatisfy({ $0.containsWithAccuracy(location) }) else {
+        guard zone.containsInRegions(location) else {
             // all of the regions think we're in the zone
             return nil
         }
@@ -76,6 +76,12 @@ struct ZoneManagerAccuracyFuzzerMultiRegionOverlap: ZoneManagerAccuracyFuzzer {
 struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
     func fuzz(for location: CLLocation, for event: ZoneManagerEvent) -> ZoneManagerAccuracyFuzzerChange? {
         guard let zone = event.associatedZone, case .region(_, .inside) = event.eventType else {
+            return nil
+        }
+
+        guard zone.containsInRegions(location) else {
+            // the zone needs to believe this location _should_ belong inside it, otherwise moving the coordinate is
+            // an incorrect change. this can happen for e.g. entering one of the circular regions for <100m zone.
             return nil
         }
 
