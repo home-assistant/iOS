@@ -3587,6 +3587,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "Tests-App" */;
 			buildPhases = (
+				11FE64BC268D984D00AC4367 /* Fix Xcode 12.5+ Dependency Issues */,
 				6B47CD8F0AAF5C691F8256D7 /* [CP] Check Pods Manifest.lock */,
 				B657A8F81CA646EB00121384 /* Sources */,
 				B657A8F91CA646EB00121384 /* Frameworks */,
@@ -3701,6 +3702,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6CC5DA52159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchApp" */;
 			buildPhases = (
+				11A67358268D9E7B00D1AFD4 /* Fix Xcode 12.5+ Dependency Issues */,
 				B6CC5D802159D10D00833E5D /* Resources */,
 				93C44648FF2FAE89B2ED8FC9 /* Frameworks */,
 				119A172824D74DA800D1B66D /* Embed App Extensions */,
@@ -4438,6 +4440,26 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ \"$CI\" != \"true\" ]\nthen \n    # swiftlint as of 2021-01-21 (0.42.0) can't handle spaces in paths\n    # for the config arg, so we rely on relative here\n    # https://github.com/realm/SwiftLint/issues/3471\n    \"${SRCROOT}/Pods/SwiftLint/swiftlint\" \\\n       --config \".swiftlint.yml\" \\\n       --quiet \\\n       \"${SRCROOT}\"\nfi\n";
 		};
+		11A67358268D9E7B00D1AFD4 /* Fix Xcode 12.5+ Dependency Issues */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fix Xcode 12.5+ Dependency Issues";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "exec $PROJECT_DIR/Configuration/Scripts/fix_xcode_12.5_target_platform_issues.sh\n";
+			showEnvVarsInLog = 0;
+		};
 		11C03007267F22BC0095AD58 /* Enable Xcode 13-requiring intents */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4475,6 +4497,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [[ $IS_MACCATALYST ]]; then\n    rm -r \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lokalise.framework\"    \nfi\n";
+		};
+		11FE64BC268D984D00AC4367 /* Fix Xcode 12.5+ Dependency Issues */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fix Xcode 12.5+ Dependency Issues";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "exec $PROJECT_DIR/Configuration/Scripts/fix_xcode_12.5_target_platform_issues.sh\n";
+			showEnvVarsInLog = 0;
 		};
 		120054CCBDBFE9476AF3222E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
