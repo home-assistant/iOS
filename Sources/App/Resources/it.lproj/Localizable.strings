@@ -318,6 +318,8 @@
 "settings_details.location.zones.location.title" = "Posizione";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Raggio";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Reset badge a 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Il badge è stato reimpostato a 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Reset badge";

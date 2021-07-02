@@ -318,6 +318,8 @@
 "settings_details.location.zones.location.title" = "座標";
 "settings_details.location.zones.radius.label" = "%li 公尺";
 "settings_details.location.zones.radius.title" = "半徑";
+"settings_details.notifications.badge_section.automatic_setting.description" = "每次啟動 App 時即重置標記。";
+"settings_details.notifications.badge_section.automatic_setting.title" = "自動化";
 "settings_details.notifications.badge_section.button.title" = "重置標記";
 "settings_details.notifications.badge_section.reset_alert.message" = "標記數字已重置為 0。";
 "settings_details.notifications.badge_section.reset_alert.title" = "標記重置";
@@ -330,10 +332,10 @@
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.info" = "使用 mobile_app 通知服務以傳送通知至您的裝置。";
 "settings_details.notifications.local_push.status.available" = "可用（%1$@）";
-"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.disabled" = "已關閉";
 "settings_details.notifications.local_push.status.establishing" = "建立連線中";
 "settings_details.notifications.local_push.status.unavailable" = "不可用";
-"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.status.unsupported" = "不支援";
 "settings_details.notifications.local_push.title" = "本地推送";
 "settings_details.notifications.new_category.title" = "新類別";
 "settings_details.notifications.permission.disabled" = "已拒絕";
@@ -418,7 +420,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
-"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
+"settings.connection_section.local_push_description" = "當使用內部 SSID 網路時，直接連線至 Home Assistant 伺服器以進行推播通知。";
 "settings.connection_section.logged_in_as" = "登入帳號：";
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
 "settings.connection_section.servers" = "伺服器";

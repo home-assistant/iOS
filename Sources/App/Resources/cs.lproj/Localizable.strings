@@ -318,6 +318,8 @@ Vaše akce a místní konfigurace budou po přihlášení stále k dispozici.";
 "settings_details.location.zones.location.title" = "Poloha";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Poloměr";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Obnovit odznak na 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Odznak byl obnoven na 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Obnova odznaku";
