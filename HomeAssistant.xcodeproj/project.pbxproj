@@ -3587,8 +3587,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "Tests-App" */;
 			buildPhases = (
-				11FE64BC268D984D00AC4367 /* Fix Xcode 12.5+ Dependency Issues */,
 				6B47CD8F0AAF5C691F8256D7 /* [CP] Check Pods Manifest.lock */,
+				11FE64BC268D984D00AC4367 /* Fix Xcode 12.5+ Dependency Issues */,
 				B657A8F81CA646EB00121384 /* Sources */,
 				B657A8F91CA646EB00121384 /* Frameworks */,
 				B657A8FA1CA646EB00121384 /* Resources */,
