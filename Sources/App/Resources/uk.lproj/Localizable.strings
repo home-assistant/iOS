@@ -318,6 +318,8 @@
 "settings_details.location.zones.location.title" = "Розташування";
 "settings_details.location.zones.radius.label" = "%li м";
 "settings_details.location.zones.radius.title" = "Радіус";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Скиньте значок до 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Значок було скинуто до 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Скидання значка";

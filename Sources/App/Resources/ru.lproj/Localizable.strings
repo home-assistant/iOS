@@ -316,6 +316,8 @@ Your actions and local configuration will still be available after logging in.";
 "settings_details.location.zones.location.title" = "Местоположение";
 "settings_details.location.zones.radius.label" = "%li м";
 "settings_details.location.zones.radius.title" = "Радиус";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Сбросить счётчик на значке";
 "settings_details.notifications.badge_section.reset_alert.message" = "Число на значке программы сброшено в 0";
 "settings_details.notifications.badge_section.reset_alert.title" = "Счётчик обнулён";

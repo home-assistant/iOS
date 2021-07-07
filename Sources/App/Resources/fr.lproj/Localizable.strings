@@ -318,6 +318,8 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.location.zones.location.title" = "Emplacement";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Rayon";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Remettre le badge à 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Le badge a été réinitialisé à 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Réinitialisation du badge";

@@ -318,6 +318,8 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.location.zones.location.title" = "Lokasjon";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Tilbakestiller merket til 0 hver gang du starter appen.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatisk";
 "settings_details.notifications.badge_section.button.title" = "Tilbakestille merke til 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Merket har blitt tilbakestilt til 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Tilbakestill merke";
@@ -330,10 +332,10 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.info" = "Bruk varslingstjenesten mobile_app til å sende varsler til enheten din.";
 "settings_details.notifications.local_push.status.available" = "Tilgjengelig (%1$@)";
-"settings_details.notifications.local_push.status.disabled" = "Disabled";
+"settings_details.notifications.local_push.status.disabled" = "Deaktivert";
 "settings_details.notifications.local_push.status.establishing" = "Etablerer";
 "settings_details.notifications.local_push.status.unavailable" = "utilgjengelig";
-"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
+"settings_details.notifications.local_push.status.unsupported" = "Støttes ikke";
 "settings_details.notifications.local_push.title" = "Lokal push";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.notifications.permission.disabled" = "Nektet";
@@ -389,7 +391,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.detail.state" = "Tilstand";
 "settings_sensors.disabled_state_replacement" = "Deaktivert";
-"settings_sensors.focus_permission.title" = "Focus Permission";
+"settings_sensors.focus_permission.title" = "Fokuseringstillatelse";
 "settings_sensors.last_updated.footer" = "Sist oppdatert %@";
 "settings_sensors.loading_error.title" = "Kunne ikke laste sensorer";
 "settings_sensors.periodic_update.description" = "Når disse sensorene er aktivert, oppdateres disse sensorene med denne frekvensen mens appen er åpen i forgrunnen.";
@@ -418,7 +420,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings.connection_section.internal_url_ssids.footer" = "Intern URL-adresse vil bli brukt når du er koblet til oppførte SSID-er";
 "settings.connection_section.internal_url_ssids.header" = "SSIDer";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRareNettverksNavn";
-"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
+"settings.connection_section.local_push_description" = "Koble direkte til Home Assistant-serveren for push-varsler når du er på interne SSIDer.";
 "settings.connection_section.logged_in_as" = "Pålogget som";
 "settings.connection_section.remote_ui_url.title" = "Ekstern UI URL";
 "settings.connection_section.servers" = "Servere";
