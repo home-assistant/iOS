@@ -97,6 +97,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         for name: Notification.Name in [
             SettingsStore.connectionInfoDidChange,
             HomeAssistantAPI.didConnectNotification,
+            UIApplication.didBecomeActiveNotification,
         ] {
             NotificationCenter.default.addObserver(
                 self,
@@ -233,30 +234,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        navigationController?.setNavigationBarHidden(true, animated: false)
-
-        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-        if let connectionInfo = Current.settingsStore.connectionInfo,
-           let webviewURL = connectionInfo.webviewURL,
-           webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false {
-            let myRequest: URLRequest
-
-            if Current.settingsStore.restoreLastURL,
-               let initialURL = initialURL, initialURL.baseIsEqual(to: webviewURL) {
-                Current.Log.info("restoring initial url")
-                myRequest = URLRequest(url: initialURL)
-            } else {
-                Current.Log.info("loading default url")
-                myRequest = URLRequest(url: webviewURL)
-            }
-
-            webView.load(myRequest)
-        }
+        loadActiveURLIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(false, animated: false)
         userActivity?.resignCurrent()
     }
 
@@ -512,19 +493,35 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     @objc private func loadActiveURLIfNeeded() {
-        guard let desiredURL = Current.settingsStore.connectionInfo?.webviewURL else {
+        guard let webviewURL = Current.settingsStore.connectionInfo?.webviewURL else {
+            Current.Log.info("not loading, no url")
             return
         }
 
-        guard webView.url == nil || webView.url?.baseIsEqual(to: desiredURL) == false else {
-            Current.Log.info("not changing webview url - we're okay with what we have")
+        guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
             // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
             webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
             return
         }
 
-        Current.Log.verbose("Changing webview to current active URL!")
-        webView.load(URLRequest(url: desiredURL))
+        guard UIApplication.shared.applicationState != .background else {
+            Current.Log.info("not loading, in background")
+            return
+        }
+
+        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
+        let request: URLRequest
+
+        if Current.settingsStore.restoreLastURL,
+           let initialURL = initialURL, initialURL.baseIsEqual(to: webviewURL) {
+            Current.Log.info("restoring initial url path: \(initialURL.path)")
+            request = URLRequest(url: initialURL)
+        } else {
+            Current.Log.info("loading default url path: \(webviewURL.path)")
+            request = URLRequest(url: webviewURL)
+        }
+
+        webView.load(request)
     }
 
     @objc private func refresh() {

@@ -64,6 +64,7 @@ class WebViewWindowController {
 
     private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
         let navigationController = UINavigationController()
+        navigationController.setNavigationBarHidden(true, animated: false)
 
         if #available(iOS 13, *) {
         } else {
