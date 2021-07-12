@@ -7,7 +7,7 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     algoliasearch (1.27.5)
       httpclient (~> 2.8, >= 2.8.3)
@@ -141,10 +141,6 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
-    fastlane-plugin-appicon (0.15.0)
-      json
-      mini_magick (>= 4.9.4, < 5.0.0)
-    fastlane-plugin-clean_testflight_testers (0.3.0)
     ffi (1.14.2)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -297,8 +293,6 @@ DEPENDENCIES
   cocoapods (>= 1.10.0.beta.1)
   cocoapods-acknowledgements
   fastlane
-  fastlane-plugin-appicon
-  fastlane-plugin-clean_testflight_testers
   rubocop
   synx
 
