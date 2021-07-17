@@ -24,6 +24,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
             }
         }
     }
+
     let visibleView: ImageViewType
 
     required init(notification: UNNotification, attachmentURL: URL?) throws {
@@ -77,7 +78,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
                     $0.scrollView.backgroundColor = .clear
                 })
             } else {
-                visibleView = .imageView(with(UIImageView()) {
+                self.visibleView = .imageView(with(UIImageView()) {
                     $0.contentMode = .scaleAspectFit
                 })
             }
