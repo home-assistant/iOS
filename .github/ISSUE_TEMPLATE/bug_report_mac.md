@@ -1,6 +1,6 @@
 ---
 name: Bug report (macOS)
-about: Create a report to help us improve the macOS
+about: Report a bug that is happening in the macOS app
 title: ''
 labels: bug, mac
 assignees: ''

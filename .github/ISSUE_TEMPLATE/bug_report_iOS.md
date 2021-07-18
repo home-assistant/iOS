@@ -1,6 +1,6 @@
 ---
-name: Bug report (iOS/iPadOS)
-about: Create a report to help us improve the mobile app
+name: Bug report (iOS/iPadOS/watchOS)
+about: Report a bug that is happening in the iOS, iPadOS or watchOS app
 title: ''
 labels: bug, ios
 assignees: ''
