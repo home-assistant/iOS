@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: App feature requests & ideas
+    url: https://github.com/home-assistant/iOS/discussions/categories/ideas?discussions_q=category%3AIdeas+sort%3Atop
+    about: For example, a new sensor, an update to how location tracking works, etc.
+  - name: Frontend feature requests
+    url: https://github.com/home-assistant/frontend/discussions/category_choices
+    about: For example, how pages, dashboards and Lovelace cards work in the frontend.
+  - name: I have a question or need support
+    url: https://www.home-assistant.io/help
+    about: We use GitHub for tracking bugs, check our website for resources on getting help.
+  - name: I'm unsure where to go
+    url: https://www.home-assistant.io/join-chat
+    about: If you are unsure where to go, then joining our chat is recommended; Just ask!
