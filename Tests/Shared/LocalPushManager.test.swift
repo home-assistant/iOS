@@ -39,6 +39,10 @@ class LocalPushManagerTests: XCTestCase {
         weak var weakManager = manager
         manager = nil
         XCTAssertNil(weakManager)
+
+        for sub in apiConnection.pendingSubscriptions {
+            XCTAssertTrue(sub.cancellable.wasCancelled)
+        }
     }
 
     private func setUpManager(webhookID: String?) {
@@ -158,6 +162,13 @@ class LocalPushManagerTests: XCTestCase {
         fireConnectionChange()
 
         XCTAssertTrue(sub2.cancellable.wasCancelled)
+    }
+
+    func testInvalidate() throws {
+        setUpManager(webhookID: "webhook1")
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        manager.invalidate()
+        XCTAssertTrue(sub.cancellable.wasCancelled)
     }
 
     func testNoSubscriptionAtStart() throws {
