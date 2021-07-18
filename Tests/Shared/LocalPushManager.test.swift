@@ -67,6 +67,19 @@ class LocalPushManagerTests: XCTestCase {
         }
     }
 
+    private func fireConnectionChange() {
+        NotificationCenter.default.post(
+            name: SettingsStore.connectionInfoDidChange,
+            object: nil,
+            userInfo: nil
+        )
+        let expectation = self.expectation(description: "loop")
+        DispatchQueue.main.async {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10)
+    }
+
     func testStateInitialUnavailable() {
         setUpManager(webhookID: nil)
         XCTAssertEqual(manager.state, .unavailable)
@@ -119,20 +132,12 @@ class LocalPushManagerTests: XCTestCase {
         sub1.initiated(.success(.empty))
 
         apiConnection.pendingSubscriptions.removeAll()
-        NotificationCenter.default.post(
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            userInfo: nil
-        )
+        fireConnectionChange()
         XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty, "same id")
 
         // change webhookID
         Current.settingsStore.connectionInfo?.webhookID = "webhook2"
-        NotificationCenter.default.post(
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            userInfo: nil
-        )
+        fireConnectionChange()
 
         XCTAssertTrue(sub1.cancellable.wasCancelled)
 
@@ -142,11 +147,7 @@ class LocalPushManagerTests: XCTestCase {
 
         // fail the subscription
         sub2.initiated(.failure(.internal(debugDescription: "unit-test")))
-        NotificationCenter.default.post(
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            userInfo: nil
-        )
+        fireConnectionChange()
 
         // now succeed it (e.g. reconnect happened)
         sub2.initiated(.success(.empty))
@@ -154,11 +155,7 @@ class LocalPushManagerTests: XCTestCase {
         // kill off the connection info
         apiConnection.pendingSubscriptions.removeAll()
         Current.settingsStore.connectionInfo = nil
-        NotificationCenter.default.post(
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            userInfo: nil
-        )
+        fireConnectionChange()
 
         XCTAssertTrue(sub2.cancellable.wasCancelled)
     }
