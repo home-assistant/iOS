@@ -80,18 +80,28 @@ public class LocalPushManager {
     }
 
     public init() {
+        updateSubscription()
+
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(updateSubscription),
+            selector: #selector(updateSubscriptionFromNotification),
             name: SettingsStore.connectionInfoDidChange,
             object: nil
         )
-
-        updateSubscription()
     }
 
     deinit {
-        subscription?.cancel()
+        invalidate()
+    }
+
+    public func invalidate() {
+        if let subscription = subscription {
+            Current.Log.info("cancelling")
+            subscription.cancel()
+        } else {
+            Current.Log.info("no active subscription")
+        }
+        NotificationCenter.default.removeObserver(self)
     }
 
     var add: (UNNotificationRequest) -> Promise<Void> = { request in
@@ -105,13 +115,20 @@ public class LocalPushManager {
         let webhookID: String
 
         func cancel() {
+            Current.Log.info("cancelling subscription")
             token.cancel()
         }
     }
 
     private var subscription: SubscriptionInstance?
 
-    @objc private func updateSubscription() {
+    @objc private func updateSubscriptionFromNotification() {
+        DispatchQueue.main.async { [self] in
+            updateSubscription()
+        }
+    }
+
+    private func updateSubscription() {
         guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
             // webhook is invalid, if there is a subscription we remove it
             subscription?.cancel()
