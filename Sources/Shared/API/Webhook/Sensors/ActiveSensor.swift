@@ -43,8 +43,8 @@ final class ActiveSensor: SensorProvider {
         sensor.Attributes = activeState.states.attributes
 
         let durationFormatter = with(DateComponentsFormatter()) {
-            $0.allowedUnits = [.minute]
-            $0.allowsFractionalUnits = false
+            $0.allowedUnits = [.minute, .second]
+            $0.allowsFractionalUnits = true
             $0.formattingContext = .standalone
             $0.unitsStyle = .short
         }
@@ -54,9 +54,9 @@ final class ActiveSensor: SensorProvider {
                 type: .stepper(
                     getter: { activeState.minimumIdleTime.converted(to: .minutes).value },
                     setter: { activeState.minimumIdleTime = .init(value: $0, unit: .minutes) },
-                    minimum: 1,
+                    minimum: 0.25,
                     maximum: .greatestFiniteMagnitude,
-                    step: 1.0,
+                    step: 0.25,
                     displayValueFor: { value in
                         let valueMeasurement = Measurement<UnitDuration>(value: value ?? 0, unit: .minutes)
                         return durationFormatter.string(from: valueMeasurement.converted(to: .seconds).value)
