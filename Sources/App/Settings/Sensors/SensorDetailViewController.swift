@@ -126,7 +126,10 @@ class SensorDetailViewController: HAFormViewController, SensorObserver {
                                     row.value = maximum
                                 }
 
-                                row.value = (value / step).rounded(.down) * step
+                                let updated = (value / step).rounded(.down) * step
+                                if abs(updated - value) > 0.05 {
+                                    row.value = updated
+                                }
                             }
 
                             setter(row.value ?? 0)
