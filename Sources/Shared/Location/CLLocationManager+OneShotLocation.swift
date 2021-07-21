@@ -115,7 +115,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
     }
 
     var description: String {
-        "accuracy \(accuracy) from \(timestamp) quality \(quality)"
+        "coordinate \(location.coordinate) accuracy \(accuracy) from \(timestamp) quality \(quality)"
     }
 
     var accuracy: CLLocationAccuracy {
@@ -267,7 +267,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         let updatedPotentialLocations = locations.map {
             PotentialLocation(location: $0, accuracyAuthorization: authorization)
         }
-        Current.Log.verbose("got potential locations: \(updatedPotentialLocations)")
+        Current.Log.verbose("got raw locations \(locations) and turned into potential: \(updatedPotentialLocations)")
         potentialLocations.append(contentsOf: updatedPotentialLocations)
         checkPotentialLocations(outOfTime: false)
     }
