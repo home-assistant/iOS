@@ -448,6 +448,34 @@ class OneShotLocationTests: XCTestCase {
             verticalAccuracy: 0,
             timestamp: now.addingTimeInterval(0)
         )
+        let location5 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: Double.leastNonzeroMagnitude),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(0)
+        )
+        let location6 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: Double.leastNonzeroMagnitude, longitude: 123),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(0)
+        )
+        let location7 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: -Double.leastNonzeroMagnitude),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(0)
+        )
+        let location8 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: -Double.leastNonzeroMagnitude, longitude: 123),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(0)
+        )
         let promise = OneShotLocationProxy(
             locationManager: locationManager,
             timeout: timeoutPromise
@@ -455,6 +483,7 @@ class OneShotLocationTests: XCTestCase {
 
         locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
             location1, location2, location3, location4,
+            location5, location6, location7, location8,
         ])
         timeoutSeal(())
 

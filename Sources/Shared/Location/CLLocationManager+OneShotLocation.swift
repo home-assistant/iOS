@@ -86,8 +86,14 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
             return
         }
 
-        if location.coordinate.latitude == 0 || location.coordinate.longitude == 0 {
+        func isBadCoordinateValue(_ value: Double) -> Bool {
+            // this is within 110µm of 0.0 latitude/longitude and is very unlikely to really happen
+            (value >= 0 && value <= 0.000000001) || (value >= -0.000000001 && value <= 0)
+        }
+
+        if isBadCoordinateValue(location.coordinate.latitude) || isBadCoordinateValue(location.coordinate.longitude) {
             // iOS 13.5? seems to occasionally report 0 lat/long, so ignore these locations
+            // iOS 15? seems to occasionally report ``9.368162246e-315 (or similar small values), so ignore these too
             Current.Log.error("Location \(location.coordinate) was super duper invalid")
             self.quality = .invalid
         } else {
@@ -109,7 +115,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
     }
 
     var description: String {
-        "accuracy \(accuracy) from \(timestamp) quality \(quality)"
+        "coordinate \(location.coordinate) accuracy \(accuracy) from \(timestamp) quality \(quality)"
     }
 
     var accuracy: CLLocationAccuracy {
@@ -261,7 +267,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         let updatedPotentialLocations = locations.map {
             PotentialLocation(location: $0, accuracyAuthorization: authorization)
         }
-        Current.Log.verbose("got potential locations: \(updatedPotentialLocations)")
+        Current.Log.verbose("got raw locations \(locations) and turned into potential: \(updatedPotentialLocations)")
         potentialLocations.append(contentsOf: updatedPotentialLocations)
         checkPotentialLocations(outOfTime: false)
     }
