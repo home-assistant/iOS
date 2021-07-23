@@ -1,6 +1,6 @@
 {
   "name": "NotificationTestCases",
-  "version": "0.2",
+  "version": "0.3",
   "summary": "NotificationTestCases",
   "description": "Test cases from the Home Assistant FCM functions.",
   "homepage": "https://github.com/home-assistant/mobile-apps-fcm-push",
