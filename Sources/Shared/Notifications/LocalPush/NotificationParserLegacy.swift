@@ -3,6 +3,26 @@ import Foundation
 // swiftlint:disable cyclomatic_complexity
 
 public enum NotificationParserLegacy {
+    struct CommandPayload {
+        let isAlert: Bool
+        let payload: [String: Any]
+
+        init(_ name: String, aps: [String: Any] = [:], homeassistant: [String: Any] = [:]) {
+            self.init(
+                isAlert: false,
+                payload: [
+                    "aps": ["contentAvailable": true].merging(aps, uniquingKeysWith: { a, _ in a }),
+                    "homeassistant": ["command": name].merging(homeassistant, uniquingKeysWith: { a, _ in a }),
+                ]
+            )
+        }
+
+        init(isAlert: Bool, payload: [String: Any]) {
+            self.isAlert = isAlert
+            self.payload = payload
+        }
+    }
+
     public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
         let registrationInfo = input["registration_info"] as? [String: String] ?? [
             "os_version": Current.device.systemVersion(),
@@ -16,21 +36,12 @@ public enum NotificationParserLegacy {
             headers.merge(apnsHeaders, uniquingKeysWith: { _, b in b })
         }
 
-        let commandPayload: [String: Any]? = {
-            func command(
-                _ name: String,
-                aps: [String: Any] = [:],
-                homeassistant: [String: Any] = [:]
-            ) -> [String: Any] { [
-                "aps": ["contentAvailable": true].merging(aps, uniquingKeysWith: { a, _ in a }),
-                "homeassistant": ["command": name].merging(homeassistant, uniquingKeysWith: { a, _ in a }),
-            ] }
-
+        let commandPayload: CommandPayload? = {
             switch input["message"] as? String {
             case "request_location_update", "request_location_updates":
-                return command("request_location_update")
+                return .init("request_location_update")
             case "clear_badge":
-                return command("clear_badge", aps: ["badge": 0])
+                return .init(isAlert: true, payload: ["aps": ["badge": 0]])
             case "clear_notification":
                 var homeassistant = [String: Any]()
 
@@ -42,15 +53,28 @@ public enum NotificationParserLegacy {
                     homeassistant["collapseId"] = collapseId
                 }
 
-                return command("clear_notification", homeassistant: homeassistant)
+                return .init("clear_notification", homeassistant: homeassistant)
             case "update_complications":
-                return command("update_complications")
+                return .init("update_complications")
             default: return nil
             }
         }()
 
         if let commandPayload = commandPayload {
-            return (headers: ["apns-push-type": "background"], payload: commandPayload)
+            var payload = commandPayload.payload
+
+            if let push = data["push"] as? [String: Any], let badge = push["badge"] as? Int {
+                payload.mutateInside("aps") { aps in
+                    if aps["badge"] == nil {
+                        aps["badge"] = badge
+                    }
+                }
+            }
+
+            return (
+                headers: ["apns-push-type": commandPayload.isAlert ? "alert" : "background"],
+                payload: payload
+            )
         }
 
         var needsCategory = false
