@@ -37,7 +37,7 @@ class AuthenticationViewController: UIViewController {
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
 
-            testResult = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil)
+            testResult = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil, data: nil)
             perform(segue: StoryboardSegue.Onboarding.showError)
             return
         }
@@ -130,15 +130,15 @@ class AuthenticationViewController: UIViewController {
                 if method == NSURLAuthenticationMethodServerTrust {
                     Current.Log.verbose("Allowing challenge \(method)")
                 } else if method == NSURLAuthenticationMethodHTTPBasic {
-                    seal.reject(ConnectionTestResult(kind: .basicAuth, underlying: nil))
+                    seal.reject(ConnectionTestResult(kind: .basicAuth, underlying: nil, data: nil))
                     task.cancel()
                 } else if method == NSURLAuthenticationMethodClientCertificate {
                     Current.Log.warning("HTTP client certificate encountered")
-                    seal.reject(ConnectionTestResult(kind: .clientCertificateRequired, underlying: nil))
+                    seal.reject(ConnectionTestResult(kind: .clientCertificateRequired, underlying: nil, data: nil))
                     task.cancel()
                 } else {
                     Current.Log.warning("Refusing to handle challenge \(challenge)")
-                    seal.reject(ConnectionTestResult(kind: .authenticationUnsupported, underlying: nil))
+                    seal.reject(ConnectionTestResult(kind: .authenticationUnsupported, underlying: nil, data: nil))
                     task.cancel()
                 }
             }
@@ -150,27 +150,40 @@ class AuthenticationViewController: UIViewController {
                 Current.Log.verbose("Result: \(response.result)")
                 Current.Log.error("Error: \(String(describing: response.error))")
 
-                if let error = response.error {
-                    let errorCode = (error as NSError).code
-                    if errorCode == NSURLErrorServerCertificateUntrusted ||
-                        errorCode == NSURLErrorServerCertificateHasUnknownRoot {
-                        seal.reject(ConnectionTestResult(kind: .sslUntrusted, underlying: error))
-                        return
-                    } else if errorCode == NSURLErrorServerCertificateHasBadDate ||
-                        errorCode == NSURLErrorServerCertificateNotYetValid {
-                        seal.reject(ConnectionTestResult(kind: .sslExpired, underlying: error))
-                        return
-                    }
-
-                    seal.reject(ConnectionTestResult(kind: .unknownError, underlying: error))
-                    return
-                }
-
                 if let statusCode = response.response?.statusCode, statusCode >= 400 {
                     let reason: ErrorReason = .unacceptableStatusCode(code: statusCode)
                     seal.reject(ConnectionTestResult(
                         kind: .serverError,
-                        underlying: AFError.responseValidationFailed(reason: reason)
+                        underlying: AFError.responseValidationFailed(reason: reason),
+                        data: response.data
+                    ))
+                    return
+                }
+
+                if let error = response.error {
+                    let errorCode = (error as NSError).code
+                    if errorCode == NSURLErrorServerCertificateUntrusted ||
+                        errorCode == NSURLErrorServerCertificateHasUnknownRoot {
+                        seal.reject(ConnectionTestResult(
+                            kind: .sslUntrusted,
+                            underlying: error,
+                            data: response.data
+                        ))
+                        return
+                    } else if errorCode == NSURLErrorServerCertificateHasBadDate ||
+                        errorCode == NSURLErrorServerCertificateNotYetValid {
+                        seal.reject(ConnectionTestResult(
+                            kind: .sslExpired,
+                            underlying: error,
+                            data: response.data
+                        ))
+                        return
+                    }
+
+                    seal.reject(ConnectionTestResult(
+                        kind: .unknownError,
+                        underlying: error,
+                        data: response.data
                     ))
                     return
                 }
@@ -209,30 +222,48 @@ public struct ConnectionTestResult: LocalizedError {
 
     let kind: ErrorKind
     let underlying: Error?
+    let data: Data?
 
     public var errorDescription: String? {
-        let description = underlying?.localizedDescription ?? ""
-        switch kind {
-        case .sslUntrusted:
-            return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
-        case .basicAuth:
-            return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
-        case .authenticationUnsupported:
-            return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(description)
-        case .sslExpired:
-            return L10n.Onboarding.ConnectionTestResult.SslExpired.description
-        case .clientCertificateRequired:
-            return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
-        case .connectionError:
-            return L10n.Onboarding.ConnectionTestResult.ConnectionError.description(description)
-        case .serverError:
-            return L10n.Onboarding.ConnectionTestResult.ServerError.description(description)
-        case .tooOld:
-            return L10n.Onboarding.ConnectionTestResult.TooOld.description
-        case .noBaseURLDiscovered:
-            return L10n.Onboarding.ConnectionTestResult.NoBaseUrlDiscovered.description
-        default:
-            return L10n.Onboarding.ConnectionTestResult.UnknownError.description(description)
+        let base: String = {
+            let description = underlying?.localizedDescription ?? ""
+            switch kind {
+            case .sslUntrusted:
+                return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
+            case .basicAuth:
+                return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
+            case .authenticationUnsupported:
+                return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(description)
+            case .sslExpired:
+                return L10n.Onboarding.ConnectionTestResult.SslExpired.description
+            case .clientCertificateRequired:
+                return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
+            case .connectionError:
+                return L10n.Onboarding.ConnectionTestResult.ConnectionError.description(description)
+            case .serverError:
+                return L10n.Onboarding.ConnectionTestResult.ServerError.description(description)
+            case .tooOld:
+                return L10n.Onboarding.ConnectionTestResult.TooOld.description
+            case .noBaseURLDiscovered:
+                return L10n.Onboarding.ConnectionTestResult.NoBaseUrlDiscovered.description
+            case .unknownError:
+                return L10n.Onboarding.ConnectionTestResult.UnknownError.description(description)
+            }
+        }()
+
+        if let data = data, let dataString = String(data: data, encoding: .utf8) {
+            let displayDataString: String
+
+            let maximumLength = 200
+            if dataString.count > maximumLength {
+                displayDataString = dataString.prefix(maximumLength - 1) + "…"
+            } else {
+                displayDataString = dataString
+            }
+
+            return base + "\n\n" + displayDataString
+        } else {
+            return base
         }
     }
 
