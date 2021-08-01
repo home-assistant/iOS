@@ -184,7 +184,13 @@ public class WebhookManager: NSObject {
 
     public func sendEphemeral<Decodable: HADataDecodable>(request: WebhookRequest) -> Promise<Decodable> {
         let promise: Promise<Any> = sendEphemeral(request: request)
-        return promise.map { try Decodable(data: HAData(value: $0)) }
+        return promise.map {
+            if let result = try? Decodable(data: HAData(value: $0)) {
+                return result
+            } else {
+                throw WebhookError.unmappableValue
+            }
+        }
     }
 
     public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<MappableResult> {

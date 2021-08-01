@@ -15,3 +15,13 @@ public struct MobileAppRegistrationResponse: HADataDecodable {
         self.WebhookSecret = data.decode("secret", fallback: nil)
     }
 }
+
+public struct MobileAppUpdateRegistrationResponse: HADataDecodable {
+    // mostly kept so an invalid response (not HA, some weird middleware, etc.) is noticed
+    public var appId: String
+
+    public init(data: HAData) throws {
+        self.appId = try data.decode("app_id")
+    }
+}
+

@@ -166,8 +166,8 @@ public class HomeAssistantAPI {
         Current.apiConnection.connect()
 
         return firstly {
-            self.UpdateRegistration()
-        }.recover { error -> Promise<MobileAppRegistrationResponse> in
+            self.UpdateRegistration().asVoid()
+        }.recover { error -> Promise<Void> in
             switch error as? WebhookError {
             case .unmappableValue,
                  .unexpectedType,
@@ -180,7 +180,7 @@ public class HomeAssistantAPI {
                 Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                     "error": String(describing: error),
                 ]))
-                return self.Register()
+                return self.Register().asVoid()
             case .noApi,
                  .unregisteredIdentifier,
                  .unacceptableStatusCode,
@@ -190,7 +190,7 @@ public class HomeAssistantAPI {
                 Current.Log.info("not re-registering, but failed to update registration: \(error)")
                 throw error
             }
-        }.then { _ in
+        }.then {
             when(fulfilled: [
                 self.GetConfig().asVoid(),
                 Current.modelManager.fetch(),
@@ -391,7 +391,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func UpdateRegistration() -> Promise<MobileAppRegistrationResponse> {
+    public func UpdateRegistration() -> Promise<MobileAppUpdateRegistrationResponse> {
         Current.webhooks.sendEphemeral(request: .init(
             type: "update_registration",
             data: buildMobileAppUpdateRegistration()
