@@ -47,7 +47,7 @@ public class Environment {
             }
         }
         HAGlobal.log = { level, log in
-            let string = "WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))"
+            let string = "HAKit: \(log.replacingOccurrences(of: "\n", with: " "))"
 
             switch level {
             case .info: Current.Log.info(string)
