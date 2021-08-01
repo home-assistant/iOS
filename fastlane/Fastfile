@@ -265,7 +265,7 @@ lane :setup_ha_ci do
   create_keychain(
     name: keychain_name,
     password: keychain_password,
-    timeout: false,
+    timeout: 3600,
     unlock: true,
     add_to_search_list: true
   )
@@ -305,15 +305,16 @@ end
 
 private_lane :provisioning_profile_specifiers do |options|
   # gym doesn't parse the provisioning profile specifier, so we need to do it ourselves
-  all_targets_result = sh(
+  all_targets_result = sh([
     'xcodebuild',
+    '2>/dev/null', # this command started outputting warnings in Xcode 12.5
     '-json',
     '-showBuildSettings',
     '-sdk', options[:sdk],
     '-project', '../HomeAssistant.xcodeproj',
     '-scheme', 'App-Release',
-    '-list', log: false
-  )
+    '-list'
+  ] + [], log: false)
   all_targets = JSON.parse(all_targets_result)['project']['targets'].map { |t| "-target #{t}" }
 
   settings_result = sh([
@@ -365,6 +366,7 @@ platform :ios do
       export_method: 'app-store',
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,
+      disable_xcpretty: true,
       output_directory: './build/ios',
       export_options: {
         signingStyle: 'manual',
@@ -389,6 +391,7 @@ platform :mac do
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,
       skip_package_pkg: true,
+      disable_xcpretty: true,
       output_directory: './build/macos',
       export_options: {
         signingStyle: 'manual',
