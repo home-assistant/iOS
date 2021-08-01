@@ -391,6 +391,7 @@ platform :mac do
       skip_package_dependencies_resolution: true,
       skip_profile_detection: true,
       skip_package_pkg: true,
+      disable_xcpretty: true,
       output_directory: './build/macos',
       export_options: {
         signingStyle: 'manual',
