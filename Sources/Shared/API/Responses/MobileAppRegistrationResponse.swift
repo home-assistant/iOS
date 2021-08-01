@@ -24,4 +24,3 @@ public struct MobileAppUpdateRegistrationResponse: HADataDecodable {
         self.appId = try data.decode("app_id")
     }
 }
-

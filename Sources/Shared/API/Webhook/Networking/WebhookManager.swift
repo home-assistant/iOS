@@ -1,8 +1,8 @@
 import Foundation
+import HAKit
 import ObjectMapper
 import PromiseKit
 import UserNotifications
-import HAKit
 
 internal enum WebhookError: LocalizedError, Equatable, CancellableError {
     case noApi
