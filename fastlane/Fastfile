@@ -313,8 +313,8 @@ private_lane :provisioning_profile_specifiers do |options|
     '-sdk', options[:sdk],
     '-project', '../HomeAssistant.xcodeproj',
     '-scheme', 'App-Release',
-    '-list'], log: false
-  )
+    '-list'
+  ] + [], log: false)
   all_targets = JSON.parse(all_targets_result)['project']['targets'].map { |t| "-target #{t}" }
 
   settings_result = sh([
