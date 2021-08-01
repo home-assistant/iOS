@@ -333,7 +333,7 @@ Uw acties en lokale configuratie zijn nog steeds beschikbaar na het inloggen.";
 "settings_details.notifications.info" = "Gebruik de mobile_app notify service om meldingen naar uw toestel te sturen.";
 "settings_details.notifications.local_push.status.available" = "Beschikbaar ( %1$@ )";
 "settings_details.notifications.local_push.status.disabled" = "Uitgeschakeld";
-"settings_details.notifications.local_push.status.establishing" = "Establishing";
+"settings_details.notifications.local_push.status.establishing" = "Tot stand brengen";
 "settings_details.notifications.local_push.status.unavailable" = "Niet beschikbaar";
 "settings_details.notifications.local_push.status.unsupported" = "Niet ondersteund";
 "settings_details.notifications.local_push.title" = "Lokale push";
