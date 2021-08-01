@@ -72,7 +72,7 @@
 "database.problem.delete" = "Slet database & afslut app";
 "database.problem.quit" = "Afslut app";
 "database.problem.title" = "Fejl i database";
-"debug_section_label" = "Debug";
+"debug_section_label" = "Fejlsøg";
 "delete" = "Slet";
 "done_label" = "Færdig";
 "error_label" = "Fejl";
@@ -97,7 +97,7 @@
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unknown" = "Der opstod en ukendt fejl.";
 "ha_api.api_error.update_not_possible" = "Handlingen kunne ikke udføres.";
-"help_label" = "Help";
+"help_label" = "Hjælp";
 "location_change_notification.app_shortcut.body" = "Lokalitet opdateret via appgenvej";
 "location_change_notification.background_fetch.body" = "Nuværende lokalitetslevering udløst via baggrundshentning";
 "location_change_notification.beacon_region_enter.body" = "ankom til %@ via iBeacon";
@@ -122,7 +122,7 @@
 "menu.application.preferences" = "Indstillinger…";
 "menu.file.update_sensors" = "Opdater sensorer";
 "menu.help.help" = "%@ Hjælp";
-"menu.status_item.quit" = "Quit";
+"menu.status_item.quit" = "Afslut";
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.reload_page" = "Genindlæs side";
 "nfc.detail.copy" = "Kopier til udklipsholder";
@@ -302,7 +302,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.location.notifications.url_scheme.title" = "URL-scheme lokalitetsnotifikationer";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL lokalitetsnotifikationer";
 "settings_details.location.title" = "Lokalitet";
-"settings_details.location.update_location" = "Update Location";
+"settings_details.location.update_location" = "Opdater placering";
 "settings_details.location.updates.background.title" = "Baggrundshentning";
 "settings_details.location.updates.footer" = "Manuelle lokalitetsopdateringer kan altid udløses";
 "settings_details.location.updates.header" = "Opdater kilder";
@@ -318,8 +318,8 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.location.zones.location.title" = "Lokalitet";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
-"settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
-"settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
+"settings_details.notifications.badge_section.automatic_setting.description" = "Nulstiller mærket til 0, hver gang du starter appen.";
+"settings_details.notifications.badge_section.automatic_setting.title" = "Automatisk";
 "settings_details.notifications.badge_section.button.title" = "Nulstil badge til 0";
 "settings_details.notifications.badge_section.reset_alert.message" = "Badget er blevet nulstillet til 0.";
 "settings_details.notifications.badge_section.reset_alert.title" = "Nulstilling af badge";
@@ -334,9 +334,9 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.local_push.status.available" = "Available (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Disabled";
 "settings_details.notifications.local_push.status.establishing" = "Establishing";
-"settings_details.notifications.local_push.status.unavailable" = "Unavailable";
-"settings_details.notifications.local_push.status.unsupported" = "Unsupported";
-"settings_details.notifications.local_push.title" = "Local Push";
+"settings_details.notifications.local_push.status.unavailable" = "Utilgængelig";
+"settings_details.notifications.local_push.status.unsupported" = "Ikke supporteret";
+"settings_details.notifications.local_push.title" = "Lokale ush notifikationer";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.notifications.permission.disabled" = "Nægtet";
 "settings_details.notifications.permission.enabled" = "Aktiveret";
@@ -360,7 +360,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.sounds.error.conversion_failed" = "Kunne ikke konvertere lyd til PCM 32 bit 48 kHz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Filen kunne ikke kopieres: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Filen kunne ikke slettes: %@";
-"settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
+"settings_details.notifications.sounds.footer" = "Indbyggede, system eller tilpassede lyde kan bruges sammen med dine notifikationer.";
 "settings_details.notifications.sounds.import_custom" = "Importer brugerdefinerede lyde";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer lyde fra iTunes-fildeling";
 "settings_details.notifications.sounds.import_mac_instructions" = "Tilføj brugerdefinerede lyde til Sounds mappen for at bruge dem i notifikationer. Brug lydens filnavn som lydværdi i kald af tjenesten.";
@@ -373,7 +373,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.notifications.sounds.title" = "Lyde";
 "settings_details.notifications.title" = "Notifikationer";
 "settings_details.privacy.alerts.description" = "Allows checking for important alerts like security vulnerabilities.";
-"settings_details.privacy.alerts.title" = "Alerts";
+"settings_details.privacy.alerts.title" = "Advarsler";
 "settings_details.privacy.analytics.generic_description" = "Giver mulighed for indsamling af grundlæggende oplysninger om din enhed og interaktioner med appen. Der deles ingen brugeridentificerbare data herunder webadresser og tokens til Home Assistant. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
 "settings_details.privacy.crash_reporting.description" = "Giver mulighed for mere tilbundsgående sporing af nedbrud og andre fejl i appen, hvilket betyder at der hurtigere kan laves rettelser. Der sendes ingen brugeridentificerbare oplysninger, bortset fra grundlæggende enhedsoplysninger. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
@@ -387,10 +387,10 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Egenskaber";
 "settings_sensors.detail.device_class" = "Enhedsklasse";
-"settings_sensors.detail.enabled" = "Enabled";
+"settings_sensors.detail.enabled" = "Aktiveret";
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.detail.state" = "Tilstand";
-"settings_sensors.disabled_state_replacement" = "Disabled";
+"settings_sensors.disabled_state_replacement" = "Deaktiveret";
 "settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Sidst opdateret %@";
 "settings_sensors.loading_error.title" = "Sensorer kunne ikke indlæses";
@@ -420,7 +420,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.connection_section.internal_url_ssids.footer" = "Intern webadresse vil blive brugt, når der er oprettet forbindelse til tilføjede SSID'er";
 "settings.connection_section.internal_url_ssids.header" = "SSID'er";
 "settings.connection_section.internal_url_ssids.placeholder" = "MitSjoveNetværksnavn";
-"settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
+"settings.connection_section.local_push_description" = "Opret direkte forbindelse til Home Assistant -serveren for push -notifikationer, når der tilsluttes via  interne SSID'er.";
 "settings.connection_section.logged_in_as" = "Logget ind som";
 "settings.connection_section.remote_ui_url.title" = "Web-adresse til ekstern UI";
 "settings.connection_section.servers" = "Servere";
@@ -432,7 +432,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "settings.connection_section.websocket.status.authenticating" = "Godkender";
 "settings.connection_section.websocket.status.connected" = "Connected";
 "settings.connection_section.websocket.status.connecting" = "Forbinder";
-"settings.connection_section.websocket.status.disconnected.error" = "Error: %1$@";
+"settings.connection_section.websocket.status.disconnected.error" = "Fejl: %1$@";
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Next Retry: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
@@ -510,7 +510,7 @@ Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efte
 "watch.configurator.delete.title" = "Slet Komplikation?";
 "watch.configurator.list.description" = "Konfigurer en ny Komplikation ved at klikke på Tlføj knappen. Når du har gemt, kan du vælge Komplikationen på dit Apple Watch eller i Watch-appen.";
 "watch.configurator.list.learn_more" = "Lær mere";
-"watch.configurator.list.manual_updates.footer" = "Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.";
+"watch.configurator.list.manual_updates.footer" = "Automatiske opdateringer sker 4 gange i timen. Manuelle opdateringer kan startes via en notitikation.";
 "watch.configurator.list.manual_updates.manually_update" = "Update Complications";
 "watch.configurator.list.manual_updates.remaining" = "Remaining";
 "watch.configurator.list.manual_updates.state.not_enabled" = "Not Enabled";
