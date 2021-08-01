@@ -1,6 +1,7 @@
 import Alamofire
 import CoreLocation
 import Foundation
+import HAKit
 import Intents
 import KeychainAccess
 import ObjectMapper
@@ -284,7 +285,16 @@ public class HomeAssistantAPI {
         if useWebhook {
             promise = Current.webhooks.sendEphemeral(request: .init(type: "get_config", data: [:]))
         } else {
-            promise = request(path: "config", callingFunctionName: "\(#function)")
+            promise = firstly {
+                Current.apiConnection.send(.init(type: .rest(.get, "config"))).promise
+            }.compactMap { (data: HAData) -> ConfigResponse? in
+                if case let .dictionary(dictionary) = data,
+                   let result = Mapper<ConfigResponse>().map(JSONObject: dictionary) {
+                    return result
+                } else {
+                    return nil
+                }
+            }
         }
 
         return promise.then { config -> Promise<ConfigResponse> in
@@ -318,7 +328,8 @@ public class HomeAssistantAPI {
     }
 
     public func GetLogbook() -> Promise<[LogbookEntry]> {
-        request(path: "logbook", callingFunctionName: "\(#function)")
+        let request = HATypedRequest<[LogbookEntry]>(request: .init(type: .rest(.get, "logbook")))
+        return Current.apiConnection.send(request).promise
     }
 
     public func CallService(
@@ -362,14 +373,14 @@ public class HomeAssistantAPI {
     }
 
     public func Register() -> Promise<MobileAppRegistrationResponse> {
-        request(
-            path: "mobile_app/registrations",
-            callingFunctionName: "\(#function)",
-            method: .post,
-            parameters: buildMobileAppRegistration(),
-            encoding: JSONEncoding.default
-        )
-        .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
+        firstly { () -> Promise<MobileAppRegistrationResponse> in
+            let request = HATypedRequest<MobileAppRegistrationResponse>(request: .init(
+                type: .rest(.post, "mobile_app/registrations"),
+                data: buildMobileAppRegistration()
+            ))
+
+            return Current.apiConnection.send(request).promise
+        }.get { resp in
             Current.Log.verbose("Registration response \(resp)")
 
             let connectionInfo = try self.connectionInfo()
@@ -377,8 +388,6 @@ public class HomeAssistantAPI {
             connectionInfo.cloudhookURL = resp.CloudhookURL
             connectionInfo.webhookID = resp.WebhookID
             connectionInfo.webhookSecret = resp.WebhookSecret
-
-            return Promise.value(resp)
         }
     }
 
@@ -392,13 +401,12 @@ public class HomeAssistantAPI {
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
         firstly { () -> Promise<MobileAppConfig> in
             if let version = Current.serverVersion(), version < .actionSyncing {
-                let old: Promise<MobileAppConfigPush> = requestImmutable(
-                    path: "ios/push",
-                    callingFunctionName: "\(#function)"
-                )
+                let request = HATypedRequest<MobileAppConfigPush>(request: .init(type: .rest(.get, "ios/push")))
+                let old = Current.apiConnection.send(request).promise
                 return old.map { MobileAppConfig(push: $0) }
             } else {
-                return requestImmutable(path: "ios/config", callingFunctionName: "\(#function)")
+                let request = HATypedRequest<MobileAppConfig>(request: .init(type: .rest(.get, "ios/config")))
+                return Current.apiConnection.send(request).promise
             }
         }.recover { error -> Promise<MobileAppConfig> in
             if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {

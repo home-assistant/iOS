@@ -1,8 +1,8 @@
 import Foundation
-import ObjectMapper
+import HAKit
 
-public struct LogbookEntry: ImmutableMappable {
-    public let entityId: String
+public struct LogbookEntry: HADataDecodable {
+    public let entityId: String?
     public let when: Date
     public let domain: String?
     public let message: String?
@@ -10,13 +10,13 @@ public struct LogbookEntry: ImmutableMappable {
     public let name: String?
     public let iconName: String?
 
-    public init(map: Map) throws {
-        self.entityId = try map.value("entity_id")
-        self.when = try map.value("when", using: HomeAssistantTimestampTransform())
-        self.domain = try? map.value("domain")
-        self.message = try? map.value("message")
-        self.state = try? map.value("state")
-        self.name = try? map.value("name")
-        self.iconName = try? map.value("icon")
+    public init(data: HAData) throws {
+        self.when = try data.decode("when")
+        self.entityId = data.decode("entity_id", fallback: nil)
+        self.domain = data.decode("domain", fallback: nil)
+        self.message = data.decode("message", fallback: nil)
+        self.state = data.decode("state", fallback: nil)
+        self.name = data.decode("name", fallback: nil)
+        self.iconName = data.decode("icon", fallback: nil)
     }
 }

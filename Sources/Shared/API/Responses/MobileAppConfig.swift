@@ -1,7 +1,8 @@
 import Foundation
+import HAKit
 import ObjectMapper
 
-public struct MobileAppConfigAction: ImmutableMappable, UpdatableModelSource {
+public struct MobileAppConfigAction: HADataDecodable, UpdatableModelSource {
     var name: String
     var backgroundColor: String?
     var labelText: String?
@@ -9,20 +10,20 @@ public struct MobileAppConfigAction: ImmutableMappable, UpdatableModelSource {
     var iconIcon: String?
     var iconColor: String?
 
-    public init(map: Map) throws {
-        self.name = try map.value("name")
-        self.backgroundColor = try? map.value("background_color")
-        self.labelText = try? map.value("label.text")
-        self.labelColor = try? map.value("label.color")
-        self.iconIcon = try? map.value("icon.icon")
-        self.iconColor = try? map.value("icon.color")
+    public init(data: HAData) throws {
+        self.name = try data.decode("name")
+        self.backgroundColor = data.decode("background_color", fallback: nil)
+        self.labelText = data.decode("label.text", fallback: nil)
+        self.labelColor = data.decode("label.color", fallback: nil)
+        self.iconIcon = data.decode("icon.icon", fallback: nil)
+        self.iconColor = data.decode("icon.color", fallback: nil)
     }
 
     public var primaryKey: String { name }
 }
 
-public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSource {
-    public struct Action: ImmutableMappable {
+public struct MobileAppConfigPushCategory: HADataDecodable, UpdatableModelSource {
+    public struct Action: HADataDecodable {
         public var title: String
         public var identifier: String
         public var authenticationRequired: Bool
@@ -33,18 +34,23 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
         public var textInputPlaceholder: String?
         public var url: String?
 
-        public init(map: Map) throws {
-            self.title = try map.value("title", default: "Missing title")
+        public init(data: HAData) throws {
+            self.title = data.decode("title", fallback: "Missing title")
             // we fall back to 'action' for android-style dynamic actions
-            self.identifier = try map.value("identifier", default: try map.value("action", default: "missing"))
-            self.authenticationRequired = try map.value("authenticationRequired", default: false)
-            self.behavior = try map.value("behavior", default: "default")
-            self.activationMode = try map.value("activationMode", default: "background")
-            self.destructive = try map.value("destructive", default: false)
-            self.textInputButtonTitle = try? map.value("textInputButtonTitle")
-            self.textInputPlaceholder = try? map.value("textInputPlaceholder")
+            if let identifier: String = try? data.decode("identifier") {
+                self.identifier = identifier
+            } else {
+                self.identifier = data.decode("action", fallback: "missing")
+            }
+
+            self.authenticationRequired = data.decode("authenticationRequired", fallback: false)
+            self.behavior = data.decode("behavior", fallback: "default")
+            self.activationMode = data.decode("activationMode", fallback: "background")
+            self.destructive = data.decode("destructive", fallback: false)
+            self.textInputButtonTitle = data.decode("textInputButtonTitle", fallback: nil)
+            self.textInputPlaceholder = data.decode("textInputPlaceholder", fallback: nil)
             for urlKey in ["url", "uri"] {
-                if let value: String = try? map.value(urlKey) {
+                if let value: String = try? data.decode(urlKey) {
                     // a url is set, which means this is likely coming from an actionable notification
                     // so assume that it wants activation for it
                     self.url = value
@@ -63,28 +69,29 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
     public var identifier: String
     public var actions: [Action]
 
-    public init(map: Map) throws {
-        self.name = try map.value("name")
-        self.identifier = try map.value("identifier", default: name)
-        self.actions = map.value("actions", default: [])
+    public init(data: HAData) throws {
+        let name: String = try data.decode("name")
+        self.name = name
+        self.identifier = data.decode("identifier", fallback: name)
+        self.actions = data.decode("actions", fallback: [])
     }
 
     public var primaryKey: String { identifier.uppercased() }
 }
 
-public struct MobileAppConfigPush: ImmutableMappable {
+public struct MobileAppConfigPush: HADataDecodable {
     public var categories: [MobileAppConfigPushCategory]
 
     internal init(categories: [MobileAppConfigPushCategory] = []) {
         self.categories = []
     }
 
-    public init(map: Map) throws {
-        self.categories = map.value("categories", default: [])
+    public init(data: HAData) throws {
+        self.categories = data.decode("categories", fallback: [])
     }
 }
 
-public struct MobileAppConfig: ImmutableMappable {
+public struct MobileAppConfig: HADataDecodable {
     public var push: MobileAppConfigPush
     public var actions: [MobileAppConfigAction]
 
@@ -93,8 +100,8 @@ public struct MobileAppConfig: ImmutableMappable {
         self.actions = actions
     }
 
-    public init(map: Map) throws {
-        self.push = (try? map.value("push")) ?? MobileAppConfigPush()
-        self.actions = map.value("actions", default: [])
+    public init(data: HAData) throws {
+        self.push = data.decode("push", fallback: MobileAppConfigPush())
+        self.actions = data.decode("actions", fallback: [])
     }
 }
