@@ -2,6 +2,7 @@ import Foundation
 import ObjectMapper
 import PromiseKit
 import UserNotifications
+import HAKit
 
 internal enum WebhookError: LocalizedError, Equatable, CancellableError {
     case noApi
@@ -179,6 +180,11 @@ public class WebhookManager: NSObject {
     public func sendEphemeral(request: WebhookRequest) -> Promise<Void> {
         let promise: Promise<Any> = sendEphemeral(request: request)
         return promise.asVoid()
+    }
+
+    public func sendEphemeral<Decodable: HADataDecodable>(request: WebhookRequest) -> Promise<Decodable> {
+        let promise: Promise<Any> = sendEphemeral(request: request)
+        return promise.map { try Decodable(data: HAData(value: $0)) }
     }
 
     public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<MappableResult> {
