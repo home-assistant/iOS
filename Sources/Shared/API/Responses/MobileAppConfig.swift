@@ -13,10 +13,14 @@ public struct MobileAppConfigAction: HADataDecodable, UpdatableModelSource {
     public init(data: HAData) throws {
         self.name = try data.decode("name")
         self.backgroundColor = data.decode("background_color", fallback: nil)
-        self.labelText = data.decode("label.text", fallback: nil)
-        self.labelColor = data.decode("label.color", fallback: nil)
-        self.iconIcon = data.decode("icon.icon", fallback: nil)
-        self.iconColor = data.decode("icon.color", fallback: nil)
+
+        let label: HAData = data.decode("label", fallback: .empty)
+        self.labelText = label.decode("text", fallback: nil)
+        self.labelColor = label.decode("color", fallback: nil)
+
+        let icon: HAData = data.decode("icon", fallback: .empty)
+        self.iconIcon = icon.decode("icon", fallback: nil)
+        self.iconColor = icon.decode("color", fallback: nil)
     }
 
     public var primaryKey: String { name }
