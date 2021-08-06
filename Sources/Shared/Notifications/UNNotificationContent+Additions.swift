@@ -1,3 +1,4 @@
+import HAKit
 import ObjectMapper
 import UserNotifications
 
@@ -20,8 +21,7 @@ public extension UNNotificationContent {
         let actions = userInfo["actions"] as? [[String: Any]] ?? []
 
         do {
-            return try Mapper<MobileAppConfigPushCategory.Action>()
-                .mapArray(JSONArray: actions)
+            return try [MobileAppConfigPushCategory.Action](data: HAData(value: actions))
                 .reduce(into: []) { result, original in
                     var trailing = (2...).lazy.map(String.init(describing:)).makeIterator()
                     var action = original

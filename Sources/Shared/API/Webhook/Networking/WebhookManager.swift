@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 import ObjectMapper
 import PromiseKit
 import UserNotifications
@@ -179,6 +180,17 @@ public class WebhookManager: NSObject {
     public func sendEphemeral(request: WebhookRequest) -> Promise<Void> {
         let promise: Promise<Any> = sendEphemeral(request: request)
         return promise.asVoid()
+    }
+
+    public func sendEphemeral<Decodable: HADataDecodable>(request: WebhookRequest) -> Promise<Decodable> {
+        let promise: Promise<Any> = sendEphemeral(request: request)
+        return promise.map {
+            if let result = try? Decodable(data: HAData(value: $0)) {
+                return result
+            } else {
+                throw WebhookError.unmappableValue
+            }
+        }
     }
 
     public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<MappableResult> {
