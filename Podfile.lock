@@ -11,13 +11,13 @@ PODS:
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.3)
   - Firebase (8.1.0)
-  - HAKit (0.2.2):
-    - HAKit/Core (= 0.2.2)
-  - HAKit/Core (0.2.2):
+  - HAKit (0.3):
+    - HAKit/Core (= 0.3)
+  - HAKit/Core (0.3):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.2.2):
+  - HAKit/Mocks (0.3):
     - HAKit/Core
-  - HAKit/PromiseKit (0.2.2):
+  - HAKit/PromiseKit (0.3):
     - HAKit/Core
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
@@ -154,6 +154,7 @@ EXTERNAL SOURCES:
     :branch: main
     :git: https://github.com/home-assistant/HAKit.git
   NotificationTestCases:
+    :path: ''
     :podspec: Configuration/Podspecs/NotificationTestCases.podspec.json
   ObjectMapper:
     :branch: master
@@ -184,10 +185,10 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   HAKit:
-    :commit: 19e6267dff11426da2c090d5e7943953606ac334
+    :commit: 0e22e80ee8626e5611f00db08f80ef9150b85345
     :git: https://github.com/home-assistant/HAKit.git
   NotificationTestCases:
-    :commit: bb5906878530973b74eed54f1751f580afa87260
+    :commit: 03d66c0b348b1b005cba083d5b9007d29501ce43
     :git: https://github.com/home-assistant/mobile-apps-fcm-push.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -211,7 +212,7 @@ SPEC CHECKSUMS:
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: e6d720290c56bb23333ad1a0e020b2a98a0e9a43
   Firebase: bd494ca54f975ea92931aaa187a4e6650d7f121c
-  HAKit: 2fefcc8028f78611408a70f5bb37c01e776bfcae
+  HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
@@ -237,6 +238,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 45c7f2fb7efd0ee4c97588afb1529924647dd8a7
+PODFILE CHECKSUM: 8604b08b7e3502f0058c124bca9a041be210f5ae
 
 COCOAPODS: 1.10.2
