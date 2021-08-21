@@ -132,6 +132,7 @@ class LocalPushManagerTests: XCTestCase {
         let sub1 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         XCTAssertEqual(sub1.request.type, "mobile_app/push_notification_channel")
         XCTAssertEqual(sub1.request.data["webhook_id"] as? String, "webhook1")
+        XCTAssertEqual(sub1.request.data["support_confirm"] as? Bool, true)
 
         sub1.initiated(.success(.empty))
 
@@ -148,6 +149,7 @@ class LocalPushManagerTests: XCTestCase {
         let sub2 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         XCTAssertEqual(sub2.request.type, "mobile_app/push_notification_channel")
         XCTAssertEqual(sub2.request.data["webhook_id"] as? String, "webhook2")
+        XCTAssertEqual(sub2.request.data["support_confirm"] as? Bool, true)
 
         // fail the subscription
         sub2.initiated(.failure(.internal(debugDescription: "unit-test")))
@@ -176,7 +178,7 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty)
     }
 
-    func testEventSuccessfullyAdded() throws {
+    func testEventSuccessfullyAddedWithoutConfirmId() throws {
         setUpManager(webhookID: "webhook1")
 
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
@@ -211,6 +213,56 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(final.0.content.body, "test_message_modified")
         XCTAssertEqual(final.0.identifier, "test_tag")
         final.1.fulfill(())
+
+        XCTAssertFalse(
+            apiConnection.pendingRequests
+                .contains(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        )
+    }
+
+    func testEventSuccessfullyAddedWithConfirmId() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "hass_confirm_id": "test_confirm_id",
+            "data": [
+                "tag": "test_tag",
+            ],
+        ]))
+
+        let expectation1 = expectation(description: "contentRequestsChanged")
+        attachmentManager.contentRequestsChanged = {
+            expectation1.fulfill()
+        }
+
+        waitForExpectations(timeout: 10.0)
+
+        let req = try XCTUnwrap(attachmentManager.contentRequests.first)
+        XCTAssertEqual(req.0.body, "test_message")
+        req.1(with(UNMutableNotificationContent()) {
+            $0.body = "test_message_modified"
+        })
+
+        let expectation2 = expectation(description: "addedChanged")
+        addedChanged = {
+            expectation2.fulfill()
+        }
+
+        waitForExpectations(timeout: 10.0)
+
+        let final = try XCTUnwrap(added.first)
+        XCTAssertEqual(final.0.content.body, "test_message_modified")
+        XCTAssertEqual(final.0.identifier, "test_tag")
+        final.1.fulfill(())
+
+        let request = try XCTUnwrap(
+            apiConnection.pendingRequests
+                .first(where: { $0.request.type == "mobile_app/push_notification_confirm" })
+        ).request
+        XCTAssertEqual(request.data["webhook_id"] as? String, "webhook1")
+        XCTAssertEqual(request.data["confirm_id"] as? String, "test_confirm_id")
     }
 
     func testEventAttachmentFails() throws {
