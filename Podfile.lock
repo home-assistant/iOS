@@ -91,7 +91,7 @@ DEPENDENCIES:
   - Lokalise (~> 0.10.0)
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
-  - NotificationTestCases (from `Configuration/Podspecs`)
+  - NotificationTestCases (from `Configuration/Podspecs/NotificationTestCases.podspec.json`)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit
@@ -154,7 +154,8 @@ EXTERNAL SOURCES:
     :branch: main
     :git: https://github.com/home-assistant/HAKit.git
   NotificationTestCases:
-    :path: Configuration/Podspecs
+    :path: ''
+    :podspec: Configuration/Podspecs/NotificationTestCases.podspec.json
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -186,6 +187,9 @@ CHECKOUT OPTIONS:
   HAKit:
     :commit: 0e22e80ee8626e5611f00db08f80ef9150b85345
     :git: https://github.com/home-assistant/HAKit.git
+  NotificationTestCases:
+    :commit: 03d66c0b348b1b005cba083d5b9007d29501ce43
+    :git: https://github.com/home-assistant/mobile-apps-fcm-push.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -234,6 +238,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: bb6993b12265187ab1f04392a1abb770260a3998
+PODFILE CHECKSUM: 8604b08b7e3502f0058c124bca9a041be210f5ae
 
 COCOAPODS: 1.10.2
