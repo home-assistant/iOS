@@ -46,7 +46,7 @@ pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', branch: '
 
 def test_pods
   pod 'OHHTTPStubs/Swift'
-  pod 'NotificationTestCases', podspec: 'Configuration/Podspecs/NotificationTestCases.podspec.json'
+  pod 'NotificationTestCases', path: 'Configuration/Podspecs'
 end
 
 def shared_fwk_pods
