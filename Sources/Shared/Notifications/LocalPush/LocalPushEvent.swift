@@ -6,9 +6,17 @@ extension HATypedSubscription {
     static func localPush(
         webhookID: String
     ) -> HATypedSubscription<LocalPushEvent> {
-        HATypedSubscription<LocalPushEvent>(request: .init(
+        var data: [String: Any] = [
+            "webhook_id": webhookID,
+        ]
+
+        if let version = Current.serverVersion(), version >= .localPushConfirm {
+            data["support_confirm"] = true
+        }
+
+        return HATypedSubscription<LocalPushEvent>(request: .init(
             type: "mobile_app/push_notification_channel",
-            data: ["webhook_id": webhookID, "support_confirm": true]
+            data: data
         ))
     }
 }

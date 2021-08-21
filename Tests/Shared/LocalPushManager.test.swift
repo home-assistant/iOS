@@ -2,6 +2,7 @@ import HAKit
 import PromiseKit
 @testable import Shared
 import XCTest
+import Version
 
 class LocalPushManagerTests: XCTestCase {
     private var manager: LocalPushManager!
@@ -129,16 +130,20 @@ class LocalPushManagerTests: XCTestCase {
     func testSubscriptionAtStart() throws {
         setUpManager(webhookID: "webhook1")
 
+        Current.serverVersion = { .init(major: 2021, minor: 8) }
+
         let sub1 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         XCTAssertEqual(sub1.request.type, "mobile_app/push_notification_channel")
         XCTAssertEqual(sub1.request.data["webhook_id"] as? String, "webhook1")
-        XCTAssertEqual(sub1.request.data["support_confirm"] as? Bool, true)
+        XCTAssertNil(sub1.request.data["support_confirm"])
 
         sub1.initiated(.success(.empty))
 
         apiConnection.pendingSubscriptions.removeAll()
         fireConnectionChange()
         XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty, "same id")
+
+        Current.serverVersion = { .init(major: 2021, minor: 9) }
 
         // change webhookID
         Current.settingsStore.connectionInfo?.webhookID = "webhook2"
