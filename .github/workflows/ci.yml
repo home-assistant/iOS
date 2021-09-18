@@ -83,7 +83,6 @@ jobs:
       - uses: actions/cache@v2
         name: "Cache: Gems"
         id: cache_gems
-        if: matrix.xcode == '12.5'
         with:
           path: vendor/bundle
           key: >-
@@ -103,10 +102,6 @@ jobs:
       - name: Install Pods Release
         if: steps.cache_pods.outputs.cache-hit != 'true'
         run: bundle exec pod install --repo-update
-
-      - name: Install Pods Beta
-        if: false #matrix.xcode == '13.0'
-        run: XCODE_BETA=true bundle exec pod install --repo-update
 
       - name: Run tests
         run: bundle exec fastlane test
