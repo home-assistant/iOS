@@ -10,7 +10,7 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.3)
-  - Firebase (8.1.0)
+  - Firebase (8.7.0)
   - HAKit (0.3):
     - HAKit/Core (= 0.3)
   - HAKit/Core (0.3):
@@ -42,30 +42,30 @@ PODS:
   - OHHTTPStubs/OHPathHelpers (9.1.0)
   - OHHTTPStubs/Swift (9.1.0):
     - OHHTTPStubs/Default
-  - PromiseKit (6.13.1):
-    - PromiseKit/CorePromise (= 6.13.1)
-    - PromiseKit/Foundation (= 6.13.1)
-    - PromiseKit/UIKit (= 6.13.1)
-  - PromiseKit/CorePromise (6.13.1)
-  - PromiseKit/Foundation (6.13.1):
+  - PromiseKit (6.15.3):
+    - PromiseKit/CorePromise (= 6.15.3)
+    - PromiseKit/Foundation (= 6.15.3)
+    - PromiseKit/UIKit (= 6.15.3)
+  - PromiseKit/CorePromise (6.15.3)
+  - PromiseKit/Foundation (6.15.3):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.13.1):
+  - PromiseKit/UIKit (6.15.3):
     - PromiseKit/CorePromise
   - ReachabilitySwift (5.0.0)
-  - RealmSwift (10.7.6)
-  - Sentry (7.1.3):
-    - Sentry/Core (= 7.1.3)
-  - Sentry/Core (7.1.3)
-  - SimulatorStatusMagic (2.5)
+  - RealmSwift (10.15.1)
+  - Sentry (7.3.0):
+    - Sentry/Core (= 7.3.0)
+  - Sentry/Core (7.3.0)
+  - SimulatorStatusMagic (2.6)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.48.6)
+  - SwiftFormat/CLI (0.48.11)
   - SwiftGen (6.4.0)
-  - SwiftLint (0.43.1)
-  - SwiftMessages (9.0.3):
-    - SwiftMessages/App (= 9.0.3)
-  - SwiftMessages/App (9.0.3)
-  - UIColor_Hex_Swift (5.1.0)
+  - SwiftLint (0.44.0)
+  - SwiftMessages (9.0.4):
+    - SwiftMessages/App (= 9.0.4)
+  - SwiftMessages/App (9.0.4)
+  - UIColor_Hex_Swift (5.1.7)
   - Version (0.8.0)
   - ViewRow (0.8):
     - Eureka (>= 5.0.0)
@@ -194,7 +194,7 @@ CHECKOUT OPTIONS:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
-    :commit: 8f94369541f5c048a9190a7095a941d4419f002d
+    :commit: 1d51e8eb8a99638166aea863e7a71d568b5a06e6
     :git: https://github.com/jedisct1/swift-sodium.git
   Starscream:
     :commit: 35db1249f572e81c480f7159051194f688c16825
@@ -211,7 +211,7 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: e6d720290c56bb23333ad1a0e020b2a98a0e9a43
-  Firebase: bd494ca54f975ea92931aaa187a4e6650d7f121c
+  Firebase: 463e3a1c9c536709599baaa0b35372a9c5d24840
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
@@ -221,23 +221,23 @@ SPEC CHECKSUMS:
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
-  PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
+  PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  RealmSwift: 3148a9d240366898ab55a4bfdd1d11eda8605aa5
-  Sentry: 6d963d64804dd06d96e778be729613f481394312
-  SimulatorStatusMagic: 71cfcea1df017e8f0fa8e48bc182d86976376f84
-  Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
+  RealmSwift: fda05634503875570eefeadd59e898d4c680422e
+  Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
+  SimulatorStatusMagic: 9f5294c12ca99c6cadb243a60362a66000df540c
+  Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 835d432cbffc8916d3def6e37a01a10c516d8e24
+  SwiftFormat: 938e5865a118c49d63c7a290ddad86335f9e585f
   SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
-  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
-  SwiftMessages: 077f19126c24033fe24042237ecc20261adb46e4
-  UIColor_Hex_Swift: 8be7432edacb7fa91c78aa05ef3c30b66e4f9415
+  SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584
+  SwiftMessages: 082ed63613a49fa8e749cd6000bb0a8b9bbc736f
+  UIColor_Hex_Swift: 31cd3e47440f07a20d2503a36bb0437a445b3c29
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 8604b08b7e3502f0058c124bca9a041be210f5ae
+PODFILE CHECKSUM: 817ccee579daa6b7beed5291e836595aa20c35f4
 
 COCOAPODS: 1.10.2

@@ -83,7 +83,7 @@ public class WatchComplication: Object, ImmutableMappable {
         super.init()
     }
 
-    public required init(map: Map) throws {
+    public required init(map: ObjectMapper.Map) throws {
         // this is used for watch<->app syncing
         self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         super.init()
@@ -95,7 +95,7 @@ public class WatchComplication: Object, ImmutableMappable {
         self.IsPublic = try map.value("IsPublic")
     }
 
-    public func mapping(map: Map) {
+    public func mapping(map: ObjectMapper.Map) {
         Template >>> map["Template"]
         Data >>> map["Data"]
         CreatedAt >>> (map["CreatedAt"], DateTransform())

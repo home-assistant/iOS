@@ -24,7 +24,7 @@ public func <- <T: Mappable>(left: List<T>, right: Map) {
 }
 
 /// Object of Realm's RealmOptional type
-public func <- <T>(left: RealmOptional<T>, right: Map) {
+public func <- <T>(left: RealmProperty<T?>, right: Map) {
     var optional: T?
 
     if right.mappingType == .toJSON {

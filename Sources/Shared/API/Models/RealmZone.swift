@@ -29,8 +29,8 @@ public final class RLMZone: Object, UpdatableModel {
 
     // Beacons
     @objc public dynamic var BeaconUUID: String?
-    public let BeaconMajor = RealmOptional<Int>()
-    public let BeaconMinor = RealmOptional<Int>()
+    public let BeaconMajor = RealmProperty<Int?>()
+    public let BeaconMinor = RealmProperty<Int?>()
 
     // SSID
     public var SSIDTrigger = List<String>()

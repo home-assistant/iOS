@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_12.5.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_13.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
@@ -61,7 +61,7 @@ jobs:
     runs-on: macos-11
     strategy:
       matrix:
-        xcode: ['12.5', '13.0']
+        xcode: ['13.0']
     timeout-minutes: 60
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -101,11 +101,11 @@ jobs:
         run: bundle install --jobs 4 --retry 3
 
       - name: Install Pods Release
-        if: steps.cache_pods.outputs.cache-hit != 'true' && matrix.xcode == '12.5'
+        if: steps.cache_pods.outputs.cache-hit != 'true'
         run: bundle exec pod install --repo-update
 
       - name: Install Pods Beta
-        if: matrix.xcode == '13.0'
+        if: false #matrix.xcode == '13.0'
         run: XCODE_BETA=true bundle exec pod install --repo-update
 
       - name: Run tests
