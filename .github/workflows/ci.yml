@@ -78,7 +78,7 @@ jobs:
             Tools/MaterialDesignIcons.json
           key: >-
             ${{ runner.os }}-pods-${{ matrix.xcode }}-
-            ${{ hashFiles('**/Podfile', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
       - uses: actions/cache@v2
         name: "Cache: Gems"
