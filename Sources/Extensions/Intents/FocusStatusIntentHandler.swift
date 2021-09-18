@@ -1,4 +1,4 @@
-#if compiler(>=5.5)
+#if compiler(>=5.5) && !targetEnvironment(macCatalyst)
 import Foundation
 import Intents
 import PromiseKit
