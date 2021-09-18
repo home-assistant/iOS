@@ -77,8 +77,8 @@ jobs:
             Tools/MaterialDesignIcons.ttf
             Tools/MaterialDesignIcons.json
           key: >-
-            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
-            ${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+            ${{ runner.os }}-pods-${{ matrix.xcode }}-
+            ${{ hashFiles('**/Podfile', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
       - uses: actions/cache@v2
         name: "Cache: Gems"
@@ -87,8 +87,6 @@ jobs:
           path: vendor/bundle
           key: >-
             ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}
 
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
