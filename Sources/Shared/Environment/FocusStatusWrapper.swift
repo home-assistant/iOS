@@ -27,7 +27,11 @@ public class FocusStatusWrapper {
         #endif
     }
 
-    public var lastStatus: Status?
+    private var lastStatus: Status? {
+        willSet {
+            precondition(Current.isAppExtension)
+        }
+    }
 
     public lazy var isAvailable: () -> Bool = { [weak self] in
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
