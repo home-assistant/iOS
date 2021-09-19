@@ -1,6 +1,6 @@
 import Foundation
-import PromiseKit
 import HAKit
+import PromiseKit
 
 final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler {
     let cancellable: HACancellable

@@ -8,7 +8,7 @@ public class FocusStateTrigger: UserDefaultsValueSync<Date> {
 }
 
 public class FocusStatusWrapper {
-    lazy private(set) var trigger = FocusStateTrigger()
+    private(set) lazy var trigger = FocusStateTrigger()
 
     public enum AuthorizationStatus: Equatable {
         case notDetermined
