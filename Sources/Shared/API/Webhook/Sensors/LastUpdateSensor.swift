@@ -12,7 +12,7 @@ public class LastUpdateSensor: SensorProvider {
 
         if Current.isCatalyst {
             if Current.device.systemModel().lowercased().contains("book") {
-                icon = "mdi:laptop-mac"
+                icon = "mdi:laptop"
             } else {
                 icon = "mdi:desktop-mac"
             }
