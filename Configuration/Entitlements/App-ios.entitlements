@@ -19,6 +19,8 @@
 	</array>
 	<key>com.apple.developer.siri</key>
 	<true/>
+	<key>com.apple.developer.usernotifications.communication</key>
+	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.$(BUNDLE_ID_PREFIX).homeassistant$(BUNDLE_ID_SUFFIX)</string>

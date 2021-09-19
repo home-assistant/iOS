@@ -8,7 +8,7 @@ public struct FocusStatusWrapper {
         case denied
         case authorized
 
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         @available(iOS 15, watchOS 8, *)
         init(authorizationStatus: INFocusStatusAuthorizationStatus) {
             switch authorizationStatus {
@@ -28,7 +28,7 @@ public struct FocusStatusWrapper {
     }
 
     public var isAvailable: () -> Bool = {
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             return true
         } else {
@@ -40,7 +40,7 @@ public struct FocusStatusWrapper {
     }
 
     public var authorizationStatus: () -> AuthorizationStatus = {
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             return .init(authorizationStatus: INFocusStatusCenter.default.authorizationStatus)
         }
@@ -52,7 +52,7 @@ public struct FocusStatusWrapper {
     public var requestAuthorization: () -> Guarantee<Void> = {
         let (promise, seal) = Guarantee<Void>.pending()
 
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             INFocusStatusCenter.default.requestAuthorization { _ in
                 seal(())
@@ -70,7 +70,7 @@ public struct FocusStatusWrapper {
     public struct Status: Equatable {
         public var isFocused: Bool?
 
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         @available(iOS 15, watchOS 8, *)
         public init(focusStatus: INFocusStatus) {
             self.init(
@@ -85,7 +85,7 @@ public struct FocusStatusWrapper {
     }
 
     public var status: () -> Status = {
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
         }

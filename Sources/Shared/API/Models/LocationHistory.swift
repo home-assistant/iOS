@@ -10,7 +10,7 @@ public class LocationHistoryEntry: Object {
     @objc public dynamic var Accuracy = 0.0
     @objc public dynamic var Payload: String = ""
     @objc public dynamic var CreatedAt = Date()
-    private let rawAccuracyAuthorization = RealmOptional<CLAccuracyAuthorization.RawValue>()
+    private let rawAccuracyAuthorization = RealmProperty<CLAccuracyAuthorization.RawValue?>()
     public var accuracyAuthorization: CLAccuracyAuthorization? {
         get {
             rawAccuracyAuthorization.value.flatMap(CLAccuracyAuthorization.init(rawValue:))

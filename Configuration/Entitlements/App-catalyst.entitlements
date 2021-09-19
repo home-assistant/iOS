@@ -33,5 +33,7 @@
 	<true/>
 	<key>com.apple.security.files.user-selected.read-write</key>
 	<true/>
+	<key>com.apple.developer.usernotifications.communication</key>
+	<true/>
 </dict>
 </plist>

@@ -17,7 +17,7 @@ if [ ! -f "$LAUNCHER_INFO_PLIST_PATH" ]; then
 EOF
 fi
 
-WATCHAPP_INFO_PLIST_PATH=$BUILD_DIR/Debug-watchos/HomeAssistant-WatchApp.app/Contents/Info.plist
+WATCHAPP_INFO_PLIST_PATH=$BUILD_DIR/Debug-watchos/HomeAssistant-WatchApp.app/Info.plist
 if [ ! -f "$WATCHAPP_INFO_PLIST_PATH" ]; then
 	mkdir -p "$(dirname "$WATCHAPP_INFO_PLIST_PATH")"
 
