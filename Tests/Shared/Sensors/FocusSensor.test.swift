@@ -78,4 +78,40 @@ class FocusSensorTests: XCTestCase {
         XCTAssertEqual(focusSensor.Type, "binary_sensor")
         XCTAssertEqual(focusSensor.State as? Bool, false)
     }
+
+    func testUpdateSignalerCreated() throws {
+        setUp(status: .init(isFocused: false))
+
+        let dependencies = SensorProviderDependencies()
+        let provider = FocusSensor(request: .init(
+            reason: .trigger("unit-test"),
+            dependencies: dependencies,
+            location: nil
+        ))
+        let promise = provider.sensors()
+        _ = try hang(promise)
+
+        let signaler: FocusSensorUpdateSignaler? = dependencies.existingSignaler(for: provider)
+        XCTAssertNotNil(signaler)
+    }
+
+    func testSignaler() {
+        let expectation = expectation(description: "signal")
+        var signaler: FocusSensorUpdateSignaler? = FocusSensorUpdateSignaler(signal: {
+            expectation.fulfill()
+        })
+
+        // to mute the written-but-never-read warning
+        _ = signaler
+
+        let date = Date()
+        Current.focusStatus.trigger.value = date
+
+        // so it sticks around, but we don't need to access it directly
+        wait(for: [expectation], timeout: 10.0)
+        signaler = nil
+
+        Current.focusStatus.trigger.value = date.addingTimeInterval(1.0)
+        // we expect this to not fire an expectation over-fulfill
+    }
 }
