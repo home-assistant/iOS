@@ -9,20 +9,16 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
     public let settingsKey: String
     public let userDefaults: UserDefaults
 
-    public init(settingsKey: String, userDefaults: UserDefaults) {
+    public init(settingsKey: String, userDefaults: UserDefaults? = nil) {
         self.settingsKey = settingsKey
-        self.userDefaults = userDefaults
+        self.userDefaults = userDefaults ?? Current.settingsStore.prefs
         super.init()
-        userDefaults.addObserver(
+        self.userDefaults.addObserver(
             self,
             forKeyPath: settingsKey,
             options: [],
             context: nil
         )
-    }
-
-    public convenience init(settingsKey: String) {
-        self.init(settingsKey: settingsKey, userDefaults: Current.settingsStore.prefs)
     }
 
     deinit {

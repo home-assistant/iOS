@@ -1,5 +1,21 @@
 import Foundation
+import HAKit
 import PromiseKit
+
+final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler {
+    let cancellable: HACancellable
+    init(signal: @escaping () -> Void) {
+        self.cancellable = Current.focusStatus.trigger.observe { _ in
+            // this means that we will double-update the focus sensor if the app is running
+            // this feels less likely to happen, but allows us to keep the in-app visual state right
+            signal()
+        }
+    }
+
+    deinit {
+        cancellable.cancel()
+    }
+}
 
 final class FocusSensor: SensorProvider {
     public enum FocusError: Error, Equatable {
@@ -34,6 +50,9 @@ final class FocusSensor: SensorProvider {
                 $0.Type = "binary_sensor"
             })
         }
+
+        // Set up our observer
+        let _: FocusSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         return .value(sensors)
     }

@@ -1,7 +1,15 @@
 import Intents
 import PromiseKit
 
+public class FocusStateTrigger: UserDefaultsValueSync<Date> {
+    init() {
+        super.init(settingsKey: "FocusStateTriggerKey")
+    }
+}
+
 public class FocusStatusWrapper {
+    private(set) lazy var trigger = FocusStateTrigger()
+
     public enum AuthorizationStatus: Equatable {
         case notDetermined
         case restricted
@@ -99,6 +107,7 @@ public class FocusStatusWrapper {
     public func update(fromReceived status: INFocusStatus?) {
         precondition(Current.isAppExtension)
         lastStatus = status.flatMap { Status(focusStatus: $0) }
+        trigger.value = Current.date()
     }
     #endif
 
