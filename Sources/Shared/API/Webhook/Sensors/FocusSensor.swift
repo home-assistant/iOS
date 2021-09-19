@@ -4,6 +4,7 @@ import PromiseKit
 final class FocusSensor: SensorProvider {
     public enum FocusError: Error, Equatable {
         case unauthorized
+        case unavailable
     }
 
     let request: SensorProviderRequest
@@ -12,6 +13,10 @@ final class FocusSensor: SensorProvider {
     }
 
     func sensors() -> Promise<[WebhookSensor]> {
+        guard Current.focusStatus.isAvailable() else {
+            return .init(error: FocusError.unavailable)
+        }
+
         guard Current.focusStatus.authorizationStatus() == .authorized else {
             return .init(error: FocusError.unauthorized)
         }
