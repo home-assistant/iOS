@@ -63,8 +63,17 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         }
 
         // Try to grab the attachments, in case they failed or were lazy
+        let shouldDownload: Bool
 
-        if allowDownloads {
+        if Current.isCatalyst {
+            // catalyst doesn't have access to the system container for the builtin attachments
+            // however, it _also_ shows the system preview image in all cases, so we don't need to for that too
+            shouldDownload = attachmentURL == nil
+        } else {
+            shouldDownload = true
+        }
+
+        if allowDownloads, shouldDownload {
             return firstly {
                 Current.api
             }.then { api in
