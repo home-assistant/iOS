@@ -94,11 +94,13 @@ public class FocusStatusWrapper {
         }
     }
 
+    #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
     @available(iOS 15, watchOS 8, *)
     public func update(fromReceived status: INFocusStatus?) {
         precondition(Current.isAppExtension)
         lastStatus = status.flatMap { Status(focusStatus: $0) }
     }
+    #endif
 
     public lazy var status: () -> Status = { [weak self] in
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
