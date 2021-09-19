@@ -2,6 +2,9 @@ import Foundation
 
 // https://github.com/home-assistant/frontend/blob/92d30a889663008317f7a28faa65beea025f0bfd/src/components/ha-icon.ts
 struct MDIMigration {
+    // MDI Version number is based on number of icons, so count is directly related to version
+    static let migrationNumber: Int = MaterialDesignIcons.count / 1000 - 5
+
     func migrate(icon old: String) -> String {
         if let updated = renamed[old] {
             Current.Log.info("migrating \(old) to \(updated)")
@@ -10,12 +13,12 @@ struct MDIMigration {
             Current.Log.info("replacing mdi \(old)")
             return MaterialDesignIcons.emoticonSadIcon.name
         } else {
-            Current.Log.info("valid mdi icon: \(old)")
             return old
         }
     }
 
     private let renamed = [
+        // 5
         "account_badge": "badge_account",
         "account_badge_alert": "badge_account_alert",
         "account_badge_alert_outline": "badge_account_alert_outline",
@@ -143,9 +146,75 @@ struct MDIMigration {
         "xbox_controller_view": "microsoft_xbox_controller_view",
         "yammer": "microsoft_yammer",
         "youtube_creator_studio": "youtube_studio",
+
+        // 6
+        "apple_airplay": "cast_variant",
+        "application": "application_outline",
+        "application_cog": "application_cog_outline",
+        "application_settings": "application_settings_outline",
+        "bolnisi_cross": "cross_bolnisi",
+        "boom_gate_up": "boom_gate_arrow_up",
+        "boom_gate_up_outline": "boom_gate_arrow_up_outline",
+        "boom_gate_down": "boom_gate_arrow_down",
+        "boom_gate_down_outline": "boom_gate_arrow_down_outline",
+        "buddhism": "dharmachakra",
+        "cellphone_android": "cellphone",
+        "cellphone_erase": "cellphone_remove",
+        "cellphone_iphone": "cellphone",
+        "celtic_cross": "cross_celtic",
+        "christianity": "cross",
+        "christianity_outline": "cross_outline",
+        "do_not_disturb_off": "minus_circle_off",
+        "do_not_disturb": "minus_circle",
+        "face": "face_man",
+        "face_outline": "face_man_outline",
+        "face_profile_woman": "face_woman_profile",
+        "face_shimmer": "face_man_shimmer",
+        "face_shimmer_outline": "face_man_shimmer_outline",
+        "file_pdf": "file_pdf_box",
+        "file_pdf_outline": "file_pdf_box",
+        "file_pdf_box_outline": "file_pdf_box",
+        "flash_circle": "lightning_bolt_circle",
+        "floor_lamp_variant": "floor_lamp_torchiere_variant",
+        "gif": "file_gif_box",
+        "gradient": "gradient_vertical",
+        "hand": "hand_front_right",
+        "hand_left": "hand_back_left",
+        "hand_right": "hand_back_right",
+        "hinduism": "om",
+        "iframe": "application_brackets",
+        "iframe_outline": "application_brackets_outline",
+        "iframe_array": "application_array",
+        "iframe_array_outline": "application_array_outline",
+        "iframe_braces": "application_braces",
+        "iframe_braces_outline": "application_braces_outline",
+        "iframe_parentheses": "application_parentheses",
+        "iframe_parentheses_outline": "application_parentheses_outline",
+        "iframe_variable": "application_variable",
+        "iframe_variable_outline": "application_variable_outline",
+        "islam": "star_crescent",
+        "judaism": "star_david",
+        "laptop_chromebook": "laptop",
+        "laptop_mac": "laptop",
+        "laptop_windows": "laptop",
+        "monitor_clean": "monitor_shimmer",
+        "pdf_box": "file_pdf_box",
+        "pharmacy": "mortar_pestle_plus",
+        "plus_one": "numeric_positive_1",
+        "poll_box": "chart_box",
+        "poll_box_outline": "chart_box_outline",
+        "sparkles": "shimmer",
+        "tablet_ipad": "tablet",
+        "teach": "human_male_board",
+        "television_clean": "television_shimmer",
+        "text_subject": "text_long",
+        "twitter_retweet": "repeat_variant",
+        "voice_off": "account_voice_off",
+        "xamarian_outline": "xamarian",
     ]
 
     private let removed = Set([
+        // 5
         "accusoft",
         "amazon_drive",
         "android_head",
@@ -213,5 +282,32 @@ struct MDIMigration {
         "xing_box",
         "xing_circle",
         "yelp",
+
+        // 6
+        "adobe_acrobat",
+        "adobe",
+        "amazon",
+        "amazon_alexa",
+        "android_auto",
+        "android_debug_bridge",
+        "bandcamp",
+        "battlenet",
+        "blogger",
+        "buffer",
+        "cash_usd_outline",
+        "cash_usd",
+        "concourse_ci",
+        "currency_usd_circle",
+        "currency_usd_circle_outline",
+        "douban",
+        "google_photos",
+        "home_currency_usd",
+        "microsoft_edge_legacy",
+        "microsoft_yammer",
+        "telegram",
+        "untappd",
+        "vk",
+        "xing",
+        "y_combinator",
     ])
 }

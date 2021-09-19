@@ -12,9 +12,9 @@ FONT_RENAME_COMMIT=77734a1a165d25c8c83b2201c15e268da4a107b6
 
 # updating this requires re-executing swiftgen to pick up the new names
 # failing to keep the MDI and SVG versions in-sync will produce problems, as we use the SVG's JSON for codepoints
-MDI_COMMIT=34bdb8135d3307eac87bcbd7377c5ae344f09b42
-SVG_COMMIT=134fbd4fbf426f2b093c128ffefc727623fd39c0
-MDI_VERSION=5.9.55
+MDI_COMMIT=c5e52ee8dda618c82efc3d594e9d79abb033ae34
+SVG_COMMIT=09bf046023931f0adc2b79953bf3928c13a57a93
+MDI_VERSION=6.1.95
 
 echo "Checking for latest..."
 
