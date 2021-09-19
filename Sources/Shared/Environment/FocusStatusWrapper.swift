@@ -1,7 +1,7 @@
 import Intents
 import PromiseKit
 
-public struct FocusStatusWrapper {
+public class FocusStatusWrapper {
     public enum AuthorizationStatus: Equatable {
         case notDetermined
         case restricted
@@ -27,10 +27,20 @@ public struct FocusStatusWrapper {
         #endif
     }
 
-    public var isAvailable: () -> Bool = {
+    private var lastStatus: Status? {
+        willSet {
+            precondition(Current.isAppExtension)
+        }
+    }
+
+    public lazy var isAvailable: () -> Bool = { [weak self] in
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
-            return true
+            if Current.isAppExtension {
+                return self?.lastStatus != nil
+            } else {
+                return true
+            }
         } else {
             return false
         }
@@ -84,10 +94,20 @@ public struct FocusStatusWrapper {
         }
     }
 
-    public var status: () -> Status = {
+    @available(iOS 15, watchOS 8, *)
+    public func update(fromReceived status: INFocusStatus?) {
+        precondition(Current.isAppExtension)
+        lastStatus = status.flatMap { Status(focusStatus: $0) }
+    }
+
+    public lazy var status: () -> Status = { [weak self] in
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
-            return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
+            if Current.isAppExtension, let lastStatus = self?.lastStatus {
+                return lastStatus
+            } else {
+                return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
+            }
         }
         #endif
         return .init(isFocused: nil)

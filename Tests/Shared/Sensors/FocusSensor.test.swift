@@ -24,6 +24,15 @@ class FocusSensorTests: XCTestCase {
         Current.focusStatus.status = { status }
     }
 
+    func testNotAvailable() throws {
+        setUp(isAvailable: false)
+
+        let promise = FocusSensor(request: request).sensors()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? FocusSensor.FocusError, .unavailable)
+        }
+    }
+
     func testNotAuthorized() throws {
         for state: FocusStatusWrapper.AuthorizationStatus in [
             .restricted, .denied, .notDetermined,
