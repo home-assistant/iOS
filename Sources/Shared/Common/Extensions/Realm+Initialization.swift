@@ -161,7 +161,7 @@ public extension Realm {
 
                         if let oldData = newObject?[dataKey] as? Data,
                            let oldJson = try? JSONSerialization
-                            .jsonObject(with: oldData, options: []) as? [String: Any],
+                           .jsonObject(with: oldData, options: []) as? [String: Any],
                            let oldIconDict = oldJson[iconDictKey] as? [String: String],
                            let oldIconIcon = oldIconDict[iconDictIconKey] {
                             var updatedIconDict = oldIconDict
