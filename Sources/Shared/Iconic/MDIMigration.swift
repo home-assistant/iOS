@@ -10,7 +10,6 @@ struct MDIMigration {
             Current.Log.info("replacing mdi \(old)")
             return MaterialDesignIcons.emoticonSadIcon.name
         } else {
-            Current.Log.info("valid mdi icon: \(old)")
             return old
         }
     }
