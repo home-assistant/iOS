@@ -20,6 +20,14 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
 
         self.needsEndSecurityScoped = attachmentURL.startAccessingSecurityScopedResource()
 
+        if Current.isCatalyst,
+           attachmentURL.isFileURL,
+           !FileManager.default.isReadableFile(atPath: attachmentURL.path) {
+            // if it's a file URL, on macOS we may not have access to the attachment on disk, so make sure
+            // FB9638431
+            throw PlayerAttachmentError.noAttachment
+        }
+
         self.attachmentURL = attachmentURL
         super.init(nibName: nil, bundle: nil)
     }
