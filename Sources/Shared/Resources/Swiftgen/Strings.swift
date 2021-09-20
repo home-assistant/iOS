@@ -787,7 +787,7 @@ public enum L10n {
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
       public enum Focus {
-        /// Allow Focus status to be sent to Home Assistant
+        /// Allow whether you are in focus mode to be sent to Home Assistant
         public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.focus.description") }
         /// Focus
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.focus.title") }

@@ -216,7 +216,7 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL entered without scheme";
-"onboarding.permissions.focus.description" = "Allow Focus status to be sent to Home Assistant";
+"onboarding.permissions.focus.description" = "Allow whether you are in focus mode to be sent to Home Assistant";
 "onboarding.permissions.focus.title" = "Focus";
 "onboarding.permissions.location.description" = "Enable location services to allow presence detection automations.";
 "onboarding.permissions.location.title" = "Location";
