@@ -321,11 +321,12 @@ public class Environment {
 
         public var isActivityAvailable: () -> Bool = {
             #if os(iOS) && targetEnvironment(simulator)
-            { true }
+            return { true }
             #else
-            CMMotionActivityManager.isActivityAvailable
+            return CMMotionActivityManager.isActivityAvailable
             #endif
         }()
+
         public lazy var queryStartEndOnQueueHandler: (
             Date, Date, OperationQueue, @escaping CMMotionActivityQueryHandler
         ) -> Void = { [underlyingManager] start, end, queue, handler in

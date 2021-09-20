@@ -1,5 +1,5 @@
-import UIKit
 import Shared
+import UIKit
 
 @IBDesignable class PermissionButton: UIButton {
     var style: Style = .default {
