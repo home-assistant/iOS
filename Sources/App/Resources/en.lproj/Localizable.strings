@@ -216,6 +216,18 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL entered without scheme";
+"onboarding.permissions.focus.description" = "Allow Focus status to be sent to Home Assistant";
+"onboarding.permissions.focus.title" = "Focus";
+"onboarding.permissions.location.description" = "Enable location services to allow presence detection automations.";
+"onboarding.permissions.location.title" = "Location";
+"onboarding.permissions.motion.description" = "Allow motion activity and pedometer data to be sent to Home Assistant";
+"onboarding.permissions.motion.title" = "Motion & Pedometer";
+"onboarding.permissions.notification.description" = "Allow push notifications to be sent from your Home Assistant";
+"onboarding.permissions.notification.title" = "Notifications";
+/* verb, grant permission button */
+"onboarding.permissions.allow" = "Allow";
+/* try to keep this terse. shorter than 'Allow' if you can. past tense, after allow is done successfully */
+"onboarding.permissions.allowed" = "Done";
 "open_label" = "Open";
 "preview_output" = "Preview Output";
 "retry_label" = "Retry";

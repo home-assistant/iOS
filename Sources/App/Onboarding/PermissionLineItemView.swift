@@ -63,10 +63,6 @@ protocol PermissionViewChangeDelegate: AnyObject {
         animationView.animation = permission.animation
         button.style = permission.isAuthorized ? .allowed : .default
         animationView.play()
-
-        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [button] _ in
-            button.style = Int.random(in: 0...1) == 0 ? .allowed : .default
-        }
     }
 
     @objc func buttonTapped(_ sender: PermissionButton) {
