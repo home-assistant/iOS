@@ -1,8 +1,8 @@
 import HAKit
 import PromiseKit
 @testable import Shared
-import XCTest
 import Version
+import XCTest
 
 class LocalPushManagerTests: XCTestCase {
     private var manager: LocalPushManager!
