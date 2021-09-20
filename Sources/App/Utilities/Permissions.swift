@@ -3,6 +3,7 @@ import CoreMotion
 import Foundation
 import Lottie
 import Shared
+import UIKit
 import UserNotifications
 
 public enum PermissionStatus {
@@ -204,13 +205,23 @@ public enum PermissionType: Int {
     }
 
     func request(_ completionHandler: @escaping (Bool, PermissionStatus) -> Void) {
-        switch self {
-        case .location:
-            if status == .denied {
-                UIApplication.shared.openSettings(destination: .location, completionHandler: nil)
-                return
+        if status == .denied {
+            let destination: UIApplication.OpenSettingsDestination
+
+            switch self {
+            case .location: destination = .location
+            case .motion: destination = .motion
+            case .notification: destination = .notification
+            case .focus: destination = .focus
             }
 
+            UIApplication.shared.openSettings(destination: destination, completionHandler: nil)
+            completionHandler(false, .denied)
+            return
+        }
+
+        switch self {
+        case .location:
             if PermissionsLocationDelegate.shared == nil {
                 PermissionsLocationDelegate.shared = PermissionsLocationDelegate()
             }
@@ -222,11 +233,6 @@ public enum PermissionType: Int {
                 }
             }
         case .motion:
-            if status == .denied {
-                UIApplication.shared.openSettings(destination: .motion, completionHandler: nil)
-                return
-            }
-
             let manager = CMMotionActivityManager()
             let now = Date()
 
@@ -240,11 +246,6 @@ public enum PermissionType: Int {
                 completionHandler(true, .authorized)
             })
         case .notification:
-            if status == .denied {
-                UIApplication.shared.openSettings(destination: .notification, completionHandler: nil)
-                return
-            }
-
             UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
@@ -256,11 +257,6 @@ public enum PermissionType: Int {
                 }
             }
         case .focus:
-            if status == .denied {
-                UIApplication.shared.openSettings(destination: .focus, completionHandler: nil)
-                return
-            }
-
             Current.focusStatus.requestAuthorization().done { status in
                 completionHandler(status == .authorized, status.genericStatus)
             }
