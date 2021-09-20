@@ -130,7 +130,7 @@ class LocalPushManagerTests: XCTestCase {
     func testSubscriptionAtStart() throws {
         setUpManager(webhookID: "webhook1")
 
-        Current.serverVersion = { .init(major: 2021, minor: 8) }
+        Current.serverVersion = { .init(major: 2021, minor: 9) }
 
         let sub1 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         XCTAssertEqual(sub1.request.type, "mobile_app/push_notification_channel")
@@ -143,7 +143,7 @@ class LocalPushManagerTests: XCTestCase {
         fireConnectionChange()
         XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty, "same id")
 
-        Current.serverVersion = { .init(major: 2021, minor: 9) }
+        Current.serverVersion = { .init(major: 2021, minor: 10) }
 
         // change webhookID
         Current.settingsStore.connectionInfo?.webhookID = "webhook2"
