@@ -57,7 +57,7 @@ protocol PermissionViewChangeDelegate: AnyObject {
         animationView.backgroundColor = .white
     }
 
-    func updateContents() {
+    @objc private func updateContents() {
         titleLabel.text = permission.title
         descriptionLabel.text = permission.description
         animationView.animation = permission.animation
@@ -109,6 +109,13 @@ protocol PermissionViewChangeDelegate: AnyObject {
     }
 
     private func commonInit() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateContents),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
         animationView.contentMode = .scaleAspectFill
         animationView.loopMode = .loop
         animationView.backgroundBehavior = .pauseAndRestore
