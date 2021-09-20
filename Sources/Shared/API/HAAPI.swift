@@ -693,14 +693,14 @@ public class HomeAssistantAPI {
             self.textInput = (response as? UNTextInputNotificationResponse)?.userText
         }
 
-        public init(map: Map) throws {
+        public init(map: ObjectMapper.Map) throws {
             self.identifier = try map.value("identifier")
             self.category = try? map.value("category")
             self.textInput = try? map.value("textInput")
             self.actionData = try? map.value("actionData")
         }
 
-        public func mapping(map: Map) {
+        public func mapping(map: ObjectMapper.Map) {
             identifier >>> map["identifier"]
             category >>> map["category"]
             textInput >>> map["textInput"]

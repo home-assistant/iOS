@@ -61,7 +61,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
     }
 
-    public required init(map: Map) throws {
+    public required init(map: ObjectMapper.Map) throws {
         // this is used for watch<->app syncing
         self.ID = try map.value("ID")
         self.Name = try map.value("Name")
@@ -76,7 +76,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         super.init()
     }
 
-    public func mapping(map: Map) {
+    public func mapping(map: ObjectMapper.Map) {
         ID >>> map["ID"]
         Name >>> map["Name"]
         Position >>> map["Position"]

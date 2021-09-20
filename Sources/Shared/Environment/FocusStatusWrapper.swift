@@ -1,14 +1,22 @@
 import Intents
 import PromiseKit
 
-public struct FocusStatusWrapper {
+public class FocusStateTrigger: UserDefaultsValueSync<Date> {
+    init() {
+        super.init(settingsKey: "FocusStateTriggerKey")
+    }
+}
+
+public class FocusStatusWrapper {
+    private(set) lazy var trigger = FocusStateTrigger()
+
     public enum AuthorizationStatus: Equatable {
         case notDetermined
         case restricted
         case denied
         case authorized
 
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         @available(iOS 15, watchOS 8, *)
         init(authorizationStatus: INFocusStatusAuthorizationStatus) {
             switch authorizationStatus {
@@ -27,10 +35,20 @@ public struct FocusStatusWrapper {
         #endif
     }
 
-    public var isAvailable: () -> Bool = {
-        #if compiler(>=5.5)
+    private var lastStatus: Status? {
+        willSet {
+            precondition(Current.isAppExtension)
+        }
+    }
+
+    public lazy var isAvailable: () -> Bool = { [weak self] in
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
-            return true
+            if Current.isAppExtension {
+                return self?.lastStatus != nil
+            } else {
+                return true
+            }
         } else {
             return false
         }
@@ -40,7 +58,7 @@ public struct FocusStatusWrapper {
     }
 
     public var authorizationStatus: () -> AuthorizationStatus = {
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             return .init(authorizationStatus: INFocusStatusCenter.default.authorizationStatus)
         }
@@ -52,7 +70,7 @@ public struct FocusStatusWrapper {
     public var requestAuthorization: () -> Guarantee<Void> = {
         let (promise, seal) = Guarantee<Void>.pending()
 
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             INFocusStatusCenter.default.requestAuthorization { _ in
                 seal(())
@@ -70,7 +88,7 @@ public struct FocusStatusWrapper {
     public struct Status: Equatable {
         public var isFocused: Bool?
 
-        #if compiler(>=5.5)
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         @available(iOS 15, watchOS 8, *)
         public init(focusStatus: INFocusStatus) {
             self.init(
@@ -84,10 +102,23 @@ public struct FocusStatusWrapper {
         }
     }
 
-    public var status: () -> Status = {
-        #if compiler(>=5.5)
+    #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+    @available(iOS 15, watchOS 8, *)
+    public func update(fromReceived status: INFocusStatus?) {
+        precondition(Current.isAppExtension)
+        lastStatus = status.flatMap { Status(focusStatus: $0) }
+        trigger.value = Current.date()
+    }
+    #endif
+
+    public lazy var status: () -> Status = { [weak self] in
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
-            return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
+            if Current.isAppExtension, let lastStatus = self?.lastStatus {
+                return lastStatus
+            } else {
+                return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
+            }
         }
         #endif
         return .init(isFocused: nil)

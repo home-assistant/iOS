@@ -29,11 +29,7 @@ pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'
 
-if ENV['XCODE_BETA']
-  pod 'RealmSwift', '10.7.6'
-else
-  pod 'RealmSwift', podspec: 'Configuration/Podspecs/Realm.podspec.json'
-end
+pod 'RealmSwift', podspec: 'Configuration/Podspecs/Realm.podspec.json'
 pod 'Sentry'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
@@ -74,20 +70,12 @@ abstract_target 'iOS' do
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka'
 
-    if ENV['XCODE_BETA']
-      pod 'Firebase/Messaging', '8.1.0'
-    else
-      pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
-    end
+    pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'SimulatorStatusMagic', configurations: ['Debug']
-    if ENV['XCODE_BETA']
-      pod 'SwiftMessages', git: 'https://github.com/zacwest/SwiftMessages', branch: 'temp-hack-xcode-13'
-    else
-      pod 'SwiftMessages'
-    end
+    pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
     pod 'ZIPFoundation', '~> 0.9'
 
