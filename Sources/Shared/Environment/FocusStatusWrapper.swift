@@ -67,16 +67,16 @@ public class FocusStatusWrapper {
         return .restricted
     }
 
-    public var requestAuthorization: () -> Guarantee<Void> = {
-        let (promise, seal) = Guarantee<Void>.pending()
+    public var requestAuthorization: () -> Guarantee<AuthorizationStatus> = {
+        let (promise, seal) = Guarantee<AuthorizationStatus>.pending()
 
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
-            INFocusStatusCenter.default.requestAuthorization { _ in
-                seal(())
+            INFocusStatusCenter.default.requestAuthorization { result in
+                seal(.init(authorizationStatus: result))
             }
         } else {
-            seal(())
+            seal(.restricted)
         }
         #else
         seal(())

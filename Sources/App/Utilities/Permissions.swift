@@ -91,30 +91,50 @@ extension UNAuthorizationStatus {
     }
 }
 
+extension FocusStatusWrapper.AuthorizationStatus {
+    var genericStatus: PermissionStatus {
+        switch self {
+        case .notDetermined:
+            return .notDetermined
+        case .authorized:
+            return .authorized
+        case .denied:
+            return .denied
+        case .restricted:
+            return .restricted
+        }
+    }
+}
+
 public enum PermissionType: Int {
     case location = 0
     case motion = 1
     case notification = 2
+    case focus = 3
 
     var title: String {
         switch self {
         case .location:
-            return "Location"
+            return L10n.Onboarding.Permissions.Location.title
         case .motion:
-            return "Motion & Pedometer"
+            return L10n.Onboarding.Permissions.Motion.title
         case .notification:
-            return "Notifications"
+            return L10n.Onboarding.Permissions.Notification.title
+        case .focus:
+            return L10n.Onboarding.Permissions.Focus.title
         }
     }
 
     var description: String {
         switch self {
         case .location:
-            return "Enable location services to allow presence detection automations."
+            return L10n.Onboarding.Permissions.Location.description
         case .motion:
-            return "Allow motion activity and pedometer data to be sent to Home Assistant"
+            return L10n.Onboarding.Permissions.Motion.description
         case .notification:
-            return "Allow push notifications to be sent from your Home Assistant"
+            return L10n.Onboarding.Permissions.Notification.description
+        case .focus:
+            return L10n.Onboarding.Permissions.Focus.description
         }
     }
 
@@ -126,6 +146,8 @@ public enum PermissionType: Int {
             return Animation.named("notification")
         case .motion:
             return Animation.named("motion")
+        case .focus:
+            return Animation.named("notification")
         }
     }
 
@@ -138,6 +160,8 @@ public enum PermissionType: Int {
         case .notification:
             guard let authorizationStatus = fetchNotificationsAuthorizationStatus() else { return .denied }
             return authorizationStatus.genericStatus
+        case .focus:
+            return Current.focusStatus.authorizationStatus().genericStatus
         }
     }
 
@@ -174,7 +198,7 @@ public enum PermissionType: Int {
             // if the user has already given permission, this allows us to register before the next launch
             // if they haven't, this is still fine; you don't need permission to register for remote ones
             UIApplication.shared.registerForRemoteNotifications()
-        case .location, .motion:
+        case .location, .motion, .focus:
             break
         }
     }
@@ -182,6 +206,11 @@ public enum PermissionType: Int {
     func request(_ completionHandler: @escaping (Bool, PermissionStatus) -> Void) {
         switch self {
         case .location:
+            if status == .denied {
+                UIApplication.shared.openSettings(destination: .location, completionHandler: nil)
+                return
+            }
+
             if PermissionsLocationDelegate.shared == nil {
                 PermissionsLocationDelegate.shared = PermissionsLocationDelegate()
             }
@@ -193,6 +222,11 @@ public enum PermissionType: Int {
                 }
             }
         case .motion:
+            if status == .denied {
+                UIApplication.shared.openSettings(destination: .motion, completionHandler: nil)
+                return
+            }
+
             let manager = CMMotionActivityManager()
             let now = Date()
 
@@ -206,6 +240,11 @@ public enum PermissionType: Int {
                 completionHandler(true, .authorized)
             })
         case .notification:
+            if status == .denied {
+                UIApplication.shared.openSettings(destination: .notification, completionHandler: nil)
+                return
+            }
+
             UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
@@ -215,6 +254,15 @@ public enum PermissionType: Int {
                     let status: PermissionStatus = granted ? .authorized : .denied
                     completionHandler(granted, status)
                 }
+            }
+        case .focus:
+            if status == .denied {
+                UIApplication.shared.openSettings(destination: .focus, completionHandler: nil)
+                return
+            }
+
+            Current.focusStatus.requestAuthorization().done { status in
+                completionHandler(status == .authorized, status.genericStatus)
             }
         }
     }

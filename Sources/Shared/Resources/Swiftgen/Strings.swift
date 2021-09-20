@@ -781,6 +781,36 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.title") }
       }
     }
+    public enum Permissions {
+      /// Allow
+      public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
+      /// Done
+      public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      public enum Focus {
+        /// Allow Focus status to be sent to Home Assistant
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.focus.description") }
+        /// Focus
+        public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.focus.title") }
+      }
+      public enum Location {
+        /// Enable location services to allow presence detection automations.
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.location.description") }
+        /// Location
+        public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.location.title") }
+      }
+      public enum Motion {
+        /// Allow motion activity and pedometer data to be sent to Home Assistant
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.motion.description") }
+        /// Motion & Pedometer
+        public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.motion.title") }
+      }
+      public enum Notification {
+        /// Allow push notifications to be sent from your Home Assistant
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.notification.description") }
+        /// Notifications
+        public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.notification.title") }
+      }
+    }
   }
 
   public enum Sensors {
