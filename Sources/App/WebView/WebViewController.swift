@@ -486,6 +486,19 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
     }
 
+    #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+    @available(iOS 15, *)
+    func webView(
+        _ webView: WKWebView,
+        requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+        initiatedByFrame frame: WKFrameInfo,
+        type: WKMediaCaptureType,
+        decisionHandler: @escaping (WKPermissionDecision) -> Void
+    ) {
+        decisionHandler(.grant)
+    }
+    #endif
+
     @objc private func connectionInfoDidChange() {
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
