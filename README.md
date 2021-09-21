@@ -22,6 +22,36 @@ bundle exec pod install --repo-update
 
 Once this completes, you can launch  `HomeAssistant.xcworkspace` and run the `App-Debug` scheme onto your simulator or iOS device.
 
+## Testing just the frontend
+
+To just test the [frontend](https://github.com/home-assistant/frontend), you can use a simulator version built by our GitHub actions.
+
+1. Install Xcode from the [App Store](https://developer.apple.com/download/) making sure it's at least the version noted above. You do not need to install or run anything else.
+2. Launch the simulator at `/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app` or in Xcode under the Xcode menu > Open Developer Tool.
+3. Open a simulator under File > Open Simulator. You can install older versions of iOS in Xcode's Components preferences.
+4. Download a simulator build from the [the GitHub action](https://github.com/home-assistant/iOS/actions/workflows/ci.yml?query=branch%3Amaster) under "Artifacts."
+5. Drag the result `.app` on drop it on top of the simulator.
+6. Locate the app on the home screen and click it to launch.
+
+The simulator behaves different than you might expect:
+
+| Action | Effect |
+| -- | -- |
+| Click | Tap |
+| Click & drag | Scroll |
+| Hold ⌥ | Add a second touch point |
+| Hold ⇧⌥ | Move both touch points |
+| ⌘←, ⌘→ | Rotate |
+| ⌘S | Take screenshot |
+| ⌘R | Record video |
+| ⌘K | Toggle software keyboard |
+
+You can now debug the WebView in this simulator build using Safari's Web Inspector:
+
+1. Make sure "Show Develop menu in menu bar" is enabled in Safari's Advanced preferences.
+2. Under the Develop menu, expand the "Simulator" menu for the simulator you've opened.
+3. Choose the WebView you want to inspect. A new window will open.
+
 ## Code Signing
 
 Although the app is set up to use Automatic provisioning for Debug builds, you'll need to customize a few of the options. This is because the app makes heavy use of entitlements that require code signing, even for simulator builds.
