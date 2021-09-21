@@ -79,7 +79,7 @@ public class FocusStatusWrapper {
             seal(.restricted)
         }
         #else
-        seal(())
+        seal(.restricted)
         #endif
 
         return promise
