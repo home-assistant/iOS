@@ -74,7 +74,8 @@ public extension Realm {
         // 14 - 2020-10-29 v2020.8 (complication privacy)
         // 15 - 2021-03-21 v2021.4 (scene properties)
         // 16 - 2021-04-12 v2021.5 (accuracy authorization on location history entries)
-        let schemaVersion: UInt64 = 16
+        // 17 - 2021-09-20 v2021.10 (added notification action key icon)
+        let schemaVersion: UInt64 = 17
         let mdiVersion = UInt64(MDIMigration.migrationNumber)
 
         let config = Realm.Configuration(
@@ -142,6 +143,10 @@ public extension Realm {
                 }
 
                 if oldVersion < 16 {
+                    // nothing, it added an optional
+                }
+
+                if oldVersion < 17 {
                     // nothing, it added an optional
                 }
 
