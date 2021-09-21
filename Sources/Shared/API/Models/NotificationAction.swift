@@ -8,6 +8,7 @@ public class NotificationAction: Object {
     @objc public dynamic var Title: String = ""
     @objc public dynamic var TextInput: Bool = false
     @objc public dynamic var isServerControlled: Bool = false
+    @objc public dynamic var icon: String?
 
     // Options
     @objc public dynamic var Foreground: Bool = false
@@ -31,6 +32,7 @@ public class NotificationAction: Object {
         self.Foreground = (action.activationMode.lowercased() == "foreground")
         self.Destructive = action.destructive
         self.TextInput = (action.behavior.lowercased() == "textinput")
+        self.icon = action.icon
         if let title = action.textInputButtonTitle {
             self.TextInputButtonTitle = title
         } else {
@@ -59,17 +61,53 @@ public class NotificationAction: Object {
     }
 
     public var action: UNNotificationAction {
-        if TextInput {
-            return UNTextInputNotificationAction(
-                identifier: Identifier,
-                title: Title,
-                options: options,
-                textInputButtonTitle: TextInputButtonTitle,
-                textInputPlaceholder: TextInputPlaceholder
-            )
+        let action: UNNotificationAction
+
+        if #available(iOS 15, watchOS 8, *) {
+            let actionIcon: UNNotificationActionIcon?
+
+            if let icon = icon, icon.hasPrefix("sfsymbols:") {
+                actionIcon = .init(systemImageName: icon.replacingOccurrences(of: "sfsymbols:", with: ""))
+            } else {
+                actionIcon = nil
+            }
+
+            if TextInput {
+                action = UNTextInputNotificationAction(
+                    identifier: Identifier,
+                    title: Title,
+                    options: options,
+                    icon: actionIcon,
+                    textInputButtonTitle: TextInputButtonTitle,
+                    textInputPlaceholder: TextInputPlaceholder
+                )
+            } else {
+                action = UNNotificationAction(
+                    identifier: Identifier,
+                    title: Title,
+                    options: options,
+                    icon: actionIcon
+                )
+            }
+        } else {
+            if TextInput {
+                action = UNTextInputNotificationAction(
+                    identifier: Identifier,
+                    title: Title,
+                    options: options,
+                    textInputButtonTitle: TextInputButtonTitle,
+                    textInputPlaceholder: TextInputPlaceholder
+                )
+            } else {
+                action = UNNotificationAction(
+                    identifier: Identifier,
+                    title: Title,
+                    options: options
+                )
+            }
         }
 
-        return UNNotificationAction(identifier: Identifier, title: Title, options: options)
+        return action
     }
 
     public class func exampleTrigger(

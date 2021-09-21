@@ -32,6 +32,7 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
         public var textInputButtonTitle: String?
         public var textInputPlaceholder: String?
         public var url: String?
+        public var icon: String?
 
         public init(map: Map) throws {
             self.title = try map.value("title", default: "Missing title")
@@ -43,6 +44,7 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
             self.destructive = try map.value("destructive", default: false)
             self.textInputButtonTitle = try? map.value("textInputButtonTitle")
             self.textInputPlaceholder = try? map.value("textInputPlaceholder")
+            self.icon = try? map.value("icon")
             for urlKey in ["url", "uri"] {
                 if let value: String = try? map.value(urlKey) {
                     // a url is set, which means this is likely coming from an actionable notification
