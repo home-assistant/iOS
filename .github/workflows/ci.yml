@@ -116,3 +116,9 @@ jobs:
             ~/Library/Logs/DiagnosticReports
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
+
+      - uses: actions/upload-artifact@v2
+        name: "Upload Simulator App"
+        with:
+          name: ios-simulator
+          path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
