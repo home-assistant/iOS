@@ -63,6 +63,25 @@ public class NotificationAction: Object {
     public var action: UNNotificationAction {
         let action: UNNotificationAction
 
+        let baseAction: () -> UNNotificationAction = { [self] in
+            if TextInput {
+                return UNTextInputNotificationAction(
+                    identifier: Identifier,
+                    title: Title,
+                    options: options,
+                    textInputButtonTitle: TextInputButtonTitle,
+                    textInputPlaceholder: TextInputPlaceholder
+                )
+            } else {
+                return UNNotificationAction(
+                    identifier: Identifier,
+                    title: Title,
+                    options: options
+                )
+            }
+        }
+
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             let actionIcon: UNNotificationActionIcon?
 
@@ -90,22 +109,11 @@ public class NotificationAction: Object {
                 )
             }
         } else {
-            if TextInput {
-                action = UNTextInputNotificationAction(
-                    identifier: Identifier,
-                    title: Title,
-                    options: options,
-                    textInputButtonTitle: TextInputButtonTitle,
-                    textInputPlaceholder: TextInputPlaceholder
-                )
-            } else {
-                action = UNNotificationAction(
-                    identifier: Identifier,
-                    title: Title,
-                    options: options
-                )
-            }
+            action = baseAction()
         }
+        #else
+        action = baseAction()
+        #endif
 
         return action
     }
