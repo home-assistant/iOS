@@ -1,3 +1,4 @@
+import Shared
 import UIKit
 
 @IBDesignable class PermissionButton: UIButton {
@@ -7,9 +8,6 @@ import UIKit
             setTitle(style.title, for: .normal)
 
             backgroundColor = style.backgroundColor
-            contentEdgeInsets = style.insets(titleLabel?.text?.count)
-
-            sizeToFit()
         }
     }
 
@@ -33,11 +31,21 @@ import UIKit
         sharedInit()
     }
 
-    func sharedInit() {
-        style = .default
-        titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        layer.masksToBounds = true
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
         layer.cornerRadius = frame.height / 2
+    }
+
+    func sharedInit() {
+        contentEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+
+        style = .default
+        layer.masksToBounds = true
+
+        titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        titleLabel?.adjustsFontSizeToFitWidth = true
+        titleLabel?.baselineAdjustment = .alignCenters
     }
 
     override func setTitle(_ title: String?, for state: UIControl.State) {
@@ -71,19 +79,12 @@ import UIKit
             }
         }
 
-        func insets(_ characterCount: Int?) -> UIEdgeInsets {
-            if self == .default, characterCount ?? 5 < 4 {
-                return UIEdgeInsets(top: 6, left: 22, bottom: 6, right: 22)
-            }
-            return UIEdgeInsets(top: 6, left: 15, bottom: 6, right: 15)
-        }
-
         var title: String {
             switch self {
             case .default:
-                return "Allow"
+                return L10n.Onboarding.Permissions.allow
             case .allowed:
-                return "Allowed"
+                return L10n.Onboarding.Permissions.allowed
             }
         }
     }

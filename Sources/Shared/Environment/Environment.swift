@@ -319,7 +319,14 @@ public class Environment {
             return CMMotionActivityManager.authorizationStatus() == .authorized
         }
 
-        public var isActivityAvailable: () -> Bool = CMMotionActivityManager.isActivityAvailable
+        public var isActivityAvailable: () -> Bool = {
+            #if os(iOS) && targetEnvironment(simulator)
+            return { true }
+            #else
+            return CMMotionActivityManager.isActivityAvailable
+            #endif
+        }()
+
         public lazy var queryStartEndOnQueueHandler: (
             Date, Date, OperationQueue, @escaping CMMotionActivityQueryHandler
         ) -> Void = { [underlyingManager] start, end, queue, handler in

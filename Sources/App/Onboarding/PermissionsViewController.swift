@@ -9,6 +9,8 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
     @IBOutlet var locationPermissionView: PermissionLineItemView!
     @IBOutlet var motionPermissionView: PermissionLineItemView!
     @IBOutlet var notificationsPermissionView: PermissionLineItemView!
+    @IBOutlet var focusPermissionView: PermissionLineItemView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -25,6 +27,10 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
 
         notificationsPermissionView.delegate = self
         notificationsPermissionView.permission.updateInitial()
+
+        focusPermissionView.delegate = self
+        focusPermissionView.isHidden = !Current.focusStatus.isAvailable()
+        focusPermissionView.permission.updateInitial()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

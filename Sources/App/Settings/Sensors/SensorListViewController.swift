@@ -148,7 +148,7 @@ class SensorListViewController: HAFormViewController, SensorObserver {
 
             row.onCellSelection { _, row in
                 if Current.focusStatus.authorizationStatus() == .notDetermined {
-                    Current.focusStatus.requestAuthorization().done {
+                    Current.focusStatus.requestAuthorization().done { _ in
                         update(isInitial: false)
                     }
                 } else {

@@ -8,12 +8,19 @@ protocol PermissionViewChangeDelegate: AnyObject {
 
 @IBDesignable class PermissionLineItemView: UIView {
     let titleLabel = UILabel()
+    let descriptionWrapper = UIView()
     let descriptionLabel = UILabel()
-    var animationView = AnimationView()
-    var button = PermissionButton()
-    // var separatorView = UIView()
+    let animationView = AnimationView()
+    let button = PermissionButton()
+    let titleStackView = UIStackView()
 
-    var permission = PermissionType.location
+    var descriptionHeightConstraint: NSLayoutConstraint?
+
+    var permission = PermissionType.location {
+        didSet {
+            updateContents()
+        }
+    }
 
     weak var delegate: PermissionViewChangeDelegate?
 
@@ -24,18 +31,13 @@ protocol PermissionViewChangeDelegate: AnyObject {
             }
 
             self.permission = permission
-            titleLabel.text = permission.title
-            descriptionLabel.text = permission.description
-            animationView.animation = permission.animation
-            commonInit()
         }
     }
 
-    init(permission: PermissionType) {
+    convenience init(permission: PermissionType) {
+        self.init(frame: .zero)
         self.permission = permission
-        super.init(frame: .zero)
-
-        commonInit()
+        updateContents()
     }
 
     override required init(frame: CGRect) {
@@ -45,11 +47,22 @@ protocol PermissionViewChangeDelegate: AnyObject {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        commonInit()
     }
 
     override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
-        commonInit()
+
+        // for visual alignment
+        animationView.backgroundColor = .white
+    }
+
+    @objc private func updateContents() {
+        titleLabel.text = permission.title
+        descriptionLabel.text = permission.description
+        animationView.animation = permission.animation
+        button.style = permission.isAuthorized ? .allowed : .default
+        animationView.play()
     }
 
     @objc func buttonTapped(_ sender: PermissionButton) {
@@ -62,72 +75,107 @@ protocol PermissionViewChangeDelegate: AnyObject {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setNeedsUpdateConstraints()
+    }
+
+    override func updateConstraints() {
+        super.updateConstraints()
+
+        let descConstraint: NSLayoutConstraint
+
+        if let descriptionHeightConstraint = descriptionHeightConstraint {
+            descConstraint = descriptionHeightConstraint
+        } else {
+            descConstraint = descriptionWrapper.heightAnchor.constraint(greaterThanOrEqualToConstant: 0)
+            descriptionHeightConstraint = descConstraint
+        }
+
+        let lines: Int
+
+        if traitCollection.verticalSizeClass == .compact {
+            lines = 1
+        } else {
+            lines = 3
+        }
+
+        let desired = ceil(descriptionLabel.font.lineHeight * CGFloat(lines))
+
+        if descConstraint.constant != desired {
+            descConstraint.constant = desired
+            descConstraint.isActive = true
+        }
+    }
+
     private func commonInit() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateContents),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
         animationView.contentMode = .scaleAspectFill
         animationView.loopMode = .loop
         animationView.backgroundBehavior = .pauseAndRestore
-        animationView.play()
 
         backgroundColor = .clear
 
-        addSubview(animationView)
+        titleStackView.axis = .vertical
+        titleStackView.alignment = .leading
 
-        titleLabel.numberOfLines = 1
+        titleLabel.numberOfLines = 0
         titleLabel.textColor = .white
-        titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        addSubview(titleLabel)
+        titleLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        titleStackView.addArrangedSubview(titleLabel)
 
-        descriptionLabel.numberOfLines = 3
+        descriptionLabel.numberOfLines = 0
         descriptionLabel.textColor = .white
-        descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        addSubview(descriptionLabel)
+        descriptionLabel.font = .systemFont(ofSize: 13, weight: .regular)
+
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionWrapper.addSubview(descriptionLabel)
+        NSLayoutConstraint.activate([
+            descriptionLabel.topAnchor.constraint(equalTo: descriptionWrapper.topAnchor),
+            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: descriptionWrapper.bottomAnchor),
+            descriptionLabel.leadingAnchor.constraint(equalTo: descriptionWrapper.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: descriptionWrapper.trailingAnchor),
+        ])
+
+        titleStackView.addArrangedSubview(descriptionWrapper)
 
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
 
-        button.style = permission.isAuthorized ? .allowed : .default
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        titleStackView.translatesAutoresizingMaskIntoConstraints = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+
+        addSubview(animationView)
+        addSubview(titleStackView)
         addSubview(button)
 
-        // self.separatorView.backgroundColor = .white
-        // self.addSubview(self.separatorView)
-    }
+        let margins = layoutMarginsGuide
+        directionalLayoutMargins = .init(top: 8, leading: 0, bottom: 8, trailing: 0)
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
+        NSLayoutConstraint.activate([
+            animationView.widthAnchor.constraint(equalToConstant: 75.0),
+            button.widthAnchor.constraint(equalToConstant: 75.0),
 
-        frame = CGRect(origin: frame.origin, size: CGSize(width: frame.width, height: 120))
+            animationView.topAnchor.constraint(greaterThanOrEqualTo: margins.topAnchor),
+            animationView.centerYAnchor.constraint(equalTo: margins.centerYAnchor),
+            animationView.widthAnchor.constraint(equalTo: animationView.heightAnchor),
+            animationView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
+            animationView.bottomAnchor.constraint(lessThanOrEqualTo: margins.bottomAnchor),
 
-        animationView.frame = CGRect(x: 0, y: 0, width: 75, height: 75)
-        animationView.center.y = frame.height / 2
+            titleStackView.topAnchor.constraint(greaterThanOrEqualTo: margins.topAnchor),
+            titleStackView.leadingAnchor.constraint(equalTo: animationView.trailingAnchor),
+            titleStackView.centerYAnchor.constraint(equalTo: margins.centerYAnchor),
+            titleStackView.bottomAnchor.constraint(lessThanOrEqualTo: margins.bottomAnchor),
 
-        button.sizeToFit()
-        button.frame.origin.x = frame.width - button.frame.width
-        button.center.y = frame.height / 2
-
-        let titleInset: CGFloat = 15
-        let titlesWidth: CGFloat = button.frame.origin
-            .x - (animationView.frame.origin.x + animationView.frame.width) - titleInset * 2
-
-        titleLabel.frame = CGRect(x: 0, y: 8, width: titlesWidth, height: 0)
-        titleLabel.sizeToFit()
-        titleLabel.frame = CGRect(
-            origin: titleLabel.frame.origin,
-            size: CGSize(width: titlesWidth, height: titleLabel.frame.height)
-        )
-        titleLabel.frame.origin.x = (animationView.frame.origin.x + animationView.frame.width) + titleInset
-
-        descriptionLabel.frame = CGRect(x: titleLabel.frame.origin.x + titleInset, y: 0, width: titlesWidth, height: 0)
-        descriptionLabel.sizeToFit()
-        descriptionLabel.frame = CGRect(
-            origin: descriptionLabel.frame.origin,
-            size: CGSize(width: titlesWidth, height: descriptionLabel.frame.height)
-        )
-        descriptionLabel.frame.origin.x = animationView.frame.origin.x + animationView.frame.width + titleInset
-
-        let allHeight = titleLabel.frame.height + 2 + descriptionLabel.frame.height
-        titleLabel.frame.origin.y = (frame.height - allHeight) / 2
-        descriptionLabel.frame.origin.y = titleLabel.frame.origin.y + titleLabel.frame.height + 2
-
-        // self.separatorView.frame = CGRect(x: self.descriptionLabel.frame.origin.x, y: self.frame.height - 0.7, width: self.button.frame.origin.x + self.button.frame.width - self.descriptionLabel.frame.origin.x, height: 0.7)
-        // self.separatorView.layer.cornerRadius = self.separatorView.frame.height / 2
+            button.leadingAnchor.constraint(greaterThanOrEqualTo: titleStackView.trailingAnchor, constant: 8),
+            button.centerYAnchor.constraint(equalTo: margins.centerYAnchor),
+            button.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
+        ])
     }
 }
