@@ -6,9 +6,29 @@ extension HATypedSubscription {
     static func localPush(
         webhookID: String
     ) -> HATypedSubscription<LocalPushEvent> {
-        HATypedSubscription<LocalPushEvent>(request: .init(
+        var data: [String: Any] = [
+            "webhook_id": webhookID,
+        ]
+
+        if let version = Current.serverVersion(), version >= .localPushConfirm {
+            data["support_confirm"] = true
+        }
+
+        return HATypedSubscription<LocalPushEvent>(request: .init(
             type: "mobile_app/push_notification_channel",
-            data: ["webhook_id": webhookID]
+            data: data
+        ))
+    }
+}
+
+extension HATypedRequest {
+    static func localPushConfirm(
+        webhookID: String,
+        confirmID: String
+    ) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(request: .init(
+            type: "mobile_app/push_notification_confirm",
+            data: ["webhook_id": webhookID, "confirm_id": confirmID]
         ))
     }
 }
@@ -18,6 +38,7 @@ struct LocalPushEvent: HADataDecodable {
         case invalidType
     }
 
+    var confirmID: String?
     var identifier: String
     var content: UNNotificationContent
 
@@ -28,6 +49,7 @@ struct LocalPushEvent: HADataDecodable {
 
         let (headers, payload) = NotificationParserLegacy.result(from: value)
         self.init(headers: headers, payload: payload)
+        confirmID = data.decode("hass_confirm_id", fallback: nil)
     }
 
     init(headers: [String: Any], payload: [String: Any]) {

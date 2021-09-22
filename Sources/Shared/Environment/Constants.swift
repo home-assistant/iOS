@@ -138,4 +138,5 @@ public extension Version {
     static var tagWebhookAvailable: Version = .init(minor: 114, prerelease: "b5")
     static var tagPlatformTrigger: Version = .init(minor: 115, prerelease: "any0")
     static var actionSyncing: Version = .init(minor: 115, prerelease: "any0")
+    static var localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
 }
