@@ -216,6 +216,16 @@
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";
 "onboarding.manual_setup.no_scheme.message" = "Θα πρέπει να προσπαθήσουμε να συνδεθούμε χρησιμοποιώντας http:// ή https://;";
 "onboarding.manual_setup.no_scheme.title" = "Η διεύθυνση URL καταχωρήθηκε χωρίς σχήμα";
+"onboarding.permissions.allow" = "Επιτρέπω";
+"onboarding.permissions.allowed" = "Έγινε";
+"onboarding.permissions.focus.description" = "Επιτρέψτε εάν είστε σε λειτουργία εστίασης για αποστολή στο Home Assistant";
+"onboarding.permissions.focus.title" = "Εστίαση";
+"onboarding.permissions.location.description" = "Ενεργοποιήστε τις υπηρεσίες τοποθεσίας για να επιτρέψετε αυτοματισμούς ανίχνευσης παρουσίας.";
+"onboarding.permissions.location.title" = "Τοποθεσία";
+"onboarding.permissions.motion.description" = "Επιτρέψτε την αποστολή δεδομένων δραστηριότητας κίνησης και βηματόμετρου στο Home Assistant";
+"onboarding.permissions.motion.title" = "Κίνηση & Βηματομετρητής";
+"onboarding.permissions.notification.description" = "Επιτρέψτε την αποστολή ειδοποιήσεων push από το Home Assistant σας";
+"onboarding.permissions.notification.title" = "Ειδοποιήσεις";
 "open_label" = "Άνοιγμα";
 "preview_output" = "Έξοδος προεπισκόπησης";
 "retry_label" = "Επανάληψη";
