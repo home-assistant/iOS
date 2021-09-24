@@ -216,6 +216,16 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan ikke opprette en URL-adresse";
 "onboarding.manual_setup.no_scheme.message" = "Skal vi prøve å koble til ved hjelp av http:// eller https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL angitt uten skjema";
+"onboarding.permissions.allow" = "Tillate";
+"onboarding.permissions.allowed" = "Ferdig";
+"onboarding.permissions.focus.description" = "Tillat om du er i fokusmodus for å bli sendt til Home Assistant";
+"onboarding.permissions.focus.title" = "Fokus";
+"onboarding.permissions.location.description" = "Aktiver posisjonstjenester for å tillate automatisering av tilstedeværelsesdeteksjon.";
+"onboarding.permissions.location.title" = "plassering";
+"onboarding.permissions.motion.description" = "Tillat at bevegelsesaktivitet og skrittellerdata sendes til Home Assistant";
+"onboarding.permissions.motion.title" = "Bevegelse og skritteller";
+"onboarding.permissions.notification.description" = "Tillat at pushvarsler sendes fra Home Assistant";
+"onboarding.permissions.notification.title" = "Varslinger";
 "open_label" = "Åpen";
 "preview_output" = "Forhåndsvisning";
 "retry_label" = "Prøv på nytt";

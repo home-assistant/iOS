@@ -216,6 +216,16 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "onboarding.manual_setup.couldnt_make_url.title" = "No s'ha pogut crear una URL";
 "onboarding.manual_setup.no_scheme.message" = "Hauríem d'intentar connectar-nos utilitzant http:// o https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL introduïda sense esquema";
+"onboarding.permissions.allow" = "Allow";
+"onboarding.permissions.allowed" = "Done";
+"onboarding.permissions.focus.description" = "Allow whether you are in focus mode to be sent to Home Assistant";
+"onboarding.permissions.focus.title" = "Focus";
+"onboarding.permissions.location.description" = "Enable location services to allow presence detection automations.";
+"onboarding.permissions.location.title" = "Location";
+"onboarding.permissions.motion.description" = "Allow motion activity and pedometer data to be sent to Home Assistant";
+"onboarding.permissions.motion.title" = "Motion & Pedometer";
+"onboarding.permissions.notification.description" = "Allow push notifications to be sent from your Home Assistant";
+"onboarding.permissions.notification.title" = "Notifications";
 "open_label" = "Obrir";
 "preview_output" = "Previsualització de la sortida";
 "retry_label" = "Reintentar";

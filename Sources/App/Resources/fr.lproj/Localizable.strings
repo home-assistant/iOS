@@ -216,6 +216,16 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossible de créer une URL";
 "onboarding.manual_setup.no_scheme.message" = "Faut-il essayer de se connecter en utilisant http:// ou https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL entrée sans schéma";
+"onboarding.permissions.allow" = "Autoriser";
+"onboarding.permissions.allowed" = "Fait";
+"onboarding.permissions.focus.description" = "Allow whether you are in focus mode to be sent to Home Assistant";
+"onboarding.permissions.focus.title" = "Focus";
+"onboarding.permissions.location.description" = "Activez les services de localisation pour permettre les automatisations de détection de présence.";
+"onboarding.permissions.location.title" = "Localisation";
+"onboarding.permissions.motion.description" = "Autoriser l'envoi des données de l'activité de mouvement et du podomètre à Home Assistant";
+"onboarding.permissions.motion.title" = "Mouvement & Podomètre";
+"onboarding.permissions.notification.description" = "Autoriser l'envoi de notifications push depuis votre Home Assistant";
+"onboarding.permissions.notification.title" = "Notifications";
 "open_label" = "Ouvert";
 "preview_output" = "Aperçu du résultat";
 "retry_label" = "Réessayer";
