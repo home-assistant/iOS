@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>20A5384c</string>
+	<string>21A5506j</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>12B5025f</string>
+	<string>13A233</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>12.2</string>
+	<string>13.0</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -141,8 +141,12 @@
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
-						<key>INIntentResponseCodeFormatString</key>
+						<key>INIntentResponseCodeConciseFormatString</key>
 						<string>Called ${domain}.${service}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>KSmKl0</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Done</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>rFSNpu</string>
 						<key>INIntentResponseCodeName</key>
@@ -151,8 +155,12 @@
 						<true/>
 					</dict>
 					<dict>
-						<key>INIntentResponseCodeFormatString</key>
+						<key>INIntentResponseCodeConciseFormatString</key>
 						<string>Failed to call service with error: ${error}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>onq5yE</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>qzje4k</string>
 						<key>INIntentResponseCodeName</key>
@@ -160,7 +168,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to call service, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>2KWKqM</string>
 						<key>INIntentResponseCodeName</key>
@@ -306,7 +314,7 @@
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>FtQqoU</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated</string>
+						<string>Updated</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>4fFx9y</string>
 						<key>INIntentResponseCodeName</key>
@@ -316,11 +324,11 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to update location with error: ${error}</string>
+						<string>Failed to update location: ${error}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>5bVvn0</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to update location with error: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>KJS2jk</string>
 						<key>INIntentResponseCodeName</key>
@@ -328,11 +336,11 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to update location, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>5ZzwZD</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to update location, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>KHH48D</string>
 						<key>INIntentResponseCodeName</key>
@@ -514,11 +522,11 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Successfully sent ${eventName} to Home Assistant</string>
+						<string>${eventName} fired</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>mZnRHS</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Successfully sent ${eventName} to Home Assistant</string>
+						<string>Done</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>8BMgur</string>
 						<key>INIntentResponseCodeName</key>
@@ -528,11 +536,11 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to send ${eventName} to Home Assistant with error: ${error}</string>
+						<string>Failed to send ${eventName}: ${error}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>mJ6CrP</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to send ${eventName} to Home Assistant with error: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>oIWFyR</string>
 						<key>INIntentResponseCodeName</key>
@@ -540,11 +548,11 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to fire event, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>pQhTjo</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to fire event, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>glRCfJ</string>
 						<key>INIntentResponseCodeName</key>
@@ -676,11 +684,11 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Got the latest still from${cameraID}</string>
+						<string>Got the latest still from ${cameraID}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>DdnZyl</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Got the latest still from${cameraID}</string>
+						<string>Done</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>nzqmFA</string>
 						<key>INIntentResponseCodeName</key>
@@ -690,23 +698,19 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to get camera image with error: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>hLFNfv</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to get camera image with error: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>KzOHYA</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failure</string>
 					</dict>
 					<dict>
-						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to get camera image, Home Assistant is not currently reachable</string>
-						<key>INIntentResponseCodeConciseFormatStringID</key>
-						<string>bqPSU7</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to get camera image, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>mAibJP</string>
 						<key>INIntentResponseCodeName</key>
@@ -864,7 +868,7 @@
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>RsOw3P</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Successfully rendered template</string>
+						<string>Done</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>B4bXyc</string>
 						<key>INIntentResponseCodeName</key>
@@ -874,11 +878,11 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to render template with error: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>0aqrcy</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to render template with error: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>cK9jdK</string>
 						<key>INIntentResponseCodeName</key>
@@ -886,11 +890,11 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to render template, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>cuflz3</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to render template, Home Assistant is not currently reachable</string>
+						<string>Failed: Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>foI0Fv</string>
 						<key>INIntentResponseCodeName</key>
@@ -1063,11 +1067,11 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Successfully performed ${action}.</string>
+						<string>Performed ${action}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>dFHPYK</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Done.</string>
+						<string>Done</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>xhwpj4</string>
 						<key>INIntentResponseCodeName</key>
@@ -1077,7 +1081,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Failed to perform action: ${error}</string>
+						<string>Failed: ${error}</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>EWqRDj</string>
 						<key>INIntentResponseCodeFormatString</key>
@@ -1172,6 +1176,12 @@
 							<integer>8</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Large</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>12</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>ExtraLarge</string>
 						</dict>
 					</array>
 					<key>INIntentParameterConfigurable</key>
@@ -1277,11 +1287,11 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Sensors updated.</string>
+						<string>Sensors updated</string>
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>fnz838</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Done!</string>
+						<string>Done</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>MwEpGz</string>
 						<key>INIntentResponseCodeName</key>
@@ -1295,7 +1305,7 @@
 						<key>INIntentResponseCodeConciseFormatStringID</key>
 						<string>lGqSSG</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Unsuccessful!</string>
+						<string>Failed</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>r6LXFe</string>
 						<key>INIntentResponseCodeName</key>

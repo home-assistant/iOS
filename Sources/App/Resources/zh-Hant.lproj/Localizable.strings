@@ -216,6 +216,16 @@
 "onboarding.manual_setup.couldnt_make_url.title" = "無法製作 URL";
 "onboarding.manual_setup.no_scheme.message" = "是否要嘗試以 http:// 或 https:// 進行連線？";
 "onboarding.manual_setup.no_scheme.title" = "所輸入 URL 不符結構";
+"onboarding.permissions.allow" = "允許";
+"onboarding.permissions.allowed" = "完成";
+"onboarding.permissions.focus.description" = "允許任何專注模式下皆能傳送資料至 Home Assistant";
+"onboarding.permissions.focus.title" = "專注模式";
+"onboarding.permissions.location.description" = "開啟定位服務以允許根據所在位置執行自動化";
+"onboarding.permissions.location.title" = "定位服務";
+"onboarding.permissions.motion.description" = "允許動作與健身活動資料傳送至 Home Assistant";
+"onboarding.permissions.motion.title" = "動作與健身";
+"onboarding.permissions.notification.description" = "允許 Home Assistant 發出推送通知";
+"onboarding.permissions.notification.title" = "通知";
 "open_label" = "開啟";
 "preview_output" = "預覽輸出";
 "retry_label" = "重試";
