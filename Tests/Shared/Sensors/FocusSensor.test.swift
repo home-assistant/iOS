@@ -105,13 +105,17 @@ class FocusSensorTests: XCTestCase {
         _ = signaler
 
         let date = Date()
+        Current.isForegroundApp = { false }
         Current.focusStatus.trigger.value = date
+
+        Current.isForegroundApp = { true }
+        Current.focusStatus.trigger.value = date.addingTimeInterval(1.0)
 
         // so it sticks around, but we don't need to access it directly
         wait(for: [expectation], timeout: 10.0)
         signaler = nil
 
-        Current.focusStatus.trigger.value = date.addingTimeInterval(1.0)
+        Current.focusStatus.trigger.value = date.addingTimeInterval(2.0)
         // we expect this to not fire an expectation over-fulfill
     }
 }

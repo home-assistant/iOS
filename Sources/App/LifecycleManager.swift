@@ -19,6 +19,20 @@ class LifecycleManager {
         Current.isCatalyst
     }
 
+    private var underlyingActive: UInt32 = 0
+    private(set) var isActive: Bool {
+        get {
+            OSAtomicOr32(0, &underlyingActive) != 0
+        }
+        set {
+            if newValue {
+                OSAtomicTestAndSet(0, &underlyingActive)
+            } else {
+                OSAtomicTestAndClear(0, &underlyingActive)
+            }
+        }
+    }
+
     init() {
         NotificationCenter.default.addObserver(
             self,
@@ -32,18 +46,24 @@ class LifecycleManager {
             // on big sur and beyond, the background/foreground lifecycle never seems to happen
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(willEnterForeground),
+                selector: #selector(warmConnect),
                 name: .init(rawValue: "NSApplicationDidBecomeActiveNotification"),
                 object: nil
             )
         } else {
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(willEnterForeground),
+                selector: #selector(warmConnect),
                 name: UIApplication.willEnterForegroundNotification,
                 object: nil
             )
         }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(willEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didEnterBackground),
@@ -75,7 +95,13 @@ class LifecycleManager {
         connectAPI(reason: .cold)
     }
 
+    @objc private func willEnterForeground() {
+        isActive = true
+    }
+
     @objc private func didEnterBackground() {
+        isActive = false
+
         Current.backgroundTask(withName: "lifecycle-manager-didEnterBackground") { _ in
             Current.api.then(on: nil) { api in
                 api.CreateEvent(
@@ -88,11 +114,11 @@ class LifecycleManager {
         invalidatePeriodicUpdateTimer()
     }
 
-    private var hasEnteredForeground = false
+    private var hasTriggeredWarm = false
 
-    @objc private func willEnterForeground() {
+    @objc private func warmConnect() {
         if #available(iOS 13, *) {
-            if hasEnteredForeground {
+            if hasTriggeredWarm {
                 // iOS 13+ scene API triggers foreground on initial launch, too, so we ignore it
                 connectAPI(reason: .warm)
             }
@@ -100,10 +126,17 @@ class LifecycleManager {
             connectAPI(reason: .warm)
         }
 
-        hasEnteredForeground = true
+        hasTriggeredWarm = true
     }
 
     @objc private func didBecomeActive() {
+        if #available(iOS 13, *) {
+            // not necessary as foreground/background always occur
+        } else {
+            // done for iOS 12's initial startup, which does not foreground
+            isActive = true
+        }
+
         Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
             Current.api.then(on: nil) { api in
                 api.CreateEvent(
