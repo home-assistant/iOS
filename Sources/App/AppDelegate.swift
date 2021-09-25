@@ -77,12 +77,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.backgroundTask = ApplicationBackgroundTaskRunner()
 
-        Current.isBackgroundRequestsImmediate = {
+        Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false
             } else {
-                return application.applicationState != .background
+                return lifecycleManager.isActive
             }
+        }
+
+        Current.isForegroundApp = { [lifecycleManager] in
+            lifecycleManager.isActive
         }
 
         #if targetEnvironment(simulator)

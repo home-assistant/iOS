@@ -8,7 +8,9 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler {
         self.cancellable = Current.focusStatus.trigger.observe { _ in
             // this means that we will double-update the focus sensor if the app is running
             // this feels less likely to happen, but allows us to keep the in-app visual state right
-            signal()
+            if Current.isForegroundApp() {
+                signal()
+            }
         }
     }
 

@@ -231,6 +231,7 @@ public class Environment {
     }
 
     public var isBackgroundRequestsImmediate = { true }
+    public var isForegroundApp = { false }
 
     public var appConfiguration: AppConfiguration {
         if isFastlaneSnapshot {
