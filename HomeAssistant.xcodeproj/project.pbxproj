@@ -125,12 +125,13 @@
 		11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		11521BD8254003B7009C5C72 /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
 		11521BD9254003B8009C5C72 /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
-		115560D42700E2F400A8F818 /* WidgetEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560D32700E2F400A8F818 /* WidgetEntities.swift */; };
-		115560DC270107ED00A8F818 /* WidgetEntitiesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560D82701072700A8F818 /* WidgetEntitiesProvider.swift */; };
-		115560DD270107F500A8F818 /* WidgetEntitiesContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560DA2701074600A8F818 /* WidgetEntitiesContainerView.swift */; };
-		115560DE270108E700A8F818 /* WidgetEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560D6270106EC00A8F818 /* WidgetEntities.swift */; };
 		115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
 		115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicView.swift */; };
+		115560E6270116B400A8F818 /* OpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E4270116AF00A8F818 /* OpenPage.swift */; };
+		115560E827011E3300A8F818 /* HAPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E727011E3300A8F818 /* HAPanel.swift */; };
+		115560E927011E3300A8F818 /* HAPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E727011E3300A8F818 /* HAPanel.swift */; };
+		115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560EB27012EE100A8F818 /* WidgetOpenPage.swift */; };
+		115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560EF27012F8100A8F818 /* WidgetOpenPageProvider.swift */; };
 		1155DD09250F4100003405C0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DD08250F4100003405C0 /* ShareViewController.swift */; };
 		1155DD10250F4101003405C0 /* HomeAssistant-Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
@@ -1115,12 +1116,12 @@
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
-		115560D32700E2F400A8F818 /* WidgetEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntities.swift; sourceTree = "<group>"; };
-		115560D6270106EC00A8F818 /* WidgetEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntities.swift; sourceTree = "<group>"; };
-		115560D82701072700A8F818 /* WidgetEntitiesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntitiesProvider.swift; sourceTree = "<group>"; };
-		115560DA2701074600A8F818 /* WidgetEntitiesContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntitiesContainerView.swift; sourceTree = "<group>"; };
 		115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicContainerView.swift; sourceTree = "<group>"; };
 		115560E227010DAB00A8F818 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
+		115560E4270116AF00A8F818 /* OpenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPage.swift; sourceTree = "<group>"; };
+		115560E727011E3300A8F818 /* HAPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAPanel.swift; sourceTree = "<group>"; };
+		115560EB27012EE100A8F818 /* WidgetOpenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetOpenPage.swift; sourceTree = "<group>"; };
+		115560EF27012F8100A8F818 /* WidgetOpenPageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetOpenPageProvider.swift; sourceTree = "<group>"; };
 		1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2087,16 +2088,6 @@
 			path = Networking;
 			sourceTree = "<group>";
 		};
-		115560D5270106E100A8F818 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				115560D6270106EC00A8F818 /* WidgetEntities.swift */,
-				115560D82701072700A8F818 /* WidgetEntitiesProvider.swift */,
-				115560DA2701074600A8F818 /* WidgetEntitiesContainerView.swift */,
-			);
-			path = Entities;
-			sourceTree = "<group>";
-		};
 		115560DF27010D6700A8F818 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -2104,6 +2095,15 @@
 				115560E227010DAB00A8F818 /* WidgetBasicView.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		115560EA27012ED000A8F818 /* OpenPage */ = {
+			isa = PBXGroup;
+			children = (
+				115560EB27012EE100A8F818 /* WidgetOpenPage.swift */,
+				115560EF27012F8100A8F818 /* WidgetOpenPageProvider.swift */,
+			);
+			path = OpenPage;
 			sourceTree = "<group>";
 		};
 		1155DD07250F4100003405C0 /* Share */ = {
@@ -2157,8 +2157,8 @@
 			isa = PBXGroup;
 			children = (
 				115560DF27010D6700A8F818 /* Common */,
-				115560D5270106E100A8F818 /* Entities */,
 				110E693E24E770BD004AA96D /* Actions */,
+				115560EA27012ED000A8F818 /* OpenPage */,
 				1171508324DFCF960065E874 /* Resources */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
@@ -2981,7 +2981,7 @@
 				11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */,
 				112B705A2526B1C500FEAA76 /* UpdateSensors.swift */,
 				115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */,
-				115560D32700E2F400A8F818 /* WidgetEntities.swift */,
+				115560E4270116AF00A8F818 /* OpenPage.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -3002,6 +3002,7 @@
 				B6723343225DBACF0031D629 /* AuthRequestMessage.swift */,
 				B672334C225DE1490031D629 /* SubscribeEvents.swift */,
 				B6723349225DDF410031D629 /* Event.swift */,
+				115560E727011E3300A8F818 /* HAPanel.swift */,
 			);
 			path = WebSocket;
 			sourceTree = "<group>";
@@ -4985,13 +4986,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				115560DE270108E700A8F818 /* WidgetEntities.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
+				115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */,
 				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
-				115560DC270107ED00A8F818 /* WidgetEntitiesProvider.swift in Sources */,
-				115560DD270107F500A8F818 /* WidgetEntitiesContainerView.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
+				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
 				11F89CB224E79E5400C373D9 /* WidgetActionsEmptyView.swift in Sources */,
 				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
@@ -5189,10 +5189,10 @@
 				11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
-				115560D42700E2F400A8F818 /* WidgetEntities.swift in Sources */,
 				115BC82B267704E300452430 /* FocusStatusIntentHandler.swift in Sources */,
 				112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */,
 				111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */,
+				115560E6270116B400A8F818 /* OpenPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5214,6 +5214,7 @@
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
+				115560E927011E3300A8F818 /* HAPanel.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
@@ -5381,6 +5382,7 @@
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
 				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,

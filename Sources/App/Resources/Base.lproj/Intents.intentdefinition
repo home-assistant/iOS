@@ -1325,10 +1325,134 @@
 		<dict>
 			<key>INIntentCategory</key>
 			<string>information</string>
+			<key>INIntentConfigurable</key>
+			<true/>
 			<key>INIntentDescription</key>
-			<string>View the state of entities</string>
+			<string>Open a page in the frontend</string>
 			<key>INIntentDescriptionID</key>
-			<string>36iPu0</string>
+			<string>T06Fka</string>
+			<key>INIntentEligibleForWidgets</key>
+			<true/>
+			<key>INIntentIneligibleForSuggestions</key>
+			<true/>
+			<key>INIntentInput</key>
+			<string>page</string>
+			<key>INIntentKeyParameter</key>
+			<string>page</string>
+			<key>INIntentLastParameterTag</key>
+			<integer>8</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>page</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Open ${page}</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>DFWJB8</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
+			<key>INIntentName</key>
+			<string>OpenPage</string>
+			<key>INIntentParameters</key>
+			<array>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Page</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>eObn2i</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterName</key>
+					<string>page</string>
+					<key>INIntentParameterObjectType</key>
+					<string>IntentPanel</string>
+					<key>INIntentParameterObjectTypeNamespace</key>
+					<string>sI7YSe</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which page?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>zjdBxm</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${page}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>XoXYnJ</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${page}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>TSDJNf</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsDynamicEnumeration</key>
+					<true/>
+					<key>INIntentParameterTag</key>
+					<integer>8</integer>
+					<key>INIntentParameterType</key>
+					<string>Object</string>
+				</dict>
+			</array>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentTitle</key>
+			<string>Open Page</string>
+			<key>INIntentTitleID</key>
+			<string>iMvUhs</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentVerb</key>
+			<string>Open</string>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>information</string>
+			<key>INIntentDescription</key>
+			<string>Open a page in the frontend</string>
+			<key>INIntentDescriptionID</key>
+			<string>ZRPVYO</string>
 			<key>INIntentEligibleForWidgets</key>
 			<true/>
 			<key>INIntentIneligibleForSuggestions</key>
@@ -1336,7 +1460,7 @@
 			<key>INIntentLastParameterTag</key>
 			<integer>3</integer>
 			<key>INIntentName</key>
-			<string>WidgetEntities</string>
+			<string>WidgetOpenPage</string>
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
@@ -1370,17 +1494,17 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Entities</string>
+					<string>Pages</string>
 					<key>INIntentParameterDisplayNameID</key>
-					<string>dmdLkj</string>
+					<string>oHn0vD</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
 					<key>INIntentParameterFixedSizeArray</key>
 					<integer>1</integer>
 					<key>INIntentParameterName</key>
-					<string>entities</string>
+					<string>pages</string>
 					<key>INIntentParameterObjectType</key>
-					<string>IntentEntity</string>
+					<string>IntentPanel</string>
 					<key>INIntentParameterObjectTypeNamespace</key>
 					<string>sI7YSe</string>
 					<key>INIntentParameterPromptDialogs</key>
@@ -1389,9 +1513,9 @@
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which entities?</string>
+							<string>Which pages?</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>F9NADy</string>
+							<string>qYpzmu</string>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Configuration</string>
 						</dict>
@@ -1405,9 +1529,9 @@
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${entities}’.</string>
+							<string>There are ${count} options matching ‘${pages}’.</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>eazsWh</string>
+							<string>Rdug8Q</string>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>DisambiguationIntroduction</string>
 						</dict>
@@ -1415,9 +1539,9 @@
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${entities}’?</string>
+							<string>Just to confirm, you wanted ‘${pages}’?</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>gB6dxB</string>
+							<string>3hAPxM</string>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Confirmation</string>
 						</dict>
@@ -1449,9 +1573,9 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Entities</string>
+			<string>Open Page</string>
 			<key>INIntentTitleID</key>
-			<string>2WLmTt</string>
+			<string>ns9RRU</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>
@@ -1525,13 +1649,13 @@
 		</dict>
 		<dict>
 			<key>INTypeDisplayName</key>
-			<string>Entity</string>
+			<string>Page</string>
 			<key>INTypeDisplayNameID</key>
-			<string>dYwf00</string>
+			<string>Zoqsph</string>
 			<key>INTypeLastPropertyTag</key>
-			<integer>99</integer>
+			<integer>104</integer>
 			<key>INTypeName</key>
-			<string>IntentEntity</string>
+			<string>IntentPanel</string>
 			<key>INTypeProperties</key>
 			<array>
 				<dict>
@@ -1583,6 +1707,34 @@
 					<integer>4</integer>
 					<key>INTypePropertyType</key>
 					<string>SpeakableString</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDisplayName</key>
+					<string>Icon</string>
+					<key>INTypePropertyDisplayNameID</key>
+					<string>LsEMMg</string>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>5</integer>
+					<key>INTypePropertyName</key>
+					<string>icon</string>
+					<key>INTypePropertyTag</key>
+					<integer>103</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDisplayName</key>
+					<string>URL Path</string>
+					<key>INTypePropertyDisplayNameID</key>
+					<string>0Wle3E</string>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>6</integer>
+					<key>INTypePropertyName</key>
+					<string>path</string>
+					<key>INTypePropertyTag</key>
+					<integer>104</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
 				</dict>
 			</array>
 		</dict>

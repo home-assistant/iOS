@@ -25,6 +25,9 @@ class IntentHandler: INExtension {
             if intent is UpdateSensorsIntent {
                 return UpdateSensorsIntentHandler()
             }
+            if intent is OpenPageIntent || intent is WidgetOpenPageIntent {
+                return OpenPageIntentHandler()
+            }
             #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
             if #available(iOS 15, *), intent is INShareFocusStatusIntent {
                 return FocusStatusIntentHandler()
@@ -32,9 +35,6 @@ class IntentHandler: INExtension {
             #endif
             if #available(iOS 14, *), intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
-            }
-            if #available(iOS 14, *), intent is WidgetEntitiesIntent {
-                return WidgetEntitiesIntentHandler()
             }
             return self
         }()

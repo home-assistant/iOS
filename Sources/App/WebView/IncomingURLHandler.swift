@@ -94,6 +94,20 @@ class IncomingURLHandler {
             // not a tag
             if let url = userActivity.webpageURL, url.host?.lowercased() == "my.home-assistant.io" {
                 return showMy(for: url)
+            } else if let interaction = userActivity.interaction {
+                if #available(iOS 13, *) {
+                    if let intent = interaction.intent as? OpenPageIntent,
+                       let panel = intent.page, let path = panel.path {
+                        Current.Log.info("launching from intent with panel \(panel)")
+
+                        Current.sceneManager.webViewWindowControllerPromise.done { controller in
+                            controller.open(from: .deeplink, urlString: "/" + path, skipConfirm: true)
+                        }
+                        return true
+                    }
+                }
+
+                return false
             } else {
                 return false
             }

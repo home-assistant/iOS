@@ -38,12 +38,13 @@
 				<string>CallServiceIntent</string>
 				<string>FireEventIntent</string>
 				<string>GetCameraImageIntent</string>
+				<string>OpenPageIntent</string>
 				<string>PerformActionIntent</string>
 				<string>RenderTemplateIntent</string>
 				<string>SendLocationIntent</string>
 				<string>UpdateSensorsIntent</string>
 				<string>WidgetActionsIntent</string>
-				<string>WidgetEntitiesIntent</string>
+				<string>WidgetOpenPageIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

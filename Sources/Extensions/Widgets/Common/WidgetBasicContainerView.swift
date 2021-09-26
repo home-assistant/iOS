@@ -114,9 +114,9 @@ struct WidgetBasicContainerView: View {
             }
 #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         case .systemExtraLarge:
-            if actionCount <= 4 {
+            if modelCount <= 4 {
                 return 1
-            } else if actionCount <= 15 {
+            } else if modelCount <= 15 {
                 // note this is 15 and not 16 - divisibility by 3 here
                 return 3
             } else {

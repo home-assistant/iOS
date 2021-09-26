@@ -216,6 +216,10 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 }
 
 public extension UIColor {
+//    static func randomBackgroundColor(
+//    using hash: Int
+//    )
+
     static func randomBackgroundColor() -> UIColor {
         // avoiding:
         // - super gray (low saturation)

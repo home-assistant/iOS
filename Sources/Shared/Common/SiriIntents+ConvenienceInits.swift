@@ -126,33 +126,42 @@ public extension WidgetActionsIntent {
     static let widgetKind = "WidgetActions"
 }
 
-@available(iOS 14, watchOS 7, *)
-public extension IntentEntity {
-    convenience init(entity: HAEntity) {
+@available(iOS 13, watchOS 7, *)
+public extension IntentPanel {
+    convenience init(panel: HAPanel) {
         let image: INImage?
 
         #if os(iOS)
-        image = entity.attributes.icon.flatMap {
+        image = panel.icon.flatMap {
             INImage(
                 icon: MaterialDesignIcons(named: $0.normalizingIconString),
-                foreground: .blue,
-                background: .clear
+                foreground: Constants.tintColor.resolvedColor(with: .init(userInterfaceStyle: .light)),
+                background: .white
             )
         }
         #else
         image = nil
         #endif
 
-        self.init(
-            identifier: entity.entityId,
-            display: entity.entityId,
-            subtitle: entity.attributes.friendlyName,
-            image: image
-        )
+        if #available(iOS 14, *) {
+            self.init(
+                identifier: panel.componentName,
+                display: panel.title,
+                subtitle: nil,
+                image: image
+            )
+        } else {
+            self.init(
+                identifier: panel.componentName,
+                display: panel.title
+            )
+        }
+        self.icon = panel.icon?.normalizingIconString
+        self.path = panel.path
     }
 }
 
 @available(iOS 12, *)
-public extension WidgetEntitiesIntent {
-    static let widgetKind = "WidgetEntities"
+public extension WidgetOpenPageIntent {
+    static let widgetKind = "WidgetOpenPage"
 }
