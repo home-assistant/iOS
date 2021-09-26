@@ -56,7 +56,7 @@
 "cl_error.description.ranging_unavailable" = "La portée est désactivée.";
 "cl_error.description.region_monitoring_denied" = "L'accès à la surveillance de région a été refusé par l'utilisateur.";
 "cl_error.description.region_monitoring_failure" = "Une région enregistrée ne peut pas être surveillée.";
-"cl_error.description.region_monitoring_response_delayed" = "Core Location assurera l'envoie des événements, mais ces derniers peuvent être retardés.";
+"cl_error.description.region_monitoring_response_delayed" = "Core Location assurera l'envoi des événements, mais ces derniers peuvent être retardés.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location n'a pas pu initialiser immédiatement la fonction de surveillance de la région.";
 "cl_error.description.unknown" = "Erreur interne de localisation inconnue";
 "client_events.event_type.location_update" = "Mise à jour de l'emplacement";
@@ -99,7 +99,7 @@
 "ha_api.api_error.update_not_possible" = "L'opération n'a pas pu être effectuée.";
 "help_label" = "Aide";
 "location_change_notification.app_shortcut.body" = "Lieu mis à jour via l'App Shortcut";
-"location_change_notification.background_fetch.body" = "L'envoie de l'emplacement actuel a été déclenchée via l'actualisation en arrière-plan";
+"location_change_notification.background_fetch.body" = "L'envoi de l'emplacement actuel a été déclenché via l'actualisation en arrière-plan";
 "location_change_notification.beacon_region_enter.body" = "%@ entré via iBeacon";
 "location_change_notification.beacon_region_exit.body" = "%@ sorti via iBeacon";
 "location_change_notification.launch.body" = "Lieu mis à jour via le lancement de l'application";
