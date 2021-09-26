@@ -1179,7 +1179,7 @@
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>24</integer>
+							<integer>32</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>ExtraLarge</string>
 						</dict>

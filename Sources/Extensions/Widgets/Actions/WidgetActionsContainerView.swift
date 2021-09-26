@@ -75,10 +75,13 @@ struct WidgetActionsContainerView: View {
             }
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         case .systemExtraLarge:
-            if actionCount <= 3 {
+            if actionCount <= 4 {
                 return 1
-            } else {
+            } else if actionCount <= 15 {
+                // note this is 15 and not 16 - divisibility by 3 here
                 return 3
+            } else {
+                return 4
             }
         #endif
         @unknown default: return 2
@@ -92,7 +95,7 @@ struct WidgetActionsContainerView: View {
         case .systemMedium: return 4
         case .systemLarge: return 8
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
-        case .systemExtraLarge: return 12
+        case .systemExtraLarge: return 16
         #endif
         @unknown default: return 8
         }
@@ -104,9 +107,9 @@ struct WidgetActionsContainerView: View {
         case .systemMedium: return 8
         case .systemLarge: return 16
         #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
-        case .systemExtraLarge: return 24
+        case .systemExtraLarge: return 32
         #endif
-        @unknown default: return 16
+        @unknown default: return 8
         }
     }
 }

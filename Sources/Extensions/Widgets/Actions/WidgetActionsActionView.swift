@@ -46,7 +46,7 @@ struct WidgetActionsActionView: View {
                         .lineLimit(1)
                     Spacer()
                 }
-                .padding([.leading, .trailing])
+                .padding([.leading])
             } else {
                 VStack(alignment: .leading) {
                     Text(verbatim: MaterialDesignIcons(named: action.IconName).unicode)
