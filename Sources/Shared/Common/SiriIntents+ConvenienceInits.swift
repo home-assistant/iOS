@@ -151,3 +151,8 @@ public extension IntentEntity {
         )
     }
 }
+
+@available(iOS 12, *)
+public extension WidgetEntitiesIntent {
+    static let widgetKind = "WidgetEntities"
+}

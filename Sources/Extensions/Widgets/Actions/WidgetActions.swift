@@ -24,5 +24,8 @@ struct WidgetActions: Widget {
 
             return supportedFamilies
         }())
+        .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
+            Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
+        }
     }
 }
