@@ -9,7 +9,7 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>21A5506j</string>
+	<string>21A5522h</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
 	<string>13A233</string>
 	<key>INIntentDefinitionToolsVersion</key>
@@ -1167,19 +1167,19 @@
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>4</integer>
+							<integer>8</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Medium</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>8</integer>
+							<integer>16</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Large</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>12</integer>
+							<integer>24</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>ExtraLarge</string>
 						</dict>
