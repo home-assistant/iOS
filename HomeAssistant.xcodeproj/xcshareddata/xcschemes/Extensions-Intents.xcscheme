@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1250"
+   LastUpgradeVersion = "1300"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -41,7 +41,25 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "D03D891620E0A85200D4F28D"
+            BuildableName = "Shared.framework"
+            BlueprintName = "Shared-iOS"
+            ReferencedContainer = "container:HomeAssistant.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B657A8E51CA646EB00121384"
+            BuildableName = "Home Assistant.app"
+            BlueprintName = "App"
+            ReferencedContainer = "container:HomeAssistant.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
       </Testables>
    </TestAction>
