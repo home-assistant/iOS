@@ -33,6 +33,9 @@ class IntentHandler: INExtension {
             if #available(iOS 14, *), intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
             }
+            if #available(iOS 14, *), intent is WidgetEntitiesIntent {
+                return WidgetEntitiesIntentHandler()
+            }
             return self
         }()
 

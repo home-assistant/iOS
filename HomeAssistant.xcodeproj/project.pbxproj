@@ -126,6 +126,7 @@
 		11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		11521BD8254003B7009C5C72 /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
 		11521BD9254003B8009C5C72 /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
+		115560D42700E2F400A8F818 /* WidgetEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560D32700E2F400A8F818 /* WidgetEntities.swift */; };
 		1155DD09250F4100003405C0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DD08250F4100003405C0 /* ShareViewController.swift */; };
 		1155DD10250F4101003405C0 /* HomeAssistant-Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
@@ -1112,6 +1113,7 @@
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
+		115560D32700E2F400A8F818 /* WidgetEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntities.swift; sourceTree = "<group>"; };
 		1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2954,6 +2956,7 @@
 				11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */,
 				112B705A2526B1C500FEAA76 /* UpdateSensors.swift */,
 				115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */,
+				115560D32700E2F400A8F818 /* WidgetEntities.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -5158,6 +5161,7 @@
 				11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
+				115560D42700E2F400A8F818 /* WidgetEntities.swift in Sources */,
 				115BC82B267704E300452430 /* FocusStatusIntentHandler.swift in Sources */,
 				112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */,
 				111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */,

@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import HAKit
 import Intents
 import MapKit
 import UIColor_Hex_Swift
@@ -123,4 +124,30 @@ public extension IntentAction {
 @available(iOS 12, *)
 public extension WidgetActionsIntent {
     static let widgetKind = "WidgetActions"
+}
+
+@available(iOS 14, watchOS 7, *)
+public extension IntentEntity {
+    convenience init(entity: HAEntity) {
+        let image: INImage?
+
+        #if os(iOS)
+        image = entity.attributes.icon.flatMap {
+            INImage(
+                icon: MaterialDesignIcons(named: $0.normalizingIconString),
+                foreground: .blue,
+                background: .clear
+            )
+        }
+        #else
+        image = nil
+        #endif
+
+        self.init(
+            identifier: entity.entityId,
+            display: entity.entityId,
+            subtitle: entity.attributes.friendlyName,
+            image: image
+        )
+    }
 }

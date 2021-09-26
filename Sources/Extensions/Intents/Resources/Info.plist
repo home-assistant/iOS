@@ -43,6 +43,7 @@
 				<string>SendLocationIntent</string>
 				<string>UpdateSensorsIntent</string>
 				<string>WidgetActionsIntent</string>
+				<string>WidgetEntitiesIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>
