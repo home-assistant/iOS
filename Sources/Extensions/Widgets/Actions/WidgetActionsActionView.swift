@@ -9,13 +9,13 @@ struct WidgetActionsActionView: View {
 
     enum SizeStyle {
         case single
-        case multiple(expanded: Bool)
+        case multiple(expanded: Bool, condensed: Bool)
 
         var font: Font {
             switch self {
             case .single:
                 return .subheadline
-            case let .multiple(expanded: expanded):
+            case let .multiple(expanded: expanded, _):
                 return expanded ? .subheadline : .footnote
             }
         }
@@ -30,19 +30,34 @@ struct WidgetActionsActionView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             Color(hex: action.BackgroundColor)
-            VStack(alignment: .leading) {
-                Text(verbatim: MaterialDesignIcons(named: action.IconName).unicode)
-                    .font(.custom(MaterialDesignIcons.familyName, size: 38.0))
-                    .minimumScaleFactor(0.2)
-                    .foregroundColor(.init(hex: action.IconColor))
-                Spacer()
-                Text(verbatim: action.Text)
-                    .font(sizeStyle.font)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(.init(hex: action.TextColor))
+
+            let text = Text(verbatim: action.Text)
+                .font(sizeStyle.font)
+                .fontWeight(.bold)
+                .multilineTextAlignment(.leading)
+                .foregroundColor(.init(hex: action.TextColor))
+
+            if case .multiple(_, condensed: true) = sizeStyle {
+                HStack(alignment: .center) {
+                    Text(verbatim: MaterialDesignIcons(named: action.IconName).unicode)
+                        .font(.custom(MaterialDesignIcons.familyName, size: 16.0))
+                        .foregroundColor(.init(hex: action.IconColor))
+                    text
+                        .lineLimit(1)
+                    Spacer()
+                }
+                .padding([.leading])
+            } else {
+                VStack(alignment: .leading) {
+                    Text(verbatim: MaterialDesignIcons(named: action.IconName).unicode)
+                        .font(.custom(MaterialDesignIcons.familyName, size: 38.0))
+                        .minimumScaleFactor(0.2)
+                        .foregroundColor(.init(hex: action.IconColor))
+                    Spacer()
+                    text
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }

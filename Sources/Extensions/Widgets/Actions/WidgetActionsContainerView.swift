@@ -5,6 +5,7 @@ import WidgetKit
 struct WidgetActionsContainerView: View {
     var entry: WidgetActionsEntry
     @SwiftUI.Environment(\.widgetFamily) var family: WidgetFamily
+    @SwiftUI.Environment(\.pixelLength) var pixelLength: CGFloat
 
     init(entry: WidgetActionsEntry) {
         self.entry = entry
@@ -29,14 +30,18 @@ struct WidgetActionsContainerView: View {
 
     @ViewBuilder
     func multiView(for actions: [Action]) -> some View {
-        let columnCount = Self.columnCount(family: family, actionCount: actions.count)
+        let actionCount = actions.count
+        let columnCount = Self.columnCount(family: family, actionCount: actionCount)
         let rows = Array(columnify(count: columnCount, actions: actions))
         let maximumRowCount = Self.maximumCount(family: family) / columnCount
-        let sizeStyle: WidgetActionsActionView.SizeStyle = .multiple(expanded: rows.count < maximumRowCount)
+        let sizeStyle: WidgetActionsActionView.SizeStyle = .multiple(
+            expanded: rows.count < maximumRowCount,
+            condensed: Self.compactSizeBreakpoint(for: family) < actionCount
+        )
 
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: pixelLength) {
             ForEach(rows, id: \.self) { column in
-                HStack(spacing: 1) {
+                HStack(spacing: pixelLength) {
                     ForEach(column, id: \.ID) { action in
                         Link(destination: action.widgetLinkURL) {
                             WidgetActionsActionView(action: action, sizeStyle: sizeStyle)
@@ -68,15 +73,42 @@ struct WidgetActionsContainerView: View {
             } else {
                 return 2
             }
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+        case .systemExtraLarge:
+            if actionCount <= 4 {
+                return 1
+            } else if actionCount <= 15 {
+                // note this is 15 and not 16 - divisibility by 3 here
+                return 3
+            } else {
+                return 4
+            }
+        #endif
         @unknown default: return 2
+        }
+    }
+
+    /// more than this number: show compact (icon left, text right) version
+    static func compactSizeBreakpoint(for family: WidgetFamily) -> Int {
+        switch family {
+        case .systemSmall: return 1
+        case .systemMedium: return 4
+        case .systemLarge: return 8
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+        case .systemExtraLarge: return 16
+        #endif
+        @unknown default: return 8
         }
     }
 
     static func maximumCount(family: WidgetFamily) -> Int {
         switch family {
         case .systemSmall: return 1
-        case .systemMedium: return 4
-        case .systemLarge: return 8
+        case .systemMedium: return 8
+        case .systemLarge: return 16
+        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+        case .systemExtraLarge: return 32
+        #endif
         @unknown default: return 8
         }
     }

@@ -13,6 +13,16 @@ struct WidgetActions: Widget {
         )
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies({
+            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
+
+            #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+            if #available(iOS 15, *) {
+                supportedFamilies.append(.systemExtraLarge)
+            }
+            #endif
+
+            return supportedFamilies
+        }())
     }
 }
