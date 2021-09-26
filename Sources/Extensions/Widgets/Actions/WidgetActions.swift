@@ -9,7 +9,24 @@ struct WidgetActions: Widget {
             kind: WidgetActionsIntent.widgetKind,
             intent: WidgetActionsIntent.self,
             provider: WidgetActionsProvider(),
-            content: { WidgetActionsContainerView(entry: $0) }
+            content: {
+                WidgetBasicContainerView(
+                    emptyViewGenerator: {
+                        AnyView(WidgetActionsEmptyView())
+                    },
+                    contents: $0.actions.map { action in
+                        WidgetBasicModel.init(
+                            id: action.ID,
+                            title: action.Text,
+                            widgetLinkURL: action.widgetLinkURL,
+                            icon: action.IconName,
+                            textColor: .init(hex: action.TextColor),
+                            iconColor: .init(hex: action.IconColor),
+                            backgroundColor: .init(hex: action.BackgroundColor)
+                        )
+                    }
+                )
+            }
         )
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)

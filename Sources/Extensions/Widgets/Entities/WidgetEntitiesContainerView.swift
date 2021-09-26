@@ -9,6 +9,6 @@ struct WidgetEntitiesContainerView: View {
     }
 
     var body: some View {
-        Text("hi")
+        Text("hi 2")
     }
 }

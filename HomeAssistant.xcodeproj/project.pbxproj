@@ -47,7 +47,6 @@
 		110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA55B25B36630005061A0 /* ServerAlerter.swift */; };
 		110AA57B25B38C02005061A0 /* ServerAlerter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */; };
 		110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110D74C92640E0DF00406078 /* NotificationSubControllerMedia.swift */; };
-		110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */; };
 		110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694324E77125004AA96D /* WidgetActionsProvider.swift */; };
 		110E694624E771AB004AA96D /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
 		110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
@@ -130,6 +129,8 @@
 		115560DC270107ED00A8F818 /* WidgetEntitiesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560D82701072700A8F818 /* WidgetEntitiesProvider.swift */; };
 		115560DD270107F500A8F818 /* WidgetEntitiesContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560DA2701074600A8F818 /* WidgetEntitiesContainerView.swift */; };
 		115560DE270108E700A8F818 /* WidgetEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560D6270106EC00A8F818 /* WidgetEntities.swift */; };
+		115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
+		115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicView.swift */; };
 		1155DD09250F4100003405C0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1155DD08250F4100003405C0 /* ShareViewController.swift */; };
 		1155DD10250F4101003405C0 /* HomeAssistant-Extensions-Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1155DD1E250F446F003405C0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
@@ -212,7 +213,6 @@
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
 		11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11948E8824DA5D50006F5657 /* InfoLabelRow.swift */; };
 		1194B4162519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1194B4152519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift */; };
-		11993D2424E78A3700627944 /* WidgetActionsActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11993D2324E78A3700627944 /* WidgetActionsActionView.swift */; };
 		119A172524D74DA800D1B66D /* HomeAssistant-WatchExtension-Watch.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		119A7DF32529761800D7000D /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
@@ -1063,7 +1063,6 @@
 		110AA55B25B36630005061A0 /* ServerAlerter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.swift; sourceTree = "<group>"; };
 		110AA57A25B38C02005061A0 /* ServerAlerter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerAlerter.test.swift; sourceTree = "<group>"; };
 		110D74C92640E0DF00406078 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
-		110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsContainerView.swift; sourceTree = "<group>"; };
 		110E694324E77125004AA96D /* WidgetActionsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsProvider.swift; sourceTree = "<group>"; };
 		110E694524E771AB004AA96D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		110ED55325A5604F00489AF7 /* MacBridgeScreenImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeScreenImpl.swift; sourceTree = "<group>"; };
@@ -1120,6 +1119,8 @@
 		115560D6270106EC00A8F818 /* WidgetEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntities.swift; sourceTree = "<group>"; };
 		115560D82701072700A8F818 /* WidgetEntitiesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntitiesProvider.swift; sourceTree = "<group>"; };
 		115560DA2701074600A8F818 /* WidgetEntitiesContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntitiesContainerView.swift; sourceTree = "<group>"; };
+		115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicContainerView.swift; sourceTree = "<group>"; };
+		115560E227010DAB00A8F818 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1195,7 +1196,6 @@
 		11948E8824DA5D50006F5657 /* InfoLabelRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLabelRow.swift; sourceTree = "<group>"; };
 		1194B3EC2519B48500AA01C3 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1194B4152519BEE900AA01C3 /* MacBridgeNetworkConnectivityImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeNetworkConnectivityImpl.swift; sourceTree = "<group>"; };
-		11993D2324E78A3700627944 /* WidgetActionsActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsActionView.swift; sourceTree = "<group>"; };
 		119A827B252A3C4700D7000D /* NFCNDEFPayload+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCNDEFPayload+Additions.swift"; sourceTree = "<group>"; };
 		119C77F725CF166400D41734 /* Bundle+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Additions.swift"; sourceTree = "<group>"; };
 		119C786625CF845800D41734 /* LocalizedStrings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.test.swift; sourceTree = "<group>"; };
@@ -2015,8 +2015,6 @@
 			isa = PBXGroup;
 			children = (
 				1171508024DFCEC50065E874 /* WidgetActions.swift */,
-				11993D2324E78A3700627944 /* WidgetActionsActionView.swift */,
-				110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */,
 				110E694324E77125004AA96D /* WidgetActionsProvider.swift */,
 				11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */,
 			);
@@ -2099,6 +2097,15 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		115560DF27010D6700A8F818 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */,
+				115560E227010DAB00A8F818 /* WidgetBasicView.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		1155DD07250F4100003405C0 /* Share */ = {
 			isa = PBXGroup;
 			children = (
@@ -2149,6 +2156,7 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				115560DF27010D6700A8F818 /* Common */,
 				115560D5270106E100A8F818 /* Entities */,
 				110E693E24E770BD004AA96D /* Actions */,
 				1171508324DFCF960065E874 /* Resources */,
@@ -4978,9 +4986,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				115560DE270108E700A8F818 /* WidgetEntities.swift in Sources */,
-				11993D2424E78A3700627944 /* WidgetActionsActionView.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
-				110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */,
+				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
+				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
 				115560DC270107ED00A8F818 /* WidgetEntitiesProvider.swift in Sources */,
 				115560DD270107F500A8F818 /* WidgetEntitiesContainerView.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
