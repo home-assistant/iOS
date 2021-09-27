@@ -151,6 +151,8 @@
 		1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */; };
 		1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */; };
 		1165704E2701690F003906A7 /* WidgetCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704D2701690F003906A7 /* WidgetCache.swift */; };
+		11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
+		11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -1144,6 +1146,7 @@
 		1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditViewController.swift; sourceTree = "<group>"; };
 		1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+CodeRow.swift"; sourceTree = "<group>"; };
 		1165704D2701690F003906A7 /* WidgetCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCache.swift; sourceTree = "<group>"; };
+		1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+WidgetAuthenticity.swift"; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -3444,6 +3447,7 @@
 				1104FCBE2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				11AF4D15249C8082006C74C0 /* With.swift */,
+				1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -5304,6 +5308,7 @@
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
+				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				11F855DD24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
 				B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */,
@@ -5472,6 +5477,7 @@
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
+				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,

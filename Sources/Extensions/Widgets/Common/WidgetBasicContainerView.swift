@@ -15,7 +15,7 @@ struct WidgetBasicModel: Identifiable, Hashable {
     init(
         id: String,
         title: String,
-        widgetLinkURL: URL,
+        widgetURL: URL,
         icon: String,
         textColor: Color = Color.black,
         iconColor: Color = Color.black,
@@ -23,7 +23,7 @@ struct WidgetBasicModel: Identifiable, Hashable {
     ) {
         self.id = id
         self.title = title
-        self.widgetLinkURL = widgetLinkURL
+        self.widgetURL = widgetURL
         self.textColor = textColor
         self.icon = icon
         self.iconColor = iconColor
@@ -33,7 +33,7 @@ struct WidgetBasicModel: Identifiable, Hashable {
     var id: String
 
     var title: String
-    var widgetLinkURL: URL
+    var widgetURL: URL
 
     var icon: String
 
@@ -64,7 +64,7 @@ struct WidgetBasicContainerView: View {
 
     func singleView(for model: WidgetBasicModel) -> some View {
         WidgetBasicView(model: model, sizeStyle: .single)
-            .widgetURL(model.widgetLinkURL)
+            .widgetURL(model.widgetURL.withWidgetAuthenticity())
     }
 
     @ViewBuilder
@@ -82,7 +82,7 @@ struct WidgetBasicContainerView: View {
             ForEach(rows, id: \.self) { column in
                 HStack(spacing: pixelLength) {
                     ForEach(column) { model in
-                        Link(destination: model.widgetLinkURL) {
+                        Link(destination: model.widgetURL.withWidgetAuthenticity()) {
                             WidgetBasicView(model: model, sizeStyle: sizeStyle)
                         }
                     }

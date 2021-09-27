@@ -44,25 +44,29 @@ class IncomingURLHandler {
             components.scheme = nil
             components.host = nil
 
+            let isFromWidget = components.popWidgetAuthenticity()
+
             guard let rawURL = components.url?.absoluteString else {
                 return false
             }
 
-            Current.sceneManager.webViewWindowControllerPromise.done { controller in
-                let wasPresentingSafari: Bool
+            let wasPresentingSafari: Bool
 
-                if let presenting = controller.presentedViewController,
-                   presenting is SFSafariViewController {
-                    // Dismiss my.* controller if it's on top - we don't get any other indication
-                    presenting.dismiss(animated: true, completion: nil)
+            if let presenting = windowController.presentedViewController,
+               presenting is SFSafariViewController {
+                // Dismiss my.* controller if it's on top - we don't get any other indication
+                presenting.dismiss(animated: true, completion: nil)
 
-                    wasPresentingSafari = true
-                } else {
-                    wasPresentingSafari = false
-                }
-
-                controller.open(from: .deeplink, urlString: rawURL, skipConfirm: wasPresentingSafari)
+                wasPresentingSafari = true
+            } else {
+                wasPresentingSafari = false
             }
+
+            windowController.open(
+                from: .deeplink,
+                urlString: rawURL,
+                skipConfirm: wasPresentingSafari || isFromWidget
+            )
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
@@ -85,7 +89,11 @@ class IncomingURLHandler {
                 }
             }()
 
-            Current.sceneManager.showFullScreenConfirm(icon: icon, text: text)
+            Current.sceneManager.showFullScreenConfirm(
+                icon: icon,
+                text: text,
+                onto: .value(windowController.window)
+            )
             return true
         case let .open(url):
             // NFC-based URL
@@ -98,11 +106,9 @@ class IncomingURLHandler {
                 if #available(iOS 13, *) {
                     if let intent = interaction.intent as? OpenPageIntent,
                        let panel = intent.page, let path = panel.identifier {
-                        Current.Log.info("launching from intent with panel \(panel)")
+                        Current.Log.info("launching from shortcuts with panel \(panel)")
 
-                        Current.sceneManager.webViewWindowControllerPromise.done { controller in
-                            controller.open(from: .deeplink, urlString: "/" + path, skipConfirm: true)
-                        }
+                        windowController.open(from: .deeplink, urlString: "/" + path, skipConfirm: true)
                         return true
                     }
                 }
@@ -356,13 +362,19 @@ extension IncomingURLHandler {
         let actionID = url.pathComponents[1]
 
         guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
-            Current.sceneManager
-                .showFullScreenConfirm(icon: .alertCircleIcon, text: L10n.UrlHandler.Error.actionNotFound)
+            Current.sceneManager.showFullScreenConfirm(
+                icon: .alertCircleIcon,
+                text: L10n.UrlHandler.Error.actionNotFound,
+                onto: .value(windowController.window)
+            )
             return
         }
 
-        Current.sceneManager
-            .showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
+        Current.sceneManager.showFullScreenConfirm(
+            icon: MaterialDesignIcons(named: action.IconName),
+            text: action.Text,
+            onto: .value(windowController.window)
+        )
 
         Current.api.then(on: nil) { api in
             api.HandleAction(actionID: actionID, source: source)

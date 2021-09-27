@@ -158,6 +158,14 @@ public extension IntentPanel {
         }
         self.icon = panel.icon?.normalizingIconString
     }
+
+    var widgetURL: URL {
+        var components = URLComponents()
+        components.scheme = "homeassistant"
+        components.host = "navigate"
+        components.path = "/" + (identifier ?? "lovelace")
+        return components.url!
+    }
 }
 
 @available(iOS 12, *)

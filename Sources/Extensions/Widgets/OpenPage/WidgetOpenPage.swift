@@ -18,7 +18,7 @@ struct WidgetOpenPage: Widget {
                         WidgetBasicModel.init(
                             id: panel.identifier!,
                             title: panel.displayString,
-                            widgetLinkURL: URL(string: "http://example.com")!,
+                            widgetURL: panel.widgetURL,
                             icon: panel.icon ?? MaterialDesignIcons.abTestingIcon.name,
                             textColor: Color(Constants.tintColor),
                             iconColor: Color(Constants.tintColor),

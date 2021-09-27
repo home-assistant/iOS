@@ -18,7 +18,7 @@ struct WidgetActions: Widget {
                         WidgetBasicModel.init(
                             id: action.ID,
                             title: action.Text,
-                            widgetLinkURL: action.widgetLinkURL,
+                            widgetURL: action.widgetLinkURL,
                             icon: action.IconName,
                             textColor: .init(hex: action.TextColor),
                             iconColor: .init(hex: action.IconColor),

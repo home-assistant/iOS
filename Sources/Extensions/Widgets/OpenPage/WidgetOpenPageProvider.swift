@@ -18,11 +18,10 @@ private extension WidgetCache {
             }
         }
 
-        let result: Promise<HAPanels> = firstly {
-            Current.apiConnection.caches.panels.once().promise
-        }.recover { error in
-            // the message itself failed; not fired for connection issues
-            cached()
+        let result: Promise<HAPanels> = firstly { () -> Guarantee<HAPanels> in
+            let apiCache = Current.apiConnection.caches.panels
+            apiCache.shouldResetWithoutSubscribers = true
+            return apiCache.once().promise
         }.get { [self] value in
             try set(value, for: key)
         }
