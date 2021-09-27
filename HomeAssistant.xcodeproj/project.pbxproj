@@ -153,6 +153,7 @@
 		1165704E2701690F003906A7 /* WidgetCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704D2701690F003906A7 /* WidgetCache.swift */; };
 		11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
 		11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
+		1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165705527018C4E003906A7 /* WidgetEmptyView.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -394,7 +395,6 @@
 		11F893B025C5F56700820C61 /* GoogleService-Info-Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */; };
 		11F893B125C5F56700820C61 /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */; };
 		11F893B225C5F56700820C61 /* GoogleService-Info-Beta.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */; };
-		11F89CB224E79E5400C373D9 /* WidgetActionsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */; };
 		11F8A53F25A6ADA400BF1D97 /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
 		11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
 		11FA53F3251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
@@ -1147,6 +1147,7 @@
 		1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+CodeRow.swift"; sourceTree = "<group>"; };
 		1165704D2701690F003906A7 /* WidgetCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCache.swift; sourceTree = "<group>"; };
 		1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+WidgetAuthenticity.swift"; sourceTree = "<group>"; };
+		1165705527018C4E003906A7 /* WidgetEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEmptyView.swift; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -1335,7 +1336,6 @@
 		11F855D324DF6C7A0018013E /* MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialDesignIcons.swift; sourceTree = "<group>"; };
 		11F855D424DF6C7A0018013E /* IconDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconDrawable.swift; sourceTree = "<group>"; };
 		11F855D524DF6C7A0018013E /* IconImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconImageView.swift; sourceTree = "<group>"; };
-		11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsEmptyView.swift; sourceTree = "<group>"; };
 		11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSItemProvider+Additions.swift"; sourceTree = "<group>"; };
 		11FA9320263FA7AC0015F1FC /* NotificationSubControllerMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMap.swift; sourceTree = "<group>"; };
 		11FA9369263FAA920015F1FC /* NotificationSubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubController.swift; sourceTree = "<group>"; };
@@ -2022,7 +2022,6 @@
 			children = (
 				1171508024DFCEC50065E874 /* WidgetActions.swift */,
 				110E694324E77125004AA96D /* WidgetActionsProvider.swift */,
-				11F89CB124E79E5400C373D9 /* WidgetActionsEmptyView.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -2097,6 +2096,7 @@
 			isa = PBXGroup;
 			children = (
 				115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */,
+				1165705527018C4E003906A7 /* WidgetEmptyView.swift */,
 				115560E227010DAB00A8F818 /* WidgetBasicView.swift */,
 				1165704D2701690F003906A7 /* WidgetCache.swift */,
 			);
@@ -5000,8 +5000,8 @@
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				1165704E2701690F003906A7 /* WidgetCache.swift in Sources */,
+				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
-				11F89CB224E79E5400C373D9 /* WidgetActionsEmptyView.swift in Sources */,
 				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
