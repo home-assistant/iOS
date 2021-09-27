@@ -1392,26 +1392,6 @@
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
 						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${page}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>XoXYnJ</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${page}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>TSDJNf</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
-						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
 					<true/>
@@ -1524,26 +1504,6 @@
 							<true/>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${pages}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>Rdug8Q</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${pages}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>3hAPxM</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
@@ -1719,20 +1679,6 @@
 					<string>icon</string>
 					<key>INTypePropertyTag</key>
 					<integer>103</integer>
-					<key>INTypePropertyType</key>
-					<string>String</string>
-				</dict>
-				<dict>
-					<key>INTypePropertyDisplayName</key>
-					<string>URL Path</string>
-					<key>INTypePropertyDisplayNameID</key>
-					<string>0Wle3E</string>
-					<key>INTypePropertyDisplayPriority</key>
-					<integer>6</integer>
-					<key>INTypePropertyName</key>
-					<string>path</string>
-					<key>INTypePropertyTag</key>
-					<integer>104</integer>
 					<key>INTypePropertyType</key>
 					<string>String</string>
 				</dict>
