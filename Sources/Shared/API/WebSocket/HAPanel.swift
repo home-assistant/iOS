@@ -48,7 +48,7 @@ public struct HAPanels: HADataDecodable, Codable {
             throw HADataError.missingKey("root")
         }
 
-        panelsByPath = try dictionary
+        self.panelsByPath = try dictionary
             .compactMapKeys {
                 if $0.hasPrefix("_") {
                     return nil
@@ -59,7 +59,7 @@ public struct HAPanels: HADataDecodable, Codable {
             .mapValues {
                 try HAPanel(data: .init(value: $0))
             }
-        allPanels = panelsByPath.values.sorted(by: {
+        self.allPanels = panelsByPath.values.sorted(by: {
             $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
         })
     }
@@ -83,7 +83,7 @@ private struct HAPanelsCacheKey: HACacheKey {
                 HACacheSubscribeInfo(
                     subscription: .events("panels_updated"),
                     transform: { _ in .reissuePopulate }
-                )
+                ),
             ]
         )
     }

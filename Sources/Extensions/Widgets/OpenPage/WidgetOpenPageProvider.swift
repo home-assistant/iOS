@@ -1,7 +1,7 @@
+import PromiseKit
 import Shared
 import SwiftUI
 import WidgetKit
-import PromiseKit
 
 struct WidgetOpenPageEntry: TimelineEntry {
     var date = Date()
@@ -87,7 +87,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
 
     func getTimeline(for configuration: Intent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         func timeline(for pages: [IntentPanel]) -> Timeline<Entry> {
-            return .init(
+            .init(
                 entries: [.init(pages: pages)],
                 policy: .after(Current.date().addingTimeInterval(Self.expiration.converted(to: .seconds).value))
             )

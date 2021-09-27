@@ -15,7 +15,7 @@ struct WidgetOpenPage: Widget {
                         AnyView(WidgetActionsEmptyView())
                     },
                     contents: $0.pages.map { panel in
-                        WidgetBasicModel.init(
+                        WidgetBasicModel(
                             id: panel.identifier!,
                             title: panel.displayString,
                             widgetURL: panel.widgetURL,
@@ -28,21 +28,21 @@ struct WidgetOpenPage: Widget {
                 )
             }
         )
-            .configurationDisplayName("Open Page")
-            .description("Open Page Description")
-            .supportedFamilies({
-                var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
+        .configurationDisplayName("Open Page")
+        .description("Open Page Description")
+        .supportedFamilies({
+            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
 
-#if compiler(>=5.5) && !targetEnvironment(macCatalyst)
-                if #available(iOS 15, *) {
-                    supportedFamilies.append(.systemExtraLarge)
-                }
-#endif
-
-                return supportedFamilies
-            }())
-            .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
-                Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
+            #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
+            if #available(iOS 15, *) {
+                supportedFamilies.append(.systemExtraLarge)
             }
+            #endif
+
+            return supportedFamilies
+        }())
+        .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
+            Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
+        }
     }
 }

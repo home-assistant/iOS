@@ -13,7 +13,7 @@ public extension URLComponents {
 
     mutating func insertWidgetAuthenticity() {
         queryItems = (queryItems ?? []) + [
-            URLQueryItem(name: "widgetAuthenticity", value: Current.settingsStore.widgetAuthenticityToken)
+            URLQueryItem(name: "widgetAuthenticity", value: Current.settingsStore.widgetAuthenticityToken),
         ]
     }
 

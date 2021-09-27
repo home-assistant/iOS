@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 private struct WidgetCacheKey: EnvironmentKey {
     static let defaultValue = WidgetCache()

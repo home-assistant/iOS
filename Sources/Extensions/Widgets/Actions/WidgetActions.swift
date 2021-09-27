@@ -15,7 +15,7 @@ struct WidgetActions: Widget {
                         AnyView(WidgetActionsEmptyView())
                     },
                     contents: $0.actions.map { action in
-                        WidgetBasicModel.init(
+                        WidgetBasicModel(
                             id: action.ID,
                             title: action.Text,
                             widgetURL: action.widgetLinkURL,

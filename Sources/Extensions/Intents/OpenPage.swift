@@ -1,6 +1,6 @@
-import Shared
 import Intents
 import PromiseKit
+import Shared
 
 class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
     private func fetchOptions(completion: @escaping ([IntentPanel]?, Error?) -> Void) {
