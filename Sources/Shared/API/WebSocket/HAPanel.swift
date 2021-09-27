@@ -71,12 +71,6 @@ public extension HATypedRequest {
     }
 }
 
-public extension HATypedSubscription {
-    static func panelsUpdated() -> HATypedSubscription<HAResponseVoid> {
-        .init(request: .init(type: "panels_updated"))
-    }
-}
-
 private struct HAPanelsCacheKey: HACacheKey {
     static func create(connection: HAConnection) -> HACache<HAPanels> {
         HACache(
@@ -87,7 +81,7 @@ private struct HAPanelsCacheKey: HACacheKey {
             ),
             subscribe: [
                 HACacheSubscribeInfo(
-                    subscription: .panelsUpdated(),
+                    subscription: .events("panels_updated"),
                     transform: { _ in .reissuePopulate }
                 )
             ]

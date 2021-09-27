@@ -97,7 +97,7 @@ class IncomingURLHandler {
             } else if let interaction = userActivity.interaction {
                 if #available(iOS 13, *) {
                     if let intent = interaction.intent as? OpenPageIntent,
-                       let panel = intent.page, let path = panel.path {
+                       let panel = intent.page, let path = panel.identifier {
                         Current.Log.info("launching from intent with panel \(panel)")
 
                         Current.sceneManager.webViewWindowControllerPromise.done { controller in

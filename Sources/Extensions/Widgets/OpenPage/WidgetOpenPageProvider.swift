@@ -107,7 +107,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
             if let existing = existing {
                 // the configured values may be ancient, use the newer version but keep the same list
                 return existing.compactMap { existingValue in
-                    panels.first(where: { $0.path == existingValue.path }) ?? existingValue
+                    panels.first(where: { $0.identifier == existingValue.identifier }) ?? existingValue
                 }
             } else {
                 return panels

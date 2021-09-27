@@ -145,7 +145,7 @@ public extension IntentPanel {
 
         if #available(iOS 14, *) {
             self.init(
-                identifier: panel.componentName,
+                identifier: panel.path,
                 display: panel.title,
                 subtitle: nil,
                 image: image
@@ -157,7 +157,6 @@ public extension IntentPanel {
             )
         }
         self.icon = panel.icon?.normalizingIconString
-        self.path = panel.path
     }
 }
 
