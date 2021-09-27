@@ -5,7 +5,6 @@ public extension HACachesContainer {
 }
 
 public struct HAPanel: HADataDecodable, Codable {
-
     public var icon: String?
     public var title: String
     public var path: String
