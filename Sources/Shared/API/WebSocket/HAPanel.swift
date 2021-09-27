@@ -1,6 +1,10 @@
 import HAKit
 
-public struct HAPanel: HADataDecodable {
+public extension HACachesContainer {
+    var panels: HACache<HAPanels> { self[HAPanelsCacheKey.self] }
+}
+
+public struct HAPanel: HADataDecodable, Codable {
     public var componentName: String
     public var icon: String?
     public var title: String
@@ -35,8 +39,8 @@ public struct HAPanel: HADataDecodable {
     }
 }
 
-public struct HAPanels: HADataDecodable {
-    public var panelsByComponent: [String: HAPanel]
+public struct HAPanels: HADataDecodable, Codable {
+    public var panelsByPath: [String: HAPanel]
     public var allPanels: [HAPanel]
 
     public init(data: HAData) throws {
@@ -44,7 +48,7 @@ public struct HAPanels: HADataDecodable {
             throw HADataError.missingKey("root")
         }
 
-        panelsByComponent = try dictionary
+        panelsByPath = try dictionary
             .compactMapKeys {
                 if $0.hasPrefix("_") {
                     return nil
@@ -55,7 +59,7 @@ public struct HAPanels: HADataDecodable {
             .mapValues {
                 try HAPanel(data: .init(value: $0))
             }
-        allPanels = panelsByComponent.values.sorted(by: {
+        allPanels = panelsByPath.values.sorted(by: {
             $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
         })
     }
@@ -64,5 +68,29 @@ public struct HAPanels: HADataDecodable {
 public extension HATypedRequest {
     static func panels() -> HATypedRequest<HAPanels> {
         .init(request: .init(type: "get_panels"))
+    }
+}
+
+public extension HATypedSubscription {
+    static func panelsUpdated() -> HATypedSubscription<HAResponseVoid> {
+        .init(request: .init(type: "panels_updated"))
+    }
+}
+
+private struct HAPanelsCacheKey: HACacheKey {
+    static func create(connection: HAConnection) -> HACache<HAPanels> {
+        HACache(
+            connection: connection,
+            populate: .init(
+                request: .panels(),
+                transform: { $0.incoming }
+            ),
+            subscribe: [
+                HACacheSubscribeInfo(
+                    subscription: .panelsUpdated(),
+                    transform: { _ in .reissuePopulate }
+                )
+            ]
+        )
     }
 }
