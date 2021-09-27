@@ -2,7 +2,41 @@ import Foundation
 import Shared
 import SwiftUI
 
-extension WidgetBasicSizeStyle {
+struct WidgetBasicViewModel: Identifiable, Hashable {
+    init(
+        id: String,
+        title: String,
+        widgetURL: URL,
+        icon: String,
+        textColor: Color = Color.black,
+        iconColor: Color = Color.black,
+        backgroundColor: Color = Color.white
+    ) {
+        self.id = id
+        self.title = title
+        self.widgetURL = widgetURL
+        self.textColor = textColor
+        self.icon = icon
+        self.iconColor = iconColor
+        self.backgroundColor = backgroundColor
+    }
+
+    var id: String
+
+    var title: String
+    var widgetURL: URL
+
+    var icon: String
+
+    var backgroundColor: Color
+    var textColor: Color
+    var iconColor: Color
+}
+
+enum WidgetBasicSizeStyle {
+    case single
+    case multiple(expanded: Bool, condensed: Bool)
+
     var font: Font {
         switch self {
         case .single:
@@ -14,10 +48,10 @@ extension WidgetBasicSizeStyle {
 }
 
 struct WidgetBasicView: View {
-    let model: WidgetBasicModel
+    let model: WidgetBasicViewModel
     let sizeStyle: WidgetBasicSizeStyle
 
-    init(model: WidgetBasicModel, sizeStyle: WidgetBasicSizeStyle) {
+    init(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) {
         self.model = model
         self.sizeStyle = sizeStyle
         MaterialDesignIcons.register()

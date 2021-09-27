@@ -2,54 +2,14 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-enum WidgetBasicSizeStyle {
-    case single
-    case multiple(expanded: Bool, condensed: Bool)
-}
-
-protocol WidgetBasicEmptyView: View {
-    init()
-}
-
-struct WidgetBasicModel: Identifiable, Hashable {
-    init(
-        id: String,
-        title: String,
-        widgetURL: URL,
-        icon: String,
-        textColor: Color = Color.black,
-        iconColor: Color = Color.black,
-        backgroundColor: Color = Color.white
-    ) {
-        self.id = id
-        self.title = title
-        self.widgetURL = widgetURL
-        self.textColor = textColor
-        self.icon = icon
-        self.iconColor = iconColor
-        self.backgroundColor = backgroundColor
-    }
-
-    var id: String
-
-    var title: String
-    var widgetURL: URL
-
-    var icon: String
-
-    var backgroundColor: Color
-    var textColor: Color
-    var iconColor: Color
-}
-
 struct WidgetBasicContainerView: View {
-    @SwiftUI.Environment(\.widgetFamily) var family: WidgetFamily
-    @SwiftUI.Environment(\.pixelLength) var pixelLength: CGFloat
+    @Environment(\.widgetFamily) var family: WidgetFamily
+    @Environment(\.pixelLength) var pixelLength: CGFloat
 
     let emptyViewGenerator: () -> AnyView
-    let contents: [WidgetBasicModel]
+    let contents: [WidgetBasicViewModel]
 
-    init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicModel]) {
+    init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicViewModel]) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
     }
@@ -62,13 +22,13 @@ struct WidgetBasicContainerView: View {
         }
     }
 
-    func singleView(for model: WidgetBasicModel) -> some View {
+    func singleView(for model: WidgetBasicViewModel) -> some View {
         WidgetBasicView(model: model, sizeStyle: .single)
             .widgetURL(model.widgetURL.withWidgetAuthenticity())
     }
 
     @ViewBuilder
-    func multiView(for models: [WidgetBasicModel]) -> some View {
+    func multiView(for models: [WidgetBasicViewModel]) -> some View {
         let actionCount = models.count
         let columnCount = Self.columnCount(family: family, modelCount: actionCount)
         let rows = Array(columnify(count: columnCount, models: models))
@@ -92,9 +52,9 @@ struct WidgetBasicContainerView: View {
         .background(Color.black)
     }
 
-    private func columnify(count: Int, models: [WidgetBasicModel]) -> AnyIterator<[WidgetBasicModel]> {
+    private func columnify(count: Int, models: [WidgetBasicViewModel]) -> AnyIterator<[WidgetBasicViewModel]> {
         var perActionIterator = models.makeIterator()
-        return AnyIterator { () -> [WidgetBasicModel]? in
+        return AnyIterator { () -> [WidgetBasicViewModel]? in
             let column = stride(from: 0, to: count, by: 1)
                 .compactMap { _ in perActionIterator.next() }
             return column.isEmpty == false ? column : nil

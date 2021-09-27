@@ -30,7 +30,7 @@ private extension UIApplication {
     }
 }
 
-extension Environment {
+extension AppEnvironment {
     var sceneManager: SceneManager {
         UIApplication.shared.typedDelegate.sceneManager
     }

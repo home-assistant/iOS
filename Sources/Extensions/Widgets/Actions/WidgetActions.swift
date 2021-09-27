@@ -12,10 +12,10 @@ struct WidgetActions: Widget {
             content: {
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetActionsEmptyView())
+                        AnyView(WidgetEmptyView(message: L10n.Widgets.Actions.notConfigured))
                     },
                     contents: $0.actions.map { action in
-                        WidgetBasicModel(
+                        WidgetBasicViewModel(
                             id: action.ID,
                             title: action.Text,
                             widgetURL: action.widgetLinkURL,

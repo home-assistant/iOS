@@ -35,8 +35,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
     typealias Intent = WidgetOpenPageIntent
     typealias Entry = WidgetOpenPageEntry
 
-    @SwiftUI.Environment(\.widgetCache)
-    var widgetCache: WidgetCache
+    @Environment(\.widgetCache) var widgetCache: WidgetCache
 
     func placeholder(in context: Context) -> WidgetOpenPageEntry {
         let count = WidgetBasicContainerView.maximumCount(family: context.family)

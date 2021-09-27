@@ -12,10 +12,10 @@ struct WidgetOpenPage: Widget {
             content: {
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetActionsEmptyView())
+                        AnyView(WidgetEmptyView(message: "hey"))
                     },
                     contents: $0.pages.map { panel in
-                        WidgetBasicModel(
+                        WidgetBasicViewModel(
                             id: panel.identifier!,
                             title: panel.displayString,
                             widgetURL: panel.widgetURL,
