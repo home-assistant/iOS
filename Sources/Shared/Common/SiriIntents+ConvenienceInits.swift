@@ -152,7 +152,7 @@ public extension IntentPanel {
             )
         } else {
             self.init(
-                identifier: panel.componentName,
+                identifier: panel.path,
                 display: panel.title
             )
         }

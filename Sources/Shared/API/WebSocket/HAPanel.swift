@@ -5,14 +5,22 @@ public extension HACachesContainer {
 }
 
 public struct HAPanel: HADataDecodable, Codable {
-    public var componentName: String
+
     public var icon: String?
     public var title: String
     public var path: String
 
     public init(data: HAData) throws {
-        self.componentName = try data.decode("component_name")
-        self.icon = data.decode("icon", fallback: "mdi:view-dashboard")
+        let component: String = try data.decode("component_name")
+        let fallbackIcon: String? = { () -> String? in
+            switch component {
+            case "profile": return "mdi:account"
+            case "lovelace": return "mdi:view-dashboard"
+            default: return nil
+            }
+        }()
+
+        self.icon = data.decode("icon", fallback: fallbackIcon)
 
         // TODO: do i really wanna copy these values from frontend repo?
         let defaultTitles = [
@@ -30,11 +38,8 @@ public struct HAPanel: HADataDecodable, Codable {
             "profile": "Profile",
         ]
 
-        if let title: String = try? data.decode("title") {
-            self.title = defaultTitles[title] ?? title
-        } else {
-            self.title = defaultTitles[componentName] ?? componentName
-        }
+        let title: String = data.decode("title", fallback: component)
+        self.title = defaultTitles[title] ?? title
         self.path = try data.decode("url_path")
     }
 }

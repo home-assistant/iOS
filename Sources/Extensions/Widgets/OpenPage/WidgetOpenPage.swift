@@ -12,7 +12,7 @@ struct WidgetOpenPage: Widget {
             content: {
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetEmptyView(message: "hey"))
+                        AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
                     contents: $0.pages.map { panel in
                         WidgetBasicViewModel(
@@ -28,8 +28,8 @@ struct WidgetOpenPage: Widget {
                 )
             }
         )
-        .configurationDisplayName("Open Page")
-        .description("Open Page Description")
+        .configurationDisplayName(L10n.Widgets.OpenPage.title)
+        .description(L10n.Widgets.OpenPage.description)
         .supportedFamilies({
             var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
 

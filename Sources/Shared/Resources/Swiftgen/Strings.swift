@@ -2375,6 +2375,14 @@ public enum L10n {
       /// Actions
       public static var title: String { return L10n.tr("Localizable", "widgets.actions.title") }
     }
+    public enum OpenPage {
+      /// Open a frontend page in Home Assistant.
+      public static var description: String { return L10n.tr("Localizable", "widgets.open_page.description") }
+      /// No Pages Available
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.open_page.not_configured") }
+      /// Open Page
+      public static var title: String { return L10n.tr("Localizable", "widgets.open_page.title") }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
