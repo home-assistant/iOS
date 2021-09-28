@@ -1,9 +1,10 @@
 import Foundation
 import SwiftUI
+import PromiseKit
 
 public protocol DiskCache {
-    func value<T: Codable>(for key: String) throws -> T
-    func set<T: Codable>(_ value: T, for key: String) throws
+    func value<T: Codable>(for key: String) -> Promise<T>
+    func set<T: Codable>(_ value: T, for key: String) -> Promise<Void>
 }
 
 private struct DiskCacheKey: EnvironmentKey {
@@ -19,16 +20,61 @@ public extension EnvironmentValues {
 }
 
 public final class DiskCacheImpl: DiskCache {
-    public func value<T: Codable>(for key: String) throws -> T {
-        let url = URL(for: key)
-        let data = try Data(contentsOf: url, options: [])
-        return try JSONDecoder().decode(T.self, from: data)
+    public func value<T: Codable>(for key: String) -> Promise<T> {
+        let (promise, seal) = Promise<T>.pending()
+        DispatchQueue.global().async { [coordinator, container] in
+            var coordinatorError: NSError?
+            coordinator.coordinate(
+                readingItemAt: Self.URL(in: container, for: key),
+                options: [],
+                error: &coordinatorError
+            ) { url in
+                do {
+                    let data = try Data(contentsOf: url, options: [])
+                    let value = try JSONDecoder().decode(T.self, from: data)
+                    seal.fulfill(value)
+                } catch {
+                    seal.reject(error)
+                }
+            }
+
+            if let error = coordinatorError {
+                seal.reject(error)
+            }
+        }
+        return promise
     }
 
-    public func set<T: Codable>(_ value: T, for key: String) throws {
-        let url = URL(for: key)
-        let data = try JSONEncoder().encode(value)
-        try data.write(to: url, options: .atomic)
+    public func set<T: Codable>(_ value: T, for key: String) -> Promise<Void> {
+        let data: Data
+
+        do {
+            // the contents of the value may be unsafe off the thread this is called on
+            // we can at least move the write operation itself off the thread
+            data = try JSONEncoder().encode(value)
+        } catch {
+            return .init(error: error)
+        }
+
+        let (promise, seal) = Promise<Void>.pending()
+        DispatchQueue.global().async { [coordinator, container] in
+            var coordinatorError: NSError?
+            coordinator.coordinate(
+                writingItemAt: Self.URL(in: container, for: key),
+                options: [],
+                error: &coordinatorError
+            ) { url in
+                do {
+                    try data.write(to: url, options: [])
+                } catch {
+                    seal.reject(error)
+                }
+            }
+            if let error = coordinatorError {
+                seal.reject(error)
+            }
+        }
+        return promise
     }
 
     private class func URL(containerName: String) -> URL {
@@ -47,11 +93,14 @@ public final class DiskCacheImpl: DiskCache {
     }
 
     let container: URL
+    let coordinator: NSFileCoordinator
+
     init(containerName: String = "Default") {
+        self.coordinator = NSFileCoordinator()
         self.container = Self.URL(containerName: containerName)
     }
 
-    func URL(for key: String) -> URL {
+    static func URL(in container: URL, for key: String) -> URL {
         container.appendingPathComponent("\(key).json")
     }
 }

@@ -9,25 +9,23 @@ struct WidgetOpenPageEntry: TimelineEntry {
 }
 
 private extension DiskCache {
-    func panels(timeout timeoutDuration: Measurement<UnitDuration>) -> Promise<HAPanels> {
-        let key = "panels"
-
-        let cached: () -> Promise<HAPanels> = { [self] in
-            Promise { seal in
-                seal.fulfill(try value(for: key))
-            }
-        }
-
+    func panels(timeout timeoutDuration: Measurement<UnitDuration>, key: String = "panels") -> Promise<HAPanels> {
         let result: Promise<HAPanels> = firstly { () -> Guarantee<HAPanels> in
             let apiCache = Current.apiConnection.caches.panels
             apiCache.shouldResetWithoutSubscribers = true
             return apiCache.once().promise
         }.get { [self] value in
-            try set(value, for: key)
+            set(value, for: key).cauterize()
         }
 
-        let timeout = after(seconds: timeoutDuration.converted(to: .seconds).value)
-        return race(result, timeout.then(cached))
+        let timeout: Promise<HAPanels> = firstly {
+            after(seconds: timeoutDuration.converted(to: .seconds).value)
+        }.then { [self] in
+            // grab from cache after timeout
+            value(for: key)
+        }
+
+        return race(result, timeout)
     }
 }
 
