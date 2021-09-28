@@ -147,46 +147,46 @@ lane :update_strings do
   )
 
   lang_frontend_to_ios = {
-    "ca" => "ca-ES",
-    "cs" => "cs",
-    "cy" => "cy-GB",
-    "da" => "da",
-    "de" => "de",
-    "el" => "el",
-    "en-GB" => "en-GB",
-    "en" => "en",
-    "es" => "es-ES",
-    "es-419" => "es",
+    'ca' => 'ca-ES',
+    'cs' => 'cs',
+    'cy' => 'cy-GB',
+    'da' => 'da',
+    'de' => 'de',
+    'el' => 'el',
+    'en-GB' => 'en-GB',
+    'en' => 'en',
+    'es' => 'es-ES',
+    'es-419' => 'es',
     # es-MX is missing from the frontend, so we copy es over below
-    "fi" => "fi",
-    "fr" => "fr",
-    "id" => "id",
-    "it" => "it",
-    "ko" => "ko-KR",
-    "nb" => "nb",
-    "nl" => "nl",
-    "pl" => "pl-PL",
-    "ru" => "ru",
-    "sl" => "sl",
-    "sv" => "sv",
-    "tr" => "tr",
-    "uk" => "uk",
-    "vi" => "vi",
-    "zh-Hans" => "zh-Hans",
-    "zh-Hant" => "zh-Hant",
+    'fi' => 'fi',
+    'fr' => 'fr',
+    'id' => 'id',
+    'it' => 'it',
+    'ko' => 'ko-KR',
+    'nb' => 'nb',
+    'nl' => 'nl',
+    'pl' => 'pl-PL',
+    'ru' => 'ru',
+    'sl' => 'sl',
+    'sv' => 'sv',
+    'tr' => 'tr',
+    'uk' => 'uk',
+    'vi' => 'vi',
+    'zh-Hans' => 'zh-Hans',
+    'zh-Hant' => 'zh-Hant'
   }
 
   # to => from, since to is unique but from may not be
   manually_copied_languages = {
-    "es-MX" => "es",
+    'es-MX' => 'es'
   }
 
   # make sure the previous map has everything. adding a new language should error.
   ios_languages = Set.new(
     Dir.children(resources_dir_full)
-    .select { |file| File.extname(file) == ".lproj" }
+    .select { |file| File.extname(file) == '.lproj' }
     .map { |file| File.basename(file, File.extname(file)) }
-    .select { |lang| lang != "Base" }
+    .reject { |lang| lang == 'Base' }
   )
 
   mapped_ios_languages = Set.new(lang_frontend_to_ios.values + manually_copied_languages.keys)
@@ -197,7 +197,7 @@ lane :update_strings do
   end
 
   language_mapping = lang_frontend_to_ios
-    .map { |key, value| {"original_language_iso" => key, "custom_language_iso": value} }
+                     .map { |key, value| { 'original_language_iso' => key, custom_language_iso: value } }
 
   sh(
     'lokalise2',
