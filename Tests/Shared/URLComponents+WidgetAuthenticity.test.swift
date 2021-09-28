@@ -1,5 +1,5 @@
-import XCTest
 @testable import Shared
+import XCTest
 
 class URLComponentsWidgetAuthenticityTests: XCTestCase {
     func testNotAuthentic() throws {
