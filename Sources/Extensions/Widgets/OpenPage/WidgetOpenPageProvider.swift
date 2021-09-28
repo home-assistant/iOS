@@ -114,6 +114,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
             completion($0)
         }.catch { error in
             Current.Log.error("failed to create a timeline: \(error)")
+            completion(timeline(for: []))
         }
     }
 }
