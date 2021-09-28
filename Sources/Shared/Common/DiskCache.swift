@@ -7,11 +7,13 @@ public protocol DiskCache {
     func set<T: Codable>(_ value: T, for key: String) -> Promise<Void>
 }
 
+@available(iOS 13, watchOS 6, *)
 private struct DiskCacheKey: EnvironmentKey {
     static let defaultValue = Current.diskCache
 }
 
 // also in AppEnvironment
+@available(iOS 13, watchOS 6, *)
 public extension EnvironmentValues {
     var diskCache: DiskCache {
         get { self[DiskCacheKey.self] }
@@ -66,6 +68,7 @@ public final class DiskCacheImpl: DiskCache {
             ) { url in
                 do {
                     try data.write(to: url, options: [])
+                    seal.fulfill(())
                 } catch {
                     seal.reject(error)
                 }
@@ -80,8 +83,8 @@ public final class DiskCacheImpl: DiskCache {
     private class func URL(containerName: String) -> URL {
         let fileManager = FileManager.default
         let url = Constants.AppGroupContainer
-            .appendingPathComponent("DiskCache")
-            .appendingPathComponent(containerName)
+            .appendingPathComponent("DiskCache", isDirectory: true)
+            .appendingPathComponent(containerName, isDirectory: false)
 
         try? fileManager.createDirectory(
             at: url,
@@ -92,8 +95,8 @@ public final class DiskCacheImpl: DiskCache {
         return url
     }
 
-    let container: URL
-    let coordinator: NSFileCoordinator
+    var container: URL
+    var coordinator: NSFileCoordinator
 
     init(containerName: String = "Default") {
         self.coordinator = NSFileCoordinator()
@@ -101,6 +104,8 @@ public final class DiskCacheImpl: DiskCache {
     }
 
     static func URL(in container: URL, for key: String) -> URL {
-        container.appendingPathComponent("\(key).json")
+        let escapedKey = key.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? key
+
+        return container.appendingPathComponent("\(escapedKey).json", isDirectory: false)
     }
 }
