@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import PromiseKit
+import SwiftUI
 
 public protocol DiskCache {
     func value<T: Codable>(for key: String) -> Promise<T>

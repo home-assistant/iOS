@@ -1,6 +1,6 @@
-import XCTest
-@testable import Shared
 import PromiseKit
+@testable import Shared
+import XCTest
 
 struct TestObject1: Codable, Equatable {
     var uuid1 = UUID()
