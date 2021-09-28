@@ -4,7 +4,7 @@ public extension HACachesContainer {
     var panels: HACache<HAPanels> { self[HAPanelsCacheKey.self] }
 }
 
-public struct HAPanel: HADataDecodable, Codable {
+public struct HAPanel: HADataDecodable, Codable, Equatable {
     public var icon: String?
     public var title: String
     public var path: String
@@ -35,29 +35,35 @@ public struct HAPanel: HADataDecodable, Codable {
     }
 }
 
-public struct HAPanels: HADataDecodable, Codable {
+public struct HAPanels: HADataDecodable, Codable, Equatable {
     public var panelsByPath: [String: HAPanel]
     public var allPanels: [HAPanel]
 
+    public init(panelsByPath: [String: HAPanel]) {
+        self.panelsByPath = panelsByPath
+        self.allPanels = panelsByPath.values.sorted(by: {
+            $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+        })
+    }
+    
     public init(data: HAData) throws {
         guard case let .dictionary(dictionary) = data else {
             throw HADataError.missingKey("root")
         }
 
-        self.panelsByPath = try dictionary
-            .compactMapKeys {
-                if $0.hasPrefix("_") {
-                    return nil
-                } else {
-                    return $0
+        self.init(
+            panelsByPath: try dictionary
+                .compactMapKeys {
+                    if $0.hasPrefix("_") {
+                        return nil
+                    } else {
+                        return $0
+                    }
                 }
-            }
-            .mapValues {
-                try HAPanel(data: .init(value: $0))
-            }
-        self.allPanels = panelsByPath.values.sorted(by: {
-            $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
-        })
+                .mapValues {
+                    try HAPanel(data: .init(value: $0))
+                }
+        )
     }
 }
 
