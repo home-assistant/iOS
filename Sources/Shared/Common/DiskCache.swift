@@ -1,25 +1,31 @@
-import Shared
+import Foundation
 import SwiftUI
 
-private struct WidgetCacheKey: EnvironmentKey {
-    static let defaultValue = WidgetCache()
+public protocol DiskCache {
+    func value<T: Codable>(for key: String) throws -> T
+    func set<T: Codable>(_ value: T, for key: String) throws
 }
 
-extension EnvironmentValues {
-    var widgetCache: WidgetCache {
-        get { self[WidgetCacheKey.self] }
-        set { self[WidgetCacheKey.self] = newValue }
+private struct DiskCacheKey: EnvironmentKey {
+    static let defaultValue = Current.diskCache
+}
+
+// also in AppEnvironment
+public extension EnvironmentValues {
+    var diskCache: DiskCache {
+        get { self[DiskCacheKey.self] }
+        set { self[DiskCacheKey.self] = newValue }
     }
 }
 
-class WidgetCache {
-    func value<T: Codable>(for key: String) throws -> T {
+public final class DiskCacheImpl: DiskCache {
+    public func value<T: Codable>(for key: String) throws -> T {
         let url = URL(for: key)
         let data = try Data(contentsOf: url, options: [])
         return try JSONDecoder().decode(T.self, from: data)
     }
 
-    func set<T: Codable>(_ value: T, for key: String) throws {
+    public func set<T: Codable>(_ value: T, for key: String) throws {
         let url = URL(for: key)
         let data = try JSONEncoder().encode(value)
         try data.write(to: url, options: .atomic)
@@ -27,9 +33,8 @@ class WidgetCache {
 
     private class func URL(containerName: String) -> URL {
         let fileManager = FileManager.default
-        let url = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
-            .first!
-            .appendingPathComponent("WidgetCache")
+        let url = Constants.AppGroupContainer
+            .appendingPathComponent("DiskCache")
             .appendingPathComponent(containerName)
 
         try? fileManager.createDirectory(

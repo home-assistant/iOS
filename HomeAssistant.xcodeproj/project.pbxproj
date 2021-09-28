@@ -150,12 +150,13 @@
 		1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
 		1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */; };
 		1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */; };
-		1165704E2701690F003906A7 /* WidgetCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704D2701690F003906A7 /* WidgetCache.swift */; };
 		11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
 		11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
 		1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165705527018C4E003906A7 /* WidgetEmptyView.swift */; };
 		1165705A2702A3BA003906A7 /* Frontend.strings in Resources */ = {isa = PBXBuildFile; fileRef = 116570582702A3B9003906A7 /* Frontend.strings */; };
 		1165705B2702A3BA003906A7 /* Frontend.strings in Resources */ = {isa = PBXBuildFile; fileRef = 116570582702A3B9003906A7 /* Frontend.strings */; };
+		116570772702B0F6003906A7 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116570762702B0F6003906A7 /* DiskCache.swift */; };
+		116570782702B0F6003906A7 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116570762702B0F6003906A7 /* DiskCache.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -1147,7 +1148,6 @@
 		1164DA0125FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditViewController.swift; sourceTree = "<group>"; };
 		1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+CodeRow.swift"; sourceTree = "<group>"; };
-		1165704D2701690F003906A7 /* WidgetCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCache.swift; sourceTree = "<group>"; };
 		1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+WidgetAuthenticity.swift"; sourceTree = "<group>"; };
 		1165705527018C4E003906A7 /* WidgetEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEmptyView.swift; sourceTree = "<group>"; };
 		116570592702A3B9003906A7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Frontend.strings; sourceTree = "<group>"; };
@@ -1177,6 +1177,7 @@
 		116570732702A40E003906A7 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Frontend.strings; sourceTree = "<group>"; };
 		116570742702A40F003906A7 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Frontend.strings; sourceTree = "<group>"; };
 		116570752702A411003906A7 /* cy-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "cy-GB"; path = "cy-GB.lproj/Frontend.strings"; sourceTree = "<group>"; };
+		116570762702B0F6003906A7 /* DiskCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskCache.swift; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -2127,7 +2128,6 @@
 				115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */,
 				1165705527018C4E003906A7 /* WidgetEmptyView.swift */,
 				115560E227010DAB00A8F818 /* WidgetBasicView.swift */,
-				1165704D2701690F003906A7 /* WidgetCache.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -3478,6 +3478,7 @@
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				11AF4D15249C8082006C74C0 /* With.swift */,
 				1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */,
+				116570762702B0F6003906A7 /* DiskCache.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -5031,7 +5032,6 @@
 				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
-				1165704E2701690F003906A7 /* WidgetCache.swift in Sources */,
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
 				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
@@ -5340,6 +5340,7 @@
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
+				116570782702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				11F855DD24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
@@ -5509,6 +5510,7 @@
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
+				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,

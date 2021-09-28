@@ -8,7 +8,7 @@ struct WidgetOpenPageEntry: TimelineEntry {
     var pages: [IntentPanel] = []
 }
 
-private extension WidgetCache {
+private extension DiskCache {
     func panels(timeout timeoutDuration: Measurement<UnitDuration>) -> Promise<HAPanels> {
         let key = "panels"
 
@@ -35,7 +35,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
     typealias Intent = WidgetOpenPageIntent
     typealias Entry = WidgetOpenPageEntry
 
-    @Environment(\.widgetCache) var widgetCache: WidgetCache
+    @Environment(\.diskCache) var diskCache: DiskCache
 
     func placeholder(in context: Context) -> WidgetOpenPageEntry {
         let count = WidgetBasicContainerView.maximumCount(family: context.family)
@@ -53,7 +53,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
         timeout: Measurement<UnitDuration> = .init(value: 15.0, unit: .seconds)
     ) -> Promise<[IntentPanel]> {
         firstly {
-            widgetCache.panels(timeout: timeout)
+            diskCache.panels(timeout: timeout)
         }.map { panels in
             panels.allPanels.prefix(WidgetBasicContainerView.maximumCount(family: context.family))
         }.mapValues {

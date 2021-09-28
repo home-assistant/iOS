@@ -376,4 +376,6 @@ public class AppEnvironment {
     public var connectivity = ConnectivityWrapper()
 
     public var focusStatus = FocusStatusWrapper()
+
+    public var diskCache: DiskCache = DiskCacheImpl()
 }
