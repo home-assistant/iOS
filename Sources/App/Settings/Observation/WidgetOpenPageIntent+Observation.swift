@@ -1,6 +1,6 @@
+import PromiseKit
 import Shared
 import WidgetKit
-import PromiseKit
 
 extension WidgetOpenPageIntent {
     static func setupObserver() {

@@ -45,7 +45,7 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
             $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
         })
     }
-    
+
     public init(data: HAData) throws {
         guard case let .dictionary(dictionary) = data else {
             throw HADataError.missingKey("root")
