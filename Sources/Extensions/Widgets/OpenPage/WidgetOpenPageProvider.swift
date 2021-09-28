@@ -79,7 +79,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
     }
 
     private static var expiration: Measurement<UnitDuration> {
-        .init(value: 60, unit: .minutes)
+        .init(value: 24, unit: .hours)
     }
 
     func getTimeline(for configuration: Intent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
