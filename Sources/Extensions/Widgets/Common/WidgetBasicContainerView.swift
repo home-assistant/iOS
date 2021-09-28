@@ -32,11 +32,19 @@ struct WidgetBasicContainerView: View {
         let actionCount = models.count
         let columnCount = Self.columnCount(family: family, modelCount: actionCount)
         let rows = Array(columnify(count: columnCount, models: models))
-        let maximumRowCount = Self.maximumCount(family: family) / columnCount
-        let sizeStyle: WidgetBasicSizeStyle = .multiple(
-            expanded: rows.count < maximumRowCount,
-            condensed: Self.compactSizeBreakpoint(for: family) < actionCount
-        )
+
+        let sizeStyle: WidgetBasicSizeStyle = {
+            let condensed = Self.compactSizeBreakpoint(for: family) < actionCount
+            let maximumRowCount = Self.maximumCount(family: family) / columnCount
+
+            if condensed {
+                return .condensed
+            } else if rows.count < maximumRowCount {
+                return .expanded
+            } else {
+                return .regular
+            }
+        }()
 
         VStack(alignment: .leading, spacing: pixelLength) {
             ForEach(rows, id: \.self) { column in

@@ -35,14 +35,16 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
 
 enum WidgetBasicSizeStyle {
     case single
-    case multiple(expanded: Bool, condensed: Bool)
+    case expanded
+    case condensed
+    case regular
 
     var font: Font {
         switch self {
-        case .single:
+        case .single, .expanded:
             return .subheadline
-        case let .multiple(expanded: expanded, _):
-            return expanded ? .subheadline : .footnote
+        case .condensed, .regular:
+            return .footnote
         }
     }
 }
@@ -67,17 +69,17 @@ struct WidgetBasicView: View {
                 .multilineTextAlignment(.leading)
                 .foregroundColor(model.textColor)
 
-            if case .multiple(_, condensed: true) = sizeStyle {
+            switch sizeStyle {
+            case .condensed:
                 HStack(alignment: .center) {
                     Text(verbatim: MaterialDesignIcons(named: model.icon).unicode)
                         .font(.custom(MaterialDesignIcons.familyName, size: 16.0))
                         .foregroundColor(model.iconColor)
                     text
-                        .lineLimit(1)
                     Spacer()
                 }
                 .padding([.leading])
-            } else {
+            case .regular, .expanded, .single:
                 VStack(alignment: .leading) {
                     Text(verbatim: MaterialDesignIcons(named: model.icon).unicode)
                         .font(.custom(MaterialDesignIcons.familyName, size: 38.0))
