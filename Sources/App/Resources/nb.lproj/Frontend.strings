@@ -1,0 +1,12 @@
+"panel::calendar" = "Kalender";
+"panel::config" = "Konfigurasjon";
+"panel::developer_tools" = "Utviklerverktøy";
+"panel::energy" = "Energi";
+"panel::history" = "Historie";
+"panel::logbook" = "Loggbok";
+"panel::mailbox" = "Postkasse";
+"panel::map" = "Kart";
+"panel::media_browser" = "Medieleser";
+"panel::profile" = "Profil";
+"panel::shopping_list" = "Handleliste";
+"panel::states" = "Oversikt";

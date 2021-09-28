@@ -1,0 +1,12 @@
+"panel::calendar" = "Kalender";
+"panel::config" = "Instellingen";
+"panel::developer_tools" = "Ontwikkelhulpmiddelen";
+"panel::energy" = "Energie";
+"panel::history" = "Geschiedenis";
+"panel::logbook" = "Logboek";
+"panel::mailbox" = "Postvak";
+"panel::map" = "Kaart";
+"panel::media_browser" = "Mediabrowser";
+"panel::profile" = "Profiel";
+"panel::shopping_list" = "Boodschappenlijst";
+"panel::states" = "Overzicht";

@@ -20,26 +20,18 @@ public struct HAPanel: HADataDecodable, Codable {
         }()
 
         self.icon = data.decode("icon", fallback: fallbackIcon)
-
-        // TODO: do i really wanna copy these values from frontend repo?
-        let defaultTitles = [
-            "lovelace": "Overview",
-            "energy": "Energy",
-            "calendar": "Calendar",
-            "config": "Configuration",
-            "map": "Map",
-            "logbook": "Logbook",
-            "history": "History",
-            "mailbox": "Mailbox",
-            "shopping_list": "Shopping List",
-            "developer_tools": "Developer Tools",
-            "media_browser": "Media Browser",
-            "profile": "Profile",
-        ]
+        self.path = try data.decode("url_path")
 
         let title: String = data.decode("title", fallback: component)
-        self.title = defaultTitles[title] ?? title
-        self.path = try data.decode("url_path")
+
+        let possibleFrontendKey: String
+        if path == "lovelace" {
+            possibleFrontendKey = "panel::states"
+        } else {
+            possibleFrontendKey = "panel::\(title)"
+        }
+
+        self.title = Current.localized.frontend(possibleFrontendKey) ?? title
     }
 }
 

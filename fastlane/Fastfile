@@ -28,6 +28,7 @@ private_lane :setup do
   ENV['FL_NOTARIZE_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
   ENV['LOKALISE_API_TOKEN'] = ENV['HOMEASSISTANT_LOKALIZE_TOKEN']
   ENV['LOKALISE_PROJECT_ID'] = ENV['HOMEASSISTANT_LOKALIZE_PROJECT_ID']
+  ENV['LOKALISE_PROJECT_ID_FRONTEND'] = ENV['HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND']
   ENV['PILOT_ITC_PROVIDER'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID']
   ENV['FASTLANE_ITC_TEAM_ID'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID']
   ENV['SIGH_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
@@ -123,21 +124,106 @@ lane :update_strings do
     secure_text: true
   )
 
+  frontend_project_id = ENV['LOKALISE_PROJECT_ID_FRONTEND'] || prompt(
+    text: 'Frontend Project ID',
+    secure_text: true
+  )
+
+  resources_dir_full = File.expand_path('../Sources/App/Resources')
+
   sh(
     'lokalise2',
     '--token', token,
     '--project-id', project_id,
     'file', 'download',
     '--format', 'ios_sdk',
-    '--bundle-structure', '%LANG_ISO%.lproj/Localizable.%FORMAT%',
     '--export-empty-as', 'base',
     '--export-sort', 'a_z',
     '--replace-breaks=false',
     '--include-comments=false',
     '--include-description=false',
-    '--unzip-to', '../Sources/App/Resources',
+    '--unzip-to', resources_dir_full,
     log: false
   )
+
+  lang_frontend_to_ios = {
+    "ca" => "ca-ES",
+    "cs" => "cs",
+    "cy" => "cy-GB",
+    "da" => "da",
+    "de" => "de",
+    "el" => "el",
+    "en-GB" => "en-GB",
+    "en" => "en",
+    "es" => "es-ES",
+    "es-419" => "es",
+    # es-MX is missing from the frontend, so we copy es over below
+    "fi" => "fi",
+    "fr" => "fr",
+    "id" => "id",
+    "it" => "it",
+    "ko" => "ko-KR",
+    "nb" => "nb",
+    "nl" => "nl",
+    "pl" => "pl-PL",
+    "ru" => "ru",
+    "sl" => "sl",
+    "sv" => "sv",
+    "tr" => "tr",
+    "uk" => "uk",
+    "vi" => "vi",
+    "zh-Hans" => "zh-Hans",
+    "zh-Hant" => "zh-Hant",
+  }
+
+  # to => from, since to is unique but from may not be
+  manually_copied_languages = {
+    "es-MX" => "es",
+  }
+
+  # make sure the previous map has everything. adding a new language should error.
+  ios_languages = Set.new(
+    Dir.children(resources_dir_full)
+    .select { |file| File.extname(file) == ".lproj" }
+    .map { |file| File.basename(file, File.extname(file)) }
+    .select { |lang| lang != "Base" }
+  )
+
+  mapped_ios_languages = Set.new(lang_frontend_to_ios.values + manually_copied_languages.keys)
+
+  unless ios_languages == mapped_ios_languages
+    missing = ios_languages - mapped_ios_languages
+    UI.user_error!("missing language in map. missing: #{missing.to_a.join(', ')}")
+  end
+
+  language_mapping = lang_frontend_to_ios
+    .map { |key, value| {"original_language_iso" => key, "custom_language_iso": value} }
+
+  sh(
+    'lokalise2',
+    '--token', token,
+    '--project-id', frontend_project_id,
+    'file', 'download',
+    '--format', 'strings',
+    '--filter-langs', lang_frontend_to_ios.keys.join(','),
+    '--language-mapping', language_mapping.to_json.to_s,
+    '--original-filenames=false',
+    '--bundle-structure', '%LANG_ISO%.lproj/Frontend.%FORMAT%',
+    '--export-empty-as', 'base',
+    '--export-sort', 'a_z',
+    '--replace-breaks=false',
+    '--include-comments=false',
+    '--include-description=false',
+    '--unzip-to', resources_dir_full,
+    log: false
+  )
+
+  manually_copied_languages.each do |to, from|
+    FileUtils.cp(
+      "#{resources_dir_full}/#{from}.lproj/Frontend.strings",
+      "#{resources_dir_full}/#{to}.lproj/Frontend.strings"
+    )
+  end
 
   sh('cd ../ && ./Pods/SwiftGen/bin/swiftgen')
 end
@@ -161,6 +247,8 @@ lane :push_strings do
   source_directories.each do |directory|
     puts "Enumerating #{directory}..."
     Dir.each_child(directory) do |file|
+      next if file == 'Frontend.strings'
+
       puts "Uploading file #{file}"
       sh(
         'lokalise2',

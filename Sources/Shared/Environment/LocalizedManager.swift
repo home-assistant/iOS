@@ -9,7 +9,7 @@ public class LocalizedManager {
 
         if let fallbackBundle = bundle.url(forResource: "en", withExtension: "lproj").flatMap(Bundle.init(url:)) {
             add(stringProvider: { request in
-                if request.key == request.defaultValue {
+                if request.key == request.defaultValue || request.defaultValue == "" {
                     // fall back to the english language version if Localizable.strings is missing this key
                     // this should only happen if we don't pull new strings before cutting a release
                     return fallbackBundle.localizedString(forKey: request.key, value: nil, table: request.table)
@@ -28,6 +28,14 @@ public class LocalizedManager {
 
     public func add(stringProvider: @escaping (StringProviderRequest) -> String?) {
         stringProviders.insert(stringProvider, at: 0)
+    }
+
+    public func frontend(_ key: String) -> String? {
+        let result = string(key, "Frontend")
+        guard result != key else {
+            return nil
+        }
+        return result
     }
 
     public func string(_ key: String, _ table: String) -> String {
