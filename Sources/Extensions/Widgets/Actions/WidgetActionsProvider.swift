@@ -11,7 +11,7 @@ struct WidgetActionsProvider: IntentTimelineProvider {
     typealias Entry = WidgetActionsEntry
 
     func placeholder(in context: Context) -> WidgetActionsEntry {
-        let count = WidgetActionsContainerView.maximumCount(family: context.family)
+        let count = WidgetBasicContainerView.maximumCount(family: context.family)
         let actions = stride(from: 0, to: count, by: 1).map { _ in
             with(Action()) {
                 $0.Text = "Redacted Text"
@@ -24,7 +24,7 @@ struct WidgetActionsProvider: IntentTimelineProvider {
 
     private static func defaultActions(in context: Context) -> [Action] {
         let allActions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
-        let maxCount = WidgetActionsContainerView.maximumCount(family: context.family)
+        let maxCount = WidgetBasicContainerView.maximumCount(family: context.family)
 
         switch allActions.count {
         case 0: return []

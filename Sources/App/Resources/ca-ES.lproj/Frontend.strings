@@ -1,0 +1,12 @@
+"panel::calendar" = "Calendari";
+"panel::config" = "Configuració";
+"panel::developer_tools" = "Eines per a desenvolupadors";
+"panel::energy" = "Energia";
+"panel::history" = "Historial";
+"panel::logbook" = "Diari de registre";
+"panel::mailbox" = "Bústia";
+"panel::map" = "Mapa";
+"panel::media_browser" = "Navegador multimèdia";
+"panel::profile" = "Perfil";
+"panel::shopping_list" = "Llista de la compra";
+"panel::states" = "Visualització principal";

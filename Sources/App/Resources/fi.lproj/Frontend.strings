@@ -1,0 +1,12 @@
+"panel::calendar" = "Kalenteri";
+"panel::config" = "Asetukset";
+"panel::developer_tools" = "Kehittäjän työkalut";
+"panel::energy" = "Energia";
+"panel::history" = "Historia";
+"panel::logbook" = "Lokikirja";
+"panel::mailbox" = "Postilaatikko";
+"panel::map" = "Kartta";
+"panel::media_browser" = "Mediaselain";
+"panel::profile" = "Profiili";
+"panel::shopping_list" = "Ostoslista";
+"panel::states" = "Yleisnäkymä";

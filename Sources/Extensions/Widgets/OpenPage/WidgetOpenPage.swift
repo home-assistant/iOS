@@ -3,33 +3,33 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-struct WidgetActions: Widget {
+struct WidgetOpenPage: Widget {
     var body: some WidgetConfiguration {
         IntentConfiguration(
-            kind: WidgetActionsIntent.widgetKind,
-            intent: WidgetActionsIntent.self,
-            provider: WidgetActionsProvider(),
+            kind: WidgetOpenPageIntent.widgetKind,
+            intent: WidgetOpenPageIntent.self,
+            provider: WidgetOpenPageProvider(),
             content: {
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
-                        AnyView(WidgetEmptyView(message: L10n.Widgets.Actions.notConfigured))
+                        AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
-                    contents: $0.actions.map { action in
+                    contents: $0.pages.map { panel in
                         WidgetBasicViewModel(
-                            id: action.ID,
-                            title: action.Text,
-                            widgetURL: action.widgetLinkURL,
-                            icon: action.IconName,
-                            textColor: .init(hex: action.TextColor),
-                            iconColor: .init(hex: action.IconColor),
-                            backgroundColor: .init(hex: action.BackgroundColor)
+                            id: panel.identifier!,
+                            title: panel.displayString,
+                            widgetURL: panel.widgetURL,
+                            icon: panel.icon ?? MaterialDesignIcons.abTestingIcon.name,
+                            textColor: Color(Constants.tintColor),
+                            iconColor: Color(Constants.tintColor),
+                            backgroundColor: Color(UIColor.systemBackground)
                         )
                     }
                 )
             }
         )
-        .configurationDisplayName(L10n.Widgets.Actions.title)
-        .description(L10n.Widgets.Actions.description)
+        .configurationDisplayName(L10n.Widgets.OpenPage.title)
+        .description(L10n.Widgets.OpenPage.description)
         .supportedFamilies({
             var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
 

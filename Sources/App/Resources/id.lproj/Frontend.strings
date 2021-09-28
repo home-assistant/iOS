@@ -1,0 +1,12 @@
+"panel::calendar" = "Kalender";
+"panel::config" = "Konfigurasi";
+"panel::developer_tools" = "Alat Pengembang";
+"panel::energy" = "Energy";
+"panel::history" = "Riwayat";
+"panel::logbook" = "Catatan Log";
+"panel::mailbox" = "Kotak Pesan";
+"panel::map" = "Peta";
+"panel::media_browser" = "Browser Media";
+"panel::profile" = "Profil";
+"panel::shopping_list" = "Daftar Belanja";
+"panel::states" = "Ikhtisar";

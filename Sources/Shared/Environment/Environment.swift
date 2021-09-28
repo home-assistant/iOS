@@ -27,10 +27,10 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     }
 }
 
-public var Current = Environment()
+public var Current = AppEnvironment()
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
-public class Environment {
+public class AppEnvironment {
     internal init() {
         PromiseKit.conf.logHandler = { event in
             Current.Log.info {
@@ -163,7 +163,7 @@ public class Environment {
 
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {
-        guard let pluginUrl = Bundle(for: Environment.self).builtInPlugInsURL,
+        guard let pluginUrl = Bundle(for: AppEnvironment.self).builtInPlugInsURL,
               let bundle = Bundle(url: pluginUrl.appendingPathComponent("MacBridge.bundle")) else {
             fatalError("couldn't load mac bridge bundle")
         }
@@ -376,4 +376,6 @@ public class Environment {
     public var connectivity = ConnectivityWrapper()
 
     public var focusStatus = FocusStatusWrapper()
+
+    public var diskCache: DiskCache = DiskCacheImpl()
 }

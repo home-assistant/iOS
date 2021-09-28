@@ -30,7 +30,7 @@ private extension UIApplication {
     }
 }
 
-extension Environment {
+extension AppEnvironment {
     var sceneManager: SceneManager {
         UIApplication.shared.typedDelegate.sceneManager
     }
@@ -595,6 +595,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.modelManager.subscribe()
         Action.setupObserver()
         NotificationCategory.setupObserver()
+        WidgetOpenPageIntent.setupObserver()
     }
 
     func setupMenus() {

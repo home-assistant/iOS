@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import HAKit
 import Intents
 import MapKit
 import UIColor_Hex_Swift
@@ -123,4 +124,51 @@ public extension IntentAction {
 @available(iOS 12, *)
 public extension WidgetActionsIntent {
     static let widgetKind = "WidgetActions"
+}
+
+@available(iOS 13, watchOS 7, *)
+public extension IntentPanel {
+    convenience init(panel: HAPanel) {
+        let image: INImage?
+
+        #if os(iOS)
+        image = panel.icon.flatMap {
+            INImage(
+                icon: MaterialDesignIcons(named: $0.normalizingIconString),
+                foreground: Constants.tintColor.resolvedColor(with: .init(userInterfaceStyle: .light)),
+                background: .white
+            )
+        }
+        #else
+        image = nil
+        #endif
+
+        if #available(iOS 14, *) {
+            self.init(
+                identifier: panel.path,
+                display: panel.title,
+                subtitle: nil,
+                image: image
+            )
+        } else {
+            self.init(
+                identifier: panel.path,
+                display: panel.title
+            )
+        }
+        self.icon = panel.icon?.normalizingIconString
+    }
+
+    var widgetURL: URL {
+        var components = URLComponents()
+        components.scheme = "homeassistant"
+        components.host = "navigate"
+        components.path = "/" + (identifier ?? "lovelace")
+        return components.url!
+    }
+}
+
+@available(iOS 12, *)
+public extension WidgetOpenPageIntent {
+    static let widgetKind = "WidgetOpenPage"
 }

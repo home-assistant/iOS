@@ -1,0 +1,12 @@
+"panel::calendar" = "日历";
+"panel::config" = "配置";
+"panel::developer_tools" = "开发者工具";
+"panel::energy" = "能源";
+"panel::history" = "历史";
+"panel::logbook" = "日志";
+"panel::mailbox" = "邮箱";
+"panel::map" = "地图";
+"panel::media_browser" = "媒体浏览器";
+"panel::profile" = "用户资料";
+"panel::shopping_list" = "购物清单";
+"panel::states" = "概览";

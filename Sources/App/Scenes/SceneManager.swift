@@ -201,13 +201,10 @@ class SceneManager {
 
     public func showFullScreenConfirm(
         icon: MaterialDesignIcons,
-        text: String
+        text: String,
+        onto window: Promise<UIWindow>
     ) {
-        firstly {
-            webViewWindowControllerPromise
-        }.compactMap { windowController in
-            windowController.window
-        }.done { window in
+        window.done { window in
             let hud = MBProgressHUD.showAdded(to: window, animated: true)
             hud.mode = .customView
             hud.backgroundView.style = .blur

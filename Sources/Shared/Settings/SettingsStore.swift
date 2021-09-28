@@ -464,6 +464,18 @@ public class SettingsStore {
         }
     }
 
+    public var widgetAuthenticityToken: String {
+        let key = "widgetAuthenticityToken"
+
+        if let existing = prefs.string(forKey: key) {
+            return existing
+        } else {
+            let string = UUID().uuidString
+            prefs.set(string, forKey: key)
+            return string
+        }
+    }
+
     // MARK: - Private helpers
 
     private var defaultDeviceID: String {

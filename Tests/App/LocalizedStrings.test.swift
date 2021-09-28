@@ -12,7 +12,7 @@ class LocalizedStrings: XCTestCase {
 
         for bundle in [
             Bundle(for: AppDelegate.self),
-            Bundle(for: Environment.self),
+            Bundle(for: AppEnvironment.self),
         ] {
             for languageSet in try Self.languageSets(for: bundle) {
                 try validate(languageSet: languageSet, expressions: expressions)

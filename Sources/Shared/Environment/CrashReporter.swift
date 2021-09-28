@@ -8,7 +8,7 @@ public protocol CrashReporter {
 }
 
 public class CrashReporterImpl: CrashReporter {
-    internal func setup(environment: Environment) {
+    internal func setup(environment: AppEnvironment) {
         guard environment.settingsStore.privacy.crashes else {
             return
         }

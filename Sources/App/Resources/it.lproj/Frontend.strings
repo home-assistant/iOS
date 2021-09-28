@@ -1,0 +1,12 @@
+"panel::calendar" = "Calendario";
+"panel::config" = "Impostazioni";
+"panel::developer_tools" = "Strumenti per sviluppatori";
+"panel::energy" = "Energia";
+"panel::history" = "Storico";
+"panel::logbook" = "Registro";
+"panel::mailbox" = "Posta";
+"panel::map" = "Mappa";
+"panel::media_browser" = "Browser multimediale";
+"panel::profile" = "Profilo";
+"panel::shopping_list" = "Lista della spesa";
+"panel::states" = "Panoramica";
