@@ -158,6 +158,7 @@
 		116570772702B0F6003906A7 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116570762702B0F6003906A7 /* DiskCache.swift */; };
 		116570782702B0F6003906A7 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116570762702B0F6003906A7 /* DiskCache.swift */; };
 		1165707C2702BAF5003906A7 /* DiskCache.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116570792702B9EB003906A7 /* DiskCache.test.swift */; };
+		116570802702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165707F2702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift */; };
 		116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
@@ -1180,6 +1181,7 @@
 		116570752702A411003906A7 /* cy-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "cy-GB"; path = "cy-GB.lproj/Frontend.strings"; sourceTree = "<group>"; };
 		116570762702B0F6003906A7 /* DiskCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskCache.swift; sourceTree = "<group>"; };
 		116570792702B9EB003906A7 /* DiskCache.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskCache.test.swift; sourceTree = "<group>"; };
+		1165707F2702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+WidgetAuthenticity.test.swift"; sourceTree = "<group>"; };
 		1167402225198F9A00F51626 /* MacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
@@ -3326,6 +3328,7 @@
 				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
 				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
 				116570792702B9EB003906A7 /* DiskCache.test.swift */,
+				1165707F2702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -5592,6 +5595,7 @@
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
 				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,
+				116570802702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift in Sources */,
 				1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */,
 				11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */,
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
