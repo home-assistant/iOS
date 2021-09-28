@@ -36,6 +36,7 @@ jobs:
         run: bundle exec fastlane update_strings
         env:
           HOMEASSISTANT_LOKALIZE_PROJECT_ID: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_ID }}
+          HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND: ${{ secrets.HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND }}
           HOMEASSISTANT_LOKALIZE_TOKEN: ${{ secrets.LOKALISE_TOKEN }}
 
       - name: Commit changes
