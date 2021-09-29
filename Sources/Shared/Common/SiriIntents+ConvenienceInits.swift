@@ -134,7 +134,7 @@ public extension IntentPanel {
         let icon = panel.icon?.normalizingIconString
 
         #if os(iOS)
-        image = panel.icon.flatMap {
+        image = icon.flatMap { icon in
             INImage(
                 icon: Self.materialDesignIcon(for: icon),
                 foreground: Constants.tintColor.resolvedColor(with: .init(userInterfaceStyle: .light)),
