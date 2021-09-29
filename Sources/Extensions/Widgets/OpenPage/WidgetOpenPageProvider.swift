@@ -8,27 +8,6 @@ struct WidgetOpenPageEntry: TimelineEntry {
     var pages: [IntentPanel] = []
 }
 
-private extension DiskCache {
-    func panels(timeout timeoutDuration: Measurement<UnitDuration>, key: String = "panels") -> Promise<HAPanels> {
-        let result: Promise<HAPanels> = firstly { () -> Guarantee<HAPanels> in
-            let apiCache = Current.apiConnection.caches.panels
-            apiCache.shouldResetWithoutSubscribers = true
-            return apiCache.once().promise
-        }.get { [self] value in
-            set(value, for: key).cauterize()
-        }
-
-        let timeout: Promise<HAPanels> = firstly {
-            after(seconds: timeoutDuration.converted(to: .seconds).value)
-        }.then { [self] in
-            // grab from cache after timeout
-            value(for: key)
-        }
-
-        return race(result, timeout)
-    }
-}
-
 struct WidgetOpenPageProvider: IntentTimelineProvider {
     typealias Intent = WidgetOpenPageIntent
     typealias Entry = WidgetOpenPageEntry
@@ -48,25 +27,51 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
 
     private func panels(
         for context: Context,
-        timeout: Measurement<UnitDuration> = .init(value: 15.0, unit: .seconds)
+        updating existing: [IntentPanel],
+        timeout: Measurement<UnitDuration> = .init(value: 10.0, unit: .seconds)
     ) -> Promise<[IntentPanel]> {
-        firstly {
-            diskCache.panels(timeout: timeout)
+        firstly { () -> Promise<[HAPanel]> in
+            let diskCacheKey = "panels"
+            let apiCache = Current.apiConnection.caches.panels
+            apiCache.shouldResetWithoutSubscribers = true
+
+            let result = apiCache.once().promise.get { value in
+                diskCache.set(value, for: diskCacheKey).cauterize()
+            }
+
+            let timeout: Promise<HAPanels> = firstly {
+                after(seconds: timeout.converted(to: .seconds).value)
+            }.then {
+                // grab from cache after timeout
+                diskCache.value(for: diskCacheKey)
+            }
+
+            return race(Promise(result), timeout)
+                .map(\.allPanels)
+        }.map { (panels: [HAPanel]) -> [IntentPanel] in
+            if existing.isEmpty {
+                return panels.map(IntentPanel.init(panel:))
+            } else {
+                // the configured values may be ancient, use the newer version but keep the same list
+                let intentified = panels.map(IntentPanel.init(panel:))
+                return existing.compactMap { existingValue in
+                    intentified.first(where: { $0.identifier == existingValue.identifier }) ?? existingValue
+                }
+            }
+        }.recover { error throws -> Promise<[IntentPanel]> in
+            if existing.isEmpty {
+                throw error
+            }
+            return .value(existing)
         }.map { panels in
-            panels.allPanels.prefix(WidgetBasicContainerView.maximumCount(family: context.family))
-        }.mapValues {
-            IntentPanel(panel: $0)
+            Array(panels.prefix(WidgetBasicContainerView.maximumCount(family: context.family)))
         }
     }
 
     func getSnapshot(for configuration: Intent, in context: Context, completion: @escaping (Entry) -> Void) {
-        if let pages = configuration.pages, !pages.isEmpty {
-            completion(.init(pages: pages))
-            return
-        }
-
         panels(
             for: context,
+            updating: configuration.pages ?? [],
             timeout: .init(value: 5.0, unit: .seconds)
         ).map { panels in
             Entry(pages: panels)
@@ -90,25 +95,10 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
             )
         }
 
-        let existing: [IntentPanel]? = configuration.pages.flatMap { $0.isEmpty ? nil : $0 }
-
-        panels(for: context).recover { error -> Promise<[IntentPanel]> in
-            // if the panels were configured, fall back to the saved value
-            if let existing = existing {
-                return .value(existing)
-            } else {
-                throw error
-            }
-        }.map { panels -> [IntentPanel] in
-            if let existing = existing {
-                // the configured values may be ancient, use the newer version but keep the same list
-                return existing.compactMap { existingValue in
-                    panels.first(where: { $0.identifier == existingValue.identifier }) ?? existingValue
-                }
-            } else {
-                return panels
-            }
-        }.map { panels in
+        panels(
+            for: context,
+            updating: configuration.pages ?? []
+        ).map { panels in
             timeline(for: panels)
         }.done {
             completion($0)

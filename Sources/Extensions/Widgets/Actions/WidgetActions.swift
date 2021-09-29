@@ -19,7 +19,7 @@ struct WidgetActions: Widget {
                             id: action.ID,
                             title: action.Text,
                             widgetURL: action.widgetLinkURL,
-                            icon: action.IconName,
+                            icon: MaterialDesignIcons(serversideValueNamed: action.IconName),
                             textColor: .init(hex: action.TextColor),
                             iconColor: .init(hex: action.IconColor),
                             backgroundColor: .init(hex: action.BackgroundColor)

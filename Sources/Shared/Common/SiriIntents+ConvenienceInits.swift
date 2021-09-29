@@ -131,10 +131,12 @@ public extension IntentPanel {
     convenience init(panel: HAPanel) {
         let image: INImage?
 
+        let icon = panel.icon?.normalizingIconString
+
         #if os(iOS)
-        image = panel.icon.flatMap {
+        image = icon.flatMap { icon in
             INImage(
-                icon: MaterialDesignIcons(named: $0.normalizingIconString),
+                icon: Self.materialDesignIcon(for: icon),
                 foreground: Constants.tintColor.resolvedColor(with: .init(userInterfaceStyle: .light)),
                 background: .white
             )
@@ -156,7 +158,7 @@ public extension IntentPanel {
                 display: panel.title
             )
         }
-        self.icon = panel.icon?.normalizingIconString
+        self.icon = icon
     }
 
     var widgetURL: URL {
@@ -165,6 +167,14 @@ public extension IntentPanel {
         components.host = "navigate"
         components.path = "/" + (identifier ?? "lovelace")
         return components.url!
+    }
+
+    private static func materialDesignIcon(for name: String?) -> MaterialDesignIcons {
+        MaterialDesignIcons(serversideValueNamed: name ?? "", fallback: .cogOutlineIcon)
+    }
+
+    var materialDesignIcon: MaterialDesignIcons {
+        Self.materialDesignIcon(for: icon)
     }
 }
 

@@ -18,8 +18,12 @@ public extension UIImage {
 }
 
 public extension MaterialDesignIcons {
-    convenience init(serversideValueNamed value: String) {
-        self.init(named: value.normalizingIconString)
+    convenience init(serversideValueNamed value: String, fallback: MaterialDesignIcons? = nil) {
+        if let fallback = fallback {
+            self.init(named: value.normalizingIconString, fallback: fallback)
+        } else {
+            self.init(named: value.normalizingIconString)
+        }
     }
 }
 

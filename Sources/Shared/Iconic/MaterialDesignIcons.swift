@@ -6,7 +6,7 @@
 
 import Foundation
 
-public final class MaterialDesignIcons: CaseIterable, Equatable, CustomStringConvertible, IconDrawable {
+public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, CustomStringConvertible, IconDrawable {
     public static let familyName: String = "MaterialDesignIcons"
     public static let count: Int = 6195
     public let name: String
@@ -17,12 +17,16 @@ public final class MaterialDesignIcons: CaseIterable, Equatable, CustomStringCon
     }
 
     public convenience init(named iconName: String) {
+        self.init(named: iconName, fallback: Self.allCases.first!)
+    }
+
+    public convenience init(named iconName: String, fallback: MaterialDesignIcons) {
         let existing: MaterialDesignIcons
 
         if let found = Self.allCases.first(where: { $0.name == iconName.lowercased() }) {
             existing = found
         } else {
-            existing = Self.allCases.first!
+            existing = fallback
         }
 
         self.init(name: existing.name, unicode: existing.unicode)
@@ -34,7 +38,11 @@ public final class MaterialDesignIcons: CaseIterable, Equatable, CustomStringCon
     }
 
     public static func == (lhs: MaterialDesignIcons, rhs: MaterialDesignIcons) -> Bool {
-        lhs.name == rhs.name && lhs.unicode == rhs.unicode
+        lhs.unicode == rhs.unicode
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(unicode)
     }
 
     public static let abTestingIcon = MaterialDesignIcons(name: "ab_testing", unicode: "\u{F01C9}")

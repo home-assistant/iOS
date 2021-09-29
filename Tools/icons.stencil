@@ -14,7 +14,7 @@ import Foundation
 {% for file in files %}
 {% set icons file.document.data %}
 {% set typeName %}{{param.typeName|default:file.name}}{% endset %}
-{{ accessModifier }} final class {{ typeName }}: CaseIterable, Equatable, CustomStringConvertible, IconDrawable {
+{{ accessModifier }} final class {{ typeName }}: CaseIterable, Hashable, Equatable, CustomStringConvertible, IconDrawable {
     {{ accessModifier }} static let familyName: String = "{{ typeName }}"
     {{ accessModifier }} static let count: Int = {{ icons.count }}
     {{ accessModifier }} let name: String
@@ -24,13 +24,17 @@ import Foundation
         "<MaterialDesignIcons: \(name)>"
     }
 
-    {{ accessModifier }} convenience init(named iconName: String) {
+    public convenience init(named iconName: String) {
+        self.init(named: iconName, fallback: Self.allCases.first!)
+    }
+
+    public convenience init(named iconName: String, fallback: MaterialDesignIcons) {
         let existing: {{ typeName }}
 
         if let found = Self.allCases.first(where: { $0.name == iconName.lowercased() }) {
             existing = found
         } else {
-            existing = Self.allCases.first!
+            existing = fallback
         }
 
         self.init(name: existing.name, unicode: existing.unicode)
@@ -42,7 +46,11 @@ import Foundation
     }
 
     {{ accessModifier }} static func == (lhs: {{ typeName }}, rhs: {{ typeName }}) -> Bool {
-        lhs.name == rhs.name && lhs.unicode == rhs.unicode
+        lhs.unicode == rhs.unicode
+    }
+
+    {{ accessModifier }} func hash(into hasher: inout Hasher) {
+        hasher.combine(unicode)
     }
 
     {% for icon in icons %}
