@@ -8,6 +8,7 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
     public var icon: String?
     public var title: String
     public var path: String
+    public var showInSidebar: Bool
 
     public init(data: HAData) throws {
         let component: String = try data.decode("component_name")
@@ -19,6 +20,7 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
             }
         }()
 
+        self.showInSidebar = data.decode("show_in_sidebar", fallback: true)
         self.icon = data.decode("icon", fallback: fallbackIcon)
         self.path = try data.decode("url_path")
 
@@ -63,6 +65,8 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
                 .mapValues {
                     try HAPanel(data: .init(value: $0))
                 }
+                // non-show_in_sidebar dashboards have badly-named titles
+                .filter(\.value.showInSidebar)
         )
     }
 }
