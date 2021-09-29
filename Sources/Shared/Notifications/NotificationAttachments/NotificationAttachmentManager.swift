@@ -10,6 +10,9 @@ public enum NotificationAttachmentManagerServiceError: Error {
 }
 
 public protocol NotificationAttachmentManager {
+    func decryptContent(
+        fromUserInfo payload: [AnyHashable: Any]
+    ) -> Promise<UNNotificationContent>
     func content(
         from originalContent: UNNotificationContent,
         api: HomeAssistantAPI
@@ -32,6 +35,14 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
 
     init(parsers: [NotificationAttachmentParser.Type]) {
         self.parsers = parsers
+    }
+
+    func decryptContent(fromUserInfo payload: [AnyHashable: Any]) -> Promise<UNNotificationContent> {
+        Promise.value(payload)
+            .decrypted(on: DispatchQueue.global(qos: .utility), requireEncryption: true)
+            .compactMap { $0 as? [String: Any] }
+            .map { try LocalPushEvent(data: .dictionary($0)) }
+            .map { $0.content }
     }
 
     public func content(
