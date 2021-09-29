@@ -173,7 +173,6 @@ public extension IntentPanel {
         MaterialDesignIcons(serversideValueNamed: name ?? "", fallback: .cogOutlineIcon)
     }
 
-
     var materialDesignIcon: MaterialDesignIcons {
         Self.materialDesignIcon(for: icon)
     }
