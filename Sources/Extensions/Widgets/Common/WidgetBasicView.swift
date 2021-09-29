@@ -7,7 +7,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
         id: String,
         title: String,
         widgetURL: URL,
-        icon: String,
+        icon: MaterialDesignIcons,
         textColor: Color = Color.black,
         iconColor: Color = Color.black,
         backgroundColor: Color = Color.white
@@ -26,7 +26,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     var title: String
     var widgetURL: URL
 
-    var icon: String
+    var icon: MaterialDesignIcons
 
     var backgroundColor: Color
     var textColor: Color
@@ -72,7 +72,7 @@ struct WidgetBasicView: View {
             switch sizeStyle {
             case .condensed:
                 HStack(alignment: .center) {
-                    Text(verbatim: MaterialDesignIcons(named: model.icon).unicode)
+                    Text(verbatim: model.icon.unicode)
                         .font(.custom(MaterialDesignIcons.familyName, size: 16.0))
                         .foregroundColor(model.iconColor)
                     text
@@ -81,7 +81,7 @@ struct WidgetBasicView: View {
                 .padding([.leading])
             case .regular, .expanded, .single:
                 VStack(alignment: .leading) {
-                    Text(verbatim: MaterialDesignIcons(named: model.icon).unicode)
+                    Text(verbatim: model.icon.unicode)
                         .font(.custom(MaterialDesignIcons.familyName, size: 38.0))
                         .minimumScaleFactor(0.2)
                         .foregroundColor(model.iconColor)

@@ -19,7 +19,7 @@ struct WidgetOpenPage: Widget {
                             id: panel.identifier!,
                             title: panel.displayString,
                             widgetURL: panel.widgetURL,
-                            icon: panel.icon ?? MaterialDesignIcons.abTestingIcon.name,
+                            icon: panel.materialDesignIcon,
                             textColor: Color(Constants.tintColor),
                             iconColor: Color(Constants.tintColor),
                             backgroundColor: Color(UIColor.systemBackground)
