@@ -61,7 +61,13 @@ struct WidgetBasicView: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            model.backgroundColor
+            Rectangle().fill(
+                LinearGradient(
+                    gradient: .init(colors: [.white.opacity(0.06), .black.opacity(0.06)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
 
             let text = Text(verbatim: model.title)
                 .font(sizeStyle.font)
