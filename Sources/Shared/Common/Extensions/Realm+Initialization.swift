@@ -152,11 +152,10 @@ public extension Realm {
 
                 do {
                     // always do an MDI migration, since micro-managing whether it needs to be done is annoying
-                    let mdiMigration = MDIMigration()
                     migration.enumerateObjects(ofType: Action.className()) { _, newObject in
                         let iconNameKey = "IconName"
                         if let oldIconName = newObject?[iconNameKey] as? String {
-                            newObject?[iconNameKey] = mdiMigration.migrate(icon: oldIconName)
+                            newObject?[iconNameKey] = MDIMigration.migrate(icon: oldIconName)
                         }
                     }
                     migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
@@ -170,7 +169,7 @@ public extension Realm {
                            let oldIconDict = oldJson[iconDictKey] as? [String: String],
                            let oldIconIcon = oldIconDict[iconDictIconKey] {
                             var updatedIconDict = oldIconDict
-                            updatedIconDict[iconDictIconKey] = mdiMigration.migrate(icon: oldIconIcon)
+                            updatedIconDict[iconDictIconKey] = MDIMigration.migrate(icon: oldIconIcon)
                             var updatedJson = oldJson
                             updatedJson[iconDictKey] = updatedIconDict
                             if let newData = try? JSONSerialization.data(withJSONObject: updatedJson, options: []) {
