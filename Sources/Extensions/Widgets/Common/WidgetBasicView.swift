@@ -39,7 +39,7 @@ enum WidgetBasicSizeStyle {
     case condensed
     case regular
 
-    var font: Font {
+    var textFont: Font {
         switch self {
         case .single, .expanded:
             return .subheadline
@@ -70,8 +70,8 @@ struct WidgetBasicView: View {
             )
 
             let text = Text(verbatim: model.title)
-                .font(sizeStyle.font)
-                .fontWeight(.bold)
+                .font(sizeStyle.textFont)
+                .fontWeight(.semibold)
                 .multilineTextAlignment(.leading)
                 .foregroundColor(model.textColor)
 
