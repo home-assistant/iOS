@@ -20,9 +20,9 @@ struct WidgetOpenPage: Widget {
                             title: panel.displayString,
                             widgetURL: panel.widgetURL,
                             icon: panel.materialDesignIcon,
-                            textColor: Color(Constants.tintColor),
-                            iconColor: Color(Constants.tintColor),
-                            backgroundColor: Color(UIColor.systemBackground)
+                            textColor: .white,
+                            iconColor: .white,
+                            backgroundColor: Color(Constants.darkerTintColor)
                         )
                     }
                 )
