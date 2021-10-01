@@ -8,6 +8,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
         title: String,
         widgetURL: URL,
         icon: MaterialDesignIcons,
+        showsChevron: Bool = false,
         textColor: Color = Color.black,
         iconColor: Color = Color.black,
         backgroundColor: Color = Color.white
@@ -17,6 +18,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
         self.widgetURL = widgetURL
         self.textColor = textColor
         self.icon = icon
+        self.showsChevron = showsChevron
         self.iconColor = iconColor
         self.backgroundColor = backgroundColor
     }
@@ -27,6 +29,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     var widgetURL: URL
 
     var icon: MaterialDesignIcons
+    var showsChevron: Bool
 
     var backgroundColor: Color
     var textColor: Color
@@ -62,6 +65,22 @@ enum WidgetBasicSizeStyle {
 
         return .custom(MaterialDesignIcons.familyName, size: size)
     }
+
+    var chevronFont: Font {
+        let size: CGFloat
+
+        switch self {
+        case .single, .expanded:
+            size = 18
+        case .regular:
+            size = 14
+        case .condensed:
+            size = 9
+        }
+
+        return .system(size: size, weight: .semibold)
+    }
+
 }
 
 struct WidgetBasicView: View {
@@ -94,11 +113,19 @@ struct WidgetBasicView: View {
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
 
-            let icon = Text(verbatim: model.icon.unicode)
+            let icon = HStack(spacing: 0) {
+                Text(verbatim: model.icon.unicode)
                 .font(sizeStyle.iconFont)
                 .minimumScaleFactor(0.2)
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
+
+                if model.showsChevron {
+                    Image(systemName: "chevron.right")
+                        .font(sizeStyle.chevronFont)
+                        .foregroundColor(model.iconColor.opacity(0.8))
+                }
+            }
 
             switch sizeStyle {
             case .regular, .condensed:

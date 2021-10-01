@@ -20,6 +20,7 @@ struct WidgetOpenPage: Widget {
                             title: panel.displayString,
                             widgetURL: panel.widgetURL,
                             icon: panel.materialDesignIcon,
+                            showsChevron: true,
                             textColor: .white,
                             iconColor: .white,
                             backgroundColor: Color(Constants.darkerTintColor)
