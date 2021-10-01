@@ -116,13 +116,7 @@ struct WidgetBasicView: View {
                     [.leading, .trailing]
                 ).padding(
                     [.top, .bottom],
-                    {
-                        if sizeStyle == .regular {
-                            return 10
-                        } else {
-                            return nil // use default
-                        }
-                    }()
+                    sizeStyle == .regular ? 10 : /* use default */ nil
                 )
             }
         }
