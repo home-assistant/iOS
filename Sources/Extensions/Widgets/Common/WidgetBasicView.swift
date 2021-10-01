@@ -47,6 +47,21 @@ enum WidgetBasicSizeStyle {
             return .footnote
         }
     }
+
+    var iconFont: Font {
+        let size: CGFloat
+
+        switch self {
+        case .single, .expanded:
+            size = 38
+        case .regular:
+            size = 28
+        case .condensed:
+            size = 18
+        }
+
+        return .custom(MaterialDesignIcons.familyName, size: size)
+    }
 }
 
 struct WidgetBasicView: View {
@@ -74,27 +89,41 @@ struct WidgetBasicView: View {
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.leading)
                 .foregroundColor(model.textColor)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+
+            let icon = Text(verbatim: model.icon.unicode)
+                .font(sizeStyle.iconFont)
+                .minimumScaleFactor(0.2)
+                .foregroundColor(model.iconColor)
+                .fixedSize(horizontal: false, vertical: false)
 
             switch sizeStyle {
-            case .condensed:
-                HStack(alignment: .center) {
-                    Text(verbatim: model.icon.unicode)
-                        .font(.custom(MaterialDesignIcons.familyName, size: 16.0))
-                        .foregroundColor(model.iconColor)
+            case .regular, .condensed:
+                HStack(alignment: .center, spacing: 6.0) {
+                    icon
                     text
                     Spacer()
-                }
-                .padding([.leading])
-            case .regular, .expanded, .single:
-                VStack(alignment: .leading) {
-                    Text(verbatim: model.icon.unicode)
-                        .font(.custom(MaterialDesignIcons.familyName, size: 38.0))
-                        .minimumScaleFactor(0.2)
-                        .foregroundColor(model.iconColor)
+                }.padding(
+                    .leading, 12
+                )
+            case .single, .expanded:
+                VStack(alignment: .leading, spacing: 0) {
+                    icon
                     Spacer()
                     text
-                }
-                .padding()
+                }.padding(
+                    [.leading, .trailing]
+                ).padding(
+                    [.top, .bottom],
+                    {
+                        if sizeStyle == .regular {
+                            return 10
+                        } else {
+                            return nil // use default
+                        }
+                    }()
+                )
             }
         }
     }
