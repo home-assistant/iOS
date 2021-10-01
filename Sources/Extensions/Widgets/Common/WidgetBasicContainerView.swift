@@ -37,12 +37,14 @@ struct WidgetBasicContainerView: View {
         let rows = Array(columnify(count: columnCount, models: models))
 
         let sizeStyle: WidgetBasicSizeStyle = {
-            let condensed = Self.compactSizeBreakpoint(for: family) < actionCount
-            let maximumRowCount = Self.maximumCount(family: family) / columnCount
+            let compactBp = Self.compactSizeBreakpoint(for: family)
+
+            let condensed = compactBp < actionCount
+            let compactRowCount = compactBp / Self.columnCount(family: family, modelCount: compactBp)
 
             if condensed {
                 return .condensed
-            } else if rows.count < maximumRowCount {
+            } else if rows.count < compactRowCount {
                 return .expanded
             } else {
                 return .regular
