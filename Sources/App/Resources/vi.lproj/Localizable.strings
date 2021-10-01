@@ -713,4 +713,7 @@ Your actions and local configuration will still be available after logging in.";
 "widgets.actions.description" = "Thực hiện các tác vụ của Home Assistant.";
 "widgets.actions.not_configured" = "Không có Hành động nào được Cấu hình";
 "widgets.actions.title" = "Hành động";
+"widgets.open_page.description" = "Open a frontend page in Home Assistant.";
+"widgets.open_page.not_configured" = "No Pages Available";
+"widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";

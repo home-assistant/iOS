@@ -713,4 +713,7 @@
 "widgets.actions.description" = "Виконайте дії Home Assistant.";
 "widgets.actions.not_configured" = "Жодних дій не налаштовано";
 "widgets.actions.title" = "Дії";
+"widgets.open_page.description" = "Open a frontend page in Home Assistant.";
+"widgets.open_page.not_configured" = "No Pages Available";
+"widgets.open_page.title" = "Open Page";
 "yes_label" = "Так";

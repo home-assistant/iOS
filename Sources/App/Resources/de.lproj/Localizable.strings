@@ -714,4 +714,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "widgets.actions.description" = "Home Assistant Aktionen durchführen.";
 "widgets.actions.not_configured" = "Keine Aktionen eingerichtet";
 "widgets.actions.title" = "Aktionen";
+"widgets.open_page.description" = "Open a frontend page in Home Assistant.";
+"widgets.open_page.not_configured" = "No Pages Available";
+"widgets.open_page.title" = "Open Page";
 "yes_label" = "Ja";

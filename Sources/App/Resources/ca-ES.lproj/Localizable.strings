@@ -713,4 +713,7 @@ Les vostres accions i la configuració local encara estaran disponibles després
 "widgets.actions.description" = "Realitza accions del Home Assistant.";
 "widgets.actions.not_configured" = "No hi ha accions configurades";
 "widgets.actions.title" = "Accions";
+"widgets.open_page.description" = "Open a frontend page in Home Assistant.";
+"widgets.open_page.not_configured" = "No Pages Available";
+"widgets.open_page.title" = "Open Page";
 "yes_label" = "Si";

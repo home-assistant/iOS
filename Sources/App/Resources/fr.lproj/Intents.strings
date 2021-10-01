@@ -12,6 +12,7 @@
 "8skKro" = "Which actions?";
 "B4bXyc" = "Done";
 "CmlkE4" = "shortcut_event";
+"DFWJB8" = "Open ${page}";
 "DdnZyl" = "Got the latest still from ${cameraID}";
 "DsasVx" = "Error";
 "EWqRDj" = "Failed: ${error}";
@@ -24,10 +25,11 @@
 "KHH48D" = "Failed: Home Assistant is not currently reachable";
 "KJS2jk" = "Failed: ${error}";
 "KM7mXC" = "Action";
-"KSmKl0" = "Called ${domain}.${service}";
+"KSmKl0" = "Service ${domain}.${service} appelé";
 "KzOHYA" = "Failed: ${error}";
 "LVEY3e" = "Camera ID";
 "Lgymq2" = "Which service?";
+"LsEMMg" = "Icon";
 "MTPojJ" = "What is the event name?";
 "MwEpGz" = "Done";
 "N9iJpK" = "Get Camera Image";
@@ -39,6 +41,7 @@
 "RCQAlr" = "Get Camera Image from ${cameraID}";
 "RMQY3r" = "Send location to Home Assistant";
 "RsOw3P" = "Successfully rendered template";
+"T06Fka" = "Open a page in the frontend";
 "ULka1b" = "Actions";
 "VP2XpM" = "Event Data";
 "X02YQ2" = "${action}";
@@ -46,12 +49,15 @@
 "Xq7UuD" = "Render the provided template";
 "YNQXwq" = "Error";
 "ZApPxB" = "Service Name";
+"ZRPVYO" = "Open a page in the frontend";
 "ZT9Mld" = "Event Name";
 "ZmUm9Q" = "What template would you like to render?";
+"Zoqsph" = "Page";
 "cK9jdK" = "Failed: ${error}";
 "cLmTme" = "Action";
 "cuflz3" = "Failed: Home Assistant is not currently reachable";
 "dFHPYK" = "Performed ${action}";
+"eObn2i" = "Page";
 "f1KX0Q" = "View and run actions";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Which action?";
@@ -66,6 +72,7 @@
 "h1xQ53" = "Update Sensors";
 "hLFNfv" = "Failed: ${error}";
 "hsrlTY" = "Get a single still frame from a camera";
+"iMvUhs" = "Open Page";
 "jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
 "kGB23u" = "Perform Action";
 "lGqSSG" = "Failed to update sensors.";
@@ -75,11 +82,14 @@
 "mJ6CrP" = "Failed to send ${eventName}: ${error}";
 "mZnRHS" = "${eventName} fired";
 "mi6B62" = "What data do you want to send with the event?";
+"ns9RRU" = "Open Page";
 "nzqmFA" = "Done";
+"oHn0vD" = "Pages";
 "oIWFyR" = "Failed: ${error}";
-"onq5yE" = "Failed to call service with error: ${error}";
+"onq5yE" = "Impossible d'appeler le service, erreur: ${error}";
 "pQhTjo" = "Failed: Home Assistant is not currently reachable";
 "pjQR7t" = "Update Sensors";
+"qYpzmu" = "Which pages?";
 "qayMH6" = "Call Service";
 "qzje4k" = "Failed: ${error}";
 "r32M7N" = "Failed: ${error}";
@@ -96,3 +106,4 @@
 "xhwpj4" = "Done";
 "ypnPyU" = "Perform ${action}";
 "yyjTxO" = "Error";
+"zjdBxm" = "Which page?";
