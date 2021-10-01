@@ -25,6 +25,7 @@ struct WidgetBasicContainerView: View {
     func singleView(for model: WidgetBasicViewModel) -> some View {
         ZStack {
             model.backgroundColor
+                .opacity(0.8)
             WidgetBasicView(model: model, sizeStyle: .single)
                 .widgetURL(model.widgetURL.withWidgetAuthenticity())
         }
@@ -58,6 +59,7 @@ struct WidgetBasicContainerView: View {
                         ZStack {
                             // stacking the color under makes the Link's highlight state nicer
                             model.backgroundColor
+                                .opacity(0.8)
                             Link(destination: model.widgetURL.withWidgetAuthenticity()) {
                                 WidgetBasicView(model: model, sizeStyle: sizeStyle)
                             }
