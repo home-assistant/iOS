@@ -23,8 +23,11 @@ struct WidgetBasicContainerView: View {
     }
 
     func singleView(for model: WidgetBasicViewModel) -> some View {
-        WidgetBasicView(model: model, sizeStyle: .single)
-            .widgetURL(model.widgetURL.withWidgetAuthenticity())
+        ZStack {
+            model.backgroundColor
+            WidgetBasicView(model: model, sizeStyle: .single)
+                .widgetURL(model.widgetURL.withWidgetAuthenticity())
+        }
     }
 
     @ViewBuilder
@@ -50,8 +53,12 @@ struct WidgetBasicContainerView: View {
             ForEach(rows, id: \.self) { column in
                 HStack(spacing: pixelLength) {
                     ForEach(column) { model in
-                        Link(destination: model.widgetURL.withWidgetAuthenticity()) {
-                            WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                        ZStack {
+                            // stacking the color under makes the Link's highlight state nicer
+                            model.backgroundColor
+                            Link(destination: model.widgetURL.withWidgetAuthenticity()) {
+                                WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                            }
                         }
                     }
                 }
