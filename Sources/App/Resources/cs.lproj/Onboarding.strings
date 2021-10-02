@@ -29,6 +29,6 @@
 "lM3-aA-jqO.text" = "Ověřování";
 "mse-YA-DiV.text" = "Vítejte v Home Assistant Companion!";
 "nJr-sw-A9l.text" = "Ověřeno";
-"suf-pJ-Nle.normalTitle" = "Start Over";
-"wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to.";
+"suf-pJ-Nle.normalTitle" = "Začít znovu";
+"wsC-f5-jbO.text" = "Nyní jsme připraveni připojit se k vašemu Home Assistant a provést počáteční ověření. Klepnutím na tlačítko Připojit níže se otevře prohlížeč, do kterého se můžete přihlásit.";
 "xO0-K1-GJX.placeholder" = "např. http://homeassistant.local:8123";

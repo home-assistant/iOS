@@ -713,4 +713,7 @@
 "widgets.actions.description" = "Εκτελέστε ενέργειες Home Assistant.";
 "widgets.actions.not_configured" = "Δεν έχουν ρυθμιστεί ενέργειες";
 "widgets.actions.title" = "Ενέργειες";
+"widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
+"widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
+"widgets.open_page.title" = "Άνοιγμα σελίδας";
 "yes_label" = "Ναι";

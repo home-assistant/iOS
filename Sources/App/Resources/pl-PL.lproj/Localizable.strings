@@ -711,4 +711,7 @@ Twoje działania i lokalna konfiguracja będą nadal dostępne po zalogowaniu.";
 "widgets.actions.description" = "Wykonaj akcje Home Assistant.";
 "widgets.actions.not_configured" = "Brak skonfigurowanych akcji";
 "widgets.actions.title" = "Akcje";
+"widgets.open_page.description" = "Open a frontend page in Home Assistant.";
+"widgets.open_page.not_configured" = "No Pages Available";
+"widgets.open_page.title" = "Open Page";
 "yes_label" = "Tak";

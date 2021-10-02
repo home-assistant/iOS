@@ -713,4 +713,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "widgets.actions.description" = "Utfør Home Assistant handlinger.";
 "widgets.actions.not_configured" = "Ingen handlinger konfigurert";
 "widgets.actions.title" = "Handlinger";
+"widgets.open_page.description" = "Åpne en frontend -side i Home Assistant.";
+"widgets.open_page.not_configured" = "Ingen sider tilgjengelig";
+"widgets.open_page.title" = "Åpne side";
 "yes_label" = "Ja";

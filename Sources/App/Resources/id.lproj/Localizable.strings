@@ -713,4 +713,7 @@ Tindakan dan konfigurasi lokal Anda akan tetap tersedia setelah masuk.";
 "widgets.actions.description" = "Luncurkan aksi Home Assistant";
 "widgets.actions.not_configured" = "Tidak Ada Aksi yang Dikonfigurasi";
 "widgets.actions.title" = "Aksi";
+"widgets.open_page.description" = "Open a frontend page in Home Assistant.";
+"widgets.open_page.not_configured" = "No Pages Available";
+"widgets.open_page.title" = "Open Page";
 "yes_label" = "Ya";

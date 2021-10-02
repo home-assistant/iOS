@@ -713,4 +713,7 @@
 "widgets.actions.description" = "執行 Home Assistant 動作。";
 "widgets.actions.not_configured" = "未設定動作";
 "widgets.actions.title" = "動作";
+"widgets.open_page.description" = "於 Home Assistant 中開啟前端頁面。";
+"widgets.open_page.not_configured" = "無頁面可使用";
+"widgets.open_page.title" = "開啟頁面";
 "yes_label" = "是";

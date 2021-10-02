@@ -713,4 +713,7 @@ Uw acties en lokale configuratie zijn nog steeds beschikbaar na het inloggen.";
 "widgets.actions.description" = "Voer Home Assistant-acties uit.";
 "widgets.actions.not_configured" = "Geen acties geconfigureerd";
 "widgets.actions.title" = "Acties";
+"widgets.open_page.description" = "Open een frontend-pagina in Home Assistant";
+"widgets.open_page.not_configured" = "Geen pagina's beschikbaar";
+"widgets.open_page.title" = "Open pagina";
 "yes_label" = "Ja";
