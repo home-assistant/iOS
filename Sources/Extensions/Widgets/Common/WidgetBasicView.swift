@@ -78,7 +78,7 @@ enum WidgetBasicSizeStyle {
             size = 9
         }
 
-        return .system(size: size, weight: .semibold)
+        return .system(size: size, weight: .bold)
     }
 
 }
@@ -113,7 +113,7 @@ struct WidgetBasicView: View {
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
 
-            let icon = HStack(spacing: 0) {
+            let icon = HStack(alignment: .center, spacing: -1) {
                 Text(verbatim: model.icon.unicode)
                 .font(sizeStyle.iconFont)
                 .minimumScaleFactor(0.2)
@@ -121,9 +121,10 @@ struct WidgetBasicView: View {
                 .fixedSize(horizontal: false, vertical: false)
 
                 if model.showsChevron {
-                    Image(systemName: "chevron.right")
+                    // this sfsymbols is a little more legible at smaller size than mdi:open-in-new
+                    Image(systemName: "arrow.up.forward.app")
                         .font(sizeStyle.chevronFont)
-                        .foregroundColor(model.iconColor.opacity(0.8))
+                        .foregroundColor(model.iconColor)
                 }
             }
 
