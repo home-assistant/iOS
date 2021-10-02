@@ -113,7 +113,7 @@ struct WidgetBasicView: View {
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
 
-            let icon = HStack(alignment: .center, spacing: -1) {
+            let icon = HStack(alignment: .top, spacing: -1) {
                 Text(verbatim: model.icon.unicode)
                 .font(sizeStyle.iconFont)
                 .minimumScaleFactor(0.2)
