@@ -171,12 +171,8 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return ignore(.ignoredSSID(current))
         }
 
-        do {
-            try zone.realm?.reentrantWrite {
-                zone.inRegion = state == .inside
-            }
-        } catch {
-            return ignore(.zoneUpdateFailed(error as NSError))
+        zone.realm?.reentrantWrite {
+            zone.inRegion = state == .inside
         }
 
         if region is CLBeaconRegion, state == .outside {

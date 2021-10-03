@@ -279,7 +279,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         if let clErr = error as? CLError {
             let realm = Current.realm()
-            try? realm.write {
+            realm.reentrantWrite {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }

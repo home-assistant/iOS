@@ -65,8 +65,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             }
         }.then { paired -> Promise<Void> in
             let realm = Current.realm()
-
-            try realm.write {
+            return realm.reentrantWrite {
                 for (identifier, rendered) in paired {
                     if let complication = realm.object(ofType: watchComplicationClass, forPrimaryKey: identifier) {
                         Current.Log.verbose("updating \(identifier) with \(rendered)")
@@ -76,8 +75,6 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                     }
                 }
             }
-
-            return .value(())
         }.done {
             #if os(watchOS)
             Self.updateComplications()

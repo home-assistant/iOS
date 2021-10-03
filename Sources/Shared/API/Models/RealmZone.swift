@@ -123,8 +123,7 @@ public final class RLMZone: Object, UpdatableModel {
                     text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
                     type: .locationUpdate
                 )
-            Current.clientEventStore.addEvent(event)
-            Current.Log.error("Couldn't create CLBeaconRegion (\(ID)) because of invalid UUID: \(uuidString)")
+            Current.clientEventStore.addEvent(event).cauterize()
             return nil
         }
 

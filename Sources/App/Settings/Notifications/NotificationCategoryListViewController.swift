@@ -106,9 +106,7 @@ class NotificationCategoryListViewController: HAFormViewController {
                     Current.Log.verbose("Saving category! \(vc.category)")
 
                     let realm = Current.realm()
-
-                    // swiftlint:disable:next force_try
-                    try! realm.write {
+                    realm.reentrantWrite {
                         realm.add(vc.category, update: .all)
                     }
                 }
@@ -128,8 +126,7 @@ class NotificationCategoryListViewController: HAFormViewController {
         let realm = Current.realm()
 
         if (rows.first as? ButtonRowWithPresent<NotificationCategoryConfigurator>) != nil {
-            // swiftlint:disable:next force_try
-            try! realm.write {
+            realm.reentrantWrite {
                 realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", deletedIDs))
             }
         }

@@ -3,6 +3,7 @@ import RealmSwift
 #if os(iOS)
 import UIKit
 #endif
+import PromiseKit
 
 public extension Realm {
     /// An in-memory data store, intended to be used in tests.
@@ -282,14 +283,29 @@ public extension Realm {
         #endif
     }
 
+    @discardableResult
     func reentrantWrite<Result>(
         withoutNotifying tokens: [NotificationToken] = [],
         _ block: () throws -> Result
-    ) throws -> Result {
+    ) -> Promise<Result> {
+        let promise: Promise<Result>
+
         if isInWriteTransaction {
-            return try block()
+            promise = Promise { seal in
+                seal.fulfill(try block())
+            }
         } else {
-            return try write(withoutNotifying: tokens, block)
+            promise = Current.backgroundTask(withName: "realm-write") { _ in
+                Promise<Result> { seal in
+                    seal.fulfill(try write(withoutNotifying: tokens, block))
+                }
+            }
         }
+
+        promise.catch { error in
+            Current.Log.error(error)
+        }
+
+        return promise
     }
 }

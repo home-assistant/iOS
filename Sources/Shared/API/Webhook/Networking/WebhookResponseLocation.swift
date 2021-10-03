@@ -71,7 +71,7 @@ struct WebhookResponseLocation: WebhookResponseHandler {
                 text: notificationOptions.body,
                 type: .locationUpdate,
                 payload: try? request.asDictionary()
-            ))
+            )).cauterize()
 
             guard notificationOptions.shouldNotify else {
                 return nil

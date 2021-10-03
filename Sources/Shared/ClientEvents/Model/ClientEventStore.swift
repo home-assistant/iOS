@@ -1,18 +1,14 @@
 import Foundation
+import PromiseKit
 import RealmSwift
 
 public struct ClientEventStore {
-    public var addEvent: (ClientEvent) -> Void = { event in
+    public var addEvent: (ClientEvent) -> Promise<Void> = { event in
         let realm = Current.realm()
-        do {
-            try realm.reentrantWrite {
-                realm.add(event)
-            }
-        } catch {
-            Current.Log.error("Error writing client event: \(error)")
-        }
-
         Current.Log.info("\(event.type): \(event.text) \(event.jsonPayload ?? [:])")
+        return realm.reentrantWrite {
+            realm.add(event)
+        }
     }
 
     public func getEvents(filter: String? = nil) -> AnyRealmCollection<ClientEvent> {
@@ -25,15 +21,10 @@ public struct ClientEventStore {
         }
     }
 
-    public var clearAllEvents: () -> Void = {
+    public var clearAllEvents: () -> Promise<Void> = {
         let realm = Current.realm()
-
-        do {
-            try realm.reentrantWrite {
-                realm.delete(realm.objects(ClientEvent.self))
-            }
-        } catch {
-            Current.Log.error("Error writing client event: \(error)")
+        return realm.reentrantWrite {
+            realm.delete(realm.objects(ClientEvent.self))
         }
     }
 }

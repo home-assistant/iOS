@@ -30,31 +30,27 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
     }
 
     @objc private func save() {
-        do {
-            let realm = Current.realm()
-            try realm.write {
-                if let name = (form.rowBy(tag: "name") as? TextRow)?.value, name.isEmpty == false {
-                    config.name = name
-                } else {
-                    config.name = nil
-                }
-                if let IsPublic = (form.rowBy(tag: "IsPublic") as? SwitchRow)?.value {
-                    config.IsPublic = IsPublic
-                } else {
-                    config.IsPublic = true
-                }
-                config.Template = displayTemplate
-                config.Data = getValuesGroupedBySection()
-
-                Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
-
-                realm.add(config, update: .all)
+        let realm = Current.realm()
+        realm.reentrantWrite {
+            if let name = (form.rowBy(tag: "name") as? TextRow)?.value, name.isEmpty == false {
+                config.name = name
+            } else {
+                config.name = nil
             }
-        } catch {
-            Current.Log.error(error)
-        }
+            if let IsPublic = (form.rowBy(tag: "IsPublic") as? SwitchRow)?.value {
+                config.IsPublic = IsPublic
+            } else {
+                config.IsPublic = true
+            }
+            config.Template = displayTemplate
+            config.Data = getValuesGroupedBySection()
 
-        Current.api.then(on: nil) { api in
+            Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
+
+            realm.add(config, update: .all)
+        }.then(on: nil) {
+            Current.api
+        }.then(on: nil) { api in
             api.updateComplications(passively: false)
         }.cauterize()
 
@@ -76,15 +72,11 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
         alert.addAction(UIAlertAction(
             title: L10n.Watch.Configurator.Delete.button, style: .destructive, handler: { [config] _ in
                 let realm = Current.realm()
-                do {
-                    try realm.write {
-                        realm.delete(config)
-                    }
-                } catch {
-                    Current.Log.error(error)
-                }
-
-                Current.api.then(on: nil) { api in
+                realm.reentrantWrite {
+                    realm.delete(config)
+                }.then(on: nil) {
+                    Current.api
+                }.then(on: nil) { api in
                     api.updateComplications(passively: false)
                 }.cauterize()
 

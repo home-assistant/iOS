@@ -23,7 +23,7 @@ struct WebhookResponseServiceCall: WebhookResponseHandler {
     ) -> Guarantee<WebhookResponseHandlerResult> {
         firstly {
             when(fulfilled: request, result)
-        }.get { request, _ in
+        }.then { request, _ -> Promise<Void> in
             let requestDictionary = try request.asDictionary()
 
             let domain = requestDictionary["domain"] as? String ?? "(unknown)"
@@ -36,8 +36,8 @@ struct WebhookResponseServiceCall: WebhookResponseHandler {
                 payload: payload
             )
 
-            Current.clientEventStore.addEvent(event)
-        }.then { _ in
+            return Current.clientEventStore.addEvent(event)
+        }.then {
             Guarantee.value(WebhookResponseHandlerResult.default)
         }.recover { _ in
             Guarantee.value(WebhookResponseHandlerResult.default)

@@ -152,6 +152,6 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 "stripped_zones": strippedZones.map(\.ID),
                 "stripped_decision": decisionSource,
             ]
-        ))
+        )).cauterize()
     }
 }

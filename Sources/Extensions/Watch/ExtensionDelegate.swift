@@ -192,7 +192,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
                 Current.Log.verbose("Updating actions from context \(actions)")
 
-                try? realm.write {
+                realm.reentrantWrite {
                     realm.delete(realm.objects(Action.self))
                     realm.add(actions, update: .all)
                 }
@@ -203,7 +203,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
                 Current.Log.verbose("Updating complications from context \(complications)")
 
-                try? realm.write {
+                realm.reentrantWrite {
                     realm.delete(realm.objects(WatchComplication.self))
                     realm.add(complications, update: .all)
                 }

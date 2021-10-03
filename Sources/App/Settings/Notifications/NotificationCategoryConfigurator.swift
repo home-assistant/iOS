@@ -124,9 +124,8 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                 if !newCategory {
                     $0.value = self.category.Name
                 }
-            }.onChange { row in
-                // swiftlint:disable:next force_try
-                try! self.realm.write {
+            }.onChange { [realm] row in
+                realm.reentrantWrite {
                     if let value = row.value {
                         self.category.Name = value
                     }
@@ -141,9 +140,8 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                     $0.value = self.category.Identifier
                     $0.disabled = true
                 }
-            }.onChange { row in
-                // swiftlint:disable:next force_try
-                try! self.realm.write {
+            }.onChange { [realm] row in
+                realm.reentrantWrite {
                     if let value = row.value {
                         self.category.Identifier = value
                     }
@@ -167,9 +165,8 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                 } else {
                     $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
                 }
-            }.onChange { row in
-                // swiftlint:disable:next force_try
-                try! self.realm.write {
+            }.onChange { [realm] row in
+                realm.reentrantWrite {
                     if let value = row.value {
                         self.category.HiddenPreviewsBodyPlaceholder = value
                     }
@@ -193,9 +190,8 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                 } else {
                     $0.value = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default
                 }
-            }.onChange { row in
-                // swiftlint:disable:next force_try
-                try! self.realm.write {
+            }.onChange { [realm] row in
+                realm.reentrantWrite {
                     if let value = row.value {
                         self.category.CategorySummaryFormat = value
                     }
@@ -260,8 +256,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
         if let index = indexes.first?.section, let section = form.allSections[index] as? MultivaluedSection {
             let deletedIDs = rows.compactMap(\.tag)
 
-            // swiftlint:disable:next force_try
-            try! realm.write {
+            realm.reentrantWrite {
                 // if the category isn't persisted yet, we need to remove the actions manually
                 category.Actions.remove(
                     atOffsets: category.Actions
@@ -319,7 +314,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
 
             row.presentationMode = PresentationMode.show(controllerProvider: ControllerProvider.callback { [category] in
                 NotificationActionConfigurator(category: category, action: action)
-            }, onDismiss: { vc in
+            }, onDismiss: { [realm, weak self] vc in
                 vc.navigationController?.popViewController(animated: true)
 
                 if let vc = vc as? NotificationActionConfigurator {
@@ -330,8 +325,8 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                     vc.row.updateCell()
                     Current.Log.verbose("action \(vc.action)")
 
-                    // swiftlint:disable:next force_try
-                    try! self.realm.write {
+                    realm.reentrantWrite {
+                        guard let self = self else { return }
                         // only add into realm if the category is also persisted
                         self.category.realm?.add(vc.action, update: .all)
 
@@ -340,7 +335,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                         }
                     }
 
-                    self.updatePreview()
+                    self?.updatePreview()
                 }
             })
         }
