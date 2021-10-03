@@ -7,20 +7,25 @@ import Version
 public enum Constants {
     /// Home Assistant Blue
     public static var tintColor: UIColor {
-        let light = UIColor(hue: 199.0 / 360.0, saturation: 0.99, brightness: 0.96, alpha: 1.0)
-        let dark = UIColor(hue: 199.0 / 360.0, saturation: 0.99, brightness: 0.67, alpha: 1.0)
-
         #if os(iOS)
         if #available(iOS 13, *) {
-            return UIColor { (traitCollection: UITraitCollection) -> UIColor in
-                traitCollection.userInterfaceStyle == .dark ? light : dark
+            return UIColor { [lighterTintColor, darkerTintColor] (traitCollection: UITraitCollection) -> UIColor in
+                traitCollection.userInterfaceStyle == .dark ? lighterTintColor : darkerTintColor
             }
         } else {
-            return dark
+            return darkerTintColor
         }
         #else
-        return light
+        return lighterTintColor
         #endif
+    }
+
+    public static var lighterTintColor: UIColor {
+        UIColor(hue: 199.0 / 360.0, saturation: 0.99, brightness: 0.96, alpha: 1.0)
+    }
+
+    public static var darkerTintColor: UIColor {
+        UIColor(hue: 199.0 / 360.0, saturation: 0.99, brightness: 0.67, alpha: 1.0)
     }
 
     /// Help icon UIBarButtonItem

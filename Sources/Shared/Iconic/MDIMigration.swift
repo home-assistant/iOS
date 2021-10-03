@@ -5,7 +5,7 @@ struct MDIMigration {
     // MDI Version number is based on number of icons, so count is directly related to version
     static let migrationNumber: Int = MaterialDesignIcons.count / 1000 - 5
 
-    func migrate(icon old: String) -> String {
+    static func migrate(icon old: String) -> String {
         if let updated = renamed[old] {
             Current.Log.info("migrating \(old) to \(updated)")
             return updated
@@ -17,7 +17,7 @@ struct MDIMigration {
         }
     }
 
-    private let renamed = [
+    private static let renamed = [
         // 5
         "account_badge": "badge_account",
         "account_badge_alert": "badge_account_alert",
@@ -213,7 +213,7 @@ struct MDIMigration {
         "xamarian_outline": "xamarian",
     ]
 
-    private let removed = Set([
+    private static let removed = Set([
         // 5
         "accusoft",
         "amazon_drive",
