@@ -66,7 +66,7 @@ public class ClientEventTableViewController: UITableViewController, UISearchResu
         alertController.popoverPresentationController?.barButtonItem = sender
 
         alertController.addAction(UIAlertAction(title: L10n.ClientEvents.View.clear, style: .destructive) { _ in
-            Current.clientEventStore.clearAllEvents()
+            Current.clientEventStore.clearAllEvents().cauterize()
         })
         alertController.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
 

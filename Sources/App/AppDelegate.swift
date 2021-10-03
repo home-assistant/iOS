@@ -106,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
             type: .unknown
         )
-        Current.clientEventStore.addEvent(event)
+        Current.clientEventStore.addEvent(event).cauterize()
 
         zoneManager = ZoneManager()
 

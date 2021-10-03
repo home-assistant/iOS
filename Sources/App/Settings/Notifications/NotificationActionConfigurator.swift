@@ -234,8 +234,7 @@ class NotificationActionConfigurator: HAFormViewController, TypedRowControllerTy
 
             let formVals = form.values(includeHidden: true)
 
-            // swiftlint:disable:next force_try
-            try! realm.write {
+            realm.reentrantWrite {
                 // swiftlint:disable force_cast
                 if self.newAction {
                     self.action.Identifier = formVals["identifier"] as! String

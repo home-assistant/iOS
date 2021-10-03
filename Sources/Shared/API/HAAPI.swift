@@ -176,10 +176,11 @@ public class HomeAssistantAPI {
                 // ha directly will send a 200 with an empty body for deleted
 
                 let message = "Integration is missing; registering."
-                Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
+                return Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                     "error": String(describing: error),
-                ]))
-                return self.Register()
+                ])).then {
+                    return self.Register()
+                }
             case .noApi,
                  .unregisteredIdentifier,
                  .unacceptableStatusCode,
@@ -483,9 +484,9 @@ public class HomeAssistantAPI {
             } else {
                 throw HomeAssistantAPI.APIError.updateNotPossible
             }
-        }.get { payload in
+        }.then { payload -> Guarantee<WebhookUpdateLocation> in
             let realm = Current.realm()
-            try realm.write {
+            return when(resolved: realm.reentrantWrite {
                 var jsonPayload = "{\"missing\": \"payload\"}"
                 if let p = payload.toJSONString(prettyPrint: false) {
                     jsonPayload = p
@@ -506,6 +507,8 @@ public class HomeAssistantAPI {
                     accuracyAuthorization: accuracyAuthorization,
                     payload: jsonPayload
                 ))
+            }).map { _ in
+                payload
             }
         }.map { payload -> [String: Any] in
             let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)

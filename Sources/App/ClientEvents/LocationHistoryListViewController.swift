@@ -8,7 +8,7 @@ class LocationHistoryListViewController: HAFormViewController {
 
     @objc private func clear(_ sender: AnyObject?) {
         let realm = Current.realm()
-        try? realm.write {
+        realm.reentrantWrite {
             realm.delete(realm.objects(LocationHistoryEntry.self))
         }
     }

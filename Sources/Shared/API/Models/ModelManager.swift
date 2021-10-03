@@ -66,21 +66,14 @@ public final class ModelManager {
         let (promise, seal) = Promise<Void>.pending()
 
         queue.async {
-            do {
-                for definition in definitions {
-                    try autoreleasepool {
-                        let realm = Current.realm()
-                        try realm.write {
-                            self.cleanup(using: definition, realm: realm)
-                        }
-                    }
+            let realm = Current.realm()
+            let writes = definitions.map { definition in
+                realm.reentrantWrite {
+                    self.cleanup(using: definition, realm: realm)
                 }
-
-                seal.fulfill(())
-            } catch {
-                Current.Log.error("failed to remove: \(error)")
-                seal.reject(error)
             }
+
+            when(fulfilled: writes).pipe(to: seal.resolve)
         }
 
         return promise
@@ -129,14 +122,10 @@ public final class ModelManager {
                                 return
                             }
 
-                            do {
-                                let entities = value.all.filter { $0.domain == domain }
-                                if entities != lastEntities {
-                                    try manager.store(type: type, sourceModels: entities)
-                                    lastEntities = entities
-                                }
-                            } catch {
-                                Current.Log.error("failed to store \(type): \(error)")
+                            let entities = value.all.filter { $0.domain == domain }
+                            if entities != lastEntities {
+                                manager.store(type: type, sourceModels: entities).cauterize()
+                                lastEntities = entities
                             }
                         }
                     },
@@ -169,12 +158,13 @@ public final class ModelManager {
         ) -> Promise<Void>
 
         public static var defaults: [Self] = [
-            .init(update: { api, _, queue, manager in
-                api.GetMobileAppConfig()
-                    .done(on: queue) {
-                        try manager.store(type: NotificationCategory.self, sourceModels: $0.push.categories)
-                        try manager.store(type: Action.self, sourceModels: $0.actions)
-                    }
+            FetchDefinition(update: { api, _, queue, manager in
+                api.GetMobileAppConfig().then(on: queue) {
+                    when(fulfilled: [
+                        manager.store(type: NotificationCategory.self, sourceModels: $0.push.categories),
+                        manager.store(type: Action.self, sourceModels: $0.actions),
+                    ])
+                }
             }),
         ]
     }
@@ -195,9 +185,9 @@ public final class ModelManager {
     internal func store<UM: Object & UpdatableModel, C: Collection>(
         type realmObjectType: UM.Type,
         sourceModels: C
-    ) throws where C.Element == UM.Source {
+    ) -> Promise<Void> where C.Element == UM.Source {
         let realm = Current.realm()
-        try realm.write {
+        return realm.reentrantWrite {
             guard let realmPrimaryKey = realmObjectType.primaryKey() else {
                 Current.Log.error("invalid realm object type: \(realmObjectType)")
                 throw StoreError.missingPrimaryKey

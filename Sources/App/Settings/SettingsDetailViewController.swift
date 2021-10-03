@@ -538,8 +538,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
 
         if (rows.first as? ButtonRowWithPresent<ActionConfigurator>) != nil {
             Current.Log.verbose("Removed row is ActionConfiguration \(deletedIDs)")
-            // swiftlint:disable:next force_try
-            try! realm.write {
+            realm.reentrantWrite {
                 realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
             }
         }
@@ -576,12 +575,8 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 _ = vc.navigationController?.popViewController(animated: true)
 
                 if let vc = vc as? ActionConfigurator, vc.shouldSave, let realm = rlmScene.realm {
-                    do {
-                        try realm.write {
-                            realm.add(vc.action, update: .all)
-                        }
-                    } catch {
-                        Current.Log.error("Error while saving to Realm!: \(error)")
+                    realm.reentrantWrite {
+                        realm.add(vc.action, update: .all)
                     }
                 }
             })
@@ -661,16 +656,11 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     Current.Log.verbose("Saving action! \(vc.action)")
 
                     let realm = Current.realm()
-
-                    do {
-                        try realm.write {
-                            realm.add(vc.action, update: .all)
-                        }
-
+                    realm.reentrantWrite {
+                        realm.add(vc.action, update: .all)
+                    }.done {
                         self?.updatePositions()
-                    } catch let error as NSError {
-                        Current.Log.error("Error while saving to Realm!: \(error)")
-                    }
+                    }.cauterize()
                 }
             })
         }

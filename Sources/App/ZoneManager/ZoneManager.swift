@@ -102,7 +102,7 @@ class ZoneManager {
             // ^ not tap for this side effect because we don't want to do this on failure
             guard let self = self else { return }
             self.sync(zones: AnyCollection(self.zones))
-        }.done {
+        }.then {
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Updated location",
                 type: .locationUpdate,
@@ -118,7 +118,7 @@ class ZoneManager {
                 text: "Didn't update: \(error.localizedDescription)",
                 type: .locationUpdate,
                 payload: updatedPayload
-            ))
+            )).cauterize()
         }
     }
 
@@ -161,7 +161,7 @@ class ZoneManager {
                 payload: [
                     "region": String(describing: region),
                 ]
-            ))
+            )).cauterize()
             locationManager.stopMonitoring(for: region)
         }
 
@@ -172,7 +172,7 @@ class ZoneManager {
                 payload: [
                     "region": String(describing: region),
                 ]
-            ))
+            )).cauterize()
 
             collector.ignoreNextState(for: region)
             locationManager.startMonitoring(for: region)

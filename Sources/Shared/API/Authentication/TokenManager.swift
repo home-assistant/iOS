@@ -178,7 +178,7 @@ public class TokenManager {
                                 "error": String(describing: underlying),
                             ]
                         )
-                        Current.clientEventStore.addEvent(event)
+                        Current.clientEventStore.addEvent(event).cauterize()
 
                         self.tokenInfo = nil
                         Current.settingsStore.tokenInfo = nil

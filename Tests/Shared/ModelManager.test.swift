@@ -251,7 +251,7 @@ class ModelManagerTests: XCTestCase {
 
     func testStoreWithoutModels() throws {
         try testQueue.sync {
-            try manager.store(type: TestStoreModel1.self, sourceModels: [])
+            try hang(manager.store(type: TestStoreModel1.self, sourceModels: []))
             XCTAssertTrue(realm.objects(TestStoreModel1.self).isEmpty)
         }
     }
@@ -259,7 +259,7 @@ class ModelManagerTests: XCTestCase {
     func testStoreWithModelLackingPrimaryKey() throws {
         func doStore() throws {
             try testQueue.sync {
-                try manager.store(type: TestStoreModel2.self, sourceModels: [])
+                try hang(manager.store(type: TestStoreModel2.self, sourceModels: []))
             }
         }
 
@@ -275,7 +275,7 @@ class ModelManagerTests: XCTestCase {
                 .init(id: "id2", value: "val2"),
             ]
 
-            try manager.store(type: TestStoreModel1.self, sourceModels: sources)
+            try hang(manager.store(type: TestStoreModel1.self, sourceModels: sources))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 2)
             XCTAssertEqual(models[0].identifier, "id1")
@@ -321,7 +321,7 @@ class ModelManagerTests: XCTestCase {
                 realm.add(start)
             }
 
-            try manager.store(type: TestStoreModel1.self, sourceModels: insertedSources + updatedSources)
+            try hang(manager.store(type: TestStoreModel1.self, sourceModels: insertedSources + updatedSources))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 4)
 
@@ -374,7 +374,7 @@ class ModelManagerTests: XCTestCase {
                 realm.add(start)
             }
 
-            try manager.store(type: TestStoreModel3.self, sourceModels: insertedSources + updatedSources)
+            try hang(manager.store(type: TestStoreModel3.self, sourceModels: insertedSources + updatedSources))
             let models = realm.objects(TestStoreModel3.self).sorted(byKeyPath: #keyPath(TestStoreModel3.value))
             XCTAssertEqual(models.count, 3)
 
@@ -396,7 +396,7 @@ class ModelManagerTests: XCTestCase {
 
             TestStoreModel1.updateFalseIds = ["id2"]
 
-            try manager.store(type: TestStoreModel1.self, sourceModels: sources)
+            try hang(manager.store(type: TestStoreModel1.self, sourceModels: sources))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 1)
             XCTAssertEqual(models[0].identifier, "id1")

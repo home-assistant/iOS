@@ -1,3 +1,4 @@
+import PromiseKit
 import RealmSwift
 @testable import Shared
 import UserNotifications
@@ -51,27 +52,27 @@ class ClientEventTests: XCTestCase {
         XCTAssertEqual(content.clientEventTitle, expectedTitle)
     }
 
-    func testCanWriteClientEvent() {
+    func testCanWriteClientEvent() throws {
         let event = ClientEvent(text: "Yo", type: .notification)
-        store.addEvent(event)
+        try hang(store.addEvent(event))
         XCTAssertEqual(1, store.getEvents().count)
     }
 
-    func testEventWrittenCorrectly() {
+    func testEventWrittenCorrectly() throws {
         let date = Date()
         Current.date = { date }
         let event = ClientEvent(text: "Yo", type: .notification)
-        store.addEvent(event)
+        try hang(store.addEvent(event))
         let retrieved = store.getEvents().first
         XCTAssertEqual(retrieved?.text, "Yo")
         XCTAssertEqual(retrieved?.type, .notification)
         XCTAssertEqual(retrieved?.date, date)
     }
 
-    func testCanClearEvents() {
+    func testCanClearEvents() throws {
         let event = ClientEvent(text: "Yo", type: .notification)
-        store.addEvent(event)
+        try hang(store.addEvent(event))
         XCTAssertEqual(1, store.getEvents().count)
-        store.clearAllEvents()
+        try hang(store.clearAllEvents())
     }
 }

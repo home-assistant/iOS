@@ -43,7 +43,7 @@ class ZoneManagerTests: XCTestCase {
         loggedEvents = []
         Current.connectivity.currentWiFiSSID = { "wifi_name" }
         Current.realm = { self.realm }
-        Current.clientEventStore.addEvent = { self.loggedEvents.append($0) }
+        Current.clientEventStore.addEvent = { self.loggedEvents.append($0); return .value(()) }
         Current.api = .value(api)
         Current.location.oneShotLocation = { _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
@@ -56,7 +56,7 @@ class ZoneManagerTests: XCTestCase {
         super.tearDown()
 
         Current.realm = Realm.live
-        Current.clientEventStore.addEvent = { _ in }
+        Current.clientEventStore.addEvent = { _ in .value(()) }
         Current.resetAPI()
     }
 
