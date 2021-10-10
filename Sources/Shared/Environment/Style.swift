@@ -2,7 +2,8 @@ import UIKit
 
 public struct Style {
     #if os(iOS)
-    public var onboardingBackground: UIColor = Constants.tintColor
+    public var onboardingBackground: UIColor = Constants.darkerTintColor
+    public var onboardingTintColor: UIColor = .white
     public var onboardingLabel: UIColor = .white
     public var onboardingLabelSecondary: UIColor = .white.withAlphaComponent(0.85)
     public var onboardingButtonPrimary: (_ button: UIButton) -> Void = { button in
@@ -13,7 +14,7 @@ public struct Style {
             ofSize: UIFont.preferredFont(forTextStyle: .callout).pointSize,
             weight: .bold
         )
-        button.setTitleColor(Constants.tintColor, for: .normal)
+        button.setTitleColor(Constants.darkerTintColor, for: .normal)
         button.setBackgroundImage(
             UIImage(size: CGSize(width: 1, height: 1), color: .white),
             for: .normal

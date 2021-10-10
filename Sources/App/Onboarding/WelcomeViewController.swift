@@ -1,65 +1,89 @@
 import Eureka
 import Lottie
-import Reachability
 import RealmSwift
 import Shared
 import UIKit
+import SafariServices
 
-class WelcomeViewController: UIViewController, UITextViewDelegate {
-    @IBOutlet var animationView: AnimationView!
-    @IBOutlet var continueButton: UIButton!
-    @IBOutlet var wifiWarningLabel: UILabel!
+class WelcomeViewController: UIViewController {
+    private var animationView: AnimationView?
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        animationView?.play(toMarker: "Circles Formed")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let reachability = (navigationController as? OnboardingNavigationViewController)?.reachability
-        wifiWarningLabel.isHidden = reachability?.connection == .wifi
+        view.backgroundColor = Current.style.onboardingBackground
 
-        if let navVC = navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(continueButton)
-        }
+        let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
-        animationView.animation = Animation.named("ha-loading")
-        animationView.loopMode = .playOnce
-        animationView.play(toMarker: "Circles Formed")
+        stackView.addArrangedSubview(equalSpacers.next())
+        stackView.addArrangedSubview(with(AnimationView(animation: .named("ha-loading"))) {
+            animationView = $0
+            $0.loopMode = .playOnce
+
+            NSLayoutConstraint.activate([
+                with($0.widthAnchor.constraint(equalToConstant: 240.0)) {
+                    $0.priority = .defaultHigh
+                },
+                $0.widthAnchor.constraint(lessThanOrEqualToConstant: 240.0),
+                $0.widthAnchor.constraint(equalTo: $0.heightAnchor),
+            ])
+        })
+
+        stackView.addArrangedSubview(with(UILabel()) {
+            $0.text = L10n.Onboarding.Welcome.title
+            $0.font = .preferredFont(forTextStyle: .title1)
+            $0.textColor = Current.style.onboardingLabel
+            $0.textAlignment = .center
+            $0.numberOfLines = 0
+        })
+
+        stackView.addArrangedSubview(with(UILabel ()) {
+            $0.text = L10n.Onboarding.Welcome.description
+            $0.font = .preferredFont(forTextStyle: .body)
+            $0.textColor = Current.style.onboardingLabelSecondary
+            $0.textAlignment = .center
+            $0.numberOfLines = 0
+        })
+        stackView.addArrangedSubview(with(UIButton(type: .system)) {
+            $0.setAttributedTitle(NSAttributedString(
+                string: L10n.Nfc.List.learnMore,
+                attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue]
+            ), for: .normal)
+            $0.titleLabel?.font = .preferredFont(forTextStyle: .body)
+            $0.setTitleColor(Current.style.onboardingLabelSecondary, for: .normal)
+            $0.addTarget(self, action: #selector(learnMoreTapped(_:)), for: .touchUpInside)
+        })
+
+        stackView.addArrangedSubview(equalSpacers.next())
+
+        stackView.addArrangedSubview(with(UIButton(type: .custom)) {
+            $0.setTitle(L10n.continueLabel, for: .normal)
+            $0.addTarget(self, action: #selector(continueTapped(_:)), for: .touchUpInside)
+            Current.style.onboardingButtonPrimary($0)
+        })
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
 
-        let reachability = (navigationController as? OnboardingNavigationViewController)?.reachability
+        let animationHidden = traitCollection.verticalSizeClass == .compact
+        animationView?.isHidden = animationHidden
+    }
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(reachabilityChanged(_:)),
-            name: .reachabilityChanged,
-            object: reachability
+    @objc private func continueTapped(_ sender: UIButton) {
+        show(DiscoverInstancesViewController(), sender: self)
+    }
+
+    @objc private func learnMoreTapped(_ sender: UIButton) {
+        present(
+            SFSafariViewController(url: .init(string: "http://www.home-assistant.io")!),
+            animated: true,
+            completion: nil
         )
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        let reachability = (navigationController as? OnboardingNavigationViewController)?.reachability
-        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
-    }
-
-    @IBAction func continueButton(_ sender: UIButton) {
-        if wifiWarningLabel.isHidden {
-            show(StoryboardScene.Onboarding.discoverInstances.instantiate(), sender: self)
-        } else {
-            show(StoryboardScene.Onboarding.manualSetup.instantiate(), sender: self)
-        }
-    }
-
-    @objc func reachabilityChanged(_ note: Notification) {
-        guard let reachability = note.object as? Reachability else {
-            Current.Log.warning("Couldn't cast notification object as Reachability")
-            return
-        }
-
-        Current.Log.verbose("Reachability changed to \(reachability.connection.description)")
-        wifiWarningLabel.isHidden = (reachability.connection == .wifi)
     }
 }

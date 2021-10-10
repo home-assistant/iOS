@@ -16,6 +16,8 @@ public enum L10n {
   public static var alwaysOpenLabel: String { return L10n.tr("Localizable", "always_open_label") }
   /// Cancel
   public static var cancelLabel: String { return L10n.tr("Localizable", "cancel_label") }
+  /// Continue
+  public static var continueLabel: String { return L10n.tr("Localizable", "continue_label") }
   /// Copy
   public static var copyLabel: String { return L10n.tr("Localizable", "copy_label") }
   /// Debug
@@ -810,6 +812,12 @@ public enum L10n {
         /// Notifications
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.notification.title") }
       }
+    }
+    public enum Welcome {
+      /// This app relies on open source home automation software that you run on hardware you control.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
+      /// Welcome to Home Assistant!
+      public static var title: String { return L10n.tr("Localizable", "onboarding.welcome.title") }
     }
   }
 

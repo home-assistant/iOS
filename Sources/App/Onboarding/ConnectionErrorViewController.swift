@@ -51,7 +51,6 @@ class ConnectionErrorViewController: UIViewController {
     }
 
     @IBAction func startOverTapped(_ sender: Any) {
-        let controller = StoryboardScene.Onboarding.welcome.instantiate()
-        show(controller, sender: self)
+        navigationController?.popToRootViewController(animated: true)
     }
 }

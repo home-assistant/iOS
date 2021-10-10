@@ -717,3 +717,7 @@ Your actions and local configuration will still be available after logging in.";
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
+"onboarding.welcome.title" = "Welcome to Home Assistant!";
+"onboarding.welcome.description" = "This app relies on open source home automation software that you run on hardware you control.";
+/* verb, button text */
+"continue_label" = "Continue";

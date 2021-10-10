@@ -89,6 +89,10 @@
 		11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
+		1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4827128A970071C2AA /* UIView+StackView.swift */; };
+		1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4827128A970071C2AA /* UIView+StackView.swift */; };
+		1121CD4C271295AD0071C2AA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4B271295AD0071C2AA /* Style.swift */; };
+		1121CD4D271295AD0071C2AA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4B271295AD0071C2AA /* Style.swift */; };
 		11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11267D0825BBA9FE00F28E5C /* Updater.test.swift */; };
 		1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */; };
 		1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */; };
@@ -1102,6 +1106,8 @@
 		11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceDirect.swift; sourceTree = "<group>"; };
 		11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceUnsupported.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
+		1121CD4827128A970071C2AA /* UIView+StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+StackView.swift"; sourceTree = "<group>"; };
+		1121CD4B271295AD0071C2AA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
 		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
 		1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonRowWithLoading.swift; sourceTree = "<group>"; };
@@ -3253,6 +3259,7 @@
 				110ED58E25A6743900489AF7 /* ConnectivityWrapper.swift */,
 				110AA55B25B36630005061A0 /* ServerAlerter.swift */,
 				115BC82C267708CA00452430 /* FocusStatusWrapper.swift */,
+				1121CD4B271295AD0071C2AA /* Style.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -3361,6 +3368,7 @@
 				1104FD04253292CD00B8BE34 /* Guarantee+Additions.swift */,
 				1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */,
 				11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */,
+				1121CD4827128A970071C2AA /* UIView+StackView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -5345,11 +5353,13 @@
 				1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
+				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
+				1121CD4D271295AD0071C2AA /* Style.swift in Sources */,
 				116570782702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				11F855DD24DF6C7A0018013E /* IconImageView.swift in Sources */,
@@ -5515,11 +5525,13 @@
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
+				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
+				1121CD4C271295AD0071C2AA /* Style.swift in Sources */,
 				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,

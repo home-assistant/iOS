@@ -2,20 +2,86 @@ import Lottie
 import Shared
 import UIKit
 
+class DiscoverInstancesCell: UITableViewCell {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        with(textLabel) {
+            $0?.textColor = Current.style.onboardingLabel
+            $0?.numberOfLines = 0
+            $0?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize)
+        }
+        with(detailTextLabel) {
+            $0?.textColor = Current.style.onboardingLabelSecondary
+            $0?.numberOfLines = 0
+            $0?.font = .preferredFont(forTextStyle: .body)
+        }
+        backgroundView = with(UIView()) {
+            $0.backgroundColor = .clear
+        }
+        selectedBackgroundView = with(UIView()) {
+            $0.backgroundColor = UIColor(white: 0, alpha: 0.25)
+        }
+        backgroundColor = .clear
+        accessoryType = .disclosureIndicator
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class DiscoverInstancesViewController: UIViewController {
     private let discovery = Bonjour()
     private var discoveredInstances: [DiscoveredHomeAssistant] = []
 
-    @IBOutlet private var tableView: UITableView!
-    @IBOutlet private var animationView: AnimationView!
-    @IBOutlet private var manualButton: UIButton!
+    private var tableView: UITableView?
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView?.indexPathsForSelectedRows?.forEach { indexPath in
+            tableView?.deselectRow(at: indexPath, animated: animated)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let navVC = navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(manualButton)
-        }
+        let (_, stackView, _) = UIView.contentStackView(in: view, scrolling: false)
+
+        view.backgroundColor = Current.style.onboardingBackground
+
+        stackView.addArrangedSubview(with(UILabel()) {
+            $0.text = "Scanning your network for Home Assistant"
+            $0.font = .preferredFont(forTextStyle: .title1)
+            $0.textColor = Current.style.onboardingLabel
+            $0.numberOfLines = 0
+            $0.textAlignment = .center
+        })
+
+        stackView.addArrangedSubview(with(UITableView(frame: .zero, style: .plain)) {
+            tableView = $0
+            $0.delegate = self
+            $0.dataSource = self
+
+            $0.backgroundView = with(UIView()) {
+                $0.backgroundColor = Current.style.onboardingBackground
+            }
+
+            // hides the empty separators
+            $0.tableFooterView = UIView()
+
+            $0.register(DiscoverInstancesCell.self, forCellReuseIdentifier: "DiscoverInstancesCell")
+        })
+
+        NSLayoutConstraint.activate([
+            tableView!.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor),
+        ])
+
+        stackView.addArrangedSubview(with(UIButton(type: .custom)) {
+            $0.setTitle("Enter Address Manually", for: .normal)
+            $0.addTarget(self, action: #selector(didSelectManual(_:)), for: .touchUpInside)
+            Current.style.onboardingButtonPrimary($0)
+        })
 
         if Current.appConfiguration == .Debug {
             for (idx, instance) in [
@@ -45,21 +111,6 @@ class DiscoverInstancesViewController: UIViewController {
                 }
             }
         }
-
-        animationView.superview?.bringSubviewToFront(animationView)
-
-        // hides the empty separators
-        tableView.tableFooterView = UIView()
-
-        animationView.contentMode = .scaleAspectFill
-        animationView.backgroundBehavior = .pauseAndRestore
-        animationView.animation = Animation.named("ha-loading")
-        animationView.play(
-            fromMarker: "Circle Fill Begins",
-            toMarker: "Deform Begins",
-            loopMode: .loop,
-            completion: nil
-        )
 
         let queue = DispatchQueue(label: Bundle.main.bundleIdentifier!, attributes: [])
         queue.async {
@@ -107,17 +158,8 @@ class DiscoverInstancesViewController: UIViewController {
         }
 
         discoveredInstances.append(discoveredInstance)
-
-        if discoveredInstances.count == 3 {
-            UIView.transition(.promise, with: animationView, duration: 1.0) { [weak animationView] in
-                animationView?.alpha = 0
-            }.done { [weak animationView] _ in
-                animationView?.stop()
-            }
-        }
-
-        tableView.performBatchUpdates({
-            tableView.insertRows(
+        tableView?.performBatchUpdates({
+            tableView?.insertRows(
                 at: [IndexPath(row: discoveredInstances.count - 1, section: 0)],
                 with: .automatic
             )
@@ -162,7 +204,7 @@ extension DiscoverInstancesViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "discoveredInstanceCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DiscoverInstancesCell", for: indexPath)
 
         let instance = discoveredInstances[indexPath.row]
 

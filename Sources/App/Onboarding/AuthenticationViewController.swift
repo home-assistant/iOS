@@ -110,8 +110,7 @@ class AuthenticationViewController: UIViewController {
     }
 
     @IBAction func goBackTapped(_ sender: Any) {
-        let controller = StoryboardScene.Onboarding.welcome.instantiate()
-        show(controller, sender: self)
+        navigationController?.popToRootViewController(animated: true)
     }
 
     fileprivate typealias ErrorReason = AFError.ResponseValidationFailureReason
