@@ -49,4 +49,9 @@ class ConnectionErrorViewController: UIViewController {
         guard let error = self.error as? ConnectionTestResult else { return }
         openURLInBrowser(error.DocumentationURL, self)
     }
+
+    @IBAction func startOverTapped(_ sender: Any) {
+        let controller = StoryboardScene.Onboarding.welcome.instantiate()
+        show(controller, sender: self)
+    }
 }

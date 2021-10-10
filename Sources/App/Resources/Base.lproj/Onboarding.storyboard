@@ -14,7 +14,7 @@
             <objects>
                 <viewController storyboardIdentifier="welcome" id="Cpw-N3-yji" customClass="WelcomeViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FZO-9W-RiW" userLabel="Welcome View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
@@ -24,7 +24,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="203.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="240" id="gcY-WU-qo5"/>
@@ -35,7 +35,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw">
-                                <rect key="frame" x="160" y="599" width="55" height="28"/>
+                                <rect key="frame" x="160" y="619" width="55" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
@@ -288,7 +288,7 @@
                                 <state key="normal" title="Start Over"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="ZUd-tI-c7g"/>
-                                    <segue destination="Cpw-N3-yji" kind="show" id="Cox-Jc-BY9"/>
+                                    <action selector="startOverTapped:" destination="MOD-3L-omt" eventType="touchUpInside" id="9np-mA-qF7"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -320,7 +320,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="p2O-ln-8Lh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1444" y="-582.45877061469275"/>
+            <point key="canvasLocation" x="-1961" y="-535"/>
         </scene>
         <!--Authentication View Controller-->
         <scene sceneID="kcK-Ui-ndY">
@@ -707,9 +707,6 @@
         <designable name="wD9-TR-rVF"/>
         <designable name="xaH-oE-knW"/>
     </designables>
-    <inferredMetricsTieBreakers>
-        <segue reference="Fz4-Qa-34b"/>
-    </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>
         <systemColor name="systemBlueColor">
