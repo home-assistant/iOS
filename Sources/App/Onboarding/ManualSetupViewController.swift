@@ -179,7 +179,9 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
                   return
               }
 
-        view.layoutIfNeeded()
+        UIView.performWithoutAnimation {
+            view.layoutIfNeeded()
+        }
 
         let intersectHeight = view.convert(frameValue.cgRectValue, from: nil).intersection(scrollView.frame).height
         let insetHeight = max(0, intersectHeight - (bottomSpacer?.bounds.height ?? 0))
