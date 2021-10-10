@@ -25,10 +25,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
 
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = "What is your Home Assistant's URL?"
-            $0.font = .preferredFont(forTextStyle: .title1)
-            $0.textColor = Current.style.onboardingLabel
-            $0.textAlignment = .center
-            $0.numberOfLines = 0
+            Current.style.onboardingTitle($0)
         })
 
         stackView.addArrangedSubview(with(UILabel()) {

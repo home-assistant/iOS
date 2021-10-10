@@ -52,10 +52,7 @@ class DiscoverInstancesViewController: UIViewController {
 
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = "Scanning your network for Home Assistant"
-            $0.font = .preferredFont(forTextStyle: .title1)
-            $0.textColor = Current.style.onboardingLabel
-            $0.numberOfLines = 0
-            $0.textAlignment = .center
+            Current.style.onboardingTitle($0)
         })
 
         stackView.addArrangedSubview(with(UITableView(frame: .zero, style: .plain)) {

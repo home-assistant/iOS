@@ -36,10 +36,7 @@ class WelcomeViewController: UIViewController {
 
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.Welcome.title
-            $0.font = .preferredFont(forTextStyle: .title1)
-            $0.textColor = Current.style.onboardingLabel
-            $0.textAlignment = .center
-            $0.numberOfLines = 0
+            Current.style.onboardingTitle($0)
         })
 
         stackView.addArrangedSubview(with(UILabel ()) {
