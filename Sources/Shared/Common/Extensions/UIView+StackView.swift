@@ -48,7 +48,6 @@ public extension UIView {
             let scrollView = with(UIScrollView()) {
                 $0.contentInsetAdjustmentBehavior = .always
                 $0.translatesAutoresizingMaskIntoConstraints = false
-                $0.alwaysBounceVertical = true
             }
 
             superview.addSubview(scrollView)
