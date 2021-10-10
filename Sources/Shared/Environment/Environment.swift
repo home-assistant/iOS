@@ -77,6 +77,8 @@ public class AppEnvironment {
     public var realmFatalPresentation: ((UIViewController) -> Void)?
     #endif
 
+    public var style: Style = .init()
+
     private var underlyingAPI: Promise<HomeAssistantAPI>?
 
     public var api: Promise<HomeAssistantAPI> {

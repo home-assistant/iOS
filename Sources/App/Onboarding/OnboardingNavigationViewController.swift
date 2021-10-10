@@ -54,29 +54,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     }
 
     func styleButton(_ button: UIButton) {
-        button.layer.cornerRadius = 6.0
-        button.layer.masksToBounds = true
-        button.contentEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        button.titleLabel?.font = UIFont.systemFont(
-            ofSize: UIFont.preferredFont(forTextStyle: .callout).pointSize,
-            weight: .bold
-        )
-        button.setTitleColor(Constants.tintColor, for: .normal)
-
-        if #available(iOS 13, *) {
-            button.setBackgroundImage(
-                UIImage(size: CGSize(width: 1, height: 1), color: .systemBackground),
-                for: .normal
-            )
-        } else {
-            button.setBackgroundImage(
-                UIImage(size: CGSize(width: 1, height: 1), color: .white),
-                for: .normal
-            )
-        }
-
-        if let title = button.title(for: .normal) {
-            button.setTitle(title.localizedUppercase, for: .normal)
-        }
+        Current.style.onboardingButtonPrimary(button)
     }
 }
