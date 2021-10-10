@@ -24,6 +24,10 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
             overrideUserInterfaceStyle = .light
             view.tintColor = .white
         }
+
+        if viewControllers.isEmpty {
+            viewControllers = [ StoryboardScene.Onboarding.welcome.instantiate() ]
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
