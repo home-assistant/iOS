@@ -394,9 +394,9 @@
         <!--Connect Instance View Controller-->
         <scene sceneID="1Nw-I3-CmV">
             <objects>
-                <viewController id="KCa-bc-FXT" userLabel="Connect Instance View Controller" customClass="ConnectInstanceViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="connectInstance" id="KCa-bc-FXT" userLabel="Connect Instance View Controller" customClass="ConnectInstanceViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pvD-0u-p2i" userLabel="Connect Instance View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting to My Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kj7-hM-8gN">
@@ -645,7 +645,7 @@
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
-                                    <segue destination="KCa-bc-FXT" kind="show" id="TXR-MD-wbi"/>
+                                    <action selector="continueTapped:" destination="XKw-m3-Nah" eventType="touchUpInside" id="xnd-bV-IOY"/>
                                 </connections>
                             </button>
                         </subviews>

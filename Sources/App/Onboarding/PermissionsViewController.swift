@@ -33,11 +33,11 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         focusPermissionView.permission.updateInitial()
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? ConnectInstanceViewController {
-            vc.instance = instance
-            vc.connectionInfo = connectionInfo
-        }
+    @IBAction func continueTapped(_ sender: Any) {
+        let controller = StoryboardScene.Onboarding.connectInstance.instantiate()
+        controller.instance = instance
+        controller.connectionInfo = connectionInfo
+        show(controller, sender: self)
     }
 
     func statusChanged(_ forPermission: PermissionType, _ toStatus: PermissionStatus) {
