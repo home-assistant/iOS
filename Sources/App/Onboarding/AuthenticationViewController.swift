@@ -138,10 +138,8 @@ class AuthenticationViewController: UIViewController {
             Current.settingsStore.connectionInfo = self.connectionInfo
 
             return HomeAssistantAPI(tokenInfo: tokenInfo).GetConfig(false)
-        }.done { [instance] _ in
-            let controller = StoryboardScene.Onboarding.permissions.instantiate()
-            controller.instance = instance
-            controller.connectionInfo = connectionInfo
+        }.done { _ in
+            let controller = PermissionWorkflowController().next()
             self.show(controller, sender: self)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")

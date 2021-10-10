@@ -21,8 +21,6 @@ internal enum StoryboardScene {
     internal static let storyboardName = "Onboarding"
 
     internal static let connectInstance = SceneType<HomeAssistant.ConnectInstanceViewController>(storyboard: Onboarding.self, identifier: "connectInstance")
-
-    internal static let permissions = SceneType<HomeAssistant.PermissionsViewController>(storyboard: Onboarding.self, identifier: "permissions")
   }
 }
 // swiftlint:enable explicit_type_interface identifier_name line_length type_body_length type_name

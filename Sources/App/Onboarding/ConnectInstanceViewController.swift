@@ -4,9 +4,6 @@ import Shared
 import UIKit
 
 class ConnectInstanceViewController: UIViewController {
-    var instance: DiscoveredHomeAssistant!
-    var connectionInfo: ConnectionInfo!
-
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var overallProgress: AnimationView!
     @IBOutlet var connectionStatus: AnimationView!
@@ -21,7 +18,7 @@ class ConnectInstanceViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        titleLabel.text = L10n.Onboarding.Connect.title(instance.LocationName)
+        titleLabel.text = ""//L10n.Onboarding.Connect.title(instance.LocationName)
 
         configureAnimation(connectionStatus, .success)
         configureAnimation(authenticated, .success)

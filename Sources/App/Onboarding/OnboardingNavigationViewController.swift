@@ -92,7 +92,13 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
 extension OnboardingNavigationViewController: UINavigationControllerDelegate {
     private func updateNavigationBar(for controller: UIViewController?, animated: Bool) {
-        if controller == viewControllers.first, controller is WelcomeViewController {
+        let hiddenNavigationBarClasses: [UIViewController.Type] = [
+            WelcomeViewController.self,
+            IndividualPermissionViewController.self,
+        ]
+
+        if let controller = controller,
+           hiddenNavigationBarClasses.contains(where: { type(of: controller) == $0 }) {
             setNavigationBarHidden(true, animated: animated)
         } else {
             setNavigationBarHidden(false, animated: animated)

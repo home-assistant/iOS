@@ -806,29 +806,61 @@ public enum L10n {
       public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      /// You can change this permission later in Settings
+      public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {
-        /// Allow whether you are in focus mode to be sent to Home Assistant
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.focus.description") }
+        /// Allow focus permission to create sensors for your focus status, also known as do-not-disturb.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.focus.grant_description") }
         /// Focus
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.focus.title") }
+        public enum Bullet {
+          /// Focus-based automations
+          public static var automations: String { return L10n.tr("Localizable", "onboarding.permissions.focus.bullet.automations") }
+          /// Instant updates when status changes
+          public static var instant: String { return L10n.tr("Localizable", "onboarding.permissions.focus.bullet.instant") }
+        }
       }
       public enum Location {
-        /// Enable location services to allow presence detection automations.
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.location.description") }
+        /// Allow location permission to create a device_tracker for your device.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.location.grant_description") }
         /// Location
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.location.title") }
+        public enum Bullet {
+          /// Presence-based automations
+          public static var automations: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.automations") }
+          /// Track location history
+          public static var history: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.history") }
+          /// On-the-move sensor updates
+          public static var onTheMove: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.on_the_move") }
+        }
       }
       public enum Motion {
-        /// Allow motion activity and pedometer data to be sent to Home Assistant
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.motion.description") }
+        /// Allow motion permission to create sensors for motion and pedometer data.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.motion.grant_description") }
         /// Motion & Pedometer
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.motion.title") }
+        public enum Bullet {
+          /// Sensor for current activity type
+          public static var activity: String { return L10n.tr("Localizable", "onboarding.permissions.motion.bullet.activity") }
+          /// Sensor for distance moved
+          public static var distance: String { return L10n.tr("Localizable", "onboarding.permissions.motion.bullet.distance") }
+          /// Sensor for step counts
+          public static var steps: String { return L10n.tr("Localizable", "onboarding.permissions.motion.bullet.steps") }
+        }
       }
       public enum Notification {
-        /// Allow push notifications to be sent from your Home Assistant
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.notification.description") }
+        /// Allow notification permission to create a notify service for your device.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.notification.grant_description") }
         /// Notifications
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.notification.title") }
+        public enum Bullet {
+          /// Get alerted from notifications
+          public static var alert: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.alert") }
+          /// Update app icon badge
+          public static var badge: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.badge") }
+          /// Send commands to your device
+          public static var commands: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.commands") }
+        }
       }
     }
     public enum Scanning {
