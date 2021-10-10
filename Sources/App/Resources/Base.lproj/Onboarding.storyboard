@@ -245,9 +245,9 @@
         <!--Connection Error View Controller-->
         <scene sceneID="B9D-Wv-cp8">
             <objects>
-                <viewController id="MOD-3L-omt" customClass="ConnectionErrorViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="authError" id="MOD-3L-omt" customClass="ConnectionErrorViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1MN-NN-6Ip">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uh Oh!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIS-8C-niN" userLabel="Title">
@@ -275,7 +275,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S">
-                                <rect key="frame" x="158.5" y="539" width="58" height="28"/>
+                                <rect key="frame" x="158.5" y="559" width="58" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="More Info"/>
                                 <connections>
@@ -283,7 +283,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="suf-pJ-Nle">
-                                <rect key="frame" x="156" y="599" width="63" height="28"/>
+                                <rect key="frame" x="156" y="619" width="63" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Start Over"/>
                                 <connections>
@@ -359,7 +359,7 @@
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Start Over"/>
                                 <connections>
-                                    <segue destination="Cpw-N3-yji" kind="show" id="Fz4-Qa-34b"/>
+                                    <action selector="goBackTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="GIT-3y-nkL"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -385,8 +385,6 @@
                         <outlet property="connectButton" destination="f1j-Ol-pW5" id="VLr-HQ-06q"/>
                         <outlet property="goBackButton" destination="RSW-l5-eRA" id="dFO-Zv-18Q"/>
                         <outlet property="whatsAboutToHappenLabel" destination="wsC-f5-jbO" id="Qcs-AD-PKE"/>
-                        <segue destination="MOD-3L-omt" kind="show" identifier="showError" id="Zm8-Bf-HW3"/>
-                        <segue destination="XKw-m3-Nah" kind="show" identifier="permissions" id="l74-5C-19T"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzm-f2-VYy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -577,7 +575,7 @@
             <objects>
                 <viewController storyboardIdentifier="permissions" id="XKw-m3-Nah" customClass="PermissionsViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Lle-dh-SMb">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For the best experience while using Home Assistant Companion, please grant the following permissions:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TEX-zW-Byk" userLabel="Title">
@@ -590,7 +588,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTp-eG-rL8">
-                                <rect key="frame" x="20" y="120" width="335" height="487"/>
+                                <rect key="frame" x="20" y="120" width="335" height="507"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="YlM-SI-sh2">
                                         <rect key="frame" x="0.0" y="0.0" width="335" height="480"/>
@@ -643,7 +641,7 @@
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" userLabel="Continue Button">
-                                <rect key="frame" x="160" y="607" width="55" height="28"/>
+                                <rect key="frame" x="160" y="627" width="55" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>

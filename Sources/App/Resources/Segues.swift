@@ -15,10 +15,6 @@ internal enum StoryboardSegue {
   internal enum ClientEvents: String, SegueType {
     case showPayload
   }
-  internal enum Onboarding: String, SegueType {
-    case permissions
-    case showError
-  }
 }
 // swiftlint:enable explicit_type_interface identifier_name line_length type_body_length type_name
 

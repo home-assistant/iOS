@@ -12,8 +12,6 @@ class AuthenticationViewController: UIViewController {
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo?
 
-    var testResult: Error?
-
     @IBOutlet var whatsAboutToHappenLabel: UILabel!
     @IBOutlet var connectButton: UIButton!
     @IBOutlet var goBackButton: UIButton!
@@ -37,8 +35,9 @@ class AuthenticationViewController: UIViewController {
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
 
-            testResult = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil, data: nil)
-            perform(segue: StoryboardSegue.Onboarding.showError)
+            let controller = StoryboardScene.Onboarding.authError.instantiate()
+            controller.error = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil, data: nil)
+            show(controller, sender: self)
             return
         }
 
@@ -66,24 +65,15 @@ class AuthenticationViewController: UIViewController {
             } else {
                 Current.Log.error("Received non-ConnectionTestResult error! \(error)")
             }
-            self.testResult = error
+
             Current.Log.error("Error during connection test \(error.localizedDescription)")
-            self.perform(segue: StoryboardSegue.Onboarding.showError)
+            let controller = StoryboardScene.Onboarding.authError.instantiate()
+            controller.error = error
+            self.show(controller, sender: self)
         }
     }
 
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
-        if segueType == .permissions, let vc = segue.destination as? PermissionsViewController {
-            vc.instance = instance
-            vc.connectionInfo = connectionInfo
-        } else if segueType == .showError, let vc = segue.destination as? ConnectionErrorViewController {
-            vc.error = testResult
-        }
-    }
 
     @IBAction func connectButtonTapped(_ sender: Any) {
         guard let connectionInfo = self.connectionInfo else {
@@ -102,8 +92,11 @@ class AuthenticationViewController: UIViewController {
             Current.settingsStore.connectionInfo = self.connectionInfo
 
             return HomeAssistantAPI(tokenInfo: tokenInfo).GetConfig(false)
-        }.done { _ in
-            self.perform(segue: StoryboardSegue.Onboarding.permissions, sender: nil)
+        }.done { [instance] _ in
+            let controller = StoryboardScene.Onboarding.permissions.instantiate()
+            controller.instance = instance
+            controller.connectionInfo = connectionInfo
+            self.show(controller, sender: self)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")
             let alert = UIAlertController(
@@ -114,6 +107,11 @@ class AuthenticationViewController: UIViewController {
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
+    }
+
+    @IBAction func goBackTapped(_ sender: Any) {
+        let controller = StoryboardScene.Onboarding.welcome.instantiate()
+        show(controller, sender: self)
     }
 
     fileprivate typealias ErrorReason = AFError.ResponseValidationFailureReason
