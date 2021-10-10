@@ -53,15 +53,6 @@ func convertToDictionary(text: String) -> [String: Any]? {
 }
 
 func setDefaults() {
-    // before we reset the value, read in the last version number -- if it's pre-team migration, save that
-    if let previous = prefs.string(forKey: "lastInstalledShortVersion"),
-       let version = try? Version(hassVersion: previous),
-       version <= Version(major: 2020, minor: 4, patch: 1),
-       Current.settingsStore.connectionInfo == nil {
-        Current.Log.info("going to show migration message")
-        prefs.set(true, forKey: "onboardingShouldShowMigrationMessage")
-    }
-
     prefs.set(Constants.build, forKey: "lastInstalledBundleVersion")
     prefs.set(Constants.version, forKey: "lastInstalledShortVersion")
 
