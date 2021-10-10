@@ -53,12 +53,15 @@ class IndividualPermissionViewController: UIViewController {
                     $0.image = bulletPoint.0.image(ofSize: CGSize(width: 34, height: 34), color: .black).withRenderingMode(.alwaysTemplate)
                     $0.setContentCompressionResistancePriority(.required, for: .horizontal)
                     $0.setContentCompressionResistancePriority(.required, for: .vertical)
+                    $0.setContentHuggingPriority(.required, for: .horizontal)
+                    $0.setContentHuggingPriority(.required, for: .vertical)
                 })
                 $0.addArrangedSubview(with(UILabel()) {
                     $0.text = bulletPoint.1
                     $0.textColor = Current.style.onboardingLabel
                     $0.font = .preferredFont(forTextStyle: .body)
                     $0.numberOfLines = 0
+                    $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
                 })
             }
 
