@@ -21,8 +21,6 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         let (scrollView, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
         self.scrollView = scrollView
         
-        stackView.alignment = .fill
-
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.ManualSetup.title
             Current.style.onboardingTitle($0)
@@ -58,6 +56,9 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
                 object: $0
             )
         })
+
+        urlField.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
+            .isActive = trues
 
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             connectButton = $0
@@ -100,8 +101,9 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         }.done { url in
             self.urlField.text = url.absoluteString
 
-            let controller = StoryboardScene.Onboarding.authentication.instantiate()
-            controller.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "2021.1")
+            let controller = AuthenticationViewController(
+                instance: DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "2021.1")
+            )
             self.show(controller, sender: self)
         }.catch { error in
             Current.Log.error("Couldn't make a URL: \(error)")

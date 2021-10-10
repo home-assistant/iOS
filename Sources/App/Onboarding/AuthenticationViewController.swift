@@ -9,12 +9,30 @@ import UIKit
 class AuthenticationViewController: UIViewController {
     let authenticationController = OnboardingAuthenticationController()
 
-    var instance: DiscoveredHomeAssistant!
-    var connectionInfo: ConnectionInfo?
+    private var instance: DiscoveredHomeAssistant
+    private var connectionInfo: ConnectionInfo?
 
-    @IBOutlet var whatsAboutToHappenLabel: UILabel!
-    @IBOutlet var connectButton: UIButton!
-    @IBOutlet var goBackButton: UIButton!
+    init(instance: DiscoveredHomeAssistant) {
+        self.instance = instance
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private var loadingViews = [UIView]()
+    private var loadedViews = [UIView]()
+
+    private func updateToLoading() {
+        loadingViews.forEach { $0.isHidden = false }
+        loadedViews.forEach { $0.isHidden = true }
+    }
+
+    private func updateToLoaded() {
+        loadingViews.forEach { $0.isHidden = true }
+        loadedViews.forEach { $0.isHidden = false }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,14 +41,48 @@ class AuthenticationViewController: UIViewController {
             self.authenticationController.asWebContext = self
         }
 
-        MBProgressHUD.showAdded(to: view, animated: true)
+        view.backgroundColor = Current.style.onboardingBackground
 
-        if let navVC = navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(connectButton)
-            navVC.styleButton(goBackButton)
-        }
+        let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
-        guard let instance = self.instance, let baseURL = instance.BaseURL else {
+        stackView.addArrangedSubview(with(UILabel()) {
+            $0.text = "Authentication"
+            Current.style.onboardingTitle($0)
+        })
+
+        stackView.addArrangedSubview(equalSpacers.next())
+        stackView.addArrangedSubview({
+            let view: UIActivityIndicatorView
+
+            if #available(iOS 13, *) {
+                view = UIActivityIndicatorView(style: .large)
+            } else {
+                view = UIActivityIndicatorView(style: .whiteLarge)
+            }
+
+            loadingViews.append(view)
+            view.startAnimating()
+            return view
+        }())
+        stackView.addArrangedSubview(with(UILabel()) {
+            $0.font = .preferredFont(forTextStyle: .body)
+            $0.textColor = Current.style.onboardingLabel
+            $0.numberOfLines = 0
+            $0.textAlignment = .center
+            $0.text = "We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open."
+            loadedViews.append($0)
+        })
+        stackView.addArrangedSubview(with(UIButton(type: .custom)) {
+            $0.setTitle(L10n.continueLabel, for: .normal)
+            $0.addTarget(self, action: #selector(connectButtonTapped(_:)), for: .touchUpInside)
+            Current.style.onboardingButtonPrimary($0)
+            loadedViews.append($0)
+        })
+        stackView.addArrangedSubview(equalSpacers.next())
+
+        updateToLoading()
+
+        guard let baseURL = instance.BaseURL else {
             let instanceDesc = String(describing: self.instance)
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
@@ -40,11 +92,11 @@ class AuthenticationViewController: UIViewController {
             return
         }
 
-        firstly {
-            self.testConnection(baseURL)
-        }.get { foundInstance in
-            self.instance = foundInstance
-        }.done { _ in
+        firstly { [self] in
+            testConnection(baseURL)
+        }.get { [self] foundInstance in
+            instance = foundInstance
+        }.done { [self] _ in
             let connInfo = ConnectionInfo(
                 externalURL: baseURL, internalURL: nil, cloudhookURL: nil, remoteUIURL: nil, webhookID: "",
                 webhookSecret: nil, internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
@@ -52,13 +104,9 @@ class AuthenticationViewController: UIViewController {
                 isLocalPushEnabled: true
             )
 
-            self.connectionInfo = connInfo
-
-            self.whatsAboutToHappenLabel.isHidden = false
-            self.connectButton.isHidden = false
-        }.ensure {
-            MBProgressHUD.hide(for: self.view, animated: true)
-        }.catch { error in
+            connectionInfo = connInfo
+            updateToLoaded()
+        }.catch { [self] error in
             if let result = error as? ConnectionTestResult {
                 Current.Log.error("Received ConnectionTestResult! \(result)")
             } else {
@@ -67,13 +115,13 @@ class AuthenticationViewController: UIViewController {
 
             Current.Log.error("Error during connection test \(error.localizedDescription)")
             let controller = ConnectionErrorViewController(error: error)
-            self.show(controller, sender: self)
+            show(controller, sender: self)
         }
     }
 
     // MARK: - Navigation
 
-    @IBAction func connectButtonTapped(_ sender: Any) {
+    @objc private func connectButtonTapped(_ sender: Any) {
         guard let connectionInfo = self.connectionInfo else {
             Current.Log.error("self.connectionInfo isnt available!")
             return
@@ -105,10 +153,6 @@ class AuthenticationViewController: UIViewController {
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
-    }
-
-    @IBAction func goBackTapped(_ sender: Any) {
-        navigationController?.popToRootViewController(animated: true)
     }
 
     fileprivate typealias ErrorReason = AFError.ResponseValidationFailureReason

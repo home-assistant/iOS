@@ -204,8 +204,7 @@ extension DiscoverInstancesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         Current.Log.verbose("Selected row at \(indexPath.row) \(discoveredInstances[indexPath.row])")
 
-        let controller = StoryboardScene.Onboarding.authentication.instantiate()
-        controller.instance = discoveredInstances[indexPath.row]
+        let controller = AuthenticationViewController(instance: discoveredInstances[indexPath.row])
         show(controller, sender: self)
     }
 }
