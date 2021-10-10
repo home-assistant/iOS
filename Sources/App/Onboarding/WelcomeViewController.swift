@@ -66,11 +66,16 @@ class WelcomeViewController: UIViewController {
             $0.addTarget(self, action: #selector(continueTapped(_:)), for: .touchUpInside)
             Current.style.onboardingButtonPrimary($0)
         })
+
+        updateAnimationHiddenState()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        updateAnimationHiddenState()
+    }
 
+    private func updateAnimationHiddenState() {
         let animationHidden = traitCollection.verticalSizeClass == .compact
         animationView?.isHidden = animationHidden
     }
