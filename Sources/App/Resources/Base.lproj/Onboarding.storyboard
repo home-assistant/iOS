@@ -236,7 +236,6 @@
                         <outlet property="connectButton" destination="gld-QQ-oTD" id="KZc-77-YyW"/>
                         <outlet property="urlField" destination="xO0-K1-GJX" id="9pq-ib-uAd"/>
                         <outlet property="view" destination="uHB-Lo-ehZ" id="c1L-g8-Eo8"/>
-                        <segue destination="jkw-3v-pbb" kind="show" identifier="setupManualInstance" id="KPp-1J-npF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ccG-Tb-Y1L" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -328,7 +327,7 @@
             <objects>
                 <viewController storyboardIdentifier="authentication" id="jkw-3v-pbb" customClass="AuthenticationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tgk-Fz-LIY">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authentication" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lM3-aA-jqO">
@@ -338,14 +337,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
-                                <rect key="frame" x="16" y="205.5" width="343" height="74"/>
+                                <rect key="frame" x="16" y="215.5" width="343" height="74"/>
                                 <string key="text">We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. </string>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-Ol-pW5">
-                                <rect key="frame" x="161.5" y="299.5" width="52" height="48"/>
+                                <rect key="frame" x="161.5" y="309.5" width="52" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="FXM-qV-KcU"/>
                                 </constraints>
@@ -356,7 +355,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSW-l5-eRA">
-                                <rect key="frame" x="156" y="599" width="63" height="28"/>
+                                <rect key="frame" x="156" y="619" width="63" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Start Over"/>
                                 <connections>

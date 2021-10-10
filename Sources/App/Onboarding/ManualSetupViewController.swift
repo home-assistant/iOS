@@ -33,9 +33,12 @@ class ManualSetupViewController: UIViewController {
 
         firstly {
             validatedURL(from: urlField.text)
-        }.done { updated in
-            self.urlField.text = updated
-            self.perform(segue: StoryboardSegue.Onboarding.setupManualInstance)
+        }.done { url in
+            self.urlField.text = url.absoluteString
+
+            let controller = StoryboardScene.Onboarding.authentication.instantiate()
+            controller.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "2021.1")
+            self.show(controller, sender: self)
         }.catch { error in
             Current.Log.error("Couldn't make a URL: \(error)")
 
@@ -46,25 +49,6 @@ class ManualSetupViewController: UIViewController {
             )
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-        }
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
-        if segueType == .setupManualInstance, let vc = segue.destination as? AuthenticationViewController {
-            guard let fieldVal = urlField.text else {
-                Current.Log
-                    .error(
-                        "Unable to get text! Field is \(String(describing: urlField)), text \(String(describing: urlField.text))"
-                    )
-                return
-            }
-            guard let url = URL(string: fieldVal) else {
-                Current.Log.error("Unable to convert text to URL! Text was \(fieldVal)")
-                return
-            }
-
-            vc.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "0.92.0")
         }
     }
 
@@ -98,7 +82,7 @@ class ManualSetupViewController: UIViewController {
         }
     }
 
-    private func validatedURL(from inputString: String?) -> Promise<String> {
+    private func validatedURL(from inputString: String?) -> Promise<URL> {
         let start = Promise<String?>.value(inputString)
 
         return start
@@ -116,9 +100,9 @@ class ManualSetupViewController: UIViewController {
                 } else {
                     throw ValidateError.invalidScheme
                 }
-            }.map { (string: String) -> String in
-                if URL(string: string) != nil {
-                    return string
+            }.map { (string: String) -> URL in
+                if let url = URL(string: string) {
+                    return url
                 } else {
                     throw ValidateError.cannotConvert
                 }
