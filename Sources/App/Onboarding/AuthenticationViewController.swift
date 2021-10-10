@@ -46,7 +46,7 @@ class AuthenticationViewController: UIViewController {
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = "Authentication"
+            $0.text = L10n.Onboarding.Authentication.title
             Current.style.onboardingTitle($0)
         })
 
@@ -69,7 +69,7 @@ class AuthenticationViewController: UIViewController {
             $0.textColor = Current.style.onboardingLabel
             $0.numberOfLines = 0
             $0.textAlignment = .center
-            $0.text = "We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open."
+            $0.text = L10n.Onboarding.Authentication.description
             loadedViews.append($0)
         })
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {

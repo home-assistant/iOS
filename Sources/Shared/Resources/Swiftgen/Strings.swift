@@ -691,11 +691,23 @@ public enum L10n {
   }
 
   public enum Onboarding {
+    public enum Authentication {
+      /// We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.authentication.description") }
+      /// Authentication
+      public static var title: String { return L10n.tr("Localizable", "onboarding.authentication.title") }
+    }
     public enum Connect {
       /// Connecting to %@
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.connect.title", String(describing: p1))
       }
+    }
+    public enum ConnectionError {
+      /// More Info
+      public static var moreInfoButton: String { return L10n.tr("Localizable", "onboarding.connection_error.more_info_button") }
+      /// Couldn't Connect
+      public static var title: String { return L10n.tr("Localizable", "onboarding.connection_error.title") }
     }
     public enum ConnectionTestResult {
       public enum AuthenticationUnsupported {

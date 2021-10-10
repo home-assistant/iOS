@@ -25,7 +25,7 @@ class ConnectionErrorViewController: UIViewController {
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = "Couldn't Connect"
+            $0.text = L10n.Onboarding.ConnectionError.title
             Current.style.onboardingTitle($0)
         })
 
@@ -61,7 +61,7 @@ class ConnectionErrorViewController: UIViewController {
 
         stackView.addArrangedSubview(equalSpacers.next())
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
-            $0.setTitle("More Info", for: .normal)
+            $0.setTitle(L10n.Onboarding.ConnectionError.moreInfoButton, for: .normal)
             $0.isHidden = !(error is ConnectionTestResult)
             $0.addTarget(self, action: #selector(moreInfoTapped(_:)), for: .touchUpInside)
             Current.style.onboardingButtonPrimary($0)

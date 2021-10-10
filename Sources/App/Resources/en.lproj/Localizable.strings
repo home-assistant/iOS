@@ -726,3 +726,7 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.manual_setup.title" = "What is your Home Assistant's URL?";
 "onboarding.manual_setup.description" = "Must be a fully-formed URL in the format \"http://homeassistant.local:8123\" (that is, containing a scheme/protocol, hostname and port).";
 "onboarding.manual_setup.connect" = "Connect";
+"onboarding.authentication.title" = "Authentication";
+"onboarding.authentication.description" = "We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open.";
+"onboarding.connection_error.title" = "Couldn't Connect";
+"onboarding.connection_error.more_info_button" = "More Info";
