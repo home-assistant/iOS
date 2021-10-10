@@ -721,3 +721,8 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.welcome.description" = "This app relies on open source home automation software that you run on hardware you control.";
 /* verb, button text */
 "continue_label" = "Continue";
+"onboarding.scanning.title" = "Scanning your network for Home Assistant";
+"onboarding.scanning.manual" = "Enter Address Manually";
+"onboarding.manual_setup.title" = "What is your Home Assistant's URL?";
+"onboarding.manual_setup.description" = "Must be a fully-formed URL in the format \"http://homeassistant.local:8123\" (that is, containing a scheme/protocol, hostname and port).";
+"onboarding.manual_setup.connect" = "Connect";

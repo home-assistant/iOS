@@ -24,12 +24,12 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         stackView.alignment = .fill
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = "What is your Home Assistant's URL?"
+            $0.text = L10n.Onboarding.ManualSetup.title
             Current.style.onboardingTitle($0)
         })
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = "It must be a fully formed URL of the format \"http://homeassistant.local:8123\" (that is, containing a scheme/protocol, hostname and port)."
+            $0.text = L10n.Onboarding.ManualSetup.description
             $0.font = .preferredFont(forTextStyle: .body)
             $0.textColor = Current.style.onboardingLabelSecondary
             $0.textAlignment = .natural
@@ -61,7 +61,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
 
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             connectButton = $0
-            $0.setTitle("Connect", for: .normal)
+            $0.setTitle(L10n.Onboarding.ManualSetup.connect, for: .normal)
             $0.addTarget(self, action: #selector(connectTapped(_:)), for: .touchUpInside)
             Current.style.onboardingButtonPrimary($0)
         })

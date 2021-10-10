@@ -768,6 +768,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.title") }
     }
     public enum ManualSetup {
+      /// Connect
+      public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
+      /// Must be a fully-formed URL in the format "http://homeassistant.local:8123" (that is, containing a scheme/protocol, hostname and port).
+      public static var description: String { return L10n.tr("Localizable", "onboarding.manual_setup.description") }
+      /// What is your Home Assistant's URL?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.title") }
       public enum CouldntMakeUrl {
         /// The value '%@' was not a valid URL.
         public static func message(_ p1: Any) -> String {
@@ -812,6 +818,12 @@ public enum L10n {
         /// Notifications
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.notification.title") }
       }
+    }
+    public enum Scanning {
+      /// Enter Address Manually
+      public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
+      /// Scanning your network for Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
     }
     public enum Welcome {
       /// This app relies on open source home automation software that you run on hardware you control.

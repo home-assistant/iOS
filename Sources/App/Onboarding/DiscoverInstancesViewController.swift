@@ -51,7 +51,7 @@ class DiscoverInstancesViewController: UIViewController {
         view.backgroundColor = Current.style.onboardingBackground
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = "Scanning your network for Home Assistant"
+            $0.text = L10n.Onboarding.Scanning.title
             Current.style.onboardingTitle($0)
         })
 
@@ -75,7 +75,7 @@ class DiscoverInstancesViewController: UIViewController {
         ])
 
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
-            $0.setTitle("Enter Address Manually", for: .normal)
+            $0.setTitle(L10n.Onboarding.Scanning.manual, for: .normal)
             $0.addTarget(self, action: #selector(didSelectManual(_:)), for: .touchUpInside)
             Current.style.onboardingButtonPrimary($0)
         })
