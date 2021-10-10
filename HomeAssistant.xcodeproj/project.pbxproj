@@ -344,6 +344,7 @@
 		11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */; };
 		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
@@ -1335,6 +1336,7 @@
 		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
+		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2472,6 +2474,7 @@
 				B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */,
 				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
 				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
+				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -5122,6 +5125,7 @@
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
+				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,

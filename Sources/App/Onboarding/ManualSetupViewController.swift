@@ -20,7 +20,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
 
         let (scrollView, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
         self.scrollView = scrollView
-        
+
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.ManualSetup.title
             Current.style.onboardingTitle($0)
@@ -49,6 +49,11 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             $0.keyboardAppearance = .dark
             $0.returnKeyType = .go
 
+            if #available(iOS 13, *) {
+            } else {
+                $0.textColor = .white
+            }
+
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(updateConnectButton),
@@ -58,14 +63,20 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         })
 
         urlField.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
-            .isActive = trues
+            .isActive = true
 
-        stackView.addArrangedSubview(with(UIButton(type: .custom)) {
-            connectButton = $0
-            $0.setTitle(L10n.Onboarding.ManualSetup.connect, for: .normal)
-            $0.addTarget(self, action: #selector(connectTapped(_:)), for: .touchUpInside)
-            Current.style.onboardingButtonPrimary($0)
-        })
+        urlField.inputAccessoryView = with(InputAccessoryView()) {
+            $0.directionalLayoutMargins = stackView.directionalLayoutMargins
+            $0.contentView = with(UIButton(type: .custom)) {
+                connectButton = $0
+                $0.setTitle(L10n.Onboarding.ManualSetup.connect, for: .normal)
+                $0.addTarget(self, action: #selector(connectTapped(_:)), for: .touchUpInside)
+                Current.style.onboardingButtonPrimary($0)
+
+                $0.translatesAutoresizingMaskIntoConstraints = false
+                $0.setContentCompressionResistancePriority(.required, for: .vertical)
+            }
+        }
 
         stackView.addArrangedSubview(with(equalSpacers.next()) {
             bottomSpacer = $0

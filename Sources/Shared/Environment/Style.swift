@@ -1,4 +1,5 @@
 import UIKit
+import ObjectiveC.runtime
 
 public struct Style {
     #if os(iOS)
@@ -12,14 +13,40 @@ public struct Style {
         label.textAlignment = .center
         label.numberOfLines = 0
     }
-    public var onboardingButtonPrimary: (_ button: UIButton) -> Void = { button in
+
+    private class WiderButton: UIButton {
+        override func didMoveToSuperview() {
+            super.didMoveToSuperview()
+
+            if let superview = superview {
+                widthAnchor.constraint(equalTo: superview.layoutMarginsGuide.widthAnchor)
+                    .isActive = true
+            }
+        }
+    }
+
+    private static func onboardingButton(_ button: UIButton) {
         button.layer.cornerRadius = 6.0
         button.layer.masksToBounds = true
         button.contentEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+
         button.titleLabel?.font = UIFont.systemFont(
             ofSize: UIFont.preferredFont(forTextStyle: .callout).pointSize,
             weight: .bold
         )
+
+        if let title = button.title(for: .normal) {
+            button.setTitle(title.localizedUppercase, for: .normal)
+        }
+
+        if type(of: button) == UIButton.self {
+            object_setClass(button, WiderButton.self)
+        }
+    }
+
+    public var onboardingButtonPrimary: (_ button: UIButton) -> Void = { button in
+        Self.onboardingButton(button)
+
         button.setTitleColor(Constants.darkerTintColor, for: .normal)
         button.setBackgroundImage(
             UIImage(size: CGSize(width: 1, height: 1), color: .white),
@@ -29,10 +56,19 @@ public struct Style {
             UIImage(size: CGSize(width: 1, height: 1), color: .white.withAlphaComponent(0.7)),
             for: .highlighted
         )
+    }
+    public var onboardingButtonSecondary: (_ button: UIButton) -> Void = { button in
+        Self.onboardingButton(button)
 
-        if let title = button.title(for: .normal) {
-            button.setTitle(title.localizedUppercase, for: .normal)
-        }
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.setBackgroundImage(
+            UIImage(size: CGSize(width: 1, height: 1), color: Constants.lighterTintColor),
+            for: .normal
+        )
+        button.setBackgroundImage(
+            UIImage(size: CGSize(width: 1, height: 1), color: .white.withAlphaComponent(0.3)),
+            for: .highlighted
+        )
     }
     #endif
 }
