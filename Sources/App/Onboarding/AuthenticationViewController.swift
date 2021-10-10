@@ -35,8 +35,7 @@ class AuthenticationViewController: UIViewController {
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
 
-            let controller = StoryboardScene.Onboarding.authError.instantiate()
-            controller.error = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil, data: nil)
+            let controller = ConnectionErrorViewController(error: ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil, data: nil))
             show(controller, sender: self)
             return
         }
@@ -67,8 +66,7 @@ class AuthenticationViewController: UIViewController {
             }
 
             Current.Log.error("Error during connection test \(error.localizedDescription)")
-            let controller = StoryboardScene.Onboarding.authError.instantiate()
-            controller.error = error
+            let controller = ConnectionErrorViewController(error: error)
             self.show(controller, sender: self)
         }
     }

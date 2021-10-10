@@ -20,8 +20,6 @@ internal enum StoryboardScene {
   internal enum Onboarding: StoryboardType {
     internal static let storyboardName = "Onboarding"
 
-    internal static let authError = SceneType<HomeAssistant.ConnectionErrorViewController>(storyboard: Onboarding.self, identifier: "authError")
-
     internal static let authentication = SceneType<HomeAssistant.AuthenticationViewController>(storyboard: Onboarding.self, identifier: "authentication")
 
     internal static let connectInstance = SceneType<HomeAssistant.ConnectInstanceViewController>(storyboard: Onboarding.self, identifier: "connectInstance")
