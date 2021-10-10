@@ -5,74 +5,9 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Manual Instance Configuration Controller-->
-        <scene sceneID="Ins-8y-neb">
-            <objects>
-                <viewController storyboardIdentifier="manualSetup" id="sGi-y7-DOI" userLabel="Manual Instance Configuration Controller" customClass="ManualSetupViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="uHB-Lo-ehZ" userLabel="Manual Configuration View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="http://homeassistant.local:8123" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xO0-K1-GJX">
-                                <rect key="frame" x="16" y="316.5" width="343" height="34"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="tintColor" systemColor="systemBlueColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button">
-                                <rect key="frame" x="153" y="380.5" width="69" height="34"/>
-                                <state key="normal" title="Connect"/>
-                                <connections>
-                                    <action selector="connectButtonTapped:" destination="sGi-y7-DOI" eventType="touchUpInside" id="lw7-fv-9pS"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manual Configuration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7iT-bd-cdY">
-                                <rect key="frame" x="16" y="0.0" width="343" height="30"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PIW-dY-j0P" userLabel="Instructions">
-                                <rect key="frame" x="16" y="38" width="343" height="70"/>
-                                <string key="text">Please enter your Home Assistant URL to continue. It must be a fully formed URL of the format "http://homeassistant.local:8123" (that is, containing a scheme/protocol, hostname and port).</string>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="qpd-6g-qfw"/>
-                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="7iT-bd-cdY" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="CxS-9v-Nze"/>
-                            <constraint firstItem="PIW-dY-j0P" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="FBS-wt-D1F"/>
-                            <constraint firstItem="xO0-K1-GJX" firstAttribute="centerY" secondItem="qpd-6g-qfw" secondAttribute="centerY" id="Hz0-kj-LCV"/>
-                            <constraint firstItem="gld-QQ-oTD" firstAttribute="top" secondItem="xO0-K1-GJX" secondAttribute="bottom" constant="30" id="J3S-0X-fVg"/>
-                            <constraint firstItem="PIW-dY-j0P" firstAttribute="top" secondItem="7iT-bd-cdY" secondAttribute="bottom" constant="8" id="THH-rE-Ndy"/>
-                            <constraint firstItem="qpd-6g-qfw" firstAttribute="trailing" secondItem="PIW-dY-j0P" secondAttribute="trailing" constant="16" id="fxU-0O-DTF"/>
-                            <constraint firstItem="gld-QQ-oTD" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="gZJ-nI-8A9"/>
-                            <constraint firstItem="qpd-6g-qfw" firstAttribute="trailing" secondItem="xO0-K1-GJX" secondAttribute="trailing" constant="16" id="hbr-Lg-ib9"/>
-                            <constraint firstItem="7iT-bd-cdY" firstAttribute="top" secondItem="qpd-6g-qfw" secondAttribute="top" id="qb8-of-U2s"/>
-                            <constraint firstItem="xO0-K1-GJX" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="si4-53-5Kn"/>
-                            <constraint firstItem="7iT-bd-cdY" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="yt7-nX-lPb"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="ffO-Ip-9NQ"/>
-                    <connections>
-                        <outlet property="connectButton" destination="gld-QQ-oTD" id="KZc-77-YyW"/>
-                        <outlet property="urlField" destination="xO0-K1-GJX" id="9pq-ib-uAd"/>
-                        <outlet property="view" destination="uHB-Lo-ehZ" id="c1L-g8-Eo8"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ccG-Tb-Y1L" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2474.4000000000001" y="-1343.4782608695652"/>
-        </scene>
         <!--Connection Error View Controller-->
         <scene sceneID="B9D-Wv-cp8">
             <objects>
@@ -520,9 +455,4 @@
         <designable name="xaH-oE-knW"/>
     </designables>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-    <resources>
-        <systemColor name="systemBlueColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-    </resources>
 </document>

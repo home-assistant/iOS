@@ -184,7 +184,7 @@ class DiscoverInstancesViewController: UIViewController {
     }
 
     @IBAction func didSelectManual(_ sender: UIButton) {
-        show(StoryboardScene.Onboarding.manualSetup.instantiate(), sender: self)
+        show(ManualSetupViewController(), sender: self)
     }
 }
 
