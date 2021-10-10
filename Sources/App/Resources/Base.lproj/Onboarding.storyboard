@@ -677,20 +677,6 @@
             </objects>
             <point key="canvasLocation" x="-618.39999999999998" y="-1343.4782608695652"/>
         </scene>
-        <!--Onboarding Navigation View Controller-->
-        <scene sceneID="qL5-eq-CzD">
-            <objects>
-                <navigationController storyboardIdentifier="navController" automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="k1J-B5-uSb" customClass="OnboardingNavigationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ATm-S0-lLd">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Zaj-z7-sxI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-4386.3999999999996" y="-1343.4782608695652"/>
-        </scene>
     </scenes>
     <designables>
         <designable name="Buq-eK-7U7"/>

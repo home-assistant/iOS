@@ -19,6 +19,9 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        setNavigationBarHidden(true, animated: false)
+
         if #available(iOS 13.0, *) {
             // Always adopt a light interface style.
             overrideUserInterfaceStyle = .light
