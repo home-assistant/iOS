@@ -14,7 +14,7 @@
             <objects>
                 <viewController storyboardIdentifier="welcome" id="Cpw-N3-yji" customClass="WelcomeViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FZO-9W-RiW" userLabel="Welcome View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
@@ -24,7 +24,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="203.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="240" id="gcY-WU-qo5"/>
@@ -35,7 +35,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw">
-                                <rect key="frame" x="160" y="599" width="55" height="28"/>
+                                <rect key="frame" x="160" y="619" width="55" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
@@ -71,8 +71,6 @@
                         <outlet property="animationView" destination="wD9-TR-rVF" id="uqF-bQ-kl5"/>
                         <outlet property="continueButton" destination="N4h-WC-wIw" id="6pm-aL-tIf"/>
                         <outlet property="wifiWarningLabel" destination="djx-xj-AwF" id="bFq-To-JiJ"/>
-                        <segue destination="zQf-lI-ZmB" kind="show" identifier="discoverInstances" id="sQB-9m-V5O"/>
-                        <segue destination="sGi-y7-DOI" kind="show" identifier="manuallyConnectInstance" id="Ywb-4q-gPS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oJ1-GF-kpe" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -84,11 +82,11 @@
             <objects>
                 <viewController storyboardIdentifier="discoverInstances" id="zQf-lI-ZmB" userLabel="Discover Instances" customClass="DiscoverInstancesViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lXu-nc-gsX" userLabel="Discover Instances View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="sOg-Tl-IGk">
-                                <rect key="frame" x="0.0" y="100" width="375" height="479"/>
+                                <rect key="frame" x="0.0" y="100" width="375" height="499"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -128,14 +126,14 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vze-fN-mpk" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="203.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="nlE-8B-p0u"/>
                                     <constraint firstAttribute="height" constant="240" id="yGo-6N-mP6"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fqx-lo-wDB">
-                                <rect key="frame" x="116" y="599" width="143" height="28"/>
+                                <rect key="frame" x="116" y="619" width="143" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Enter Address Manually">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -716,9 +714,8 @@
         <designable name="xaH-oE-knW"/>
     </designables>
     <inferredMetricsTieBreakers>
-        <segue reference="KPp-1J-npF"/>
-        <segue reference="Ywb-4q-gPS"/>
-        <segue reference="Cox-Jc-BY9"/>
+        <segue reference="WUK-ZQ-cSr"/>
+        <segue reference="ZAG-P6-gFU"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>

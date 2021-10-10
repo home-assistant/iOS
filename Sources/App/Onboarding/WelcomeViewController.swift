@@ -51,18 +51,11 @@ class WelcomeViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
-        if segueType == .manuallyConnectInstance, let vc = segue.destination as? ManualSetupViewController {
-            vc.notOnWifi = false
-        }
-    }
-
     @IBAction func continueButton(_ sender: UIButton) {
         if wifiWarningLabel.isHidden {
-            perform(segue: StoryboardSegue.Onboarding.discoverInstances, sender: nil)
+            show(StoryboardScene.Onboarding.discoverInstances.instantiate(), sender: self)
         } else {
-            perform(segue: StoryboardSegue.Onboarding.manuallyConnectInstance, sender: nil)
+            show(StoryboardScene.Onboarding.manualSetup.instantiate(), sender: self)
         }
     }
 

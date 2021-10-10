@@ -6,8 +6,6 @@ class ManualSetupViewController: UIViewController {
     @IBOutlet var connectButton: UIButton!
     @IBOutlet var urlField: UITextField!
 
-    public var notOnWifi: Bool = true
-
     override func viewDidLoad() {
         super.viewDidLoad()
 

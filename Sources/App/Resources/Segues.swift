@@ -17,8 +17,6 @@ internal enum StoryboardSegue {
   }
   internal enum Onboarding: String, SegueType {
     case continueManually
-    case discoverInstances
-    case manuallyConnectInstance
     case permissions
     case setupDiscoveredInstance
     case setupManualInstance
