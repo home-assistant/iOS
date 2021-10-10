@@ -20,6 +20,7 @@ class DiscoverInstancesCell: UITableViewCell {
         }
         selectedBackgroundView = with(UIView()) {
             $0.backgroundColor = UIColor(white: 0, alpha: 0.25)
+            $0.layer.cornerRadius = 4.0
         }
         backgroundColor = .clear
         accessoryType = .disclosureIndicator
@@ -45,6 +46,20 @@ class DiscoverInstancesViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let activityIndicator: UIActivityIndicatorView
+
+        if #available(iOS 13, *) {
+            activityIndicator = UIActivityIndicatorView(style: .medium)
+        } else {
+            activityIndicator = UIActivityIndicatorView(style: .white)
+        }
+
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(customView: activityIndicator)
+        ]
+        
+        activityIndicator.startAnimating()
 
         let (_, stackView, _) = UIView.contentStackView(in: view, scrolling: false)
 
