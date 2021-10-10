@@ -92,7 +92,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
 extension OnboardingNavigationViewController: UINavigationControllerDelegate {
     private func updateNavigationBar(for controller: UIViewController?, animated: Bool) {
-        if controller == viewControllers.first {
+        if controller == viewControllers.first, controller is WelcomeViewController {
             setNavigationBarHidden(true, animated: animated)
         } else {
             setNavigationBarHidden(false, animated: animated)
@@ -100,8 +100,10 @@ extension OnboardingNavigationViewController: UINavigationControllerDelegate {
     }
 
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        self.transitionCoordinator?.animate(alongsideTransition: { [weak self] _ in
-            self?.updateNavigationBar(for: viewController, animated: animated)
+        updateNavigationBar(for: viewController, animated: animated)
+
+        self.transitionCoordinator?.animate(alongsideTransition: { _ in
+            // putting the navigation bar change here causes the bar to animate in/out
         }, completion: { [weak self] context in
             if context.isCancelled {
                 self?.updateNavigationBar(for: self?.topViewController, animated: animated)
