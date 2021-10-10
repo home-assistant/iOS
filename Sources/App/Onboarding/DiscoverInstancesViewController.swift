@@ -141,21 +141,18 @@ class DiscoverInstancesViewController: UIViewController {
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
-
-        if segueType == .setupDiscoveredInstance,
-           let sender = sender as? UITableViewCell,
-           let vc = segue.destination as? AuthenticationViewController,
-           let indexPath = tableView.indexPath(for: sender) {
-            vc.instance = discoveredInstances[indexPath.row]
-        }
+    @IBAction func didSelectManual(_ sender: UIButton) {
+        show(StoryboardScene.Onboarding.manualSetup.instantiate(), sender: self)
     }
 }
 
 extension DiscoverInstancesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         Current.Log.verbose("Selected row at \(indexPath.row) \(discoveredInstances[indexPath.row])")
+
+        let controller = StoryboardScene.Onboarding.authentication.instantiate()
+        controller.instance = discoveredInstances[indexPath.row]
+        show(controller, sender: self)
     }
 }
 

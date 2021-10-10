@@ -14,7 +14,7 @@
             <objects>
                 <viewController storyboardIdentifier="welcome" id="Cpw-N3-yji" customClass="WelcomeViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FZO-9W-RiW" userLabel="Welcome View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
@@ -24,7 +24,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="203.5" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="240" id="gcY-WU-qo5"/>
@@ -35,7 +35,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw">
-                                <rect key="frame" x="160" y="619" width="55" height="28"/>
+                                <rect key="frame" x="160" y="599" width="55" height="28"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
@@ -115,9 +115,6 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <connections>
-                                            <segue destination="jkw-3v-pbb" kind="show" identifier="setupDiscoveredInstance" id="WUK-ZQ-cSr"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -139,7 +136,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <segue destination="sGi-y7-DOI" kind="show" identifier="continueManually" id="tfQ-DV-bBL"/>
+                                    <action selector="didSelectManual:" destination="zQf-lI-ZmB" eventType="touchUpInside" id="age-5K-ar6"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scanning your network for Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4qQ-ND-WGB">
@@ -179,25 +176,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="thh-Bc-uAU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3447" y="-582"/>
+            <point key="canvasLocation" x="-3548" y="-626"/>
         </scene>
         <!--Manual Instance Configuration Controller-->
         <scene sceneID="Ins-8y-neb">
             <objects>
                 <viewController storyboardIdentifier="manualSetup" id="sGi-y7-DOI" userLabel="Manual Instance Configuration Controller" customClass="ManualSetupViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uHB-Lo-ehZ" userLabel="Manual Configuration View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="http://homeassistant.local:8123" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xO0-K1-GJX">
-                                <rect key="frame" x="16" y="306.5" width="343" height="34"/>
+                                <rect key="frame" x="16" y="316.5" width="343" height="34"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" systemColor="systemBlueColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button">
-                                <rect key="frame" x="153" y="370.5" width="69" height="34"/>
+                                <rect key="frame" x="153" y="380.5" width="69" height="34"/>
                                 <state key="normal" title="Connect"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="sGi-y7-DOI" eventType="touchUpInside" id="lw7-fv-9pS"/>
@@ -329,7 +326,7 @@
         <!--Authentication View Controller-->
         <scene sceneID="kcK-Ui-ndY">
             <objects>
-                <viewController id="jkw-3v-pbb" customClass="AuthenticationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="authentication" id="jkw-3v-pbb" customClass="AuthenticationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tgk-Fz-LIY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -714,8 +711,7 @@
         <designable name="xaH-oE-knW"/>
     </designables>
     <inferredMetricsTieBreakers>
-        <segue reference="WUK-ZQ-cSr"/>
-        <segue reference="ZAG-P6-gFU"/>
+        <segue reference="Fz4-Qa-34b"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>
