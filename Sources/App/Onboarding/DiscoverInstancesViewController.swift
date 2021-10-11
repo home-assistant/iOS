@@ -43,6 +43,15 @@ class DiscoverInstancesViewController: UIViewController {
         tableView?.indexPathsForSelectedRows?.forEach { indexPath in
             tableView?.deselectRow(at: indexPath, animated: animated)
         }
+
+        if !discovery.browserIsRunning {
+            startDiscovery()
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        stopDiscovery()
     }
 
     override func viewDidLoad() {
@@ -90,6 +99,18 @@ class DiscoverInstancesViewController: UIViewController {
             tableView!.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor),
         ])
 
+        let manualHintLabel: UILabel = with(UILabel()) {
+            $0.text = "Not finding your server?"
+            $0.textColor = Current.style.onboardingLabelSecondary
+            $0.font = .preferredFont(forTextStyle: .footnote)
+            $0.numberOfLines = 1
+            $0.baselineAdjustment = .alignCenters
+            $0.minimumScaleFactor = 0.2
+            $0.adjustsFontSizeToFitWidth = true
+        }
+        stackView.addArrangedSubview(manualHintLabel)
+        stackView.setCustomSpacing(stackView.spacing / 2.0, after: manualHintLabel)
+
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             $0.setTitle(L10n.Onboarding.Scanning.manual, for: .normal)
             $0.addTarget(self, action: #selector(didSelectManual(_:)), for: .touchUpInside)
@@ -99,7 +120,7 @@ class DiscoverInstancesViewController: UIViewController {
         if Current.appConfiguration == .Debug {
             for (idx, instance) in [
                 DiscoveredHomeAssistant(
-                    baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic/api/discovery_info")!,
+                    baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic")!,
                     name: "Basic Auth",
                     version: "0.92.0"
                 ),
@@ -119,20 +140,13 @@ class DiscoverInstancesViewController: UIViewController {
                     version: "0.92.0"
                 ),
             ].enumerated() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500 * idx)) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500 * (idx + 1))) { [weak self] in
                     self?.add(discoveredInstance: instance)
                 }
             }
         }
 
-        let queue = DispatchQueue(label: Bundle.main.bundleIdentifier!, attributes: [])
-        queue.async {
-            self.discovery.stopDiscovery()
-            self.discovery.stopPublish()
-
-            self.discovery.startDiscovery()
-            self.discovery.startPublish()
-        }
+        startDiscovery()
 
         let center = NotificationCenter.default
         center.addObserver(
@@ -150,32 +164,42 @@ class DiscoverInstancesViewController: UIViewController {
         )
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
+        stopDiscovery()
+    }
 
+    private func startDiscovery() {
+        let queue = DispatchQueue(label: "bonjour", target: .global())
+        queue.async { [discovery] in
+            discovery.stopDiscovery()
+            discovery.stopPublish()
+            discovery.startDiscovery()
+            discovery.startPublish()
+        }
+    }
+
+    private func stopDiscovery() {
         discovery.stopDiscovery()
         discovery.stopPublish()
     }
 
-    deinit {
-        self.discovery.stopDiscovery()
-        self.discovery.stopPublish()
-    }
-
     private func add(discoveredInstance: DiscoveredHomeAssistant) {
-        guard discoveredInstances.contains(where: {
-            $0.BaseURL == discoveredInstance.BaseURL
-        }) == false else {
-            // already discovered
-            return
-        }
-
-        discoveredInstances.append(discoveredInstance)
         tableView?.performBatchUpdates({
-            tableView?.insertRows(
-                at: [IndexPath(row: discoveredInstances.count - 1, section: 0)],
-                with: .automatic
-            )
+            if let existing = discoveredInstances.firstIndex(where: {
+                $0.BaseURL == discoveredInstance.BaseURL
+            }) {
+                discoveredInstances[existing] = discoveredInstance
+                tableView?.reloadRows(
+                    at: [IndexPath(row: existing, section: 0)],
+                    with: .fade
+                )
+            } else {
+                discoveredInstances.append(discoveredInstance)
+                tableView?.insertRows(
+                    at: [IndexPath(row: discoveredInstances.count - 1, section: 0)],
+                    with: .automatic
+                )
+            }
         }, completion: nil)
     }
 
