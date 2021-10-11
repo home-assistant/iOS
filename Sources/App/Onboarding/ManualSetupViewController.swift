@@ -206,6 +206,11 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         let insetHeight = max(0, intersectHeight - (bottomSpacer?.bounds.height ?? 0))
 
         scrollView.contentInset.bottom = insetHeight
-        scrollView.scrollIndicatorInsets.bottom = insetHeight
+
+        if #available(iOS 13, *) {
+            scrollView.verticalScrollIndicatorInsets.bottom = insetHeight
+        } else {
+            scrollView.scrollIndicatorInsets.bottom = insetHeight
+        }
     }
 }
