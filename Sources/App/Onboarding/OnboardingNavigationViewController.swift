@@ -41,7 +41,13 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         case .secondary: rootViewController = DiscoverInstancesViewController()
         }
 
-        super.init(rootViewController: rootViewController)
+        if #available(iOS 13, *) {
+            super.init(rootViewController: rootViewController)
+        } else {
+            // iOS 12 won't create this initializer even though init(rootViewController:) calls it
+            super.init(nibName: nil, bundle: nil)
+            viewControllers = [rootViewController]
+        }
 
         modalPresentationStyle = onboardingStyle.modalPresentationStyle
 

@@ -84,6 +84,7 @@ class DiscoverInstancesViewController: UIViewController {
             $0.dataSource = self
             $0.cellLayoutMarginsFollowReadableWidth = true
 
+            $0.backgroundColor = Current.style.onboardingBackground
             $0.backgroundView = with(UIView()) {
                 $0.backgroundColor = Current.style.onboardingBackground
             }
