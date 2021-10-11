@@ -76,7 +76,7 @@ class WebViewWindowController {
     func setup() {
         if requiresOnboarding {
             Current.Log.info("showing onboarding")
-            updateRootViewController(to: OnboardingNavigationViewController())
+            updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
         } else {
             if let rootController = window.rootViewController, !rootController.children.isEmpty {
                 Current.Log.info("state restoration loaded controller, not creating a new one")
@@ -199,7 +199,7 @@ extension WebViewWindowController: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
         switch state {
         case let .needed(type):
-            let controller = OnboardingNavigationViewController()
+            let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
             updateRootViewController(to: controller)
 
             if type.shouldShowError {

@@ -38,8 +38,11 @@ class SettingsViewController: HAFormViewController {
         rows.append(HomeAssistantAccountRow {
             $0.hidden = .isNotDebug
             $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
-                fatalError()
+                OnboardingNavigationViewController(onboardingStyle: .secondary)
             }), onDismiss: nil)
+            $0.onCellSelection { cell, row in
+                row.deselect(animated: true)
+            }
         })
 
         return rows

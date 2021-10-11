@@ -4,7 +4,63 @@ import Shared
 import UIKit
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
+    enum OnboardingStyle {
+        case initial
+        case secondary
+
+        var insertsCancelButton: Bool {
+            switch self {
+            case .initial: return false
+            case .secondary: return true
+            }
+        }
+
+        var modalPresentationStyle: UIModalPresentationStyle {
+            switch self {
+            case .initial: return .fullScreen
+            case .secondary:
+                if #available(iOS 13, *) {
+                    return .automatic
+                } else {
+                    return .fullScreen
+                }
+            }
+        }
+    }
+
+    public let onboardingStyle: OnboardingStyle
     public var onDismissCallback: ((UIViewController) -> Void)?
+
+    public init(onboardingStyle: OnboardingStyle) {
+        self.onboardingStyle = onboardingStyle
+
+        let rootViewController: UIViewController
+
+        switch onboardingStyle {
+        case .initial: rootViewController = WelcomeViewController()
+        case .secondary: rootViewController = DiscoverInstancesViewController()
+        }
+
+        super.init(rootViewController: rootViewController)
+
+        modalPresentationStyle = onboardingStyle.modalPresentationStyle
+
+        if onboardingStyle.insertsCancelButton {
+            var leftItems = rootViewController.navigationItem.leftBarButtonItems ?? []
+            leftItems.append(
+                UIBarButtonItem(
+                    barButtonSystemItem: .cancel,
+                    target: self,
+                    action: #selector(cancelTapped(_:))
+                )
+            )
+            rootViewController.navigationItem.leftBarButtonItems = leftItems
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // swiftlint:disable:next force_try
     let reachability = try! Reachability()
@@ -44,10 +100,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
             )
             navigationBar.shadowImage = UIImage(size: CGSize(width: 1, height: 1), color: .clear)
         }
-
-        if viewControllers.isEmpty {
-            viewControllers = [WelcomeViewController()]
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -63,6 +115,10 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         reachability.stopNotifier()
+    }
+
+    @objc private func cancelTapped(_ sender: UIBarButtonItem) {
+        dismiss()
     }
 
     func dismiss() {
