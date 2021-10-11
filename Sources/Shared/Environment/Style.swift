@@ -35,10 +35,6 @@ public struct Style {
             weight: .bold
         )
 
-        if let title = button.title(for: .normal) {
-            button.setTitle(title.localizedUppercase, for: .normal)
-        }
-
         if type(of: button) == UIButton.self {
             object_setClass(button, WiderButton.self)
         }
