@@ -15,6 +15,8 @@ class IndividualPermissionViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private var headerImageView: UIImageView?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -24,6 +26,7 @@ class IndividualPermissionViewController: UIViewController {
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
         stackView.addArrangedSubview(with(UIImageView()) {
+            headerImageView = $0
             $0.image = permission.enableIcon.image(ofSize: CGSize(width: 128, height: 128), color: .black)
                 .withRenderingMode(.alwaysTemplate)
         })
@@ -96,5 +99,15 @@ class IndividualPermissionViewController: UIViewController {
             sender.isUserInteractionEnabled = true
             show(workflowController.next(), sender: self)
         }
+    }
+
+    private func updateHiddenStates() {
+        let imageViewHidden = traitCollection.verticalSizeClass == .compact
+        headerImageView?.isHidden = imageViewHidden
+    }
+
+    override func traitCollectionDidChange(_ traitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(traitCollection)
+        updateHiddenStates()
     }
 }
