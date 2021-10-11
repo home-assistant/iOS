@@ -16,7 +16,7 @@ class DiscoverInstancesCell: UITableViewCell {
             $0?.font = .preferredFont(forTextStyle: .body)
         }
         backgroundView = with(UIView()) {
-            $0.backgroundColor = .clear
+            $0.backgroundColor = Current.style.onboardingBackground
         }
         selectedBackgroundView = with(UIView()) {
             $0.backgroundColor = UIColor(white: 0, alpha: 0.25)
