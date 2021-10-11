@@ -884,6 +884,8 @@ public enum L10n {
     public enum Scanning {
       /// Enter Address Manually
       public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
+      /// Not finding your server?
+      public static var manualHint: String { return L10n.tr("Localizable", "onboarding.scanning.manual_hint") }
       /// Scanning your network for Home Assistant
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
     }

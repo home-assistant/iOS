@@ -749,3 +749,4 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.final.state.cloud" = "Nabu Casa Cloud Detected";
 "onboarding.final.state.encrypted" = "Encrypted Communications Established";
 "onboarding.final.state.sensors" = "Sensors Configured";
+"onboarding.scanning.manual_hint" = "Not finding your server?";

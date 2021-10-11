@@ -100,7 +100,7 @@ class DiscoverInstancesViewController: UIViewController {
         ])
 
         let manualHintLabel: UILabel = with(UILabel()) {
-            $0.text = "Not finding your server?"
+            $0.text = L10n.Onboarding.Scanning.manualHint
             $0.textColor = Current.style.onboardingLabelSecondary
             $0.font = .preferredFont(forTextStyle: .footnote)
             $0.numberOfLines = 1
