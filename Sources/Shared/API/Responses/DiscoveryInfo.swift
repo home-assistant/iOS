@@ -10,18 +10,15 @@ public class DiscoveredHomeAssistant: Mappable {
     // If false, this class was manually constructed
     public var Discovered: Bool = true
 
-    public var AnnouncedFrom: [String] = []
-
     public init() {}
 
     public required init?(map: Map) {}
 
-    public convenience init(baseURL: URL, name: String, version: String, announcedFrom: [String] = []) {
+    public convenience init(baseURL: URL, name: String, version: String) {
         self.init()
         self.BaseURL = baseURL
         self.LocationName = name
         self.Version = version
-        self.AnnouncedFrom = announcedFrom
         self.Discovered = false
     }
 

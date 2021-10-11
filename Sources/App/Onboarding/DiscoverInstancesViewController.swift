@@ -44,14 +44,12 @@ class DiscoverInstancesViewController: UIViewController {
             tableView?.deselectRow(at: indexPath, animated: animated)
         }
 
-        if !discovery.browserIsRunning {
-            startDiscovery()
-        }
+        discovery.start()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        stopDiscovery()
+        discovery.stop()
     }
 
     override func viewDidLoad() {
@@ -117,6 +115,8 @@ class DiscoverInstancesViewController: UIViewController {
             Current.style.onboardingButtonSecondary($0)
         })
 
+        discovery.observer = self
+
         if Current.appConfiguration == .Debug {
             for (idx, instance) in [
                 DiscoveredHomeAssistant(
@@ -145,42 +145,10 @@ class DiscoverInstancesViewController: UIViewController {
                 }
             }
         }
-
-        startDiscovery()
-
-        let center = NotificationCenter.default
-        center.addObserver(
-            self,
-            selector: #selector(HomeAssistantDiscovered(_:)),
-            name: NSNotification.Name(rawValue: "homeassistant.discovered"),
-            object: nil
-        )
-
-        center.addObserver(
-            self,
-            selector: #selector(HomeAssistantUndiscovered(_:)),
-            name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
-            object: nil
-        )
     }
 
     deinit {
-        stopDiscovery()
-    }
-
-    private func startDiscovery() {
-        let queue = DispatchQueue(label: "bonjour", target: .global())
-        queue.async { [discovery] in
-            discovery.stopDiscovery()
-            discovery.stopPublish()
-            discovery.startDiscovery()
-            discovery.startPublish()
-        }
-    }
-
-    private func stopDiscovery() {
-        discovery.stopDiscovery()
-        discovery.stopPublish()
+        discovery.stop()
     }
 
     private func add(discoveredInstance: DiscoveredHomeAssistant) {
@@ -203,25 +171,32 @@ class DiscoverInstancesViewController: UIViewController {
         }, completion: nil)
     }
 
-    @objc func HomeAssistantDiscovered(_ notification: Notification) {
-        if let userInfo = notification.userInfo as? [String: Any] {
-            guard let discoveryInfo = DiscoveredHomeAssistant(JSON: userInfo) else {
-                Current.Log.error("Unable to parse discovered HA Instance")
-                return
+    private func remove(forName name: String) {
+        tableView?.performBatchUpdates({
+            if let existing = discoveredInstances.firstIndex(where: {
+                $0.LocationName == name
+            }) {
+                discoveredInstances.remove(at: existing)
+                tableView?.deleteRows(
+                    at: [IndexPath(row: existing, section: 0)],
+                    with: .automatic
+                )
             }
-
-            add(discoveredInstance: discoveryInfo)
-        }
-    }
-
-    @objc func HomeAssistantUndiscovered(_ notification: Notification) {
-        if let userInfo = notification.userInfo, let name = userInfo["name"] as? String {
-            Current.Log.verbose("Remove discovered instance \(name)")
-        }
+        }, completion: nil)
     }
 
     @IBAction func didSelectManual(_ sender: UIButton) {
         show(ManualSetupViewController(), sender: self)
+    }
+}
+
+extension DiscoverInstancesViewController: BonjourObserver {
+    func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant) {
+        add(discoveredInstance: instance)
+    }
+
+    func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String) {
+        remove(forName: name)
     }
 }
 
