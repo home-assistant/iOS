@@ -72,8 +72,15 @@ class IndividualPermissionViewController: UIViewController {
             }
 
             stackView.addArrangedSubview(view)
-            view.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
-                .isActive = true
+
+            switch traitCollection.userInterfaceIdiom {
+            case .pad, .mac:
+                view.widthAnchor.constraint(equalTo: stackView.readableContentGuide.widthAnchor)
+                    .isActive = true
+            default:
+                view.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
+                    .isActive = true
+            }
         }
 
         stackView.addArrangedSubview(equalSpacers.next())

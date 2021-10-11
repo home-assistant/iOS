@@ -62,8 +62,14 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             )
         })
 
-        urlField.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
-            .isActive = true
+        switch traitCollection.userInterfaceIdiom {
+        case .pad, .mac:
+            urlField.widthAnchor.constraint(equalTo: stackView.readableContentGuide.widthAnchor)
+                .isActive = true
+        default:
+            urlField.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
+                .isActive = true
+        }
 
         urlField.inputAccessoryView = with(InputAccessoryView()) {
             $0.directionalLayoutMargins = stackView.directionalLayoutMargins
