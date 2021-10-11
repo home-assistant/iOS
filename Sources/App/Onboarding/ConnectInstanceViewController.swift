@@ -14,12 +14,12 @@ class ConnectInstanceViewController: UIViewController {
 
         var title: String {
             switch self {
-            case .connectionStatus: return "Connected"
-            case .authenticated: return "Authenticated"
-            case .integrationCreated: return "Integration Created"
-            case .cloudStatus: return "Nabu Casa Cloud Detected"
-            case .encrypted: return "Encrypted Communications Established"
-            case .sensorsConfigured: return "Sensors Configured"
+            case .connectionStatus: return L10n.Onboarding.Final.State.connection
+            case .authenticated: return L10n.Onboarding.Final.State.authenticated
+            case .integrationCreated: return L10n.Onboarding.Final.State.integration
+            case .cloudStatus: return L10n.Onboarding.Final.State.cloud
+            case .encrypted: return L10n.Onboarding.Final.State.encrypted
+            case .sensorsConfigured: return L10n.Onboarding.Final.State.sensors
             }
         }
     }
@@ -48,7 +48,7 @@ class ConnectInstanceViewController: UIViewController {
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = "Setting Up"
+            $0.text = L10n.Onboarding.Final.title
             Current.style.onboardingTitle($0)
         })
 

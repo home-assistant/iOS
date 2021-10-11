@@ -767,6 +767,24 @@ public enum L10n {
         }
       }
     }
+    public enum Final {
+      /// Final Set Up
+      public static var title: String { return L10n.tr("Localizable", "onboarding.final.title") }
+      public enum State {
+        /// Authenticated
+        public static var authenticated: String { return L10n.tr("Localizable", "onboarding.final.state.authenticated") }
+        /// Nabu Casa Cloud Detected
+        public static var cloud: String { return L10n.tr("Localizable", "onboarding.final.state.cloud") }
+        /// Connected
+        public static var connection: String { return L10n.tr("Localizable", "onboarding.final.state.connection") }
+        /// Encrypted Communications Established
+        public static var encrypted: String { return L10n.tr("Localizable", "onboarding.final.state.encrypted") }
+        /// Integration Created
+        public static var integration: String { return L10n.tr("Localizable", "onboarding.final.state.integration") }
+        /// Sensors Configured
+        public static var sensors: String { return L10n.tr("Localizable", "onboarding.final.state.sensors") }
+      }
+    }
     public enum LoggedOutFromMove {
       /// The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\n\nYour actions and local configuration will still be available after logging in.
       public static var body: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.body") }
