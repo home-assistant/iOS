@@ -54,6 +54,11 @@ class WelcomeViewController: UIViewController {
             $0.titleLabel?.font = .preferredFont(forTextStyle: .body)
             $0.setTitleColor(Current.style.onboardingLabelSecondary, for: .normal)
             $0.addTarget(self, action: #selector(learnMoreTapped(_:)), for: .touchUpInside)
+
+            UIView.performWithoutAnimation { [button = $0] in
+                // Prevent the button from fading in initially
+                button.layoutIfNeeded()
+            }
         })
 
         stackView.addArrangedSubview(equalSpacers.next())
