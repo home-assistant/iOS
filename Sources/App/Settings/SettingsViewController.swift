@@ -40,7 +40,7 @@ class SettingsViewController: HAFormViewController {
             $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
                 OnboardingNavigationViewController(onboardingStyle: .secondary)
             }), onDismiss: nil)
-            $0.onCellSelection { cell, row in
+            $0.onCellSelection { _, row in
                 row.deselect(animated: true)
             }
         })
