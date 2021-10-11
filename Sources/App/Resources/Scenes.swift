@@ -17,11 +17,6 @@ internal enum StoryboardScene {
 
     internal static let clientEventsList = SceneType<HomeAssistant.ClientEventTableViewController>(storyboard: ClientEvents.self, identifier: "clientEventsList")
   }
-  internal enum Onboarding: StoryboardType {
-    internal static let storyboardName = "Onboarding"
-
-    internal static let connectInstance = SceneType<HomeAssistant.ConnectInstanceViewController>(storyboard: Onboarding.self, identifier: "connectInstance")
-  }
 }
 // swiftlint:enable explicit_type_interface identifier_name line_length type_body_length type_name
 

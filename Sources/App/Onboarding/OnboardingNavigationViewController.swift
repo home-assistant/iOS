@@ -95,6 +95,7 @@ extension OnboardingNavigationViewController: UINavigationControllerDelegate {
         let hiddenNavigationBarClasses: [UIViewController.Type] = [
             WelcomeViewController.self,
             IndividualPermissionViewController.self,
+            ConnectInstanceViewController.self,
         ]
 
         if let controller = controller,

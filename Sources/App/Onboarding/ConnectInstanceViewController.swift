@@ -4,55 +4,115 @@ import Shared
 import UIKit
 
 class ConnectInstanceViewController: UIViewController {
-    @IBOutlet var titleLabel: UILabel!
-    @IBOutlet var overallProgress: AnimationView!
-    @IBOutlet var connectionStatus: AnimationView!
-    @IBOutlet var authenticated: AnimationView!
-    @IBOutlet var integrationCreated: AnimationView!
-    @IBOutlet var cloudStatus: AnimationView!
-    @IBOutlet var encrypted: AnimationView!
-    @IBOutlet var sensorsConfigured: AnimationView!
+    enum ConnectionRow: Equatable, Hashable, CaseIterable {
+        case connectionStatus
+        case authenticated
+        case integrationCreated
+        case cloudStatus
+        case encrypted
+        case sensorsConfigured
 
-    private var wantedAnimationStates: [AnimationView: AnimationState] = [:]
+        var title: String {
+            switch self {
+            case .connectionStatus: return "Connected"
+            case .authenticated: return "Authenticated"
+            case .integrationCreated: return "Integration Created"
+            case .cloudStatus: return "Nabu Casa Cloud Detected"
+            case .encrypted: return "Encrypted Communications Established"
+            case .sensorsConfigured: return "Sensors Configured"
+            }
+        }
+    }
+
+    private var overallAnimation = AnimationView()
+    private var animationViews: [ConnectionRow: AnimationView] = {
+        var views = [ConnectionRow: AnimationView]()
+        for key in ConnectionRow.allCases {
+            views[key] = with(AnimationView()) {
+                $0.loopMode = .loop
+                $0.contentMode = .scaleAspectFill
+                $0.animation = Animation.named("loader-success-failed")
+            }
+        }
+        return views
+    }()
+
+    private var wantedAnimationStates: [ConnectionRow: AnimationState] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        titleLabel.text = ""//L10n.Onboarding.Connect.title(instance.LocationName)
+        view.backgroundColor = Current.style.onboardingBackground
+        navigationItem.hidesBackButton = true
 
-        configureAnimation(connectionStatus, .success)
-        configureAnimation(authenticated, .success)
+        let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
-        overallProgress.loopMode = .loop
-        overallProgress.contentMode = .scaleAspectFill
-        overallProgress.animation = Animation.named("home")
-        overallProgress.play()
+        stackView.addArrangedSubview(with(UILabel()) {
+            $0.text = "Setting Up"
+            Current.style.onboardingTitle($0)
+        })
 
-        let completedSteps: [AnimationView] = [connectionStatus, authenticated]
-        for animationView in completedSteps {
-            animationView.loopMode = .playOnce
-            animationView.contentMode = .scaleAspectFill
-            animationView.animation = Animation.named("loader-success-failed")
-            animationView.play(fromFrame: AnimationState.success.startFrame, toFrame: AnimationState.success.endFrame)
+        stackView.addArrangedSubview(with(overallAnimation) {
+            $0.loopMode = .loop
+            $0.contentMode = .scaleAspectFill
+            $0.animation = Animation.named("home")
+            $0.play()
+
+            NSLayoutConstraint.activate([
+                $0.widthAnchor.constraint(equalTo: $0.heightAnchor),
+                $0.widthAnchor.constraint(equalToConstant: 128.0),
+            ])
+        })
+
+        for row in ConnectionRow.allCases {
+            let view = with(UIStackView()) {
+                $0.axis = .horizontal
+                $0.alignment = .fill
+
+                $0.addArrangedSubview(with(UILabel()) {
+                    $0.text = row.title
+                    $0.font = .preferredFont(forTextStyle: .callout)
+                    $0.textColor = Current.style.onboardingLabel
+                    $0.numberOfLines = 0
+                    $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
+                })
+
+                $0.addArrangedSubview(with(animationViews[row]!) {
+                    NSLayoutConstraint.activate([
+                        $0.widthAnchor.constraint(equalTo: $0.heightAnchor),
+                        $0.widthAnchor.constraint(equalToConstant: 32.0),
+                    ])
+                })
+            }
+
+            stackView.addArrangedSubview(view)
+            view.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor)
+                .isActive = true
         }
 
-        let pendingViews: [AnimationView] = [integrationCreated, cloudStatus, encrypted, sensorsConfigured]
-        for aView in pendingViews {
-            configureAnimation(aView)
+        stackView.addArrangedSubview(equalSpacers.next())
+
+        for row in ConnectionRow.allCases {
+            switch row {
+            case .connectionStatus, .authenticated:
+                setAnimationStatus(row, state: .success, waitingForCompletion: false)
+            default:
+                setAnimationStatus(row, state: .loading, waitingForCompletion: false)
+            }
         }
 
-        Connect().done {
+        Connect().done { [overallAnimation] in
             Current.Log.verbose("Done with setup, continuing!")
 
-            self.overallProgress.loopMode = .playOnce
+            overallAnimation.loopMode = .playOnce
+        }.then {
+            after(seconds: 6.0)
+        }.done {
+            Current.onboardingObservation.complete()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-                Current.onboardingObservation.complete()
-
-                if let navVC = self.navigationController as? OnboardingNavigationViewController {
-                    Current.Log.verbose("Dismissing from permissions")
-                    navVC.dismiss()
-                }
+            if let navVC = self.navigationController as? OnboardingNavigationViewController {
+                Current.Log.verbose("Dismissing from permissions")
+                navVC.dismiss()
             }
         }.catch { error in
             let alert = UIAlertController(
@@ -65,35 +125,33 @@ class ConnectInstanceViewController: UIViewController {
         }
     }
 
-    private func configureAnimation(_ animationView: AnimationView, _ state: AnimationState = .loading) {
-        animationView.loopMode = .loop
-        animationView.contentMode = .scaleAspectFill
-        animationView.animation = Animation.named("loader-success-failed")
-        setAnimationStatus(animationView, state: state)
-    }
+    private func setAnimationStatus(_ row: ConnectionRow, state: AnimationState, waitingForCompletion: Bool = true) {
+        let animationView = animationViews[row]!
 
-    private func setAnimationStatus(_ animationView: AnimationView, state: AnimationState) {
         switch state {
         case .failed, .success:
             animationView.loopMode = .playOnce
-            wantedAnimationStates[animationView] = state
+            wantedAnimationStates[row] = state
+            if !waitingForCompletion {
+                finalizeAnimation(for: row)
+            }
         case .loading:
-            animationView.play(fromFrame: state.startFrame, toFrame: state.endFrame, loopMode: .loop) { _ in
-                self.finalizeAnimationView(animationView)
+            animationView.play(fromFrame: state.startFrame, toFrame: state.endFrame, loopMode: .loop) { [weak self] _ in
+                self?.finalizeAnimation(for: row)
             }
         }
     }
 
-    private func finalizeAnimationView(_ animationView: AnimationView) {
-        guard let wantedState = wantedAnimationStates[animationView], wantedState != .loading else { return }
+    private func finalizeAnimation(for row: ConnectionRow) {
+        guard let wantedState = wantedAnimationStates[row], wantedState != .loading else { return }
 
-        animationView.play(
+        animationViews[row]!.play(
             fromFrame: wantedState.startFrame,
             toFrame: wantedState.endFrame,
             loopMode: .playOnce,
             completion: nil
         )
-        wantedAnimationStates[animationView] = nil
+        wantedAnimationStates[row] = nil
     }
 
     private enum AnimationState {
@@ -133,36 +191,36 @@ class ConnectInstanceViewController: UIViewController {
 
         return Current.api.then(on: nil) { api in
             api.Register().map { (api, $0) }
-        }.map { api, regResponse -> HomeAssistantAPI in
-            self.setAnimationStatus(self.integrationCreated, state: .success)
+        }.get { [self] api, regResponse in
+            setAnimationStatus(.integrationCreated, state: .success)
 
             let cloudAvailable = (regResponse.CloudhookURL != nil || regResponse.RemoteUIURL != nil)
             let cloudState: AnimationState = cloudAvailable ? .success : .failed
-            self.setAnimationStatus(self.cloudStatus, state: cloudState)
+            setAnimationStatus(.cloudStatus, state: cloudState)
 
             if cloudAvailable {
                 Current.settingsStore.connectionInfo?.useCloud = true
             }
 
             let encryptState: AnimationState = regResponse.WebhookSecret != nil ? .success : .failed
-            self.setAnimationStatus(self.encrypted, state: encryptState)
-
-            return api
+            setAnimationStatus(.encrypted, state: encryptState)
+        }.map { api, _ in
+            api
         }.then { api in
             when(fulfilled: [
                 api.GetConfig().asVoid(),
                 Current.modelManager.fetch(),
                 api.RegisterSensors().asVoid(),
             ]).asVoid()
-        }.map { _ in
+        }.get { [self] _ in
+            setAnimationStatus(.sensorsConfigured, state: .success)
+
             NotificationCenter.default.post(
                 name: HomeAssistantAPI.didConnectNotification,
                 object: nil,
                 userInfo: nil
             )
 
-            self.setAnimationStatus(self.sensorsConfigured, state: .success)
-        }.get { _ in
             Current.apiConnection.connect()
         }
     }

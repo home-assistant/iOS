@@ -25,7 +25,7 @@ class PermissionWorkflowController {
         if let permission = permissions.first(where: { $0.status == .notDetermined }) {
             return IndividualPermissionViewController(permission: permission, workflowController: self)
         } else {
-            return StoryboardScene.Onboarding.connectInstance.instantiate()
+            return ConnectInstanceViewController()
         }
     }
 }
