@@ -19,8 +19,15 @@ public struct Style {
             super.didMoveToSuperview()
 
             if let superview = superview {
-                widthAnchor.constraint(equalTo: superview.layoutMarginsGuide.widthAnchor)
-                    .isActive = true
+                switch traitCollection.userInterfaceIdiom {
+                case .phone, .carPlay, .tv, .unspecified:
+                    widthAnchor.constraint(equalTo: superview.layoutMarginsGuide.widthAnchor)
+                        .isActive = true
+                case .pad, .mac:
+                    widthAnchor.constraint(equalTo: superview.readableContentGuide.widthAnchor)
+                        .isActive = true
+                @unknown default: break
+                }
             }
         }
     }
