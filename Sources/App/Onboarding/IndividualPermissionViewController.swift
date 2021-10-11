@@ -10,6 +10,7 @@ class IndividualPermissionViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -23,7 +24,8 @@ class IndividualPermissionViewController: UIViewController {
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
         stackView.addArrangedSubview(with(UIImageView()) {
-            $0.image = permission.enableIcon.image(ofSize: CGSize(width: 128, height: 128), color: .black).withRenderingMode(.alwaysTemplate)
+            $0.image = permission.enableIcon.image(ofSize: CGSize(width: 128, height: 128), color: .black)
+                .withRenderingMode(.alwaysTemplate)
         })
 
         stackView.addArrangedSubview(with(UILabel()) {
@@ -50,7 +52,8 @@ class IndividualPermissionViewController: UIViewController {
                 $0.isLayoutMarginsRelativeArrangement = true
 
                 $0.addArrangedSubview(with(UIImageView()) {
-                    $0.image = bulletPoint.0.image(ofSize: CGSize(width: 34, height: 34), color: .black).withRenderingMode(.alwaysTemplate)
+                    $0.image = bulletPoint.0.image(ofSize: CGSize(width: 34, height: 34), color: .black)
+                        .withRenderingMode(.alwaysTemplate)
                     $0.setContentCompressionResistancePriority(.required, for: .horizontal)
                     $0.setContentCompressionResistancePriority(.required, for: .vertical)
                     $0.setContentHuggingPriority(.required, for: .horizontal)

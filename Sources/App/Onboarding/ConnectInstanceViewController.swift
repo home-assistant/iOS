@@ -191,7 +191,7 @@ class ConnectInstanceViewController: UIViewController {
 
         return Current.api.then(on: nil) { api in
             api.Register().map { (api, $0) }
-        }.get { [self] api, regResponse in
+        }.get { [self] _, regResponse in
             setAnimationStatus(.integrationCreated, state: .success)
 
             let cloudAvailable = (regResponse.CloudhookURL != nil || regResponse.RemoteUIURL != nil)

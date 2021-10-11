@@ -1,5 +1,5 @@
-import UIKit
 import ObjectiveC.runtime
+import UIKit
 
 public struct Style {
     #if os(iOS)
@@ -57,6 +57,7 @@ public struct Style {
             for: .highlighted
         )
     }
+
     public var onboardingButtonSecondary: (_ button: UIButton) -> Void = { button in
         Self.onboardingButton(button)
 

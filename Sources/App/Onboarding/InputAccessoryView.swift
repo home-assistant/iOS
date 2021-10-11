@@ -6,12 +6,13 @@ class InputAccessoryView: UIView {
         autoresizingMask.insert(.flexibleHeight)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override var intrinsicContentSize: CGSize {
-        return .init(width: UIView.noIntrinsicMetric, height: 0)
+        .init(width: UIView.noIntrinsicMetric, height: 0)
     }
 
     var contentView: UIView? {
@@ -34,4 +35,3 @@ class InputAccessoryView: UIView {
         }
     }
 }
-

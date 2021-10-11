@@ -17,6 +17,7 @@ class AuthenticationViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -62,6 +63,7 @@ class AuthenticationViewController: UIViewController {
 
             loadingViews.append(view)
             view.startAnimating()
+            view.hidesWhenStopped = false
             return view
         }())
         stackView.addArrangedSubview(with(UILabel()) {
@@ -83,11 +85,16 @@ class AuthenticationViewController: UIViewController {
         updateToLoading()
 
         guard let baseURL = instance.BaseURL else {
-            let instanceDesc = String(describing: self.instance)
+            let instanceDesc = String(describing: instance)
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
 
-            let controller = ConnectionErrorViewController(error: ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil, data: nil))
+            let controller =
+                ConnectionErrorViewController(error: ConnectionTestResult(
+                    kind: .noBaseURLDiscovered,
+                    underlying: nil,
+                    data: nil
+                ))
             show(controller, sender: self)
             return
         }

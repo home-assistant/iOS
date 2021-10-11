@@ -18,6 +18,8 @@ public extension UIView {
                 setContentHuggingPriority(.defaultLow, for: .vertical)
                 setContentHuggingPriority(.defaultLow, for: .horizontal)
             }
+
+            @available(*, unavailable)
             required init?(coder: NSCoder) { fatalError() }
             override func didMoveToSuperview() {
                 super.didMoveToSuperview()

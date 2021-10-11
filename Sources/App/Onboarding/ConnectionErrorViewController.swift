@@ -13,6 +13,7 @@ class ConnectionErrorViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -40,7 +41,8 @@ class ConnectionErrorViewController: UIViewController {
 
             if let error = error as? ConnectionTestResult {
                 if error.kind == .sslExpired || error.kind == .sslUntrusted {
-                    errorText = L10n.Onboarding.ConnectionTestResult.SslContainer.description(error.localizedDescription)
+                    errorText = L10n.Onboarding.ConnectionTestResult.SslContainer
+                        .description(error.localizedDescription)
                 } else {
                     errorText = error.localizedDescription
                 }

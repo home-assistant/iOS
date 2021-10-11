@@ -1,9 +1,9 @@
 import Eureka
 import Lottie
 import RealmSwift
+import SafariServices
 import Shared
 import UIKit
-import SafariServices
 
 class WelcomeViewController: UIViewController {
     private var animationView: AnimationView?
@@ -39,7 +39,7 @@ class WelcomeViewController: UIViewController {
             Current.style.onboardingTitle($0)
         })
 
-        stackView.addArrangedSubview(with(UILabel ()) {
+        stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.Welcome.description
             $0.font = .preferredFont(forTextStyle: .body)
             $0.textColor = Current.style.onboardingLabelSecondary

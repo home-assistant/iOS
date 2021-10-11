@@ -189,8 +189,8 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
     @objc private func keyboardWillChangeFrame(_ note: Notification) {
         guard let scrollView = scrollView,
               let frameValue = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
-                  return
-              }
+            return
+        }
 
         UIView.performWithoutAnimation {
             view.layoutIfNeeded()

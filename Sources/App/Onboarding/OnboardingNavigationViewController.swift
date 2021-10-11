@@ -32,7 +32,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
                 $0.configureWithOpaqueBackground()
                 $0.backgroundColor = Current.style.onboardingBackground
                 $0.shadowColor = .clear
-                $0.titleTextAttributes = [ .foregroundColor: UIColor.white ]
+                $0.titleTextAttributes = [.foregroundColor: UIColor.white]
             }
             navigationBar.standardAppearance = appearance
             navigationBar.scrollEdgeAppearance = appearance
@@ -46,7 +46,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         }
 
         if viewControllers.isEmpty {
-            viewControllers = [ WelcomeViewController() ]
+            viewControllers = [WelcomeViewController()]
         }
     }
 
@@ -106,10 +106,14 @@ extension OnboardingNavigationViewController: UINavigationControllerDelegate {
         }
     }
 
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        willShow viewController: UIViewController,
+        animated: Bool
+    ) {
         updateNavigationBar(for: viewController, animated: animated)
 
-        self.transitionCoordinator?.animate(alongsideTransition: { _ in
+        transitionCoordinator?.animate(alongsideTransition: { _ in
             // putting the navigation bar change here causes the bar to animate in/out
         }, completion: { [weak self] context in
             if context.isCancelled {

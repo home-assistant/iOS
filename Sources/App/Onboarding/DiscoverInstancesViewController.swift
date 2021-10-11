@@ -26,6 +26,7 @@ class DiscoverInstancesCell: UITableViewCell {
         accessoryType = .disclosureIndicator
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -56,9 +57,9 @@ class DiscoverInstancesViewController: UIViewController {
         }
 
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(customView: activityIndicator)
+            UIBarButtonItem(customView: activityIndicator),
         ]
-        
+
         activityIndicator.startAnimating()
 
         let (_, stackView, _) = UIView.contentStackView(in: view, scrolling: false)
