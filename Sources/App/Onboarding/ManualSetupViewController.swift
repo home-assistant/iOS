@@ -47,7 +47,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             $0.smartQuotesType = .no
             $0.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
             $0.keyboardAppearance = .dark
-            $0.returnKeyType = .go
+            $0.returnKeyType = .continue
             $0.enablesReturnKeyAutomatically = true
 
             if #available(iOS 13, *) {
