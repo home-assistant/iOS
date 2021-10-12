@@ -1,4 +1,5 @@
 import Lottie
+import PromiseKit
 import Shared
 import UIKit
 
@@ -30,11 +31,32 @@ class DiscoverInstancesCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    public var isLoading: Bool = false {
+        didSet {
+            if isLoading {
+                accessoryType = .none
+                let activityIndicator: UIActivityIndicatorView = {
+                    if #available(iOS 13, *) {
+                        return UIActivityIndicatorView(style: .medium)
+                    } else {
+                        return UIActivityIndicatorView(style: .white)
+                    }
+                }()
+                accessoryView = activityIndicator
+                activityIndicator.startAnimating()
+            } else {
+                accessoryView = nil
+                accessoryType = .disclosureIndicator
+            }
+        }
+    }
 }
 
 class DiscoverInstancesViewController: UIViewController {
     private let discovery = Bonjour()
     private var discoveredInstances: [DiscoveredHomeAssistant] = []
+    fileprivate let authController = OnboardingAuthenticationController()
 
     private var tableView: UITableView?
 
@@ -208,10 +230,27 @@ extension DiscoverInstancesViewController: BonjourObserver {
 
 extension DiscoverInstancesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Current.Log.verbose("Selected row at \(indexPath.row) \(discoveredInstances[indexPath.row])")
+        let instance = discoveredInstances[indexPath.row]
+        let cell = tableView.cellForRow(at: indexPath) as? DiscoverInstancesCell
 
-        let controller = AuthenticationViewController(instance: discoveredInstances[indexPath.row])
-        show(controller, sender: self)
+        Current.Log.verbose("Selected row at \(indexPath.row) \(instance)")
+
+        cell?.isLoading = true
+        tableView.isUserInteractionEnabled = false
+
+        firstly {
+            authController.authenticate(from: instance, sender: tableView)
+        }.ensure {
+            cell?.isLoading = false
+            tableView.isUserInteractionEnabled = true
+            tableView.deselectRow(at: indexPath, animated: true)
+        }.done { [self] in
+            let viewController = PermissionWorkflowController().next()
+            show(viewController, sender: self)
+        }.catch { [self] error in
+            let viewController = ConnectionErrorViewController(error: error)
+            show(viewController, sender: self)
+        }
     }
 }
 
@@ -226,23 +265,19 @@ extension DiscoverInstancesViewController: UITableViewDataSource {
         let instance = discoveredInstances[indexPath.row]
 
         cell.textLabel?.text = instance.LocationName
-        cell.detailTextLabel?.text = instance.BaseURL?.absoluteString
+        cell.detailTextLabel?.text = instance.BaseURL.absoluteString
         cell.accessibilityLabel = instance.LocationName
-
-        if let url = instance.BaseURL {
-            // TODO: this url isn't actually optional
-            cell.accessibilityAttributedValue = with(NSMutableAttributedString()) { overall in
-                for part in [
-                    url.host,
-                    url.port.flatMap { String(describing: $0) },
-                ].compactMap({ $0 }) {
-                    overall
-                        .append(NSAttributedString(
-                            string: part,
-                            attributes: [.accessibilitySpeechPunctuation: true as NSNumber]
-                        ))
-                    overall.append(NSAttributedString(string: ", "))
-                }
+        cell.accessibilityAttributedValue = with(NSMutableAttributedString()) { overall in
+            for part in [
+                instance.BaseURL.host,
+                instance.BaseURL.port.flatMap { String(describing: $0) },
+            ].compactMap({ $0 }) {
+                overall
+                    .append(NSAttributedString(
+                        string: part,
+                        attributes: [.accessibilitySpeechPunctuation: true as NSNumber]
+                    ))
+                overall.append(NSAttributedString(string: ", "))
             }
         }
 

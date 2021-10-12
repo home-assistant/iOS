@@ -3,7 +3,7 @@ import ObjectMapper
 import PromiseKit
 
 public class DiscoveredHomeAssistant: Mappable {
-    public var BaseURL: URL?
+    public var BaseURL = URL(string: "http://example.com")!
     public var LocationName: String = ""
     public var Version: String = ""
 

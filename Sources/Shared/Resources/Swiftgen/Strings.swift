@@ -706,7 +706,7 @@ public enum L10n {
     public enum ConnectionError {
       /// More Info
       public static var moreInfoButton: String { return L10n.tr("Localizable", "onboarding.connection_error.more_info_button") }
-      /// Couldn't Connect
+      /// Failed to Connect
       public static var title: String { return L10n.tr("Localizable", "onboarding.connection_error.title") }
     }
     public enum ConnectionTestResult {
@@ -800,9 +800,9 @@ public enum L10n {
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
-      /// Must be a fully-formed URL in the format "http://homeassistant.local:8123" (that is, containing a scheme/protocol, hostname and port).
+      /// The URL of your Home Assistant server. Make sure it includes the protocol and port.
       public static var description: String { return L10n.tr("Localizable", "onboarding.manual_setup.description") }
-      /// What is your Home Assistant's URL?
+      /// Enter URL
       public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.title") }
       public enum CouldntMakeUrl {
         /// The value '%@' was not a valid URL.
@@ -890,14 +890,16 @@ public enum L10n {
       public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
       /// Not finding your server?
       public static var manualHint: String { return L10n.tr("Localizable", "onboarding.scanning.manual_hint") }
-      /// Scanning your network for Home Assistant
+      /// Scanning for Servers
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
     }
     public enum Welcome {
-      /// This app relies on open source home automation software that you run on hardware you control.
+      /// This app connects to your Home Assistant server and allows integrating data about you and your phone.\n\nHome Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
-      /// Welcome to Home Assistant!
-      public static var title: String { return L10n.tr("Localizable", "onboarding.welcome.title") }
+      /// Welcome to Home Assistant %@!
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
+      }
     }
   }
 

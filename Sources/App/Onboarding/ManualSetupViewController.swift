@@ -5,8 +5,10 @@ import UIKit
 class ManualSetupViewController: UIViewController, UITextFieldDelegate {
     private let urlField = UITextField()
     private var connectButton: UIButton?
+    private var connectLoading: UIActivityIndicatorView?
     private var scrollView: UIScrollView?
     private var bottomSpacer: UIView?
+    private let authController = OnboardingAuthenticationController()
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -80,8 +82,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
 
         urlField.inputAccessoryView = with(InputAccessoryView()) {
             $0.directionalLayoutMargins = stackView.directionalLayoutMargins
-            $0.contentView = with(UIButton(type: .custom)) {
-                connectButton = $0
+            let button = with(UIButton(type: .custom)) {
                 $0.setTitle(L10n.Onboarding.ManualSetup.connect, for: .normal)
                 $0.addTarget(self, action: #selector(connectTapped(_:)), for: .touchUpInside)
                 Current.style.onboardingButtonPrimary($0)
@@ -89,6 +90,30 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
                 $0.translatesAutoresizingMaskIntoConstraints = false
                 $0.setContentCompressionResistancePriority(.required, for: .vertical)
             }
+            let loading: UIActivityIndicatorView = {
+                let indicator: UIActivityIndicatorView
+                if #available(iOS 13, *) {
+                    indicator = UIActivityIndicatorView(style: .medium)
+                } else {
+                    indicator = UIActivityIndicatorView(style: .white)
+                }
+
+                indicator.hidesWhenStopped = true
+                indicator.color = button.titleColor(for: .normal)
+                return indicator
+            }()
+
+            connectButton = button
+            connectLoading = loading
+
+            $0.contentView = button
+            $0.addSubview(loading)
+
+            loading.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                loading.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+                loading.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16),
+            ])
         }
 
         stackView.addArrangedSubview(with(equalSpacers.next()) {
@@ -119,17 +144,26 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         connectButton?.isEnabled = urlField.text?.isEmpty == false
     }
 
+    private var isConnecting: Bool = false {
+        didSet {
+            if isConnecting {
+                connectLoading?.startAnimating()
+                connectButton?.isUserInteractionEnabled = false
+            } else {
+                connectLoading?.stopAnimating()
+                connectButton?.isUserInteractionEnabled = true
+            }
+        }
+    }
+
     private func connect() {
+        guard !isConnecting else { return }
+
+        isConnecting = true
+
         firstly {
             validatedURL(from: urlField.text)
-        }.done { url in
-            self.urlField.text = url.absoluteString
-
-            let controller = AuthenticationViewController(
-                instance: DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "2021.1")
-            )
-            self.show(controller, sender: self)
-        }.catch { error in
+        }.recover { [self] error -> Promise<URL> in
             Current.Log.error("Couldn't make a URL: \(error)")
 
             let alert = UIAlertController(
@@ -138,7 +172,18 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
+
+            return .init(error: PMKError.cancelled)
+        }.then { [authController, view] (url: URL) -> Promise<Void> in
+            let instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "2021.1")
+            return authController.authenticate(from: instance, sender: view!)
+        }.ensure { [self] in
+            isConnecting = false
+        }.done { [self] in
+            show(authController.successController(), sender: self)
+        }.catch { [self] error in
+            show(authController.failureController(error: error), sender: self)
         }
     }
 

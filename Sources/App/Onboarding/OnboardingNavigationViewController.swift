@@ -133,20 +133,10 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         onDismissCallback?(self)
     }
 
-    func styleButton(_ button: UIButton) {
-        Current.style.onboardingButtonPrimary(button)
-    }
-
     override func show(_ vc: UIViewController, sender: Any?) {
-        if let vc = vc as? ConnectionErrorViewController, let sender = sender as? UIViewController {
-            // we don't check if we're _going_ to replace, in case the user tapped 'back' first
-            setViewControllers(viewControllers.map {
-                if $0 == sender {
-                    return vc
-                } else {
-                    return $0
-                }
-            }, animated: false)
+        if vc is OnboardingTerminalViewController {
+            Current.onboardingObservation.complete()
+            dismiss()
         } else {
             super.show(vc, sender: sender)
         }
@@ -158,7 +148,6 @@ extension OnboardingNavigationViewController: UINavigationControllerDelegate {
         let hiddenNavigationBarClasses: [UIViewController.Type] = [
             WelcomeViewController.self,
             IndividualPermissionViewController.self,
-            ConnectInstanceViewController.self,
         ]
 
         if let controller = controller,

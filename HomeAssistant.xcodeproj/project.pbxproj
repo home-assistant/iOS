@@ -359,6 +359,7 @@
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E7C4B02702E03000667342 /* WidgetOpenPageIntent+Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E7C4AF2702E03000667342 /* WidgetOpenPageIntent+Observation.swift */; };
+		11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */; };
 		11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
 		11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
 		11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* ModelManager.swift */; };
@@ -433,12 +434,10 @@
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
 		99FADB7D51EDA255CD841D90 /* Pods_iOS_Extensions_Today.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6E8DF7DED57BAD4EF47D11 /* Pods_iOS_Extensions_Today.framework */; };
-		B60221F6226D84B500E8DBFE /* loader-success-failed.json in Resources */ = {isa = PBXBuildFile; fileRef = B60221F5226D84B500E8DBFE /* loader-success-failed.json */; };
 		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
 		B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
-		B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C892226EC25800EF46DD /* AuthenticationViewController.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
 		B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */; };
 		B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */; };
@@ -651,7 +650,6 @@
 		B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* ManualSetupViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */; };
-		B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66C58B12150891B004AB261 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallService.swift */; };
@@ -1338,6 +1336,7 @@
 		11E16399250B1B760076D612 /* OnboardingStateObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservation.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11E7C4AF2702E03000667342 /* WidgetOpenPageIntent+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetOpenPageIntent+Observation.swift"; sourceTree = "<group>"; };
+		11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTerminalViewController.swift; sourceTree = "<group>"; };
 		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
 		11EE9B4824C5116F00404AF8 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
@@ -1415,7 +1414,6 @@
 		AF744211EE471EE671F7C928 /* Pods-iOS-Extensions-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		B086E41966E89AE531E3C1A5 /* Pods-iOS-Extensions-Widgets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.debug.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
-		B60221F5226D84B500E8DBFE /* loader-success-failed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "loader-success-failed.json"; sourceTree = "<group>"; };
 		B6022212226DAC9D00E8DBFE /* ScaledFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaledFont.swift; sourceTree = "<group>"; };
 		B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationViewController.swift; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1440,7 +1438,6 @@
 		B60409ED2492B30900D36599 /* cy-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "cy-GB"; path = "cy-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		B60409EE2492B30A00D36599 /* cy-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "cy-GB"; path = "cy-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B605C890226E9DAC00EF46DD /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
-		B605C892226EC25800EF46DD /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MorganFreemanSounds.csv; sourceTree = "<group>"; };
 		B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Closed.wav"; sourceTree = "<group>"; };
 		B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Locked.wav"; sourceTree = "<group>"; };
@@ -1693,7 +1690,6 @@
 		B661FB79226C197900E541DD /* ManualSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSetupViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
 		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
-		B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInstanceViewController.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2421,8 +2417,6 @@
 			children = (
 				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
 				D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */,
-				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
-				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
 				B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */,
 				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
 				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
@@ -2431,6 +2425,7 @@
 				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				11DA6B4C2713900E008ADFAF /* PermissionWorkflowController.swift */,
 				11DA6B4E2713912F008ADFAF /* IndividualPermissionViewController.swift */,
+				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -2962,7 +2957,6 @@
 			isa = PBXGroup;
 			children = (
 				B661FC7D226C87BB00E541DD /* home.json */,
-				B60221F5226D84B500E8DBFE /* loader-success-failed.json */,
 				B6E2D4D42270706200446DFA /* ha-loading.json */,
 				B6D8A3272271448D00FA765D /* error.json */,
 			);
@@ -4273,7 +4267,6 @@
 				B60616491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav in Resources */,
 				B60616381D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav in Resources */,
 				B60616B01D1F117800249C11 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
-				B60221F6226D84B500E8DBFE /* loader-success-failed.json in Resources */,
 				B64E754323F3BFF200472C04 /* pink@3x.png in Resources */,
 				B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */,
 				11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */,
@@ -5039,7 +5032,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
@@ -5102,6 +5094,7 @@
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
+				11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
 				11E7C4B02702E03000667342 /* WidgetOpenPageIntent+Observation.swift in Sources */,
 				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
@@ -5131,7 +5124,6 @@
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
-				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,

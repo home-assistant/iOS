@@ -729,18 +729,19 @@ Your actions and local configuration will still be available after logging in.";
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
-"onboarding.welcome.title" = "Welcome to Home Assistant!";
-"onboarding.welcome.description" = "This app relies on open source home automation software that you run on hardware you control.";
+/* parameter is replaced with iOS or macOS (or other future OSes) */
+"onboarding.welcome.title" = "Welcome to Home Assistant %@!";
+"onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\n\nHome Assistant is free and open source home automation software with a focus on local control and privacy.";
 /* verb, button text */
 "continue_label" = "Continue";
-"onboarding.scanning.title" = "Scanning your network for Home Assistant";
+"onboarding.scanning.title" = "Scanning for Servers";
 "onboarding.scanning.manual" = "Enter Address Manually";
-"onboarding.manual_setup.title" = "What is your Home Assistant's URL?";
-"onboarding.manual_setup.description" = "Must be a fully-formed URL in the format \"http://homeassistant.local:8123\" (that is, containing a scheme/protocol, hostname and port).";
+"onboarding.manual_setup.title" = "Enter URL";
+"onboarding.manual_setup.description" = "The URL of your Home Assistant server. Make sure it includes the protocol and port.";
 "onboarding.manual_setup.connect" = "Connect";
 "onboarding.authentication.title" = "Authentication";
 "onboarding.authentication.description" = "We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open.";
-"onboarding.connection_error.title" = "Couldn't Connect";
+"onboarding.connection_error.title" = "Failed to Connect";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.final.title" = "Final Set Up";
 "onboarding.final.state.connection" = "Connected";
@@ -750,5 +751,5 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.final.state.encrypted" = "Encrypted Communications Established";
 "onboarding.final.state.sensors" = "Sensors Configured";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
-/* short, read for accessibility when a new instance is found during scanning */
+/* short, read for accessibility when a new server is found during scanning */
 "onboarding.scanning.discovered_announcement" = "Discovered: %@";
