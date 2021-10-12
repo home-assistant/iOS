@@ -750,3 +750,5 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.final.state.encrypted" = "Encrypted Communications Established";
 "onboarding.final.state.sensors" = "Sensors Configured";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
+/* short, read for accessibility when a new instance is found during scanning */
+"onboarding.scanning.discovered_announcement" = "Discovered: %@";

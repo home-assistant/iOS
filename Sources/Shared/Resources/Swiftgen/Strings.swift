@@ -882,6 +882,10 @@ public enum L10n {
       }
     }
     public enum Scanning {
+      /// Discovered: %@
+      public static func discoveredAnnouncement(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.scanning.discovered_announcement", String(describing: p1))
+      }
       /// Enter Address Manually
       public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
       /// Not finding your server?

@@ -164,6 +164,10 @@ class DiscoverInstancesViewController: UIViewController {
                     with: .none
                 )
             } else {
+                UIAccessibility.post(notification: .announcement, argument: NSAttributedString(
+                    string: L10n.Onboarding.Scanning.discoveredAnnouncement(discoveredInstance.LocationName),
+                    attributes: [.accessibilitySpeechQueueAnnouncement: true]
+                ))
                 discoveredInstances.append(discoveredInstance)
                 tableView?.insertRows(
                     at: [IndexPath(row: discoveredInstances.count - 1, section: 0)],
@@ -223,6 +227,24 @@ extension DiscoverInstancesViewController: UITableViewDataSource {
 
         cell.textLabel?.text = instance.LocationName
         cell.detailTextLabel?.text = instance.BaseURL?.absoluteString
+        cell.accessibilityLabel = instance.LocationName
+
+        if let url = instance.BaseURL {
+            // TODO: this url isn't actually optional
+            cell.accessibilityAttributedValue = with(NSMutableAttributedString()) { overall in
+                for part in [
+                    url.host,
+                    url.port.flatMap { String(describing: $0) },
+                ].compactMap({ $0 }) {
+                    overall
+                        .append(NSAttributedString(
+                            string: part,
+                            attributes: [.accessibilitySpeechPunctuation: true as NSNumber]
+                        ))
+                    overall.append(NSAttributedString(string: ", "))
+                }
+            }
+        }
 
         return cell
     }

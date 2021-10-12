@@ -12,6 +12,7 @@ public struct Style {
         label.textColor = Current.style.onboardingLabel
         label.textAlignment = .center
         label.numberOfLines = 0
+        label.accessibilityTraits.insert(.header)
     }
 
     private class WiderButton: UIButton {
