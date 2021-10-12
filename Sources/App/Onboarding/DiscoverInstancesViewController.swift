@@ -161,7 +161,7 @@ class DiscoverInstancesViewController: UIViewController {
                 discoveredInstances[existing] = discoveredInstance
                 tableView?.reloadRows(
                     at: [IndexPath(row: existing, section: 0)],
-                    with: .fade
+                    with: .none
                 )
             } else {
                 discoveredInstances.append(discoveredInstance)

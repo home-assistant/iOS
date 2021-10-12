@@ -22,6 +22,7 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     public func start() {
         precondition(Thread.isMainThread)
         guard !browserIsRunning else { return }
+        Current.Log.info("starting")
         browserIsRunning = true
         browser.delegate = self
         browser.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
@@ -30,6 +31,7 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     public func stop() {
         precondition(Thread.isMainThread)
         guard browserIsRunning else { return }
+        Current.Log.info("stopping")
         browserIsRunning = false
         browser.stop()
         browser.delegate = nil
