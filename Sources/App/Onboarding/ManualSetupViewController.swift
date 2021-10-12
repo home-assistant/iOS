@@ -43,17 +43,23 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             $0.keyboardType = .URL
             $0.autocapitalizationType = .none
             $0.autocorrectionType = .no
+            $0.spellCheckingType = .no
             $0.smartDashesType = .no
             $0.smartQuotesType = .no
-            $0.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
             $0.keyboardAppearance = .dark
             $0.returnKeyType = .continue
             $0.enablesReturnKeyAutomatically = true
+            $0.clearButtonMode = .whileEditing
 
             if #available(iOS 13, *) {
             } else {
                 $0.textColor = .white
             }
+
+            let font = UIFont.preferredFont(forTextStyle: .body)
+            $0.font = font
+            $0.heightAnchor.constraint(greaterThanOrEqualToConstant: font.lineHeight * 2.5)
+                .isActive = true
 
             NotificationCenter.default.addObserver(
                 self,
@@ -136,11 +142,20 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
-    enum ValidateError: Error {
+    enum ValidateError: Error, CancellableError {
         case emptyString
         case cannotConvert
-        case noScheme
         case invalidScheme
+        case noSchemeCancelled
+
+        var isCancelled: Bool {
+            switch self {
+            case .emptyString, .cannotConvert, .invalidScheme:
+                return false
+            case .noSchemeCancelled:
+                return true
+            }
+        }
     }
 
     private func promptForScheme(for string: String) -> Promise<String> {
@@ -148,8 +163,13 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             let alert = UIAlertController(
                 title: L10n.Onboarding.ManualSetup.NoScheme.title,
                 message: L10n.Onboarding.ManualSetup.NoScheme.message,
-                preferredStyle: .alert
+                preferredStyle: .actionSheet
             )
+
+            with(alert.popoverPresentationController) {
+                $0?.sourceView = urlField
+                $0?.sourceRect = urlField.bounds
+            }
 
             func action(for scheme: String) -> UIAlertAction {
                 UIAlertAction(title: scheme, style: .default, handler: { _ in
@@ -160,7 +180,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             alert.addAction(action(for: "http://"))
             alert.addAction(action(for: "https://"))
             alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: { _ in
-                seal.reject(ValidateError.noScheme)
+                seal.reject(ValidateError.noSchemeCancelled)
             }))
             self.present(alert, animated: true, completion: nil)
         }
