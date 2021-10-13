@@ -175,7 +175,7 @@ class DiscoverInstancesViewController: UIViewController {
         tableView?.performBatchUpdates({
             if let existing = discoveredInstances.firstIndex(where: {
                 ($0.uuid != nil && $0.uuid == discoveredInstance.uuid)
-                || $0.internalOrExternalURL == discoveredInstance.internalOrExternalURL
+                    || $0.internalOrExternalURL == discoveredInstance.internalOrExternalURL
             }) {
                 discoveredInstances[existing] = discoveredInstance
                 tableView?.reloadRows(
