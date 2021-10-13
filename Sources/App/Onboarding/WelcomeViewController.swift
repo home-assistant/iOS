@@ -35,7 +35,7 @@ class WelcomeViewController: UIViewController {
         })
 
         stackView.addArrangedSubview(with(UILabel()) {
-            $0.text = L10n.Onboarding.Welcome.title(UIDevice.current.systemName)
+            $0.text = L10n.Onboarding.Welcome.title(Current.device.systemName())
             Current.style.onboardingTitle($0)
         })
 
