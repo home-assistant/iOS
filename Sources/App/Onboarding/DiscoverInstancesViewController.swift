@@ -159,8 +159,8 @@ class DiscoverInstancesViewController: UIViewController {
                     version: "0.92.0"
                 ),
                 DiscoveredHomeAssistant(
-                    baseURL: URL(string: "http://http.badssl.com/")!,
-                    name: "HTTP",
+                    baseURL: URL(string: "https://expired.badssl.com/")!,
+                    name: "Expired",
                     version: "0.92.0"
                 ),
             ].enumerated() {

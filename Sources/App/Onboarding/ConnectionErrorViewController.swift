@@ -57,8 +57,17 @@ class ConnectionErrorViewController: UIViewController {
         })
     }
 
+    private func documentationURL(for error: Error) -> URL {
+        var string = "https://companion.home-assistant.io/docs/troubleshooting/errors"
+
+        if let error = error as? ConnectionTestResult {
+            string += "#\(error.kind.rawValue)"
+        }
+
+        return URL(string: string)!
+    }
+
     @objc private func moreInfoTapped(_ sender: UIButton) {
-        guard let error = self.error as? ConnectionTestResult else { return }
-        openURLInBrowser(error.DocumentationURL, self)
+        openURLInBrowser(documentationURL(for: error), self)
     }
 }

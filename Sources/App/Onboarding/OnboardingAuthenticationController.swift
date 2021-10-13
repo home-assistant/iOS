@@ -4,7 +4,6 @@ import Foundation
 import PromiseKit
 import Shared
 
-/// Manages browser verification to retrive an access code that can be exchanged for an authentication token.
 class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentationContextProviding {
     enum AuthenticationControllerError: Error {
         case invalidURL
@@ -72,6 +71,8 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
             }
         }
     }
+
+    // MARK: - Authentication Session
 
     struct AuthDetails {
         var url: URL
@@ -164,14 +165,12 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
         return nil
     }
 
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        lastView?.window ?? UIWindow()
-    }
+    // MARK: - URL Validation/Testing
 
     private func validate(url: URL) -> Promise<Void> {
         let (promise, resolver) = Promise<Void>.pending()
 
-        var clientErrorOccurred: Bool = false
+        var clientCertificateErrorOccurred: Bool = false
 
         let eventMonitor = with(ClosureEventMonitor()) {
             $0.taskDidReceiveChallenge = { _, task, challenge in
@@ -182,7 +181,7 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                     case NSURLAuthenticationMethodServerTrust: return nil
                     case NSURLAuthenticationMethodHTTPBasic: return .basicAuth
                     case NSURLAuthenticationMethodClientCertificate:
-                        clientErrorOccurred = true
+                        clientCertificateErrorOccurred = true
                         return nil
                     default: return .authenticationUnsupported
                     }
@@ -202,7 +201,7 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
 
             resolver.resolve(response.result.map { _ in () }.mapError { error -> ConnectionTestResult in
                 let errorKind: ConnectionTestResult.ErrorKind = {
-                    if clientErrorOccurred {
+                    if clientCertificateErrorOccurred {
                         return .clientCertificateRequired
                     }
 
@@ -246,6 +245,12 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                 isLocalPushEnabled: true
             )
         }
+    }
+
+    // - MARK: ASWebAuthenticationPresentationContextProviding
+
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        lastView?.window ?? UIWindow()
     }
 }
 
@@ -292,7 +297,7 @@ public struct ConnectionTestResult: LocalizedError {
         if let data = data, let dataString = String(data: data, encoding: .utf8) {
             let displayDataString: String
 
-            let maximumLength = 200
+            let maximumLength = 1024
             if dataString.count > maximumLength {
                 displayDataString = dataString.prefix(maximumLength - 1) + "…"
             } else {
@@ -303,9 +308,5 @@ public struct ConnectionTestResult: LocalizedError {
         } else {
             return base
         }
-    }
-
-    public var DocumentationURL: URL {
-        URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors#\(kind.rawValue)")!
     }
 }
