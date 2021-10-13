@@ -11,6 +11,7 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
     }
 
     private weak var lastView: UIView?
+    private var lastTestSession: Session?
     private var authenticationSession: ASWebAuthenticationSession?
 
     func successController() -> UIViewController {
@@ -72,69 +73,78 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
         }
     }
 
-    private func openInBrowser(url baseURL: URL) -> Promise<String> {
-        let (promise, resolver) = Promise<String>.pending()
+    struct AuthDetails {
+        var url: URL
+        var scheme: String
+    }
 
+    private func authDetails(from baseURL: URL) -> Promise<AuthDetails> {
+        Promise<AuthDetails> { seal in
+            guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+                throw AuthenticationControllerError.invalidURL
+            }
+
+            let redirectURI: String
+            let scheme: String
+            let clientID: String
+
+            if Current.appConfiguration == .Debug {
+                clientID = "https://home-assistant.io/iOS/dev-auth"
+                redirectURI = "homeassistant-dev://auth-callback"
+                scheme = "homeassistant-dev"
+            } else if Current.appConfiguration == .Beta {
+                clientID = "https://home-assistant.io/iOS/beta-auth"
+                redirectURI = "homeassistant-beta://auth-callback"
+                scheme = "homeassistant-beta"
+            } else {
+                clientID = "https://home-assistant.io/iOS"
+                redirectURI = "homeassistant://auth-callback"
+                scheme = "homeassistant"
+            }
+
+            components.path += "/auth/authorize"
+            components.queryItems = [
+                URLQueryItem(name: "response_type", value: "code"),
+                URLQueryItem(name: "client_id", value: clientID),
+                URLQueryItem(name: "redirect_uri", value: redirectURI),
+            ]
+
+            guard let authURL = components.url else {
+                throw AuthenticationControllerError.invalidURL
+            }
+
+            seal.fulfill(.init(url: authURL, scheme: scheme))
+        }
+    }
+
+    private func openInBrowser(url baseURL: URL) -> Promise<String> {
         Current.Log.verbose("Attempting browser auth to: \(baseURL)")
 
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-            resolver.reject(AuthenticationControllerError.invalidURL)
-            return promise
-        }
-
-        let redirectURI: String
-        let scheme: String
-        let clientID: String
-
-        if Current.appConfiguration == .Debug {
-            clientID = "https://home-assistant.io/iOS/dev-auth"
-            redirectURI = "homeassistant-dev://auth-callback"
-            scheme = "homeassistant-dev"
-        } else if Current.appConfiguration == .Beta {
-            clientID = "https://home-assistant.io/iOS/beta-auth"
-            redirectURI = "homeassistant-beta://auth-callback"
-            scheme = "homeassistant-beta"
-        } else {
-            clientID = "https://home-assistant.io/iOS"
-            redirectURI = "homeassistant://auth-callback"
-            scheme = "homeassistant"
-        }
-
-        components.path = "/auth/authorize"
-        components.queryItems = [
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "client_id", value: clientID),
-            URLQueryItem(name: "redirect_uri", value: redirectURI),
-        ]
-
-        guard let authURL = components.url else {
-            resolver.reject(AuthenticationControllerError.invalidURL)
-            return promise
-        }
-
-        let session = ASWebAuthenticationSession(
-            url: authURL,
-            callbackURLScheme: scheme,
-            completionHandler: { url, error in
-                if let error = error as NSError?,
-                   error.domain == ASWebAuthenticationSessionErrorDomain,
-                   error.code == ASWebAuthenticationSessionError.Code.canceledLogin.rawValue {
-                    resolver.reject(PMKError.cancelled)
-                } else {
-                    resolver.resolve(error, url.flatMap(Self.code(fromSuccess:)))
+        return authDetails(from: baseURL).then { [self] authDetails -> Promise<String> in
+            let (promise, resolver) = Promise<String>.pending()
+            let session = ASWebAuthenticationSession(
+                url: authDetails.url,
+                callbackURLScheme: authDetails.scheme,
+                completionHandler: { url, error in
+                    if let error = error as NSError?,
+                       error.domain == ASWebAuthenticationSessionErrorDomain,
+                       error.code == ASWebAuthenticationSessionError.Code.canceledLogin.rawValue {
+                        resolver.reject(PMKError.cancelled)
+                    } else {
+                        resolver.resolve(error, url.flatMap(Self.code(fromSuccess:)))
+                    }
                 }
+            )
+
+            if #available(iOS 13.0, *) {
+                session.presentationContextProvider = self
+                session.prefersEphemeralWebBrowserSession = true
             }
-        )
 
-        if #available(iOS 13.0, *) {
-            session.presentationContextProvider = self
-            session.prefersEphemeralWebBrowserSession = true
+            session.start()
+            authenticationSession = session
+            return promise
         }
-
-        session.start()
-
-        authenticationSession = session
-        return promise
     }
 
     private static func code(fromSuccess url: URL) -> String? {
@@ -158,85 +168,72 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
         lastView?.window ?? UIWindow()
     }
 
-    fileprivate typealias ErrorReason = AFError.ResponseValidationFailureReason
-    private var lastTestSession: Session?
+    private func validate(url: URL) -> Promise<Void> {
+        let (promise, resolver) = Promise<Void>.pending()
 
-    private func connectionInfo(for instance: DiscoveredHomeAssistant) -> Promise<ConnectionInfo> {
-        let discoveryURL = instance.BaseURL.appendingPathComponent("api/discovery_info")
-        return Promise<Void> { seal in
-            let eventMonitor = ClosureEventMonitor()
-            eventMonitor.taskDidReceiveChallenge = { _, task, challenge in
+        var clientErrorOccurred: Bool = false
+
+        let eventMonitor = with(ClosureEventMonitor()) {
+            $0.taskDidReceiveChallenge = { _, task, challenge in
                 Current.Log.verbose("Handling challenge \(challenge.protectionSpace.authenticationMethod)")
 
                 let errorKind: ConnectionTestResult.ErrorKind? = {
                     switch challenge.protectionSpace.authenticationMethod {
                     case NSURLAuthenticationMethodServerTrust: return nil
                     case NSURLAuthenticationMethodHTTPBasic: return .basicAuth
-                    case NSURLAuthenticationMethodClientCertificate: return .clientCertificateRequired
+                    case NSURLAuthenticationMethodClientCertificate:
+                        clientErrorOccurred = true
+                        return nil
                     default: return .authenticationUnsupported
                     }
                 }()
 
                 if let errorKind = errorKind {
-                    seal.reject(ConnectionTestResult(kind: errorKind, underlying: nil, data: nil))
+                    resolver.reject(ConnectionTestResult(kind: errorKind, underlying: nil, data: nil))
                     task.cancel()
                 }
             }
+        }
 
-            let session = Session(eventMonitors: [eventMonitor])
-            lastTestSession = session
-            session.request(discoveryURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant, AFError>) in
-                Current.Log.verbose("Request: \(String(describing: response.request))")
-                Current.Log.verbose("Response: \(String(describing: response.response))")
-                Current.Log.verbose("Result: \(response.result)")
-                Current.Log.error("Error: \(String(describing: response.error))")
+        let session = Session(eventMonitors: [eventMonitor])
+        lastTestSession = session
+        session.request(url).validate().response { response in
+            Current.Log.info(response)
 
-                if let statusCode = response.response?.statusCode, statusCode >= 400 {
-                    let reason: ErrorReason = .unacceptableStatusCode(code: statusCode)
-                    seal.reject(ConnectionTestResult(
-                        kind: .serverError,
-                        underlying: AFError.responseValidationFailed(reason: reason),
-                        data: response.data
-                    ))
-                    return
-                }
-
-                if let error = response.error {
-                    let errorCode = (error as NSError).code
-                    if errorCode == NSURLErrorServerCertificateUntrusted ||
-                        errorCode == NSURLErrorServerCertificateHasUnknownRoot {
-                        seal.reject(ConnectionTestResult(
-                            kind: .sslUntrusted,
-                            underlying: error,
-                            data: response.data
-                        ))
-                        return
-                    } else if errorCode == NSURLErrorServerCertificateHasBadDate ||
-                        errorCode == NSURLErrorServerCertificateNotYetValid {
-                        seal.reject(ConnectionTestResult(
-                            kind: .sslExpired,
-                            underlying: error,
-                            data: response.data
-                        ))
-                        return
+            resolver.resolve(response.result.map { _ in () }.mapError { error -> ConnectionTestResult in
+                let errorKind: ConnectionTestResult.ErrorKind = {
+                    if clientErrorOccurred {
+                        return .clientCertificateRequired
                     }
 
-                    seal.reject(ConnectionTestResult(
-                        kind: .unknownError,
-                        underlying: error,
-                        data: response.data
-                    ))
-                    return
-                }
+                    guard let error = error.underlyingError as NSError?, error.domain == URLError.errorDomain else {
+                        return .unknownError
+                    }
 
-                switch response.result {
-                case .success:
-                    seal.fulfill(())
-                case let .failure(error):
-                    seal.reject(error)
-                }
-            }
-        }.map { () -> ConnectionInfo in
+                    switch URLError.Code(rawValue: error.code) {
+                    case URLError.serverCertificateUntrusted, URLError.serverCertificateHasUnknownRoot:
+                        return .sslUntrusted
+                    case URLError.serverCertificateHasBadDate, URLError.serverCertificateNotYetValid:
+                        return .sslExpired
+                    default:
+                        return .unknownError
+                    }
+                }()
+
+                let underlying = error.underlyingError ?? error
+                return ConnectionTestResult(kind: errorKind, underlying: underlying, data: response.data)
+            })
+        }
+
+        return promise
+    }
+
+    private func connectionInfo(for instance: DiscoveredHomeAssistant) -> Promise<ConnectionInfo> {
+        firstly {
+            authDetails(from: instance.BaseURL)
+        }.then { [self] authDetails in
+            validate(url: authDetails.url)
+        }.map {
             ConnectionInfo(
                 externalURL: instance.BaseURL,
                 internalURL: nil,
@@ -272,7 +269,11 @@ public struct ConnectionTestResult: LocalizedError {
             let description = underlying?.localizedDescription ?? ""
             switch kind {
             case .sslUntrusted:
-                return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
+                if description.isEmpty {
+                    return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
+                } else {
+                    return description
+                }
             case .basicAuth:
                 return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
             case .authenticationUnsupported:
@@ -284,7 +285,7 @@ public struct ConnectionTestResult: LocalizedError {
             case .serverError:
                 return L10n.Onboarding.ConnectionTestResult.ServerError.description(description)
             case .unknownError:
-                return L10n.Onboarding.ConnectionTestResult.UnknownError.description(description)
+                return description
             }
         }()
 

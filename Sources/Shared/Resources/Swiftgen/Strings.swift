@@ -751,7 +751,7 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_expired.description") }
       }
       public enum SslUntrusted {
-        /// Your SSL certificate is untrusted. %@.
+        /// Your SSL certificate is untrusted. %@
         public static func description(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", String(describing: p1))
         }

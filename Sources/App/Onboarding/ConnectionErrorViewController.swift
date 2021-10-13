@@ -37,26 +37,13 @@ class ConnectionErrorViewController: UIViewController {
         })
 
         stackView.addArrangedSubview(with(UITextView()) {
-            let errorText: String
-
-            if let error = error as? ConnectionTestResult {
-                if error.kind == .sslExpired || error.kind == .sslUntrusted {
-                    errorText = L10n.Onboarding.ConnectionTestResult.SslContainer
-                        .description(error.localizedDescription)
-                } else {
-                    errorText = error.localizedDescription
-                }
-            } else {
-                errorText = error.localizedDescription
-            }
-
             $0.isScrollEnabled = false
             $0.isEditable = false
             $0.isSelectable = true
             $0.backgroundColor = .clear
             $0.textContainer.lineFragmentPadding = 0
             $0.textContainerInset = .zero
-            $0.text = errorText
+            $0.text = error.localizedDescription
             $0.font = .preferredFont(forTextStyle: .body)
             $0.textColor = Current.style.onboardingLabel
         })
