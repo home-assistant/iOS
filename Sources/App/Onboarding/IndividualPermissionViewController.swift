@@ -102,7 +102,12 @@ class IndividualPermissionViewController: UIViewController {
 
     @objc private func continueTapped(_ sender: UIButton) {
         sender.isUserInteractionEnabled = false
-        permission.request { [self] _, _ in
+        permission.request { [self] granted, _ in
+            if permission == .location && granted, let currentSSID = Current.connectivity.currentWiFiSSID() {
+                // update SSIDs if we have access to them, since we're gonna need it later
+                Current.settingsStore.connectionInfo?.internalSSIDs = [ currentSSID ]
+            }
+
             sender.isUserInteractionEnabled = true
             show(workflowController.next(), sender: self)
         }

@@ -1,0 +1,41 @@
+import Foundation
+import ObjectMapper
+import PromiseKit
+import Version
+
+public struct DiscoveredHomeAssistant: ImmutableMappable {
+    public var uuid: String?
+    public var version: Version
+    public var internalOrExternalURL: URL
+    public var externalURL: URL?
+    public var internalURL: URL?
+    public var locationName: String
+    public var bonjourName: String?
+
+    public init(manualURL: URL, name: String = "Home") {
+        self.version = Version(major: 2021, minor: 9)
+        self.uuid = nil
+        self.internalOrExternalURL = manualURL
+        self.internalURL = manualURL
+        self.externalURL = nil
+        self.locationName = name
+    }
+
+    private enum TransformError: Error {
+        case missingUsableURL
+    }
+
+    public init(map: Map) throws {
+        self.uuid = try map.value("uuid")
+        self.version = try map.value("version", using: VersionTransform())
+        self.externalURL = try? map.value("external_url", using: URLTransform())
+        self.internalURL = try? map.value("internal_url", using: URLTransform())
+        self.locationName = (try? map.value("location_name")) ?? "Home"
+
+        if let url = internalURL ?? externalURL {
+            self.internalOrExternalURL = url
+        } else {
+            throw TransformError.missingUsableURL
+        }
+    }
+}

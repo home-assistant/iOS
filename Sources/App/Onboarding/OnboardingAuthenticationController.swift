@@ -229,13 +229,13 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
 
     private func connectionInfo(for instance: DiscoveredHomeAssistant) -> Promise<ConnectionInfo> {
         firstly {
-            authDetails(from: instance.BaseURL)
+            authDetails(from: instance.internalOrExternalURL)
         }.then { [self] authDetails in
             validate(url: authDetails.url)
         }.map {
-            ConnectionInfo(
-                externalURL: instance.BaseURL,
-                internalURL: nil,
+            with(ConnectionInfo(
+                externalURL: instance.externalURL,
+                internalURL: instance.internalURL,
                 cloudhookURL: nil,
                 remoteUIURL: nil,
                 webhookID: "",
@@ -243,7 +243,11 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                 internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
                 internalHardwareAddresses: Current.connectivity.currentNetworkHardwareAddress().map { [$0] },
                 isLocalPushEnabled: true
-            )
+            )) {
+                // if we have internal+external, we're on the internal network doing discovery
+                // but we don't yet have location permission to know we're on an internal ssid
+                $0.overrideActiveURLType = .internal
+            }
         }
     }
 

@@ -22,7 +22,7 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     public func start() {
         precondition(Thread.isMainThread)
         guard !browserIsRunning else { return }
-        Current.Log.info("starting")
+        Current.Log.info()
         browserIsRunning = true
         browser.delegate = self
         browser.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
@@ -31,7 +31,7 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     public func stop() {
         precondition(Thread.isMainThread)
         guard browserIsRunning else { return }
-        Current.Log.info("stopping")
+        Current.Log.info()
         browserIsRunning = false
         browser.stop()
         browser.delegate = nil
@@ -44,25 +44,33 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         didFind netService: NetService,
         moreComing moreServicesComing: Bool
     ) {
-        Current.Log.verbose("BonjourDelegate.Browser.didFindService")
+        Current.Log.verbose()
         netService.delegate = self
         resolvingDict[netService.name] = netService
         netService.resolve(withTimeout: 0.0)
     }
 
     public func netServiceDidResolveAddress(_ sender: NetService) {
-        Current.Log.verbose("BonjourDelegate.Browser.netServiceDidResolveAddress")
-        if let txtRecord = sender.txtRecordData() {
-            let potentialServiceDict = NetService.dictionary(fromTXTRecord: txtRecord) as NSDictionary
+        Current.Log.verbose()
 
-            // This fixes a crash in 0.110, the root cause is the dictionary returned
-            // above contains NSNull instead of NSData, which Swift will crash trying
-            // to cast to the Swift dictionary. So we do it the hard way.
-            let serviceDict = (potentialServiceDict as? [String: Any])?
-                .compactMapValues { $0 as? Data } ?? [:]
+        guard let txtRecord = sender.txtRecordData() else { return }
 
-            let discoveryInfo = discoveryInfoFromDict(locationName: sender.name, netServiceDictionary: serviceDict)
-            observer?.bonjour(self, didAdd: discoveryInfo)
+        let potentialServiceDict = NetService.dictionary(fromTXTRecord: txtRecord) as NSDictionary
+
+        // This fixes a crash in 0.110, the root cause is the dictionary returned
+        // above contains NSNull instead of NSData, which Swift will crash trying
+        // to cast to the Swift dictionary. So we do it the hard way.
+        let serviceDict = (potentialServiceDict as? [String: Any])?
+            .compactMapValues { $0 as? Data } ?? [:]
+
+        do {
+            let discovered = try discoveredHomeAssistant(
+                bonjourName: sender.name,
+                netServiceDictionary: serviceDict
+            )
+            observer?.bonjour(self, didAdd: discovered)
+        } catch {
+            Current.Log.error(error)
         }
     }
 
@@ -71,26 +79,25 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         didRemove netService: NetService,
         moreComing moreServicesComing: Bool
     ) {
-        Current.Log.verbose("BonjourDelegate.Browser.didRemoveService")
+        Current.Log.verbose(netService.name)
 
         observer?.bonjour(self, didRemoveInstanceWithName: netService.name)
         resolvingDict.removeValue(forKey: netService.name)
     }
 
-    private func discoveryInfoFromDict(
-        locationName: String,
+    private func discoveredHomeAssistant(
+        bonjourName: String,
         netServiceDictionary: [String: Data]
-    ) -> DiscoveredHomeAssistant {
+    ) throws -> DiscoveredHomeAssistant {
         var outputDict: [String: Any] = [:]
         for (key, value) in netServiceDictionary {
             outputDict[key] = String(data: value, encoding: .utf8)
-            if outputDict[key] as? String == "true" || outputDict[key] as? String == "false" {
-                if let stringedKey = outputDict[key] as? String {
-                    outputDict[key] = Bool(stringedKey)
-                }
-            }
         }
-        outputDict["location_name"] = locationName
-        return DiscoveredHomeAssistant(JSON: outputDict)!
+        if outputDict["location_name"] == nil {
+            outputDict["location_name"] = bonjourName
+        }
+        var instance = try DiscoveredHomeAssistant(JSON: outputDict, context: nil)
+        instance.bonjourName = bonjourName
+        return instance
     }
 }

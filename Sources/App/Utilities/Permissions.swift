@@ -154,7 +154,7 @@ public enum PermissionType {
             return [
                 (.homeAutomationIcon, L10n.Onboarding.Permissions.Location.Bullet.automations),
                 (.mapOutlineIcon, L10n.Onboarding.Permissions.Location.Bullet.history),
-                (.updateIcon, L10n.Onboarding.Permissions.Location.Bullet.onTheMove),
+                (.wifiIcon, L10n.Onboarding.Permissions.Location.Bullet.wifi),
             ]
         case .motion:
             return [

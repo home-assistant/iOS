@@ -227,7 +227,7 @@ Your actions and local configuration will still be available after logging in.";
 "onboarding.permissions.location.grant_description" = "Allow location permission to create a device_tracker for your device.";
 "onboarding.permissions.location.bullet.automations" = "Presence-based automations";
 "onboarding.permissions.location.bullet.history" = "Track location history";
-"onboarding.permissions.location.bullet.on_the_move" = "On-the-move sensor updates";
+"onboarding.permissions.location.bullet.wifi" = "Internal URL at home";
 "onboarding.permissions.motion.title" = "Motion & Pedometer";
 "onboarding.permissions.motion.grant_description" = "Allow motion permission to create sensors for motion and pedometer data.";
 "onboarding.permissions.motion.bullet.steps" = "Sensor for step counts";

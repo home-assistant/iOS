@@ -144,24 +144,20 @@ class DiscoverInstancesViewController: UIViewController {
         if Current.appConfiguration == .Debug {
             for (idx, instance) in [
                 DiscoveredHomeAssistant(
-                    baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic")!,
-                    name: "Basic Auth",
-                    version: "0.92.0"
+                    manualURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic")!,
+                    name: "Basic Auth"
                 ),
                 DiscoveredHomeAssistant(
-                    baseURL: URL(string: "https://self-signed.badssl.com/")!,
-                    name: "Self signed SSL",
-                    version: "0.92.0"
+                    manualURL: URL(string: "https://self-signed.badssl.com/")!,
+                    name: "Self signed SSL"
                 ),
                 DiscoveredHomeAssistant(
-                    baseURL: URL(string: "https://client.badssl.com/")!,
-                    name: "Client Cert",
-                    version: "0.92.0"
+                    manualURL: URL(string: "https://client.badssl.com/")!,
+                    name: "Client Cert"
                 ),
                 DiscoveredHomeAssistant(
-                    baseURL: URL(string: "https://expired.badssl.com/")!,
-                    name: "Expired",
-                    version: "0.92.0"
+                    manualURL: URL(string: "https://expired.badssl.com/")!,
+                    name: "Expired"
                 ),
             ].enumerated() {
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500 * (idx + 1))) { [weak self] in
@@ -178,7 +174,8 @@ class DiscoverInstancesViewController: UIViewController {
     private func add(discoveredInstance: DiscoveredHomeAssistant) {
         tableView?.performBatchUpdates({
             if let existing = discoveredInstances.firstIndex(where: {
-                $0.BaseURL == discoveredInstance.BaseURL
+                ($0.uuid != nil && $0.uuid == discoveredInstance.uuid)
+                || $0.internalOrExternalURL == discoveredInstance.internalOrExternalURL
             }) {
                 discoveredInstances[existing] = discoveredInstance
                 tableView?.reloadRows(
@@ -187,7 +184,7 @@ class DiscoverInstancesViewController: UIViewController {
                 )
             } else {
                 UIAccessibility.post(notification: .announcement, argument: NSAttributedString(
-                    string: L10n.Onboarding.Scanning.discoveredAnnouncement(discoveredInstance.LocationName),
+                    string: L10n.Onboarding.Scanning.discoveredAnnouncement(discoveredInstance.locationName),
                     attributes: [.accessibilitySpeechQueueAnnouncement: true]
                 ))
                 discoveredInstances.append(discoveredInstance)
@@ -202,7 +199,7 @@ class DiscoverInstancesViewController: UIViewController {
     private func remove(forName name: String) {
         tableView?.performBatchUpdates({
             if let existing = discoveredInstances.firstIndex(where: {
-                $0.LocationName == name
+                $0.bonjourName == name
             }) {
                 discoveredInstances.remove(at: existing)
                 tableView?.deleteRows(
@@ -264,13 +261,13 @@ extension DiscoverInstancesViewController: UITableViewDataSource {
 
         let instance = discoveredInstances[indexPath.row]
 
-        cell.textLabel?.text = instance.LocationName
-        cell.detailTextLabel?.text = instance.BaseURL.absoluteString
-        cell.accessibilityLabel = instance.LocationName
+        cell.textLabel?.text = instance.locationName
+        cell.detailTextLabel?.text = instance.internalOrExternalURL.absoluteString
+        cell.accessibilityLabel = instance.locationName
         cell.accessibilityAttributedValue = with(NSMutableAttributedString()) { overall in
             for part in [
-                instance.BaseURL.host,
-                instance.BaseURL.port.flatMap { String(describing: $0) },
+                instance.internalOrExternalURL.host,
+                instance.internalOrExternalURL.port.flatMap { String(describing: $0) },
             ].compactMap({ $0 }) {
                 overall
                     .append(NSAttributedString(

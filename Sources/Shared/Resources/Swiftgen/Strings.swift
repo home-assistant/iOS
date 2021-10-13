@@ -848,8 +848,8 @@ public enum L10n {
           public static var automations: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.automations") }
           /// Track location history
           public static var history: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.history") }
-          /// On-the-move sensor updates
-          public static var onTheMove: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.on_the_move") }
+          /// Internal URL at home
+          public static var wifi: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.wifi") }
         }
       }
       public enum Motion {
