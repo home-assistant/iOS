@@ -80,40 +80,47 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
                 .isActive = true
         }
 
-        urlField.inputAccessoryView = with(InputAccessoryView()) {
-            $0.directionalLayoutMargins = stackView.directionalLayoutMargins
-            let button = with(UIButton(type: .custom)) {
-                $0.setTitle(L10n.Onboarding.ManualSetup.connect, for: .normal)
-                $0.addTarget(self, action: #selector(connectTapped(_:)), for: .touchUpInside)
-                Current.style.onboardingButtonPrimary($0)
+        let button = with(UIButton(type: .custom)) {
+            $0.setTitle(L10n.Onboarding.ManualSetup.connect, for: .normal)
+            $0.addTarget(self, action: #selector(connectTapped(_:)), for: .touchUpInside)
+            Current.style.onboardingButtonPrimary($0)
 
-                $0.translatesAutoresizingMaskIntoConstraints = false
-                $0.setContentCompressionResistancePriority(.required, for: .vertical)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.setContentCompressionResistancePriority(.required, for: .vertical)
+        }
+        let loading: UIActivityIndicatorView = {
+            let indicator: UIActivityIndicatorView
+            if #available(iOS 13, *) {
+                indicator = UIActivityIndicatorView(style: .medium)
+            } else {
+                indicator = UIActivityIndicatorView(style: .white)
             }
-            let loading: UIActivityIndicatorView = {
-                let indicator: UIActivityIndicatorView
-                if #available(iOS 13, *) {
-                    indicator = UIActivityIndicatorView(style: .medium)
-                } else {
-                    indicator = UIActivityIndicatorView(style: .white)
-                }
 
-                indicator.hidesWhenStopped = true
-                indicator.color = button.titleColor(for: .normal)
-                return indicator
-            }()
+            indicator.hidesWhenStopped = true
+            indicator.color = button.titleColor(for: .normal)
+            return indicator
+        }()
 
-            connectButton = button
-            connectLoading = loading
+        connectButton = button
+        connectLoading = loading
 
-            $0.contentView = button
+        with(button) {
             $0.addSubview(loading)
-
             loading.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                loading.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-                loading.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16),
+                loading.centerYAnchor.constraint(equalTo: $0.centerYAnchor),
+                loading.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -16),
             ])
+        }
+
+        if Current.isCatalyst {
+            // iPad and iPhone unconditionally show the input view, but mac never does
+            stackView.addArrangedSubview(button)
+        } else {
+            urlField.inputAccessoryView = with(InputAccessoryView()) {
+                $0.directionalLayoutMargins = stackView.directionalLayoutMargins
+                $0.contentView = button
+            }
         }
 
         stackView.addArrangedSubview(with(equalSpacers.next()) {

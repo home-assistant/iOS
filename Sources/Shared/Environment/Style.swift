@@ -59,6 +59,12 @@ public struct Style {
             UIImage(size: CGSize(width: 1, height: 1), color: .white.withAlphaComponent(0.7)),
             for: .highlighted
         )
+
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 14, *) {
+            button.role = .primary
+        }
+        #endif
     }
 
     public var onboardingButtonSecondary: (_ button: UIButton) -> Void = { button in
