@@ -348,8 +348,8 @@
 		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
-		11DA6B4D2713900E008ADFAF /* PermissionWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4C2713900E008ADFAF /* PermissionWorkflowController.swift */; };
-		11DA6B4F2713912F008ADFAF /* IndividualPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4E2713912F008ADFAF /* IndividualPermissionViewController.swift */; };
+		11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */; };
+		11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
@@ -649,10 +649,10 @@
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB69226BBDA900E541DD /* SettingsViewController.swift */; };
 		B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */; };
-		B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB73226C110A00E541DD /* WelcomeViewController.swift */; };
-		B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* ManualSetupViewController.swift */; };
+		B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB73226C110A00E541DD /* OnboardingWelcomeViewController.swift */; };
+		B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
-		B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */; };
+		B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66C58B12150891B004AB261 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallService.swift */; };
@@ -744,7 +744,7 @@
 		B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D8A3282271448E00FA765D /* error.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3272271448D00FA765D /* error.json */; };
-		B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */; };
+		B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D8A3292271455300FA765D /* OnboardingErrorViewController.swift */; };
 		B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */; };
 		B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7222691A5000DE811C /* AKConverter.swift */; };
 		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
@@ -778,7 +778,7 @@
 		D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
 		D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
-		D0C88462211ED16300CCB501 /* OnboardingAuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */; };
+		D0C88462211ED16300CCB501 /* OnboardingAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* OnboardingAuthentication.swift */; };
 		D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
 		D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
 		D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */; };
@@ -1329,8 +1329,8 @@
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
-		11DA6B4C2713900E008ADFAF /* PermissionWorkflowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionWorkflowController.swift; sourceTree = "<group>"; };
-		11DA6B4E2713912F008ADFAF /* IndividualPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndividualPermissionViewController.swift; sourceTree = "<group>"; };
+		11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionWorkflowController.swift; sourceTree = "<group>"; };
+		11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionViewController.swift; sourceTree = "<group>"; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1691,10 +1691,10 @@
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B661FB69226BBDA900E541DD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsViewController.swift; sourceTree = "<group>"; };
-		B661FB73226C110A00E541DD /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
-		B661FB79226C197900E541DD /* ManualSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSetupViewController.swift; sourceTree = "<group>"; };
+		B661FB73226C110A00E541DD /* OnboardingWelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeViewController.swift; sourceTree = "<group>"; };
+		B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManualURLViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
-		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
+		B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewController.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1760,7 +1760,7 @@
 		B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentryLogDestination.swift; sourceTree = "<group>"; };
 		B6D3B4EB225B26300082BB4F /* SensorContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.swift; sourceTree = "<group>"; };
 		B6D8A3272271448D00FA765D /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
-		B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorViewController.swift; sourceTree = "<group>"; };
+		B6D8A3292271455300FA765D /* OnboardingErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorViewController.swift; sourceTree = "<group>"; };
 		B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSoundsViewController.swift; sourceTree = "<group>"; };
 		B6DA3C7222691A5000DE811C /* AKConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKConverter.swift; sourceTree = "<group>"; };
 		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
@@ -1816,7 +1816,7 @@
 		D0BE441121043B8100C74314 /* AuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationTests.swift; sourceTree = "<group>"; };
 		D0BE44152104410D00C74314 /* AuthenticationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationAPI.swift; sourceTree = "<group>"; };
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
-		D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthenticationController.swift; sourceTree = "<group>"; };
+		D0C88461211ED16300CCB501 /* OnboardingAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthentication.swift; sourceTree = "<group>"; };
 		D0C88463211F33CE00CCB501 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+RequestHelpers.swift"; sourceTree = "<group>"; };
 		D0C884792122A65800CCB501 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
@@ -2160,6 +2160,38 @@
 			path = MacBridge;
 			sourceTree = "<group>";
 		};
+		1168BF34271811B300DD4D15 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
+				D0C88461211ED16300CCB501 /* OnboardingAuthentication.swift */,
+				1168BF32271809C600DD4D15 /* OnboardingAuthenticationError.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		1168BF35271811C200DD4D15 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				B6D8A3292271455300FA765D /* OnboardingErrorViewController.swift */,
+				B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */,
+				11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */,
+				B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */,
+				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
+				B661FB73226C110A00E541DD /* OnboardingWelcomeViewController.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		1168BF36271811D800DD4D15 /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
+				11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */,
+			);
+			path = Container;
+			sourceTree = "<group>";
+		};
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -2420,18 +2452,9 @@
 		11AF1ED82528FBAA00AAE364 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
-				D0C88461211ED16300CCB501 /* OnboardingAuthenticationController.swift */,
-				B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */,
-				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
-				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
-				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
-				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
-				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
-				11DA6B4C2713900E008ADFAF /* PermissionWorkflowController.swift */,
-				11DA6B4E2713912F008ADFAF /* IndividualPermissionViewController.swift */,
-				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
-				1168BF32271809C600DD4D15 /* OnboardingAuthenticationError.swift */,
+				1168BF34271811B300DD4D15 /* API */,
+				1168BF36271811D800DD4D15 /* Container */,
+				1168BF35271811C200DD4D15 /* Screens */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -3079,6 +3102,7 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
@@ -5060,7 +5084,7 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
-				11DA6B4F2713912F008ADFAF /* IndividualPermissionViewController.swift in Sources */,
+				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
@@ -5108,16 +5132,16 @@
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
-				D0C88462211ED16300CCB501 /* OnboardingAuthenticationController.swift in Sources */,
+				D0C88462211ED16300CCB501 /* OnboardingAuthentication.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
-				B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */,
+				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
-				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
+				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
@@ -5132,7 +5156,7 @@
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
-				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,
+				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
@@ -5140,10 +5164,10 @@
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
-				11DA6B4D2713900E008ADFAF /* PermissionWorkflowController.swift in Sources */,
+				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
-				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
+				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,

@@ -2,7 +2,7 @@ import PromiseKit
 import Shared
 import UIKit
 
-class ManualSetupViewController: UIViewController, UITextFieldDelegate {
+class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
     private let urlField = UITextField()
     private var connectButton: UIButton?
     private var connectLoading: UIActivityIndicatorView?
@@ -183,13 +183,13 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             return .init(error: PMKError.cancelled)
         }.then { [view] (url: URL) -> Promise<Void> in
             let instance = DiscoveredHomeAssistant(manualURL: url)
-            return OnboardingAuthenticationController.authenticate(to: instance, sender: view!)
+            return OnboardingAuthentication.authenticate(to: instance, sender: view!)
         }.ensure { [self] in
             isConnecting = false
         }.done { [self] in
-            show(OnboardingAuthenticationController.successController(), sender: self)
+            show(OnboardingAuthentication.successController(), sender: self)
         }.catch { [self] error in
-            show(OnboardingAuthenticationController.failureController(error: error), sender: self)
+            show(OnboardingAuthentication.failureController(error: error), sender: self)
         }
     }
 

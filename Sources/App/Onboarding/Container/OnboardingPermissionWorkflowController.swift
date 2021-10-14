@@ -1,7 +1,7 @@
 import Shared
 import UIKit
 
-class PermissionWorkflowController {
+class OnboardingPermissionWorkflowController {
     private let permissions: [PermissionType]
 
     init() {
@@ -23,7 +23,7 @@ class PermissionWorkflowController {
 
     func next() -> UIViewController {
         if let permission = permissions.first(where: { $0.status == .notDetermined }) {
-            return IndividualPermissionViewController(permission: permission, workflowController: self)
+            return OnboardingPermissionViewController(permission: permission, workflowController: self)
         } else {
             return OnboardingTerminalViewController()
         }

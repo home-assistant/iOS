@@ -5,7 +5,7 @@ import SafariServices
 import Shared
 import UIKit
 
-class WelcomeViewController: UIViewController {
+class OnboardingWelcomeViewController: UIViewController {
     private var animationView: AnimationView?
 
     override func viewWillAppear(_ animated: Bool) {
@@ -83,7 +83,7 @@ class WelcomeViewController: UIViewController {
     }
 
     @objc private func continueTapped(_ sender: UIButton) {
-        show(DiscoverInstancesViewController(), sender: self)
+        show(OnboardingScanningViewController(), sender: self)
     }
 
     @objc private func learnMoreTapped(_ sender: UIButton) {

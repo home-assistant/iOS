@@ -3,7 +3,7 @@ import PromiseKit
 import Shared
 import UIKit
 
-class DiscoverInstancesCell: UITableViewCell {
+class OnboardingScanningInstanceCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         with(textLabel) {
@@ -53,7 +53,7 @@ class DiscoverInstancesCell: UITableViewCell {
     }
 }
 
-class DiscoverInstancesViewController: UIViewController {
+class OnboardingScanningViewController: UIViewController {
     private let discovery = Bonjour()
     private var discoveredInstances: [DiscoveredHomeAssistant] = []
 
@@ -113,7 +113,7 @@ class DiscoverInstancesViewController: UIViewController {
             // hides the empty separators
             $0.tableFooterView = UIView()
 
-            $0.register(DiscoverInstancesCell.self, forCellReuseIdentifier: "DiscoverInstancesCell")
+            $0.register(OnboardingScanningInstanceCell.self, forCellReuseIdentifier: "OnboardingScanningInstanceCell")
         })
 
         NSLayoutConstraint.activate([
@@ -218,11 +218,11 @@ class DiscoverInstancesViewController: UIViewController {
     }
 
     @IBAction func didSelectManual(_ sender: UIButton) {
-        show(ManualSetupViewController(), sender: self)
+        show(OnboardingManualURLViewController(), sender: self)
     }
 }
 
-extension DiscoverInstancesViewController: BonjourObserver {
+extension OnboardingScanningViewController: BonjourObserver {
     func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant) {
         add(discoveredInstance: instance)
     }
@@ -232,10 +232,10 @@ extension DiscoverInstancesViewController: BonjourObserver {
     }
 }
 
-extension DiscoverInstancesViewController: UITableViewDelegate {
+extension OnboardingScanningViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let instance = discoveredInstances[indexPath.row]
-        let cell = tableView.cellForRow(at: indexPath) as? DiscoverInstancesCell
+        let cell = tableView.cellForRow(at: indexPath) as? OnboardingScanningInstanceCell
 
         Current.Log.verbose("Selected row at \(indexPath.row) \(instance)")
 
@@ -243,26 +243,26 @@ extension DiscoverInstancesViewController: UITableViewDelegate {
         tableView.isUserInteractionEnabled = false
 
         firstly {
-            OnboardingAuthenticationController.authenticate(to: instance, sender: tableView)
+            OnboardingAuthentication.authenticate(to: instance, sender: tableView)
         }.ensure {
             cell?.isLoading = false
             tableView.isUserInteractionEnabled = true
             tableView.deselectRow(at: indexPath, animated: true)
         }.done { [self] in
-            show(OnboardingAuthenticationController.successController(), sender: self)
+            show(OnboardingAuthentication.successController(), sender: self)
         }.catch { [self] error in
-            show(OnboardingAuthenticationController.failureController(error: error), sender: self)
+            show(OnboardingAuthentication.failureController(error: error), sender: self)
         }
     }
 }
 
-extension DiscoverInstancesViewController: UITableViewDataSource {
+extension OnboardingScanningViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         discoveredInstances.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DiscoverInstancesCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "OnboardingScanningInstanceCell", for: indexPath)
 
         let instance = discoveredInstances[indexPath.row]
 

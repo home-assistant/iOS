@@ -37,8 +37,8 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         let rootViewController: UIViewController
 
         switch onboardingStyle {
-        case .initial: rootViewController = WelcomeViewController()
-        case .secondary: rootViewController = DiscoverInstancesViewController()
+        case .initial: rootViewController = OnboardingWelcomeViewController()
+        case .secondary: rootViewController = OnboardingScanningViewController()
         }
 
         if #available(iOS 13, *) {
@@ -146,8 +146,8 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 extension OnboardingNavigationViewController: UINavigationControllerDelegate {
     private func updateNavigationBar(for controller: UIViewController?, animated: Bool) {
         let hiddenNavigationBarClasses: [UIViewController.Type] = [
-            WelcomeViewController.self,
-            IndividualPermissionViewController.self,
+            OnboardingWelcomeViewController.self,
+            OnboardingPermissionViewController.self,
         ]
 
         if let controller = controller,

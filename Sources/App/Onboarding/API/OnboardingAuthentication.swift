@@ -4,13 +4,13 @@ import Foundation
 import PromiseKit
 import Shared
 
-class OnboardingAuthenticationController: NSObject {
+class OnboardingAuthentication: NSObject {
     static func successController() -> UIViewController {
-        PermissionWorkflowController().next()
+        OnboardingPermissionWorkflowController().next()
     }
 
     static func failureController(error: Error) -> UIViewController {
-        ConnectionErrorViewController(error: error)
+        OnboardingErrorViewController(error: error)
     }
 
     static func authenticate(to instance: DiscoveredHomeAssistant, sender: UIView) -> Promise<Void> {
@@ -74,7 +74,7 @@ class OnboardingAuthenticationController: NSObject {
     }
 
     private static func openInBrowser(url baseURL: URL, sender: UIView) -> Promise<String> {
-        Current.Log.verbose("Attempting browser auth to: \(baseURL)")
+        Current.Log.verbose(baseURL)
 
         class PresentationDelegate: NSObject, ASWebAuthenticationPresentationContextProviding {
             let view: UIView
@@ -146,12 +146,12 @@ class OnboardingAuthenticationController: NSObject {
     // MARK: - Authorizing
 
     private static func configuredAPI(code: String, connectionInfo: ConnectionInfo) -> Promise<HomeAssistantAPI> {
-        Current.Log.info("Browser auth succeeded, getting token")
+        Current.Log.verbose()
         let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
         return firstly {
             tokenManager.initialTokenWithCode(code).asVoid()
         }.then { _ -> Promise<HomeAssistantAPI> in
-            Current.Log.verbose("Got token, storing & registering")
+            Current.Log.verbose()
             Current.settingsStore.connectionInfo = connectionInfo
 
             withExtendedLifetime(tokenManager) {
@@ -164,7 +164,8 @@ class OnboardingAuthenticationController: NSObject {
     }
 
     private static func connect(to api: HomeAssistantAPI) -> Promise<Void> {
-        firstly {
+        Current.Log.verbose()
+        return firstly {
             api.Register().asVoid()
         }.then {
             when(fulfilled: [
@@ -184,13 +185,15 @@ class OnboardingAuthenticationController: NSObject {
     // MARK: - URL Validation/Testing
 
     private static func validate(url: URL) -> Promise<Void> {
+        Current.Log.verbose()
+
         let (promise, resolver) = Promise<Void>.pending()
 
         var clientCertificateErrorOccurred: Bool = false
 
         let eventMonitor = with(ClosureEventMonitor()) {
             $0.taskDidReceiveChallenge = { _, task, challenge in
-                Current.Log.verbose("Handling challenge \(challenge.protectionSpace.authenticationMethod)")
+                Current.Log.verbose(challenge.protectionSpace.authenticationMethod)
 
                 let errorKind: OnboardingAuthenticationError.ErrorKind? = {
                     switch challenge.protectionSpace.authenticationMethod {

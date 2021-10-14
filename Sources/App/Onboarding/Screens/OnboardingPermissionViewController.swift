@@ -1,10 +1,10 @@
 import Shared
 import UIKit
 
-class IndividualPermissionViewController: UIViewController {
+class OnboardingPermissionViewController: UIViewController {
     let permission: PermissionType
-    let workflowController: PermissionWorkflowController
-    init(permission: PermissionType, workflowController: PermissionWorkflowController) {
+    let workflowController: OnboardingPermissionWorkflowController
+    init(permission: PermissionType, workflowController: OnboardingPermissionWorkflowController) {
         self.permission = permission
         self.workflowController = workflowController
         super.init(nibName: nil, bundle: nil)

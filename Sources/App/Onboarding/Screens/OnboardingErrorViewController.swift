@@ -2,7 +2,7 @@ import Lottie
 import Shared
 import UIKit
 
-class ConnectionErrorViewController: UIViewController {
+class OnboardingErrorViewController: UIViewController {
     private var animationView: AnimationView?
     private var moreInfoButton: UIButton?
     private var goBackButton: UIButton?
