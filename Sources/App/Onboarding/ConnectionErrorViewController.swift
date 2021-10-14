@@ -37,17 +37,32 @@ class ConnectionErrorViewController: UIViewController {
         })
 
         stackView.addArrangedSubview(with(UITextView()) {
-            var errorComponents: [String] = [
-                error.localizedDescription
+            var errorComponents: [NSAttributedString] = [
+                NSAttributedString(string: error.localizedDescription),
             ]
 
-            func errorCode(_ value: String) -> String {
-                L10n.Onboarding.ConnectionTestResult.errorCode + "\n" + value
+            func errorCode(_ value: String) -> NSAttributedString {
+                NSAttributedString(string: L10n.Onboarding.ConnectionTestResult.errorCode + "\n" + value)
             }
 
             if let error = error as? ConnectionTestError {
                 if let code = error.errorCode {
                     errorComponents.append(errorCode(code))
+                }
+
+                if let source = error.responseString {
+                    let font: UIFont
+
+                    if #available(iOS 13, *) {
+                        font = .monospacedSystemFont(ofSize: 14.0, weight: .regular)
+                    } else {
+                        font = UIFont(name: "Menlo", size: 14.0) ?? UIFont.systemFont(ofSize: 14.0)
+                    }
+
+                    errorComponents.append(NSAttributedString(
+                        string: source,
+                        attributes: [.font: font]
+                    ))
                 }
             } else {
                 let nsError = error as NSError
@@ -60,9 +75,19 @@ class ConnectionErrorViewController: UIViewController {
             $0.backgroundColor = .clear
             $0.textContainer.lineFragmentPadding = 0
             $0.textContainerInset = .zero
-            $0.text = errorComponents.joined(separator: "\n\n")
-            $0.font = .preferredFont(forTextStyle: .body)
-            $0.textColor = Current.style.onboardingLabel
+            let baseAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.preferredFont(forTextStyle: .body),
+                .foregroundColor: Current.style.onboardingLabel,
+            ]
+            $0.attributedText = errorComponents.reduce(into: NSMutableAttributedString()) { base, added in
+                if base.length > 0 {
+                    base.append(NSAttributedString(string: "\n\n", attributes: baseAttributes))
+                }
+
+                base.append(with(NSMutableAttributedString(attributedString: added)) {
+                    $0.addMissingAttributes(baseAttributes)
+                })
+            }
         })
 
         stackView.addArrangedSubview(equalSpacers.next())

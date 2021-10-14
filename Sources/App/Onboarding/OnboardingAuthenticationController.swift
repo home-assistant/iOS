@@ -292,34 +292,34 @@ public struct ConnectionTestError: LocalizedError {
     }
 
     public var errorDescription: String? {
-        let base: String = {
-            switch kind {
-            case .basicAuth:
-                return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
-            case let .authenticationUnsupported(method):
-                return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
-            case let .clientCertificateRequired(underlying):
-                return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
-                    + "\n\n" + underlying.localizedDescription
-            case let .sslUntrusted(underlying),
-                let .other(underlying):
-                return underlying.localizedDescription
-            }
-        }()
-
-        if let data = data, let dataString = String(data: data, encoding: .utf8) {
-            let displayDataString: String
-
-            let maximumLength = 1024
-            if dataString.count > maximumLength {
-                displayDataString = dataString.prefix(maximumLength - 1) + "…"
-            } else {
-                displayDataString = dataString
-            }
-
-            return base + "\n\n" + displayDataString
-        } else {
-            return base
+        switch kind {
+        case .basicAuth:
+            return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
+        case let .authenticationUnsupported(method):
+            return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
+        case let .clientCertificateRequired(underlying):
+            return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
+                + "\n\n" + underlying.localizedDescription
+        case let .sslUntrusted(underlying),
+            let .other(underlying):
+            return underlying.localizedDescription
         }
+    }
+
+    public var responseString: String? {
+        guard let data = data, let dataString = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+
+        let displayDataString: String
+
+        let maximumLength = 1024
+        if dataString.count > maximumLength {
+            displayDataString = dataString.prefix(maximumLength - 1) + "…"
+        } else {
+            displayDataString = dataString
+        }
+
+        return displayDataString
     }
 }

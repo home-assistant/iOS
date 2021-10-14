@@ -167,6 +167,8 @@
 		1167408E251990D500F51626 /* MacBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1167408D251990D500F51626 /* MacBridgeImpl.swift */; };
 		1167409B251991AB00F51626 /* MacBridgeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116740722519907400F51626 /* MacBridgeProtocol.swift */; };
 		11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11684B79263F994600B48EC3 /* NotificationSubControllerMJPEG.swift */; };
+		1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1168BF2F2718070400DD4D15 /* NSMutableAttributedString+Additions.swift */; };
+		1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1168BF2F2718070400DD4D15 /* NSMutableAttributedString+Additions.swift */; };
 		1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */; };
 		116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
 		116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
@@ -1182,6 +1184,7 @@
 		116740722519907400F51626 /* MacBridgeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeProtocol.swift; sourceTree = "<group>"; };
 		1167408D251990D500F51626 /* MacBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBridgeImpl.swift; sourceTree = "<group>"; };
 		11684B79263F994600B48EC3 /* NotificationSubControllerMJPEG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMJPEG.swift; sourceTree = "<group>"; };
+		1168BF2F2718070400DD4D15 /* NSMutableAttributedString+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Additions.swift"; sourceTree = "<group>"; };
 		1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Eureka.swift"; sourceTree = "<group>"; };
 		116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.swift; sourceTree = "<group>"; };
 		1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3315,6 +3318,7 @@
 				1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */,
 				11169CBA262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift */,
 				1121CD4827128A970071C2AA /* UIView+StackView.swift */,
+				1168BF2F2718070400DD4D15 /* NSMutableAttributedString+Additions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -5271,6 +5275,7 @@
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
+				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
@@ -5443,6 +5448,7 @@
 				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
+				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
 				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
