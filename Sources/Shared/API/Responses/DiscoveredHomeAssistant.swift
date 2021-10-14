@@ -16,8 +16,8 @@ public struct DiscoveredHomeAssistant: ImmutableMappable {
         self.version = Version(major: 2021, minor: 9)
         self.uuid = nil
         self.internalOrExternalURL = manualURL
-        self.internalURL = manualURL
-        self.externalURL = nil
+        self.internalURL = nil
+        self.externalURL = manualURL
         self.locationName = name
     }
 
