@@ -10,6 +10,5 @@ public extension NSMutableAttributedString {
                 }
             }
         }
-
     }
 }

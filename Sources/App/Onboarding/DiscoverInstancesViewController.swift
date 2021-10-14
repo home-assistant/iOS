@@ -56,7 +56,6 @@ class DiscoverInstancesCell: UITableViewCell {
 class DiscoverInstancesViewController: UIViewController {
     private let discovery = Bonjour()
     private var discoveredInstances: [DiscoveredHomeAssistant] = []
-    fileprivate let authController = OnboardingAuthenticationController()
 
     private var tableView: UITableView?
 
@@ -244,17 +243,15 @@ extension DiscoverInstancesViewController: UITableViewDelegate {
         tableView.isUserInteractionEnabled = false
 
         firstly {
-            authController.authenticate(from: instance, sender: tableView)
+            OnboardingAuthenticationController.authenticate(from: instance, sender: tableView)
         }.ensure {
             cell?.isLoading = false
             tableView.isUserInteractionEnabled = true
             tableView.deselectRow(at: indexPath, animated: true)
         }.done { [self] in
-            let viewController = PermissionWorkflowController().next()
-            show(viewController, sender: self)
+            show(OnboardingAuthenticationController.successController(), sender: self)
         }.catch { [self] error in
-            let viewController = ConnectionErrorViewController(error: error)
-            show(viewController, sender: self)
+            show(OnboardingAuthenticationController.failureController(error: error), sender: self)
         }
     }
 }

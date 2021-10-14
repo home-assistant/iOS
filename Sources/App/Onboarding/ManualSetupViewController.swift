@@ -8,7 +8,6 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
     private var connectLoading: UIActivityIndicatorView?
     private var scrollView: UIScrollView?
     private var bottomSpacer: UIView?
-    private let authController = OnboardingAuthenticationController()
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -182,15 +181,15 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             present(alert, animated: true, completion: nil)
 
             return .init(error: PMKError.cancelled)
-        }.then { [authController, view] (url: URL) -> Promise<Void> in
+        }.then { [view] (url: URL) -> Promise<Void> in
             let instance = DiscoveredHomeAssistant(manualURL: url)
-            return authController.authenticate(from: instance, sender: view!)
+            return OnboardingAuthenticationController.authenticate(from: instance, sender: view!)
         }.ensure { [self] in
             isConnecting = false
         }.done { [self] in
-            show(authController.successController(), sender: self)
+            show(OnboardingAuthenticationController.successController(), sender: self)
         }.catch { [self] error in
-            show(authController.failureController(error: error), sender: self)
+            show(OnboardingAuthenticationController.failureController(error: error), sender: self)
         }
     }
 

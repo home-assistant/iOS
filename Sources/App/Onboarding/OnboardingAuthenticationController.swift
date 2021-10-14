@@ -4,85 +4,43 @@ import Foundation
 import PromiseKit
 import Shared
 
-class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentationContextProviding {
-    enum AuthenticationControllerError: Error {
-        case invalidURL
-    }
-
-    private weak var lastView: UIView?
-    private var lastTestSession: Session?
-    private var authenticationSession: ASWebAuthenticationSession?
-
-    func successController() -> UIViewController {
+class OnboardingAuthenticationController: NSObject {
+    static func successController() -> UIViewController {
         PermissionWorkflowController().next()
     }
 
-    func failureController(error: Error) -> UIViewController {
+    static func failureController(error: Error) -> UIViewController {
         ConnectionErrorViewController(error: error)
     }
 
-    /// Opens a browser to the URL for obtaining an access code.
-    func authenticate(
+    static func authenticate(
         from instance: DiscoveredHomeAssistant,
         sender: UIView
     ) -> Promise<Void> {
-        lastView = sender
-        return firstly { () -> Promise<ConnectionInfo> in
+        firstly { () -> Promise<ConnectionInfo> in
             connectionInfo(for: instance)
         }.then { connectionInfo -> Promise<HomeAssistantAPI> in
-            firstly { [self] () -> Promise<String> in
-                openInBrowser(url: connectionInfo.activeURL)
-            }.then { code -> Promise<Void> in
-                Current.Log.info("Browser auth succeeded, getting token")
-                let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
-                return firstly {
-                    tokenManager.initialTokenWithCode(code).asVoid()
-                }.done {
-                    Current.Log.verbose("Got token, storing & registering")
-                    Current.settingsStore.connectionInfo = connectionInfo
-
-                    withExtendedLifetime(tokenManager) {
-                        // just making it exist longer
-                    }
-                }
-            }.then { () -> Promise<HomeAssistantAPI> in
-                Current.resetAPI()
-                return Current.api
+            firstly { () -> Promise<String> in
+                openInBrowser(url: connectionInfo.activeURL, sender: sender)
+            }.then { code -> Promise<HomeAssistantAPI> in
+                configuredAPI(code: code, connectionInfo: connectionInfo)
             }
         }.then { api -> Promise<Void> in
-            firstly {
-                api.Register().asVoid()
-            }.then {
-                when(fulfilled: [
-                    api.GetConfig().asVoid(),
-                    api.RegisterSensors().asVoid(),
-                    Current.modelManager.fetch(),
-                ])
-            }.done {
-                NotificationCenter.default.post(
-                    name: HomeAssistantAPI.didConnectNotification,
-                    object: nil,
-                    userInfo: nil
-                )
-            }
-        }.ensure {
-            withExtendedLifetime(self) {
-                // so deallocating us doesn't necessarily break callers
-            }
+            connect(to: api)
         }
     }
 
     // MARK: - Authentication Session
 
-    struct AuthDetails {
+    private struct AuthDetails {
         var url: URL
         var scheme: String
     }
 
-    private func authDetails(from baseURL: URL) -> Promise<AuthDetails> {
+    private static func authDetails(from baseURL: URL) -> Promise<AuthDetails> {
         Promise<AuthDetails> { seal in
             guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-                throw AuthenticationControllerError.invalidURL
+                throw OnboardingAuthenticationError(kind: .invalidURL)
             }
 
             let redirectURI: String
@@ -111,17 +69,29 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
             ]
 
             guard let authURL = components.url else {
-                throw AuthenticationControllerError.invalidURL
+                throw OnboardingAuthenticationError(kind: .invalidURL)
             }
 
             seal.fulfill(.init(url: authURL, scheme: scheme))
         }
     }
 
-    private func openInBrowser(url baseURL: URL) -> Promise<String> {
+    private static func openInBrowser(url baseURL: URL, sender: UIView) -> Promise<String> {
         Current.Log.verbose("Attempting browser auth to: \(baseURL)")
 
-        return authDetails(from: baseURL).then { [self] authDetails -> Promise<String> in
+        class PresentationDelegate: NSObject, ASWebAuthenticationPresentationContextProviding {
+            let view: UIView
+            init(view: UIView) {
+                self.view = view
+                super.init()
+            }
+
+            func presentationAnchor(for: ASWebAuthenticationSession) -> ASPresentationAnchor {
+                view.window ?? UIWindow()
+            }
+        }
+
+        return authDetails(from: baseURL).then { authDetails -> Promise<String> in
             let (promise, resolver) = Promise<String>.pending()
             let session = ASWebAuthenticationSession(
                 url: authDetails.url,
@@ -132,18 +102,29 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                        error.code == ASWebAuthenticationSessionError.Code.canceledLogin.rawValue {
                         resolver.reject(PMKError.cancelled)
                     } else {
-                        resolver.resolve(error, url.flatMap(Self.code(fromSuccess:)))
+                        resolver.resolve(error, url.flatMap(code(fromSuccess:)))
                     }
                 }
             )
 
+            var delegate: PresentationDelegate? = PresentationDelegate(view: sender)
+            var presentationSession: ASWebAuthenticationSession? = session
+
             if #available(iOS 13.0, *) {
-                session.presentationContextProvider = self
+                session.presentationContextProvider = delegate
                 session.prefersEphemeralWebBrowserSession = true
             }
 
             session.start()
-            authenticationSession = session
+
+            promise.ensure {
+                // keep the session and its presentation context around until it's done
+                withExtendedLifetime(presentationSession) { /* avoiding warnings of write-only */ }
+
+                delegate = nil
+                presentationSession = nil
+            }.cauterize()
+
             return promise
         }
     }
@@ -165,9 +146,47 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
         return nil
     }
 
+    // MARK: - Authorizing
+
+    private static func configuredAPI(code: String, connectionInfo: ConnectionInfo) -> Promise<HomeAssistantAPI> {
+        Current.Log.info("Browser auth succeeded, getting token")
+        let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
+        return firstly {
+            tokenManager.initialTokenWithCode(code).asVoid()
+        }.then { _ -> Promise<HomeAssistantAPI> in
+            Current.Log.verbose("Got token, storing & registering")
+            Current.settingsStore.connectionInfo = connectionInfo
+
+            withExtendedLifetime(tokenManager) {
+                // just making it exist longer
+            }
+
+            Current.resetAPI()
+            return Current.api
+        }
+    }
+
+    private static func connect(to api: HomeAssistantAPI) -> Promise<Void> {
+        firstly {
+            api.Register().asVoid()
+        }.then {
+            when(fulfilled: [
+                api.GetConfig().asVoid(),
+                api.RegisterSensors().asVoid(),
+                Current.modelManager.fetch(),
+            ])
+        }.done {
+            NotificationCenter.default.post(
+                name: HomeAssistantAPI.didConnectNotification,
+                object: nil,
+                userInfo: nil
+            )
+        }
+    }
+
     // MARK: - URL Validation/Testing
 
-    private func validate(url: URL) -> Promise<Void> {
+    private static func validate(url: URL) -> Promise<Void> {
         let (promise, resolver) = Promise<Void>.pending()
 
         var clientCertificateErrorOccurred: Bool = false
@@ -176,7 +195,7 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
             $0.taskDidReceiveChallenge = { _, task, challenge in
                 Current.Log.verbose("Handling challenge \(challenge.protectionSpace.authenticationMethod)")
 
-                let errorKind: ConnectionTestError.ErrorKind? = {
+                let errorKind: OnboardingAuthenticationError.ErrorKind? = {
                     switch challenge.protectionSpace.authenticationMethod {
                     case NSURLAuthenticationMethodServerTrust: return nil
                     case NSURLAuthenticationMethodHTTPBasic: return .basicAuth
@@ -188,19 +207,18 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                 }()
 
                 if let errorKind = errorKind {
-                    resolver.reject(ConnectionTestError(kind: errorKind, data: nil))
+                    resolver.reject(OnboardingAuthenticationError(kind: errorKind, data: nil))
                     task.cancel()
                 }
             }
         }
 
         let session = Session(eventMonitors: [eventMonitor])
-        lastTestSession = session
         session.request(url).validate().response { response in
             Current.Log.info(response)
 
             resolver.resolve(response.result.map { _ in () }.mapError { wrapper -> Error in
-                let kind: ConnectionTestError.ErrorKind
+                let kind: OnboardingAuthenticationError.ErrorKind
                 let underlying = wrapper.underlyingError ?? wrapper
 
                 if clientCertificateErrorOccurred {
@@ -208,7 +226,7 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                 } else if let underlying = underlying as? URLError {
                     switch underlying.code {
                     case .serverCertificateUntrusted, .serverCertificateHasUnknownRoot, .serverCertificateHasBadDate,
-                            .serverCertificateNotYetValid:
+                         .serverCertificateNotYetValid:
                         kind = .sslUntrusted(underlying)
                     default:
                         kind = .other(underlying)
@@ -217,17 +235,21 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                     kind = .other(underlying)
                 }
 
-                return ConnectionTestError(kind: kind, data: response.data)
+                return OnboardingAuthenticationError(kind: kind, data: response.data)
             })
+
+            withExtendedLifetime(session) {
+                // keep the session alive
+            }
         }
 
         return promise
     }
 
-    private func connectionInfo(for instance: DiscoveredHomeAssistant) -> Promise<ConnectionInfo> {
+    private static func connectionInfo(for instance: DiscoveredHomeAssistant) -> Promise<ConnectionInfo> {
         firstly {
             authDetails(from: instance.internalOrExternalURL)
-        }.then { [self] authDetails in
+        }.then { authDetails in
             validate(url: authDetails.url)
         }.map {
             with(ConnectionInfo(
@@ -244,82 +266,10 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
                 // if we have internal+external, we're on the internal network doing discovery
                 // but we don't yet have location permission to know we're on an internal ssid
                 if $0.internalSSIDs == [] || $0.internalSSIDs == nil,
-                   $0.internalURL != nil && $0.externalURL != nil {
+                   $0.internalURL != nil, $0.externalURL != nil {
                     $0.overrideActiveURLType = .internal
                 }
             }
         }
-    }
-
-    // - MARK: ASWebAuthenticationPresentationContextProviding
-
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        lastView?.window ?? UIWindow()
-    }
-}
-
-public struct ConnectionTestError: LocalizedError {
-    enum ErrorKind {
-        case basicAuth
-        case authenticationUnsupported(String)
-        case sslUntrusted(Error)
-        case clientCertificateRequired(Error)
-        case other(Error)
-
-        var documentationAnchor: String {
-            switch self {
-            case .basicAuth: return "basic_auth"
-            case .authenticationUnsupported: return "authentication_unsupported"
-            case .sslUntrusted: return "ssl_untrusted"
-            case .clientCertificateRequired: return "client_certificate"
-            case .other: return "unknown_error"
-            }
-        }
-    }
-
-    let kind: ErrorKind
-    let data: Data?
-
-    public var errorCode: String? {
-        switch kind {
-        case .basicAuth: return nil
-        case .authenticationUnsupported: return nil
-        case let .sslUntrusted(underlying as NSError),
-            let .clientCertificateRequired(underlying as NSError),
-            let .other(underlying as NSError):
-            return String(format: "%@ %d", underlying.domain, underlying.code)
-        }
-    }
-
-    public var errorDescription: String? {
-        switch kind {
-        case .basicAuth:
-            return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
-        case let .authenticationUnsupported(method):
-            return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
-        case let .clientCertificateRequired(underlying):
-            return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
-                + "\n\n" + underlying.localizedDescription
-        case let .sslUntrusted(underlying),
-            let .other(underlying):
-            return underlying.localizedDescription
-        }
-    }
-
-    public var responseString: String? {
-        guard let data = data, let dataString = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-
-        let displayDataString: String
-
-        let maximumLength = 1024
-        if dataString.count > maximumLength {
-            displayDataString = dataString.prefix(maximumLength - 1) + "…"
-        } else {
-            displayDataString = dataString
-        }
-
-        return displayDataString
     }
 }
