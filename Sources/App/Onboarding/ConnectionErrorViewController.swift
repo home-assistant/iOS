@@ -37,13 +37,30 @@ class ConnectionErrorViewController: UIViewController {
         })
 
         stackView.addArrangedSubview(with(UITextView()) {
+            var errorComponents: [String] = [
+                error.localizedDescription
+            ]
+
+            func errorCode(_ value: String) -> String {
+                L10n.Onboarding.ConnectionTestResult.errorCode + "\n" + value
+            }
+
+            if let error = error as? ConnectionTestError {
+                if let code = error.errorCode {
+                    errorComponents.append(errorCode(code))
+                }
+            } else {
+                let nsError = error as NSError
+                errorComponents.append(errorCode(String(format: "%@ %d", nsError.domain, nsError.code)))
+            }
+
             $0.isScrollEnabled = false
             $0.isEditable = false
             $0.isSelectable = true
             $0.backgroundColor = .clear
             $0.textContainer.lineFragmentPadding = 0
             $0.textContainerInset = .zero
-            $0.text = error.localizedDescription
+            $0.text = errorComponents.joined(separator: "\n\n")
             $0.font = .preferredFont(forTextStyle: .body)
             $0.textColor = Current.style.onboardingLabel
         })
@@ -51,7 +68,7 @@ class ConnectionErrorViewController: UIViewController {
         stackView.addArrangedSubview(equalSpacers.next())
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             $0.setTitle(L10n.Onboarding.ConnectionError.moreInfoButton, for: .normal)
-            $0.isHidden = !(error is ConnectionTestResult)
+            $0.isHidden = !(error is ConnectionTestError)
             $0.addTarget(self, action: #selector(moreInfoTapped(_:)), for: .touchUpInside)
             Current.style.onboardingButtonPrimary($0)
         })
@@ -60,8 +77,8 @@ class ConnectionErrorViewController: UIViewController {
     private func documentationURL(for error: Error) -> URL {
         var string = "https://companion.home-assistant.io/docs/troubleshooting/errors"
 
-        if let error = error as? ConnectionTestResult {
-            string += "#\(error.kind.rawValue)"
+        if let error = error as? ConnectionTestError {
+            string += "#\(error.kind.documentationAnchor)"
         }
 
         return URL(string: string)!

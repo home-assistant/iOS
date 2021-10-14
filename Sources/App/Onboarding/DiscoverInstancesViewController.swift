@@ -148,6 +148,10 @@ class DiscoverInstancesViewController: UIViewController {
                     name: "Basic Auth"
                 ),
                 DiscoveredHomeAssistant(
+                    manualURL: URL(string: "http://httpbin.org/digest-auth/asdf")!,
+                    name: "Digest Auth"
+                ),
+                DiscoveredHomeAssistant(
                     manualURL: URL(string: "https://self-signed.badssl.com/")!,
                     name: "Self signed SSL"
                 ),
@@ -158,6 +162,10 @@ class DiscoverInstancesViewController: UIViewController {
                 DiscoveredHomeAssistant(
                     manualURL: URL(string: "https://expired.badssl.com/")!,
                     name: "Expired"
+                ),
+                DiscoveredHomeAssistant(
+                    manualURL: URL(string: "https://httpbin.org/statuses/404")!,
+                    name: "Status Code 404"
                 ),
             ].enumerated() {
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500 * (idx + 1))) { [weak self] in

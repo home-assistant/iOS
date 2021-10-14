@@ -176,19 +176,19 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
             $0.taskDidReceiveChallenge = { _, task, challenge in
                 Current.Log.verbose("Handling challenge \(challenge.protectionSpace.authenticationMethod)")
 
-                let errorKind: ConnectionTestResult.ErrorKind? = {
+                let errorKind: ConnectionTestError.ErrorKind? = {
                     switch challenge.protectionSpace.authenticationMethod {
                     case NSURLAuthenticationMethodServerTrust: return nil
                     case NSURLAuthenticationMethodHTTPBasic: return .basicAuth
                     case NSURLAuthenticationMethodClientCertificate:
                         clientCertificateErrorOccurred = true
                         return nil
-                    default: return .authenticationUnsupported
+                    default: return .authenticationUnsupported(challenge.protectionSpace.authenticationMethod)
                     }
                 }()
 
                 if let errorKind = errorKind {
-                    resolver.reject(ConnectionTestResult(kind: errorKind, underlying: nil, data: nil))
+                    resolver.reject(ConnectionTestError(kind: errorKind, data: nil))
                     task.cancel()
                 }
             }
@@ -199,28 +199,25 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
         session.request(url).validate().response { response in
             Current.Log.info(response)
 
-            resolver.resolve(response.result.map { _ in () }.mapError { error -> ConnectionTestResult in
-                let errorKind: ConnectionTestResult.ErrorKind = {
-                    if clientCertificateErrorOccurred {
-                        return .clientCertificateRequired
-                    }
+            resolver.resolve(response.result.map { _ in () }.mapError { wrapper -> Error in
+                let kind: ConnectionTestError.ErrorKind
+                let underlying = wrapper.underlyingError ?? wrapper
 
-                    guard let error = error.underlyingError as NSError?, error.domain == URLError.errorDomain else {
-                        return .unknownError
-                    }
-
-                    switch URLError.Code(rawValue: error.code) {
-                    case URLError.serverCertificateUntrusted, URLError.serverCertificateHasUnknownRoot:
-                        return .sslUntrusted
-                    case URLError.serverCertificateHasBadDate, URLError.serverCertificateNotYetValid:
-                        return .sslExpired
+                if clientCertificateErrorOccurred {
+                    kind = .clientCertificateRequired(underlying)
+                } else if let underlying = underlying as? URLError {
+                    switch underlying.code {
+                    case .serverCertificateUntrusted, .serverCertificateHasUnknownRoot, .serverCertificateHasBadDate,
+                            .serverCertificateNotYetValid:
+                        kind = .sslUntrusted(underlying)
                     default:
-                        return .unknownError
+                        kind = .other(underlying)
                     }
-                }()
+                } else {
+                    kind = .other(underlying)
+                }
 
-                let underlying = error.underlyingError ?? error
-                return ConnectionTestResult(kind: errorKind, underlying: underlying, data: response.data)
+                return ConnectionTestError(kind: kind, data: response.data)
             })
         }
 
@@ -246,7 +243,10 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
             )) {
                 // if we have internal+external, we're on the internal network doing discovery
                 // but we don't yet have location permission to know we're on an internal ssid
-                $0.overrideActiveURLType = .internal
+                if $0.internalSSIDs == [] || $0.internalSSIDs == nil,
+                   $0.internalURL != nil && $0.externalURL != nil {
+                    $0.overrideActiveURLType = .internal
+                }
             }
         }
     }
@@ -258,43 +258,52 @@ class OnboardingAuthenticationController: NSObject, ASWebAuthenticationPresentat
     }
 }
 
-public struct ConnectionTestResult: LocalizedError {
-    enum ErrorKind: String {
-        case basicAuth = "basic_auth"
-        case authenticationUnsupported = "authentication_unsupported"
-        case sslUntrusted = "ssl_untrusted"
-        case sslExpired = "ssl_expired"
-        case clientCertificateRequired = "client_certificate"
-        case serverError = "server_error"
-        case unknownError = "unknown_error"
+public struct ConnectionTestError: LocalizedError {
+    enum ErrorKind {
+        case basicAuth
+        case authenticationUnsupported(String)
+        case sslUntrusted(Error)
+        case clientCertificateRequired(Error)
+        case other(Error)
+
+        var documentationAnchor: String {
+            switch self {
+            case .basicAuth: return "basic_auth"
+            case .authenticationUnsupported: return "authentication_unsupported"
+            case .sslUntrusted: return "ssl_untrusted"
+            case .clientCertificateRequired: return "client_certificate"
+            case .other: return "unknown_error"
+            }
+        }
     }
 
     let kind: ErrorKind
-    let underlying: Error?
     let data: Data?
+
+    public var errorCode: String? {
+        switch kind {
+        case .basicAuth: return nil
+        case .authenticationUnsupported: return nil
+        case let .sslUntrusted(underlying as NSError),
+            let .clientCertificateRequired(underlying as NSError),
+            let .other(underlying as NSError):
+            return String(format: "%@ %d", underlying.domain, underlying.code)
+        }
+    }
 
     public var errorDescription: String? {
         let base: String = {
-            let description = underlying?.localizedDescription ?? ""
             switch kind {
-            case .sslUntrusted:
-                if description.isEmpty {
-                    return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
-                } else {
-                    return description
-                }
             case .basicAuth:
                 return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
-            case .authenticationUnsupported:
-                return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(description)
-            case .sslExpired:
-                return L10n.Onboarding.ConnectionTestResult.SslExpired.description
-            case .clientCertificateRequired:
+            case let .authenticationUnsupported(method):
+                return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(" " + method)
+            case let .clientCertificateRequired(underlying):
                 return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
-            case .serverError:
-                return L10n.Onboarding.ConnectionTestResult.ServerError.description(description)
-            case .unknownError:
-                return description
+                    + "\n\n" + underlying.localizedDescription
+            case let .sslUntrusted(underlying),
+                let .other(underlying):
+                return underlying.localizedDescription
             }
         }()
 

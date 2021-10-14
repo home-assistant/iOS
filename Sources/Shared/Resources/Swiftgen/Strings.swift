@@ -710,6 +710,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "onboarding.connection_error.title") }
     }
     public enum ConnectionTestResult {
+      /// Error Code:
+      public static var errorCode: String { return L10n.tr("Localizable", "onboarding.connection_test_result.error_code") }
       public enum AuthenticationUnsupported {
         /// Authentication type is unsupported%@.
         public static func description(_ p1: Any) -> String {

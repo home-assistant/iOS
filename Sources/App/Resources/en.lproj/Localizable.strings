@@ -205,6 +205,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.ssl_untrusted.description" = "Your SSL certificate is untrusted. %@";
 "onboarding.connection_test_result.too_old.description" = "You must upgrade your Home Assistant version.";
 "onboarding.connection_test_result.unknown_error.description" = "Unknown error: %@";
+/* header before the error code */
+"onboarding.connection_test_result.error_code" = "Error Code:";
 "onboarding.logged_out_from_move.body" = "The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\
 \
 Your actions and local configuration will still be available after logging in.";
