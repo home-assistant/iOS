@@ -13,10 +13,7 @@ class OnboardingAuthenticationController: NSObject {
         ConnectionErrorViewController(error: error)
     }
 
-    static func authenticate(
-        from instance: DiscoveredHomeAssistant,
-        sender: UIView
-    ) -> Promise<Void> {
+    static func authenticate(to instance: DiscoveredHomeAssistant, sender: UIView) -> Promise<Void> {
         firstly { () -> Promise<ConnectionInfo> in
             connectionInfo(for: instance)
         }.then { connectionInfo -> Promise<HomeAssistantAPI> in

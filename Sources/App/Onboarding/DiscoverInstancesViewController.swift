@@ -243,7 +243,7 @@ extension DiscoverInstancesViewController: UITableViewDelegate {
         tableView.isUserInteractionEnabled = false
 
         firstly {
-            OnboardingAuthenticationController.authenticate(from: instance, sender: tableView)
+            OnboardingAuthenticationController.authenticate(to: instance, sender: tableView)
         }.ensure {
             cell?.isLoading = false
             tableView.isUserInteractionEnabled = true

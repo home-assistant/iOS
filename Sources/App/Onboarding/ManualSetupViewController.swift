@@ -183,7 +183,7 @@ class ManualSetupViewController: UIViewController, UITextFieldDelegate {
             return .init(error: PMKError.cancelled)
         }.then { [view] (url: URL) -> Promise<Void> in
             let instance = DiscoveredHomeAssistant(manualURL: url)
-            return OnboardingAuthenticationController.authenticate(from: instance, sender: view!)
+            return OnboardingAuthenticationController.authenticate(to: instance, sender: view!)
         }.ensure { [self] in
             isConnecting = false
         }.done { [self] in
