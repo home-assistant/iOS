@@ -1,5 +1,4 @@
 import Eureka
-import Reachability
 import Shared
 import UIKit
 
@@ -69,9 +68,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         fatalError("init(coder:) has not been implemented")
     }
 
-    // swiftlint:disable:next force_try
-    let reachability = try! Reachability()
-
     override var childForStatusBarStyle: UIViewController? {
         nil
     }
@@ -107,21 +103,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
             )
             navigationBar.shadowImage = UIImage(size: CGSize(width: 1, height: 1), color: .clear)
         }
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        do {
-            try reachability.startNotifier()
-        } catch {
-            Current.Log.error("Unable to start Reachability notifier: \(error)")
-        }
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        reachability.stopNotifier()
     }
 
     @objc private func cancelTapped(_ sender: UIBarButtonItem) {
