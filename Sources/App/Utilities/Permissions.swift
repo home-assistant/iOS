@@ -269,6 +269,12 @@ public enum PermissionType {
                     completionHandler(granted, status)
                 }
             }
+
+            if Current.isCatalyst {
+                // we likely will not get a completion until the user responds to the notification
+                // but we don't wanna delay onboarding for this
+                completionHandler(status == .authorized, status)
+            }
         case .focus:
             Current.focusStatus.requestAuthorization().done { status in
                 completionHandler(status == .authorized, status.genericStatus)
