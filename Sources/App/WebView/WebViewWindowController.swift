@@ -50,8 +50,6 @@ class WebViewWindowController {
     }
 
     var requiresOnboarding: Bool {
-        return true
-
         if Current.settingsStore.tokenInfo == nil || Current.settingsStore.connectionInfo == nil {
             Current.Log.info("requiring onboarding due to auth token or connection info")
             return true
