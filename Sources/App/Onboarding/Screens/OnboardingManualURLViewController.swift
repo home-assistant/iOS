@@ -141,8 +141,12 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
         return false
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        return !isConnecting
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        !isConnecting
     }
 
     @objc private func connectTapped(_ sender: UIButton) {
