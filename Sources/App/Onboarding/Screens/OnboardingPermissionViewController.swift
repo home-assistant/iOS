@@ -98,6 +98,8 @@ class OnboardingPermissionViewController: UIViewController {
             $0.numberOfLines = 0
             $0.textAlignment = .center
         })
+
+        updateHiddenStates()
     }
 
     @objc private func continueTapped(_ sender: UIButton) {
