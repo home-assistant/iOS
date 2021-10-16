@@ -217,7 +217,7 @@ class OnboardingScanningViewController: UIViewController {
         }, completion: nil)
     }
 
-    @IBAction func didSelectManual(_ sender: UIButton) {
+    @objc private func didSelectManual(_ sender: UIButton) {
         show(OnboardingManualURLViewController(), sender: self)
     }
 }
