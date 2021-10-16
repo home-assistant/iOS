@@ -1,0 +1,25 @@
+{
+    "input": {
+        "message": "delete_alert",
+        "data": {
+            "push": {
+                "badge": 3
+            }
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "alert"
+    },
+    "payload": {
+        "aps": {
+            "alert": {},
+            "badge": 3
+        }
+    }
+}

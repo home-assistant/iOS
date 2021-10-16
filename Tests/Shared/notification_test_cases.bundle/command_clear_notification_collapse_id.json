@@ -1,0 +1,29 @@
+{
+    "input": {
+        "title": "extra excluded title",
+        "message": "clear_notification",
+        "data": {
+            "apns_headers": {
+                "apns-collapse-id": "test_collapse_id"
+            }
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "background"
+    },
+    "payload": {
+        "aps": {
+            "contentAvailable": true
+        },
+        "homeassistant": {
+            "command": "clear_notification",
+            "collapseId": "test_collapse_id"
+        }
+    }
+}

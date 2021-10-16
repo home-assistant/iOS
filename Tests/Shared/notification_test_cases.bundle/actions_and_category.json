@@ -1,0 +1,40 @@
+{
+    "input": {
+        "message": "test",
+        "data": {
+            "push": {
+                "category": "CUSTOM_CATEGORY"
+            },
+            "actions": [
+                {
+                    "action": "hey",
+                    "title": "hey title"
+                }
+            ]
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "body": "test"
+            },
+            "category": "CUSTOM_CATEGORY",
+            "sound": "default"
+        },
+        "actions": [
+            {
+                "action": "hey",
+                "title": "hey title"
+            }
+        ]
+    }
+}

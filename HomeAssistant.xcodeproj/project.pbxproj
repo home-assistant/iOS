@@ -347,6 +347,7 @@
 		11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */; };
 		11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */; };
 		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
+		11D7059F271B7CF400B2F7EB /* notification_test_cases.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 11D7059E271B7CF300B2F7EB /* notification_test_cases.bundle */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
 		11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */; };
@@ -1342,6 +1343,7 @@
 		11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.test.swift; sourceTree = "<group>"; };
 		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
+		11D7059E271B7CF300B2F7EB /* notification_test_cases.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = notification_test_cases.bundle; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
 		11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionWorkflowController.swift; sourceTree = "<group>"; };
@@ -3308,6 +3310,7 @@
 		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				11D7059E271B7CF300B2F7EB /* notification_test_cases.bundle */,
 				118511C024B25BDC00D18F60 /* Webhook */,
 				11AF4D28249D88B2006C74C0 /* Sensors */,
 				D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */,
@@ -4446,6 +4449,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11D7059F271B7CF400B2F7EB /* notification_test_cases.bundle in Resources */,
 				C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
