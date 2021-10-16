@@ -1,7 +1,7 @@
 import Shared
 import UIKit
 
-class OnboardingPermissionViewController: UIViewController {
+class OnboardingPermissionViewController: UIViewController, OnboardingViewController {
     let permission: PermissionType
     let workflowController: OnboardingPermissionWorkflowController
     init(permission: PermissionType, workflowController: OnboardingPermissionWorkflowController) {
@@ -14,6 +14,8 @@ class OnboardingPermissionViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    var preferredBarAppearance: OnboardingBarAppearance { .hidden }
 
     private var headerImageView: UIImageView?
 

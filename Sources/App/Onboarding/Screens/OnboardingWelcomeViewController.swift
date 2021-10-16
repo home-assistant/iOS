@@ -5,13 +5,15 @@ import SafariServices
 import Shared
 import UIKit
 
-class OnboardingWelcomeViewController: UIViewController {
+class OnboardingWelcomeViewController: UIViewController, OnboardingViewController {
     private var animationView: AnimationView?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animationView?.play(toMarker: "Circles Formed")
     }
+
+    var preferredBarAppearance: OnboardingBarAppearance { .hidden }
 
     override func viewDidLoad() {
         super.viewDidLoad()

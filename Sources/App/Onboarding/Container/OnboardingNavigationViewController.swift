@@ -2,6 +2,15 @@ import Eureka
 import Shared
 import UIKit
 
+enum OnboardingBarAppearance {
+    case normal
+    case hidden
+}
+
+protocol OnboardingViewController {
+    var preferredBarAppearance: OnboardingBarAppearance { get }
+}
+
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
     enum OnboardingStyle {
         case initial
@@ -126,16 +135,19 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
 extension OnboardingNavigationViewController: UINavigationControllerDelegate {
     private func updateNavigationBar(for controller: UIViewController?, animated: Bool) {
-        let hiddenNavigationBarClasses: [UIViewController.Type] = [
-            OnboardingWelcomeViewController.self,
-            OnboardingPermissionViewController.self,
-        ]
+        let appearance: OnboardingBarAppearance
 
-        if let controller = controller,
-           hiddenNavigationBarClasses.contains(where: { type(of: controller) == $0 }) {
-            setNavigationBarHidden(true, animated: animated)
+        if let controller = controller as? OnboardingViewController {
+            appearance = controller.preferredBarAppearance
         } else {
+            appearance = .normal
+        }
+
+        switch appearance {
+        case .normal:
             setNavigationBarHidden(false, animated: animated)
+        case .hidden:
+            setNavigationBarHidden(true, animated: animated)
         }
     }
 
