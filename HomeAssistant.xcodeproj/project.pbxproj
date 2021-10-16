@@ -3642,7 +3642,6 @@
 				9C08D123229F187E001B4F73 /* Enable Special Entitlements */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
 				110EC9FF251708D5009C9A1B /* Embed Frameworks */,
-				11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */,
 			);
 			buildRules = (
 			);
@@ -4554,25 +4553,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if [[ $XCODE_VERSION_MAJOR != \"1200\" ]]; then\n    /usr/libexec/PlistBuddy -c \"add NSExtension:NSExtensionAttributes:IntentsSupported:0 string 'INShareFocusStatusIntent'\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\nfi\n";
 			showEnvVarsInLog = 0;
-		};
-		11F3820F2518795700494258 /* Unembed Lokalise for Catalyst */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lokalise.framework",
-			);
-			name = "Unembed Lokalise for Catalyst";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [[ $IS_MACCATALYST ]]; then\n    rm -r \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lokalise.framework\"    \nfi\n";
 		};
 		11FE64BC268D984D00AC4367 /* Fix Xcode 12.5+ Dependency Issues */ = {
 			isa = PBXShellScriptBuildPhase;

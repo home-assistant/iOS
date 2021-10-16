@@ -21,7 +21,6 @@ PODS:
     - HAKit/Core
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
-  - Lokalise (0.10.2)
   - lottie-ios (3.2.3)
   - MBProgressHUD (1.2.0)
   - ObjcExceptionBridging (1.0.1):
@@ -86,7 +85,6 @@ DEPENDENCIES:
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - KeychainAccess
-  - Lokalise (~> 0.10.0)
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
@@ -113,7 +111,6 @@ SPEC REPOS:
     - CallbackURLKit
     - Eureka
     - KeychainAccess
-    - Lokalise
     - lottie-ios
     - MBProgressHUD
     - ObjcExceptionBridging
@@ -203,7 +200,6 @@ SPEC CHECKSUMS:
   Firebase: d28e7668bcefef272a35510ebb51ac18518bdb99
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -225,6 +221,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 9f516c5f12e735371e0488c46b5d4e945251010c
+PODFILE CHECKSUM: ba90619d92c8b901aa04320e6bbbb7a1e541aad8
 
 COCOAPODS: 1.10.2

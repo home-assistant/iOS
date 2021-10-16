@@ -71,7 +71,6 @@ abstract_target 'iOS' do
 
     pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
-    pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
@@ -109,11 +108,6 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      xcconfig_path = config.base_configuration_reference.real_path
-      xcconfig = File.read(xcconfig_path)
-      xcconfig.sub!('-framework "Lokalise"', '')
-      File.open(xcconfig_path, 'w') { |file| file << xcconfig }
-
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
