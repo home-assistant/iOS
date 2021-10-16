@@ -1,9 +1,16 @@
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
 "NSCameraUsageDescription" = "拍照并将其发送到您的Home Assistant服务器。";
+"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
+"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "我们建议选择“始终允许”以获得最佳位置体验。选择“使用应用期间”时，iBeacons，地理围栏，后台位置更新和准确性报告等功能将无法使用。";
 "NSLocationAlwaysUsageDescription" = "我们需要持续获取您的位置用于 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";
+"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
 "NSLocationWhenInUseUsageDescription" = "只允许“使用应用期间”访问您的位置，将禁用 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";
+"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSMotionUsageDescription" = "动作以当前动作类别来改善位置更新，以及提供基本的计步数据。";
 "NSPhotoLibraryAddUsageDescription" = "需要访问照片库才能保存网页视图中的照片。";
 "NSPhotoLibraryUsageDescription" = "需要访问照片库才能保存网页视图中的照片。";
 "NSSiriUsageDescription" = "我们使用Siri让创建的捷径与应用进行交互";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "发送位置";
+"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";
