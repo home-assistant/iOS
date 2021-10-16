@@ -4,7 +4,7 @@
 "3jKamg" = "{{ şimdi() }}";
 "4fFx9y" = "Güncellenmiş";
 "5ZzwZD" = "Başarısız: Ev Asistanı'na şu anda ulaşılamıyor";
-"5bVvn0" = "Konum güncelleneme başarısız: $ {error}";
+"5bVvn0" = "Konum güncelleneme başarısız: ${error}";
 "637QjD" = "Hata";
 "6ozAdN" = "Kamera Görüntüsü";
 "7boBzr" = "${service} 'i veri ile çağır";
@@ -12,7 +12,7 @@
 "8skKro" = "Hangi eylemler?";
 "B4bXyc" = "Bitti";
 "CmlkE4" = "kısayol_olay";
-"DFWJB8" = "Aç $ {page}";
+"DFWJB8" = "Aç ${page}";
 "DsasVx" = "Hata";
 "EWqRDj" = "Başarısız: ${error}";
 "FZ9qkT" = "Oluşturma Şablonu";
@@ -20,7 +20,7 @@
 "HSLcG7" = "Etkinlik Adı";
 "HoH8wg" = "Aksiyonlar";
 "KM7mXC" = "Aksiyon";
-"KzOHYA" = "Başarısız: $ {error}";
+"KzOHYA" = "Başarısız: ${error}";
 "LVEY3e" = "Kamera kimliği";
 "Lgymq2" = "Hangi servis?";
 "LsEMMg" = "Simge";
@@ -42,7 +42,7 @@
 "ZT9Mld" = "Etkinlik Adı";
 "ZmUm9Q" = "Hangi taslağı oluşturmak istersiniz?";
 "Zoqsph" = "Sayfa";
-"cK9jdK" = "Başarısız: $ {error}";
+"cK9jdK" = "Başarısız: ${error}";
 "cLmTme" = "Aksiyon";
 "eObn2i" = "Sayfa";
 "f1KX0Q" = "Eylemleri görüntüleyin ve çalıştırın";
@@ -67,7 +67,7 @@
 "qYpzmu" = "Hangi sayfalar?";
 "qayMH6" = "Servisi Çağır";
 "qzje4k" = "Başarısız: ${error}";
-"r32M7N" = "Başarısız: $ {error}";
+"r32M7N" = "Başarısız: ${error}";
 "r6LXFe" = "Başarısız";
 "rFSNpu" = "Bitti";
 "rOlW1x" = "Hangi konumu göndermek istiyorsun?";
