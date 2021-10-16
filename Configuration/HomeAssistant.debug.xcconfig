@@ -1,5 +1,10 @@
 #include "HomeAssistant.xcconfig"
 
+CODE_SIGN_STYLE_QMQYCKL255_App = Manual
+CODE_SIGN_STYLE_QMQYCKL255_Extensions_PushProvider = Manual
+PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_App = Local Developer: Main App
+PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_Extensions_PushProvider = Local Developer: Push Provider
+
 BUNDLE_ID_SUFFIX = .dev
 VALIDATE_PRODUCT = NO
 DEBUG_INFORMATION_FORMAT = dwarf
