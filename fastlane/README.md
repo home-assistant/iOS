@@ -40,6 +40,11 @@ fastlane import_provisioning_profiles
 fastlane update_dsyms
 ```
 
+### update_notification_test_cases
+```
+fastlane update_notification_test_cases
+```
+Update the test cases from the fcm repo
 ### icons
 ```
 fastlane icons
