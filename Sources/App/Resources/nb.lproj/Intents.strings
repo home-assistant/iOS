@@ -1,4 +1,5 @@
 "0aqrcy" = "Mislyktes: ${error}";
+"2KWKqM" = "Failed: Home Assistant is not reachable";
 "2b0Uo4" = "Tjeneste";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Oppdatert";
@@ -15,14 +16,17 @@
 "DdnZyl" = "Fikk siste stillbilde fra ${cameraID}";
 "DsasVx" = "Feil";
 "EWqRDj" = "Mislyktes: ${error}";
+"FBQiVD" = "Call a service on the Home Assistant instance";
 "FZ9qkT" = "Gjengi mal";
 "FtQqoU" = "Plassering oppdatert";
 "HCM8Oe" = "Utfør ${eventName} med data";
 "HSLcG7" = "Navn på hendelse";
 "HoH8wg" = "Handlinger";
+"KHH48D" = "Failed: Home Assistant is not currently reachable";
 "KJS2jk" = "Mislyktes: ${error}";
 "KM7mXC" = "Handling";
 "KSmKl0" = "Kalt ${domain}.${service}";
+"KzOHYA" = "Failed: ${error}";
 "LVEY3e" = "Kamera-ID";
 "Lgymq2" = "Hvilken tjeneste?";
 "LsEMMg" = "Ikon";
@@ -35,6 +39,7 @@
 "QVD2lM" = "Tjenestedata";
 "QmGpOH" = "Feil";
 "RCQAlr" = "Få kamerabilde fra ${cameraID}";
+"RMQY3r" = "Send location to Home Assistant";
 "RsOw3P" = "Malen ble gjengitt";
 "T06Fka" = "Åpne en side i frontend";
 "ULka1b" = "Handlinger";
@@ -42,8 +47,10 @@
 "X02YQ2" = "${action}";
 "X4A8Cc" = "Tjenestedomene";
 "Xq7UuD" = "Gjengi den angitte malen";
+"YNQXwq" = "Error";
 "ZApPxB" = "Tjenestenavn";
 "ZRPVYO" = "Åpne en side i frontend";
+"ZT9Mld" = "Event Name";
 "ZmUm9Q" = "Hvilken mal vil du gjengi?";
 "Zoqsph" = "Side";
 "cK9jdK" = "Mislyktes: ${error}";
@@ -59,7 +66,9 @@
 "fuRWMi" = "Send ${location} til Home Assistant";
 "g8g7Af" = "Utfør handlingen";
 "gI3mme" = "Hvilke tjenestedata vil du sende?";
+"gePUyy" = "Location";
 "glRCfJ" = "Mislyktes: Home Assistant er ikke tilgjengelig nå";
+"gv7Gg6" = "Location";
 "h1xQ53" = "Oppdater sensorer";
 "hLFNfv" = "Mislyktes: ${error}";
 "hsrlTY" = "Hent et stillbilde fra et kamera";
@@ -81,6 +90,7 @@
 "pQhTjo" = "Mislyktes: Home Assistant er ikke tilgjengelig nå";
 "pjQR7t" = "Oppdater sensorer";
 "qYpzmu" = "Hvilke sider?";
+"qayMH6" = "Call Service";
 "qzje4k" = "Mislyktes: ${error}";
 "r32M7N" = "Mislyktes: ${error}";
 "r6LXFe" = "Mislyktes";
