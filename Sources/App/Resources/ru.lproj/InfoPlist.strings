@@ -1,16 +1,9 @@
 "NFCReaderUsageDescription" = "Чтение и запись тегов NFC (Связь ближнего поля) позволяет запускать события.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Рекомендуется «Всегда» для работы всех гео-функций. Если выбрать «При использовании программы», перестанут работать iBeacons, геозоны и фоновая отправка геопозиции.";
 "NSLocationAlwaysUsageDescription" = "Постоянный доступ к геопозиции необходим для таких функций, как iBeacons, геозоны и фоновая отправка геопозиции.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
 "NSLocationWhenInUseUsageDescription" = "Если выбрать «При использовании программы», перестанут работать iBeacons, геозоны и фоновая отправка геопозиции.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSMotionUsageDescription" = "Отправляют состояние движения телефона вместе с данными геопозиции, и предоставляют данные шагомера";
 "NSPhotoLibraryAddUsageDescription" = "Доступ к фотографиям нужен для сохранения картинок из основного окна программы";
 "NSPhotoLibraryUsageDescription" = "Доступ к фотографиям нужен для сохранения картинок из основного окна программы";
 "NSSiriUsageDescription" = "Siri нужна, чтобы создавать команды, взаимодействующие с приложением";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Отправить геопозицию";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

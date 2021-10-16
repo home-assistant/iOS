@@ -86,7 +86,6 @@
 "extensions.notification_content.error.request.entity_not_found" = "找不到實體 '%@'！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 串流不可用";
 "extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%li）";
-"extensions.notification_content.error.request.unknown" = "未知錯誤！";
 "ha_api.api_error.cant_build_url" = "無法建立 API URL";
 "ha_api.api_error.invalid_response" = "來自 Home Assistant 回應無效";
 "ha_api.api_error.manager_not_available" = "HA API 管理員不可用";
@@ -197,21 +196,6 @@
 "onboarding.connection_test_result.authentication_unsupported.description" = "不支援認證類型%@。";
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.client_certificate.description" = "不支援客戶端認證。";
-"onboarding.connection_test_result.connection_error.description" = "一般連線錯誤%@。";
-"onboarding.connection_test_result.no_base_url_discovered.description" = "於發現的資訊中找不到 http.base_url。請於 configuration.yaml 檔案中加入有效 http.base_url 後，重啟 Home Assistant 以繼續自動設定或手動設定。";
-"onboarding.connection_test_result.server_error.description" = "伺服器錯誤：%@";
-"onboarding.connection_test_result.ssl_container.description" = "連線至裝置時發生錯誤，%@。由於 OS 限制，將無法繼續設定，直到已安裝有效的 SSL 認證。建議您使用 Lets Encrypt 或 Nabu Casa Remote UI。";
-"onboarding.connection_test_result.ssl_expired.description" = "SSL 認證已過期。";
-"onboarding.connection_test_result.ssl_untrusted.description" = "SSL 認證未信任。%@。";
-"onboarding.connection_test_result.too_old.description" = "必須更新 Home Assistant 版本。";
-"onboarding.connection_test_result.unknown_error.description" = "未知錯誤：%@";
-"onboarding.logged_out_from_move.body" = "Home Assistant iOS App 最近於 App Sote 上進行了發行組織的轉移。很不幸的，這個轉移動作需要暫時將您進行登出。\
-\
-所有的動作與本地設定都會於重新登入後復原。";
-"onboarding.logged_out_from_move.continue" = "繼續";
-"onboarding.logged_out_from_move.duplicate_warning" = "為了避免產生重複的實體，於重新登入前、必須於此裝置的瀏覽器內移除現有的 mobile_app 整合。登入後重新啟動  HA 以更新服務。";
-"onboarding.logged_out_from_move.learn_more" = "詳細了解轉移訊息。";
-"onboarding.logged_out_from_move.title" = "已經被登出 :(";
 "onboarding.manual_setup.couldnt_make_url.message" = "數值 '%@' 並非有效 URL。";
 "onboarding.manual_setup.couldnt_make_url.title" = "無法製作 URL";
 "onboarding.manual_setup.no_scheme.message" = "是否要嘗試以 http:// 或 https:// 進行連線？";
@@ -408,10 +392,7 @@
 "settings_details.notifications.badge_section.automatic_setting.description" = "每次啟動 App 時即重置標記。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自動化";
 "settings_details.notifications.badge_section.button.title" = "重置標記";
-"settings_details.notifications.badge_section.reset_alert.message" = "標記數字已重置為 0。";
-"settings_details.notifications.badge_section.reset_alert.title" = "標記重置";
 "settings_details.notifications.categories.deprecated_note" = "可回應動作通知將不再想要類別、將於未來的版本移除。";
-"settings_details.notifications.categories.footer" = "使用類別定物可操作之通知、類別定義了通知可用的操作動作。";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.categories_synced.empty" = "無同步類別";
 "settings_details.notifications.categories_synced.footer" = "於 .yaml 中定義的類別無法於裝置上編輯。";
@@ -519,7 +500,6 @@
 "watch.configurator.delete.message" = "確定要刪除複雜功能？無法還原。";
 "watch.configurator.delete.title" = "刪除複雜功能？";
 "watch.configurator.list.description" = "使用新增按鈕新增複雜功能，可以於 Apple Watch 或 Watch App 中選擇。";
-"watch.configurator.list.learn_more" = "了解更多";
 "watch.configurator.list.manual_updates.footer" = "自動更新每小時執行 4 次、手動更新也能使用通知來完成。";
 "watch.configurator.list.manual_updates.manually_update" = "更新合集";
 "watch.configurator.list.manual_updates.remaining" = "剩餘";

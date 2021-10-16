@@ -1,7 +1,6 @@
 "NFCReaderUsageDescription" = "Читання та запис тегів NFC дозволяє запускати події.";
 "NSCameraUsageDescription" = "Зробіть фотографії та надішліть їх на сервер Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "За бажанням увімкніть відстеження між веб-сайтами, якщо цього вимагає ваша конфігурація.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
 "NSLocalNetworkUsageDescription" = "Визначіть та взаємодійте з вашим екземпляром Home Assistant.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Радимо вибрати параметр \"Дозволити завжди\" для найоптимальнішої роботи. Вибір \"тільки при використанні\" відключить iBeacons, віртуальні периметри, фонове оновлення розташування та звітність про точність.";
 "NSLocationAlwaysUsageDescription" = "Нам завжди потрібен доступ до вашого місця розташування для таких функцій, як iBeacons, віртуальні периметри, фонове оновлення та звіти про точність.";

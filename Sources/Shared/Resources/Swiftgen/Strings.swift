@@ -327,8 +327,6 @@ public enum L10n {
           public static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
           }
-          /// Unknown error!
-          public static var unknown: String { return L10n.tr("Localizable", "extensions.notification_content.error.request.unknown") }
         }
       }
     }
@@ -691,12 +689,6 @@ public enum L10n {
   }
 
   public enum Onboarding {
-    public enum Authentication {
-      /// We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open.
-      public static var description: String { return L10n.tr("Localizable", "onboarding.authentication.description") }
-      /// Authentication
-      public static var title: String { return L10n.tr("Localizable", "onboarding.authentication.title") }
-    }
     public enum Connect {
       /// Connecting to %@
       public static func title(_ p1: Any) -> String {
@@ -726,78 +718,6 @@ public enum L10n {
         /// Client Certificate Authentication is not supported.
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.client_certificate.description") }
       }
-      public enum ConnectionError {
-        /// General connection error%@.
-        public static func description(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.connection_error.description", String(describing: p1))
-        }
-      }
-      public enum NoBaseUrlDiscovered {
-        /// No http.base_url was found in the discovery information. Please add a valid http.base_url to your configuration.yaml and restart Home Assistant to continue with automatic setup or setup manually.
-        public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.no_base_url_discovered.description") }
-      }
-      public enum ServerError {
-        /// Server error: %@
-        public static func description(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.server_error.description", String(describing: p1))
-        }
-      }
-      public enum SslContainer {
-        /// We encountered an error while connecting to your instance. %@ Due to OS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.
-        public static func description(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_container.description", String(describing: p1))
-        }
-      }
-      public enum SslExpired {
-        /// Your SSL certificate is expired.
-        public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_expired.description") }
-      }
-      public enum SslUntrusted {
-        /// Your SSL certificate is untrusted. %@
-        public static func description(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", String(describing: p1))
-        }
-      }
-      public enum TooOld {
-        /// You must upgrade your Home Assistant version.
-        public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.too_old.description") }
-      }
-      public enum UnknownError {
-        /// Unknown error: %@
-        public static func description(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.unknown_error.description", String(describing: p1))
-        }
-      }
-    }
-    public enum Final {
-      /// Final Set Up
-      public static var title: String { return L10n.tr("Localizable", "onboarding.final.title") }
-      public enum State {
-        /// Authenticated
-        public static var authenticated: String { return L10n.tr("Localizable", "onboarding.final.state.authenticated") }
-        /// Nabu Casa Cloud Detected
-        public static var cloud: String { return L10n.tr("Localizable", "onboarding.final.state.cloud") }
-        /// Connected
-        public static var connection: String { return L10n.tr("Localizable", "onboarding.final.state.connection") }
-        /// Encrypted Communications Established
-        public static var encrypted: String { return L10n.tr("Localizable", "onboarding.final.state.encrypted") }
-        /// Integration Created
-        public static var integration: String { return L10n.tr("Localizable", "onboarding.final.state.integration") }
-        /// Sensors Configured
-        public static var sensors: String { return L10n.tr("Localizable", "onboarding.final.state.sensors") }
-      }
-    }
-    public enum LoggedOutFromMove {
-      /// The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\n\nYour actions and local configuration will still be available after logging in.
-      public static var body: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.body") }
-      /// Continue
-      public static var `continue`: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.continue") }
-      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in. Restart HA once logged so services update.
-      public static var duplicateWarning: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.duplicate_warning") }
-      /// Learn more about the move.
-      public static var learnMore: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.learn_more") }
-      /// You've been logged out :(
-      public static var title: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.title") }
     }
     public enum ManualSetup {
       /// Connect
@@ -829,6 +749,8 @@ public enum L10n {
       /// You can change this permission later in Settings
       public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {
+        /// Allow whether you are in focus mode to be sent to Home Assistant
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.focus.description") }
         /// Allow focus permission to create sensors for your focus status, also known as do-not-disturb.
         public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.focus.grant_description") }
         /// Focus
@@ -841,6 +763,8 @@ public enum L10n {
         }
       }
       public enum Location {
+        /// Enable location services to allow presence detection automations.
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.location.description") }
         /// Allow location permission to create a device_tracker for your device.
         public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.location.grant_description") }
         /// Location
@@ -855,6 +779,8 @@ public enum L10n {
         }
       }
       public enum Motion {
+        /// Allow motion activity and pedometer data to be sent to Home Assistant
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.motion.description") }
         /// Allow motion permission to create sensors for motion and pedometer data.
         public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.motion.grant_description") }
         /// Motion & Pedometer
@@ -869,6 +795,8 @@ public enum L10n {
         }
       }
       public enum Notification {
+        /// Allow push notifications to be sent from your Home Assistant
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.notification.description") }
         /// Allow notification permission to create a notify service for your device.
         public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.notification.grant_description") }
         /// Notifications
@@ -1482,18 +1410,10 @@ public enum L10n {
           /// Reset Badge
           public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.button.title") }
         }
-        public enum ResetAlert {
-          /// The badge has been reset to 0.
-          public static var message: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.reset_alert.message") }
-          /// Badge reset
-          public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.reset_alert.title") }
-        }
       }
       public enum Categories {
         /// Categories are no longer required for actionable notifications and will be removed in a future release.
         public static var deprecatedNote: String { return L10n.tr("Localizable", "settings_details.notifications.categories.deprecated_note") }
-        /// Actionable notifications are created using categories which define the available actions for the notifications.
-        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.categories.footer") }
         /// Categories
         public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories.header") }
       }
@@ -1844,8 +1764,6 @@ public enum L10n {
       public enum List {
         /// Configure a new Complication using the Add button. Once saved, you can choose it on your Apple Watch or in the Watch app.
         public static var description: String { return L10n.tr("Localizable", "watch.configurator.list.description") }
-        /// Learn More
-        public static var learnMore: String { return L10n.tr("Localizable", "watch.configurator.list.learn_more") }
         public enum ManualUpdates {
           /// Automatic updates occur 4 times per hour. Manual updates can also be done using notifications.
           public static var footer: String { return L10n.tr("Localizable", "watch.configurator.list.manual_updates.footer") }
