@@ -53,6 +53,7 @@ public class ConnectionInfo: Codable {
 
     public var internalSSIDs: [String]? {
         didSet {
+            overrideActiveURLType = nil
             guard internalSSIDs != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
@@ -60,6 +61,7 @@ public class ConnectionInfo: Codable {
 
     public var internalHardwareAddresses: [String]? {
         didSet {
+            overrideActiveURLType = nil
             guard internalHardwareAddresses != oldValue else { return }
             Current.settingsStore.connectionInfo = self
         }
@@ -89,6 +91,8 @@ public class ConnectionInfo: Codable {
             }
         }
     }
+
+    public var overrideActiveURLType: URLType?
 
     public var activeURLType: URLType = .external {
         didSet {
@@ -245,7 +249,7 @@ public class ConnectionInfo: Codable {
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
     public var activeURL: URL {
-        switch activeURLType {
+        switch overrideActiveURLType ?? activeURLType {
         case .internal:
             if let url = internalURL {
                 guard isOnInternalNetwork else {

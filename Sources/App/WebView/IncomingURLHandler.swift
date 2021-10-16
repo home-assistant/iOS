@@ -30,12 +30,6 @@ class IncomingURLHandler {
             sendLocationURLHandler()
         case "perform_action":
             performActionURLHandler(url, serviceData: serviceData)
-        case "auth-callback": // homeassistant://auth-callback
-            NotificationCenter.default.post(
-                name: Notification.Name("AuthCallback"),
-                object: nil,
-                userInfo: ["url": url]
-            )
         case "navigate": // homeassistant://navigate/lovelace/dashboard
             guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                 return false

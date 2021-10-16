@@ -16,6 +16,8 @@ public enum L10n {
   public static var alwaysOpenLabel: String { return L10n.tr("Localizable", "always_open_label") }
   /// Cancel
   public static var cancelLabel: String { return L10n.tr("Localizable", "cancel_label") }
+  /// Continue
+  public static var continueLabel: String { return L10n.tr("Localizable", "continue_label") }
   /// Copy
   public static var copyLabel: String { return L10n.tr("Localizable", "copy_label") }
   /// Debug
@@ -689,13 +691,27 @@ public enum L10n {
   }
 
   public enum Onboarding {
+    public enum Authentication {
+      /// We are now ready to connect to your Home Assistant to log in. The Continue button below will cause a browser to open.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.authentication.description") }
+      /// Authentication
+      public static var title: String { return L10n.tr("Localizable", "onboarding.authentication.title") }
+    }
     public enum Connect {
       /// Connecting to %@
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.connect.title", String(describing: p1))
       }
     }
+    public enum ConnectionError {
+      /// More Info
+      public static var moreInfoButton: String { return L10n.tr("Localizable", "onboarding.connection_error.more_info_button") }
+      /// Failed to Connect
+      public static var title: String { return L10n.tr("Localizable", "onboarding.connection_error.title") }
+    }
     public enum ConnectionTestResult {
+      /// Error Code:
+      public static var errorCode: String { return L10n.tr("Localizable", "onboarding.connection_test_result.error_code") }
       public enum AuthenticationUnsupported {
         /// Authentication type is unsupported%@.
         public static func description(_ p1: Any) -> String {
@@ -737,7 +753,7 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_expired.description") }
       }
       public enum SslUntrusted {
-        /// Your SSL certificate is untrusted. %@.
+        /// Your SSL certificate is untrusted. %@
         public static func description(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", String(describing: p1))
         }
@@ -753,6 +769,24 @@ public enum L10n {
         }
       }
     }
+    public enum Final {
+      /// Final Set Up
+      public static var title: String { return L10n.tr("Localizable", "onboarding.final.title") }
+      public enum State {
+        /// Authenticated
+        public static var authenticated: String { return L10n.tr("Localizable", "onboarding.final.state.authenticated") }
+        /// Nabu Casa Cloud Detected
+        public static var cloud: String { return L10n.tr("Localizable", "onboarding.final.state.cloud") }
+        /// Connected
+        public static var connection: String { return L10n.tr("Localizable", "onboarding.final.state.connection") }
+        /// Encrypted Communications Established
+        public static var encrypted: String { return L10n.tr("Localizable", "onboarding.final.state.encrypted") }
+        /// Integration Created
+        public static var integration: String { return L10n.tr("Localizable", "onboarding.final.state.integration") }
+        /// Sensors Configured
+        public static var sensors: String { return L10n.tr("Localizable", "onboarding.final.state.sensors") }
+      }
+    }
     public enum LoggedOutFromMove {
       /// The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\n\nYour actions and local configuration will still be available after logging in.
       public static var body: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.body") }
@@ -766,6 +800,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "onboarding.logged_out_from_move.title") }
     }
     public enum ManualSetup {
+      /// Connect
+      public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
+      /// The URL of your Home Assistant server. Make sure it includes the protocol and port.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.manual_setup.description") }
+      /// Enter URL
+      public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.title") }
       public enum CouldntMakeUrl {
         /// The value '%@' was not a valid URL.
         public static func message(_ p1: Any) -> String {
@@ -786,29 +826,81 @@ public enum L10n {
       public static var allow: String { return L10n.tr("Localizable", "onboarding.permissions.allow") }
       /// Done
       public static var allowed: String { return L10n.tr("Localizable", "onboarding.permissions.allowed") }
+      /// You can change this permission later in Settings
+      public static var changeLaterNote: String { return L10n.tr("Localizable", "onboarding.permissions.change_later_note") }
       public enum Focus {
-        /// Allow whether you are in focus mode to be sent to Home Assistant
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.focus.description") }
+        /// Allow focus permission to create sensors for your focus status, also known as do-not-disturb.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.focus.grant_description") }
         /// Focus
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.focus.title") }
+        public enum Bullet {
+          /// Focus-based automations
+          public static var automations: String { return L10n.tr("Localizable", "onboarding.permissions.focus.bullet.automations") }
+          /// Instant updates when status changes
+          public static var instant: String { return L10n.tr("Localizable", "onboarding.permissions.focus.bullet.instant") }
+        }
       }
       public enum Location {
-        /// Enable location services to allow presence detection automations.
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.location.description") }
+        /// Allow location permission to create a device_tracker for your device.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.location.grant_description") }
         /// Location
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.location.title") }
+        public enum Bullet {
+          /// Presence-based automations
+          public static var automations: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.automations") }
+          /// Track location history
+          public static var history: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.history") }
+          /// Internal URL at home
+          public static var wifi: String { return L10n.tr("Localizable", "onboarding.permissions.location.bullet.wifi") }
+        }
       }
       public enum Motion {
-        /// Allow motion activity and pedometer data to be sent to Home Assistant
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.motion.description") }
+        /// Allow motion permission to create sensors for motion and pedometer data.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.motion.grant_description") }
         /// Motion & Pedometer
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.motion.title") }
+        public enum Bullet {
+          /// Sensor for current activity type
+          public static var activity: String { return L10n.tr("Localizable", "onboarding.permissions.motion.bullet.activity") }
+          /// Sensor for distance moved
+          public static var distance: String { return L10n.tr("Localizable", "onboarding.permissions.motion.bullet.distance") }
+          /// Sensor for step counts
+          public static var steps: String { return L10n.tr("Localizable", "onboarding.permissions.motion.bullet.steps") }
+        }
       }
       public enum Notification {
-        /// Allow push notifications to be sent from your Home Assistant
-        public static var description: String { return L10n.tr("Localizable", "onboarding.permissions.notification.description") }
+        /// Allow notification permission to create a notify service for your device.
+        public static var grantDescription: String { return L10n.tr("Localizable", "onboarding.permissions.notification.grant_description") }
         /// Notifications
         public static var title: String { return L10n.tr("Localizable", "onboarding.permissions.notification.title") }
+        public enum Bullet {
+          /// Get alerted from notifications
+          public static var alert: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.alert") }
+          /// Update app icon badge
+          public static var badge: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.badge") }
+          /// Send commands to your device
+          public static var commands: String { return L10n.tr("Localizable", "onboarding.permissions.notification.bullet.commands") }
+        }
+      }
+    }
+    public enum Scanning {
+      /// Discovered: %@
+      public static func discoveredAnnouncement(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.scanning.discovered_announcement", String(describing: p1))
+      }
+      /// Enter Address Manually
+      public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
+      /// Not finding your server?
+      public static var manualHint: String { return L10n.tr("Localizable", "onboarding.scanning.manual_hint") }
+      /// Scanning for Servers
+      public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
+    }
+    public enum Welcome {
+      /// This app connects to your Home Assistant server and allows integrating data about you and your phone.\n\nHome Assistant is free and open source home automation software with a focus on local control and privacy.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
+      /// Welcome to Home Assistant %@!
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
       }
     }
   }

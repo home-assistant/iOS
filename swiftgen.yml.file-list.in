@@ -1,6 +1,5 @@
 # ib
 $(SRCROOT)/Sources/App/ClientEvents/ClientEvents.storyboard
-$(SRCROOT)/Sources/App/Resources/Base.lproj/Onboarding.storyboard
 
 # json
 $(SRCROOT)/Tools/MaterialDesignIcons.json

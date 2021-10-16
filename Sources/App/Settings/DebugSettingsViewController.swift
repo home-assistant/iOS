@@ -313,12 +313,10 @@ class DebugSettingsViewController: HAFormViewController {
         }
 
         section <<< ButtonRow("onboardTest") {
-            $0.title = "Onboard"
-            $0.presentationMode = .presentModally(controllerProvider: .storyBoard(
-                storyboardId: "navController",
-                storyboardName: "Onboarding",
-                bundle: Bundle.main
-            ), onDismiss: nil)
+            $0.title = "Onboard (Initial)"
+            $0.presentationMode = .presentModally(controllerProvider: .callback(builder: {
+                OnboardingNavigationViewController(onboardingStyle: .initial)
+            }), onDismiss: nil)
         }.cellUpdate { cell, _ in
             cell.textLabel?.textAlignment = .center
             cell.accessoryType = .none

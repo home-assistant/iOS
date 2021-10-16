@@ -107,11 +107,11 @@ extension FocusStatusWrapper.AuthorizationStatus {
     }
 }
 
-public enum PermissionType: Int {
-    case location = 0
-    case motion = 1
-    case notification = 2
-    case focus = 3
+public enum PermissionType {
+    case location
+    case motion
+    case notification
+    case focus
 
     var title: String {
         switch self {
@@ -126,29 +126,53 @@ public enum PermissionType: Int {
         }
     }
 
-    var description: String {
+    var enableIcon: MaterialDesignIcons {
         switch self {
-        case .location:
-            return L10n.Onboarding.Permissions.Location.description
-        case .motion:
-            return L10n.Onboarding.Permissions.Motion.description
-        case .notification:
-            return L10n.Onboarding.Permissions.Notification.description
-        case .focus:
-            return L10n.Onboarding.Permissions.Focus.description
+        case .location: return .mapMarkerOutlineIcon
+        case .motion: return .runIcon
+        case .notification: return .bellOutlineIcon
+        case .focus: return .powerSleepIcon
         }
     }
 
-    var animation: Animation? {
+    var enableDescription: String {
         switch self {
         case .location:
-            return Animation.named("location")
-        case .notification:
-            return Animation.named("notification")
+            return L10n.Onboarding.Permissions.Location.grantDescription
         case .motion:
-            return Animation.named("motion")
+            return L10n.Onboarding.Permissions.Motion.grantDescription
+        case .notification:
+            return L10n.Onboarding.Permissions.Notification.grantDescription
         case .focus:
-            return Animation.named("notification")
+            return L10n.Onboarding.Permissions.Focus.grantDescription
+        }
+    }
+
+    var enableBulletPoints: [(MaterialDesignIcons, String)] {
+        switch self {
+        case .location:
+            return [
+                (.homeAutomationIcon, L10n.Onboarding.Permissions.Location.Bullet.automations),
+                (.mapOutlineIcon, L10n.Onboarding.Permissions.Location.Bullet.history),
+                (.wifiIcon, L10n.Onboarding.Permissions.Location.Bullet.wifi),
+            ]
+        case .motion:
+            return [
+                (.walkIcon, L10n.Onboarding.Permissions.Motion.Bullet.steps),
+                (.mapMarkerDistanceIcon, L10n.Onboarding.Permissions.Motion.Bullet.distance),
+                (.bikeIcon, L10n.Onboarding.Permissions.Motion.Bullet.activity),
+            ]
+        case .notification:
+            return [
+                (.alertDecagramIcon, L10n.Onboarding.Permissions.Notification.Bullet.alert),
+                (.textIcon, L10n.Onboarding.Permissions.Notification.Bullet.commands),
+                (.bellBadgeOutlineIcon, L10n.Onboarding.Permissions.Notification.Bullet.badge),
+            ]
+        case .focus:
+            return [
+                (.homeAutomationIcon, L10n.Onboarding.Permissions.Focus.Bullet.automations),
+                (.cancelIcon, L10n.Onboarding.Permissions.Focus.Bullet.instant),
+            ]
         }
     }
 
@@ -191,17 +215,6 @@ public enum PermissionType: Int {
 
         semaphore.wait()
         return notificationSettings?.authorizationStatus
-    }
-
-    func updateInitial() {
-        switch self {
-        case .notification:
-            // if the user has already given permission, this allows us to register before the next launch
-            // if they haven't, this is still fine; you don't need permission to register for remote ones
-            UIApplication.shared.registerForRemoteNotifications()
-        case .location, .motion, .focus:
-            break
-        }
     }
 
     func request(_ completionHandler: @escaping (Bool, PermissionStatus) -> Void) {
@@ -255,6 +268,12 @@ public enum PermissionType: Int {
                     let status: PermissionStatus = granted ? .authorized : .denied
                     completionHandler(granted, status)
                 }
+            }
+
+            if Current.isCatalyst {
+                // we likely will not get a completion until the user responds to the notification
+                // but we don't wanna delay onboarding for this
+                completionHandler(status == .authorized, status)
             }
         case .focus:
             Current.focusStatus.requestAuthorization().done { status in

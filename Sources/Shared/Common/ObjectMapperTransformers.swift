@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import ObjectMapper
+import Version
 
 open class EntityIDToDomainTransform: TransformType {
     public typealias Object = String
@@ -117,5 +118,22 @@ open class TimeIntervalToString: TransformType {
         let minutes = (interval / 60) % 60
         let hours = (interval / 3600)
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+}
+
+open class VersionTransform: TransformType {
+    public typealias Object = Version
+    public typealias JSON = String
+
+    public func transformFromJSON(_ value: Any?) -> Version? {
+        if let value = value as? String {
+            return try? Version(hassVersion: value)
+        } else {
+            return nil
+        }
+    }
+
+    open func transformToJSON(_ value: Version?) -> String? {
+        value?.description
     }
 }

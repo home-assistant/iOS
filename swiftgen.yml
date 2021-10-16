@@ -13,7 +13,6 @@ strings:
         lookupFunction: Current.localized.string
 ib:
   inputs:
-    - Sources/App/Resources/Base.lproj/Onboarding.storyboard
     - Sources/App/ClientEvents/ClientEvents.storyboard
   outputs:
     - templateName: scenes-swift5
