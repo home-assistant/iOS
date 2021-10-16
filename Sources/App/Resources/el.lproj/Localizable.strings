@@ -86,7 +86,6 @@
 "extensions.notification_content.error.request.entity_not_found" = "Η οντότητα '%@' δεν βρέθηκε!";
 "extensions.notification_content.error.request.hls_unavailable" = "Η ροή HLS δεν είναι διαθέσιμη";
 "extensions.notification_content.error.request.other" = "Λήφθηκε κωδικός κατάστασης που δεν είναι 200 (%li)";
-"extensions.notification_content.error.request.unknown" = "Αγνωστο σφάλμα!";
 "ha_api.api_error.cant_build_url" = "Δεν είναι δυνατή η δημιουργία URL API";
 "ha_api.api_error.invalid_response" = "Λάβαμε μη έγκυρη απάντηση από το Home Assistant";
 "ha_api.api_error.manager_not_available" = "Το HA API Manager δεν είναι διαθέσιμο";
@@ -197,21 +196,6 @@
 "onboarding.connection_test_result.authentication_unsupported.description" = "Ο τύπος ελέγχου ταυτότητας δεν υποστηρίζεται%@.";
 "onboarding.connection_test_result.basic_auth.description" = "Ο βασικός έλεγχος ταυτότητας HTTP δεν υποστηρίζεται.";
 "onboarding.connection_test_result.client_certificate.description" = "Ο έλεγχος ταυτότητας πιστοποιητικού πελάτη δεν υποστηρίζεται.";
-"onboarding.connection_test_result.connection_error.description" = "Γενικό σφάλμα σύνδεσης %@ .";
-"onboarding.connection_test_result.no_base_url_discovered.description" = "Δεν βρέθηκε http.base_url στις πληροφορίες ανακάλυψης. Προσθέστε ένα έγκυρο http.base_url στη διαμόρφωση.yaml και κάντε επανεκκίνηση του Home Assistant για να συνεχίσετε με την αυτόματη ρύθμιση ή μη αυτόματη ρύθμιση.";
-"onboarding.connection_test_result.server_error.description" = "Σφάλμα διακομιστή: %@";
-"onboarding.connection_test_result.ssl_container.description" = "Παρουσιάστηκε σφάλμα κατά τη σύνδεση στην παρουσία σας. %@ Λόγω περιορισμών iOS, δεν θα μπορείτε να συνεχίσετε με τη ρύθμιση έως ότου εγκατασταθεί ένα έγκυρο πιστοποιητικό SSL. Σας προτείνουμε Lets Encrypt ή Nabu Casa Remote UI.";
-"onboarding.connection_test_result.ssl_expired.description" = "Το πιστοποιητικό SSL σας έχει λήξει.";
-"onboarding.connection_test_result.ssl_untrusted.description" = "Το πιστοποιητικό SSL δεν είναι αξιόπιστο. %@ .";
-"onboarding.connection_test_result.too_old.description" = "Πρέπει να αναβαθμίσετε την έκδοση του Home Assistant.";
-"onboarding.connection_test_result.unknown_error.description" = "Άγνωστο σφάλμα: %@";
-"onboarding.logged_out_from_move.body" = "Η εφαρμογή Home Assistant iOS μετέφερε πρόσφατα οργανισμούς στο App Store. Αυτή η κίνηση, δυστυχώς, απαιτούσε την αποσύνδεσή σας.\
-\
-Οι ενέργειες και οι τοπικές ρυθμίσεις παραμέτρων θα εξακολουθούν να είναι διαθέσιμες μετά τη σύνδεση.";
-"onboarding.logged_out_from_move.continue" = "Συνέχεια";
-"onboarding.logged_out_from_move.duplicate_warning" = "Για να αποφύγετε διπλές οντότητες, πρέπει να καταργήσετε την υπάρχουσα ενσωμάτωση mobile_app για αυτήν τη συσκευή στο πρόγραμμα περιήγησής σας πριν συνδεθείτε. Επανεκκινήστε το HA μόλις συνδεθείτε, ώστε οι υπηρεσίες να ενημερωθούν.";
-"onboarding.logged_out_from_move.learn_more" = "Μάθετε περισσότερα για την κίνηση.";
-"onboarding.logged_out_from_move.title" = "Έχετε αποσυνδεθεί :(";
 "onboarding.manual_setup.couldnt_make_url.message" = "Η τιμή '%@' δεν ήταν έγκυρη διεύθυνση URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";
 "onboarding.manual_setup.no_scheme.message" = "Θα πρέπει να προσπαθήσουμε να συνδεθούμε χρησιμοποιώντας http:// ή https://;";
@@ -408,10 +392,7 @@
 "settings_details.notifications.badge_section.automatic_setting.description" = "Επαναφέρει το σήμα στο 0 κάθε φορά που ξεκινάτε την εφαρμογή.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Αυτόματα";
 "settings_details.notifications.badge_section.button.title" = "Επαναφορά σήματος στο 0";
-"settings_details.notifications.badge_section.reset_alert.message" = "Το σήμα έχει μηδενιστεί στο 0.";
-"settings_details.notifications.badge_section.reset_alert.title" = "Επαναφορά σήματος";
 "settings_details.notifications.categories.deprecated_note" = "Οι κατηγορίες δεν απαιτούνται πλέον για ειδοποιήσεις με δυνατότητα ενέργειας και θα καταργηθούν σε μελλοντική έκδοση.";
-"settings_details.notifications.categories.footer" = "Οι ενεργές ειδοποιήσεις δημιουργούνται χρησιμοποιώντας κατηγορίες που καθορίζουν τις διαθέσιμες ενέργειες για τις ειδοποιήσεις.";
 "settings_details.notifications.categories.header" = "Κατηγορίες";
 "settings_details.notifications.categories_synced.empty" = "Καμία συγχρονισμένη κατηγορία";
 "settings_details.notifications.categories_synced.footer" = "Οι κατηγορίες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";
@@ -519,7 +500,6 @@
 "watch.configurator.delete.message" = "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτήν την επιπλοκή; Αυτό δεν μπορεί να αναιρεθεί.";
 "watch.configurator.delete.title" = "Διαγραφή επιπλοκής;";
 "watch.configurator.list.description" = "Ρυθμίστε τις παραμέτρους μιας νέας επιπλοκής χρησιμοποιώντας το κουμπί Προσθήκη. Αφού αποθηκεύσετε, μπορείτε να το επιλέξετε στο Apple Watch ή στην εφαρμογή Watch.";
-"watch.configurator.list.learn_more" = "Μάθε περισσότερα";
 "watch.configurator.list.manual_updates.footer" = "Οι αυτόματες ενημερώσεις πραγματοποιούνται 4 φορές την ώρα. Οι μη αυτόματες ενημερώσεις μπορούν επίσης να γίνουν με τη χρήση ειδοποιήσεων.";
 "watch.configurator.list.manual_updates.manually_update" = "Ενημέρωση επιπλοκών";
 "watch.configurator.list.manual_updates.remaining" = "Παραμένουν";

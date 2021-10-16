@@ -1,16 +1,8 @@
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
-"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Suosittelemme valitsemaan \"Salli aina\" parhaan sijaintikokemukseen. Valitsemalla \"vain käyttäessäsi sovellusta\" poistat iBeacon-, geofences-, taustasijaintipäivitykset ja tarkan sijaintiraportoinnin käytöstä.";
 "NSLocationAlwaysUsageDescription" = "Tarvitsemme aina pääsyn sijaintisi ominaisuuksiin kuten iBeacons, geofences, paikanpäivitykseen taustassa ja tarkkaan sijaintiraportointiin.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
 "NSLocationWhenInUseUsageDescription" = "Paikannusoikeuden salliminen ainoastaan kun sovellus on käytössä, poistaa iBeaconit, geofenssit, taussaolevat sijaintipäivitykset sekä tarkan sijaintiraportoinnin käytöstä.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSMotionUsageDescription" = "Liikettä käytetään parantamaan sijaintipäivityksiä nykyisellä liiketyypillä, sekä tarjoamaan perusdataa askelmittarille.";
 "NSPhotoLibraryAddUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
 "NSPhotoLibraryUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
 "NSSiriUsageDescription" = "Käytämme Siriä, jotta luodut oikotiet voivat vuorovaikuttaa sovelluksen kanssa.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Lähetä sijainti";
-"TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

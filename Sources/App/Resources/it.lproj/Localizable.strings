@@ -86,7 +86,6 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entità ' %@ ' non trovata!";
 "extensions.notification_content.error.request.hls_unavailable" = "Flusso HLS non disponibile";
 "extensions.notification_content.error.request.other" = "Ha ottenuto un codice di stato non-200 (%li)";
-"extensions.notification_content.error.request.unknown" = "Errore sconosciuto!";
 "ha_api.api_error.cant_build_url" = "Impossibile costruire l'URL API";
 "ha_api.api_error.invalid_response" = "Ricevuta risposta non valida da Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager non è disponibile";
@@ -197,34 +196,18 @@
 "onboarding.connection_test_result.authentication_unsupported.description" = "Il tipo di autenticazione non è supportato %@.";
 "onboarding.connection_test_result.basic_auth.description" = "L'autenticazione di base HTTP non è supportata.";
 "onboarding.connection_test_result.client_certificate.description" = "Autenticazione del certificato client non è supportata.";
-"onboarding.connection_test_result.connection_error.description" = "Errore di connessione generale %@.";
-"onboarding.connection_test_result.no_base_url_discovered.description" = "Non è stato possibile individuare il corretto http.base_url. Si prega di aggiungere http.base_url nel tuo file configuration.yaml e di riavviare Home Assistant per continuare con il setup automatico o, in alternativa, di procedere con la configurazione manuale.";
-"onboarding.connection_test_result.server_error.description" = "Errore del Server %@";
-"onboarding.connection_test_result.ssl_container.description" = "Si è verificato un errore durante la connessione alla tua istanza di Home Assistant. %@ A causa di limitazioni di iOS, non sarà possibile continuare con l'installazione finchè non verrà installato un certificato SSL valido. Si consiglia di utilizzare Lets Encrypt o Nabu Casa Remote UI.";
-"onboarding.connection_test_result.ssl_expired.description" = "Il tuo certificato SSL è scaduto.";
-"onboarding.connection_test_result.ssl_untrusted.description" = "Il tuo certificato SSL non è attendibile. %@.";
-"onboarding.connection_test_result.too_old.description" = "È necessario aggiornare la versione del tuo Home Assistant.";
-"onboarding.connection_test_result.unknown_error.description" = "Errore sconosciuto: %@";
-"onboarding.logged_out_from_move.body" = "L'app per iOS di Home Assistant ha spostato di recente le organizzazioni sull'App Store. Questo spostamento, sfortunatamente, ha richiesto la disconnessione. \
-\
- Le tue azioni e la configurazione locale saranno ancora disponibili dopo l'accesso.";
-"onboarding.logged_out_from_move.continue" = "Continua";
-"onboarding.logged_out_from_move.duplicate_warning" = "Per evitare entità duplicate, è necessario rimuovere l'mobile_app esistente per questo dispositivo nel browser prima di accedere. Riavviare HA una volta effettuato l'accesso in modo che i servizi si aggiornino.";
-"onboarding.logged_out_from_move.learn_more" = "Ulteriori informazioni sul movimento.";
-"onboarding.logged_out_from_move.title" = "Sei stato disconnesso :(";
 "onboarding.manual_setup.couldnt_make_url.message" = "Il valore \"%@\" non era un URL valido.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossibile creare un URL";
 "onboarding.manual_setup.no_scheme.message" = "Dovremmo provare a collegarci usando http: // o https: //?";
 "onboarding.manual_setup.no_scheme.title" = "E' stato inserito un URL senza schema";
 "onboarding.permissions.allow" = "Consenti";
 "onboarding.permissions.allowed" = "Fatto";
-"onboarding.permissions.focus.description" = "Allow whether you are in focus mode to be sent to Home Assistant";
 "onboarding.permissions.focus.title" = "Messa a fuoco";
-"onboarding.permissions.location.description" = "Enable location services to allow presence detection automations.";
+"onboarding.permissions.location.description" = "Abilita i servizi di localizzazione per consentire le automazioni del rilevamento della presenza.";
 "onboarding.permissions.location.title" = "Posizione";
-"onboarding.permissions.motion.description" = "Allow motion activity and pedometer data to be sent to Home Assistant";
-"onboarding.permissions.motion.title" = "Motion & Pedometer";
-"onboarding.permissions.notification.description" = "Allow push notifications to be sent from your Home Assistant";
+"onboarding.permissions.motion.description" = "Consenti l'invio dei dati dell'attività di movimento e del pedometro a Home Assistant";
+"onboarding.permissions.motion.title" = "Movimento & Pedometro";
+"onboarding.permissions.notification.description" = "Consenti l'invio di notifiche push dal tuo Home Assistant";
 "onboarding.permissions.notification.title" = "Notifiche";
 "open_label" = "Aperto";
 "preview_output" = "Anteprima dell'output";
@@ -408,10 +391,7 @@
 "settings_details.notifications.badge_section.automatic_setting.description" = "Reimposta il badge a 0 ogni volta che avvii l'app.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticamente";
 "settings_details.notifications.badge_section.button.title" = "Reset badge";
-"settings_details.notifications.badge_section.reset_alert.message" = "Il badge è stato reimpostato a 0.";
-"settings_details.notifications.badge_section.reset_alert.title" = "Reset badge";
 "settings_details.notifications.categories.deprecated_note" = "Le categorie non sono più necessarie per le notifiche azionabili e saranno rimosse in una versione futura.";
-"settings_details.notifications.categories.footer" = "Le notifiche attivabili vengono create utilizzando categorie che definiscono le azioni disponibili per le notifiche.";
 "settings_details.notifications.categories.header" = "Categorie";
 "settings_details.notifications.categories_synced.empty" = "Nessuna categoria sincronizzata";
 "settings_details.notifications.categories_synced.footer" = "Le categorie definite in .yaml non sono modificabili sul dispositivo.";
@@ -519,7 +499,6 @@
 "watch.configurator.delete.message" = "Sei sicuro di voler eliminare questa complicazione? L'azione non può essere annullata.";
 "watch.configurator.delete.title" = "Eliminare la complicazione?";
 "watch.configurator.list.description" = "Configurare una nuova complicazione utilizzando il pulsante Aggiungi. Una volta salvato, puoi sceglierlo sul tuo Apple Watch o nell'app Watch.";
-"watch.configurator.list.learn_more" = "Per saperne di più";
 "watch.configurator.list.manual_updates.footer" = "Gli aggiornamenti automatici si verificano 4 volte all'ora. Gli aggiornamenti manuali possono essere effettuati anche tramite le notifiche.";
 "watch.configurator.list.manual_updates.manually_update" = "Aggiorna complicazioni";
 "watch.configurator.list.manual_updates.remaining" = "Rimanente";

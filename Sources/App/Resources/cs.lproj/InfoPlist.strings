@@ -1,12 +1,6 @@
 "NFCReaderUsageDescription" = "Čtení a zápis NFC štítků umožňuje spouštět události.";
 "NSCameraUsageDescription" = "Pořiďte fotografie a odešlete je na server Home Assistant.";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
 "NSLocalNetworkUsageDescription" = "Vyhledat a komunikovat s vaší instanci Home Assistant";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSMicrophoneUsageDescription" = "Nahrávejte zvuk pomocí frontendu Home Assistant.";
 "NSMotionUsageDescription" = "Pohyb se používá ke zlepšení aktualizace polohy pomocí aktuálního typu pohybu a k poskytování základních údajů o krokoměru.";
 "NSPhotoLibraryAddUsageDescription" = "Přístup do knihovny fotografií je nutný k tomu, aby bylo možné ukládat fotografie z webového zobrazení.";

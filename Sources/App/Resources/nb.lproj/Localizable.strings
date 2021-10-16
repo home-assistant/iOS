@@ -86,7 +86,6 @@
 "extensions.notification_content.error.request.entity_not_found" = "Enheten %@ ble ikke funnet!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-strøm er ikke tilgjengelig";
 "extensions.notification_content.error.request.other" = "Mottok non-200 statuskode (%li)";
-"extensions.notification_content.error.request.unknown" = "Ukjent feil!";
 "ha_api.api_error.cant_build_url" = "Kan ikke lage API-nettadressen";
 "ha_api.api_error.invalid_response" = "Mottatt ugyldig tilbakemelding fra Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager er ikke tilgjengelig";
@@ -197,21 +196,6 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.connection_test_result.authentication_unsupported.description" = "Godkjenningstypen støttes ikke%@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic-godkjenning støttes ikke.";
 "onboarding.connection_test_result.client_certificate.description" = "Klientsertifikatgodkjenning støttes ikke.";
-"onboarding.connection_test_result.connection_error.description" = "Generell tilkoblingsfeil%@.";
-"onboarding.connection_test_result.no_base_url_discovered.description" = "Fant ingen http.base_url i søkeinformasjonen. Legg til en gyldig http.base_url i configuration.yaml og start Home Assistant på nytt for å fortsette med automatisk installasjon eller installasjon manuelt.";
-"onboarding.connection_test_result.server_error.description" = "Serverfeil: %@";
-"onboarding.connection_test_result.ssl_container.description" = "Det oppstod en feil da vi koblet til forekomsten din. %@ På grunn av OS-begrensninger, vil du ikke kunne fortsette med oppsettet før et gyldig SSL-sertifikat er installert. Vi anbefaler Lets Encrypt eller Nabu Casa Remote UI.";
-"onboarding.connection_test_result.ssl_expired.description" = "SSL-sertifikatet er utløpt.";
-"onboarding.connection_test_result.ssl_untrusted.description" = "SSL-sertifikatet ditt er ikke klarert. %@.";
-"onboarding.connection_test_result.too_old.description" = "Du må oppgradere din Home Assistant-versjon.";
-"onboarding.connection_test_result.unknown_error.description" = "Ukjent feil: %@";
-"onboarding.logged_out_from_move.body" = "Home Assistant iOS-appen flyttet nylig organisasjoner på App Store. Dette trekket krevde dessverre at du logget deg ut.\
-\
-Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter at du har logget inn.";
-"onboarding.logged_out_from_move.continue" = "Fortsette";
-"onboarding.logged_out_from_move.duplicate_warning" = "Hvis du vil unngå dupliserte enheter, må du fjerne den eksisterende mobile_app integreringen for denne enheten i nettleseren før du logger på. Start HA på nytt når du er logget slik at tjenester oppdateres.";
-"onboarding.logged_out_from_move.learn_more" = "Finn ut mer om flyttingen.";
-"onboarding.logged_out_from_move.title" = "Du har blitt logget ut :(";
 "onboarding.manual_setup.couldnt_make_url.message" = "Verdien %@ var ikke en gyldig URL-adresse.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan ikke opprette en URL-adresse";
 "onboarding.manual_setup.no_scheme.message" = "Skal vi prøve å koble til ved hjelp av http:// eller https://?";
@@ -408,10 +392,7 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "settings_details.notifications.badge_section.automatic_setting.description" = "Tilbakestiller merket til 0 hver gang du starter appen.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisk";
 "settings_details.notifications.badge_section.button.title" = "Tilbakestille merke til 0";
-"settings_details.notifications.badge_section.reset_alert.message" = "Merket har blitt tilbakestilt til 0.";
-"settings_details.notifications.badge_section.reset_alert.title" = "Tilbakestill merke";
 "settings_details.notifications.categories.deprecated_note" = "Kategorier er ikke lenger nødvendige for handlingsrettet varslinger og vil bli fjernet i en fremtidig versjon.";
-"settings_details.notifications.categories.footer" = "Handlingsvarsler opprettes ved hjelp av kategorier som definerer tilgjengelige handlinger for varslingene.";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.categories_synced.empty" = "Ingen synkroniserte kategorier";
 "settings_details.notifications.categories_synced.footer" = "Kategorier definert i .yaml kan ikke redigeres på enheten.";
@@ -519,7 +500,6 @@ Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter
 "watch.configurator.delete.message" = "Er du sikker på at du vil slette denne komplikasjonen? Dette kan ikke angres.";
 "watch.configurator.delete.title" = "Slette komplikasjon?";
 "watch.configurator.list.description" = "Konfigurer en ny komplikasjon ved hjelp av Legg til-knappen. Når den er lagret, kan du velge den på Apple Watch eller i Watch-appen.";
-"watch.configurator.list.learn_more" = "Lære mer";
 "watch.configurator.list.manual_updates.footer" = "Automatiske oppdateringer skjer 4 ganger i timen. Manuelle oppdateringer kan også gjøres ved hjelp av varsler.";
 "watch.configurator.list.manual_updates.manually_update" = "Oppdater komplikasjoner";
 "watch.configurator.list.manual_updates.remaining" = "Gjenstående";
