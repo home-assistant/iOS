@@ -1,9 +1,9 @@
 import Alamofire
 import CallbackURLKit
 import Communicator
+import FirebaseCore
 import FirebaseMessaging
 import KeychainAccess
-import FirebaseCore
 import MBProgressHUD
 import ObjectMapper
 import PromiseKit
