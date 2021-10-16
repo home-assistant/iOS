@@ -156,7 +156,7 @@ lane :update_strings do
     '--project-id', project_id,
     'file', 'download',
     '--format', 'ios_sdk',
-    '--export-empty-as', 'skip',
+    '--export-empty-as', 'base',
     '--export-sort', 'a_z',
     '--replace-breaks=false',
     '--include-comments=false',
