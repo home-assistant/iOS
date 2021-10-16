@@ -25,7 +25,7 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         Current.Log.info()
         browserIsRunning = true
         browser.delegate = self
-        browser.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
+        browser.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "")
     }
 
     public func stop() {
