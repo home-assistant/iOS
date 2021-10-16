@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'cocoapods'
+# cocoapods 1.11.x breaks Clibsodium compilation/linking
+gem 'cocoapods', '1.10.2'
 gem 'cocoapods-acknowledgements'
 gem 'fastlane'
 gem 'rubocop', require: false
