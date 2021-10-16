@@ -15,9 +15,6 @@ import SafariServices
 import Shared
 import UIKit
 import XCGLogger
-#if DEBUG
-import SimulatorStatusMagic
-#endif
 
 let keychain = Constants.Keychain
 

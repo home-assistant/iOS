@@ -18,7 +18,7 @@ class AuthRequestMessage: WebSocketMessage {
         let superdecoder = try values.superDecoder()
         try super.init(from: superdecoder)
 
-        AccessToken = try values.decode(String.self, forKey: .AccessToken)
+        self.AccessToken = try values.decode(String.self, forKey: .AccessToken)
     }
 
     override public func encode(to encoder: Encoder) throws {

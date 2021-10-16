@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.4.3)
+  - Alamofire (5.4.4)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
@@ -9,8 +9,8 @@ PODS:
   - Communicator (4.1.0)
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
-  - Eureka (5.3.3)
-  - Firebase (8.7.0)
+  - Eureka (5.3.4)
+  - Firebase (8.8.0)
   - HAKit (0.3):
     - HAKit/Core (= 0.3)
   - HAKit/Core (0.3):
@@ -24,7 +24,6 @@ PODS:
   - Lokalise (0.10.2)
   - lottie-ios (3.2.3)
   - MBProgressHUD (1.2.0)
-  - NotificationTestCases (0.3)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
@@ -52,19 +51,18 @@ PODS:
   - PromiseKit/UIKit (6.15.3):
     - PromiseKit/CorePromise
   - ReachabilitySwift (5.0.0)
-  - RealmSwift (10.15.1)
-  - Sentry (7.3.0):
-    - Sentry/Core (= 7.3.0)
-  - Sentry/Core (7.3.0)
-  - SimulatorStatusMagic (2.6)
+  - RealmSwift (10.17.0)
+  - Sentry (7.4.5):
+    - Sentry/Core (= 7.4.5)
+  - Sentry/Core (7.4.5)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.48.11)
-  - SwiftGen (6.4.0)
+  - SwiftFormat/CLI (0.48.16)
+  - SwiftGen (6.5.1)
   - SwiftLint (0.44.0)
-  - SwiftMessages (9.0.4):
-    - SwiftMessages/App (= 9.0.4)
-  - SwiftMessages/App (9.0.4)
+  - SwiftMessages (9.0.5):
+    - SwiftMessages/App (= 9.0.5)
+  - SwiftMessages/App (9.0.5)
   - UIColor_Hex_Swift (5.1.7)
   - Version (0.8.0)
   - ViewRow (0.8):
@@ -91,18 +89,16 @@ DEPENDENCIES:
   - Lokalise (~> 0.10.0)
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
-  - NotificationTestCases (from `Configuration/Podspecs/NotificationTestCases.podspec.json`)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
   - RealmSwift (from `Configuration/Podspecs/Realm.podspec.json`)
   - Sentry
-  - SimulatorStatusMagic
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
   - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
   - SwiftFormat/CLI
-  - SwiftGen (~> 6.4.0)
+  - SwiftGen (~> 6.5.0)
   - SwiftLint
   - SwiftMessages
   - UIColor_Hex_Swift
@@ -125,7 +121,6 @@ SPEC REPOS:
     - PromiseKit
     - ReachabilitySwift
     - Sentry
-    - SimulatorStatusMagic
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -153,9 +148,6 @@ EXTERNAL SOURCES:
   HAKit:
     :branch: main
     :git: https://github.com/home-assistant/HAKit.git
-  NotificationTestCases:
-    :path: ''
-    :podspec: Configuration/Podspecs/NotificationTestCases.podspec.json
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -187,9 +179,6 @@ CHECKOUT OPTIONS:
   HAKit:
     :commit: 0e22e80ee8626e5611f00db08f80ef9150b85345
     :git: https://github.com/home-assistant/HAKit.git
-  NotificationTestCases:
-    :commit: 03d66c0b348b1b005cba083d5b9007d29501ce43
-    :git: https://github.com/home-assistant/mobile-apps-fcm-push.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -204,40 +193,38 @@ CHECKOUT OPTIONS:
     :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
-  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
+  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
-  Eureka: e6d720290c56bb23333ad1a0e020b2a98a0e9a43
-  Firebase: 463e3a1c9c536709599baaa0b35372a9c5d24840
+  Eureka: 60cf058f86a8fb3ed26165ba5292b9850361b0a6
+  Firebase: d28e7668bcefef272a35510ebb51ac18518bdb99
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Lokalise: 252c397887dfd9983331abffa90ab60cdb004e19
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
-  NotificationTestCases: 569f617780b296399015f8c40052ebac36887662
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  RealmSwift: 42ad1f076da667ab521c61745fb485d4e1003267
-  Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
-  SimulatorStatusMagic: 9f5294c12ca99c6cadb243a60362a66000df540c
+  RealmSwift: 594f7ae166568436a36d0a3c03d9b0ea29bd8528
+  Sentry: 67b79d8af14a9113ef28a4d798cdc01a1c9fb696
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 938e5865a118c49d63c7a290ddad86335f9e585f
-  SwiftGen: 67860cc7c3cfc2ed25b9b74cfd55495fc89f9108
+  SwiftFormat: b8a60419c4a8680f67faa80e2da710fd9dc85ca5
+  SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584
-  SwiftMessages: 082ed63613a49fa8e749cd6000bb0a8b9bbc736f
+  SwiftMessages: 9cca50659fa22bb523b4dd2a958d4442e843a354
   UIColor_Hex_Swift: 31cd3e47440f07a20d2503a36bb0437a445b3c29
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 817ccee579daa6b7beed5291e836595aa20c35f4
+PODFILE CHECKSUM: 9f516c5f12e735371e0488c46b5d4e945251010c
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.11.2

@@ -71,7 +71,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
                     }
                 }
 
-                visibleView = .webView(with(WKWebView(frame: .zero, configuration: config)) {
+                self.visibleView = .webView(with(WKWebView(frame: .zero, configuration: config)) {
                     $0.scrollView.isScrollEnabled = false
                     $0.isOpaque = false
                     $0.backgroundColor = .clear

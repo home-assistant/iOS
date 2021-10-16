@@ -28,7 +28,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 
     override public required init() {
         let background = UIColor.randomBackgroundColor()
-        BackgroundColor = background.hexString()
+        self.BackgroundColor = background.hexString()
         if background.isLight {
             self.TextColor = UIColor.black.hexString()
             self.IconColor = UIColor.black.hexString()

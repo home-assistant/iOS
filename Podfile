@@ -4,7 +4,7 @@ inhibit_all_warnings!
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
 
 def support_modules
-  pod 'SwiftGen', '~> 6.4.0'
+  pod 'SwiftGen', '~> 6.5.0'
   pod 'SwiftLint'
   pod 'SwiftFormat/CLI'
 end
@@ -42,7 +42,6 @@ pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', branch: '
 
 def test_pods
   pod 'OHHTTPStubs/Swift'
-  pod 'NotificationTestCases', path: '', podspec: 'Configuration/Podspecs/NotificationTestCases.podspec.json'
 end
 
 def shared_fwk_pods
@@ -74,7 +73,6 @@ abstract_target 'iOS' do
 
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
-    pod 'SimulatorStatusMagic', configurations: ['Debug']
     pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
     pod 'ZIPFoundation', '~> 0.9'

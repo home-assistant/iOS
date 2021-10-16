@@ -17,7 +17,7 @@ class SubscribeEvents: WebSocketMessage {
         let superdecoder = try values.superDecoder()
         try super.init(from: superdecoder)
 
-        EventType = try values.decode(String.self, forKey: .EventType)
+        self.EventType = try values.decode(String.self, forKey: .EventType)
     }
 
     override public func encode(to encoder: Encoder) throws {

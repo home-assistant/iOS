@@ -21,13 +21,13 @@ public class WebSocketMessage: Codable {
 
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        MessageType = try values.decode(String.self, forKey: .MessageType)
-        ID = try? values.decode(Int.self, forKey: .ID)
-        Success = try? values.decode(Bool.self, forKey: .Success)
-        Payload = try? values.decode([String: Any].self, forKey: .Payload)
-        Result = try? values.decode([String: Any].self, forKey: .Result)
-        Message = try? values.decode(String.self, forKey: .Message)
-        HAVersion = try? values.decode(String.self, forKey: .HAVersion)
+        self.MessageType = try values.decode(String.self, forKey: .MessageType)
+        self.ID = try? values.decode(Int.self, forKey: .ID)
+        self.Success = try? values.decode(Bool.self, forKey: .Success)
+        self.Payload = try? values.decode([String: Any].self, forKey: .Payload)
+        self.Result = try? values.decode([String: Any].self, forKey: .Result)
+        self.Message = try? values.decode(String.self, forKey: .Message)
+        self.HAVersion = try? values.decode(String.self, forKey: .HAVersion)
     }
 
     public init?(_ dictionary: [String: Any]) {

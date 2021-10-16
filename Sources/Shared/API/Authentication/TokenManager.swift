@@ -63,7 +63,7 @@ public class TokenManager {
 
     // Request the server revokes the current token.
     public func revokeToken() -> Promise<Bool> {
-        guard let tokenInfo = self.tokenInfo else {
+        guard let tokenInfo = tokenInfo else {
             return Promise(error: TokenError.tokenUnavailable)
         }
 
