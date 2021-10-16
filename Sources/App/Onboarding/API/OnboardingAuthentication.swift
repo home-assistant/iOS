@@ -94,9 +94,7 @@ class OnboardingAuthentication: NSObject {
                 url: authDetails.url,
                 callbackURLScheme: authDetails.scheme,
                 completionHandler: { url, error in
-                    if let error = error as NSError?,
-                       error.domain == ASWebAuthenticationSessionErrorDomain,
-                       error.code == ASWebAuthenticationSessionError.Code.canceledLogin.rawValue {
+                    if let error = error as? ASWebAuthenticationSessionError, error.code == .canceledLogin {
                         resolver.reject(PMKError.cancelled)
                     } else {
                         resolver.resolve(error, url.flatMap(code(fromSuccess:)))
