@@ -87,7 +87,7 @@ public struct ScaledFont {
         if let url = bundle.url(forResource: fontName, withExtension: "plist"),
            let data = try? Data(contentsOf: url) {
             let decoder = PropertyListDecoder()
-            styleDictionary = try? decoder.decode(StyleDictionary.self, from: data)
+            self.styleDictionary = try? decoder.decode(StyleDictionary.self, from: data)
         }
     }
 

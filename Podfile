@@ -4,7 +4,7 @@ inhibit_all_warnings!
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
 
 def support_modules
-  pod 'SwiftGen', '~> 6.4.0'
+  pod 'SwiftGen', '~> 6.5.0'
   pod 'SwiftLint'
   pod 'SwiftFormat/CLI'
 end
@@ -42,7 +42,6 @@ pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', branch: '
 
 def test_pods
   pod 'OHHTTPStubs/Swift'
-  pod 'NotificationTestCases', path: '', podspec: 'Configuration/Podspecs/NotificationTestCases.podspec.json'
 end
 
 def shared_fwk_pods
@@ -72,9 +71,7 @@ abstract_target 'iOS' do
 
     pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
-    pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
-    pod 'SimulatorStatusMagic', configurations: ['Debug']
     pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
     pod 'ZIPFoundation', '~> 0.9'
@@ -111,11 +108,6 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      xcconfig_path = config.base_configuration_reference.real_path
-      xcconfig = File.read(xcconfig_path)
-      xcconfig.sub!('-framework "Lokalise"', '')
-      File.open(xcconfig_path, 'w') { |file| file << xcconfig }
-
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'

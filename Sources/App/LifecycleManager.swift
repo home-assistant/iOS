@@ -2,9 +2,6 @@ import Foundation
 import PromiseKit
 import Shared
 import UIKit
-#if !targetEnvironment(macCatalyst)
-import Lokalise
-#endif
 
 class LifecycleManager {
     private var periodicUpdateTimer: Timer? {
@@ -81,16 +78,6 @@ class LifecycleManager {
                 )
             }
         }.cauterize()
-
-        #if !targetEnvironment(macCatalyst)
-        Lokalise.shared.checkForUpdates { updated, error in
-            if let error = error {
-                Current.Log.error("Error when updating Lokalise: \(error)")
-            } else {
-                Current.Log.info("Lokalise updated? \(updated)")
-            }
-        }
-        #endif
 
         connectAPI(reason: .cold)
     }

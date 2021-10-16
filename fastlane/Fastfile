@@ -88,6 +88,25 @@ lane :update_dsyms do
   FileUtils.rm_r directory
 end
 
+desc 'Update the test cases from the fcm repo'
+lane :update_notification_test_cases do
+  bundle_directory = File.expand_path('../Tests/Shared/notification_test_cases.bundle')
+  zip_file = Tempfile.new(['archive', '.zip'])
+
+  FileUtils.rm_rf bundle_directory
+  FileUtils.mkdir_p bundle_directory
+
+  begin
+    archive_url = 'https://github.com/home-assistant/mobile-apps-fcm-push/archive/refs/heads/master.zip'
+    unzip_path = 'mobile-apps-fcm-push-master/functions/test/fixtures/legacy/*.json'
+
+    sh("curl -L #{archive_url} -o #{zip_file.path}")
+    sh("unzip -j #{zip_file.path} -d #{bundle_directory} '#{unzip_path}'")
+  ensure
+    zip_file.unlink
+  end
+end
+
 desc 'Generate proper icons for all build trains'
 lane :icons do
   appicon(appicon_path: 'Sources/App/Resources/Assets.xcassets', appicon_image_file: 'icons/dev.png',

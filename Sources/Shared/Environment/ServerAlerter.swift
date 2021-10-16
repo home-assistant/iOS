@@ -62,11 +62,11 @@ public struct ServerAlert: Codable, Equatable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        date = try container.decode(Date.self, forKey: .date)
-        url = try container.decode(URL.self, forKey: .url)
-        message = try container.decode(String.self, forKey: .message)
-        adminOnly = try container.decodeIfPresent(Bool.self, forKey: .adminOnly) ?? false
+        self.id = try container.decode(String.self, forKey: .id)
+        self.date = try container.decode(Date.self, forKey: .date)
+        self.url = try container.decode(URL.self, forKey: .url)
+        self.message = try container.decode(String.self, forKey: .message)
+        self.adminOnly = try container.decodeIfPresent(Bool.self, forKey: .adminOnly) ?? false
         self.ios = try container.decodeIfPresent(VersionRequirement.self, forKey: .ios) ?? .init(min: nil, max: nil)
         self.core = try container.decodeIfPresent(VersionRequirement.self, forKey: .core) ?? .init(min: nil, max: nil)
     }

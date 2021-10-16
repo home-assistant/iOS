@@ -1,26 +1,26 @@
 {
   "name": "RealmSwift",
-  "version": "10.15.1",
+  "version": "10.17.0",
   "summary": "Realm is a modern data framework & database for iOS, macOS, tvOS & watchOS.",
   "description": "The Realm Mobile Database, for Swift. (If you want to use Realm from Objective-C, see the “Realm” pod.)\n\nThe Realm Mobile Database is a fast, easy-to-use replacement for Core Data & SQLite. Use it with the Realm Mobile Platform for realtime, automatic data sync. Works on iOS, macOS, tvOS & watchOS. Learn more and get help at https://realm.io.",
   "homepage": "https://realm.io",
   "source": {
-    "http": "https://static.realm.io/downloads/swift/realm-swift-10.15.1.zip"
+    "http": "https://static.realm.io/downloads/swift/realm-swift-10.17.0.zip"
   },
   "authors": {
     "Realm": "help@realm.io"
   },
   "license": {
     "type": "Apache 2.0",
-    "file": "realm-swift-10.15.1/LICENSE"
+    "file": "realm-swift-10.17.0/LICENSE"
   },
   "preserve_paths": [
-    "realm-swift-10.15.1/13.0",
-    "realm-swift-10.15.1/LICENSE"
+    "realm-swift-10.17.0/13.0",
+    "realm-swift-10.17.0/LICENSE"
   ],
   "vendored_frameworks": [
-    "realm-swift-10.15.1/13.0/RealmSwift.xcframework",
-    "realm-swift-10.15.1/13.0/Realm.xcframework"
+    "realm-swift-10.17.0/13.0/RealmSwift.xcframework",
+    "realm-swift-10.17.0/13.0/Realm.xcframework"
   ],
   "platforms": {
     "ios": "9.0",

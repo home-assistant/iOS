@@ -49,7 +49,7 @@ struct LocalPushEvent: HADataDecodable {
 
         let (headers, payload) = NotificationParserLegacy.result(from: value)
         self.init(headers: headers, payload: payload)
-        confirmID = data.decode("hass_confirm_id", fallback: nil)
+        self.confirmID = data.decode("hass_confirm_id", fallback: nil)
     }
 
     init(headers: [String: Any], payload: [String: Any]) {

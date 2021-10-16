@@ -1,0 +1,28 @@
+{
+    "input": {
+        "message": "test",
+        "data": {
+            "tag": "test_tag",
+            "group": "test_group"
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert",
+        "apns-collapse-id": "test_tag"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "body": "test"
+            },
+            "sound": "default",
+            "thread-id": "test_group"
+        }
+    }
+}

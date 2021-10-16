@@ -1,0 +1,20 @@
+{
+    "input": {
+        "title": "extra excluded title",
+        "message": "clear_badge",
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "alert"
+    },
+    "payload": {
+        "aps": {
+            "badge": 0
+        }
+    }
+}

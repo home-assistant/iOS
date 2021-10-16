@@ -1,0 +1,32 @@
+{
+    "input": {
+        "message": "test",
+        "data": {
+            "shortcut": {
+                "name": "some_name",
+                "some_key": "some_value"
+            }
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "10.15",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "body": "test"
+            },
+            "sound": "default"
+        },
+        "shortcut": {
+            "name": "some_name",
+            "some_key": "some_value"
+        }
+    }
+}

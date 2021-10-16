@@ -1,0 +1,27 @@
+{
+    "input": {
+        "message": "test",
+        "data": {
+            "push": {
+                "sound": "custom_sound.wav"
+            }
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "11.3",
+            "app_version": "2021.5"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "body": "test"
+            },
+            "sound": "custom_sound.wav"
+        }
+    }
+}

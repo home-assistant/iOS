@@ -507,7 +507,9 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "nfc.detail.title") }
     }
     public enum List {
-      /// NFC tags written by the app will show a notification when you bring your device near them. Activating the notification will launch the app and fire an event.\n\nTags will work on any device with Home Assistant installed which has hardware support to read them.
+      /// NFC tags written by the app will show a notification when you bring your device near them. Activating the notification will launch the app and fire an event.
+      /// 
+      /// Tags will work on any device with Home Assistant installed which has hardware support to read them.
       public static var description: String { return L10n.tr("Localizable", "nfc.list.description") }
       /// Learn More
       public static var learnMore: String { return L10n.tr("Localizable", "nfc.list.learn_more") }
@@ -824,7 +826,9 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
     }
     public enum Welcome {
-      /// This app connects to your Home Assistant server and allows integrating data about you and your phone.\n\nHome Assistant is free and open source home automation software with a focus on local control and privacy.
+      /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
+      /// 
+      /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
       /// Welcome to Home Assistant %@!
       public static func title(_ p1: Any) -> String {
