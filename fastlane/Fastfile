@@ -97,8 +97,8 @@ lane :update_notification_test_cases do
   FileUtils.mkdir_p bundle_directory
 
   begin
-    archive_url = "https://github.com/home-assistant/mobile-apps-fcm-push/archive/refs/heads/master.zip"
-    unzip_path = "mobile-apps-fcm-push-master/functions/test/fixtures/legacy/*.json"
+    archive_url = 'https://github.com/home-assistant/mobile-apps-fcm-push/archive/refs/heads/master.zip'
+    unzip_path = 'mobile-apps-fcm-push-master/functions/test/fixtures/legacy/*.json'
 
     sh("curl -L #{archive_url} -o #{zip_file.path}")
     sh("unzip -j #{zip_file.path} -d #{bundle_directory} '#{unzip_path}'")
