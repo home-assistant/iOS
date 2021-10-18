@@ -25,10 +25,6 @@ public protocol OnboardingStateObserver: AnyObject {
 public class OnboardingStateObservation {
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
 
-    public var requiresOnboarding: Bool {
-        Current.settingsStore.tokenInfo == nil || Current.settingsStore.connectionInfo == nil
-    }
-
     public func register(observer: OnboardingStateObserver) {
         observers.add(observer)
     }

@@ -66,9 +66,9 @@ class WebViewWindowController {
     }
 
     func setup() {
-        if Current.onboardingObservation.requiresOnboarding {
-            Current.Log.info("showing onboarding")
-            updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
+        if let style = OnboardingNavigationViewController.requiredOnboardingStyle {
+            Current.Log.info("showing onboarding \(style)")
+            updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: style))
         } else {
             if let rootController = window.rootViewController, !rootController.children.isEmpty {
                 Current.Log.info("state restoration loaded controller, not creating a new one")

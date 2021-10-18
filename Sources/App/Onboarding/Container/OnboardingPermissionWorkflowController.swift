@@ -1,10 +1,20 @@
 import Shared
 import UIKit
 
-class OnboardingPermissionWorkflowController {
-    private let permissions: [PermissionType]
+class OnboardingPermissionViewControllerFactory {
+    static var hasControllers: Bool {
+        !permissions.isEmpty
+    }
 
-    init() {
+    static func next() -> UIViewController {
+        if let permission = permissions.first {
+            return OnboardingPermissionViewController(permission: permission, factory: self)
+        } else {
+            return OnboardingTerminalViewController()
+        }
+    }
+
+    private static var permissions: [PermissionType] {
         var permissions: [PermissionType] = [
             .notification,
             .location,
@@ -18,14 +28,6 @@ class OnboardingPermissionWorkflowController {
             permissions.append(.focus)
         }
 
-        self.permissions = permissions
-    }
-
-    func next() -> UIViewController {
-        if let permission = permissions.first(where: { $0.status == .notDetermined }) {
-            return OnboardingPermissionViewController(permission: permission, workflowController: self)
-        } else {
-            return OnboardingTerminalViewController()
-        }
+        return permissions.filter { $0.status == .notDetermined }
     }
 }
