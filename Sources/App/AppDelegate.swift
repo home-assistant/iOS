@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13, *) {
             return false
         } else {
-            if sceneManager.compatibility.windowController?.requiresOnboarding == true {
+            if Current.onboardingObservation.requiresOnboarding {
                 Current.Log.info("disallowing state to be restored due to onboarding")
                 return false
             }
