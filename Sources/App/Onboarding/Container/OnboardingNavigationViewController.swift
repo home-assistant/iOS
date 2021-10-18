@@ -13,19 +13,25 @@ protocol OnboardingViewController {
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
     enum OnboardingStyle {
+        enum RequiredType {
+            case full
+            case permissions
+        }
+
         case initial
+        case required(RequiredType)
         case secondary
 
         var insertsCancelButton: Bool {
             switch self {
-            case .initial: return false
+            case .initial, .required: return false
             case .secondary: return true
             }
         }
 
         var modalPresentationStyle: UIModalPresentationStyle {
             switch self {
-            case .initial: return .fullScreen
+            case .initial, .required: return .fullScreen
             case .secondary:
                 if #available(iOS 13, *) {
                     return .automatic
@@ -33,6 +39,16 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
                     return .fullScreen
                 }
             }
+        }
+    }
+
+    public static var requiredOnboardingStyle: OnboardingStyle? {
+        if Current.settingsStore.tokenInfo == nil || Current.settingsStore.connectionInfo == nil {
+            return .required(.full)
+        } else if OnboardingPermissionViewControllerFactory.hasControllers {
+            return .required(.permissions)
+        } else {
+            return nil
         }
     }
 
@@ -47,6 +63,13 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         switch onboardingStyle {
         case .initial: rootViewController = OnboardingWelcomeViewController()
         case .secondary: rootViewController = OnboardingScanningViewController()
+        case let .required(type):
+            switch type {
+            case .full:
+                rootViewController = OnboardingWelcomeViewController()
+            case .permissions:
+                rootViewController = OnboardingPermissionViewControllerFactory.next()
+            }
         }
 
         if #available(iOS 13, *) {

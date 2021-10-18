@@ -3,10 +3,10 @@ import UIKit
 
 class OnboardingPermissionViewController: UIViewController, OnboardingViewController {
     let permission: PermissionType
-    let workflowController: OnboardingPermissionWorkflowController
-    init(permission: PermissionType, workflowController: OnboardingPermissionWorkflowController) {
+    let factory: OnboardingPermissionViewControllerFactory.Type
+    init(permission: PermissionType, factory: OnboardingPermissionViewControllerFactory.Type) {
         self.permission = permission
-        self.workflowController = workflowController
+        self.factory = factory
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -113,7 +113,7 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
             }
 
             sender.isUserInteractionEnabled = true
-            show(workflowController.next(), sender: self)
+            show(factory.next(), sender: self)
         }
     }
 

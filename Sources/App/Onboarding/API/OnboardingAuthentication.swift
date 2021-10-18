@@ -6,7 +6,7 @@ import Shared
 
 class OnboardingAuthentication: NSObject {
     static func successController() -> UIViewController {
-        OnboardingPermissionWorkflowController().next()
+        OnboardingPermissionViewControllerFactory.next()
     }
 
     static func failureController(error: Error) -> UIViewController {
