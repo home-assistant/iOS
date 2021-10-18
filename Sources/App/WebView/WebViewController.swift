@@ -241,7 +241,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         userActivity?.resignCurrent()
     }
 
-    init(restorationActivity: NSUserActivity?) {
+    init(restorationActivity: NSUserActivity?, shouldLoadImmediately: Bool = false) {
         super.init(nibName: nil, bundle: nil)
 
         userActivity = with(NSUserActivity(activityType: "\(Constants.BundleID).frontend")) {
@@ -250,6 +250,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         if let url = restorationActivity?.userInfo?[RestorableStateKey.lastURL.rawValue] as? URL {
             self.initialURL = url
+        }
+
+        if shouldLoadImmediately {
+            loadViewIfNeeded()
+            loadActiveURLIfNeeded()
         }
     }
 

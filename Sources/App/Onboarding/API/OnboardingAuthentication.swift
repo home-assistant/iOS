@@ -178,6 +178,8 @@ class OnboardingAuthentication: NSObject {
                 userInfo: nil
             )
             Current.apiConnection.connect()
+
+            Current.onboardingObservation.didConnect()
         }
     }
 
