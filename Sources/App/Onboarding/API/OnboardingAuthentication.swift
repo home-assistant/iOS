@@ -1,6 +1,7 @@
 import Alamofire
 import AuthenticationServices
 import Foundation
+import HAKit
 import PromiseKit
 import Shared
 
@@ -13,17 +14,19 @@ class OnboardingAuthentication: NSObject {
         OnboardingErrorViewController(error: error)
     }
 
-    static func authenticate(to instance: DiscoveredHomeAssistant, sender: UIView) -> Promise<Void> {
+    static func authenticate(to instance: DiscoveredHomeAssistant, sender: UIViewController) -> Promise<Void> {
         firstly { () -> Promise<ConnectionInfo> in
             connectionInfo(for: instance)
-        }.then { connectionInfo -> Promise<HomeAssistantAPI> in
+        }.then { connectionInfo -> Promise<(HomeAssistantAPI, HAConnection)> in
             firstly { () -> Promise<String> in
                 openInBrowser(url: connectionInfo.activeURL, sender: sender)
-            }.then { code -> Promise<HomeAssistantAPI> in
+            }.then { code -> Promise<(HomeAssistantAPI, HAConnection)> in
                 configuredAPI(code: code, connectionInfo: connectionInfo)
             }
-        }.then { api -> Promise<Void> in
-            connect(to: api)
+        }.then { api, connection -> Promise<(HomeAssistantAPI, HAConnection)> in
+            checkDeviceName(connection: connection, sender: sender).map { (api, connection) }
+        }.then { api, connection -> Promise<Void> in
+            connect(api: api, connection: connection)
         }
     }
 
@@ -73,7 +76,7 @@ class OnboardingAuthentication: NSObject {
         }
     }
 
-    private static func openInBrowser(url baseURL: URL, sender: UIView) -> Promise<String> {
+    private static func openInBrowser(url baseURL: URL, sender: UIViewController) -> Promise<String> {
         Current.Log.verbose(baseURL)
 
         class PresentationDelegate: NSObject, ASWebAuthenticationPresentationContextProviding {
@@ -102,7 +105,7 @@ class OnboardingAuthentication: NSObject {
                 }
             )
 
-            var delegate: PresentationDelegate? = PresentationDelegate(view: sender)
+            var delegate: PresentationDelegate? = PresentationDelegate(view: sender.view)
             var presentationSession: ASWebAuthenticationSession? = session
 
             if #available(iOS 13.0, *) {
@@ -143,12 +146,15 @@ class OnboardingAuthentication: NSObject {
 
     // MARK: - Authorizing
 
-    private static func configuredAPI(code: String, connectionInfo: ConnectionInfo) -> Promise<HomeAssistantAPI> {
+    private static func configuredAPI(
+        code: String,
+        connectionInfo: ConnectionInfo
+    ) -> Promise<(HomeAssistantAPI, HAConnection)> {
         Current.Log.verbose()
         let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
-        return firstly {
-            tokenManager.initialTokenWithCode(code).asVoid()
-        }.then { _ -> Promise<HomeAssistantAPI> in
+        let token: Promise<Void> = tokenManager.initialTokenWithCode(code).asVoid()
+
+        return token.get {
             Current.Log.verbose()
             Current.settingsStore.connectionInfo = connectionInfo
 
@@ -157,11 +163,13 @@ class OnboardingAuthentication: NSObject {
             }
 
             Current.resetAPI()
-            return Current.api
+            Current.apiConnection.connect()
+        }.then {
+            Current.api.map { ($0, Current.apiConnection) }
         }
     }
 
-    private static func connect(to api: HomeAssistantAPI) -> Promise<Void> {
+    private static func connect(api: HomeAssistantAPI, connection: HAConnection) -> Promise<Void> {
         Current.Log.verbose()
         return firstly {
             api.Register().asVoid()
@@ -177,9 +185,125 @@ class OnboardingAuthentication: NSObject {
                 object: nil,
                 userInfo: nil
             )
-            Current.apiConnection.connect()
 
             Current.onboardingObservation.didConnect()
+        }
+    }
+
+    // MARK: - Device dedupe
+
+    struct RegisteredDevice {
+        var name: String
+        var id: String
+
+        init?(data: HAData) throws {
+            self.name = try data.decode("name")
+            self.id = try {
+                let identifiers: [[String]] = try data.decode("identifiers")
+                for identifier in identifiers {
+                    if identifier.count == 2, identifier.starts(with: ["mobile_app"]) {
+                        return identifier[1]
+                    }
+                }
+
+                throw HADataError.couldntTransform(key: "identifiers")
+            }()
+        }
+
+        func matches(name other: String) -> Bool {
+            name.lowercased() == other.lowercased()
+        }
+    }
+
+    private static func checkDeviceName(connection: HAConnection, sender: UIViewController) -> Promise<Void> {
+        firstly { () -> Promise<[HAData]> in
+            connection.send(.init(type: "config/device_registry/list")).promise.compactMap {
+                if case let .array(value) = $0 {
+                    return value
+                } else {
+                    return nil
+                }
+            }
+        }.compactMapValues { value -> RegisteredDevice? in
+            try? RegisteredDevice(data: value)
+        }.recover { _ in
+            .value([])
+        }.then { registeredDevices -> Promise<Void> in
+            guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
+                // if the integration is registered already, we will take over that one, so we don't need to look
+                return .value(())
+            }
+
+            return promptForDeviceName(
+                deviceName: Current.device.deviceName(),
+                registeredDevices: registeredDevices,
+                sender: sender
+            )
+        }
+    }
+
+    private static func promptForDeviceName(
+        deviceName: String,
+        registeredDevices: [RegisteredDevice],
+        sender: UIViewController
+    ) -> Promise<Void> {
+        guard registeredDevices.contains(where: { $0.matches(name: deviceName) }) else {
+            // if the device name is not already taken, we can safely use it and don't need to prompt
+            return .value(())
+        }
+
+        return Promise<Void> { seal in
+            let alert = UIAlertController(
+                title: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
+                message: L10n.Onboarding.DeviceNameCheck.Error.prompt,
+                preferredStyle: .alert
+            )
+
+            alert.addTextField { textField in
+                textField.keyboardType = .default
+                textField.placeholder = Current.device.deviceName()
+                textField.text = Current.device.deviceName()
+                textField.enablesReturnKeyAutomatically = true
+                textField.autocapitalizationType = .words
+            }
+
+            alert.addAction(.init(title: L10n.cancelLabel, style: .cancel, handler: { _ in
+                Current.api.map(\.tokenManager)
+                    .then { $0.revokeToken().asVoid() }
+                    .ensure {
+                        Current.settingsStore.tokenInfo = nil
+                        Current.settingsStore.connectionInfo = nil
+                        Current.apiConnection.disconnect()
+                    }.recover { _ in
+                        Guarantee<Void>.value(())
+                    }.done {
+                        seal.reject(PMKError.cancelled)
+                    }
+            }))
+
+            alert
+                .addAction(.init(
+                    title: L10n.Onboarding.DeviceNameCheck.Error.renameAction,
+                    style: .default,
+                    handler: { _ in
+                        let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces)
+
+                        guard let name = name, name.isEmpty == false,
+                              !registeredDevices.contains(where: { $0.matches(name: name) }) else {
+                            promptForDeviceName(
+                                deviceName: name ?? deviceName,
+                                registeredDevices: registeredDevices,
+                                sender: sender
+                            ).pipe(to: seal.resolve)
+                            return
+                        }
+
+                        Current.settingsStore.overrideDeviceName = name
+                        seal.fulfill(())
+                    }
+                ))
+
+            sender.present(alert, animated: true, completion: nil)
         }
     }
 

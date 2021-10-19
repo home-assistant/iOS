@@ -243,7 +243,7 @@ extension OnboardingScanningViewController: UITableViewDelegate {
         tableView.isUserInteractionEnabled = false
 
         firstly {
-            OnboardingAuthentication.authenticate(to: instance, sender: tableView)
+            OnboardingAuthentication.authenticate(to: instance, sender: self)
         }.ensure {
             cell?.isLoading = false
             tableView.isUserInteractionEnabled = true
