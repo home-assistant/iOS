@@ -261,8 +261,8 @@ class OnboardingAuthentication: NSObject {
 
             alert.addTextField { textField in
                 textField.keyboardType = .default
-                textField.placeholder = Current.device.deviceName()
-                textField.text = Current.device.deviceName()
+                textField.placeholder = deviceName
+                textField.text = deviceName
                 textField.enablesReturnKeyAutomatically = true
                 textField.autocapitalizationType = .words
             }
