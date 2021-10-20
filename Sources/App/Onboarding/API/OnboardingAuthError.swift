@@ -1,7 +1,7 @@
 import Foundation
 import Shared
 
-struct OnboardingAuthenticationError: LocalizedError {
+struct OnboardingAuthError: LocalizedError {
     enum ErrorKind {
         case invalidURL
         case basicAuth
@@ -25,7 +25,7 @@ struct OnboardingAuthenticationError: LocalizedError {
     var kind: ErrorKind
     var data: Data?
 
-    init(kind: OnboardingAuthenticationError.ErrorKind, data: Data? = nil) {
+    init(kind: OnboardingAuthError.ErrorKind, data: Data? = nil) {
         self.kind = kind
         self.data = data
     }

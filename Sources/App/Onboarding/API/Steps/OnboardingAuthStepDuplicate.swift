@@ -1,0 +1,131 @@
+import HAKit
+import PromiseKit
+import Shared
+
+struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
+    var connection: HAConnection
+    var api: HomeAssistantAPI
+    var sender: UIViewController
+
+    static var supportedPoints: Set<OnboardingAuthStepPoint> {
+        Set([.beforeRegister])
+    }
+
+    func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        let check = firstly { () -> Promise<[HAData]> in
+            connection.send(.init(type: "config/device_registry/list")).promise.compactMap {
+                if case let .array(value) = $0 {
+                    return value
+                } else {
+                    return nil
+                }
+            }
+        }.compactMapValues { value -> RegisteredDevice? in
+            try? RegisteredDevice(data: value)
+        }.recover { _ in
+            .value([])
+        }.then { [self] registeredDevices -> Promise<Void> in
+            guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
+                // if the integration is registered already, we will take over that one, so we don't need to look
+                return .value(())
+            }
+
+            // this can be removed once the mobile_app notify service stops being device name specific
+            return promptForDeviceName(
+                deviceName: Current.device.deviceName(),
+                registeredDevices: registeredDevices,
+                sender: sender
+            )
+        }
+
+        let timeout = after(seconds: 30.0).then { () -> Promise<Void> in
+            switch connection.state {
+            case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
+                throw error
+            default:
+                throw OnboardingAuthError(kind: .invalidURL, data: nil)
+            }
+        }
+
+        // in case the WebSocket connectivity fails, provide the error
+        return race(timeout, check)
+    }
+
+    private struct RegisteredDevice {
+        var name: String
+        var id: String
+
+        init?(data: HAData) throws {
+            self.name = try data.decode("name")
+            self.id = try {
+                let identifiers: [[String]] = try data.decode("identifiers")
+                for identifier in identifiers {
+                    if identifier.count == 2, identifier.starts(with: ["mobile_app"]) {
+                        return identifier[1]
+                    }
+                }
+
+                throw HADataError.couldntTransform(key: "identifiers")
+            }()
+        }
+
+        func matches(name other: String) -> Bool {
+            name.lowercased() == other.lowercased()
+        }
+    }
+
+    private func promptForDeviceName(
+        deviceName: String,
+        registeredDevices: [RegisteredDevice],
+        sender: UIViewController
+    ) -> Promise<Void> {
+        guard registeredDevices.contains(where: { $0.matches(name: deviceName) }) else {
+            // if the device name is not already taken, we can safely use it and don't need to prompt
+            return .value(())
+        }
+
+        return Promise<Void> { seal in
+            let alert = UIAlertController(
+                title: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
+                message: L10n.Onboarding.DeviceNameCheck.Error.prompt,
+                preferredStyle: .alert
+            )
+
+            alert.addTextField { textField in
+                textField.keyboardType = .default
+                textField.placeholder = deviceName
+                textField.text = deviceName
+                textField.enablesReturnKeyAutomatically = true
+                textField.autocapitalizationType = .words
+            }
+
+            alert.addAction(.init(title: L10n.cancelLabel, style: .cancel, handler: { _ in
+                seal.reject(PMKError.cancelled)
+            }))
+
+            alert
+                .addAction(.init(
+                    title: L10n.Onboarding.DeviceNameCheck.Error.renameAction,
+                    style: .default,
+                    handler: { [self] _ in
+                        let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces)
+
+                        guard let name = name, name.isEmpty == false,
+                              !registeredDevices.contains(where: { $0.matches(name: name) }) else {
+                                  promptForDeviceName(
+                                    deviceName: name ?? deviceName,
+                                    registeredDevices: registeredDevices,
+                                    sender: sender
+                                  ).pipe(to: seal.resolve)
+                                  return
+                              }
+
+                        Current.settingsStore.overrideDeviceName = name
+                        seal.fulfill(())
+                    }
+                ))
+
+            sender.present(alert, animated: true, completion: nil)
+        }
+    }
+}

@@ -45,7 +45,7 @@ class OnboardingErrorViewController: UIViewController {
                 NSAttributedString(string: L10n.Onboarding.ConnectionTestResult.errorCode + "\n" + value)
             }
 
-            if let error = error as? OnboardingAuthenticationError {
+            if let error = error as? OnboardingAuthError {
                 if let code = error.errorCode {
                     errorComponents.append(errorCode(code))
                 }
@@ -93,7 +93,7 @@ class OnboardingErrorViewController: UIViewController {
         stackView.addArrangedSubview(equalSpacers.next())
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             $0.setTitle(L10n.Onboarding.ConnectionError.moreInfoButton, for: .normal)
-            $0.isHidden = !(error is OnboardingAuthenticationError)
+            $0.isHidden = !(error is OnboardingAuthError)
             $0.addTarget(self, action: #selector(moreInfoTapped(_:)), for: .touchUpInside)
             Current.style.onboardingButtonPrimary($0)
         })
@@ -102,7 +102,7 @@ class OnboardingErrorViewController: UIViewController {
     private func documentationURL(for error: Error) -> URL {
         var string = "https://companion.home-assistant.io/docs/troubleshooting/errors"
 
-        if let error = error as? OnboardingAuthenticationError {
+        if let error = error as? OnboardingAuthError {
             string += "#\(error.kind.documentationAnchor)"
         }
 
