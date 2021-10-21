@@ -67,7 +67,7 @@ abstract_target 'iOS' do
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', git: 'https://github.com/EurekaCommunity/ColorPickerRow', branch: 'master'
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
-    pod 'Eureka'
+    pod 'Eureka', git: 'https://github.com/zacwest/Eureka', branch: 'fix-xcode-13-compile-error'
 
     pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
