@@ -79,10 +79,8 @@ extension UNAuthorizationStatus {
             return PermissionStatus.restricted
         case .denied:
             return PermissionStatus.denied
-        #if compiler(>=5.3)
         case .ephemeral:
             return PermissionStatus.authorized
-        #endif
         case .authorized:
             return PermissionStatus.authorized
         @unknown default:
@@ -296,12 +294,10 @@ public extension UNAuthorizationOptions {
             opts.insert(.announcement)
         }
 
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, *) {
             // this is also deprecated in iOS 15 in favor of the entitlement, but it does seem to be required in b1
             opts.insert(.timeSensitive)
         }
-        #endif
 
         return opts
     }

@@ -16,7 +16,6 @@ public class FocusStatusWrapper {
         case denied
         case authorized
 
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         @available(iOS 15, watchOS 8, *)
         init(authorizationStatus: INFocusStatusAuthorizationStatus) {
             switch authorizationStatus {
@@ -32,7 +31,6 @@ public class FocusStatusWrapper {
                 self = .denied
             }
         }
-        #endif
     }
 
     private var lastStatus: Status? {
@@ -42,7 +40,6 @@ public class FocusStatusWrapper {
     }
 
     public lazy var isAvailable: () -> Bool = { [weak self] in
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             if Current.isAppExtension {
                 return self?.lastStatus != nil
@@ -52,17 +49,12 @@ public class FocusStatusWrapper {
         } else {
             return false
         }
-        #else
-        return false
-        #endif
     }
 
     public var authorizationStatus: () -> AuthorizationStatus = {
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             return .init(authorizationStatus: INFocusStatusCenter.default.authorizationStatus)
         }
-        #endif
 
         return .restricted
     }
@@ -70,7 +62,6 @@ public class FocusStatusWrapper {
     public var requestAuthorization: () -> Guarantee<AuthorizationStatus> = {
         let (promise, seal) = Guarantee<AuthorizationStatus>.pending()
 
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             INFocusStatusCenter.default.requestAuthorization { result in
                 seal(.init(authorizationStatus: result))
@@ -78,9 +69,6 @@ public class FocusStatusWrapper {
         } else {
             seal(.restricted)
         }
-        #else
-        seal(.restricted)
-        #endif
 
         return promise
     }
@@ -88,31 +76,26 @@ public class FocusStatusWrapper {
     public struct Status: Equatable {
         public var isFocused: Bool?
 
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         @available(iOS 15, watchOS 8, *)
         public init(focusStatus: INFocusStatus) {
             self.init(
                 isFocused: focusStatus.isFocused
             )
         }
-        #endif
 
         public init(isFocused: Bool?) {
             self.isFocused = isFocused
         }
     }
 
-    #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
     @available(iOS 15, watchOS 8, *)
     public func update(fromReceived status: INFocusStatus?) {
         precondition(Current.isAppExtension)
         lastStatus = status.flatMap { Status(focusStatus: $0) }
         trigger.value = Current.date()
     }
-    #endif
 
     public lazy var status: () -> Status = { [weak self] in
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             if Current.isAppExtension, let lastStatus = self?.lastStatus {
                 return lastStatus
@@ -120,7 +103,6 @@ public class FocusStatusWrapper {
                 return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
             }
         }
-        #endif
         return .init(isFocused: nil)
     }
 }

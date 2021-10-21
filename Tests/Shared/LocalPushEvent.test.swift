@@ -46,11 +46,9 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertTrue(content.categoryIdentifier.isEmpty)
         XCTAssertNil(content.sound)
         XCTAssertEqual(Set(content.userInfo.keys), Set(["aps"]))
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             XCTAssertEqual(content.interruptionLevel, .active)
         }
-        #endif
     }
 
     func testFullWithoutSound() {
@@ -79,11 +77,9 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertEqual(content.badge, 3)
         XCTAssertEqual(content.categoryIdentifier, "some_category")
         XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "extra"]))
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             XCTAssertEqual(content.interruptionLevel, .timeSensitive)
         }
-        #endif
     }
 
     func testSoundNonCriticalNamed() {
@@ -225,7 +221,6 @@ class LocalPushEventTests: XCTestCase {
         }
     }
 
-    #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
     func testInterruptionLevels() throws {
         guard #available(iOS 15, watchOS 8, *) else {
             throw XCTSkip("not valid on this OS")
@@ -255,5 +250,4 @@ class LocalPushEventTests: XCTestCase {
             XCTAssertEqual(content.interruptionLevel, level)
         }
     }
-    #endif
 }

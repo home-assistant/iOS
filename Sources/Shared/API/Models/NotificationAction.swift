@@ -81,7 +81,6 @@ public class NotificationAction: Object {
             }
         }
 
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         if #available(iOS 15, watchOS 8, *) {
             let actionIcon: UNNotificationActionIcon?
 
@@ -111,9 +110,6 @@ public class NotificationAction: Object {
         } else {
             action = baseAction()
         }
-        #else
-        action = baseAction()
-        #endif
 
         return action
     }
