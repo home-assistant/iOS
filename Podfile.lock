@@ -79,7 +79,7 @@ DEPENDENCIES:
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - Eureka
+  - Eureka (from `https://github.com/zacwest/Eureka`, branch `fix-xcode-13-compile-error`)
   - Firebase (from `Configuration/Podspecs/Firebase.podspec.json`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
@@ -109,7 +109,6 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - CallbackURLKit
-    - Eureka
     - KeychainAccess
     - lottie-ios
     - MBProgressHUD
@@ -140,6 +139,9 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
+  Eureka:
+    :branch: fix-xcode-13-compile-error
+    :git: https://github.com/zacwest/Eureka
   Firebase:
     :podspec: Configuration/Podspecs/Firebase.podspec.json
   HAKit:
@@ -173,6 +175,9 @@ CHECKOUT OPTIONS:
   EMTLoadingIndicator:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
+  Eureka:
+    :commit: 70e222063929260cc9425104e6c6f042a3ff74a0
+    :git: https://github.com/zacwest/Eureka
   HAKit:
     :commit: 0e22e80ee8626e5611f00db08f80ef9150b85345
     :git: https://github.com/home-assistant/HAKit.git
@@ -221,6 +226,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: ba90619d92c8b901aa04320e6bbbb7a1e541aad8
+PODFILE CHECKSUM: c061eb96433303857c272fc9b4e26a5340fb68ba
 
 COCOAPODS: 1.10.2

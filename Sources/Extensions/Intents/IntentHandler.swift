@@ -28,11 +28,9 @@ class IntentHandler: INExtension {
             if intent is OpenPageIntent || intent is WidgetOpenPageIntent {
                 return OpenPageIntentHandler()
             }
-            #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
             if #available(iOS 15, *), intent is INShareFocusStatusIntent {
                 return FocusStatusIntentHandler()
             }
-            #endif
             if #available(iOS 14, *), intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
             }

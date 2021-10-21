@@ -91,11 +91,9 @@ struct LocalPushEvent: HADataDecodable {
             if let sound = aps["sound"] as? [String: Any] {
                 content.sound = Sound(dictionary: sound).asSound()
             }
-            #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
             if #available(iOS 15, watchOS 8, *), let level = aps["interruption-level"] as? String {
                 content.interruptionLevel = .init(apsValue: level)
             }
-            #endif
         }
         content.userInfo = payload
         // swiftlint:disable:next force_cast
@@ -183,7 +181,6 @@ private struct Sound {
     }
 }
 
-#if compiler(>=5.5) && !targetEnvironment(macCatalyst)
 @available(iOS 15, watchOS 8, *)
 private extension UNNotificationInterruptionLevel {
     init(apsValue: String) {
@@ -196,4 +193,3 @@ private extension UNNotificationInterruptionLevel {
         }
     }
 }
-#endif

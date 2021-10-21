@@ -8,7 +8,7 @@ Home Assistant for Apple Platforms
 
 ## Getting Started
 
-Home Assistant uses Bundler, Homebrew and Cocoapods to manage build dependencies. You'll need Xcode 13.0 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get the app running using the following commands:
+Home Assistant uses Bundler, Homebrew and Cocoapods to manage build dependencies. You'll need Xcode 13.1 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get the app running using the following commands:
 
 ```bash
 git clone https://github.com/home-assistant/iOS.git
