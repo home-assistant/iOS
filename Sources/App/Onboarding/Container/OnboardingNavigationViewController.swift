@@ -150,8 +150,10 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         if vc is OnboardingTerminalViewController {
             Current.onboardingObservation.complete()
             dismiss()
-        } else {
+        } else if sender as? UIViewController == topViewController {
             super.show(vc, sender: sender)
+        } else {
+            Current.Log.error("unknown sender \(String(describing: sender)) wanted us to present: \(vc)")
         }
     }
 }
