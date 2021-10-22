@@ -91,7 +91,6 @@ struct WidgetBasicContainerView: View {
             } else {
                 return 2
             }
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         case .systemExtraLarge:
             if modelCount <= 4 {
                 return 1
@@ -101,7 +100,6 @@ struct WidgetBasicContainerView: View {
             } else {
                 return 4
             }
-        #endif
         @unknown default: return 2
         }
     }
@@ -112,9 +110,7 @@ struct WidgetBasicContainerView: View {
         case .systemSmall: return 1
         case .systemMedium: return 4
         case .systemLarge: return 8
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         case .systemExtraLarge: return 16
-        #endif
         @unknown default: return 8
         }
     }
@@ -124,9 +120,7 @@ struct WidgetBasicContainerView: View {
         case .systemSmall: return 1
         case .systemMedium: return 8
         case .systemLarge: return 16
-        #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
         case .systemExtraLarge: return 32
-        #endif
         @unknown default: return 8
         }
     }

@@ -33,11 +33,9 @@ struct WidgetActions: Widget {
         .supportedFamilies({
             var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
 
-            #if compiler(>=5.5) && !targetEnvironment(macCatalyst)
             if #available(iOS 15, *) {
                 supportedFamilies.append(.systemExtraLarge)
             }
-            #endif
 
             return supportedFamilies
         }())
