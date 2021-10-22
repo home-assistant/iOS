@@ -1,7 +1,7 @@
 "NFCReaderUsageDescription" = "讀寫NFC標籤可觸發事件";
 "NSCameraUsageDescription" = "拍照並上傳至 Home Assistant 伺服器。";
 "NSCrossWebsiteTrackingUsageDescription" = "假如設定需要，可選項開啟跨網站追蹤。";
-"NSFocusStatusUsageDescription" = "以傳感器方式回報專注狀態。";
+"NSFocusStatusUsageDescription" = "以感測器方式回報專注狀態。";
 "NSLocalNetworkUsageDescription" = "與 Home Assistant 設備確認與進行通訊。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "建議您使用「永遠允許提供座標」以獲得最好的定位體驗。「只允許在使用 app 的期間提供座標資訊」將會自動關閉 iBeacons、地理圍欄、背景更新等功能。";
 "NSLocationAlwaysUsageDescription" = "程式需要提供以下權限，如存取 iBeacons、地址圍欄、背景運作等功能來取得目前的座標更新與精確度回報資訊。";

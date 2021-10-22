@@ -233,7 +233,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.notification.description" = "Allow push notifications to be sent from your Home Assistant";
 "onboarding.permissions.notification.grant_description" = "Allow notification permission to create a notify service for your device.";
 "onboarding.permissions.notification.title" = "Notifications";
-"onboarding.scanning.discovered_announcement" = "Discovered: %@";
+"onboarding.scanning.discovered_announcement" = "Entdeckt: %@";
 "onboarding.scanning.manual" = "Enter Address Manually";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
 "onboarding.scanning.title" = "Scanning for Servers";

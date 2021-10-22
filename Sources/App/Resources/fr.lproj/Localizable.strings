@@ -194,13 +194,13 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "ok_label" = "OK";
 "on_label" = "On";
 "onboarding.connect.title" = "Connexion à %@";
-"onboarding.connection_error.more_info_button" = "More Info";
-"onboarding.connection_error.title" = "Failed to Connect";
+"onboarding.connection_error.more_info_button" = "plus d'infos";
+"onboarding.connection_error.title" = "échec de connexion";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Le type d'authentification n'est pas pris en charge %@ .";
 "onboarding.connection_test_result.basic_auth.description" = "L'authentification HTTP de base n'est pas prise en charge.";
 "onboarding.connection_test_result.client_certificate.description" = "L'authentification par certificat client n'est pas prise en charge.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
-"onboarding.manual_setup.connect" = "Connect";
+"onboarding.manual_setup.connect" = "Connecter";
 "onboarding.manual_setup.couldnt_make_url.message" = "La valeur '%@' n'était pas une URL valide.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossible de créer une URL";
 "onboarding.manual_setup.description" = "The URL of your Home Assistant server. Make sure it includes the protocol and port.";
@@ -233,9 +233,9 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.permissions.notification.description" = "Autoriser l'envoi de notifications push depuis votre Home Assistant";
 "onboarding.permissions.notification.grant_description" = "Allow notification permission to create a notify service for your device.";
 "onboarding.permissions.notification.title" = "Notifications";
-"onboarding.scanning.discovered_announcement" = "Discovered: %@";
+"onboarding.scanning.discovered_announcement" = "Découvert %@";
 "onboarding.scanning.manual" = "Enter Address Manually";
-"onboarding.scanning.manual_hint" = "Not finding your server?";
+"onboarding.scanning.manual_hint" = "Vous ne trouvez pas votre serveur?";
 "onboarding.scanning.title" = "Scanning for Servers";
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
