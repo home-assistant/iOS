@@ -13,28 +13,18 @@ class OnboardingAuth {
         OnboardingErrorViewController(error: error)
     }
 
-    var login: OnboardingAuthLogin
-    var preSteps: [OnboardingAuthPreStep.Type]
-    var postSteps: [OnboardingAuthPostStep.Type]
-
-    init(
-        login: OnboardingAuthLogin = OnboardingAuthLoginImpl(),
-        preSteps: [OnboardingAuthPreStep.Type] = [
-            OnboardingAuthStepConnectivity.self,
-        ],
-        postSteps: [OnboardingAuthPostStep.Type] = [
-            OnboardingAuthStepDuplicate.self,
-            OnboardingAuthStepConfig.self,
-            OnboardingAuthStepSensors.self,
-            OnboardingAuthStepModels.self,
-            OnboardingAuthStepRegister.self,
-            OnboardingAuthStepNotify.self,
-        ]
-    ) {
-        self.login = login
-        self.preSteps = preSteps
-        self.postSteps = postSteps
-    }
+    var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
+    var preSteps: [OnboardingAuthPreStep.Type] = [
+        OnboardingAuthStepConnectivity.self,
+    ]
+    var postSteps: [OnboardingAuthPostStep.Type] = [
+        OnboardingAuthStepDuplicate.self,
+        OnboardingAuthStepConfig.self,
+        OnboardingAuthStepSensors.self,
+        OnboardingAuthStepModels.self,
+        OnboardingAuthStepRegister.self,
+        OnboardingAuthStepNotify.self,
+    ]
 
     func authenticate(
         to instance: DiscoveredHomeAssistant,
