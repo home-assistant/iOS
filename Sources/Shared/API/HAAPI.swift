@@ -192,7 +192,7 @@ public class HomeAssistantAPI {
             }
         }.then { _ in
             when(fulfilled: [
-                self.GetConfig().asVoid(),
+                self.getConfig(),
                 Current.modelManager.fetch(),
                 self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
                 self.updateComplications(passively: false).asVoid(),
@@ -279,16 +279,10 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetConfig(_ useWebhook: Bool = true) -> Promise<ConfigResponse> {
-        let promise: Promise<ConfigResponse>
+    public func getConfig() -> Promise<Void> {
+        let promise: Promise<ConfigResponse> = Current.webhooks.sendEphemeral(request: .init(type: "get_config", data: [:]))
 
-        if useWebhook {
-            promise = Current.webhooks.sendEphemeral(request: .init(type: "get_config", data: [:]))
-        } else {
-            promise = request(path: "config", callingFunctionName: "\(#function)")
-        }
-
-        return promise.then { config -> Promise<ConfigResponse> in
+        return promise.done { config in
             HomeAssistantAPI.LoadedComponents = config.Components
 
             guard self.MobileAppComponentLoaded else {
@@ -313,8 +307,6 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
             Current.crashReporter.setUserProperty(value: config.Version, name: "HA_Version")
-
-            return Promise.value(config)
         }
     }
 

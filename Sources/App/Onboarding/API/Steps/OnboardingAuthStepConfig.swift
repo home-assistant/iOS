@@ -12,6 +12,6 @@ struct OnboardingAuthStepConfig: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        api.GetConfig().asVoid()
+        api.getConfig()
     }
 }

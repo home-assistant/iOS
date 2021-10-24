@@ -176,6 +176,7 @@
 		116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
 		116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */; };
 		116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */; };
+		116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */; };
 		1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506C24DFCDE60065E874 /* SwiftUI.framework */; };
 		1171507024DFCDE60065E874 /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171506F24DFCDE60065E874 /* Widgets.swift */; };
@@ -1220,6 +1221,7 @@
 		116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.swift; sourceTree = "<group>"; };
 		116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuth.test.swift; sourceTree = "<group>"; };
 		116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthTokenExchange.swift; sourceTree = "<group>"; };
+		116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConfig.test.swift; sourceTree = "<group>"; };
 		1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1171506A24DFCDE60065E874 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1171506C24DFCDE60065E874 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -2243,6 +2245,7 @@
 			isa = PBXGroup;
 			children = (
 				116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */,
+				116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -5213,6 +5216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
+				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
