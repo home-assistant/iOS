@@ -14,6 +14,8 @@ struct OnboardingAuthStepConnectivity: OnboardingAuthPreStep {
         Set([.beforeAuth])
     }
 
+    var prepareSessionConfiguration: ((URLSessionConfiguration) -> Void)?
+
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         Current.Log.verbose()
 
@@ -43,7 +45,10 @@ struct OnboardingAuthStepConnectivity: OnboardingAuthPreStep {
             }
         }
 
-        let session = Session(eventMonitors: [eventMonitor])
+        let configuration = URLSessionConfiguration.ephemeral
+        prepareSessionConfiguration?(configuration)
+
+        let session = Session(configuration: configuration, eventMonitors: [eventMonitor])
         session.request(authDetails.url).validate().response { response in
             Current.Log.info(response)
 
