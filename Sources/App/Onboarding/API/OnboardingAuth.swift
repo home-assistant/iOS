@@ -14,6 +14,7 @@ class OnboardingAuth {
     }
 
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()
+    var tokenExchange: OnboardingAuthTokenExchange = OnboardingAuthTokenExchangeImpl()
     var preSteps: [OnboardingAuthPreStep.Type] = [
         OnboardingAuthStepConnectivity.self,
     ]
@@ -49,13 +50,13 @@ class OnboardingAuth {
                 .afterRegister,
                 .complete,
             ] {
-                promise = promise.then {
+                promise = promise.then { 
                     performPostSteps(checkPoint: step, connection: connection, api: api, sender: sender)
                 }
             }
 
             return promise.recover(policy: .allErrors) { error -> Promise<Void> in
-                undoConfigure(api: api).then { Promise<Void>(error: error) }
+                when(resolved: undoConfigure(api: api)).then { _ in Promise<Void>(error: error) }
             }
         }
     }
@@ -104,18 +105,14 @@ class OnboardingAuth {
         connectionInfo: ConnectionInfo
     ) -> Promise<(HomeAssistantAPI, HAConnection)> {
         Current.Log.info()
-        let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
-        let token = tokenManager.initialTokenWithCode(code)
 
-        return token.get { tokenInfo in
+        return tokenExchange.tokenInfo(
+            code: code,
+            connectionInfo: connectionInfo
+        ).get { tokenInfo in
             Current.Log.verbose()
             Current.settingsStore.tokenInfo = tokenInfo
             Current.settingsStore.connectionInfo = connectionInfo
-
-            withExtendedLifetime(tokenManager) {
-                // just making it exist longer
-            }
-
             Current.resetAPI()
             Current.apiConnection.connect()
         }.then { _ in

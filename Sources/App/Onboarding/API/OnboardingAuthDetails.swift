@@ -1,7 +1,7 @@
 import Foundation
 import Shared
 
-struct OnboardingAuthDetails {
+struct OnboardingAuthDetails: Equatable {
     var url: URL
     var scheme: String
 

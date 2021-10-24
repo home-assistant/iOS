@@ -174,6 +174,8 @@
 		1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */; };
 		116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
 		116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
+		116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */; };
+		116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */; };
 		1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506C24DFCDE60065E874 /* SwiftUI.framework */; };
 		1171507024DFCDE60065E874 /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171506F24DFCDE60065E874 /* Widgets.swift */; };
@@ -1216,6 +1218,8 @@
 		1168BF32271809C600DD4D15 /* OnboardingAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthError.swift; sourceTree = "<group>"; };
 		1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Eureka.swift"; sourceTree = "<group>"; };
 		116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.swift; sourceTree = "<group>"; };
+		116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuth.test.swift; sourceTree = "<group>"; };
+		116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthTokenExchange.swift; sourceTree = "<group>"; };
 		1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1171506A24DFCDE60065E874 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1171506C24DFCDE60065E874 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -2208,6 +2212,7 @@
 				1185DF93271FBA6100ED7D9A /* OnboardingAuthDetails.swift */,
 				1168BF32271809C600DD4D15 /* OnboardingAuthError.swift */,
 				1185DF95271FBB9800ED7D9A /* OnboardingAuthLogin.swift */,
+				116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -2232,6 +2237,14 @@
 				11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */,
 			);
 			path = Container;
+			sourceTree = "<group>";
+		};
+		116D3A3B2724D81C00EF5D21 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		1171506E24DFCDE60065E874 /* Widgets */ = {
@@ -2995,6 +3008,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				116D3A3B2724D81C00EF5D21 /* Auth */,
 				11AD2EA7252900AA00FBC437 /* Resources */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 				117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */,
@@ -5174,6 +5188,7 @@
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
+				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
@@ -5204,6 +5219,7 @@
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
+				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
 				11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
