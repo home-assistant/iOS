@@ -2,7 +2,7 @@ import Foundation
 @testable import HomeAssistant
 import XCTest
 import PromiseKit
-import Shared
+@testable import Shared
 import HAKit
 @testable import Tests_Shared
 
@@ -14,9 +14,15 @@ class OnboardingAuthTests: XCTestCase {
         super.setUp()
 
         auth = OnboardingAuth()
-        instance = DiscoveredHomeAssistant(manualURL: URL(string: "http://127.0.0.1:8123")!)
+
+        var instance = DiscoveredHomeAssistant(manualURL: URL(string: "https://external.homeassistant:8123")!)
+        instance.internalURL = URL(string: "https://internal.homeassistant:8123")!
+        self.instance = instance
 
         Current.isTestingOnboarding = true
+
+        Current.settingsStore.tokenInfo = nil
+        Current.settingsStore.connectionInfo = nil
     }
 
     override func tearDown() {
@@ -32,6 +38,9 @@ class OnboardingAuthTests: XCTestCase {
 
         // normally it is bad to tautologically test that some lines exist in the non-test code
         // however, auth is important enough that removing a step should be _very_ intentional
+        XCTAssertTrue(auth.login is OnboardingAuthLoginImpl)
+        XCTAssertTrue(auth.tokenExchange is OnboardingAuthTokenExchangeImpl)
+
         XCTAssertTrue(pre.contains(.init(OnboardingAuthStepConnectivity.self)))
 
         XCTAssertTrue(post.contains(.init(OnboardingAuthStepDuplicate.self)))
@@ -47,6 +56,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
     func testLoginFails() throws {
@@ -54,6 +66,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
     func testTokenFails() throws {
@@ -61,6 +76,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
     func testBeforeRegisterFails() throws {
@@ -68,6 +86,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
     func testRegisterFails() throws {
@@ -75,6 +96,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
     func testAfterRegisterFails() throws {
@@ -82,6 +106,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
     func testCompleteFails() throws {
@@ -89,13 +116,63 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .specific)
         }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
     }
 
-    func testSuccessful() throws {
+    func testCancelledLogin() throws {
+        let result = auth(loginResult: .init(error: TestError.cancelled))
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(error as? TestError, .cancelled)
+        }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
+    }
+
+    func testCancelledBefore() throws {
+        let result = auth(postBeforeRegister: [.value(()), .init(error: TestError.cancelled)])
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(error as? TestError, .cancelled)
+        }
+
+        XCTAssertNil(Current.settingsStore.tokenInfo)
+        XCTAssertNil(Current.settingsStore.connectionInfo)
+    }
+
+    func testSuccessfulWithInternalAndExternal() throws {
         let result = auth()
         XCTAssertNoThrow(try hang(result))
         // test api state
         // add tests above to test negated api state
+
+        let tokenInfo = try XCTUnwrap(Current.settingsStore.tokenInfo)
+        XCTAssertEqual(tokenInfo.accessToken, "access_token1")
+        XCTAssertEqual(tokenInfo.refreshToken, "refresh_token1")
+
+        let connectionInfo = try XCTUnwrap(Current.settingsStore.connectionInfo)
+        XCTAssertEqual(connectionInfo.internalURL, instance.internalURL)
+        XCTAssertEqual(connectionInfo.externalURL, instance.externalURL)
+        XCTAssertEqual(connectionInfo.overrideActiveURLType, .internal)
+    }
+
+    func testSuccessfulWithOnlyExternal() throws {
+        instance.internalURL = nil
+
+        let result = auth()
+        XCTAssertNoThrow(try hang(result))
+        // test api state
+        // add tests above to test negated api state
+
+        let tokenInfo = try XCTUnwrap(Current.settingsStore.tokenInfo)
+        XCTAssertEqual(tokenInfo.accessToken, "access_token1")
+        XCTAssertEqual(tokenInfo.refreshToken, "refresh_token1")
+
+        let connectionInfo = try XCTUnwrap(Current.settingsStore.connectionInfo)
+        XCTAssertNil(connectionInfo.internalURL)
+        XCTAssertEqual(connectionInfo.externalURL, instance.externalURL)
+        XCTAssertNil(connectionInfo.overrideActiveURLType)
     }
 
     func testOrderPostCommands() throws {
@@ -244,9 +321,18 @@ class OnboardingAuthTests: XCTestCase {
     }
 }
 
-private enum TestError: Error {
+private enum TestError: Error, CancellableError {
     case any
     case specific
+    case cancelled
+
+    var isCancelled: Bool {
+        if case .cancelled = self {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 protocol FakeAuthStepResultable {
