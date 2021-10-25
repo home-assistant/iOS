@@ -25,7 +25,7 @@ class OnboardingAuthStepRegisterTests: XCTestCase {
     }
 
     func testSupportedPoints() {
-        XCTAssertTrue(OnboardingAuthStepConfig.supportedPoints.contains(.register))
+        XCTAssertTrue(OnboardingAuthStepRegister.supportedPoints.contains(.register))
     }
 
     func testPerformSuccess() {
