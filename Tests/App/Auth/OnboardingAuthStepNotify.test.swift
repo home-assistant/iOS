@@ -41,7 +41,7 @@ class OnboardingAuthStepNotifyTests: XCTestCase {
         let observer = FakeOnboardingStateObserver(expectation: observationExpectation)
         Current.onboardingObservation.register(observer: observer)
 
-        let result = step.perform(point: .afterRegister)
+        let result = step.perform(point: .complete)
         XCTAssertNoThrow(try hang(result))
         wait(for: [
             notificationExpectation,

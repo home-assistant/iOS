@@ -29,7 +29,7 @@ class OnboardingAuthStepRegisterTests: XCTestCase {
     }
 
     func testPerformSuccess() {
-        let result = step.perform(point: .afterRegister)
+        let result = step.perform(point: .register)
 
         XCTAssertFalse(result.isResolved)
         api.registerResolver?.fulfill(())
@@ -37,7 +37,7 @@ class OnboardingAuthStepRegisterTests: XCTestCase {
     }
 
     func testPerformFailure() {
-        let result = step.perform(point: .afterRegister)
+        let result = step.perform(point: .register)
 
         XCTAssertFalse(result.isResolved)
         api.registerResolver?.reject(TestError.any)
