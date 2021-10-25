@@ -395,6 +395,8 @@
 		11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */; };
 		11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */; };
 		11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */; };
+		11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */; };
+		11EFD3C327264306000AF78B /* UIAlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3C227264306000AF78B /* UIAlertAction.swift */; };
 		11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */; };
 		11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
@@ -1400,6 +1402,8 @@
 		11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConnectivity.swift; sourceTree = "<group>"; };
+		11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepDuplicate.test.swift; sourceTree = "<group>"; };
+		11EFD3C227264306000AF78B /* UIAlertAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertAction.swift; sourceTree = "<group>"; };
 		11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationLoadingViewController.swift; sourceTree = "<group>"; };
 		11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.swift; sourceTree = "<group>"; };
 		11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.test.swift; sourceTree = "<group>"; };
@@ -2249,6 +2253,7 @@
 				116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */,
 				116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */,
 				11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */,
+				11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -2613,6 +2618,14 @@
 				118261F424F8C7C1000795C6 /* SceneManager.swift */,
 			);
 			path = Scenes;
+			sourceTree = "<group>";
+		};
+		11EFD3C1272642FC000AF78B /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				11EFD3C227264306000AF78B /* UIAlertAction.swift */,
+			);
+			path = Additions;
 			sourceTree = "<group>";
 		};
 		11F2F21725871C1700F61F7C /* NotificationAttachments */ = {
@@ -3014,6 +3027,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				11EFD3C1272642FC000AF78B /* Additions */,
 				116D3A3B2724D81C00EF5D21 /* Auth */,
 				11AD2EA7252900AA00FBC437 /* Resources */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
@@ -5222,7 +5236,9 @@
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.swift in Sources */,
+				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
+				11EFD3C327264306000AF78B /* UIAlertAction.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,

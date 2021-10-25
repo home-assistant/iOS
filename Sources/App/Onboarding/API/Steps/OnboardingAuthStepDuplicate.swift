@@ -3,6 +3,16 @@ import PromiseKit
 import Shared
 
 struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
+    init(
+        connection: HAConnection,
+        api: HomeAssistantAPI,
+        sender: UIViewController
+    ) {
+        self.connection = connection
+        self.api = api
+        self.sender = sender
+    }
+
     var connection: HAConnection
     var api: HomeAssistantAPI
     var sender: UIViewController
@@ -10,6 +20,8 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
     static var supportedPoints: Set<OnboardingAuthStepPoint> {
         Set([.beforeRegister])
     }
+
+    var timeout: TimeInterval = 30.0
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         let check = firstly { () -> Promise<[HAData]> in
@@ -38,7 +50,7 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
             )
         }
 
-        let timeout = after(seconds: 30.0).then { () -> Promise<Void> in
+        let timeout = after(seconds: timeout).then { () -> Promise<Void> in
             switch connection.state {
             case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
                 throw error
@@ -103,27 +115,26 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
                 seal.reject(PMKError.cancelled)
             }))
 
-            alert
-                .addAction(.init(
-                    title: L10n.Onboarding.DeviceNameCheck.Error.renameAction,
-                    style: .default,
-                    handler: { [self] _ in
-                        let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces)
+            alert.addAction(.init(
+                title: L10n.Onboarding.DeviceNameCheck.Error.renameAction,
+                style: .default,
+                handler: { [self] _ in
+                    let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces)
 
-                        guard let name = name, name.isEmpty == false,
-                              !registeredDevices.contains(where: { $0.matches(name: name) }) else {
-                                  promptForDeviceName(
-                                    deviceName: name ?? deviceName,
-                                    registeredDevices: registeredDevices,
-                                    sender: sender
-                                  ).pipe(to: seal.resolve)
-                                  return
-                              }
+                    guard let name = name, name.isEmpty == false,
+                          !registeredDevices.contains(where: { $0.matches(name: name) }) else {
+                              promptForDeviceName(
+                                deviceName: name ?? deviceName,
+                                registeredDevices: registeredDevices,
+                                sender: sender
+                              ).pipe(to: seal.resolve)
+                              return
+                          }
 
-                        Current.settingsStore.overrideDeviceName = name
-                        seal.fulfill(())
-                    }
-                ))
+                    Current.settingsStore.overrideDeviceName = name
+                    seal.fulfill(())
+                }
+            ))
 
             sender.present(alert, animated: true, completion: nil)
         }
