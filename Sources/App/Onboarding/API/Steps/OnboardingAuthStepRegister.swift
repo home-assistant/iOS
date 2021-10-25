@@ -15,4 +15,3 @@ struct OnboardingAuthStepRegister: OnboardingAuthPostStep {
         api.register()
     }
 }
-

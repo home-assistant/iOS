@@ -50,7 +50,7 @@ class OnboardingAuth {
                 .afterRegister,
                 .complete,
             ] {
-                promise = promise.then { 
+                promise = promise.then {
                     performPostSteps(checkPoint: step, connection: connection, api: api, sender: sender)
                 }
             }

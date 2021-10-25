@@ -1,5 +1,5 @@
-import PromiseKit
 import HAKit
+import PromiseKit
 import Shared
 
 enum OnboardingAuthStepPoint: Int, Comparable {

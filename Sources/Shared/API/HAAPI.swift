@@ -280,7 +280,8 @@ public class HomeAssistantAPI {
     }
 
     public func getConfig() -> Promise<Void> {
-        let promise: Promise<ConfigResponse> = Current.webhooks.sendEphemeral(request: .init(type: "get_config", data: [:]))
+        let promise: Promise<ConfigResponse> = Current.webhooks
+            .sendEphemeral(request: .init(type: "get_config", data: [:]))
 
         return promise.done { config in
             HomeAssistantAPI.LoadedComponents = config.Components

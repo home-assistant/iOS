@@ -1,10 +1,10 @@
 import Foundation
+import HAKit
 @testable import HomeAssistant
-import XCTest
 import PromiseKit
 @testable import Shared
-import HAKit
 @testable import Tests_Shared
+import XCTest
 
 class OnboardingAuthTests: XCTestCase {
     private var auth: OnboardingAuth!
@@ -249,7 +249,7 @@ class OnboardingAuthTests: XCTestCase {
         tokenResult: Promise<TokenInfo> = .value(TokenInfo(
             accessToken: "access_token1",
             refreshToken: "refresh_token1",
-            expiration: Date.init(timeIntervalSinceNow: 1000)
+            expiration: Date(timeIntervalSinceNow: 1000)
         )),
         postBeforeRegister: [Promise<Void>] = [.value(()), .value(()), .value(())],
         postRegister: [Promise<Void>] = [.value(()), .value(()), .value(())],
@@ -379,19 +379,28 @@ class FakeOnboardingAuthPreStepBeforeAuth: FakeOnboardingAuthPreStep {
 class FakeOnboardingAuthPreStepBeforeAuth1: FakeOnboardingAuthPreStepBeforeAuth, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPreStepBeforeAuth2: FakeOnboardingAuthPreStepBeforeAuth, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPreStepBeforeAuth3: FakeOnboardingAuthPreStepBeforeAuth, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStep: OnboardingAuthPostStep {
@@ -419,6 +428,7 @@ class FakeOnboardingAuthPostStepBeforeRegister1: FakeOnboardingAuthPostStepBefor
             (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
+
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
@@ -426,21 +436,31 @@ class FakeOnboardingAuthPostStepBeforeRegister1: FakeOnboardingAuthPostStepBefor
             }
         }
     }
+
     static var wasInvokedPromise: Guarantee<Void>?
     static var wasInvokedResolver: ((()) -> Void)?
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepBeforeRegister2: FakeOnboardingAuthPostStepBeforeRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepBeforeRegister3: FakeOnboardingAuthPostStepBeforeRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepRegister: FakeOnboardingAuthPostStep {
@@ -453,6 +473,7 @@ class FakeOnboardingAuthPostStepRegister1: FakeOnboardingAuthPostStepRegister, F
             (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
+
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
@@ -460,21 +481,31 @@ class FakeOnboardingAuthPostStepRegister1: FakeOnboardingAuthPostStepRegister, F
             }
         }
     }
+
     static var wasInvokedPromise: Guarantee<Void>?
     static var wasInvokedResolver: ((()) -> Void)?
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepRegister2: FakeOnboardingAuthPostStepRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepRegister3: FakeOnboardingAuthPostStepRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepAfterRegister: FakeOnboardingAuthPostStep {
@@ -487,6 +518,7 @@ class FakeOnboardingAuthPostStepAfterRegister1: FakeOnboardingAuthPostStepAfterR
             (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
+
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
@@ -494,21 +526,31 @@ class FakeOnboardingAuthPostStepAfterRegister1: FakeOnboardingAuthPostStepAfterR
             }
         }
     }
+
     static var wasInvokedPromise: Guarantee<Void>?
     static var wasInvokedResolver: ((()) -> Void)?
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepAfterRegister2: FakeOnboardingAuthPostStepAfterRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepAfterRegister3: FakeOnboardingAuthPostStepAfterRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepComplete: FakeOnboardingAuthPostStep {
@@ -521,6 +563,7 @@ class FakeOnboardingAuthPostStepComplete1: FakeOnboardingAuthPostStepComplete, F
             (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
+
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
@@ -528,20 +571,29 @@ class FakeOnboardingAuthPostStepComplete1: FakeOnboardingAuthPostStepComplete, F
             }
         }
     }
+
     static var wasInvokedPromise: Guarantee<Void>?
     static var wasInvokedResolver: ((()) -> Void)?
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepComplete2: FakeOnboardingAuthPostStepComplete, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
 
 class FakeOnboardingAuthPostStepComplete3: FakeOnboardingAuthPostStepComplete, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any)
     static var wasInvoked: Bool = false
-    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> { Self.wasInvoked = true; return Self.result }
+    override func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Self.wasInvoked = true
+        return Self.result
+    }
 }
-

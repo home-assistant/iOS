@@ -1,8 +1,8 @@
-@testable import HomeAssistant
-import XCTest
-@testable import Shared
 import HAKit
+@testable import HomeAssistant
 import PromiseKit
+@testable import Shared
+import XCTest
 
 class OnboardingAuthStepNotifyTests: XCTestCase {
     private var step: OnboardingAuthStepNotify!
@@ -17,7 +17,11 @@ class OnboardingAuthStepNotifyTests: XCTestCase {
         Current.onboardingObservation = .init()
 
         connection = HAMockConnection()
-        api = HomeAssistantAPI(tokenInfo: .init(accessToken: "access_token", refreshToken: "refresh_token", expiration: .init(timeIntervalSinceNow: 100)))
+        api = HomeAssistantAPI(tokenInfo: .init(
+            accessToken: "access_token",
+            refreshToken: "refresh_token",
+            expiration: .init(timeIntervalSinceNow: 100)
+        ))
         sender = UIViewController()
 
         step = OnboardingAuthStepNotify(connection: connection, api: api, sender: sender)
@@ -28,7 +32,10 @@ class OnboardingAuthStepNotifyTests: XCTestCase {
     }
 
     func testPerform() {
-        let notificationExpectation = XCTNSNotificationExpectation(name: HomeAssistantAPI.didConnectNotification, object: nil)
+        let notificationExpectation = XCTNSNotificationExpectation(
+            name: HomeAssistantAPI.didConnectNotification,
+            object: nil
+        )
         let observationExpectation = expectation(description: "observation")
 
         let observer = FakeOnboardingStateObserver(expectation: observationExpectation)
@@ -56,13 +63,13 @@ private class FakeOnboardingStateObserver: OnboardingStateObserver {
     init(expectation: XCTestExpectation) {
         self.expectation = expectation
     }
+
     func onboardingStateDidChange(to state: OnboardingState) {
         if case .didConnect = state {
             expectation.fulfill()
         }
     }
 }
-
 
 private class FakeModelManager: ModelManager {
     var fetchResult: Promise<Void> = .value(())

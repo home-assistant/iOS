@@ -1,8 +1,8 @@
-@testable import HomeAssistant
-import XCTest
-@testable import Shared
 import HAKit
+@testable import HomeAssistant
 import PromiseKit
+@testable import Shared
+import XCTest
 
 class OnboardingAuthStepDuplicateTests: XCTestCase {
     private var step: OnboardingAuthStepDuplicate!
@@ -17,7 +17,11 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         Current.settingsStore.overrideDeviceName = nil
 
         connection = HAMockConnection()
-        api = HomeAssistantAPI(tokenInfo: .init(accessToken: "access_token", refreshToken: "refresh_token", expiration: .init(timeIntervalSinceNow: 100)))
+        api = HomeAssistantAPI(tokenInfo: .init(
+            accessToken: "access_token",
+            refreshToken: "refresh_token",
+            expiration: .init(timeIntervalSinceNow: 100)
+        ))
         sender = FakeUIViewController()
 
         connection.automaticallyTransitionToConnecting = false
@@ -42,7 +46,12 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
 
     func testNoWebSocketResponseWithError() {
         step.timeout = 0
-        connection.setState(.disconnected(reason: .waitingToReconnect(lastError: TestError.any, atLatest: Date(), retryCount: 0)))
+        connection
+            .setState(.disconnected(reason: .waitingToReconnect(
+                lastError: TestError.any,
+                atLatest: Date(),
+                retryCount: 0
+            )))
         XCTAssertThrowsError(try hang(step.perform(point: .beforeRegister))) { error in
             XCTAssertEqual(error as? TestError, .any)
         }
@@ -217,7 +226,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
                 [
                     "name": device.name,
                     "identifiers": [
-                        ["mobile_app", device.identifier]
+                        ["mobile_app", device.identifier],
                     ],
                     "additional_unused_key1": true,
                     "additional_unused_key2": 3,
@@ -236,7 +245,11 @@ private enum TestError: Error {
 private class FakeUIViewController: UIViewController {
     var didPresent: ((UIViewController) -> Void)?
 
-    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+    override func present(
+        _ viewControllerToPresent: UIViewController,
+        animated flag: Bool,
+        completion: (() -> Void)? = nil
+    ) {
         didPresent?(viewControllerToPresent)
         completion?()
     }

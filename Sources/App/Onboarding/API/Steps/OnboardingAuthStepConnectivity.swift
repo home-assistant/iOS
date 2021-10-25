@@ -1,5 +1,5 @@
-import Foundation
 import Alamofire
+import Foundation
 import PromiseKit
 import Shared
 import UIKit
@@ -61,7 +61,7 @@ struct OnboardingAuthStepConnectivity: OnboardingAuthPreStep {
                 } else if let underlying = underlying as? URLError {
                     switch underlying.code {
                     case .serverCertificateUntrusted, .serverCertificateHasUnknownRoot, .serverCertificateHasBadDate,
-                            .serverCertificateNotYetValid:
+                         .serverCertificateNotYetValid:
                         kind = .sslUntrusted(underlying)
                     default:
                         kind = .other(underlying)

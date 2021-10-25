@@ -1,8 +1,8 @@
-@testable import HomeAssistant
-import XCTest
-@testable import Shared
 import HAKit
+@testable import HomeAssistant
 import PromiseKit
+@testable import Shared
+import XCTest
 
 class OnboardingAuthStepSensorsTests: XCTestCase {
     private var step: OnboardingAuthStepSensors!
@@ -14,7 +14,11 @@ class OnboardingAuthStepSensorsTests: XCTestCase {
         super.setUp()
 
         connection = HAMockConnection()
-        api = FakeHomeAssistantAPI(tokenInfo: .init(accessToken: "access_token", refreshToken: "refresh_token", expiration: .init(timeIntervalSinceNow: 100)))
+        api = FakeHomeAssistantAPI(tokenInfo: .init(
+            accessToken: "access_token",
+            refreshToken: "refresh_token",
+            expiration: .init(timeIntervalSinceNow: 100)
+        ))
         sender = UIViewController()
 
         step = OnboardingAuthStepSensors(connection: connection, api: api, sender: sender)

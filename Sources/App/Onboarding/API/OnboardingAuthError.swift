@@ -28,8 +28,8 @@ struct OnboardingAuthError: LocalizedError {
             case let (.authenticationUnsupported(lhsMethod), .authenticationUnsupported(rhsMethod)):
                 return lhsMethod == rhsMethod
             case let (.sslUntrusted(lhsError as NSError), .sslUntrusted(rhsError as NSError)),
-                let (.clientCertificateRequired(lhsError as NSError), .clientCertificateRequired(rhsError as NSError)),
-                let (.other(lhsError as NSError), .other(rhsError as NSError)):
+                 let (.clientCertificateRequired(lhsError as NSError), .clientCertificateRequired(rhsError as NSError)),
+                 let (.other(lhsError as NSError), .other(rhsError as NSError)):
                 return lhsError.domain == rhsError.domain &&
                     lhsError.code == rhsError.code
             default: return false

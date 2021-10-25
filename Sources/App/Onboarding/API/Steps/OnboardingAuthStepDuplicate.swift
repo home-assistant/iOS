@@ -123,13 +123,13 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
 
                     guard let name = name, name.isEmpty == false,
                           !registeredDevices.contains(where: { $0.matches(name: name) }) else {
-                              promptForDeviceName(
-                                deviceName: name ?? deviceName,
-                                registeredDevices: registeredDevices,
-                                sender: sender
-                              ).pipe(to: seal.resolve)
-                              return
-                          }
+                        promptForDeviceName(
+                            deviceName: name ?? deviceName,
+                            registeredDevices: registeredDevices,
+                            sender: sender
+                        ).pipe(to: seal.resolve)
+                        return
+                    }
 
                     Current.settingsStore.overrideDeviceName = name
                     seal.fulfill(())

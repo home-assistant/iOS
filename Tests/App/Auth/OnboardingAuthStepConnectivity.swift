@@ -1,8 +1,8 @@
+import Alamofire
 @testable import HomeAssistant
 import OHHTTPStubs
-import XCTest
 import PromiseKit
-import Alamofire
+import XCTest
 
 class OnboardingAuthStepConnectivityTests: XCTestCase {
     private var step: OnboardingAuthStepConnectivity!
@@ -84,7 +84,10 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
 
         for methodKind: MethodKind in [
             .init(method: NSURLAuthenticationMethodHTTPBasic, errorKind: .basicAuth),
-            .init(method: NSURLAuthenticationMethodHTTPDigest, errorKind: .authenticationUnsupported(NSURLAuthenticationMethodHTTPDigest)),
+            .init(
+                method: NSURLAuthenticationMethodHTTPDigest,
+                errorKind: .authenticationUnsupported(NSURLAuthenticationMethodHTTPDigest)
+            ),
         ] {
             ConnectivityURLProtocol.handler = { proto, client in
                 client.urlProtocol(proto, didReceive: URLAuthenticationChallenge(
@@ -115,7 +118,12 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
                 error: nil,
                 sender: FakeURLAuthenticationChallengeSender(
                     defaultHandling: {
-                        Self.finish(authDetails: authDetails, client: client, proto: proto, statusCode: returnError ? 401 : 200)
+                        Self.finish(
+                            authDetails: authDetails,
+                            client: client,
+                            proto: proto,
+                            statusCode: returnError ? 401 : 200
+                        )
                     }
                 )
             ))
@@ -177,7 +185,10 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
             }
 
             XCTAssertThrowsError(try hang(step.perform(point: .beforeAuth))) { error in
-                XCTAssertEqual((error as? OnboardingAuthError)?.kind, .other(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: statusCode))))
+                XCTAssertEqual(
+                    (error as? OnboardingAuthError)?.kind,
+                    .other(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: statusCode)))
+                )
             }
         }
     }
