@@ -12,6 +12,6 @@ struct OnboardingAuthStepSensors: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        api.RegisterSensors().asVoid()
+        api.registerSensors()
     }
 }

@@ -758,7 +758,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func RegisterSensors() -> Promise<Void> {
+    public func registerSensors() -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration).map(\.sensors)
         }.get { sensors in
