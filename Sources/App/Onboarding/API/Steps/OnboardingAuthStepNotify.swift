@@ -23,4 +23,3 @@ struct OnboardingAuthStepNotify: OnboardingAuthPostStep {
         return .value(())
     }
 }
-
