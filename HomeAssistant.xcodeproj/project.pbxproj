@@ -378,6 +378,7 @@
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E7C4B02702E03000667342 /* WidgetOpenPageIntent+Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E7C4AF2702E03000667342 /* WidgetOpenPageIntent+Observation.swift */; };
 		11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */; };
+		11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */; };
 		11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
 		11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
 		11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* ModelManager.swift */; };
@@ -1388,6 +1389,7 @@
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11E7C4AF2702E03000667342 /* WidgetOpenPageIntent+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetOpenPageIntent+Observation.swift"; sourceTree = "<group>"; };
 		11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTerminalViewController.swift; sourceTree = "<group>"; };
+		11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepModels.test.swift; sourceTree = "<group>"; };
 		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
 		11EE9B4824C5116F00404AF8 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
@@ -2254,6 +2256,7 @@
 				116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */,
 				11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */,
 				11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */,
+				11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -5244,6 +5247,7 @@
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
+				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
 				11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
