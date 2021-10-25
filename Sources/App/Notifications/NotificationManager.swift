@@ -327,7 +327,7 @@ extension NotificationManager: MessagingDelegate {
 
         Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
             Current.api.then(on: nil) { api in
-                api.UpdateRegistration()
+                api.updateRegistration()
             }
         }.cauterize()
     }

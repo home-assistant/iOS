@@ -12,7 +12,7 @@ struct OnboardingAuthStepRegister: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        api.Register().asVoid()
+        api.register()
     }
 }
 

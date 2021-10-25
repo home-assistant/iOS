@@ -165,8 +165,8 @@ public class HomeAssistantAPI {
         Current.apiConnection.connect()
 
         return firstly {
-            self.UpdateRegistration()
-        }.recover { error -> Promise<MobileAppRegistrationResponse> in
+            self.updateRegistration().asVoid()
+        }.recover { error -> Promise<Void> in
             switch error as? WebhookError {
             case .unmappableValue,
                  .unexpectedType,
@@ -179,7 +179,7 @@ public class HomeAssistantAPI {
                 return Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                     "error": String(describing: error),
                 ])).then {
-                    return self.Register()
+                    return self.register()
                 }
             case .noApi,
                  .unregisteredIdentifier,
@@ -190,7 +190,7 @@ public class HomeAssistantAPI {
                 Current.Log.info("not re-registering, but failed to update registration: \(error)")
                 throw error
             }
-        }.then { _ in
+        }.then {
             when(fulfilled: [
                 self.getConfig(),
                 Current.modelManager.fetch(),
@@ -354,15 +354,14 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func Register() -> Promise<MobileAppRegistrationResponse> {
+    public func register() -> Promise<Void> {
         request(
             path: "mobile_app/registrations",
             callingFunctionName: "\(#function)",
             method: .post,
             parameters: buildMobileAppRegistration(),
             encoding: JSONEncoding.default
-        )
-        .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
+        ).done { (resp: MobileAppRegistrationResponse) in
             Current.Log.verbose("Registration response \(resp)")
 
             let connectionInfo = try self.connectionInfo()
@@ -370,12 +369,10 @@ public class HomeAssistantAPI {
             connectionInfo.cloudhookURL = resp.CloudhookURL
             connectionInfo.webhookID = resp.WebhookID
             connectionInfo.webhookSecret = resp.WebhookSecret
-
-            return Promise.value(resp)
         }
     }
 
-    public func UpdateRegistration() -> Promise<MobileAppRegistrationResponse> {
+    public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
         Current.webhooks.sendEphemeral(request: .init(
             type: "update_registration",
             data: buildMobileAppUpdateRegistration()
