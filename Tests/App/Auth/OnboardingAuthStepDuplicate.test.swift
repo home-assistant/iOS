@@ -65,7 +65,9 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
             $0.completion(.failure(testError))
         }
 
-        XCTAssertNoThrow(try hang(result))
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(error as? HAError, testError)
+        }
     }
 
     func testRequestWrongDataType() {
@@ -75,7 +77,9 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
             $0.completion(.success(.primitive(true)))
         }
 
-        XCTAssertNoThrow(try hang(result))
+        XCTAssertThrowsError(try hang(result)) { error in
+            XCTAssertEqual(error as? HomeAssistantAPI.APIError, .invalidResponse)
+        }
     }
 
     func testNoExistingIntegrations() throws {
@@ -141,6 +145,21 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         XCTAssertEqual(Current.settingsStore.overrideDeviceName, "New Name")
     }
 
+    func testTimeoutBeforeUserFlowFinished() throws {
+        // just enough to enqueue and execute before the alert action below
+        step.timeout = 0.01
+
+        let expectation = setupSender(delay: .milliseconds(100), actions: (.default, "New Name"))
+
+        let result = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName, identifier: "any_other"),
+        ]))
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertNoThrow(try hang(result))
+    }
+
     func testDuplicateChangedToExistingThenExistingThenCancelled() throws {
         let expectation = setupSender(actions: (.default, deviceName), (.default, deviceName), (.cancel, nil))
 
@@ -173,7 +192,10 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         XCTAssertEqual(Current.settingsStore.overrideDeviceName, "New Name 2")
     }
 
-    private func setupSender(actions: (UIAlertAction.Style, String?)...) -> XCTestExpectation {
+    private func setupSender(
+        delay: DispatchTimeInterval = .seconds(0),
+        actions: (UIAlertAction.Style, String?)...
+    ) -> XCTestExpectation {
         var pendingActions = actions.makeIterator()
 
         let expectation = expectation(description: "alert action")
@@ -196,8 +218,10 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
 
             vc.textFields?.forEach { $0.text = nextAction.1 }
 
-            action.ha_handler(action)
-            expectation.fulfill()
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                action.ha_handler(action)
+                expectation.fulfill()
+            }
         }
         return expectation
     }

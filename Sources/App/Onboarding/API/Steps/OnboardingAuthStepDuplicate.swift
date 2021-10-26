@@ -24,19 +24,31 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
     var timeout: TimeInterval = 30.0
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        let check = firstly { () -> Promise<[HAData]> in
-            connection.send(.init(type: "config/device_registry/list")).promise.compactMap {
+        let devices = firstly { () -> Promise<[HAData]> in
+            connection.send(.init(type: "config/device_registry/list")).promise.map {
                 if case let .array(value) = $0 {
                     return value
                 } else {
-                    return nil
+                    throw HomeAssistantAPI.APIError.invalidResponse
                 }
             }
         }.compactMapValues { value -> RegisteredDevice? in
             try? RegisteredDevice(data: value)
-        }.recover { _ in
-            .value([])
-        }.then { [self] registeredDevices -> Promise<Void> in
+        }
+
+        let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
+            switch connection.state {
+            case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
+                throw error
+            default:
+                throw OnboardingAuthError(kind: .invalidURL, data: nil)
+            }
+        }
+
+        // racing the request, not the whole flow, importantly.
+        // otherwise we'd fail out before the user finished typing.
+
+        return race(timeout, devices).then { [self] registeredDevices -> Promise<Void> in
             guard !registeredDevices.contains(where: { $0.id == Current.settingsStore.integrationDeviceID }) else {
                 // if the integration is registered already, we will take over that one, so we don't need to look
                 return .value(())
@@ -49,18 +61,6 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
                 sender: sender
             )
         }
-
-        let timeout = after(seconds: timeout).then { () -> Promise<Void> in
-            switch connection.state {
-            case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
-                throw error
-            default:
-                throw OnboardingAuthError(kind: .invalidURL, data: nil)
-            }
-        }
-
-        // in case the WebSocket connectivity fails, provide the error
-        return race(timeout, check)
     }
 
     private struct RegisteredDevice {
