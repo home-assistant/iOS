@@ -43,6 +43,7 @@ class OnboardingAuthTests: XCTestCase {
 
         XCTAssertTrue(pre.contains(.init(OnboardingAuthStepConnectivity.self)))
 
+        XCTAssertTrue(post.contains(.init(OnboardingAuthStepDuplicate.self)))
         XCTAssertTrue(post.contains(.init(OnboardingAuthStepConfig.self)))
         XCTAssertTrue(post.contains(.init(OnboardingAuthStepSensors.self)))
         XCTAssertTrue(post.contains(.init(OnboardingAuthStepModels.self)))
