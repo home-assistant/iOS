@@ -8,6 +8,8 @@ protocol OnboardingAuthLogin {
 }
 
 class OnboardingAuthLoginImpl: OnboardingAuthLogin {
+    var authenticationSessionClass: ASWebAuthenticationSession.Type = ASWebAuthenticationSession.self
+
     func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String> {
         Current.Log.verbose(authDetails.url)
 
@@ -24,14 +26,14 @@ class OnboardingAuthLoginImpl: OnboardingAuthLogin {
         }
 
         let (promise, resolver) = Promise<String>.pending()
-        let session = ASWebAuthenticationSession(
+        let session = authenticationSessionClass.init(
             url: authDetails.url,
             callbackURLScheme: authDetails.scheme,
             completionHandler: { url, error in
                 if let error = error as? ASWebAuthenticationSessionError, error.code == .canceledLogin {
                     resolver.reject(PMKError.cancelled)
                 } else {
-                    resolver.resolve(error, url.flatMap(Self.code(fromSuccess:)))
+                    resolver.resolve(url?.queryItems?["code"], error)
                 }
             }
         )
@@ -55,22 +57,5 @@ class OnboardingAuthLoginImpl: OnboardingAuthLogin {
         }.cauterize()
 
         return promise
-    }
-
-    private static func code(fromSuccess url: URL) -> String? {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
-            return nil
-        }
-
-        let parameter = components.queryItems?.first(where: { item -> Bool in
-            item.name == "code"
-        })
-
-        if let codeParamter = parameter, let code = codeParamter.value {
-            Current.Log.verbose("Returning from authentication with code \(code)")
-            return code
-        }
-
-        return nil
     }
 }
