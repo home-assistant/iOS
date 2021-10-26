@@ -2,7 +2,7 @@ import HAKit
 import PromiseKit
 import Shared
 
-enum OnboardingAuthStepPoint: Int, Comparable {
+enum OnboardingAuthStepPoint: Int {
     case beforeAuth
 
     case beforeRegister
@@ -10,10 +10,6 @@ enum OnboardingAuthStepPoint: Int, Comparable {
     case afterRegister
 
     case complete
-
-    static func < (lhs: OnboardingAuthStepPoint, rhs: OnboardingAuthStepPoint) -> Bool {
-        lhs.rawValue < rhs.rawValue
-    }
 }
 
 protocol OnboardingAuthStep {
