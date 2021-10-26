@@ -721,18 +721,6 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.client_certificate.description") }
       }
     }
-    public enum DeviceNameCheck {
-      public enum Error {
-        /// What device name should be used instead?
-        public static var prompt: String { return L10n.tr("Localizable", "onboarding.device_name_check.error.prompt") }
-        /// Rename
-        public static var renameAction: String { return L10n.tr("Localizable", "onboarding.device_name_check.error.rename_action") }
-        /// A device already exists with the name '%1$@'
-        public static func title(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "onboarding.device_name_check.error.title", String(describing: p1))
-        }
-      }
-    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
