@@ -178,6 +178,19 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         }
     }
 
+    func testDuplicateChangedToEmptyThenNew() throws {
+        let expectation = setupSender(actions: (.default, ""), (.default, "New Name 2"))
+
+        let result = step.perform(point: .beforeRegister)
+        try respond(result: .success([
+            .init(name: deviceName, identifier: "any_other1"),
+        ]))
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertNoThrow(try hang(result))
+        XCTAssertEqual(Current.settingsStore.overrideDeviceName, "New Name 2")
+    }
+
     func testDuplicateChangedToExistingThenExistingThenNew() throws {
         let expectation = setupSender(actions: (.default, "New Name"), (.default, "New Name"), (.default, "New Name 2"))
 
