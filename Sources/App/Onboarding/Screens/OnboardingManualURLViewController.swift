@@ -175,6 +175,8 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
 
         isConnecting = true
 
+        let authentication = OnboardingAuth()
+
         firstly {
             validatedURL(from: urlField.text)
         }.recover { [self] error -> Promise<URL> in
@@ -189,15 +191,15 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
             present(alert, animated: true, completion: nil)
 
             return .init(error: PMKError.cancelled)
-        }.then { [view] (url: URL) -> Promise<Void> in
+        }.then { [self] (url: URL) -> Promise<Void> in
             let instance = DiscoveredHomeAssistant(manualURL: url)
-            return OnboardingAuthentication.authenticate(to: instance, sender: view!)
+            return authentication.authenticate(to: instance, sender: self)
         }.ensure { [self] in
             isConnecting = false
         }.done { [self] in
-            show(OnboardingAuthentication.successController(), sender: self)
+            show(authentication.successController(), sender: self)
         }.catch { [self] error in
-            show(OnboardingAuthentication.failureController(error: error), sender: self)
+            show(authentication.failureController(error: error), sender: self)
         }
     }
 

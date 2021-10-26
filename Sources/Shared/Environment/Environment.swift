@@ -85,7 +85,7 @@ public class AppEnvironment {
         get {
             if let value = underlyingAPI {
                 return value
-            } else if !isRunningTests, let value = HomeAssistantAPI() {
+            } else if !isRunningTests || isTestingOnboarding, let value = HomeAssistantAPI() {
                 underlyingAPI = .value(value)
                 return .value(value)
             } else {
@@ -231,6 +231,8 @@ public class AppEnvironment {
     public var isRunningTests: Bool {
         NSClassFromString("XCTest") != nil
     }
+
+    public var isTestingOnboarding = false
 
     public var isBackgroundRequestsImmediate = { true }
     public var isForegroundApp = { false }

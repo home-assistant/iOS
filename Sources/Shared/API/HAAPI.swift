@@ -165,8 +165,8 @@ public class HomeAssistantAPI {
         Current.apiConnection.connect()
 
         return firstly {
-            self.UpdateRegistration()
-        }.recover { error -> Promise<MobileAppRegistrationResponse> in
+            self.updateRegistration().asVoid()
+        }.recover { error -> Promise<Void> in
             switch error as? WebhookError {
             case .unmappableValue,
                  .unexpectedType,
@@ -179,7 +179,7 @@ public class HomeAssistantAPI {
                 return Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                     "error": String(describing: error),
                 ])).then {
-                    return self.Register()
+                    return self.register()
                 }
             case .noApi,
                  .unregisteredIdentifier,
@@ -190,9 +190,9 @@ public class HomeAssistantAPI {
                 Current.Log.info("not re-registering, but failed to update registration: \(error)")
                 throw error
             }
-        }.then { _ in
+        }.then {
             when(fulfilled: [
-                self.GetConfig().asVoid(),
+                self.getConfig(),
                 Current.modelManager.fetch(),
                 self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
                 self.updateComplications(passively: false).asVoid(),
@@ -279,16 +279,11 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetConfig(_ useWebhook: Bool = true) -> Promise<ConfigResponse> {
-        let promise: Promise<ConfigResponse>
+    public func getConfig() -> Promise<Void> {
+        let promise: Promise<ConfigResponse> = Current.webhooks
+            .sendEphemeral(request: .init(type: "get_config", data: [:]))
 
-        if useWebhook {
-            promise = Current.webhooks.sendEphemeral(request: .init(type: "get_config", data: [:]))
-        } else {
-            promise = request(path: "config", callingFunctionName: "\(#function)")
-        }
-
-        return promise.then { config -> Promise<ConfigResponse> in
+        return promise.done { config in
             HomeAssistantAPI.LoadedComponents = config.Components
 
             guard self.MobileAppComponentLoaded else {
@@ -313,8 +308,6 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
             Current.crashReporter.setUserProperty(value: config.Version, name: "HA_Version")
-
-            return Promise.value(config)
         }
     }
 
@@ -362,15 +355,14 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func Register() -> Promise<MobileAppRegistrationResponse> {
+    public func register() -> Promise<Void> {
         request(
             path: "mobile_app/registrations",
             callingFunctionName: "\(#function)",
             method: .post,
             parameters: buildMobileAppRegistration(),
             encoding: JSONEncoding.default
-        )
-        .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
+        ).done { (resp: MobileAppRegistrationResponse) in
             Current.Log.verbose("Registration response \(resp)")
 
             let connectionInfo = try self.connectionInfo()
@@ -378,12 +370,10 @@ public class HomeAssistantAPI {
             connectionInfo.cloudhookURL = resp.CloudhookURL
             connectionInfo.webhookID = resp.WebhookID
             connectionInfo.webhookSecret = resp.WebhookSecret
-
-            return Promise.value(resp)
         }
     }
 
-    public func UpdateRegistration() -> Promise<MobileAppRegistrationResponse> {
+    public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
         Current.webhooks.sendEphemeral(request: .init(
             type: "update_registration",
             data: buildMobileAppUpdateRegistration()
@@ -769,7 +759,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func RegisterSensors() -> Promise<Void> {
+    public func registerSensors() -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration).map(\.sensors)
         }.get { sensors in

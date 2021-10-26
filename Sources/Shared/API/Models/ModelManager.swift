@@ -3,7 +3,7 @@ import HAKit
 import PromiseKit
 import RealmSwift
 
-public final class ModelManager {
+public class ModelManager {
     private var notificationTokens = [NotificationToken]()
     private var hakitTokens = [HACancellable]()
 

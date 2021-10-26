@@ -1,8 +1,8 @@
 import Foundation
 import Shared
 
-struct OnboardingAuthenticationError: LocalizedError {
-    enum ErrorKind {
+struct OnboardingAuthError: LocalizedError {
+    enum ErrorKind: Equatable {
         case invalidURL
         case basicAuth
         case authenticationUnsupported(String)
@@ -20,12 +20,27 @@ struct OnboardingAuthenticationError: LocalizedError {
             case .other: return "unknown_error"
             }
         }
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.invalidURL, .invalidURL), (.basicAuth, .basicAuth):
+                return true
+            case let (.authenticationUnsupported(lhsMethod), .authenticationUnsupported(rhsMethod)):
+                return lhsMethod == rhsMethod
+            case let (.sslUntrusted(lhsError as NSError), .sslUntrusted(rhsError as NSError)),
+                 let (.clientCertificateRequired(lhsError as NSError), .clientCertificateRequired(rhsError as NSError)),
+                 let (.other(lhsError as NSError), .other(rhsError as NSError)):
+                return lhsError.domain == rhsError.domain &&
+                    lhsError.code == rhsError.code
+            default: return false
+            }
+        }
     }
 
     var kind: ErrorKind
     var data: Data?
 
-    init(kind: OnboardingAuthenticationError.ErrorKind, data: Data? = nil) {
+    init(kind: OnboardingAuthError.ErrorKind, data: Data? = nil) {
         self.kind = kind
         self.data = data
     }

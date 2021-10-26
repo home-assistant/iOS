@@ -242,16 +242,18 @@ extension OnboardingScanningViewController: UITableViewDelegate {
         cell?.isLoading = true
         tableView.isUserInteractionEnabled = false
 
+        let authentication = OnboardingAuth()
+
         firstly {
-            OnboardingAuthentication.authenticate(to: instance, sender: tableView)
+            authentication.authenticate(to: instance, sender: self)
         }.ensure {
             cell?.isLoading = false
             tableView.isUserInteractionEnabled = true
             tableView.deselectRow(at: indexPath, animated: true)
         }.done { [self] in
-            show(OnboardingAuthentication.successController(), sender: self)
+            show(authentication.successController(), sender: self)
         }.catch { [self] error in
-            show(OnboardingAuthentication.failureController(error: error), sender: self)
+            show(authentication.failureController(error: error), sender: self)
         }
     }
 }
