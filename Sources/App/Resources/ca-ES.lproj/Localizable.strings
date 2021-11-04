@@ -200,6 +200,9 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.connection_test_result.basic_auth.description" = "L'autenticació bàsica HTTP no és compatible.";
 "onboarding.connection_test_result.client_certificate.description" = "L'autenticació del certificat de client no és compatible.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
+"onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
+"onboarding.device_name_check.error.rename_action" = "Rename";
+"onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
 "onboarding.manual_setup.connect" = "Connect";
 "onboarding.manual_setup.couldnt_make_url.message" = "El valor \" %@ \" no és una URL vàlida.";
 "onboarding.manual_setup.couldnt_make_url.title" = "No s'ha pogut crear una URL";

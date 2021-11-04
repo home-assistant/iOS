@@ -200,6 +200,9 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.connection_test_result.basic_auth.description" = "HTTP-basisverificatie wordt niet ondersteund.";
 "onboarding.connection_test_result.client_certificate.description" = "Verificatie van cliëntcertificaten wordt niet ondersteund.";
 "onboarding.connection_test_result.error_code" = "Foutcode:";
+"onboarding.device_name_check.error.prompt" = "Welke apparaat moet in plaats daarvan worden gebruikt?";
+"onboarding.device_name_check.error.rename_action" = "Hernoemen";
+"onboarding.device_name_check.error.title" = "Er bestaat al een apparaat met de naam ' %1$@ '";
 "onboarding.manual_setup.connect" = "Verbind";
 "onboarding.manual_setup.couldnt_make_url.message" = "De waarde '%@' was geen geldige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan geen URL maken";
