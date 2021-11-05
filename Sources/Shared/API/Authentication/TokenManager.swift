@@ -106,14 +106,6 @@ public class TokenManager {
 
     // MARK: - Private helpers
 
-    private func loggableString(for url: URL) -> String {
-        guard let urlType = connectionInfo?.getURLType(url) else {
-            return "[Non-HASS URL]\(url.path)"
-        }
-
-        return "[\(urlType.description)]\(url.path)"
-    }
-
     private var currentToken: Promise<String> {
         Promise<String> { seal in
             guard let tokenInfo = self.tokenInfo else {

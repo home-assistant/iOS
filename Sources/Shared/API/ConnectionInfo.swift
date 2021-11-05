@@ -426,22 +426,6 @@ public class ConnectionInfo: Codable {
         return false
         #endif
     }
-
-    /// Returns the URLType of the given URL, if it is known.
-    public func getURLType(_ url: URL) -> URLType? {
-        if url.scheme == internalURL?.scheme, url.host == internalURL?.host,
-           url.port == internalURL?.port {
-            return .internal
-        } else if url.scheme == externalURL?.scheme, url.host == externalURL?.host,
-                  url.port == externalURL?.port {
-            return .external
-        } else if url.scheme == remoteUIURL?.scheme, url.host == remoteUIURL?.host,
-                  url.port == remoteUIURL?.port {
-            return .remoteUI
-        }
-
-        return nil
-    }
 }
 
 extension ConnectionInfo: RequestAdapter {

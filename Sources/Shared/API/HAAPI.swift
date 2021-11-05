@@ -2,18 +2,14 @@ import Alamofire
 import CoreLocation
 import Foundation
 import Intents
-import KeychainAccess
 import ObjectMapper
 import PromiseKit
 import RealmSwift
 import UIKit
-import UserNotifications
 import Version
 #if os(iOS)
 import Reachability
 #endif
-
-private let keychain = Constants.Keychain
 
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
