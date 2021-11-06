@@ -200,6 +200,9 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic-godkjenning støttes ikke.";
 "onboarding.connection_test_result.client_certificate.description" = "Klientsertifikatgodkjenning støttes ikke.";
 "onboarding.connection_test_result.error_code" = "Feilkode:";
+"onboarding.device_name_check.error.prompt" = "Hvilket enhetsnavn bør brukes i stedet?";
+"onboarding.device_name_check.error.rename_action" = "Gi nytt navn";
+"onboarding.device_name_check.error.title" = "Det finnes allerede en enhet med navnet ' %1$@ '";
 "onboarding.manual_setup.connect" = "Koble";
 "onboarding.manual_setup.couldnt_make_url.message" = "Verdien %@ var ikke en gyldig URL-adresse.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan ikke opprette en URL-adresse";

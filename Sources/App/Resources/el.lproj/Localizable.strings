@@ -200,6 +200,9 @@
 "onboarding.connection_test_result.basic_auth.description" = "Ο βασικός έλεγχος ταυτότητας HTTP δεν υποστηρίζεται.";
 "onboarding.connection_test_result.client_certificate.description" = "Ο έλεγχος ταυτότητας πιστοποιητικού πελάτη δεν υποστηρίζεται.";
 "onboarding.connection_test_result.error_code" = "Κωδικός σφάλματος:";
+"onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
+"onboarding.device_name_check.error.rename_action" = "Μετονομασία";
+"onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
 "onboarding.manual_setup.connect" = "Σύνδεση";
 "onboarding.manual_setup.couldnt_make_url.message" = "Η τιμή '%@' δεν ήταν έγκυρη διεύθυνση URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";

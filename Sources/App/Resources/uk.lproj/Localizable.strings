@@ -200,6 +200,9 @@
 "onboarding.connection_test_result.basic_auth.description" = "Базова HTTP-автентифікація не підтримується.";
 "onboarding.connection_test_result.client_certificate.description" = "Автентифікація з клієнтським сертифікатом не підтримується.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
+"onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
+"onboarding.device_name_check.error.rename_action" = "Rename";
+"onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
 "onboarding.manual_setup.connect" = "Connect";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значення \"%@\" не є допустимою URL-адресою.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не вдалося створити URL";
