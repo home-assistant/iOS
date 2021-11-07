@@ -159,7 +159,7 @@ public final class TemplateSection: Section {
 
         let delay: TimeInterval = skipDelay ? 0 : (Current.isCatalyst ? 0.5 : 1.0)
         debounceTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
-            self?.subscriptionToken = Current.apiConnection.subscribe(
+            self?.subscriptionToken = Current.apiConnection?.subscribe(
                 to: .renderTemplate(template),
                 initiated: { result in
                     if case let .failure(error) = result {

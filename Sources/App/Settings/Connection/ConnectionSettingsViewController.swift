@@ -9,10 +9,10 @@ import UIKit
 class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    let connection: HAConnection
+    let server: Server
 
-    init(connection: HAConnection) {
-        self.connection = connection
+    init(server: Server) {
+        self.server = server
 
         super.init()
     }
@@ -35,6 +35,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             object: nil
         )
 
+        let connection = Current.api(for: server).connection
+
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
                 $0.tag = "status"
@@ -42,21 +44,17 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
             <<< LabelRow("locationName") {
                 $0.title = L10n.Settings.StatusSection.LocationNameRow.title
-                $0.value = L10n.Settings.StatusSection.LocationNameRow.placeholder
-                if let locationName = prefs.string(forKey: "location_name") {
-                    $0.value = locationName
-                }
+                $0.displayValueFor = { [server] _ in server.info.name }
             }
 
             <<< LabelRow("version") {
                 $0.title = L10n.Settings.StatusSection.VersionRow.title
-                $0.value = L10n.Settings.StatusSection.VersionRow.placeholder
-                if let version = prefs.string(forKey: "version") {
-                    $0.value = version
-                }
+                $0.displayValueFor = { [server] _ in server.info.version.description }
             }
 
-            <<< WebSocketStatusRow()
+            <<< with(WebSocketStatusRow()) {
+                $0.connection = connection
+            }
 
             <<< LabelRow { row in
                 row.title = L10n.Settings.ConnectionSection.loggedInAs
@@ -71,23 +69,23 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< TextRow {
                 $0.title = L10n.SettingsDetails.General.DeviceName.title
                 $0.placeholder = Current.device.deviceName()
-                $0.value = Current.settingsStore.overrideDeviceName
-                $0.onChange { row in
-                    Current.settingsStore.overrideDeviceName = row.value
+                $0.value = server.info.setting(for: .overrideDeviceName)
+                $0.onChange { [server] row in
+                    server.info.setSetting(value: row.value, for: .overrideDeviceName)
                 }
             }
 
             <<< LabelRow("connectionPath") {
                 $0.title = L10n.Settings.ConnectionSection.connectingVia
-                $0.displayValueFor = { _ in Current.settingsStore.connectionInfo?.activeURLType.description }
+                $0.displayValueFor = { [server] _ in server.info.connection.activeURLType.description }
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-                row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.address(for: .internal)?.absoluteString }
-                row.presentationMode = .show(controllerProvider: .callback(builder: {
-                    ConnectionURLViewController(urlType: .internal, row: row)
+                row.displayValueFor = { [server] _ in server.info.connection.address(for: .internal)?.absoluteString }
+                row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
+                    ConnectionURLViewController(server: server, urlType: .internal, row: row)
                 }), onDismiss: { [navigationController] _ in
                     navigationController?.popViewController(animated: true)
                 })
@@ -98,19 +96,15 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
-                row.displayValueFor = { _ in
-                    if let connectionInfo = Current.settingsStore.connectionInfo {
-                        if connectionInfo.useCloud, connectionInfo.canUseCloud {
-                            return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
-                        } else {
-                            return Current.settingsStore.connectionInfo?.address(for: .external)?.absoluteString
-                        }
+                row.displayValueFor = { [server] _ in
+                    if server.info.connection.useCloud, server.info.connection.canUseCloud {
+                        return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                     } else {
-                        return nil
+                        return server.info.connection.address(for: .external)?.absoluteString
                     }
                 }
-                row.presentationMode = .show(controllerProvider: .callback(builder: {
-                    ConnectionURLViewController(urlType: .external, row: row)
+                row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
+                    ConnectionURLViewController(server: server, urlType: .external, row: row)
                 }), onDismiss: { [navigationController] _ in
                     navigationController?.popViewController(animated: true)
                 })

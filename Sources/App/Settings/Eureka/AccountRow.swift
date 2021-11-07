@@ -4,7 +4,7 @@ import HAKit
 import PromiseKit
 import Shared
 
-class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
+class AccountCell: Cell<Server>, CellType {
     private var accountRow: HomeAssistantAccountRow? { row as? HomeAssistantAccountRow }
 
     override func setup() {
@@ -23,7 +23,7 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
 
         if let value = accountRow?.value {
             let userName = accountRow?.cachedUserName
-            let locationName = value.locationName
+            let locationName = value.info.name
             let size = AccountInitialsImage.defaultSize
 
             if let imageView = imageView {
@@ -60,16 +60,6 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
         } else {
             detailTextLabel?.textColor = .darkGray
         }
-    }
-}
-
-struct HomeAssistantAccountRowInfo: Equatable {
-    var connection: HAConnection
-    var locationName: String?
-
-    static func == (lhs: HomeAssistantAccountRowInfo, rhs: HomeAssistantAccountRowInfo) -> Bool {
-        lhs.connection === rhs.connection &&
-            lhs.locationName == rhs.locationName
     }
 }
 
@@ -124,7 +114,6 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
     enum FetchAvatarError: Error, CancellableError {
         case missingPerson
         case missingURL
-        case noActiveUrl
         case alreadySet
         case couldntDecode
 
@@ -138,12 +127,14 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
     }
 
     private func fetchAvatar() {
-        guard let connection = value?.connection else {
+        guard let server = value else {
             cachedImage = nil
             cachedUserName = nil
             updateCell()
             return
         }
+
+        let connection = Current.api(for: server).connection
 
         accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
             guard let self = self else { return }
@@ -174,9 +165,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                         throw FetchAvatarError.missingURL
                     }
                 }.map { path throws -> URL in
-                    guard let url = Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path) else {
-                        throw FetchAvatarError.noActiveUrl
-                    }
+                    let url = server.info.connection.activeURL.appendingPathComponent(path)
                     if let lastTask = lastTask, lastTask.error == nil, lastTask.originalRequest?.url == url {
                         throw FetchAvatarError.alreadySet
                     }

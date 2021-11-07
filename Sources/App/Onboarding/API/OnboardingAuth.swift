@@ -114,9 +114,9 @@ class OnboardingAuth {
             Current.settingsStore.tokenInfo = tokenInfo
             Current.settingsStore.connectionInfo = connectionInfo
             Current.resetAPI()
-            Current.apiConnection.connect()
+            Current.apiConnection?.connect()
         }.then { _ in
-            Current.api.map { ($0, Current.apiConnection) }
+            Current.api.map { ($0, Current.apiConnection!) }
         }
     }
 
@@ -128,7 +128,7 @@ class OnboardingAuth {
             Current.settingsStore.tokenInfo = nil
             Current.settingsStore.connectionInfo = nil
             Current.resetAPI()
-            Current.apiConnection.disconnect()
+            Current.apiConnection?.disconnect()
         }
     }
 }

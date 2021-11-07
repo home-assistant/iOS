@@ -72,7 +72,7 @@ class MenuManager {
     ) -> MenuManagerTitleSubscription? {
         let template = Current.settingsStore.menuItemTemplate
 
-        guard Current.settingsStore.locationVisibility.isStatusItemVisible, !template.isEmpty else {
+        guard Current.settingsStore.locationVisibility.isStatusItemVisible, !template.isEmpty, let connection = Current.apiConnection else {
             update("")
             return nil
         }
@@ -84,7 +84,7 @@ class MenuManager {
         // if we know it's going to change, reset it for now so it doesn't show the old value
         update("")
 
-        return .init(template: template, token: Current.apiConnection.subscribe(
+        return .init(template: template, token: connection.subscribe(
             to: .renderTemplate(template),
             initiated: { result in
                 switch result {

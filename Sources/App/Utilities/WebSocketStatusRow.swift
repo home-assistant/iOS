@@ -116,8 +116,14 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
         stateDidChange()
     }
 
+    public var connection: HAConnection? {
+        didSet {
+            stateDidChange()
+        }
+    }
+
     @objc private func stateDidChange() {
-        value = Current.apiConnection.state
+        value = connection?.state
         updateCell()
     }
 

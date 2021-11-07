@@ -115,7 +115,7 @@ public class ServerAlerter {
     }
 
     public func check(dueToUserInteraction: Bool) -> Promise<ServerAlert> {
-        guard Current.settingsStore.privacy.alerts || dueToUserInteraction else {
+        guard Current.settingsStore.privacy.alerts || dueToUserInteraction, let connection = Current.apiConnection else {
             return .init(error: AlerterError.privacyDisabled)
         }
 
@@ -123,7 +123,7 @@ public class ServerAlerter {
             when(
                 fulfilled:
                 URLSession.shared.dataTask(.promise, with: apiUrl).map(\.data),
-                Current.apiConnection.caches.user.once().promise
+                connection.caches.user.once().promise
             )
         }.map { data, user -> [ServerAlert] in
             // allows individual alerts to fail to parse, in case e.g. somebody typos something

@@ -27,8 +27,13 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
+        guard let connection = Current.apiConnection else {
+            completion(nil, nil)
+            return
+        }
+
         firstly {
-            Current.apiConnection.send(.getServices()).promise
+            connection.send(.getServices()).promise
         }
         .map(\.all)
         .mapValues(\.domainServicePair)

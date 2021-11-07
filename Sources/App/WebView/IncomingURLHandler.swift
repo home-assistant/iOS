@@ -261,7 +261,7 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "template")
             let variablesDict = cleanParamters
 
-            Current.apiConnection.subscribe(
+            Current.apiConnection?.subscribe(
                 to: .renderTemplate(template, variables: variablesDict),
                 initiated: { result in
                     if case let .failure(error) = result {

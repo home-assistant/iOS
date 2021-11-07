@@ -4,8 +4,13 @@ import Shared
 
 class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
     private func fetchOptions(completion: @escaping ([IntentPanel]?, Error?) -> Void) {
+        guard let connection = Current.apiConnection else {
+            completion(nil, nil)
+            return
+        }
+
         firstly {
-            Current.apiConnection.send(.panels()).promise
+            connection.send(.panels()).promise
         }.done { panels in
             completion(panels.allPanels.map { .init(panel: $0) }, nil)
         }.catch { error in

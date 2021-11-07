@@ -483,7 +483,7 @@ class DebugSettingsViewController: HAFormViewController {
         }.then {
             waitAtLeast
         }.get {
-            Current.apiConnection.disconnect()
+            Current.apiConnection?.disconnect()
 
             resetStores()
             setDefaults()

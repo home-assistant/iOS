@@ -86,6 +86,18 @@ public class AppEnvironment {
 
     public var servers: ServerManager
 
+    public var apis = [Identifier<Server>: HomeAssistantAPI]()
+
+    public func api(for server: Server) -> HomeAssistantAPI {
+        if let existing = apis[server.identifier] {
+            return existing
+        } else {
+            let api = HomeAssistantAPI(server: server, urlConfig: .default)
+            apis[server.identifier] = api
+            return api
+        }
+    }
+
     private var underlyingAPI: Promise<HomeAssistantAPI>?
 
     @available(*, deprecated)
@@ -93,7 +105,8 @@ public class AppEnvironment {
         get {
             if let value = underlyingAPI {
                 return value
-            } else if !isRunningTests || isTestingOnboarding, let value = HomeAssistantAPI() {
+            } else if !isRunningTests || isTestingOnboarding, let server = Current.servers.all.first {
+                let value = Current.api(for: server)
                 underlyingAPI = .value(value)
                 return .value(value)
             } else {
@@ -106,32 +119,14 @@ public class AppEnvironment {
     }
 
     @available(*, deprecated)
-    public var apiConnection: HAConnection = HAKit.connection(configuration: .init(
-        connectionInfo: {
-            if let info = Current.settingsStore.connectionInfo {
-                do {
-                    return try .init(url: info.activeURL, userAgent: HomeAssistantAPI.userAgent)
-                } catch {
-                    Current.Log.error("couldn't create connection info: \(error)")
-                    return nil
-                }
-            } else {
-                return nil
-            }
-        },
-        fetchAuthToken: { completion in
-            Current.api.then(\.tokenManager.bearerToken).done {
-                completion(.success($0))
-            }.catch {
-                completion(.failure($0))
-            }
-        }
-    ))
+    public var apiConnection: HAConnection? {
+        api.value?.connection
+    }
 
     @available(*, deprecated)
     public func resetAPI() {
+        apiConnection?.disconnect()
         underlyingAPI = nil
-        apiConnection.disconnect()
     }
 
     public var modelManager = ModelManager()

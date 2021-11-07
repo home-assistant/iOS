@@ -54,7 +54,7 @@ import UserNotifications
             valueSync.value = localPushManager.state
         }
 
-        Current.apiConnection.connect()
+        guard let connection = Current.apiConnection else { return }
 
         // state of the connection dictates our callback to the completion handler
         // this wraps it in a way that guarantees we only ever call it once (via the promise's guarantee of that)
@@ -62,7 +62,7 @@ import UserNotifications
             let (promise, seal) = Promise<Void>.pending()
 
             func checkState() {
-                switch Current.apiConnection.state {
+                switch connection.state {
                 case .ready(version: _):
                     seal.fulfill(())
                 case let .disconnected(reason: .waitingToReconnect(
@@ -81,7 +81,7 @@ import UserNotifications
 
             let token = NotificationCenter.default.addObserver(
                 forName: HAConnectionState.didTransitionToStateNotification,
-                object: Current.apiConnection,
+                object: connection,
                 queue: nil
             ) { _ in
                 checkState()
@@ -104,12 +104,12 @@ import UserNotifications
         Current.Log.notify("stopping with reason \(reason)", log: .error)
         localPushManager?.invalidate()
         localPushManager = nil
-        Current.apiConnection.disconnect()
+        Current.apiConnection?.disconnect()
     }
 
     override func handleTimerEvent() {
         // we may be signaled that it's a good time to connect, so do so
-        Current.apiConnection.connect()
+        Current.apiConnection?.connect()
     }
 
     func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {

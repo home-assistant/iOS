@@ -7,6 +7,7 @@ import PromiseKit
 import RealmSwift
 import UIKit
 import Version
+import HAKit
 #if os(iOS)
 import Reachability
 #endif
@@ -33,6 +34,7 @@ public class HomeAssistantAPI {
 
     public let tokenManager: TokenManager
     public let server: Server
+    public let connection: HAConnection
 
     public static var clientVersionDescription: String {
         "\(Constants.version) (\(Constants.build))"
@@ -59,7 +61,25 @@ public class HomeAssistantAPI {
     /// Initialize an API object with an authenticated tokenManager.
     public init(server: Server, urlConfig: URLSessionConfiguration = .default) {
         self.server = server
-        self.tokenManager = TokenManager(server: server)
+        let tokenManager = TokenManager(server: server)
+        self.tokenManager = tokenManager
+        self.connection = HAKit.connection(configuration: .init(
+            connectionInfo: {
+                do {
+                    return try .init(url: server.info.connection.activeURL, userAgent: HomeAssistantAPI.userAgent)
+                } catch {
+                    Current.Log.error("couldn't create connection info: \(error)")
+                    return nil
+                }
+            },
+            fetchAuthToken: { completion in
+                tokenManager.bearerToken.done {
+                    completion(.success($0))
+                }.catch {
+                    completion(.failure($0))
+                }
+            }
+        ))
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
             interceptor: newInterceptor()
@@ -130,7 +150,7 @@ public class HomeAssistantAPI {
     }
 
     public func Connect(reason: ConnectReason) -> Promise<Void> {
-        Current.apiConnection.connect()
+        connection.connect()
 
         return firstly {
             self.updateRegistration().asVoid()

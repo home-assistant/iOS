@@ -23,14 +23,11 @@ class SettingsViewController: HAFormViewController {
     class func serversContents() -> [BaseRow] {
         var rows = [BaseRow]()
 
-        for connection in [Current.apiConnection] {
+        for server in Current.servers.all {
             rows.append(HomeAssistantAccountRow {
-                $0.value = .init(
-                    connection: connection,
-                    locationName: prefs.string(forKey: "location_name")
-                )
+                $0.value = server
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    ConnectionSettingsViewController(connection: connection)
+                    ConnectionSettingsViewController(server: server)
                 }, onDismiss: nil)
             })
         }

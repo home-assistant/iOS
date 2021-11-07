@@ -144,8 +144,12 @@ public class ModelManager {
         on queue: DispatchQueue = .global(qos: .utility)
     ) {
         hakitTokens.forEach { $0.cancel() }
-        hakitTokens = definitions.flatMap {
-            $0.subscribe(Current.apiConnection, queue, self)
+        hakitTokens = definitions.flatMap { definition -> [HACancellable] in
+            if let connection = Current.apiConnection {
+                return definition.subscribe(connection, queue, self)
+            } else {
+                return [HANoopCancellable()]
+            }
         }
     }
 
@@ -174,7 +178,7 @@ public class ModelManager {
         on queue: DispatchQueue = .global(qos: .utility)
     ) -> Promise<Void> {
         Current.api.then(on: nil) { api in
-            when(fulfilled: definitions.map { $0.update(api, Current.apiConnection, queue, self) })
+            when(fulfilled: definitions.map { $0.update(api, api.connection, queue, self) })
         }
     }
 

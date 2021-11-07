@@ -129,7 +129,7 @@ public class LocalPushManager {
     }
 
     private func updateSubscription() {
-        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
+        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID, let connection = Current.apiConnection else {
             // webhook is invalid, if there is a subscription we remove it
             subscription?.cancel()
             subscription = nil
@@ -144,7 +144,7 @@ public class LocalPushManager {
 
         subscription?.cancel()
         subscription = .init(
-            token: Current.apiConnection.subscribe(
+            token: connection.subscribe(
                 to: .localPush(webhookID: webhookID),
                 initiated: { [weak self] result in
                     self?.handle(initiated: result.map { _ in () })
@@ -172,9 +172,9 @@ public class LocalPushManager {
 
         state.increment()
 
-        if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
+        if let confirmID = event.confirmID, let webhookID = subscription?.webhookID, let connection = Current.apiConnection {
             firstly {
-                Current.apiConnection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise
+                connection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise
             }.catch { error in
                 Current.Log.error("failed to confirm local push: \(error)")
             }

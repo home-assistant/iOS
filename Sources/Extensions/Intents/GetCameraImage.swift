@@ -24,8 +24,8 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         with completion: @escaping ([String]?, Error?) -> Void
     ) {
         firstly {
-            Current.apiConnection.caches.states.once().promise
-                .map(\.all)
+            Current.apiConnection?.caches.states.once().promise
+                .map(\.all) ?? .value([])
         }
         .filterValues { $0.domain == "camera" }
         .mapValues(\.entityId)

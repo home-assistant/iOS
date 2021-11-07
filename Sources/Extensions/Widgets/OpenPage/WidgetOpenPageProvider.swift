@@ -31,8 +31,10 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
         timeout: Measurement<UnitDuration> = .init(value: 10.0, unit: .seconds)
     ) -> Promise<[IntentPanel]> {
         firstly { () -> Promise<[HAPanel]> in
+            guard let connection = Current.apiConnection else { return .value([]) }
+
             let diskCacheKey = "panels"
-            let apiCache = Current.apiConnection.caches.panels
+            let apiCache = connection.caches.panels
             apiCache.shouldResetWithoutSubscribers = true
 
             let result = apiCache.once().promise.get { value in

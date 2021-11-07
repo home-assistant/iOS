@@ -71,7 +71,7 @@ public struct ServerInfo: Codable {
         L10n.Settings.StatusSection.LocationNameRow.placeholder
     }
 
-    public mutating func setSetting<T>(value: T, for key: ServerSettingKey<T>) {
+    public mutating func setSetting<T>(value: T?, for key: ServerSettingKey<T>) {
         settings[key.rawValue] = value
     }
 

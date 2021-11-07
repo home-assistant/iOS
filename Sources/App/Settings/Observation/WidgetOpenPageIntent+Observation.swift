@@ -5,7 +5,7 @@ import WidgetKit
 extension WidgetOpenPageIntent {
     static func setupObserver() {
         if #available(iOS 14, *) {
-            _ = Current.apiConnection.caches.panels.subscribe { _, panels in
+            _ = Current.apiConnection?.caches.panels.subscribe { _, panels in
                 WidgetOpenPageIntent.handle(panels: panels)
             }
         }
