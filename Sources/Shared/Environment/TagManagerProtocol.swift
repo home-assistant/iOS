@@ -39,7 +39,7 @@ public extension TagManager {
     }
 
     func fireEvent(tag: String) -> Promise<Void> {
-        Current.api.then(on: nil) { api -> Promise<Void> in
+        when(fulfilled: Current.apis.map { api -> Promise<Void> in
             if api.server.info.version < .tagWebhookAvailable {
                 let event = api.tagEvent(tagPath: tag)
                 return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
@@ -48,7 +48,7 @@ public extension TagManager {
                     "tag_id": tag,
                 ]))
             }
-        }
+        })
     }
 }
 
