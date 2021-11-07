@@ -88,7 +88,7 @@ public class AppEnvironment {
 
     public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
 
-    public var allApis: [HomeAssistantAPI] { servers.all.map(api(for:)) }
+    public var apis: [HomeAssistantAPI] { servers.all.map(api(for:)) }
 
     public func api(for server: Server) -> HomeAssistantAPI {
         if let existing = cachedApis[server.identifier] {

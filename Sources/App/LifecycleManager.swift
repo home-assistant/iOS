@@ -163,7 +163,7 @@ class LifecycleManager {
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         Current.backgroundTask(withName: "connect-api") { _ in
-            when(resolved: Current.allApis.map { api in
+            when(resolved: Current.apis.map { api in
                 api.Connect(reason: reason)
             }).asVoid()
         }.done {

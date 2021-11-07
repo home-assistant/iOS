@@ -43,13 +43,15 @@ class ShareViewController: SLComposeServiceViewController {
     override func didSelectPost() {
         Current.Log.info("starting to post")
 
-        firstly {
-            Current.api.then { [self] api in
-                event(api: api).map { (api, $0) }
-            }
-        }.then { api, event -> Promise<Void> in
+        firstly { () -> Promise<Void> in
             Current.Log.verbose("starting request")
-            return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
+            return when(fulfilled: Current.apis.map { api -> Promise<Void> in
+                firstly {
+                    event(api: api)
+                }.then { event in
+                    api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
+                }
+            }).asVoid()
         }.done { [extensionContext] in
             Current.Log.info("succeeded with post")
             extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
