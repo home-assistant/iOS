@@ -131,7 +131,7 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
                         return
                     }
 
-                    Current.settingsStore.overrideDeviceName = name
+                    api.server.info.setSetting(value: name, for: .overrideDeviceName)
                     seal.fulfill(())
                 }
             ))

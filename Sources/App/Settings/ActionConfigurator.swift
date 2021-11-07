@@ -239,7 +239,9 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
         form +++ YamlSection(
             tag: "exampleTrigger",
             header: L10n.ActionsConfigurator.TriggerExample.title,
-            yamlGetter: { [action] in action.exampleTrigger },
+            yamlGetter: { [action] in
+                Current.api.value.map { action.exampleTrigger(api: $0) } ?? ""
+            },
             present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
         )
     }

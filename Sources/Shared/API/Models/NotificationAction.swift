@@ -119,7 +119,11 @@ public class NotificationAction: Object {
         category: String?,
         textInput: Bool
     ) -> String {
-        let data = HomeAssistantAPI.legacyNotificationActionEvent(
+        guard let api = Current.api.value else {
+            return ""
+        }
+
+        let data = api.legacyNotificationActionEvent(
             identifier: identifier,
             category: category,
             actionData: "# value of action_data in notify call",

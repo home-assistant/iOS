@@ -66,7 +66,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         let localPush = (form.rowBy(tag: RowTag.localPush.rawValue) as? SwitchRow)?.value
 
         func commit() {
-            Current.settingsStore.connectionInfo?.setAddress(givenURL, urlType)
+            Current.settingsStore.connectionInfo?.set(address: givenURL, for: urlType)
 
             if let useCloud = useCloud {
                 Current.settingsStore.connectionInfo?.useCloud = useCloud
@@ -99,7 +99,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         firstly { () -> Promise<Void> in
             try check(url: givenURL, useCloud: useCloud, validationErrors: form.validate())
 
-            if useCloud == true, let url = Current.settingsStore.connectionInfo?.remoteUIURL {
+            if useCloud == true, let url = Current.settingsStore.connectionInfo?.address(for: .remoteUI) {
                 return Current.webhooks.sendTest(baseURL: url)
             }
 

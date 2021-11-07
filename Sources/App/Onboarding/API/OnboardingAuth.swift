@@ -134,7 +134,7 @@ class OnboardingAuth {
 }
 
 private extension ConnectionInfo {
-    convenience init(discovered: DiscoveredHomeAssistant) {
+    init(discovered: DiscoveredHomeAssistant) {
         self.init(
             externalURL: discovered.externalURL,
             internalURL: discovered.internalURL,
@@ -150,7 +150,7 @@ private extension ConnectionInfo {
         // if we have internal+external, we're on the internal network doing discovery
         // but we don't yet have location permission to know we're on an internal ssid
         if internalSSIDs == [] || internalSSIDs == nil,
-           internalURL != nil, externalURL != nil {
+           discovered.internalURL != nil, discovered.externalURL != nil {
             overrideActiveURLType = .internal
         }
     }

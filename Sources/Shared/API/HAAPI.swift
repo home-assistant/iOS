@@ -26,28 +26,13 @@ public class HomeAssistantAPI {
     static let minimumRequiredVersion = Version(major: 0, minor: 92, patch: 2)
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
 
-    let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
-
-    public static var LoadedComponents = [String]()
-
     public private(set) var manager: Alamofire.Session!
     public static var unauthenticatedManager: Alamofire.Session = {
         configureSessionManager()
     }()
 
-    public var MobileAppComponentLoaded: Bool {
-        HomeAssistantAPI.LoadedComponents.contains("mobile_app")
-    }
-
     public let tokenManager: TokenManager
-
-    public func connectionInfo() throws -> ConnectionInfo {
-        if let connectionInfo = Current.settingsStore.connectionInfo {
-            return connectionInfo
-        } else {
-            throw HomeAssistantAPI.APIError.notConfigured
-        }
-    }
+    public let server: Server
 
     public static var clientVersionDescription: String {
         "\(Constants.version) (\(Constants.build))"
@@ -72,8 +57,9 @@ public class HomeAssistantAPI {
     }
 
     /// Initialize an API object with an authenticated tokenManager.
-    public init(tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
-        self.tokenManager = TokenManager(tokenInfo: tokenInfo)
+    public init(server: Server, urlConfig: URLSessionConfiguration = .default) {
+        self.server = server
+        self.tokenManager = TokenManager(server: server)
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
             interceptor: newInterceptor()
@@ -83,6 +69,14 @@ public class HomeAssistantAPI {
         removeOldDownloadDirectory()
 
         Current.sensors.register(observer: self)
+    }
+
+    convenience init?() {
+        if let server = Current.servers.all.first {
+            self.init(server: server, urlConfig: .default)
+        } else {
+            return nil
+        }
     }
 
     private static func configureSessionManager(
@@ -102,18 +96,8 @@ public class HomeAssistantAPI {
     private func newInterceptor() -> Interceptor {
         .init(
             adapters: [
-                Adapter { [weak self] request, session, completion in
-                    guard let self = self else {
-                        completion(.success(request))
-                        return
-                    }
-
-                    do {
-                        let connectionInfo = try self.connectionInfo()
-                        connectionInfo.adapt(request, for: session, completion: completion)
-                    } catch {
-                        completion(.failure(error))
-                    }
+                Adapter { [server] request, session, completion in
+                    server.info.connection.adapt(request, for: session, completion: completion)
                 },
             ], retriers: [
             ], interceptors: [
@@ -121,18 +105,6 @@ public class HomeAssistantAPI {
                 RetryPolicy(),
             ]
         )
-    }
-
-    convenience init?() {
-        guard Current.settingsStore.connectionInfo != nil else {
-            return nil
-        }
-
-        guard let tokenInfo = Current.settingsStore.tokenInfo else {
-            return nil
-        }
-
-        self.init(tokenInfo: tokenInfo, urlConfig: .default)
     }
 
     public func VideoStreamer() -> MJPEGStreamer {
@@ -244,7 +216,7 @@ public class HomeAssistantAPI {
             let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
 
             if needsAuth {
-                let activeURL = try connectionInfo().activeURL
+                let activeURL = server.info.connection.activeURL
 
                 if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
                     Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
@@ -279,29 +251,16 @@ public class HomeAssistantAPI {
         let promise: Promise<ConfigResponse> = Current.webhooks
             .sendEphemeral(request: .init(type: "get_config", data: [:]))
 
-        return promise.done { config in
-            HomeAssistantAPI.LoadedComponents = config.Components
+        return promise.done { [self] config in
+            server.update { server in
+                server.connection.cloudhookURL = config.CloudhookURL
+                server.connection.set(address: config.RemoteUIURL, for: .remoteUI)
+                server.name = config.LocationName ?? ServerInfo.defaultName
 
-            guard self.MobileAppComponentLoaded else {
-                Current.Log.error("mobile_app component is not loaded!")
-                throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
+                if let version = try? Version(hassVersion: config.Version) {
+                    server.version = version
+                }
             }
-
-            let connectionInfo = try self.connectionInfo()
-            connectionInfo.cloudhookURL = config.CloudhookURL
-            connectionInfo.setAddress(config.RemoteUIURL, .remoteUI)
-
-            self.prefs.setValue(config.LocationName, forKey: "location_name")
-            self.prefs.setValue(config.Latitude, forKey: "latitude")
-            self.prefs.setValue(config.Longitude, forKey: "longitude")
-            self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-            self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
-            self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
-            self.prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
-            self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-            self.prefs.setValue(config.Timezone, forKey: "time_zone")
-            self.prefs.setValue(config.Version, forKey: "version")
-            self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
             Current.crashReporter.setUserProperty(value: config.Version, name: "HA_Version")
         }
@@ -332,7 +291,7 @@ public class HomeAssistantAPI {
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            let connectionInfo = try self.connectionInfo()
+            let connectionInfo = server.info.connection
 
             let queryUrl = connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
             _ = manager.request(queryUrl)
@@ -358,14 +317,15 @@ public class HomeAssistantAPI {
             method: .post,
             parameters: buildMobileAppRegistration(),
             encoding: JSONEncoding.default
-        ).done { (resp: MobileAppRegistrationResponse) in
+        ).done { [self] (resp: MobileAppRegistrationResponse) in
             Current.Log.verbose("Registration response \(resp)")
 
-            let connectionInfo = try self.connectionInfo()
-            connectionInfo.setAddress(resp.RemoteUIURL, .remoteUI)
-            connectionInfo.cloudhookURL = resp.CloudhookURL
-            connectionInfo.webhookID = resp.WebhookID
-            connectionInfo.webhookSecret = resp.WebhookSecret
+            server.update { server in
+                server.connection.set(address: resp.RemoteUIURL, for: .remoteUI)
+                server.connection.cloudhookURL = resp.CloudhookURL
+                server.connection.webhookID = resp.WebhookID
+                server.connection.webhookSecret = resp.WebhookSecret
+            }
         }
     }
 
@@ -378,7 +338,7 @@ public class HomeAssistantAPI {
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
         firstly { () -> Promise<MobileAppConfig> in
-            if let version = Current.serverVersion(), version < .actionSyncing {
+            if server.info.version < .actionSyncing {
                 let old: Promise<MobileAppConfigPush> = requestImmutable(
                     path: "ios/push",
                     callingFunctionName: "\(#function)"
@@ -408,7 +368,7 @@ public class HomeAssistantAPI {
         let ident = mobileAppRegistrationRequestModel()
         var json = Mapper().toJSON(ident)
 
-        if let version = Current.serverVersion(), version < .canSendDeviceID {
+        if server.info.version < .canSendDeviceID {
             // device_id was added in 0.104, but prior it would error for unknown keys
             json.removeValue(forKey: "device_id")
         }
@@ -429,7 +389,7 @@ public class HomeAssistantAPI {
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
             $0.DeviceID = Current.settingsStore.integrationDeviceID
-            $0.DeviceName = Current.settingsStore.overrideDeviceName ?? Current.device.deviceName()
+            $0.DeviceName = server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName()
             $0.Manufacturer = "Apple"
             $0.Model = Current.device.systemModel()
             $0.OSName = Current.device.systemName()
@@ -539,9 +499,9 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    public class var sharedEventDeviceInfo: [String: String] { [
+    public var sharedEventDeviceInfo: [String: String] { [
         "sourceDevicePermanentID": Constants.PermanentID,
-        "sourceDeviceName": Current.settingsStore.overrideDeviceName ?? Current.device.deviceName(),
+        "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
         "sourceDeviceID": Current.settingsStore.deviceID,
     ] }
 
@@ -558,7 +518,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public class func legacyNotificationActionEvent(
+    public func legacyNotificationActionEvent(
         identifier: String,
         category: String?,
         actionData: Any?,
@@ -581,7 +541,7 @@ public class HomeAssistantAPI {
         return (eventType: "ios.notification_action_fired", eventData: eventData)
     }
 
-    public class func mobileAppNotificationActionEvent(
+    public func mobileAppNotificationActionEvent(
         identifier: String,
         category: String?,
         actionData: Any?,
@@ -600,7 +560,7 @@ public class HomeAssistantAPI {
         return (eventType: "mobile_app_notification_action", eventData: eventData)
     }
 
-    public class func actionEvent(
+    public func actionEvent(
         actionID: String,
         actionName: String,
         source: ActionSource
@@ -613,26 +573,26 @@ public class HomeAssistantAPI {
         return (eventType: "ios.action_fired", eventData: eventData)
     }
 
-    public class func actionScene(
+    public func actionScene(
         actionID: String,
         source: ActionSource
     ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
         return (serviceDomain: "scene", serviceName: "turn_on", serviceData: ["entity_id": actionID])
     }
 
-    public class func tagEvent(
+    public func tagEvent(
         tagPath: String
     ) -> (eventType: String, eventData: [String: String]) {
         var eventData = [String: String]()
         eventData["tag_id"] = tagPath
-        if let version = Current.serverVersion(), version < .tagWebhookAvailable {
+        if server.info.version < .tagWebhookAvailable {
             eventData["device_id"] = Current.settingsStore.integrationDeviceID
         }
         return (eventType: "tag_scanned", eventData: eventData)
     }
 
     @available(watchOS, unavailable)
-    public class func zoneStateEvent(
+    public func zoneStateEvent(
         region: CLRegion,
         state: CLRegionState,
         zone: RLMZone
@@ -649,7 +609,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public class func shareEvent(
+    public func shareEvent(
         entered: String,
         url: URL?,
         text: String?
@@ -699,13 +659,13 @@ public class HomeAssistantAPI {
 
     public func handlePushAction(for info: PushActionInfo) -> Promise<Void> {
         let actions = [
-            Self.legacyNotificationActionEvent(
+            legacyNotificationActionEvent(
                 identifier: info.identifier,
                 category: info.category,
                 actionData: info.actionData,
                 textInput: info.textInput
             ),
-            Self.mobileAppNotificationActionEvent(
+            mobileAppNotificationActionEvent(
                 identifier: info.identifier,
                 category: info.category,
                 actionData: info.actionData,
@@ -713,12 +673,10 @@ public class HomeAssistantAPI {
             ),
         ]
 
-        return Current.api.then(on: nil) { api in
-            when(resolved: actions.map { action -> Promise<Void> in
-                Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
-                return api.CreateEvent(eventType: action.eventType, eventData: action.eventData)
-            }).asVoid()
-        }
+        return when(resolved: actions.map { action -> Promise<Void> in
+            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+            return CreateEvent(eventType: action.eventType, eventData: action.eventData)
+        }).asVoid()
     }
 
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
@@ -732,26 +690,22 @@ public class HomeAssistantAPI {
 
         switch action.triggerType {
         case .event:
-            let actionInfo = Self.actionEvent(actionID: action.ID, actionName: action.Name, source: source)
+            let actionInfo = actionEvent(actionID: action.ID, actionName: action.Name, source: source)
             Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
 
-            return Current.api.then(on: nil) { api in
-                api.CreateEvent(
-                    eventType: actionInfo.eventType,
-                    eventData: actionInfo.eventData
-                )
-            }
+            return CreateEvent(
+                eventType: actionInfo.eventType,
+                eventData: actionInfo.eventData
+            )
         case .scene:
-            let serviceInfo = Self.actionScene(actionID: action.ID, source: source)
+            let serviceInfo = actionScene(actionID: action.ID, source: source)
             Current.Log.verbose("activating scene: \(action.ID)")
 
-            return Current.api.then(on: nil) { api in
-                api.CallService(
-                    domain: serviceInfo.serviceDomain,
-                    service: serviceInfo.serviceName,
-                    serviceData: serviceInfo.serviceData
-                )
-            }
+            return CallService(
+                domain: serviceInfo.serviceDomain,
+                service: serviceInfo.serviceName,
+                serviceData: serviceInfo.serviceData
+            )
         }
     }
 

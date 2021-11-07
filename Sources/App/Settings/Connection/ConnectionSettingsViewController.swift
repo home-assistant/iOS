@@ -85,7 +85,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-                row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.internalURL?.absoluteString }
+                row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.address(for: .internal)?.absoluteString }
                 row.presentationMode = .show(controllerProvider: .callback(builder: {
                     ConnectionURLViewController(urlType: .internal, row: row)
                 }), onDismiss: { [navigationController] _ in
@@ -103,7 +103,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                         if connectionInfo.useCloud, connectionInfo.canUseCloud {
                             return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                         } else {
-                            return Current.settingsStore.connectionInfo?.externalURL?.absoluteString
+                            return Current.settingsStore.connectionInfo?.address(for: .external)?.absoluteString
                         }
                     } else {
                         return nil

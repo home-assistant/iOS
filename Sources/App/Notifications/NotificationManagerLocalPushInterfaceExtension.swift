@@ -98,7 +98,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         guard
             let connectionInfo = Current.settingsStore.connectionInfo,
             connectionInfo.internalSSIDs?.isEmpty == false,
-            connectionInfo.internalURL != nil,
+            connectionInfo.address(for: .internal) != nil,
             connectionInfo.isLocalPushEnabled else {
             return Promise { seal in
                 guard let manager = self.manager else {

@@ -9,9 +9,8 @@ public class TokenManager {
         case connectionFailed
     }
 
-    private var tokenInfo: TokenInfo?
+    public let server: Server
     private var authenticationAPI: AuthenticationAPI
-    private let forcedConnectionInfo: ConnectionInfo?
 
     private class RefreshPromiseCache {
         // we can be asked to refresh from any queue - alamofire's utility queue, webview's main queue, so guard
@@ -40,40 +39,36 @@ public class TokenManager {
 
     private let refreshPromiseCache = RefreshPromiseCache()
 
-    public init(tokenInfo: TokenInfo? = nil, forcedConnectionInfo: ConnectionInfo? = nil) {
-        self.authenticationAPI = AuthenticationAPI(forcedConnectionInfo: forcedConnectionInfo)
-        self.tokenInfo = tokenInfo
-        self.forcedConnectionInfo = forcedConnectionInfo
-    }
-
-    private var connectionInfo: ConnectionInfo? {
-        forcedConnectionInfo ?? Current.settingsStore.connectionInfo
+    public init(server: Server) {
+        self.authenticationAPI = AuthenticationAPI(server: server)
+        self.server = server
     }
 
     /// After authenticating with the server and getting a code, call this method to exchange the code for
     /// an auth token.
     /// - Parameter code: Code acquired by authenticating with an authenticaiton provider.
-    public func initialTokenWithCode(_ code: String) -> Promise<TokenInfo> {
-        authenticationAPI.fetchTokenWithCode(code).get { tokenInfo in
-            self.tokenInfo = tokenInfo
+    public static func initialToken(
+        code: String,
+        connectionInfo: ConnectionInfo
+    ) -> Promise<TokenInfo> {
+        let api = AuthenticationAPI(forcedConnectionInfo: connectionInfo)
+        return api.fetchTokenWithCode(code).get { _ in
+            withExtendedLifetime(api) {
+                // keep around
+            }
         }
     }
 
     // Request the server revokes the current token.
     public func revokeToken() -> Promise<Bool> {
-        guard let tokenInfo = tokenInfo else {
-            return Promise(error: TokenError.tokenUnavailable)
-        }
-
-        return authenticationAPI.revokeToken(tokenInfo: tokenInfo)
+        return authenticationAPI.revokeToken(tokenInfo: server.info.token)
     }
 
     public var bearerToken: Promise<String> {
         firstly {
             self.currentToken
         }.recover { [self] error -> Promise<String> in
-            guard let tokenError = error as? TokenError, tokenError == TokenError.expired,
-                  self.tokenInfo != nil else {
+            guard let tokenError = error as? TokenError, tokenError == TokenError.expired else {
                 Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
@@ -91,12 +86,8 @@ public class TokenManager {
                 Current.Log.info("using existing token")
                 return bearerToken
             }
-        }.map { _ -> [String: Any] in
-            // TokenInfo is refreshed at this point.
-            guard let info = self.tokenInfo else {
-                throw TokenError.tokenUnavailable
-            }
-
+        }.map { [server] _ -> [String: Any] in
+            let info = server.info.token
             var dictionary: [String: Any] = [:]
             dictionary["access_token"] = info.accessToken
             dictionary["expires_in"] = Int(info.expiration.timeIntervalSince(Current.date()))
@@ -108,9 +99,7 @@ public class TokenManager {
 
     private var currentToken: Promise<String> {
         Promise<String> { seal in
-            guard let tokenInfo = self.tokenInfo else {
-                throw TokenError.tokenUnavailable
-            }
+            let tokenInfo = server.info.token
 
             // Add a margin to -10 seconds so that we never get into a state where we return a token
             // that immediately fails.
@@ -133,11 +122,8 @@ public class TokenManager {
     }
 
     private func refreshToken() -> Promise<TokenInfo> {
-        refreshPromiseCache.queue.sync {
-            guard let tokenInfo = self.tokenInfo else {
-                Current.Log.error("no token info, can't refresh")
-                return Promise(error: TokenError.tokenUnavailable)
-            }
+        refreshPromiseCache.queue.sync { [self, server] in
+            let tokenInfo = server.info.token
 
             if let refreshPromise = self.refreshPromiseCache.promise {
                 Current.Log.info("using cached refreshToken promise")
@@ -145,15 +131,14 @@ public class TokenManager {
             }
 
             let promise: Promise<TokenInfo> = firstly {
-                self.authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
-            }.get { tokenInfo in
+                authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
+            }.get { [server] tokenInfo in
                 Current.Log.info("storing refresh token")
-                Current.settingsStore.tokenInfo = tokenInfo
-                self.tokenInfo = tokenInfo
-            }.ensure(on: refreshPromiseCache.queue) {
+                server.info.token = tokenInfo
+            }.ensure(on: refreshPromiseCache.queue) { [self] in
                 Current.Log.info("reset cached refreshToken promise")
-                self.refreshPromiseCache.promise = nil
-            }.tap { result in
+                refreshPromiseCache.promise = nil
+            }.tap { [server] result in
                 switch result {
                 case let .rejected(error):
                     Current.Log.error("refresh token got error: \(error)")
@@ -170,8 +155,7 @@ public class TokenManager {
                         )
                         Current.clientEventStore.addEvent(event).cauterize()
 
-                        self.tokenInfo = nil
-                        Current.settingsStore.tokenInfo = nil
+                        Current.servers.remove(identifier: server.identifier)
                         Current.onboardingObservation.needed(.error)
                     }
                 case .fulfilled:
@@ -180,7 +164,7 @@ public class TokenManager {
             }
 
             Current.Log.info("starting refreshToken cache")
-            self.refreshPromiseCache.promise = promise
+            refreshPromiseCache.promise = promise
             return promise
         }
     }
@@ -201,7 +185,7 @@ extension TokenManager.TokenError: LocalizedError {
 
 extension TokenManager: Authenticator {
     public var authenticationInterceptor: AuthenticationInterceptor<TokenManager> {
-        AuthenticationInterceptor(authenticator: self, credential: tokenInfo, refreshWindow: nil)
+        AuthenticationInterceptor(authenticator: self, credential: server.info.token, refreshWindow: nil)
     }
 
     public func apply(_ credential: TokenInfo, to urlRequest: inout URLRequest) {

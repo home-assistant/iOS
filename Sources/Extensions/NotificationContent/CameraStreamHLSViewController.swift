@@ -31,7 +31,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
             throw HLSError.noPath
         }
 
-        let connectionInfo = try api.connectionInfo()
+        let connectionInfo = api.server.info.connection
         let url = connectionInfo.activeURL.appendingPathComponent(path)
 
         self.init(url: url)

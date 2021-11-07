@@ -74,7 +74,7 @@ class LifecycleManager {
             Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: "ios.finished_launching",
-                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                    eventData: api.sharedEventDeviceInfo
                 )
             }
         }.cauterize()
@@ -93,7 +93,7 @@ class LifecycleManager {
             Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: "ios.entered_background",
-                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                    eventData: api.sharedEventDeviceInfo
                 )
             }
         }.cauterize()
@@ -128,7 +128,7 @@ class LifecycleManager {
             Current.api.then(on: nil) { api in
                 api.CreateEvent(
                     eventType: "ios.became_active",
-                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                    eventData: api.sharedEventDeviceInfo
                 )
             }
         }.cauterize()

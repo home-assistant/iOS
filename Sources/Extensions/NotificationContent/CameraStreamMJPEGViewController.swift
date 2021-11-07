@@ -45,7 +45,7 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         }
 
         self.api = api
-        self.connectionInfo = try api.connectionInfo()
+        self.connectionInfo = api.server.info.connection
         self.response = response
         self.streamer = api.VideoStreamer()
         self.imageView = UIImageView()

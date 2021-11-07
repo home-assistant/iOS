@@ -900,10 +900,8 @@ extension ConnectionInfo {
             return nil
         }
 
-        if Current.settingsStore.tokenInfo != nil {
-            let queryItem = URLQueryItem(name: "external_auth", value: "1")
-            components.queryItems = [queryItem]
-        }
+        let queryItem = URLQueryItem(name: "external_auth", value: "1")
+        components.queryItems = [queryItem]
 
         return components
     }

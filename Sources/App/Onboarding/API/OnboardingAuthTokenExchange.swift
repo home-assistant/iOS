@@ -7,11 +7,6 @@ protocol OnboardingAuthTokenExchange {
 
 class OnboardingAuthTokenExchangeImpl: OnboardingAuthTokenExchange {
     func tokenInfo(code: String, connectionInfo: ConnectionInfo) -> Promise<TokenInfo> {
-        let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
-        return tokenManager.initialTokenWithCode(code).ensure {
-            withExtendedLifetime(tokenManager) {
-                // preserving it until it's done
-            }
-        }
+        TokenManager.initialToken(code: code, connectionInfo: connectionInfo)
     }
 }

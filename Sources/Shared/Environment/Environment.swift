@@ -57,7 +57,12 @@ public class AppEnvironment {
 
         let crashReporter = CrashReporterImpl()
         self.crashReporter = crashReporter
+
+        let servers = ServerManagerImpl()
+        self.servers = servers
+
         crashReporter.setup(environment: self)
+        servers.setup(environment: self)
     }
 
     /// Crash reporting and related metadata gathering
@@ -78,6 +83,8 @@ public class AppEnvironment {
     #endif
 
     public var style: Style = .init()
+
+    public var servers: ServerManager
 
     private var underlyingAPI: Promise<HomeAssistantAPI>?
 

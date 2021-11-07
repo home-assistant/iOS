@@ -19,17 +19,19 @@ public class AuthenticationAPI {
         }
     }
 
-    private let forcedConnectionInfo: ConnectionInfo?
+    private let connectionInfoGetter: () -> ConnectionInfo?
 
-    init(forcedConnectionInfo: ConnectionInfo? = nil) {
-        self.forcedConnectionInfo = forcedConnectionInfo
+    init(forcedConnectionInfo: ConnectionInfo) {
+        self.connectionInfoGetter = { forcedConnectionInfo }
+    }
+
+    init(server: Server) {
+        self.connectionInfoGetter = { server.info.connection }
     }
 
     private func activeURL() throws -> URL {
-        if let forcedConnectionInfo = forcedConnectionInfo {
-            return forcedConnectionInfo.activeURL
-        } else if let url = Current.settingsStore.connectionInfo?.activeURL {
-            return url
+        if let connectionInfo = connectionInfoGetter() {
+            return connectionInfo.activeURL
         } else {
             throw AuthenticationError.noConnectionInfo
         }

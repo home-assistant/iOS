@@ -10,7 +10,7 @@ class ShareViewController: SLComposeServiceViewController {
         case invalidExtensionContext
     }
 
-    private func event() -> Promise<(eventType: String, eventData: [String: String])> {
+    private func event(api: HomeAssistantAPI) -> Promise<(eventType: String, eventData: [String: String])> {
         guard let extensionContext = extensionContext else {
             return .init(error: EventError.invalidExtensionContext)
         }
@@ -28,7 +28,7 @@ class ShareViewController: SLComposeServiceViewController {
         return firstly {
             when(fulfilled: entered, url, text)
         }.map { entered, url, text in
-            HomeAssistantAPI.shareEvent(
+            api.shareEvent(
                 entered: entered,
                 url: url,
                 text: text
@@ -44,7 +44,9 @@ class ShareViewController: SLComposeServiceViewController {
         Current.Log.info("starting to post")
 
         firstly {
-            when(fulfilled: Current.api, event())
+            Current.api.then { [self] api in
+                event(api: api).map { (api, $0) }
+            }
         }.then { api, event -> Promise<Void> in
             Current.Log.verbose("starting request")
             return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)

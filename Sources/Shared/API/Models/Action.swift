@@ -167,10 +167,10 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
     }
 
-    public var exampleTrigger: String {
+    public func exampleTrigger(api: HomeAssistantAPI) -> String {
         switch triggerType {
         case .event:
-            let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)
+            let data = api.actionEvent(actionID: ID, actionName: Name, source: .Preview)
             let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
             let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map(\.description).sorted()
 
@@ -185,7 +185,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
                 \(eventDataStrings.joined(separator: indentation))
             """
         case .scene:
-            let data = HomeAssistantAPI.actionScene(actionID: ID, source: .Preview)
+            let data = api.actionScene(actionID: ID, source: .Preview)
             let eventDataStrings = data.serviceData.map { $0 + ": " + $1 }.sorted()
 
             let indentation = "\n      "

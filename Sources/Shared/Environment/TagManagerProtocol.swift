@@ -39,15 +39,15 @@ public extension TagManager {
     }
 
     func fireEvent(tag: String) -> Promise<Void> {
-        if let version = Current.serverVersion(), version < .tagWebhookAvailable {
-            return Current.api.then(on: nil) { api -> Promise<Void> in
-                let event = HomeAssistantAPI.tagEvent(tagPath: tag)
+        Current.api.then(on: nil) { api -> Promise<Void> in
+            if api.server.info.version < .tagWebhookAvailable {
+                let event = api.tagEvent(tagPath: tag)
                 return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
+            } else {
+                return Current.webhooks.send(request: .init(type: "scan_tag", data: [
+                    "tag_id": tag,
+                ]))
             }
-        } else {
-            return Current.webhooks.send(request: .init(type: "scan_tag", data: [
-                "tag_id": tag,
-            ]))
         }
     }
 }

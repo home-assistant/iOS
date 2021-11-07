@@ -43,7 +43,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     }
 
     public static var requiredOnboardingStyle: OnboardingStyle? {
-        if Current.settingsStore.tokenInfo == nil || Current.settingsStore.connectionInfo == nil {
+        if Current.servers.all.isEmpty {
             return .required(.full)
         } else if OnboardingPermissionViewControllerFactory.hasControllers {
             return .required(.permissions)

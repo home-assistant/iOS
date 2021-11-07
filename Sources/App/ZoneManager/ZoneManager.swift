@@ -123,12 +123,9 @@ class ZoneManager {
     }
 
     private func fire(event: ZoneManagerEvent) {
-        guard let eventInfo = event.asFirableEvent() else {
-            return
-        }
-
-        Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
+        Current.api.then(on: nil) { api -> Promise<Void> in
+            guard let eventInfo = event.asFirableEvent(api: api) else { return .value(()) }
+            return api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
         }.cauterize()
     }
 
