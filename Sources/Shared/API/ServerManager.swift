@@ -12,6 +12,7 @@ public protocol ServerManager {
 
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo)
     func remove(identifier: Identifier<Server>)
+    func removeAll()
 
     func add(observer: ServerObserver)
     func remove(observer: ServerObserver)
@@ -92,6 +93,10 @@ public class ServerManagerImpl: ServerManager {
         cache.all = nil
         keychain.deleteServerInfo(key: identifier.keychainKey)
         notify()
+    }
+
+    public func removeAll() {
+        _ = try? keychain.removeAll()
     }
 
     private func notify() {

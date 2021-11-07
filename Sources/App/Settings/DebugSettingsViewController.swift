@@ -474,17 +474,14 @@ class DebugSettingsViewController: HAFormViewController {
 
         firstly {
             race(
-                Current.api
-                    .map(\.tokenManager)
-                    .then { $0.revokeToken() }.asVoid()
-                    .recover { _ in () },
+                when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
                 after(seconds: 10.0)
             )
         }.then {
             waitAtLeast
         }.get {
-            Current.apiConnection?.disconnect()
-
+            Current.apis.map(\.connection).forEach { $0.disconnect() }
+            Current.servers.removeAll()
             resetStores()
             setDefaults()
         }.then {
