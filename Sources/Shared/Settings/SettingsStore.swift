@@ -16,6 +16,7 @@ public class SettingsStore {
     /// This may be posted on any thread
     public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
 
+    @available(*, deprecated)
     public var tokenInfo: TokenInfo? {
         get {
             guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
@@ -41,6 +42,8 @@ public class SettingsStore {
     }
 
     private var cachedConnectionInfo: ConnectionInfo?
+
+    @available(*, deprecated)
     public var connectionInfo: ConnectionInfo? {
         get {
             if let cachedConnectionInfo = cachedConnectionInfo {
@@ -90,6 +93,7 @@ public class SettingsStore {
         }
     }
 
+    @available(*, deprecated)
     internal var serverVersion: Version? {
         // access this publicly using Environment
         guard let string = prefs.string(forKey: "version") else {
@@ -136,6 +140,7 @@ public class SettingsStore {
         }
     }
 
+    @available(*, deprecated)
     public var overrideDeviceName: String? {
         get {
             prefs.string(forKey: "override_device_name")
@@ -176,6 +181,7 @@ public class SettingsStore {
     }
     #endif
 
+    @available(*, deprecated)
     public var timezone: String? {
         get {
             prefs.string(forKey: "time_zone")

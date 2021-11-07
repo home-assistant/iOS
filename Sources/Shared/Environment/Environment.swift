@@ -88,6 +88,7 @@ public class AppEnvironment {
 
     private var underlyingAPI: Promise<HomeAssistantAPI>?
 
+    @available(*, deprecated)
     public var api: Promise<HomeAssistantAPI> {
         get {
             if let value = underlyingAPI {
@@ -104,6 +105,7 @@ public class AppEnvironment {
         }
     }
 
+    @available(*, deprecated)
     public var apiConnection: HAConnection = HAKit.connection(configuration: .init(
         connectionInfo: {
             if let info = Current.settingsStore.connectionInfo {
@@ -126,6 +128,7 @@ public class AppEnvironment {
         }
     ))
 
+    @available(*, deprecated)
     public func resetAPI() {
         underlyingAPI = nil
         apiConnection.disconnect()
@@ -135,6 +138,7 @@ public class AppEnvironment {
 
     public var settingsStore = SettingsStore()
 
+    @available(*, deprecated)
     public var webhooks = with(WebhookManager()) {
         // ^ because background url session identifiers cannot be reused, this must be a singleton-ish
         $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
@@ -189,6 +193,7 @@ public class AppEnvironment {
 
     public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
 
+    @available(*, deprecated)
     public lazy var serverVersion: () -> Version? = { [settingsStore] in settingsStore.serverVersion }
     public lazy var clientVersion: () -> Version = { Constants.clientVersion }
 
