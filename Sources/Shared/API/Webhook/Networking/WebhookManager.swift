@@ -208,7 +208,7 @@ public class WebhookManager: NSObject {
                 firstly {
                     Self.urlRequest(for: request, server: server)
                 }.get { _, _ in
-                    Current.Log.info("sending: \(request)")
+                    Current.Log.info("sending to \(server.identifier): \(request)")
                 }.then(on: dataQueue) { urlRequest, data in
                     self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
                 }
@@ -231,9 +231,9 @@ public class WebhookManager: NSObject {
         }.tap { result in
             switch result {
             case let .fulfilled(response):
-                Current.Log.info("got successful response for \(request.type): \(response)")
+                Current.Log.info("got successful response from \(server.identifier) for \(request.type): \(response)")
             case let .rejected(error):
-                Current.Log.error("got failure for \(request.type): \(error)")
+                Current.Log.error("got failure from \(server.identifier) for \(request.type): \(error)")
             }
         }
     }
@@ -355,6 +355,7 @@ public class WebhookManager: NSObject {
             Current.Log.info {
                 let values = [
                     "\(taskKey)",
+                    "server(\(server.identifier))",
                     "type(\(handlerType))",
                     "request(\(persisted.request))",
                 ]
@@ -546,6 +547,7 @@ extension WebhookManager: URLSessionDataDelegate {
                     let values = [
                         "\(taskKey)",
                         "type(\(handlerType))",
+                        "server(\(server.identifier))",
                         "request(\(persisted.request))",
                         "statusCode(\(statusCode.flatMap { String(describing: $0) } ?? "none"))",
                         "body(\(body))",
@@ -554,7 +556,7 @@ extension WebhookManager: URLSessionDataDelegate {
                     return "got response: " + values.joined(separator: ", ")
                 }
             }.catch { error in
-                Current.Log.error("failed request for \(handlerType): \(error)")
+                Current.Log.error("failed request to \(server.identifier) for \(handlerType): \(error)")
             }
 
             invoke(
@@ -581,7 +583,7 @@ extension WebhookManager: URLSessionDataDelegate {
         result: Promise<Any>,
         resolver: Resolver<Void>?
     ) {
-        Current.Log.notify("starting \(request.type) (\(handlerType))")
+        Current.Log.notify("starting \(request.type) to \(server.identifier) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
         Current.backgroundTask(withName: "webhook-invoke") { _ -> Promise<Void> in
@@ -601,7 +603,7 @@ extension WebhookManager: URLSessionDataDelegate {
             }.tap {
                 resolver?.resolve($0)
             }.ensure {
-                Current.Log.notify("finished \(request.type) \(handlerType)")
+                Current.Log.notify("finished \(request.type) to \(server.identifier) \(handlerType)")
                 sessionInfo.eventGroup.leave()
             }
         }.cauterize()

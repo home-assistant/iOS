@@ -11,8 +11,10 @@ struct OnboardingAuthStepNotify: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        // actually persists to outside-onboarding
         Current.servers.add(identifier: api.server.identifier, serverInfo: api.server.info)
-        Current.apis[api.server.identifier] = api
+        // not super necessary but prevents making a duplicate connection during this session
+        Current.cachedApis[api.server.identifier] = api
 
         NotificationCenter.default.post(
             name: HomeAssistantAPI.didConnectNotification,

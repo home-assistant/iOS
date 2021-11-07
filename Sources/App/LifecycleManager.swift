@@ -163,9 +163,9 @@ class LifecycleManager {
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         Current.backgroundTask(withName: "connect-api") { _ in
-            Current.api.then(on: nil) { api in
+            when(resolved: Current.allApis.map { api in
                 api.Connect(reason: reason)
-            }
+            }).asVoid()
         }.done {
             Current.Log.info("Connect finished for reason \(reason)")
         }.catch { error in
