@@ -18,8 +18,8 @@ public class PedometerSensor: SensorProvider {
     public func sensors() -> Promise<[WebhookSensor]> {
         firstly { () -> Promise<CMPedometerData> in
             latestPedometerData()
-        }.then { data in
-            when(resolved: PedometerSensor.allCases.map { $0.asSensor(from: data) })
+        }.then { [request] data in
+            when(resolved: PedometerSensor.allCases.map { $0.asSensor(from: data, request: request) })
         }.map { sensors -> [WebhookSensor] in
             sensors.compactMap {
                 if case let .fulfilled(value) = $0 {
@@ -102,17 +102,17 @@ public class PedometerSensor: SensorProvider {
             }
         }
 
-        private var icon: String? {
+        private func icon(serverVersion: Version) -> String? {
             switch self {
             case .distance: return "mdi:hiking"
             case .floorsAscended:
-                if let version = Current.serverVersion(), version < .pedometerIconsAvailable {
+                if serverVersion < .pedometerIconsAvailable {
                     return "mdi:slope-uphill"
                 } else {
                     return "mdi:stairs-up"
                 }
             case .floorsDescended:
-                if let version = Current.serverVersion(), version < .pedometerIconsAvailable {
+                if serverVersion < .pedometerIconsAvailable {
                     return "mdi:slope-downhill"
                 } else {
                     return "mdi:stairs-down"
@@ -136,7 +136,7 @@ public class PedometerSensor: SensorProvider {
             }
         }
 
-        func asSensor(from data: CMPedometerData) -> Promise<WebhookSensor> {
+        func asSensor(from data: CMPedometerData, request: SensorProviderRequest) -> Promise<WebhookSensor> {
             guard let intVal = keyPath.intValue(on: data) else {
                 return .init(error: PedometerError.noData)
             }
@@ -144,7 +144,7 @@ public class PedometerSensor: SensorProvider {
             return .value(WebhookSensor(
                 name: name,
                 uniqueID: rawValue,
-                icon: icon,
+                icon: icon(serverVersion: request.serverVersion),
                 state: intVal,
                 unit: unit
             ))

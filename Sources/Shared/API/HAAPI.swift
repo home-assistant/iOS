@@ -741,7 +741,7 @@ public class HomeAssistantAPI {
 
     public func registerSensors() -> Promise<Void> {
         firstly {
-            Current.sensors.sensors(reason: .registration).map(\.sensors)
+            Current.sensors.sensors(reason: .registration, serverVersion: server.info.version).map(\.sensors)
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
         }.thenMap { [server] sensor in
@@ -758,7 +758,8 @@ public class HomeAssistantAPI {
         firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
-                location: location
+                location: location,
+                serverVersion: server.info.version
             )
         }.map { sensorResponse -> (SensorResponse, [[String: Any]]) in
             Current.Log.info("updating sensors \(sensorResponse.sensors.map { $0.UniqueID ?? "unknown" })")

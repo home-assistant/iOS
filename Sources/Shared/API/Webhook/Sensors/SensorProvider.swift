@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import PromiseKit
+import Version
 
 public struct SensorProviderRequest {
     public enum Reason {
@@ -11,11 +12,13 @@ public struct SensorProviderRequest {
     public var reason: Reason
     public var dependencies: SensorProviderDependencies
     public var location: CLLocation?
+    public var serverVersion: Version
 
-    public init(reason: Reason, dependencies: SensorProviderDependencies, location: CLLocation?) {
+    public init(reason: Reason, dependencies: SensorProviderDependencies, location: CLLocation?, serverVersion: Version) {
         self.reason = reason
         self.dependencies = dependencies
         self.location = location
+        self.serverVersion = serverVersion
     }
 
     internal var lastUpdateReason: String {

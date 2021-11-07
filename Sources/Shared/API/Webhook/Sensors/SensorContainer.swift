@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import PromiseKit
+import Version
 
 public struct SensorObserverUpdate {
     public let sensors: Guarantee<[WebhookSensor]>
@@ -193,12 +194,14 @@ public class SensorContainer {
 
     internal func sensors(
         reason: SensorProviderRequest.Reason,
-        location: CLLocation? = nil
+        location: CLLocation? = nil,
+        serverVersion: Version
     ) -> Guarantee<SensorResponse> {
         let request = SensorProviderRequest(
             reason: reason,
             dependencies: providerDependencies,
-            location: location
+            location: location,
+            serverVersion: serverVersion
         )
 
         let generatedSensors = firstly {
