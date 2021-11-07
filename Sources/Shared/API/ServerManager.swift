@@ -8,6 +8,7 @@ public protocol ServerObserver: AnyObject {
 
 public protocol ServerManager {
     var all: [Server] { get }
+    func server(for identifier: Identifier<Server>) -> Server?
 
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo)
     func remove(identifier: Identifier<Server>)
@@ -73,7 +74,16 @@ public class ServerManagerImpl: ServerManager {
         }
     }
 
+    public func server(for identifier: Identifier<Server>) -> Server? {
+        if let fast = cache.server[identifier] {
+            return fast
+        } else {
+            return all.first(where: { $0.identifier == identifier })
+        }
+    }
+
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) {
+        cache.all = nil
         keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
         notify()
     }

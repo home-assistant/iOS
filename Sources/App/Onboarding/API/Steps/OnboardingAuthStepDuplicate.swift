@@ -4,16 +4,13 @@ import Shared
 
 struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
     init(
-        connection: HAConnection,
         api: HomeAssistantAPI,
         sender: UIViewController
     ) {
-        self.connection = connection
         self.api = api
         self.sender = sender
     }
 
-    var connection: HAConnection
     var api: HomeAssistantAPI
     var sender: UIViewController
 
@@ -25,7 +22,7 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         let devices = firstly { () -> Promise<[HAData]> in
-            connection.send(.init(type: "config/device_registry/list")).promise.map {
+            api.connection.send(.init(type: "config/device_registry/list")).promise.map {
                 if case let .array(value) = $0 {
                     return value
                 } else {
@@ -37,7 +34,7 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
         }
 
         let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
-            switch connection.state {
+            switch api.connection.state {
             case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
                 throw error
             default:

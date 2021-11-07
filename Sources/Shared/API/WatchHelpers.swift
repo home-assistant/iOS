@@ -91,10 +91,14 @@ public extension HomeAssistantAPI {
             return .value(())
         }
 
+        guard let server = Current.servers.all.first else {
+            return .value(())
+        }
+
         if passively {
-            return Current.webhooks.sendPassive(identifier: .updateComplications, request: request)
+            return Current.webhooks.sendPassive(identifier: .updateComplications, server: server, request: request)
         } else {
-            return Current.webhooks.send(identifier: .updateComplications, request: request)
+            return Current.webhooks.send(identifier: .updateComplications, server: server, request: request)
         }
     }
 }

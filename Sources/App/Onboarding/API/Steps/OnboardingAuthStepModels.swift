@@ -3,7 +3,6 @@ import PromiseKit
 import Shared
 
 struct OnboardingAuthStepModels: OnboardingAuthPostStep {
-    var connection: HAConnection
     var api: HomeAssistantAPI
     var sender: UIViewController
 

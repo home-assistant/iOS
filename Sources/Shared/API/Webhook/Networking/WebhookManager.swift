@@ -4,7 +4,6 @@ import PromiseKit
 import UserNotifications
 
 internal enum WebhookError: LocalizedError, Equatable, CancellableError {
-    case noApi
     case unregisteredIdentifier(handler: String)
     case unexpectedType(given: String, desire: String)
     case unacceptableStatusCode(Int)
@@ -20,8 +19,6 @@ internal enum WebhookError: LocalizedError, Equatable, CancellableError {
 
     var errorDescription: String? {
         switch self {
-        case .noApi:
-            return L10n.HaApi.ApiError.notConfigured
         case .unregisteredIdentifier:
             return L10n.HaApi.ApiError.unknown
         case let .unexpectedType(given, desire):
@@ -79,6 +76,8 @@ public class WebhookManager: NSObject {
     }
 
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
+
+    private var serverCache = [Identifier<Server>: Server]()
 
     // MARK: - Lifecycle
 
@@ -176,13 +175,13 @@ public class WebhookManager: NSObject {
 
     // MARK: - Sending Ephemeral
 
-    public func sendEphemeral(request: WebhookRequest) -> Promise<Void> {
-        let promise: Promise<Any> = sendEphemeral(request: request)
+    public func sendEphemeral(server: Server, request: WebhookRequest) -> Promise<Void> {
+        let promise: Promise<Any> = sendEphemeral(server: server, request: request)
         return promise.asVoid()
     }
 
-    public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<MappableResult> {
-        let promise: Promise<Any> = sendEphemeral(request: request)
+    public func sendEphemeral<MappableResult: BaseMappable>(server: Server, request: WebhookRequest) -> Promise<MappableResult> {
+        let promise: Promise<Any> = sendEphemeral(server: server, request: request)
         return promise.map {
             if let result = Mapper<MappableResult>().map(JSONObject: $0) {
                 return result
@@ -192,8 +191,8 @@ public class WebhookManager: NSObject {
         }
     }
 
-    public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<[MappableResult]> {
-        let promise: Promise<Any> = sendEphemeral(request: request)
+    public func sendEphemeral<MappableResult: BaseMappable>(server: Server, request: WebhookRequest) -> Promise<[MappableResult]> {
+        let promise: Promise<Any> = sendEphemeral(server: server, request: request)
         return promise.map {
             if let result = Mapper<MappableResult>(shouldIncludeNilValues: false).mapArray(JSONObject: $0) {
                 return result
@@ -203,11 +202,11 @@ public class WebhookManager: NSObject {
         }
     }
 
-    public func sendEphemeral<ResponseType>(request: WebhookRequest) -> Promise<ResponseType> {
+    public func sendEphemeral<ResponseType>(server: Server, request: WebhookRequest) -> Promise<ResponseType> {
         Current.backgroundTask(withName: "webhook-send-ephemeral") { [self, dataQueue] _ in
             attemptNetworking {
                 firstly {
-                    Self.urlRequest(for: request)
+                    Self.urlRequest(for: request, server: server)
                 }.get { _, _ in
                     Current.Log.info("sending: \(request)")
                 }.then(on: dataQueue) { urlRequest, data in
@@ -217,7 +216,8 @@ public class WebhookManager: NSObject {
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
-                statusCode: (response as? HTTPURLResponse)?.statusCode
+                statusCode: (response as? HTTPURLResponse)?.statusCode,
+                secretGetter: { server.info.connection.webhookSecret }
             )
         }.map { possible in
             if let value = possible as? ResponseType {
@@ -242,17 +242,18 @@ public class WebhookManager: NSObject {
 
     public func send(
         identifier: WebhookResponseIdentifier = .unhandled,
+        server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [dataQueue] in
             let sendRegular: () -> Promise<Void> = { [self] in
-                send(on: currentRegularSessionInfo, identifier: identifier, request: request, waitForResponse: true)
+                send(on: currentRegularSessionInfo, server: server, identifier: identifier, request: request, waitForResponse: true)
             }
 
             let sendBackground: () -> Promise<Void> = { [self] in
-                send(on: currentBackgroundSessionInfo, identifier: identifier, request: request, waitForResponse: true)
+                send(on: currentBackgroundSessionInfo, server: server, identifier: identifier, request: request, waitForResponse: true)
             }
 
             let promise: Promise<Void>
@@ -280,12 +281,13 @@ public class WebhookManager: NSObject {
 
     public func sendPassive(
         identifier: WebhookResponseIdentifier = .unhandled,
+        server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
-            send(on: currentBackgroundSessionInfo, identifier: identifier, request: request, waitForResponse: false)
+            send(on: currentBackgroundSessionInfo, server: server, identifier: identifier, request: request, waitForResponse: false)
                 .pipe(to: seal.resolve)
         }
 
@@ -294,6 +296,7 @@ public class WebhookManager: NSObject {
 
     private func send(
         on sessionInfo: WebhookSessionInfo,
+        server: Server,
         identifier: WebhookResponseIdentifier,
         request: WebhookRequest,
         waitForResponse: Bool
@@ -305,13 +308,16 @@ public class WebhookManager: NSObject {
 
         let (promise, seal) = Promise<Void>.pending()
 
+        // if we're asked to send on a non-persisted server, we may need to refer back to it
+        serverCache[server.identifier] = server
+
         // wrap this in a background task, but don't let the expiration cause the resolve chain to be aborted
         // this is important because we may be woken up later and asked to continue the same request, even if timed out
         // since, you know, background execution and whatnot
         Current.backgroundTask(withName: "webhook-send") { _ in promise }.cauterize()
 
         firstly {
-            Self.urlRequest(for: request)
+            Self.urlRequest(for: request, server: server)
         }.done(on: dataQueue) { urlRequest, data in
             let task: URLSessionUploadTask
             let filesToRemove: [URL]
@@ -332,7 +338,7 @@ public class WebhookManager: NSObject {
                 filesToRemove = []
             }
 
-            let persisted = WebhookPersisted(request: request, identifier: identifier)
+            let persisted = WebhookPersisted(server: server.identifier, request: request, identifier: identifier)
             task.webhookPersisted = persisted
 
             let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
@@ -363,6 +369,7 @@ public class WebhookManager: NSObject {
             self.invoke(
                 sessionInfo: sessionInfo,
                 handler: handlerType,
+                server: server,
                 request: request,
                 result: .init(error: error),
                 resolver: seal
@@ -378,10 +385,11 @@ public class WebhookManager: NSObject {
 
     // MARK: - Testing Connection Info
 
-    public func sendTest(baseURL: URL) -> Promise<Void> {
+    public func sendTest(server: Server, baseURL: URL) -> Promise<Void> {
         firstly {
             Self.urlRequest(
                 for: .init(type: "get_config", data: [:]),
+               server: server,
                 baseURL: baseURL
             )
         }.then(on: dataQueue) { urlRequest, data in
@@ -389,7 +397,8 @@ public class WebhookManager: NSObject {
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
-                statusCode: (response as? HTTPURLResponse)?.statusCode
+                statusCode: (response as? HTTPURLResponse)?.statusCode,
+                secretGetter: { server.info.connection.webhookSecret }
             )
         }.asVoid()
     }
@@ -415,7 +424,7 @@ public class WebhookManager: NSObject {
                     return false
                 }
 
-                if thisType == newType, thisTask != newTask {
+                if thisType == newType, thisTask != newTask, newPersisted.server == thisPersisted.server {
                     return newType.shouldReplace(request: newPersisted.request, with: thisPersisted.request)
                 } else {
                     return false
@@ -443,14 +452,11 @@ public class WebhookManager: NSObject {
 
     private static func urlRequest(
         for request: WebhookRequest,
+        server: Server,
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         Promise { seal in
-            guard let connectionInfo = Current.settingsStore.connectionInfo else {
-                seal.reject(WebhookError.noApi)
-                return
-            }
-
+            let connectionInfo = server.info.connection
             let webhookURL: URL
 
             if let baseURL = baseURL {
@@ -462,7 +468,7 @@ public class WebhookManager: NSObject {
             var urlRequest = try URLRequest(url: webhookURL, method: .post)
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server).toJSON(request)
+            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server)).toJSON(request)
             let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
 
             // httpBody is ignored by URLSession but is made available in tests
@@ -521,17 +527,19 @@ extension WebhookManager: URLSessionDataDelegate {
             return
         }
 
-        let result = Promise<Data?> { seal in
-            let data = self.pendingDataForTask[taskKey]
-            self.pendingDataForTask.removeValue(forKey: taskKey)
-            seal.resolve(error, data)
-        }.webhookJson(
-            on: DispatchQueue.global(qos: .utility),
-            statusCode: statusCode
-        )
-
         // dispatch
-        if let (handlerType, persisted) = responseInfo(from: task) {
+        if let (handlerType, persisted) = responseInfo(from: task),
+           let server = serverCache[persisted.server] ?? Current.servers.server(for: persisted.server) {
+            let result = Promise<Data?> { seal in
+                let data = self.pendingDataForTask[taskKey]
+                self.pendingDataForTask.removeValue(forKey: taskKey)
+                seal.resolve(error, data)
+            }.webhookJson(
+                on: DispatchQueue.global(qos: .utility),
+                statusCode: statusCode,
+                secretGetter: { server.info.connection.webhookSecret }
+            )
+
             // logging
             result.done(on: dataQueue) { body in
                 Current.Log.info {
@@ -552,6 +560,7 @@ extension WebhookManager: URLSessionDataDelegate {
             invoke(
                 sessionInfo: sessionInfo,
                 handler: handlerType,
+                server: server,
                 request: persisted.request,
                 result: result,
                 resolver: resolverForTask[taskKey]
@@ -567,6 +576,7 @@ extension WebhookManager: URLSessionDataDelegate {
     private func invoke(
         sessionInfo: WebhookSessionInfo,
         handler handlerType: WebhookResponseHandler.Type,
+        server: Server,
         request: WebhookRequest,
         result: Promise<Any>,
         resolver: Resolver<Void>?
@@ -574,19 +584,20 @@ extension WebhookManager: URLSessionDataDelegate {
         Current.Log.notify("starting \(request.type) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        Current.backgroundTask(withName: "webhook-invoke") { _ in
-            Current.api.then(on: nil) { (api: HomeAssistantAPI) -> Promise<Void> in
-                let handler = handlerType.init(api: api)
-                let handlerPromise = firstly {
-                    handler.handle(request: .value(request), result: result)
-                }.done { [weak self] result in
-                    // keep the handler around until it finishes
-                    withExtendedLifetime(handler) {
-                        self?.handle(result: result)
-                    }
+        Current.backgroundTask(withName: "webhook-invoke") { _ -> Promise<Void> in
+            let api = Current.api(for: server)
+            let handler = handlerType.init(api: api)
+            let handlerPromise = firstly {
+                handler.handle(request: .value(request), result: result)
+            }.done { [weak self] result in
+                // keep the handler around until it finishes
+                withExtendedLifetime(handler) {
+                    self?.handle(result: result)
                 }
+            }
 
-                return when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+            return firstly {
+                when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
             }.tap {
                 resolver?.resolve($0)
             }.ensure {

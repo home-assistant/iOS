@@ -44,7 +44,7 @@ public extension TagManager {
                 let event = api.tagEvent(tagPath: tag)
                 return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
             } else {
-                return Current.webhooks.send(request: .init(type: "scan_tag", data: [
+                return Current.webhooks.send(server: api.server, request: .init(type: "scan_tag", data: [
                     "tag_id": tag,
                 ]))
             }

@@ -40,8 +40,8 @@ class OnboardingAuth {
                 login.open(authDetails: authDetails, sender: sender)
             }
         }.then { [self] code in
-            configuredAPI(code: code, connectionInfo: ConnectionInfo(discovered: instance))
-        }.then { [self] api, connection -> Promise<Void> in
+            configuredAPI(instance: instance, code: code, connectionInfo: ConnectionInfo(discovered: instance))
+        }.then { [self] api -> Promise<Void> in
             var promise: Promise<Void> = .value(())
 
             for step: OnboardingAuthStepPoint in [
@@ -51,7 +51,7 @@ class OnboardingAuth {
                 .complete,
             ] {
                 promise = promise.then {
-                    performPostSteps(checkPoint: step, connection: connection, api: api, sender: sender)
+                    performPostSteps(checkPoint: step, api: api, sender: sender)
                 }
             }
 
@@ -86,14 +86,13 @@ class OnboardingAuth {
 
     private func performPostSteps(
         checkPoint: OnboardingAuthStepPoint,
-        connection: HAConnection,
         api: HomeAssistantAPI,
         sender: UIViewController
     ) -> Promise<Void> {
         Current.Log.info(checkPoint)
         return perform(checkPoint: checkPoint, checks: postSteps.compactMap { checkType in
             if checkType.supportedPoints.contains(checkPoint) {
-                return checkType.init(connection: connection, api: api, sender: sender)
+                return checkType.init(api: api, sender: sender)
             } else {
                 return nil
             }
@@ -101,22 +100,33 @@ class OnboardingAuth {
     }
 
     private func configuredAPI(
+        instance: DiscoveredHomeAssistant,
         code: String,
         connectionInfo: ConnectionInfo
-    ) -> Promise<(HomeAssistantAPI, HAConnection)> {
+    ) -> Promise<HomeAssistantAPI> {
         Current.Log.info()
 
         return tokenExchange.tokenInfo(
             code: code,
             connectionInfo: connectionInfo
-        ).get { tokenInfo in
+        ).then { tokenInfo -> Promise<HomeAssistantAPI> in
             Current.Log.verbose()
-            Current.settingsStore.tokenInfo = tokenInfo
-            Current.settingsStore.connectionInfo = connectionInfo
-            Current.resetAPI()
-            Current.apiConnection?.connect()
-        }.then { _ in
-            Current.api.map { ($0, Current.apiConnection!) }
+
+            var serverInfo = ServerInfo(
+                name: ServerInfo.defaultName,
+                connection: connectionInfo,
+                token: tokenInfo,
+                version: instance.version
+            )
+
+            let identifier = Identifier<Server>(rawValue: instance.uuid ?? UUID().uuidString)
+            let server = Server(
+                identifier: identifier,
+                getter: { serverInfo },
+                setter: { serverInfo = $0 }
+            )
+
+            return .value(HomeAssistantAPI(server: server))
         }
     }
 
@@ -125,10 +135,8 @@ class OnboardingAuth {
         return firstly {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
-            Current.settingsStore.tokenInfo = nil
-            Current.settingsStore.connectionInfo = nil
-            Current.resetAPI()
-            Current.apiConnection?.disconnect()
+            Current.apis[api.server.identifier] = nil
+            api.connection.disconnect()
         }
     }
 }

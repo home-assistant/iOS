@@ -2,10 +2,12 @@ import Foundation
 import ObjectMapper
 
 struct WebhookPersisted: Codable {
+    var server: Identifier<Server>
     var request: WebhookRequest
     var identifier: WebhookResponseIdentifier
 
     enum CodingKeys: CodingKey {
+        case server
         case request
         case identifier
     }
@@ -14,7 +16,8 @@ struct WebhookPersisted: Codable {
         case requestFailure
     }
 
-    init(request: WebhookRequest, identifier: WebhookResponseIdentifier) {
+    init(server: Identifier<Server>, request: WebhookRequest, identifier: WebhookResponseIdentifier) {
+        self.server = server
         self.request = request
         self.identifier = identifier
     }
@@ -27,6 +30,7 @@ struct WebhookPersisted: Codable {
             forKey: .request
         )
         try container.encode(identifier, forKey: .identifier)
+        try container.encode(server, forKey: .server)
     }
 
     init(from decoder: Decoder) throws {
@@ -35,6 +39,7 @@ struct WebhookPersisted: Codable {
         let json = try container.decode([String: Any].self, forKey: .request)
         self.request = try Mapper<WebhookRequest>(context: WebhookRequestContext.local).map(JSON: json)
         self.identifier = try container.decode(WebhookResponseIdentifier.self, forKey: .identifier)
+        self.server = try container.decode(Identifier<Server>.self, forKey: .server)
     }
 }
 

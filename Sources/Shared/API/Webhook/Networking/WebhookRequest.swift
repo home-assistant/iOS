@@ -3,7 +3,7 @@ import ObjectMapper
 import Sodium
 
 public enum WebhookRequestContext: MapContext, Equatable {
-    case server
+    case server(Server)
     case local
 }
 
@@ -47,7 +47,7 @@ public struct WebhookRequest: ImmutableMappable {
             localMetadata >>> map["local_metadata"]
         }
 
-        if context == .server, let encrypted = encryptedData() {
+        if case let .server(server) = context, let encrypted = encryptedData(server: server) {
             true >>> map["encrypted"]
             encrypted >>> map["encrypted_data"]
         } else {
@@ -55,8 +55,8 @@ public struct WebhookRequest: ImmutableMappable {
         }
     }
 
-    private func encryptedData() -> String? {
-        guard let secret = Current.settingsStore.connectionInfo?.webhookSecret else {
+    private func encryptedData(server: Server) -> String? {
+        guard let secret = server.info.connection.webhookSecret else {
             return nil
         }
 

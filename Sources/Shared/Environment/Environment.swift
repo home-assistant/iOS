@@ -133,7 +133,6 @@ public class AppEnvironment {
 
     public var settingsStore = SettingsStore()
 
-    @available(*, deprecated)
     public var webhooks = with(WebhookManager()) {
         // ^ because background url session identifiers cannot be reused, this must be a singleton-ish
         $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)

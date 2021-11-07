@@ -62,7 +62,7 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
             }.get { sensors in
                 Current.Log.info("registering \(sensors.map(\.UniqueID))")
             }.thenMap { sensor in
-                Current.webhooks.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
+                Current.webhooks.send(server: api.server, request: .init(type: "register_sensor", data: sensor.toJSON()))
             }.asVoid()
         }
 

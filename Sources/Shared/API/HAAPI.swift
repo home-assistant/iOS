@@ -169,8 +169,7 @@ public class HomeAssistantAPI {
                 ])).then {
                     return self.register()
                 }
-            case .noApi,
-                 .unregisteredIdentifier,
+            case .unregisteredIdentifier,
                  .unacceptableStatusCode,
                  .replaced,
                  .none:
@@ -199,6 +198,7 @@ public class HomeAssistantAPI {
         INInteraction(intent: intent, response: nil).donate(completion: nil)
 
         return Current.webhooks.sendEphemeral(
+            server: server,
             request: .init(type: "fire_event", data: [
                 "event_type": eventType,
                 "event_data": eventData,
@@ -268,8 +268,10 @@ public class HomeAssistantAPI {
     }
 
     public func getConfig() -> Promise<Void> {
-        let promise: Promise<ConfigResponse> = Current.webhooks
-            .sendEphemeral(request: .init(type: "get_config", data: [:]))
+        let promise: Promise<ConfigResponse> = Current.webhooks.sendEphemeral(
+            server: server,
+            request: .init(type: "get_config", data: [:])
+        )
 
         return promise.done { [self] config in
             server.update { server in
@@ -301,6 +303,7 @@ public class HomeAssistantAPI {
 
         return Current.webhooks.send(
             identifier: .serviceCall,
+            server: server,
             request: .init(type: "call_service", data: [
                 "domain": domain,
                 "service": service,
@@ -350,10 +353,13 @@ public class HomeAssistantAPI {
     }
 
     public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
-        Current.webhooks.sendEphemeral(request: .init(
-            type: "update_registration",
-            data: buildMobileAppUpdateRegistration()
-        ))
+        Current.webhooks.sendEphemeral(
+            server: server,
+            request: .init(
+                type: "update_registration",
+                data: buildMobileAppUpdateRegistration()
+            )
+        )
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
@@ -378,10 +384,13 @@ public class HomeAssistantAPI {
     }
 
     public func StreamCamera(entityId: String) -> Promise<StreamCameraResponse> {
-        Current.webhooks.sendEphemeral(request: .init(
-            type: "stream_camera",
-            data: ["camera_entity_id": entityId]
-        ))
+        Current.webhooks.sendEphemeral(
+            server: server,
+            request: .init(
+                type: "stream_camera",
+                data: ["camera_entity_id": entityId]
+            )
+        )
     }
 
     private func buildMobileAppRegistration() -> [String: Any] {
@@ -480,12 +489,13 @@ public class HomeAssistantAPI {
             let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
             Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict
-        }.then { payload in
+        }.then { [server] payload in
             when(
                 resolved:
                 self.UpdateSensors(trigger: updateType, location: location).asVoid(),
                 Current.webhooks.send(
                     identifier: .location,
+                    server: server,
                     request: .init(
                         type: "update_location",
                         data: payload,
@@ -734,8 +744,8 @@ public class HomeAssistantAPI {
             Current.sensors.sensors(reason: .registration).map(\.sensors)
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
-        }.thenMap { sensor in
-            Current.webhooks.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
+        }.thenMap { [server] sensor in
+            Current.webhooks.send(server: server, request: .init(type: "register_sensor", data: sensor.toJSON()))
         }.tap { result in
             Current.Log.info("finished registering sensors: \(result)")
         }.asVoid()
@@ -757,7 +767,7 @@ public class HomeAssistantAPI {
                 shouldIncludeNilValues: false
             )
             return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
-        }.then { sensorResponse, payload -> Promise<Void> in
+        }.then { [server] sensorResponse, payload -> Promise<Void> in
             firstly { () -> Promise<Void> in
                 if payload.isEmpty {
                     Current.Log.info("skipping network request for unchanged sensor update")
@@ -765,6 +775,7 @@ public class HomeAssistantAPI {
                 } else {
                     return Current.webhooks.send(
                         identifier: .updateSensors,
+                        server: server,
                         request: .init(type: "update_sensor_states", data: payload)
                     )
                 }

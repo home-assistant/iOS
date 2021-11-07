@@ -103,11 +103,11 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
             try check(url: givenURL, useCloud: useCloud, validationErrors: form.validate())
 
             if useCloud == true, let url = server.info.connection.address(for: .remoteUI) {
-                return Current.webhooks.sendTest(baseURL: url)
+                return Current.webhooks.sendTest(server: server, baseURL: url)
             }
 
             if let givenURL = givenURL, useCloud != true {
-                return Current.webhooks.sendTest(baseURL: givenURL)
+                return Current.webhooks.sendTest(server: server, baseURL: givenURL)
             }
 
             return .value(())

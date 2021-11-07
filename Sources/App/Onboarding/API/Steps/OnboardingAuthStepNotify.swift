@@ -3,7 +3,6 @@ import PromiseKit
 import Shared
 
 struct OnboardingAuthStepNotify: OnboardingAuthPostStep {
-    var connection: HAConnection
     var api: HomeAssistantAPI
     var sender: UIViewController
 
@@ -12,6 +11,9 @@ struct OnboardingAuthStepNotify: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        Current.servers.add(identifier: api.server.identifier, serverInfo: api.server.info)
+        Current.apis[api.server.identifier] = api
+
         NotificationCenter.default.post(
             name: HomeAssistantAPI.didConnectNotification,
             object: nil,

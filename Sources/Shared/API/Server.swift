@@ -99,13 +99,13 @@ public class Server: Hashable {
         info = value
     }
 
-    typealias Getter = () -> ServerInfo
-    typealias Setter = (ServerInfo) -> Void
+    public typealias Getter = () -> ServerInfo
+    public typealias Setter = (ServerInfo) -> Void
 
     private let getter: Getter
     private let setter: Setter
 
-    init(
+    public init(
         identifier: Identifier<Server>,
         getter: @escaping Getter,
         setter: @escaping Setter
