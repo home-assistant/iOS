@@ -262,7 +262,7 @@ public class ConnectionInfo: Codable {
             }
 
             if let overrideURL = overrideURL {
-                return overrideURL
+                return sanitize(overrideURL)
             }
         }
 
