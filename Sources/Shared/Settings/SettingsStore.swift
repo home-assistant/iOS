@@ -18,95 +18,17 @@ public class SettingsStore {
 
     @available(*, deprecated)
     public var tokenInfo: TokenInfo? {
-        get {
-            guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
-                  let unwrappedData = tokenData else {
-                return nil
-            }
-
-            return try? JSONDecoder().decode(TokenInfo.self, from: unwrappedData)
-        }
-        set {
-            guard let info = newValue else {
-                keychain["tokenInfo"] = nil
-                return
-            }
-
-            do {
-                let data = try JSONEncoder().encode(info)
-                try keychain.set(data, key: "tokenInfo")
-            } catch {
-                assertionFailure("Error while saving token info: \(error)")
-            }
-        }
+        Current.servers.all.first?.info.token
     }
-
-    private var cachedConnectionInfo: ConnectionInfo?
 
     @available(*, deprecated)
     public var connectionInfo: ConnectionInfo? {
-        get {
-            if let cachedConnectionInfo = cachedConnectionInfo {
-                return cachedConnectionInfo
-            }
-
-            if NSClassFromString("XCTest") != nil {
-                return nil
-            }
-
-            guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
-                  let unwrappedData = connectionData else {
-                return nil
-            }
-
-            do {
-                return try JSONDecoder().decode(ConnectionInfo.self, from: unwrappedData)
-            } catch {
-                Current.Log.error("Error when decoding Keychain ConnectionInfo: \(error)")
-            }
-            return nil
-        }
-        set {
-            cachedConnectionInfo = newValue
-
-            if NSClassFromString("XCTest") != nil {
-                return
-            }
-
-            guard let info = newValue else {
-                keychain["connectionInfo"] = nil
-                return
-            }
-
-            do {
-                let data = try JSONEncoder().encode(info)
-                try keychain.set(data, key: "connectionInfo")
-            } catch {
-                assertionFailure("Error while saving token info: \(error)")
-            }
-
-            NotificationCenter.default.post(
-                name: Self.connectionInfoDidChange,
-                object: nil,
-                userInfo: nil
-            )
-        }
+        Current.servers.all.first?.info.connection
     }
 
     @available(*, deprecated)
     internal var serverVersion: Version? {
-        // access this publicly using Environment
-        guard let string = prefs.string(forKey: "version") else {
-            Current.Log.info("couldn't find version string, falling back")
-            return nil
-        }
-
-        do {
-            return try Version(hassVersion: string)
-        } catch {
-            Current.Log.error("couldn't parse version '\(string)': \(error)")
-            return nil
-        }
+        Current.servers.all.first?.info.version
     }
 
     public var pushID: String? {
@@ -137,16 +59,6 @@ public class SettingsStore {
         }
         set {
             keychain["deviceID"] = newValue
-        }
-    }
-
-    @available(*, deprecated)
-    public var overrideDeviceName: String? {
-        get {
-            prefs.string(forKey: "override_device_name")
-        }
-        set {
-            prefs.set(newValue, forKey: "override_device_name")
         }
     }
 

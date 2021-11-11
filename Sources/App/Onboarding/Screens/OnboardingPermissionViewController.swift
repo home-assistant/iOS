@@ -109,6 +109,7 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
         permission.request { [self] granted, _ in
             if permission == .location, granted, let currentSSID = Current.connectivity.currentWiFiSSID() {
                 // update SSIDs if we have access to them, since we're gonna need it later
+
                 Current.settingsStore.connectionInfo?.internalSSIDs = [currentSSID]
             }
 

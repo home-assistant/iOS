@@ -178,12 +178,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
             if let connInfoData = context.content["connection_info"] as? Data {
                 let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoData)
-                Current.settingsStore.connectionInfo = connInfo
+//                Current.settingsStore.connectionInfo = connInfo
             }
 
             if let tokenInfoData = context.content["token_info"] as? Data {
                 let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoData)
-                Current.settingsStore.tokenInfo = tokenInfo
+//                Current.settingsStore.tokenInfo = tokenInfo
                 Current.resetAPI()
             }
 

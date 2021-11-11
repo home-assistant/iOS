@@ -728,8 +728,9 @@ extension WebViewController: WKScriptMessageHandler {
                     .then { $0.revokeToken() }
             }.done { _ in
                 Current.resetAPI()
-                Current.settingsStore.connectionInfo = nil
-                Current.settingsStore.tokenInfo = nil
+//                Current.settingsStore.connectionInfo = nil
+//                Current.settingsStore.tokenInfo = nil
+                // TODO: delete
                 let script = "\(callbackName)(true)"
 
                 Current.Log.verbose("Running revoke external auth callback \(script)")
