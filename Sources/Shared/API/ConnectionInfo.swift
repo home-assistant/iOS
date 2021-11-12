@@ -249,93 +249,39 @@ public class ConnectionInfo: Codable {
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
     public var activeURL: URL {
-        switch overrideActiveURLType ?? activeURLType {
-        case .internal:
-            if let url = internalURL {
-                guard isOnInternalNetwork else {
-                    if useCloud, canUseCloud {
-                        activeURLType = .remoteUI
-                    } else if externalURL != nil {
-                        activeURLType = .external
-                    } else {
-                        // no change - we don't have one to switch to
-                        return sanitize(url)
-                    }
-                    return self.activeURL
-                }
-                return sanitize(url)
-            } else {
-                // No internal URL available, so fallback to an external URL
-                if useCloud, canUseCloud {
-                    activeURLType = .remoteUI
-                } else {
-                    activeURLType = .external
-                }
-                return self.activeURL
+        if let overrideActiveURLType = overrideActiveURLType {
+            let overrideURL: URL?
+
+            switch overrideActiveURLType {
+            case .internal:
+                overrideURL = internalURL
+            case .remoteUI:
+                overrideURL = remoteUIURL
+            case .external:
+                overrideURL = externalURL
             }
-        case .remoteUI:
-            if let url = remoteUIURL {
-                if let internalURL = internalURL, self.isOnInternalNetwork {
-                    activeURLType = .internal
-                    return sanitize(internalURL)
-                }
-                return sanitize(url)
-            } else if externalURL != nil {
-                activeURLType = .external
-                return self.activeURL
-            }
-        case .external:
-            if useCloud, canUseCloud {
-                activeURLType = .remoteUI
-                return self.activeURL
-            } else if let url = externalURL {
-                if let internalURL = internalURL, self.isOnInternalNetwork {
-                    activeURLType = .internal
-                    return sanitize(internalURL)
-                }
-                return sanitize(url)
+
+            if let overrideURL = overrideURL {
+                return sanitize(overrideURL)
             }
         }
 
-        let errMsg =
-            "Unable to get \(activeURLType), even though its active! Internal URL: \(String(describing: internalURL)), External URL: \(String(describing: externalURL)), Remote UI URL: \(String(describing: remoteUIURL))"
-        Current.Log.error(errMsg)
+        let url: URL
 
-        #if os(iOS)
-        DispatchQueue.main.async {
-            let alert = UIAlertController(
-                title: "URL Unavailable",
-                message: "Expected to have a \(self.activeURLType) but none available! Please enter the URL. App will exit after entry, please reopen.",
-                preferredStyle: .alert
-            )
-
-            var textField: UITextField?
-
-            alert.addTextField { pTextField in
-                pTextField.placeholder = self.activeURLType.description
-                pTextField.clearButtonMode = .whileEditing
-                pTextField.borderStyle = .none
-                textField = pTextField
-            }
-
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
-                guard let urlStr = textField?.text, let url = URL(string: urlStr) else { return }
-                self.setAddress(url, self.activeURLType)
-                exit(1)
-            }))
-            let win = UIWindow(frame: UIScreen.main.bounds)
-            let vc = UIViewController()
-            vc.view.backgroundColor = .clear
-            win.rootViewController = vc
-            win.windowLevel = UIWindow.Level.alert + 1
-            win.makeKeyAndVisible()
-            vc.present(alert, animated: true, completion: nil)
+        if let internalURL = internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
+            activeURLType = .internal
+            url = internalURL
+        } else if let remoteUIURL = remoteUIURL, useCloud {
+            activeURLType = .remoteUI
+            url = remoteUIURL
+        } else if let externalURL = externalURL {
+            activeURLType = .external
+            url = externalURL
+        } else {
+            url = URL(string: "http://homeassistant.local:8123")!
         }
 
-        return URL(string: "http://somethingbroke.fake")!
-        #else
-        fatalError(errMsg)
-        #endif
+        return sanitize(url)
     }
 
     /// Returns the activeURL with /api appended.
