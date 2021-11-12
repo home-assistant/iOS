@@ -110,7 +110,8 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
             if permission == .location, granted, let currentSSID = Current.connectivity.currentWiFiSSID() {
                 // update SSIDs if we have access to them, since we're gonna need it later
 
-                Current.settingsStore.connectionInfo?.internalSSIDs = [currentSSID]
+                #warning("multiserver")
+//                Current.settingsStore.connectionInfo?.internalSSIDs = [currentSSID]
             }
 
             sender.isUserInteractionEnabled = true

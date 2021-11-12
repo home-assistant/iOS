@@ -14,6 +14,7 @@ class WebViewWindowController {
     var restorationActivity: NSUserActivity?
 
     var webViewControllerPromise: Guarantee<WebViewController>
+    var server: Guarantee<Server> { webViewControllerPromise.map(\.server) }
 
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
@@ -71,15 +72,15 @@ class WebViewWindowController {
             updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: style))
         } else {
             if let rootController = window.rootViewController, !rootController.children.isEmpty {
-                Current.Log.info("state restoration loaded controller, not creating a new one")
+                Current.Log.info("[iOS 12] state restoration loaded controller, not creating a new one")
                 // not changing anything, but handle the promises
                 updateRootViewController(to: rootController)
             } else {
-                Current.Log.info("state restoration didn't load anything, constructing controllers manually")
-                let webViewController = WebViewController(restorationActivity: restorationActivity)
-                let navController = webViewNavigationController(rootViewController: webViewController)
-                updateRootViewController(to: navController)
-
+                if let webViewController = WebViewController(restoring: .init(restorationActivity)) {
+                    updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
+                } else {
+                    updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
+                }
                 restorationActivity = nil
             }
         }
@@ -136,9 +137,29 @@ class WebViewWindowController {
     }
 
     func open(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
-        let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw)
-        let externalURL = URL(string: openUrlRaw)
+        firstly {
+            server.map(\.info.connection)
+        }.done { [self] connectionInfo in
+            let webviewURL = connectionInfo.webviewURL(from: openUrlRaw)
+            let externalURL = URL(string: openUrlRaw)
 
+            open(
+                from: from,
+                urlString: openUrlRaw,
+                webviewURL: webviewURL,
+                externalURL: externalURL,
+                skipConfirm: skipConfirm
+            )
+        }
+    }
+
+    private func open(
+        from: OpenSource,
+        urlString openUrlRaw: String,
+        webviewURL: URL?,
+        externalURL: URL?,
+        skipConfirm: Bool
+    ) {
         guard webviewURL != nil || externalURL != nil else {
             return
         }
@@ -211,20 +232,25 @@ extension WebViewWindowController: OnboardingStateObserver {
             }
         case .didConnect:
             onboardingPreloadWebViewController = WebViewController(
-                restorationActivity: restorationActivity,
+                restoring: .init(restorationActivity),
                 shouldLoadImmediately: true
             )
         case .complete:
-            let controller: WebViewController
+            let controller: WebViewController?
 
             if let preload = onboardingPreloadWebViewController {
                 controller = preload
             } else {
-                controller = WebViewController(restorationActivity: restorationActivity, shouldLoadImmediately: true)
+                controller = WebViewController(
+                    restoring: .init(restorationActivity),
+                    shouldLoadImmediately: true
+                )
+                restorationActivity = nil
             }
 
-            updateRootViewController(to: webViewNavigationController(rootViewController: controller))
-            restorationActivity = nil
+            if let controller = controller {
+                updateRootViewController(to: webViewNavigationController(rootViewController: controller))
+            }
         }
     }
 }
