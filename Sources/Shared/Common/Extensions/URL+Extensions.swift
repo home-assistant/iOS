@@ -23,6 +23,19 @@ extension URL {
         }
     }
 
+    public func sanitized() -> URL {
+        guard path.hasSuffix("/"),
+              var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+            return self
+        }
+
+        while components.path.hasSuffix("/") {
+            components.path.removeLast()
+        }
+
+        return components.url ?? self
+    }
+
     func adapting(url: URL) -> URL {
         guard
             let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
