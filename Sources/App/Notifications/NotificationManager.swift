@@ -135,9 +135,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
                 Current.Log.verbose("Success, sending data \(eventData)")
 
-                Current.api.then(on: nil) { api in
+                when(fulfilled: Current.apis.map { api in
                     api.CreateEvent(eventType: eventName, eventData: eventData)
-                }.catch { error -> Void in
+                }).catch { error -> Void in
                     Current.Log.error("Received error from createEvent during shortcut run \(error)")
                 }
             }
@@ -147,9 +147,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             eventData["status"] = "failure"
             eventData["error"] = error.XCUErrorParameters
 
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
+            }).catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
         }
@@ -157,9 +157,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         let cancelHandler: CallbackURLKit.CancelCallback = {
             eventData["status"] = "cancelled"
 
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
+            }).catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
         }
@@ -179,9 +179,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             eventData["status"] = "error"
             eventData["error"] = error.localizedDescription
 
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
+            }).catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
             }
         }
@@ -256,9 +256,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: "handle-push-action") { _ in
-                Current.api.then(on: nil) { api in
-                    api.handlePushAction(for: info)
-                }
+                Current.api(for: server).handlePushAction(for: info)
             }.ensure {
                 completionHandler()
             }.catch { err -> Void in
@@ -333,9 +331,9 @@ extension NotificationManager: MessagingDelegate {
         Current.settingsStore.pushID = fcmToken
 
         Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.updateRegistration()
-            }
+            })
         }.cauterize()
     }
 }
