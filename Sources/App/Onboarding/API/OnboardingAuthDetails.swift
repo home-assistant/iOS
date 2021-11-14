@@ -6,7 +6,7 @@ struct OnboardingAuthDetails: Equatable {
     var scheme: String
 
     init(baseURL: URL) throws {
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+        guard var components = URLComponents(url: baseURL.sanitized(), resolvingAgainstBaseURL: false) else {
             throw OnboardingAuthError(kind: .invalidURL)
         }
 
