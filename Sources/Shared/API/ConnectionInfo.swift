@@ -147,21 +147,6 @@ public struct ConnectionInfo: Codable {
         }
     }
 
-    private func sanitize(_ url: URL) -> URL {
-        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return url
-        }
-
-        if components.path.hasSuffix("/") {
-            while components.path.hasSuffix("/") {
-                components.path.removeLast()
-            }
-            return components.url ?? url
-        } else {
-            return url
-        }
-    }
-
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
     public var activeURL: URL {
         if let overrideActiveURLType = overrideActiveURLType {
@@ -177,10 +162,10 @@ public struct ConnectionInfo: Codable {
             }
 
             if let overrideURL = overrideURL {
-                return overrideURL
+                return overrideURL.sanitized()
             }
         }
-
+        
         let url: URL
 
         if let internalURL = internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
@@ -193,7 +178,7 @@ public struct ConnectionInfo: Codable {
             url = URL(string: "http://homeassistant.local:8123")!
         }
 
-        return sanitize(url)
+        return url.sanitized()
     }
 
     /// Returns the activeURL with /api appended.

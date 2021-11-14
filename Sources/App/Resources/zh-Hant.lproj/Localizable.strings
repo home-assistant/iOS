@@ -200,6 +200,9 @@
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.client_certificate.description" = "不支援客戶端認證。";
 "onboarding.connection_test_result.error_code" = "錯誤代碼：";
+"onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
+"onboarding.device_name_check.error.rename_action" = "重新命名";
+"onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";
 "onboarding.manual_setup.connect" = "連線";
 "onboarding.manual_setup.couldnt_make_url.message" = "數值 '%@' 並非有效 URL。";
 "onboarding.manual_setup.couldnt_make_url.title" = "無法製作 URL";

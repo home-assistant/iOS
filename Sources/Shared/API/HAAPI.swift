@@ -340,7 +340,13 @@ public class HomeAssistantAPI {
             method: .post,
             parameters: buildMobileAppRegistration(),
             encoding: JSONEncoding.default
-        ).done { [self] (resp: MobileAppRegistrationResponse) in
+        ).recover { error -> Promise<MobileAppRegistrationResponse> in
+            if case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error {
+                throw APIError.mobileAppComponentNotLoaded
+            }
+
+            throw error
+        }.done { (resp: MobileAppRegistrationResponse) in
             Current.Log.verbose("Registration response \(resp)")
 
             server.update { server in
