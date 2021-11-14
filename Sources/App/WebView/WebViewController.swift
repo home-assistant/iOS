@@ -274,14 +274,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
     }
 
-    init?(restoring: RestorationType?, shouldLoadImmediately: Bool = false) {
-        if let server = restoring?.server ?? Current.servers.all.first {
-            self.server = server
-        } else {
-            return nil
-        }
-
-        self.initialURL = restoring?.initialURL
+    init(server: Server, shouldLoadImmediately: Bool = false) {
+        self.server = server
 
         super.init(nibName: nil, bundle: nil)
 
@@ -293,6 +287,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             loadViewIfNeeded()
             loadActiveURLIfNeeded()
         }
+    }
+
+    convenience init?(restoring: RestorationType?, shouldLoadImmediately: Bool = false) {
+        if let server = restoring?.server ?? Current.servers.all.first {
+            self.init(server: server)
+        } else {
+            return nil
+        }
+
+        self.initialURL = restoring?.initialURL
     }
 
     @available(*, unavailable)

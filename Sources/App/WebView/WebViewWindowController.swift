@@ -14,7 +14,6 @@ class WebViewWindowController {
     var restorationActivity: NSUserActivity?
 
     var webViewControllerPromise: Guarantee<WebViewController>
-    var server: Guarantee<Server> { webViewControllerPromise.map(\.server) }
 
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
@@ -118,9 +117,36 @@ class WebViewWindowController {
         }
     }
 
-    func navigate(to url: URL) {
-        webViewControllerPromise.done { webViewController in
+    func navigate(to url: URL, on server: Server) {
+        open(server: server).done { webViewController in
             webViewController.open(inline: url)
+        }
+    }
+
+    @discardableResult
+    func open(server: Server) -> Guarantee<WebViewController> {
+        return webViewControllerPromise.then { [self] controller -> Guarantee<WebViewController> in
+            guard controller.server != server else {
+                return .value(controller)
+            }
+
+            let (promise, resolver) = Guarantee<WebViewController>.pending()
+
+            let perform = {
+                let newController = WebViewController(server: server)
+                updateRootViewController(to: webViewNavigationController(rootViewController: newController))
+                resolver(newController)
+            }
+
+            if let rootViewController = window.rootViewController, rootViewController.presentedViewController != nil {
+                rootViewController.dismiss(animated: true, completion: {
+                    perform()
+                })
+            } else {
+                perform()
+            }
+
+            return promise
         }
     }
 
@@ -136,25 +162,23 @@ class WebViewWindowController {
         }
     }
 
-    func open(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
-        firstly {
-            server.map(\.info.connection)
-        }.done { [self] connectionInfo in
-            let webviewURL = connectionInfo.webviewURL(from: openUrlRaw)
-            let externalURL = URL(string: openUrlRaw)
+    func open(from: OpenSource, server: Server, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+        let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
+        let externalURL = URL(string: openUrlRaw)
 
-            open(
-                from: from,
-                urlString: openUrlRaw,
-                webviewURL: webviewURL,
-                externalURL: externalURL,
-                skipConfirm: skipConfirm
-            )
-        }
+        open(
+            from: from,
+            server: server,
+            urlString: openUrlRaw,
+            webviewURL: webviewURL,
+            externalURL: externalURL,
+            skipConfirm: skipConfirm
+        )
     }
 
     private func open(
         from: OpenSource,
+        server: Server,
         urlString openUrlRaw: String,
         webviewURL: URL?,
         externalURL: URL?,
@@ -166,7 +190,7 @@ class WebViewWindowController {
 
         let triggerOpen = { [self] in
             if let webviewURL = webviewURL {
-                navigate(to: webviewURL)
+                navigate(to: webviewURL, on: server)
             } else if let externalURL = externalURL {
                 openURLInBrowser(externalURL, presentedViewController)
             }

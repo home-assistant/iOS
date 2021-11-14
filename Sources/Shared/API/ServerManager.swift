@@ -9,6 +9,7 @@ public protocol ServerObserver: AnyObject {
 public protocol ServerManager {
     var all: [Server] { get }
     func server(for identifier: Identifier<Server>) -> Server?
+    func server(forWebhookID: String) -> Server?
 
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo)
     func remove(identifier: Identifier<Server>)
@@ -81,6 +82,10 @@ public class ServerManagerImpl: ServerManager {
         } else {
             return all.first(where: { $0.identifier == identifier })
         }
+    }
+
+    public func server(forWebhookID webhookID: String) -> Server? {
+        all.first(where: { $0.info.connection.webhookID == webhookID })
     }
 
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) {

@@ -56,8 +56,10 @@ class IncomingURLHandler {
                 wasPresentingSafari = false
             }
 
+            #warning("multiserver")
             windowController.open(
                 from: .deeplink,
+                server: Current.servers.all.first!,
                 urlString: rawURL,
                 skipConfirm: wasPresentingSafari || isFromWidget
             )
@@ -102,7 +104,14 @@ class IncomingURLHandler {
                        let panel = intent.page, let path = panel.identifier {
                         Current.Log.info("launching from shortcuts with panel \(panel)")
 
-                        windowController.open(from: .deeplink, urlString: "/" + path, skipConfirm: true)
+                        #warning("multiserver")
+
+                        windowController.open(
+                            from: .deeplink,
+                            server: Current.servers.all.first!,
+                            urlString: "/" + path,
+                            skipConfirm: true
+                        )
                         return true
                     }
                 }

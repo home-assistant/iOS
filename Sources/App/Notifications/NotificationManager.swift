@@ -232,8 +232,15 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         let userInfo = response.notification.request.content.userInfo
+        let webhookID = userInfo["webhook_id"] as? String
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
+
+        guard let server = webhookID.map({ Current.servers.server(forWebhookID: $0) }) ?? Current.servers.all.first else {
+            Current.Log.info("ignoring push when unable to find server")
+            completionHandler()
+            return
+        }
 
         if let shortcutDict = userInfo["shortcut"] as? [String: String],
            let shortcutName = shortcutDict["name"] {
@@ -243,7 +250,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
             Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, urlString: url)
+                $0.open(from: .notification, server: server, urlString: url)
             }
         }
 
