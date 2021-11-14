@@ -5,6 +5,7 @@ import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
+import MBProgressHUD
 
 class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -36,6 +37,17 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         )
 
         let connection = Current.api(for: server).connection
+
+        form +++ Section() { _ in
+
+        } <<< ButtonRow {
+            $0.title = NSLocalizedString("Activate", comment: "")
+            $0.onCellSelection { [server] cell, _ in
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(server: server)
+                }
+            }
+        }
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -108,6 +120,58 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }), onDismiss: { [navigationController] _ in
                     navigationController?.popViewController(animated: true)
                 })
+            }
+
+            +++ Section()
+
+            <<< ButtonRow {
+                $0.title = NSLocalizedString("Delete Server", comment: "")
+                $0.onCellSelection { [navigationController, server, view] cell, _ in
+                    let alert = UIAlertController(
+                        title: NSLocalizedString("Are you sure you wish to delete this server?", comment: ""),
+                        message: NSLocalizedString("This cannot be undone.", comment: ""),
+                        preferredStyle: .actionSheet
+                    )
+
+                    with(alert.popoverPresentationController) {
+                        $0?.sourceView = cell
+                        $0?.sourceRect = cell.bounds
+                    }
+
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("Delete Server", comment: ""), style: .destructive, handler: { _ in
+                        let hud = MBProgressHUD.showAdded(to: view!, animated: true)
+                        hud.label.text = NSLocalizedString("Deleting Server…", comment: "")
+                        hud.show(animated: true)
+
+                        let waitAtLeast = after(seconds: 3.0)
+
+                        firstly {
+                            race(
+                                when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
+                                after(seconds: 10.0)
+                            )
+                        }.then {
+                            waitAtLeast
+                        }.get {
+                            Current.api(for: server).connection.disconnect()
+                            Current.servers.remove(identifier: server.identifier)
+                        }.ensure {
+                            hud.hide(animated: true)
+                        }.done {
+                            navigationController?.popViewController(animated: true)
+                        }.cauterize()
+                    }))
+
+                    alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+                    cell.formViewController()?.present(alert, animated: true, completion: nil)
+                }
+                $0.cellUpdate { cell, _ in
+                    if #available(iOS 13, *) {
+                        cell.textLabel?.textColor = .systemRed
+                    } else {
+                        cell.textLabel?.textColor = .red
+                    }
+                }
             }
     }
 
