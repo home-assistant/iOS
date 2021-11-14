@@ -61,7 +61,7 @@ public class TokenManager {
 
     // Request the server revokes the current token.
     public func revokeToken() -> Promise<Bool> {
-        return authenticationAPI.revokeToken(tokenInfo: server.info.token)
+        authenticationAPI.revokeToken(tokenInfo: server.info.token)
     }
 
     public var bearerToken: Promise<String> {

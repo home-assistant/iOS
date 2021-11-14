@@ -129,7 +129,8 @@ public class LocalPushManager {
     }
 
     private func updateSubscription() {
-        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID, let connection = Current.apiConnection else {
+        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID,
+              let connection = Current.apiConnection else {
             // webhook is invalid, if there is a subscription we remove it
             subscription?.cancel()
             subscription = nil
@@ -172,7 +173,8 @@ public class LocalPushManager {
 
         state.increment()
 
-        if let confirmID = event.confirmID, let webhookID = subscription?.webhookID, let connection = Current.apiConnection {
+        if let confirmID = event.confirmID, let webhookID = subscription?.webhookID,
+           let connection = Current.apiConnection {
             firstly {
                 connection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise
             }.catch { error in

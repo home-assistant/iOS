@@ -72,7 +72,8 @@ class MenuManager {
     ) -> MenuManagerTitleSubscription? {
         let template = Current.settingsStore.menuItemTemplate
 
-        guard Current.settingsStore.locationVisibility.isStatusItemVisible, !template.isEmpty, let connection = Current.apiConnection else {
+        guard Current.settingsStore.locationVisibility.isStatusItemVisible, !template.isEmpty,
+              let connection = Current.apiConnection else {
             update("")
             return nil
         }

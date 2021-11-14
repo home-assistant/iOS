@@ -1,4 +1,5 @@
-public struct Identifier<ObjectType>: RawRepresentable, Hashable, Codable, ExpressibleByStringLiteral, CustomStringConvertible {
+public struct Identifier<ObjectType>: RawRepresentable, Hashable, Codable, ExpressibleByStringLiteral,
+    CustomStringConvertible {
     public var rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
@@ -15,7 +16,7 @@ public struct Identifier<ObjectType>: RawRepresentable, Hashable, Codable, Expre
     }
 
     public init(stringLiteral value: StringLiteralType) {
-        rawValue = value
+        self.rawValue = value
     }
 
     public var description: String {

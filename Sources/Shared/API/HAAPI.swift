@@ -1,13 +1,13 @@
 import Alamofire
 import CoreLocation
 import Foundation
+import HAKit
 import Intents
 import ObjectMapper
 import PromiseKit
 import RealmSwift
 import UIKit
 import Version
-import HAKit
 #if os(iOS)
 import Reachability
 #endif

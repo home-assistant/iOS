@@ -13,7 +13,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     var webView: WKWebView!
 
     let server: Server
-    
+
     var urlObserver: NSKeyValueObservation?
 
     let refreshControl = UIRefreshControl()
@@ -258,11 +258,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             let serverRawValue: String?
 
             switch self {
-            case .userActivity(let userActivity):
+            case let .userActivity(userActivity):
                 serverRawValue = userActivity.userInfo?[RestorableStateKey.server.rawValue] as? String
-            case .coder(let coder):
-                serverRawValue = coder.decodeObject(of: NSString.self, forKey: RestorableStateKey.server.rawValue) as String?
-            case .server(let server):
+            case let .coder(coder):
+                serverRawValue = coder.decodeObject(
+                    of: NSString.self,
+                    forKey: RestorableStateKey.server.rawValue
+                ) as String?
+            case let .server(server):
                 return server
             }
 

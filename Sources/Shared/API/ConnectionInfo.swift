@@ -17,6 +17,7 @@ public struct ConnectionInfo: Codable {
             overrideActiveURLType = nil
         }
     }
+
     public var internalHardwareAddresses: [String]? {
         didSet {
             overrideActiveURLType = nil

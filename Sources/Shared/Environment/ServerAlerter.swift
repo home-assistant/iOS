@@ -115,7 +115,8 @@ public class ServerAlerter {
     }
 
     public func check(dueToUserInteraction: Bool) -> Promise<ServerAlert> {
-        guard Current.settingsStore.privacy.alerts || dueToUserInteraction, let connection = Current.apiConnection else {
+        guard Current.settingsStore.privacy.alerts || dueToUserInteraction,
+              let connection = Current.apiConnection else {
             return .init(error: AlerterError.privacyDisabled)
         }
 

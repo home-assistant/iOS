@@ -1,11 +1,11 @@
 import Alamofire
 import Eureka
 import HAKit
+import MBProgressHUD
 import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
-import MBProgressHUD
 
 class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -38,11 +38,11 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let connection = Current.api(for: server).connection
 
-        form +++ Section() { _ in
+        form +++ Section { _ in
 
         } <<< ButtonRow {
             $0.title = NSLocalizedString("Activate", comment: "")
-            $0.onCellSelection { [server] cell, _ in
+            $0.onCellSelection { [server] _, _ in
                 Current.sceneManager.webViewWindowControllerPromise.done {
                     $0.open(server: server)
                 }
@@ -138,29 +138,34 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                         $0?.sourceRect = cell.bounds
                     }
 
-                    alert.addAction(UIAlertAction(title: NSLocalizedString("Delete Server", comment: ""), style: .destructive, handler: { _ in
-                        let hud = MBProgressHUD.showAdded(to: view!, animated: true)
-                        hud.label.text = NSLocalizedString("Deleting Server…", comment: "")
-                        hud.show(animated: true)
+                    alert
+                        .addAction(UIAlertAction(
+                            title: NSLocalizedString("Delete Server", comment: ""),
+                            style: .destructive,
+                            handler: { _ in
+                                let hud = MBProgressHUD.showAdded(to: view!, animated: true)
+                                hud.label.text = NSLocalizedString("Deleting Server…", comment: "")
+                                hud.show(animated: true)
 
-                        let waitAtLeast = after(seconds: 3.0)
+                                let waitAtLeast = after(seconds: 3.0)
 
-                        firstly {
-                            race(
-                                when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
-                                after(seconds: 10.0)
-                            )
-                        }.then {
-                            waitAtLeast
-                        }.get {
-                            Current.api(for: server).connection.disconnect()
-                            Current.servers.remove(identifier: server.identifier)
-                        }.ensure {
-                            hud.hide(animated: true)
-                        }.done {
-                            navigationController?.popViewController(animated: true)
-                        }.cauterize()
-                    }))
+                                firstly {
+                                    race(
+                                        when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
+                                        after(seconds: 10.0)
+                                    )
+                                }.then {
+                                    waitAtLeast
+                                }.get {
+                                    Current.api(for: server).connection.disconnect()
+                                    Current.servers.remove(identifier: server.identifier)
+                                }.ensure {
+                                    hud.hide(animated: true)
+                                }.done {
+                                    navigationController?.popViewController(animated: true)
+                                }.cauterize()
+                            }
+                        ))
 
                     alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
                     cell.formViewController()?.present(alert, animated: true, completion: nil)

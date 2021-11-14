@@ -125,7 +125,7 @@ class WebViewWindowController {
 
     @discardableResult
     func open(server: Server) -> Guarantee<WebViewController> {
-        return webViewControllerPromise.then { [self] controller -> Guarantee<WebViewController> in
+        webViewControllerPromise.then { [self] controller -> Guarantee<WebViewController> in
             guard controller.server != server else {
                 return .value(controller)
             }

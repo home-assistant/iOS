@@ -14,7 +14,12 @@ public struct SensorProviderRequest {
     public var location: CLLocation?
     public var serverVersion: Version
 
-    public init(reason: Reason, dependencies: SensorProviderDependencies, location: CLLocation?, serverVersion: Version) {
+    public init(
+        reason: Reason,
+        dependencies: SensorProviderDependencies,
+        location: CLLocation?,
+        serverVersion: Version
+    ) {
         self.reason = reason
         self.dependencies = dependencies
         self.location = location

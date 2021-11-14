@@ -154,8 +154,7 @@ public class ServerManagerImpl: ServerManager {
             let userDefaults = UserDefaults(suiteName: Constants.AppGroupID)!
             if let tokenInfoData = try historicKeychain.getData("tokenInfo"),
                let connectionInfoData = try historicKeychain.getData("connectionInfo"),
-               let versionString = userDefaults.string(forKey: "version")
-            {
+               let versionString = userDefaults.string(forKey: "version") {
                 let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
 
                 var serverInfo = ServerInfo(

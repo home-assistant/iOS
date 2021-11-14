@@ -180,7 +180,10 @@ public class WebhookManager: NSObject {
         return promise.asVoid()
     }
 
-    public func sendEphemeral<MappableResult: BaseMappable>(server: Server, request: WebhookRequest) -> Promise<MappableResult> {
+    public func sendEphemeral<MappableResult: BaseMappable>(
+        server: Server,
+        request: WebhookRequest
+    ) -> Promise<MappableResult> {
         let promise: Promise<Any> = sendEphemeral(server: server, request: request)
         return promise.map {
             if let result = Mapper<MappableResult>().map(JSONObject: $0) {
@@ -191,7 +194,10 @@ public class WebhookManager: NSObject {
         }
     }
 
-    public func sendEphemeral<MappableResult: BaseMappable>(server: Server, request: WebhookRequest) -> Promise<[MappableResult]> {
+    public func sendEphemeral<MappableResult: BaseMappable>(
+        server: Server,
+        request: WebhookRequest
+    ) -> Promise<[MappableResult]> {
         let promise: Promise<Any> = sendEphemeral(server: server, request: request)
         return promise.map {
             if let result = Mapper<MappableResult>(shouldIncludeNilValues: false).mapArray(JSONObject: $0) {
@@ -249,11 +255,23 @@ public class WebhookManager: NSObject {
 
         dataQueue.async { [dataQueue] in
             let sendRegular: () -> Promise<Void> = { [self] in
-                send(on: currentRegularSessionInfo, server: server, identifier: identifier, request: request, waitForResponse: true)
+                send(
+                    on: currentRegularSessionInfo,
+                    server: server,
+                    identifier: identifier,
+                    request: request,
+                    waitForResponse: true
+                )
             }
 
             let sendBackground: () -> Promise<Void> = { [self] in
-                send(on: currentBackgroundSessionInfo, server: server, identifier: identifier, request: request, waitForResponse: true)
+                send(
+                    on: currentBackgroundSessionInfo,
+                    server: server,
+                    identifier: identifier,
+                    request: request,
+                    waitForResponse: true
+                )
             }
 
             let promise: Promise<Void>
@@ -287,8 +305,14 @@ public class WebhookManager: NSObject {
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
-            send(on: currentBackgroundSessionInfo, server: server, identifier: identifier, request: request, waitForResponse: false)
-                .pipe(to: seal.resolve)
+            send(
+                on: currentBackgroundSessionInfo,
+                server: server,
+                identifier: identifier,
+                request: request,
+                waitForResponse: false
+            )
+            .pipe(to: seal.resolve)
         }
 
         return promise
@@ -390,7 +414,7 @@ public class WebhookManager: NSObject {
         firstly {
             Self.urlRequest(
                 for: .init(type: "get_config", data: [:]),
-               server: server,
+                server: server,
                 baseURL: baseURL
             )
         }.then(on: dataQueue) { urlRequest, data in

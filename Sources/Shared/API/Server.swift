@@ -1,11 +1,12 @@
-import Version
 import Foundation
+import Version
 
 public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
     public var rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
     }
+
     public init(stringLiteral value: StringLiteralType) {
         self.rawValue = value
     }
