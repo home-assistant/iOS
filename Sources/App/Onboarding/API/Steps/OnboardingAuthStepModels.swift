@@ -11,6 +11,8 @@ struct OnboardingAuthStepModels: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        Current.modelManager.fetch()
+        #warning("multi-server")
+        return .value(())
+//        Current.modelManager.fetch()
     }
 }
