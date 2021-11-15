@@ -9,8 +9,9 @@ protocol UpdatableModel {
     static func willDelete(objects: [Self], realm: Realm)
 
     static func primaryKey() -> String? // from realm, we use
+    static func serverIdentifierKey() -> String
     static var updateEligiblePredicate: NSPredicate { get }
-    func update(with object: Source, using realm: Realm) -> Bool
+    func update(with object: Source, server: Server, using realm: Realm) -> Bool
 }
 
 extension UpdatableModel {

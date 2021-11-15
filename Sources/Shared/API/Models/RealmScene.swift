@@ -4,7 +4,9 @@ import ObjectMapper
 import RealmSwift
 
 public final class RLMScene: Object, UpdatableModel {
+    #warning("multiserver - primary key duplication")
     @objc public dynamic var identifier: String = ""
+    @objc public dynamic var serverIdentifier: String = ""
 
     @objc private dynamic var backingPosition: Int = 0
     public static var positionKeyPath: String { #keyPath(RLMScene.backingPosition) }
@@ -43,6 +45,10 @@ public final class RLMScene: Object, UpdatableModel {
         #keyPath(identifier)
     }
 
+    static func serverIdentifierKey() -> String {
+        #keyPath(serverIdentifier)
+    }
+
     static func didUpdate(objects: [RLMScene], realm: Realm) {
         let sorted = objects.sorted { lhs, rhs in
             let lhsText = lhs.name ?? lhs.identifier
@@ -62,7 +68,7 @@ public final class RLMScene: Object, UpdatableModel {
         realm.delete(actions)
     }
 
-    func update(with entity: HAEntity, using realm: Realm) -> Bool {
+    func update(with entity: HAEntity, server: Server, using realm: Realm) -> Bool {
         precondition(entity.domain == "scene")
 
         if self.realm == nil {
@@ -71,6 +77,7 @@ public final class RLMScene: Object, UpdatableModel {
             precondition(identifier == entity.entityId)
         }
 
+        serverIdentifier = server.identifier.rawValue
         name = entity.attributes.friendlyName
         icon = entity.attributes.icon ?? "mdi:palette"
         backgroundColor = entity.attributes["background_color"] as? String

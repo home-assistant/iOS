@@ -16,7 +16,9 @@ private extension HAEntityAttributes {
 }
 
 public final class RLMZone: Object, UpdatableModel {
+    #warning("multiserver - primary key duplication")
     @objc public dynamic var ID: String = ""
+    @objc public dynamic var serverIdentifier: String = ""
     @objc public dynamic var FriendlyName: String?
     @objc public dynamic var Latitude: Double = 0.0
     @objc public dynamic var Longitude: Double = 0.0
@@ -44,7 +46,7 @@ public final class RLMZone: Object, UpdatableModel {
 
     static func willDelete(objects: [RLMZone], realm: Realm) {}
 
-    func update(with zone: HAEntity, using: Realm) -> Bool {
+    func update(with zone: HAEntity, server: Server, using: Realm) -> Bool {
         guard let zoneAttributes = zone.attributes.zone else {
             return false
         }
@@ -55,6 +57,7 @@ public final class RLMZone: Object, UpdatableModel {
             precondition(zone.entityId == ID)
         }
 
+        serverIdentifier = server.identifier.rawValue
         FriendlyName = zone.attributes.friendlyName
         Latitude = zoneAttributes.latitude
         Longitude = zoneAttributes.longitude
@@ -211,7 +214,11 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     override public static func primaryKey() -> String? {
-        "ID"
+        #keyPath(ID)
+    }
+
+    static func serverIdentifierKey() -> String {
+        #keyPath(serverIdentifier)
     }
 
     public var Name: String {

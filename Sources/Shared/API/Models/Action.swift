@@ -10,6 +10,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         case scene = 10000
     }
 
+    #warning("multiserver - primary key duplication")
     @objc public dynamic var ID: String = UUID().uuidString
     @objc public dynamic var Name: String = ""
     @objc public dynamic var Text: String = ""
@@ -21,9 +22,14 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var CreatedAt = Date()
     @objc public dynamic var Scene: RLMScene?
     @objc public dynamic var isServerControlled: Bool = false
+    @objc public dynamic var serverIdentifier: String?
 
     override public static func primaryKey() -> String? {
-        "ID"
+        #keyPath(ID)
+    }
+
+    static func serverIdentifierKey() -> String {
+        #keyPath(serverIdentifier)
     }
 
     override public required init() {
@@ -101,7 +107,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: MobileAppConfigAction, using realm: Realm) -> Bool {
+    public func update(with object: MobileAppConfigAction, server: Server, using realm: Realm) -> Bool {
         if self.realm == nil {
             ID = object.name
             Name = object.name
@@ -111,6 +117,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
 
         isServerControlled = true
+        serverIdentifier = server.identifier.rawValue
         Name = object.name
 
         if let backgroundColor = object.backgroundColor {

@@ -6,8 +6,10 @@ public final class NotificationCategory: Object, UpdatableModel {
     public static let FallbackActionIdentifier = "_"
 
     @objc public dynamic var isServerControlled: Bool = false
+    @objc public dynamic var serverIdentifier: String = ""
 
     @objc public dynamic var Name: String = ""
+    #warning("multiserver - primary key duplication")
     @objc public dynamic var Identifier: String = ""
     @objc public dynamic var HiddenPreviewsBodyPlaceholder: String?
     // iOS 12+ only
@@ -24,7 +26,11 @@ public final class NotificationCategory: Object, UpdatableModel {
     public var Actions = List<NotificationAction>()
 
     override public static func primaryKey() -> String? {
-        "Identifier"
+        #keyPath(Identifier)
+    }
+
+    static func serverIdentifierKey() -> String {
+        #keyPath(serverIdentifier)
     }
 
     public var options: UNNotificationCategoryOptions {
@@ -95,7 +101,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: MobileAppConfigPushCategory, using realm: Realm) -> Bool {
+    public func update(with object: MobileAppConfigPushCategory, server: Server, using realm: Realm) -> Bool {
         if self.realm == nil {
             Identifier = object.identifier.uppercased()
         } else {
@@ -103,6 +109,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         }
 
         isServerControlled = true
+        serverIdentifier = server.identifier.rawValue
         Name = object.name
 
         // TODO: update
