@@ -125,10 +125,16 @@ class IncomingURLHandler {
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
         Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
-            Current.api.then(on: nil) { api -> Promise<Void> in
-                if shortcutItem.type == "sendLocation" {
-                    return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
-                } else {
+            if shortcutItem.type == "sendLocation" {
+                return firstly {
+                    Current.location.oneShotLocation(.AppShortcut, remaining)
+                }.then { location in
+                    when(fulfilled: Current.apis.map { api in
+                        api.SubmitLocation(updateType: .AppShortcut, location: location, zone: nil)
+                    })
+                }.asVoid()
+            } else {
+                return Current.api.then(on: nil) { api -> Promise<Void> in
                     return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
                 }
             }
@@ -250,8 +256,12 @@ extension IncomingURLHandler {
         }
 
         Manager.shared["send_location"] = { _, success, failure, _ in
-            Current.api.then(on: nil) { api in
-                api.GetAndSendLocation(trigger: .XCallbackURL)
+            firstly {
+                Current.location.oneShotLocation(.XCallbackURL, nil)
+            }.then { location in
+                when(fulfilled: Current.apis.map { api in
+                    api.SubmitLocation(updateType: .XCallbackURL, location: location, zone: nil)
+                })
             }.done { _ in
                 success(nil)
             }.catch { error in
@@ -331,8 +341,12 @@ extension IncomingURLHandler {
 
     private func sendLocationURLHandler() {
         // homeassistant://send_location/
-        Current.api.then(on: nil) { api in
-            api.GetAndSendLocation(trigger: .URLScheme)
+        firstly {
+            Current.location.oneShotLocation(.URLScheme, nil)
+        }.then { location in
+            when(fulfilled: Current.apis.map { api in
+                api.SubmitLocation(updateType: .URLScheme, location: location, zone: nil)
+            })
         }.done { _ in
             self.showAlert(
                 title: L10n.UrlHandler.SendLocation.Success.title,

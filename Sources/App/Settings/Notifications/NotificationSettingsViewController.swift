@@ -262,7 +262,7 @@ class NotificationSettingsViewController: HAFormViewController {
                     idRow.value = token
                     idRow.updateCell()
                 }.then { _ in
-                    Current.api.then(on: nil) { $0.Connect(reason: .periodic) }
+                    when(fulfilled: Current.apis.map { $0.updateRegistration() })
                 }.catch { error in
                     Current.Log.error("Error resetting push token: \(error)")
                     let alert = UIAlertController(

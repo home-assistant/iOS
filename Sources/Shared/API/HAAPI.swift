@@ -346,7 +346,7 @@ public class HomeAssistantAPI {
             }
 
             throw error
-        }.done { (resp: MobileAppRegistrationResponse) in
+        }.done { [server] (resp: MobileAppRegistrationResponse) in
             Current.Log.verbose("Registration response \(resp)")
 
             server.update { server in
@@ -512,26 +512,6 @@ public class HomeAssistantAPI {
                     )
                 )
             )
-        }.asVoid()
-    }
-
-    public func GetAndSendLocation(
-        trigger: LocationUpdateTrigger?,
-        zone: RLMZone? = nil,
-        maximumBackgroundTime: TimeInterval? = nil
-    ) -> Promise<Void> {
-        var updateTrigger: LocationUpdateTrigger = .Manual
-        if let trigger = trigger {
-            updateTrigger = trigger
-        }
-        Current.Log.verbose("getAndSendLocation called via \(String(describing: updateTrigger))")
-
-        return firstly { () -> Promise<CLLocation> in
-            CLLocationManager.oneShotLocation(
-                timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
-            )
-        }.then { location in
-            self.SubmitLocation(updateType: updateTrigger, location: location, zone: zone)
         }.asVoid()
     }
 
@@ -826,15 +806,20 @@ public class HomeAssistantAPI {
                 }
 
                 if Current.settingsStore.isLocationEnabled(for: applicationState) {
-                    return GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
-                        .recover { error -> Promise<Void> in
-                            if error is CLError {
-                                Current.Log.info("couldn't get location, sending remaining sensor data")
-                                return updateWithoutLocation()
-                            } else {
-                                throw error
-                            }
+                    return firstly {
+                        Current.location.oneShotLocation(.Manual, nil)
+                    }.then { location in
+                        when(fulfilled: Current.apis.map { api in
+                            api.SubmitLocation(updateType: .Manual, location: location, zone: nil)
+                        }).asVoid()
+                    }.recover { error -> Promise<Void> in
+                        if error is CLError {
+                            Current.Log.info("couldn't get location, sending remaining sensor data")
+                            return updateWithoutLocation()
+                        } else {
+                            throw error
                         }
+                    }
                 } else {
                     return updateWithoutLocation()
                 }

@@ -71,12 +71,12 @@ class LifecycleManager {
 
     func didFinishLaunching() {
         Current.backgroundTask(withName: "lifecycle-manager-didFinishLaunching") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.finished_launching",
                     eventData: api.sharedEventDeviceInfo
                 )
-            }
+            })
         }.cauterize()
 
         connectAPI(reason: .cold)
@@ -90,12 +90,12 @@ class LifecycleManager {
         isActive = false
 
         Current.backgroundTask(withName: "lifecycle-manager-didEnterBackground") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.entered_background",
                     eventData: api.sharedEventDeviceInfo
                 )
-            }
+            })
         }.cauterize()
 
         invalidatePeriodicUpdateTimer()
@@ -125,12 +125,12 @@ class LifecycleManager {
         }
 
         Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.became_active",
                     eventData: api.sharedEventDeviceInfo
                 )
-            }
+            })
         }.cauterize()
     }
 

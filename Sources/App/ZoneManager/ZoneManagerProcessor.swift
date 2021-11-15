@@ -68,9 +68,8 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                 let trigger = event.asTrigger()
                 return firstly { () -> Promise<CLLocation?> in
                     if event.shouldOneShotLocation {
-                        return Current.location
-                            .oneShotLocation(trigger.oneShotTimeout(maximum: remaining))
-                            .map { $0 }
+                        return Current.location.oneShotLocation(trigger, remaining)
+                            .map { .some($0) }
                     } else {
                         return .value(event.associatedLocation)
                     }
@@ -81,13 +80,13 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                         return nil
                     }
                 }.then { location in
-                    Current.api.then(on: nil) { api in
+                    when(fulfilled: Current.apis.map { api in
                         api.SubmitLocation(
                             updateType: trigger,
                             location: location,
                             zone: event.associatedZone
                         )
-                    }
+                    })
                 }
             }
         }.tap { [self] result in

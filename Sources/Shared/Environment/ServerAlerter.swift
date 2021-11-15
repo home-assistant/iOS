@@ -153,7 +153,7 @@ public class ServerAlerter {
                     return true
                 }
 
-                if let version = Current.serverVersion(), alert.core.shouldTrigger(for: version) {
+                for server in Current.servers.all where alert.core.shouldTrigger(for: server.info.version) {
                     return true
                 }
 

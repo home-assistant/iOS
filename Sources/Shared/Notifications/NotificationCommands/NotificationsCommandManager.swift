@@ -67,8 +67,12 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
         Current.Log.verbose("Received remote request to provide a location update")
 
         return Current.backgroundTask(withName: "push-location-request") { remaining in
-            Current.api.then(on: nil) { api in
-                api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
+            firstly {
+                Current.location.oneShotLocation(.PushNotification, remaining)
+            }.then { location in
+                when(fulfilled: Current.apis.map { api in
+                    api.SubmitLocation(updateType: .PushNotification, location: location, zone: nil)
+                })
             }
         }
     }

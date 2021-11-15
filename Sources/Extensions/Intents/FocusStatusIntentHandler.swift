@@ -10,9 +10,9 @@ class FocusStatusIntentHandler: NSObject, INShareFocusStatusIntentHandling {
         Current.focusStatus.update(fromReceived: currentState)
         Current.Log.info("starting, status from intent is \(String(describing: currentState)) from \(intent)")
 
-        Current.api.then(on: nil) {
+        when(fulfilled: Current.apis.map {
             $0.UpdateSensors(trigger: .Siri)
-        }.done {
+        }).done {
             Current.Log.info("finished successfully")
             completion(.init(code: .success, userActivity: nil))
         }.catch { error in

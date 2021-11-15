@@ -378,8 +378,11 @@ public class AppEnvironment {
 
     /// Wrapper around One Shot
     public struct Location {
-        public lazy var oneShotLocation: (_ timeout: TimeInterval) -> Promise<CLLocation> = {
-            CLLocationManager.oneShotLocation(timeout: $0)
+        public lazy var oneShotLocation: (
+            _ trigger: LocationUpdateTrigger,
+            _ remaining: TimeInterval?
+        ) -> Promise<CLLocation> = {
+            CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
     }
 

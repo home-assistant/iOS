@@ -282,21 +282,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
         Current.backgroundTask(withName: "background-fetch") { remaining in
-            Current.api.then(on: nil) { api -> Promise<Void> in
-                let updatePromise: Promise<Void>
-
-                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-                   Current.settingsStore.locationSources.backgroundFetch {
-                    updatePromise = api.GetAndSendLocation(
-                        trigger: .BackgroundFetch,
-                        maximumBackgroundTime: remaining
-                    ).asVoid()
-                } else {
-                    updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
-                }
-
-                return updatePromise
+            let updatePromise: Promise<Void>
+            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+               Current.settingsStore.locationSources.backgroundFetch {
+                updatePromise = firstly {
+                    Current.location.oneShotLocation(.BackgroundFetch, remaining)
+                }.then { location in
+                    when(fulfilled: Current.apis.map {
+                        $0.SubmitLocation(updateType: .BackgroundFetch, location: location, zone: nil)
+                    })
+                }.asVoid()
+            } else {
+                updatePromise = when(fulfilled: Current.apis.map {
+                    $0.UpdateSensors(trigger: .BackgroundFetch, location: nil)
+                })
             }
+
+            return updatePromise
         }.done {
             completionHandler(.newData)
         }.catch { error in
