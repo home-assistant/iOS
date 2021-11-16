@@ -260,20 +260,22 @@ extension WebViewWindowController: OnboardingStateObserver {
                 shouldLoadImmediately: true
             )
         case .complete:
-            let controller: WebViewController?
+            if window.rootViewController is OnboardingNavigationViewController {
+                let controller: WebViewController?
 
-            if let preload = onboardingPreloadWebViewController {
-                controller = preload
-            } else {
-                controller = WebViewController(
-                    restoring: .init(restorationActivity),
-                    shouldLoadImmediately: true
-                )
-                restorationActivity = nil
-            }
+                if let preload = onboardingPreloadWebViewController {
+                    controller = preload
+                } else {
+                    controller = WebViewController(
+                        restoring: .init(restorationActivity),
+                        shouldLoadImmediately: true
+                    )
+                    restorationActivity = nil
+                }
 
-            if let controller = controller {
-                updateRootViewController(to: webViewNavigationController(rootViewController: controller))
+                if let controller = controller {
+                    updateRootViewController(to: webViewNavigationController(rootViewController: controller))
+                }
             }
         }
     }
