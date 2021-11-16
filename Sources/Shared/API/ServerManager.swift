@@ -63,7 +63,11 @@ public class ServerManagerImpl: ServerManager {
         // load to cache immediately
         _ = all
 
-        migrateIfNeeded()
+        do {
+            try migrateIfNeeded()
+        } catch {
+            Current.Log.error("failed to load historic server: \(error)")
+        }
     }
 
     public var all: [Server] {
@@ -89,14 +93,22 @@ public class ServerManagerImpl: ServerManager {
     }
 
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) {
+        keychain.set(
+            serverInfo: with(serverInfo) {
+                $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
+            },
+            key: identifier.keychainKey,
+            encoder: encoder
+        )
+
         cache.all = nil
-        keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
         notify()
     }
 
     public func remove(identifier: Identifier<Server>) {
-        cache.all = nil
         keychain.deleteServerInfo(key: identifier.keychainKey)
+
+        cache.all = nil
         notify()
     }
 
@@ -137,42 +149,32 @@ public class ServerManagerImpl: ServerManager {
             })
             cache.server[identifier] = server
             return server
-        }
+        }.sorted()
     }
 
-    private func migrateIfNeeded() {
+    private func migrateIfNeeded() throws {
         guard all.isEmpty else { return }
 
         let historicKeychain = Keychain(service: Constants.BundleID)
-        let didMigrateKey = "HADidMigrate"
+        let userDefaults = UserDefaults(suiteName: Constants.AppGroupID)!
+        if let tokenInfoData = try historicKeychain.getData("tokenInfo"),
+           let connectionInfoData = try historicKeychain.getData("connectionInfo"),
+           let versionString = userDefaults.string(forKey: "version") {
+            let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
 
-//        guard historicKeychain[didMigrateKey] != nil else {
-//            return
-//        }
+            var serverInfo = ServerInfo(
+                name: name,
+                connection: try decoder.decode(ConnectionInfo.self, from: connectionInfoData),
+                token: try decoder.decode(TokenInfo.self, from: tokenInfoData),
+                version: try Version(hassVersion: versionString)
+            )
 
-        do {
-            let userDefaults = UserDefaults(suiteName: Constants.AppGroupID)!
-            if let tokenInfoData = try historicKeychain.getData("tokenInfo"),
-               let connectionInfoData = try historicKeychain.getData("connectionInfo"),
-               let versionString = userDefaults.string(forKey: "version") {
-                let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
-
-                var serverInfo = ServerInfo(
-                    name: name,
-                    connection: try decoder.decode(ConnectionInfo.self, from: connectionInfoData),
-                    token: try decoder.decode(TokenInfo.self, from: tokenInfoData),
-                    version: try Version(hassVersion: versionString)
-                )
-
-                if let name = userDefaults.string(forKey: "override_device_name") {
-                    serverInfo.setSetting(value: name, for: .overrideDeviceName)
-                }
-
-                add(identifier: Server.historicId, serverInfo: serverInfo)
-                historicKeychain[didMigrateKey] = "true"
+            if let name = userDefaults.string(forKey: "override_device_name") {
+                serverInfo.setSetting(value: name, for: .overrideDeviceName)
             }
-        } catch {
-            Current.Log.error("failed to load historic server: \(error)")
+
+            add(identifier: Server.historicId, serverInfo: serverInfo)
+            try historicKeychain.removeAll()
         }
     }
 }

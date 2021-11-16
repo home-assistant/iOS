@@ -18,6 +18,7 @@ public extension ServerSettingKey {
 
 public struct ServerInfo: Codable {
     public var name: String
+    public var sortOrder: Int
     public var version: Version
     public var connection: ConnectionInfo
     public var token: TokenInfo
@@ -29,6 +30,7 @@ public struct ServerInfo: Codable {
 
     enum CodingKeys: CodingKey {
         case id
+        case sortOrder
         case name
         case version
         case connectionInfo
@@ -40,6 +42,7 @@ public struct ServerInfo: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.name = try container.decode(String.self, forKey: .name)
+        self.sortOrder = try container.decode(Int.self, forKey: .sortOrder)
         self.connection = try container.decode(ConnectionInfo.self, forKey: .connectionInfo)
         self.token = try container.decode(TokenInfo.self, forKey: .tokenInfo)
         self.version = try container.decode(Version.self, forKey: .version)
@@ -49,6 +52,7 @@ public struct ServerInfo: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
+        try container.encode(sortOrder, forKey: .sortOrder)
         try container.encode(version, forKey: .version)
         try container.encode(connection, forKey: .connectionInfo)
         try container.encode(token, forKey: .tokenInfo)
@@ -62,6 +66,7 @@ public struct ServerInfo: Codable {
         version: Version
     ) {
         self.name = name
+        self.sortOrder = .max
         self.connection = connection
         self.token = token
         self.version = version
@@ -81,7 +86,7 @@ public struct ServerInfo: Codable {
     }
 }
 
-public class Server: Hashable {
+public class Server: Hashable, Comparable {
     public static var historicId: Identifier<Server> = "historic"
 
     public let identifier: Identifier<Server>
@@ -122,5 +127,18 @@ public class Server: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+
+    public static func < (lhs: Server, rhs: Server) -> Bool {
+        let lhsSO = lhs.info.sortOrder
+        let rhsSO = rhs.info.sortOrder
+
+        if lhsSO < rhsSO {
+            return true
+        } else if lhsSO > rhsSO {
+            return false
+        } else {
+            return lhs.info.name.localizedCaseInsensitiveCompare(rhs.info.name) == .orderedAscending
+        }
     }
 }
