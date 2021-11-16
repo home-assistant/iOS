@@ -203,9 +203,10 @@ public class ModelManager {
 
     public func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        on queue: DispatchQueue = .global(qos: .utility),
+        apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
-        when(fulfilled: Current.apis.map { api in
+        when(fulfilled: apis.map { api in
             when(fulfilled: definitions.map { $0.update(api, api.connection, queue, self) })
         }).asVoid()
     }
