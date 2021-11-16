@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 import ObjectMapper
 
-public struct TokenInfo: ImmutableMappable, Codable {
+public struct TokenInfo: ImmutableMappable, Codable, Equatable {
     struct TokenInfoContext: MapContext {
         var oldTokenInfo: TokenInfo
     }

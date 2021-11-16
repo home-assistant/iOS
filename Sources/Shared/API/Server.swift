@@ -16,7 +16,7 @@ public extension ServerSettingKey {
     static var overrideDeviceName: ServerSettingKey<String> { "override_device_name" }
 }
 
-public struct ServerInfo: Codable {
+public struct ServerInfo: Codable, Equatable {
     public var name: String
     public var sortOrder: Int
     public var version: Version
@@ -83,6 +83,21 @@ public struct ServerInfo: Codable {
 
     public func setting<T>(for key: ServerSettingKey<T>) -> T? {
         settings[key.rawValue] as? T
+    }
+
+    public static func == (lhs: ServerInfo, rhs: ServerInfo) -> Bool {
+        func equatable(_ settings: [String: Any]) -> Data {
+            do {
+                return try JSONSerialization.data(withJSONObject: settings, options: [.sortedKeys])
+            } catch {
+                return Data()
+            }
+        }
+
+        return lhs.name == rhs.name
+            && lhs.connection == rhs.connection
+            && lhs.token == rhs.token
+            && equatable(lhs.settings) == equatable(rhs.settings)
     }
 }
 

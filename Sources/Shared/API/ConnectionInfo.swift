@@ -4,7 +4,7 @@ import Foundation
 import Communicator
 #endif
 
-public struct ConnectionInfo: Codable {
+public struct ConnectionInfo: Codable, Equatable {
     private var externalURL: URL?
     private var internalURL: URL?
     private var remoteUIURL: URL?

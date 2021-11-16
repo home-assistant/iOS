@@ -56,7 +56,9 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             title = L10n.SettingsDetails.General.title
 
             if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac, !Current.isDebug {
-                form +++ Section(SettingsViewController.serversContents())
+                let (section, deallocate) = SettingsViewController.servers()
+                form +++ section
+                after(life: self).done(deallocate)
             }
 
             form
