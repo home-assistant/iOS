@@ -144,7 +144,7 @@ public class ServerAlerter {
                     return false
                 }
 
-                guard !alert.adminOnly || users.contains(where: { $0.isAdmin }) else {
+                guard !alert.adminOnly || users.contains(where: \.isAdmin) else {
                     return false
                 }
 

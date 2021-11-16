@@ -1,6 +1,6 @@
 import Eureka
-import Shared
 import PromiseKit
+import Shared
 
 class SettingsViewController: HAFormViewController {
     struct ContentSection: OptionSet, ExpressibleByIntegerLiteral {

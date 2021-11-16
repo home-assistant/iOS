@@ -773,8 +773,9 @@ public class HomeAssistantAPI {
     }
 
     #if os(iOS)
+    #warning("multiserver - move out of HAAPI")
     public func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
-        Current.backgroundTask(withName: "manual-location-update") { remaining in
+        Current.backgroundTask(withName: "manual-location-update") { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
                     guard #available(iOS 14, *) else {

@@ -155,7 +155,7 @@ public extension Realm {
                 if oldVersion < 18 {
                     // set the serverIdentifier to the historic value for anything synced earlier
                     func migrate<T: Object & UpdatableModel>(_ modelType: T.Type) {
-                        migration.enumerateObjects(ofType: modelType.className()) { oldObject, newObject in
+                        migration.enumerateObjects(ofType: modelType.className()) { _, newObject in
                             newObject?[modelType.serverIdentifierKey()] = Server.historicId.rawValue
                         }
                     }

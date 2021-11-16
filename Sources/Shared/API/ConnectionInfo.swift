@@ -165,7 +165,7 @@ public struct ConnectionInfo: Codable, Equatable {
                 return overrideURL.sanitized()
             }
         }
-        
+
         let url: URL
 
         if let internalURL = internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {

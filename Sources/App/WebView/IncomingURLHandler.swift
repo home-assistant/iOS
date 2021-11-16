@@ -135,7 +135,7 @@ class IncomingURLHandler {
                 }.asVoid()
             } else {
                 return Current.api.then(on: nil) { api -> Promise<Void> in
-                    return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+                    api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
                 }
             }
         }

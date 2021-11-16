@@ -153,7 +153,7 @@ public class ModelManager {
 
                             let entities = value.all.filter { $0.domain == domain }
                             if entities != lastEntities {
-                                manager.store(type: type, from: server,  sourceModels: entities).cauterize()
+                                manager.store(type: type, from: server, sourceModels: entities).cauterize()
                                 lastEntities = entities
                             }
                         }
@@ -193,7 +193,11 @@ public class ModelManager {
             FetchDefinition(update: { api, _, queue, manager in
                 api.GetMobileAppConfig().then(on: queue) {
                     when(fulfilled: [
-                        manager.store(type: NotificationCategory.self, from: api.server, sourceModels: $0.push.categories),
+                        manager.store(
+                            type: NotificationCategory.self,
+                            from: api.server,
+                            sourceModels: $0.push.categories
+                        ),
                         manager.store(type: Action.self, from: api.server, sourceModels: $0.actions),
                     ])
                 }

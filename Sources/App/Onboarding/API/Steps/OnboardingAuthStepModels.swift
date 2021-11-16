@@ -11,6 +11,6 @@ struct OnboardingAuthStepModels: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        return Current.modelManager.fetch(apis: [api])
+        Current.modelManager.fetch(apis: [api])
     }
 }
