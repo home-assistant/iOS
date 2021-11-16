@@ -141,8 +141,9 @@ public class ServerManagerImpl: ServerManager {
                     return info
                 }
             }, setter: { [weak self] serverInfo in
-                guard let self = self else { return }
+                guard let self = self, self.cache.info[identifier] != serverInfo else { return }
                 fallback = serverInfo
+                
                 self.cache.info[identifier] = serverInfo
                 self.keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
                 self.notify()
