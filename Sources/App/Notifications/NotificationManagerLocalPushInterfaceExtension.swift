@@ -7,7 +7,8 @@ import Shared
 @available(iOS 14, *)
 final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface,
     NEAppPushDelegate {
-    var status: NotificationManagerLocalPushStatus {
+    func status(for server: Server) -> NotificationManagerLocalPushStatus {
+        #warning("multiserver")
         if let manager = manager, manager.isActive, let value = stateSync.value {
             return .allowed(value)
         } else {
@@ -15,7 +16,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
-    func addObserver(_ handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable {
+    func addObserver(for server: Server, handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable {
+        #warning("multiserver")
         let identifier = UUID()
         observers.append((identifier: identifier, handler: handler))
         return HABlockCancellable { [weak self] in
@@ -25,7 +27,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     private var observers = [(identifier: UUID, handler: (NotificationManagerLocalPushStatus) -> Void)]()
     private func notifyObservers() {
-        let status = status
+        let status = status(for: Current.servers.all.first!)
         for observer in observers {
             observer.handler(status)
         }

@@ -14,6 +14,7 @@ public class SettingsStore {
     public static let menuRelatedSettingDidChange: Notification.Name = .init("menuRelatedSettingDidChange")
     public static let locationRelatedSettingDidChange: Notification.Name = .init("locationRelatedSettingDidChange")
     /// This may be posted on any thread
+    @available(*, deprecated)
     public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
 
     @available(*, deprecated)

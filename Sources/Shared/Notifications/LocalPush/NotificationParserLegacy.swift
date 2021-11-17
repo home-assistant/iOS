@@ -24,6 +24,8 @@ public enum NotificationParserLegacy {
     }
 
     public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
+        #warning("multiserver")
+
         let registrationInfo = input["registration_info"] as? [String: String] ?? [
             "os_version": Current.device.systemVersion(),
             "app_id": "io.robbie.HomeAssistant",

@@ -69,6 +69,42 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             }
 
             <<< LabelRow { row in
+                row.title = L10n.SettingsDetails.Notifications.LocalPush.title
+                let manager = Current.notificationManager.localPushManager
+
+                let updateValue = { [weak row, server] in
+                    guard let row = row else { return }
+                    switch manager.status(for: server) {
+                    case .disabled:
+                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.disabled
+                    case .unsupported:
+                        row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.unsupported
+                    case let .allowed(state):
+                        switch state {
+                        case .unavailable:
+                            row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.unavailable
+                        case .establishing:
+                            row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.establishing
+                        case let .available(received: received):
+                            let formatted = NumberFormatter.localizedString(
+                                from: NSNumber(value: received),
+                                number: .decimal
+                            )
+                            row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.available(formatted)
+                        }
+                    }
+
+                    row.updateCell()
+                }
+
+                let cancel = manager.addObserver(for: server) { _ in
+                    updateValue()
+                }
+                after(life: self).done(cancel.cancel)
+                updateValue()
+            }
+
+            <<< LabelRow { row in
                 row.title = L10n.Settings.ConnectionSection.loggedInAs
 
                 tokens.append(connection.caches.user.subscribe { _, user in

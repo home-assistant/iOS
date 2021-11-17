@@ -1,16 +1,18 @@
 import Foundation
 import HAKit
 import UserNotifications
+import Version
 
 extension HATypedSubscription {
     static func localPush(
-        webhookID: String
+        webhookID: String,
+        serverVersion: Version
     ) -> HATypedSubscription<LocalPushEvent> {
         var data: [String: Any] = [
             "webhook_id": webhookID,
         ]
 
-        if let version = Current.serverVersion(), version >= .localPushConfirm {
+        if serverVersion >= .localPushConfirm {
             data["support_confirm"] = true
         }
 

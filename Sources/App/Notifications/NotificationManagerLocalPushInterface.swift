@@ -8,6 +8,6 @@ enum NotificationManagerLocalPushStatus {
 }
 
 protocol NotificationManagerLocalPushInterface {
-    var status: NotificationManagerLocalPushStatus { get }
-    func addObserver(_ handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable
+    func status(for server: Server) -> NotificationManagerLocalPushStatus
+    func addObserver(for server: Server, handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable
 }
