@@ -61,11 +61,11 @@ public class PerServerContainer<ObjectType>: ServerObserver {
     }
 
     public func serversDidChange(_ serverManager: ServerManager) {
-        let existing = backing.keys
+        let existing = Set(backing.keys)
         let servers = Current.servers.all
 
-        let deleted = Set(servers.map(\.identifier)).subtracting(existing)
-        let needed = servers.filter { backing[$0.identifier] == nil }
+        let deleted = existing.subtracting(servers.map(\.identifier))
+        let needed = servers.filter { !existing.contains($0.identifier) }
 
         backing = deleted.reduce(into: backing) { result, identifier in
             result[identifier] = nil
