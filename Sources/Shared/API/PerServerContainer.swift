@@ -29,7 +29,7 @@ public class PerServerContainer<ObjectType>: ServerObserver {
             }
         }
     }
-    
+
     public init(lazy: Bool = false, constructor: @escaping Constructor) {
         self.constructor = constructor
         self.lazy = lazy
@@ -78,4 +78,3 @@ public class PerServerContainer<ObjectType>: ServerObserver {
         }
     }
 }
-

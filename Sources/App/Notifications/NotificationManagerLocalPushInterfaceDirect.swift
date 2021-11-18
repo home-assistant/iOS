@@ -31,7 +31,8 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
 
     func addObserver(
         for server: Server,
-        handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable {
+        handler: @escaping (NotificationManagerLocalPushStatus) -> Void
+    ) -> HACancellable {
         let observer = Observer(identifier: UUID(), server: server, handler: handler)
         observers.append(observer)
         return HABlockCancellable { [weak self] in

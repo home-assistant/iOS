@@ -16,19 +16,22 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
-    func addObserver(for server: Server, handler: @escaping (NotificationManagerLocalPushStatus) -> Void) -> HACancellable {
-        #warning("multiserver")
+    func addObserver(
+        for server: Server,
+        handler: @escaping (NotificationManagerLocalPushStatus) -> Void
+    ) -> HACancellable {
         let identifier = UUID()
-        observers.append((identifier: identifier, handler: handler))
+        observers.append((identifier: identifier, server: server, handler: handler))
         return HABlockCancellable { [weak self] in
             self?.observers.removeAll(where: { $0.identifier == identifier })
         }
     }
 
-    private var observers = [(identifier: UUID, handler: (NotificationManagerLocalPushStatus) -> Void)]()
-    private func notifyObservers() {
-        let status = status(for: Current.servers.all.first!)
-        for observer in observers {
+    private var observers =
+        [(identifier: UUID, server: Server, handler: (NotificationManagerLocalPushStatus) -> Void)]()
+    private func notifyObservers(for server: Server) {
+        let status = status(for: server)
+        for observer in observers where observer.server == server {
             observer.handler(status)
         }
     }
@@ -46,7 +49,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 } else {
                     tokens = []
                 }
-                notifyObservers()
+                #warning("multiserver")
+                notifyObservers(for: Current.servers.all.first!)
             }
         }
     }
@@ -55,7 +59,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         super.init()
 
         _ = stateSync.observe { [weak self] (_: LocalPushManager.State) in
-            self?.notifyObservers()
+            #warning("multiserver")
+            self?.notifyObservers(for: Current.servers.all.first!)
         }
 
         // future multi-server: move this to container
@@ -91,7 +96,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         [
             manager.observe(\.isActive) { [weak self] manager, _ in
                 Current.Log.info("manager is active: \(manager.isActive)")
-                self?.notifyObservers()
+                #warning("multiserver")
+                self?.notifyObservers(for: Current.servers.all.first!)
             },
         ]
     }
