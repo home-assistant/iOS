@@ -2,26 +2,33 @@ import Foundation
 import HAKit
 import Shared
 
-class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushInterface, ServerObserver {
+class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushInterface {
     func status(for server: Server) -> NotificationManagerLocalPushStatus {
-        if let state = localPushManagers[server.identifier]?.state {
-            return .allowed(state)
-        } else {
-            return .disabled
-        }
+        .allowed(localPushManagers[server].state)
     }
 
-    private var localPushManagers = [Identifier<Server>: LocalPushManager]()
+    private var localPushManagers: PerServerContainer<LocalPushManager>!
     weak var localPushDelegate: LocalPushManagerDelegate?
 
     init(delegate: LocalPushManagerDelegate) {
         self.localPushDelegate = delegate
-        updateLocalPushManagers()
-        Current.servers.add(observer: self)
-    }
+        self.localPushManagers = .init(
+            constructor: { [weak self] server in
+                let manager = LocalPushManager(server: server)
+                let token = NotificationCenter.default.addObserver(
+                    forName: LocalPushManager.stateDidChange,
+                    object: manager,
+                    queue: .main,
+                    using: { [weak self] _ in
+                        self?.pushManagerStateDidChange(server: server)
+                    }
+                )
 
-    deinit {
-        notificationTokens.forEach { NotificationCenter.default.removeObserver($0) }
+                return .init(manager) { _, _ in
+                    NotificationCenter.default.removeObserver(token)
+                }
+            }
+        )
     }
 
     func addObserver(
@@ -45,39 +52,10 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
     }
 
     private var observers = [Observer]()
-    private var notificationTokens: [NSObjectProtocol] = []
 
     private func pushManagerStateDidChange(server: Server) {
         for observer in observers where observer.server == server {
             observer.handler(status(for: server))
-        }
-    }
-
-    func serversDidChange(_ serverManager: ServerManager) {
-        updateLocalPushManagers()
-    }
-
-    private func updateLocalPushManagers() {
-        let existing = localPushManagers.keys
-        let servers = Current.servers.all
-
-        let deleted = Set(servers.map(\.identifier)).subtracting(existing)
-        let needed = servers.filter { localPushManagers[$0.identifier] == nil }
-
-        deleted.forEach { localPushManagers[$0] = nil }
-        needed.forEach { server in
-            localPushManagers[server.identifier] = with(.init(server: server)) { manager in
-                notificationTokens.append(
-                    NotificationCenter.default.addObserver(
-                        forName: LocalPushManager.stateDidChange,
-                        object: manager,
-                        queue: .main,
-                        using: { [weak self] _ in
-                            self?.pushManagerStateDidChange(server: server)
-                        }
-                    )
-                )
-            }
         }
     }
 }

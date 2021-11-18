@@ -92,6 +92,8 @@
 		11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11195F6C267EFC15003DF674 /* HACancellable+App.swift */; };
 		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
+		1120C57F274638330046C38B /* PerServerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1120C57E274638330046C38B /* PerServerContainer.swift */; };
+		1120C580274638330046C38B /* PerServerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1120C57E274638330046C38B /* PerServerContainer.swift */; };
 		1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4827128A970071C2AA /* UIView+StackView.swift */; };
 		1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4827128A970071C2AA /* UIView+StackView.swift */; };
 		1121CD4C271295AD0071C2AA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4B271295AD0071C2AA /* Style.swift */; };
@@ -1144,6 +1146,7 @@
 		11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceDirect.swift; sourceTree = "<group>"; };
 		11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerLocalPushInterfaceUnsupported.swift; sourceTree = "<group>"; };
 		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
+		1120C57E274638330046C38B /* PerServerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerServerContainer.swift; sourceTree = "<group>"; };
 		1121CD4827128A970071C2AA /* UIView+StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+StackView.swift"; sourceTree = "<group>"; };
 		1121CD4B271295AD0071C2AA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
@@ -3372,6 +3375,7 @@
 				1105CE1B272B9CB300F33BD8 /* ServerManager.swift */,
 				11CFD78027364F450082D557 /* Identifier.swift */,
 				11CFD783273662DF0082D557 /* Server.swift */,
+				1120C57E274638330046C38B /* PerServerContainer.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5389,6 +5393,7 @@
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
+				1120C580274638330046C38B /* PerServerContainer.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
@@ -5565,6 +5570,7 @@
 				11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */,
 				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
+				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
