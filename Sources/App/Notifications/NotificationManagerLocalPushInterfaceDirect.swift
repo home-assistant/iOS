@@ -12,23 +12,21 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
 
     init(delegate: LocalPushManagerDelegate) {
         self.localPushDelegate = delegate
-        self.localPushManagers = .init(
-            constructor: { [weak self] server in
-                let manager = LocalPushManager(server: server)
-                let token = NotificationCenter.default.addObserver(
-                    forName: LocalPushManager.stateDidChange,
-                    object: manager,
-                    queue: .main,
-                    using: { [weak self] _ in
-                        self?.pushManagerStateDidChange(server: server)
-                    }
-                )
-
-                return .init(manager) { _, _ in
-                    NotificationCenter.default.removeObserver(token)
+        self.localPushManagers = .init { [weak self] server in
+            let manager = LocalPushManager(server: server)
+            let token = NotificationCenter.default.addObserver(
+                forName: LocalPushManager.stateDidChange,
+                object: manager,
+                queue: .main,
+                using: { [weak self] _ in
+                    self?.pushManagerStateDidChange(server: server)
                 }
+            )
+
+            return .init(manager) { _, _ in
+                NotificationCenter.default.removeObserver(token)
             }
-        )
+        }
     }
 
     func addObserver(
