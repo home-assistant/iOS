@@ -41,7 +41,7 @@ class SettingsViewController: HAFormViewController {
 
             for server in Current.servers.all {
                 rows.append(HomeAssistantAccountRow {
-                    $0.value = server
+                    $0.value = .server(server)
                     $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                         ConnectionSettingsViewController(server: server)
                     }, onDismiss: nil)
@@ -50,6 +50,7 @@ class SettingsViewController: HAFormViewController {
 
             rows.append(HomeAssistantAccountRow {
                 $0.hidden = .isNotDebug
+                $0.value = .add
                 $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
                     OnboardingNavigationViewController(onboardingStyle: .secondary)
                 }), onDismiss: nil)

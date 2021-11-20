@@ -74,4 +74,8 @@ enum AccountInitialsImage {
             image.draw(at: imageOrigin)
         }.withRenderingMode(.alwaysTemplate)
     }
+
+    static func allImage(size: CGSize = Self.defaultSize) -> UIImage {
+        UIImage()
+    }
 }
