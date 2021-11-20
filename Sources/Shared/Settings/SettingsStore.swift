@@ -94,16 +94,6 @@ public class SettingsStore {
     }
     #endif
 
-    @available(*, deprecated)
-    public var timezone: String? {
-        get {
-            prefs.string(forKey: "time_zone")
-        }
-        set {
-            prefs.setValue(newValue, forKey: "time_zone")
-        }
-    }
-
     public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
         public let zoom: Int
 
