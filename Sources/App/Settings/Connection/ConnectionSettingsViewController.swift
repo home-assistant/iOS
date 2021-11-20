@@ -29,12 +29,9 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         title = L10n.Settings.ConnectionSection.header
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(connectionInfoDidChange(_:)),
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil
-        )
+        tokens.append(server.observe { [weak self] _ in
+            self?.form.allRows.forEach { $0.updateCell() }
+        })
 
         let connection = Current.api(for: server).connection
 
@@ -222,12 +219,6 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         // Detect when your view controller is popped and invoke the callback
         if !isMovingToParent {
             onDismissCallback?(self)
-        }
-    }
-
-    @objc func connectionInfoDidChange(_ notification: Notification) {
-        DispatchQueue.main.async { [self] in
-            form.allRows.forEach { $0.updateCell() }
         }
     }
 }

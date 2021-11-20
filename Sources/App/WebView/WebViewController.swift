@@ -8,6 +8,7 @@ import Shared
 import SwiftMessages
 import UIKit
 import WebKit
+import HAKit
 
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
     var webView: WKWebView!
@@ -15,6 +16,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     let server: Server
 
     var urlObserver: NSKeyValueObservation?
+    var tokens = [HACancellable]()
 
     let refreshControl = UIRefreshControl()
 
@@ -91,7 +93,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         becomeFirstResponder()
 
         for name: Notification.Name in [
-            SettingsStore.connectionInfoDidChange,
             HomeAssistantAPI.didConnectNotification,
             UIApplication.didBecomeActiveNotification,
         ] {
@@ -102,6 +103,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 object: nil
             )
         }
+
+        tokens.append(server.observe { [weak self] info in
+            self?.connectionInfoDidChange()
+        })
 
         let statusBarView = UIView()
         statusBarView.tag = 111
@@ -309,6 +314,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     deinit {
         self.urlObserver = nil
+        self.tokens.forEach { $0.cancel() }
     }
 
     private func styleUI() {
@@ -428,7 +434,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
             // it's for the restored page, let's load the default url
 
-            if let webviewURL = server.info.connection.webviewURL {
+            if let webviewURL = server.info.connection.webviewURL() {
                 decisionHandler(.cancel)
                 webView.load(URLRequest(url: webviewURL))
             } else {
@@ -550,7 +556,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     @objc private func loadActiveURLIfNeeded() {
-        guard let webviewURL = server.info.connection.webviewURL else {
+        guard let webviewURL = server.info.connection.webviewURL() else {
             Current.Log.info("not loading, no url")
             return
         }
@@ -583,7 +589,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func refresh() {
         // called via menu/keyboard shortcut too
-        if let webviewURL = server.info.connection.webviewURL {
+        if let webviewURL = server.info.connection.webviewURL() {
             if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                 webView.reload()
             } else {
@@ -930,11 +936,11 @@ extension WebViewController: UIScrollViewDelegate {
 }
 
 extension ConnectionInfo {
-    var webviewURLComponents: URLComponents? {
+    mutating func webviewURLComponents() ->  URLComponents? {
         if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
             return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
-        guard var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
+        guard var components = URLComponents(url: activeURL(), resolvingAgainstBaseURL: true) else {
             return nil
         }
 
@@ -944,12 +950,12 @@ extension ConnectionInfo {
         return components
     }
 
-    var webviewURL: URL? {
-        webviewURLComponents?.url
+    mutating func webviewURL() -> URL? {
+        webviewURLComponents()?.url
     }
 
-    func webviewURL(from raw: String) -> URL? {
-        guard let baseURLComponents = webviewURLComponents, let baseURL = baseURLComponents.url else {
+    mutating func webviewURL(from raw: String) -> URL? {
+        guard let baseURLComponents = webviewURLComponents(), let baseURL = baseURLComponents.url else {
             return nil
         }
 

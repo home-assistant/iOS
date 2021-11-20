@@ -19,22 +19,22 @@ public class AuthenticationAPI {
         }
     }
 
-    private let connectionInfoGetter: () -> ConnectionInfo?
+    var connectionInfo: ConnectionInfo {
+        get { connectionInfoGetter() }
+        set { connectionInfoSetter(newValue) }
+    }
+
+    private let connectionInfoGetter: () -> ConnectionInfo
+    private let connectionInfoSetter: (ConnectionInfo) -> Void
 
     init(forcedConnectionInfo: ConnectionInfo) {
         self.connectionInfoGetter = { forcedConnectionInfo }
+        self.connectionInfoSetter = { _ in }
     }
 
     init(server: Server) {
         self.connectionInfoGetter = { server.info.connection }
-    }
-
-    private func activeURL() throws -> URL {
-        if let connectionInfo = connectionInfoGetter() {
-            return connectionInfo.activeURL
-        } else {
-            throw AuthenticationError.noConnectionInfo
-        }
+        self.connectionInfoSetter = { server.info.connection = $0 }
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
@@ -42,7 +42,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.refreshToken(token: token),
-                baseURL: try activeURL()
+                baseURL: connectionInfo.activeURL()
             )
             let request = Session.default.request(routeInfo)
 
@@ -63,7 +63,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.accessToken
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.revokeToken(token: token),
-                baseURL: try activeURL()
+                baseURL: connectionInfo.activeURL()
             )
             let request = Session.default.request(routeInfo)
 
@@ -81,7 +81,7 @@ public class AuthenticationAPI {
         Promise { seal in
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                baseURL: try activeURL()
+                baseURL: connectionInfo.activeURL()
             )
             let request = Session.default.request(routeInfo)
 

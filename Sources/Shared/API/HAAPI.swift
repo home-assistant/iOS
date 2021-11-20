@@ -66,7 +66,7 @@ public class HomeAssistantAPI {
         self.connection = HAKit.connection(configuration: .init(
             connectionInfo: {
                 do {
-                    return try .init(url: server.info.connection.activeURL, userAgent: HomeAssistantAPI.userAgent)
+                    return try .init(url: server.info.connection.activeURL(), userAgent: HomeAssistantAPI.userAgent)
                 } catch {
                     Current.Log.error("couldn't create connection info: \(error)")
                     return nil
@@ -116,9 +116,7 @@ public class HomeAssistantAPI {
     private func newInterceptor() -> Interceptor {
         .init(
             adapters: [
-                Adapter { [server] request, session, completion in
-                    server.info.connection.adapt(request, for: session, completion: completion)
-                },
+                ServerRequestAdapter(server: server),
             ], retriers: [
             ], interceptors: [
                 tokenManager.authenticationInterceptor,
@@ -153,8 +151,8 @@ public class HomeAssistantAPI {
         connection.connect()
 
         return firstly {
-            self.updateRegistration().asVoid()
-        }.recover { error -> Promise<Void> in
+            updateRegistration().asVoid()
+        }.recover { [self] error -> Promise<Void> in
             switch error as? WebhookError {
             case .unmappableValue,
                  .unexpectedType,
@@ -167,7 +165,7 @@ public class HomeAssistantAPI {
                 return Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                     "error": String(describing: error),
                 ])).then {
-                    return self.register()
+                    return register()
                 }
             case .unregisteredIdentifier,
                  .unacceptableStatusCode,
@@ -177,12 +175,12 @@ public class HomeAssistantAPI {
                 Current.Log.info("not re-registering, but failed to update registration: \(error)")
                 throw error
             }
-        }.then {
+        }.then { [self] in
             when(fulfilled: [
-                self.getConfig(),
-                Current.modelManager.fetch(),
-                self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
-                self.updateComplications(passively: false).asVoid(),
+                getConfig(),
+                Current.modelManager.fetch(apis: [self]),
+                UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
+                updateComplications(passively: false).asVoid(),
             ]).asVoid()
         }.get { _ in
             NotificationCenter.default.post(
@@ -236,7 +234,7 @@ public class HomeAssistantAPI {
             let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
 
             if needsAuth {
-                let activeURL = server.info.connection.activeURL
+                let activeURL = server.info.connection.activeURL()
 
                 if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
                     Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
@@ -314,9 +312,7 @@ public class HomeAssistantAPI {
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            let connectionInfo = server.info.connection
-
-            let queryUrl = connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
+            let queryUrl = server.info.connection.activeAPIURL().appendingPathComponent("camera_proxy/\(cameraEntityID)")
             _ = manager.request(queryUrl)
                 .validate()
                 .responseData { response in

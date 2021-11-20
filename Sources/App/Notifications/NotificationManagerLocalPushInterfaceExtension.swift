@@ -138,6 +138,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
         manager.localizedDescription = "HomeAssistant"
         manager.providerBundleIdentifier = Constants.BundleID + ".PushProvider"
+        #warning("multiserver - this cannot overlap, more complex than 1 manager / server")
         manager.matchSSIDs = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
         manager.providerConfiguration = [
             LocalPushStateSync.settingsKey: Self.settingsKey,

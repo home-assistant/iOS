@@ -1,5 +1,6 @@
 import Foundation
 import Version
+import HAKit
 
 public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
     public var rawValue: String
@@ -110,7 +111,15 @@ public class Server: Hashable, Comparable {
             getter()
         }
         set {
+            let oldValue = getter()
             setter(newValue)
+            if newValue != oldValue {
+                observers.values.forEach { observer in
+                    DispatchQueue.main.async {
+                        observer(newValue)
+                    }
+                }
+            }
         }
     }
 
@@ -120,11 +129,21 @@ public class Server: Hashable, Comparable {
         info = value
     }
 
+    public func observe(_ block: @escaping Observer) -> HACancellable {
+        let uuid = UUID()
+        observers[uuid] = block
+        return HABlockCancellable { [weak self] in
+            self?.observers[uuid] = nil
+        }
+    }
+
     public typealias Getter = () -> ServerInfo
     public typealias Setter = (ServerInfo) -> Void
+    public typealias Observer = (ServerInfo) -> Void
 
     private let getter: Getter
     private let setter: Setter
+    private var observers = [UUID: Observer]()
 
     public init(
         identifier: Identifier<Server>,

@@ -24,9 +24,7 @@ public class PerServerContainer<ObjectType>: ServerObserver {
 
     private var backing = [Identifier<Server>: Value]() {
         willSet {
-            for (key, value) in backing where newValue[key] == nil {
-                value.destructor?(key, value.object)
-            }
+            destruct(from: backing, to: newValue)
         }
     }
 
@@ -38,9 +36,7 @@ public class PerServerContainer<ObjectType>: ServerObserver {
     }
 
     deinit {
-        for (key, value) in backing {
-            value.destructor?(key, value.object)
-        }
+        destruct(from: backing, to: [:])
     }
 
     public subscript(_ server: Server) -> ObjectType {
@@ -50,6 +46,12 @@ public class PerServerContainer<ObjectType>: ServerObserver {
             let value = constructor(server)
             backing[server.identifier] = value
             return value.object
+        }
+    }
+
+    private func destruct(from: [Identifier<Server>: Value], to: [Identifier<Server>: Value]) {
+        for (key, value) in from where to[key] == nil {
+            value.destructor?(key, value.object)
         }
     }
 

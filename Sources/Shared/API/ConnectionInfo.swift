@@ -29,15 +29,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public var overrideActiveURLType: URLType?
-    public var activeURLType: URLType {
-        if isOnInternalNetwork, internalURL != nil {
-            return .internal
-        } else if useCloud, remoteUIURL != nil {
-            return .remoteUI
-        } else {
-            return .external
-        }
-    }
+    public private(set) var activeURLType: URLType = .internal
 
     public var isLocalPushEnabled = true {
         didSet {
@@ -66,6 +58,9 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalSSIDs = internalSSIDs
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
+
+        // make the activeURLType valid
+        _ = activeURL()
     }
 
     public init(from decoder: Decoder) throws {
@@ -81,6 +76,9 @@ public struct ConnectionInfo: Codable, Equatable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
+
+        // make the activeURLType valid
+        _ = activeURL()
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -148,7 +146,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
-    public var activeURL: URL {
+    public mutating func activeURL() -> URL {
         if let overrideActiveURLType = overrideActiveURLType {
             let overrideURL: URL?
 
@@ -169,12 +167,16 @@ public struct ConnectionInfo: Codable, Equatable {
         let url: URL
 
         if let internalURL = internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
+            activeURLType = .internal
             url = internalURL
         } else if let remoteUIURL = remoteUIURL, useCloud {
+            activeURLType = .remoteUI
             url = remoteUIURL
         } else if let externalURL = externalURL {
+            activeURLType = .external
             url = externalURL
         } else {
+            activeURLType = .internal
             url = URL(string: "http://homeassistant.local:8123")!
         }
 
@@ -182,16 +184,16 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the activeURL with /api appended.
-    public var activeAPIURL: URL {
-        activeURL.appendingPathComponent("api", isDirectory: false)
+    public mutating func activeAPIURL() ->  URL {
+        activeURL().appendingPathComponent("api", isDirectory: false)
     }
 
-    public var webhookURL: URL {
+    public mutating func webhookURL() -> URL {
         if useCloud, let cloudURL = cloudhookURL {
             return cloudURL
         }
 
-        return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
+        return activeURL().appendingPathComponent(webhookPath, isDirectory: false)
     }
 
     public var webhookPath: String {
@@ -242,8 +244,14 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 }
 
-extension ConnectionInfo: RequestAdapter {
-    public func adapt(
+class ServerRequestAdapter: RequestAdapter {
+    let server: Server
+
+    init(server: Server) {
+        self.server = server
+    }
+
+    func adapt(
         _ urlRequest: URLRequest,
         for session: Session,
         completion: @escaping (Result<URLRequest, Error>) -> Void
@@ -251,7 +259,7 @@ extension ConnectionInfo: RequestAdapter {
         var updatedRequest: URLRequest = urlRequest
 
         if let currentURL = urlRequest.url {
-            let expectedURL = activeURL.adapting(url: currentURL)
+            let expectedURL = server.info.connection.activeURL().adapting(url: currentURL)
             if currentURL != expectedURL {
                 Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
                 updatedRequest.url = expectedURL

@@ -481,13 +481,12 @@ public class WebhookManager: NSObject {
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         Promise { seal in
-            let connectionInfo = server.info.connection
             let webhookURL: URL
 
             if let baseURL = baseURL {
-                webhookURL = baseURL.appendingPathComponent(connectionInfo.webhookPath, isDirectory: false)
+                webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
             } else {
-                webhookURL = connectionInfo.webhookURL
+                webhookURL = server.info.connection.webhookURL()
             }
 
             var urlRequest = try URLRequest(url: webhookURL, method: .post)

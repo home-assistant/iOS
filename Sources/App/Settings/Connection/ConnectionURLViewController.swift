@@ -69,29 +69,31 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         let localPush = (form.rowBy(tag: RowTag.localPush.rawValue) as? SwitchRow)?.value
 
         func commit() {
-            server.info.connection.set(address: givenURL, for: urlType)
+            server.update { info in
+                info.connection.set(address: givenURL, for: urlType)
 
-            if let useCloud = useCloud {
-                server.info.connection.useCloud = useCloud
-            }
+                if let useCloud = useCloud {
+                    info.connection.useCloud = useCloud
+                }
 
-            if let localPush = localPush {
-                server.info.connection.isLocalPushEnabled = localPush
-            }
+                if let localPush = localPush {
+                    info.connection.isLocalPushEnabled = localPush
+                }
 
-            if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
-                server.info.connection.internalSSIDs = section.allRows
-                    .compactMap { $0 as? TextRow }
-                    .compactMap(\.value)
-                    .filter { !$0.isEmpty }
-            }
+                if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
+                    info.connection.internalSSIDs = section.allRows
+                        .compactMap { $0 as? TextRow }
+                        .compactMap(\.value)
+                        .filter { !$0.isEmpty }
+                }
 
-            if let section = form.sectionBy(tag: RowTag.hardwareAddresses.rawValue) as? MultivaluedSection {
-                server.info.connection.internalHardwareAddresses = section.allRows
-                    .compactMap { $0 as? TextRow }
-                    .compactMap(\.value)
-                    .map { $0.lowercased() }
-                    .filter { !$0.isEmpty }
+                if let section = form.sectionBy(tag: RowTag.hardwareAddresses.rawValue) as? MultivaluedSection {
+                    info.connection.internalHardwareAddresses = section.allRows
+                        .compactMap { $0 as? TextRow }
+                        .compactMap(\.value)
+                        .map { $0.lowercased() }
+                        .filter { !$0.isEmpty }
+                }
             }
 
             onDismissCallback?(self)

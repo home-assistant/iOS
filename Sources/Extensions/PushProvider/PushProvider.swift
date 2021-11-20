@@ -39,7 +39,8 @@ import UserNotifications
             return
         }
 
-        let localPushManager = with(LocalPushManager()) {
+        #warning("multiserver")
+        let localPushManager = with(LocalPushManager(server: Current.servers.all.first!)) {
             $0.delegate = self
         }
         self.localPushManager = localPushManager

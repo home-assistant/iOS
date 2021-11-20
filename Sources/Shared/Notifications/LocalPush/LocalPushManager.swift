@@ -80,21 +80,20 @@ public class LocalPushManager {
         }
     }
 
+    private var tokens = [HACancellable]()
+
     public init(server: Server) {
         self.server = server
 
         updateSubscription()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateSubscriptionFromNotification),
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil
-        )
+        tokens.append(server.observe { [weak self] _ in
+            self?.updateSubscription()
+        })
     }
 
     deinit {
         invalidate()
+        tokens.forEach { $0.cancel() }
     }
 
     public func invalidate() {
@@ -125,15 +124,8 @@ public class LocalPushManager {
 
     private var subscription: SubscriptionInstance?
 
-    @objc private func updateSubscriptionFromNotification() {
-        DispatchQueue.main.async { [self] in
-            updateSubscription()
-        }
-    }
-
     private func updateSubscription() {
         let webhookID = server.info.connection.webhookID
-        let connection = Current.api(for: server).connection
 
         guard webhookID != subscription?.webhookID else {
             // webhookID hasn't changed, so we don't need to reset
@@ -142,7 +134,7 @@ public class LocalPushManager {
 
         subscription?.cancel()
         subscription = .init(
-            token: connection.subscribe(
+            token: Current.api(for: server).connection.subscribe(
                 to: .localPush(webhookID: webhookID, serverVersion: server.info.version),
                 initiated: { [weak self] result in
                     self?.handle(initiated: result.map { _ in () })
