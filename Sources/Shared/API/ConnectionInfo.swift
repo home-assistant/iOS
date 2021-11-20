@@ -58,9 +58,6 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalSSIDs = internalSSIDs
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
-
-        // make the activeURLType valid
-        _ = activeURL()
     }
 
     public init(from decoder: Decoder) throws {
@@ -76,9 +73,6 @@ public struct ConnectionInfo: Codable, Equatable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
-
-        // make the activeURLType valid
-        _ = activeURL()
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -152,10 +146,13 @@ public struct ConnectionInfo: Codable, Equatable {
 
             switch overrideActiveURLType {
             case .internal:
+                activeURLType = .internal
                 overrideURL = internalURL
             case .remoteUI:
+                activeURLType = .remoteUI
                 overrideURL = remoteUIURL
             case .external:
+                activeURLType = .external
                 overrideURL = externalURL
             }
 
