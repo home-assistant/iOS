@@ -21,19 +21,30 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             Current.Log.info("using provided \(servicePayload)")
             completion(.success(with: servicePayload))
         } else {
-            Current.Log.info("requesting a value")
+            Current.Log.info("using default empty dictionary value")
+            completion(.success(with: "{}"))
+        }
+    }
+
+    func resolveServer(
+        for intent: CallServiceIntent,
+        with completion: @escaping (IntentServerResolutionResult) -> Void
+    ) {
+        if let server = server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
             completion(.needsValue())
         }
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
-        guard let connection = Current.apiConnection else {
+        guard let server = server(for: intent) else {
             completion(nil, nil)
             return
         }
 
         firstly {
-            connection.send(.getServices()).promise
+            Current.api(for: server).connection.send(.getServices()).promise
         }
         .map(\.all)
         .mapValues(\.domainServicePair)
@@ -48,6 +59,23 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     ) {
         provideServiceOptions(for: intent) { services, error in
             completion(services.flatMap { .init(items: $0.map { $0 as NSString }) }, error)
+        }
+    }
+
+    func provideServerOptions(
+        for intent: CallServiceIntent,
+        with completion: @escaping ([IntentServer]?, Error?) -> Void
+    ) {
+        completion(Current.servers.all.map { IntentServer(server: $0) }, nil)
+    }
+
+    @available(iOS 14, *)
+    func provideServerOptionsCollection(
+        for intent: CallServiceIntent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        provideServerOptions(for: intent) { servers, error in
+            completion(servers.flatMap { .init(items: $0) }, error)
         }
     }
 
@@ -82,6 +110,11 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             return
         }
 
+        guard let server = server(for: intent) else {
+            completion(.failure(error: "No server provided"))
+            return
+        }
+
         let splitServiceNameInput = serviceName.split(separator: ".")
 
         guard splitServiceNameInput.count == 2 else {
@@ -97,8 +130,13 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
         Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
-        Current.api.then(on: nil) { api in
-            api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true)
+        firstly {
+            Current.api(for: server).CallService(
+                domain: domain,
+                service: service,
+                serviceData: payloadDict,
+                shouldLog: true
+            )
         }.done { _ in
             Current.Log.verbose("Successfully called service during shortcut")
             let resp = CallServiceIntentResponse(code: .success, userActivity: nil)
@@ -110,6 +148,16 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Error during api.callService: \(error.localizedDescription)"
             completion(resp)
+        }
+    }
+
+    private func server(for intent: CallServiceIntent) -> Server? {
+        if let server = intent.server?.identifier.flatMap({ Current.servers.server(for: .init(rawValue: $0)) }) {
+            return server
+        } else if let server = Current.servers.all.first, Current.servers.all.count == 1 {
+            return server
+        } else {
+            return nil
         }
     }
 }

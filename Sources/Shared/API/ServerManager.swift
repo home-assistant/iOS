@@ -25,6 +25,7 @@ private extension Identifier where ObjectType == Server {
 }
 
 private class ServerCache {
+    var restrictCaching: Bool = false
     var info: [Identifier<Server>: ServerInfo] = [:]
     var server: [Identifier<Server>: Server] = [:]
     var all: [Server]?
@@ -60,6 +61,8 @@ public class ServerManagerImpl: ServerManager {
     }
 
     func setup(environment: AppEnvironment) {
+        cache.restrictCaching = environment.isAppExtension
+
         // load to cache immediately
         _ = all
 
@@ -71,7 +74,8 @@ public class ServerManagerImpl: ServerManager {
     }
 
     public var all: [Server] {
-        if let cachedServers = cache.all {
+        if !cache.restrictCaching, let cachedServers = cache.all {
+            #warning("multiserver, need to watch for server changes in extensions better")
             return cachedServers
         } else {
             let servers = loadServers()
@@ -133,7 +137,7 @@ public class ServerManagerImpl: ServerManager {
             var fallback = value
 
             let server = Server(identifier: identifier, getter: { [cache, keychain, decoder] in
-                if let info = cache.info[identifier] {
+                if let info = cache.info[identifier], !cache.restrictCaching {
                     return info
                 } else {
                     let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
@@ -141,7 +145,7 @@ public class ServerManagerImpl: ServerManager {
                     return info
                 }
             }, setter: { [weak self] serverInfo in
-                guard let self = self, self.cache.info[identifier] != serverInfo else { return }
+                guard let self = self, self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
                 fallback = serverInfo
 
                 self.cache.info[identifier] = serverInfo

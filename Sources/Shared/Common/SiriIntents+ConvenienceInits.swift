@@ -182,3 +182,10 @@ public extension IntentPanel {
 public extension WidgetOpenPageIntent {
     static let widgetKind = "WidgetOpenPage"
 }
+
+@available(iOS 13, *)
+public extension IntentServer {
+    convenience init(server: Server) {
+        self.init(identifier: server.identifier.rawValue, display: server.info.name)
+    }
+}
