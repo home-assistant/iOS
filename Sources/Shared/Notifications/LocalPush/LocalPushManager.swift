@@ -173,13 +173,15 @@ public class LocalPushManager {
             }
         }
 
-        delegate?.localPushManager(self, didReceiveRemoteNotification: event.content.userInfo)
+        let baseContent = event.content(server: server)
+
+        delegate?.localPushManager(self, didReceiveRemoteNotification: baseContent.userInfo)
 
         firstly {
-            Current.notificationAttachmentManager.content(from: event.content, api: Current.api(for: server))
+            Current.notificationAttachmentManager.content(from: baseContent, api: Current.api(for: server))
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
-            return .value(event.content)
+            return .value(baseContent)
         }.then { [add] content -> Promise<Void> in
             add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
         }.done {

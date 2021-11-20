@@ -42,7 +42,7 @@ struct LocalPushEvent: HADataDecodable {
 
     var confirmID: String?
     var identifier: String
-    var content: UNNotificationContent
+    var contentWithoutServer: UNNotificationContent
 
     init(data: HAData) throws {
         guard case let .dictionary(value) = data else {
@@ -60,7 +60,17 @@ struct LocalPushEvent: HADataDecodable {
         } else {
             self.identifier = UUID().uuidString
         }
-        self.content = Self.content(from: payload)
+        self.contentWithoutServer = Self.content(from: payload)
+    }
+
+    func content(server: Server) -> UNNotificationContent {
+        // swiftlint:disable:next force_cast
+        let content = contentWithoutServer.mutableCopy() as! UNMutableNotificationContent
+
+        content.userInfo["webhook_id"] = server.info.connection.webhookID
+
+        // swiftlint:disable:next force_cast
+        return content.copy() as! UNNotificationContent
     }
 
     // swiftlint:disable:next cyclomatic_complexity
