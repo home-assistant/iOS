@@ -312,7 +312,8 @@ public class HomeAssistantAPI {
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            let queryUrl = server.info.connection.activeAPIURL().appendingPathComponent("camera_proxy/\(cameraEntityID)")
+            let queryUrl = server.info.connection.activeAPIURL()
+                .appendingPathComponent("camera_proxy/\(cameraEntityID)")
             _ = manager.request(queryUrl)
                 .validate()
                 .responseData { response in

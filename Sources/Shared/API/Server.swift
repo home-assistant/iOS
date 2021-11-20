@@ -1,6 +1,6 @@
 import Foundation
-import Version
 import HAKit
+import Version
 
 public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
     public var rawValue: String

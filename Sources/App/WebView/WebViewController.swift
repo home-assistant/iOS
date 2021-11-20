@@ -2,13 +2,13 @@ import Alamofire
 import AVFoundation
 import AVKit
 import CoreLocation
+import HAKit
 import KeychainAccess
 import PromiseKit
 import Shared
 import SwiftMessages
 import UIKit
 import WebKit
-import HAKit
 
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
     var webView: WKWebView!
@@ -104,7 +104,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             )
         }
 
-        tokens.append(server.observe { [weak self] info in
+        tokens.append(server.observe { [weak self] _ in
             self?.connectionInfoDidChange()
         })
 
@@ -936,7 +936,7 @@ extension WebViewController: UIScrollViewDelegate {
 }
 
 extension ConnectionInfo {
-    mutating func webviewURLComponents() ->  URLComponents? {
+    mutating func webviewURLComponents() -> URLComponents? {
         if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
             return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }

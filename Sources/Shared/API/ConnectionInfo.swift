@@ -184,7 +184,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the activeURL with /api appended.
-    public mutating func activeAPIURL() ->  URL {
+    public mutating func activeAPIURL() -> URL {
         activeURL().appendingPathComponent("api", isDirectory: false)
     }
 
