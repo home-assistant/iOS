@@ -40,7 +40,7 @@ public class ServerManagerImpl: ServerManager {
     private var encoder: JSONEncoder
     private var decoder: JSONDecoder
 
-    private var observers = NSHashTable<AnyObject>()
+    private var observers = NSHashTable<AnyObject>(options: .weakMemory)
 
     public func add(observer: ServerObserver) {
         observers.add(observer)
@@ -151,8 +151,10 @@ public class ServerManagerImpl: ServerManager {
     }
 
     private func notify() {
-        for observer in observers.allObjects.compactMap({ $0 as? ServerObserver }) {
-            observer.serversDidChange(self)
+        DispatchQueue.main.async { [self] in
+            for observer in observers.allObjects.compactMap({ $0 as? ServerObserver }) {
+                observer.serversDidChange(self)
+            }
         }
     }
 
