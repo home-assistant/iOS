@@ -69,7 +69,6 @@ public extension HomeAssistantAPI {
         return nil
     }
 
-    @available(*, deprecated)
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
         guard case .paired = Communicator.shared.currentWatchState else {
@@ -78,7 +77,10 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let complications = Set(Current.realm().objects(WatchComplication.self))
+        let complications = Set(
+            Current.realm().objects(WatchComplication.self)
+                .filter("serverIdentifier = %@", server.identifier.rawValue)
+        )
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
@@ -91,10 +93,6 @@ public extension HomeAssistantAPI {
             WebhookResponseUpdateComplications.updateComplications()
             #endif
 
-            return .value(())
-        }
-
-        guard let server = Current.servers.all.first else {
             return .value(())
         }
 

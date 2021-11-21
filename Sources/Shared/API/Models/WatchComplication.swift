@@ -9,6 +9,7 @@ import ClockKit
 
 public class WatchComplication: Object, ImmutableMappable {
     @objc public dynamic var identifier: String = UUID().uuidString
+    @objc public dynamic var serverIdentifier: String?
 
     @objc private dynamic var rawFamily: String = ""
     public var Family: ComplicationGroupMember {

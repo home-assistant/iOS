@@ -164,6 +164,10 @@ public extension Realm {
                     migrate(RLMScene.self)
                     migrate(RLMZone.self)
                     migrate(Action.self)
+
+                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
+                        newObject?["serverIdentifier"] = Server.historicId.rawValue
+                    }
                 }
 
                 do {

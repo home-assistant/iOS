@@ -4,10 +4,18 @@ import HAKit
 import PromiseKit
 import Shared
 
-enum AccountRowValue: Equatable {
+enum AccountRowValue: Equatable, CustomStringConvertible {
     case server(Server)
     case add
     case all
+
+    var description: String {
+        switch self {
+        case .server(let server): return String(describing: server.identifier)
+        case .add: return "add"
+        case .all: return "all"
+        }
+    }
 
     var server: Server? {
         switch self {
