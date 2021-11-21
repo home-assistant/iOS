@@ -11,7 +11,7 @@ enum AccountRowValue: Equatable {
 
     var server: Server? {
         switch self {
-        case .server(let server): return server
+        case let .server(server): return server
         case .add: return nil
         case .all: return nil
         }

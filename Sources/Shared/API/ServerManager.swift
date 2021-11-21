@@ -1,7 +1,7 @@
 import HAKit
 import KeychainAccess
-import Version
 import UserNotifications
+import Version
 
 public protocol ServerObserver: AnyObject {
     func serversDidChange(_ serverManager: ServerManager)
@@ -170,7 +170,8 @@ public class ServerManagerImpl: ServerManager {
                     return info
                 }
             }, setter: { [weak self] serverInfo in
-                guard let self = self, self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
+                guard let self = self,
+                      self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
                 fallback = serverInfo
 
                 self.cache.info[identifier] = serverInfo

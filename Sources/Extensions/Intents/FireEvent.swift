@@ -26,7 +26,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     ) {
         completion(.init(items: IntentServer.all), nil)
     }
-    
+
     func resolveEventName(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let eventName = intent.eventName, eventName.isEmpty == false {
             Current.Log.info("using provided \(eventName)")

@@ -1,8 +1,8 @@
 import Foundation
 import PromiseKit
+import Shared
 import UIKit
 import UserNotificationsUI
-import Shared
 
 class NotificationErrorViewController: UIViewController, NotificationCategory {
     let label = UILabel()

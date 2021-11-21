@@ -1,7 +1,7 @@
 import PromiseKit
+import Shared
 import UserNotifications
 import WatchKit
-import Shared
 
 struct NotificationElements {
     var image: WKInterfaceImage

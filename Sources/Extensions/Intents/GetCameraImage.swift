@@ -51,11 +51,11 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         }
 
         Current.api(for: server).connection.caches.states.once().promise.map(\.all)
-        .filterValues { $0.domain == "camera" }
-        .mapValues(\.entityId)
-        .sortedValues()
-        .done { completion($0, nil) }
-        .catch { completion(nil, $0) }
+            .filterValues { $0.domain == "camera" }
+            .mapValues(\.entityId)
+            .sortedValues()
+            .done { completion($0, nil) }
+            .catch { completion(nil, $0) }
     }
 
     @available(iOS 14, *)

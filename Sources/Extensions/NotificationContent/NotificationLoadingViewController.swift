@@ -1,8 +1,8 @@
 import Foundation
 import PromiseKit
+import Shared
 import UIKit
 import UserNotificationsUI
-import Shared
 
 class NotificationLoadingViewController: UIViewController, NotificationCategory {
     required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
