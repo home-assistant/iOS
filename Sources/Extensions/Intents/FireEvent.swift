@@ -25,16 +25,38 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
     }
 
-    func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        Current.api.catch { error in
-            Current.Log.error("Can't get a authenticated API \(error)")
-            completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
+    func resolveServer(
+        for intent: FireEventIntent,
+        with completion: @escaping (IntentServerResolutionResult) -> Void
+    ) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
         }
+    }
 
-        completion(FireEventIntentResponse(code: .ready, userActivity: nil))
+    func provideServerOptions(
+        for intent: FireEventIntent,
+        with completion: @escaping ([IntentServer]?, Error?) -> Void
+    ) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, *)
+    func provideServerOptionsCollection(
+        for intent: FireEventIntent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
     }
 
     func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.failure(error: "No server provided", eventName: intent.eventName!))
+            return
+        }
+
         Current.Log.verbose("Handling fire event shortcut \(intent)")
 
         var eventDataDict: [String: Any] = [:]
@@ -77,8 +99,8 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             }
         }
 
-        Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
+        firstly {
+            Current.api(for: server).CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
         }.done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")
             let resp = FireEventIntentResponse(code: .success, userActivity: nil)

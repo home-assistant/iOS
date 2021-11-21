@@ -10,6 +10,7 @@ public protocol ServerManager {
     var all: [Server] { get }
     func server(for identifier: Identifier<Server>) -> Server?
     func server(forWebhookID: String) -> Server?
+    func server(for intent: SingleServerIntent) -> Server?
 
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo)
     func remove(identifier: Identifier<Server>)
@@ -94,6 +95,19 @@ public class ServerManagerImpl: ServerManager {
 
     public func server(forWebhookID webhookID: String) -> Server? {
         all.first(where: { $0.info.connection.webhookID == webhookID })
+    }
+
+    public func server(for intent: SingleServerIntent) -> Server? {
+        if let server = intent.server?.identifier.flatMap({ server(for: .init(rawValue: $0)) }) {
+            return server
+        } else {
+            let all = all
+            if all.count == 1, let server = all.first {
+                return server
+            } else {
+                return nil
+            }
+        }
     }
 
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) {

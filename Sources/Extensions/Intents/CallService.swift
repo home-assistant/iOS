@@ -30,7 +30,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         for intent: CallServiceIntent,
         with completion: @escaping (IntentServerResolutionResult) -> Void
     ) {
-        if let server = server(for: intent) {
+        if let server = Current.servers.server(for: intent) {
             completion(.success(with: .init(server: server)))
         } else {
             completion(.needsValue())
@@ -38,7 +38,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     }
 
     func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
-        guard let server = server(for: intent) else {
+        guard let server = Current.servers.server(for: intent) else {
             completion(nil, nil)
             return
         }
@@ -66,7 +66,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         for intent: CallServiceIntent,
         with completion: @escaping ([IntentServer]?, Error?) -> Void
     ) {
-        completion(Current.servers.all.map { IntentServer(server: $0) }, nil)
+        completion(IntentServer.all, nil)
     }
 
     @available(iOS 14, *)
@@ -74,9 +74,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         for intent: CallServiceIntent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
     ) {
-        provideServerOptions(for: intent) { servers, error in
-            completion(servers.flatMap { .init(items: $0) }, error)
-        }
+        completion(.init(items: IntentServer.all), nil)
     }
 
     func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
@@ -110,7 +108,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             return
         }
 
-        guard let server = server(for: intent) else {
+        guard let server = Current.servers.server(for: intent) else {
             completion(.failure(error: "No server provided"))
             return
         }
@@ -148,16 +146,6 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Error during api.callService: \(error.localizedDescription)"
             completion(resp)
-        }
-    }
-
-    private func server(for intent: CallServiceIntent) -> Server? {
-        if let server = intent.server?.identifier.flatMap({ Current.servers.server(for: .init(rawValue: $0)) }) {
-            return server
-        } else if let server = Current.servers.all.first, Current.servers.all.count == 1 {
-            return server
-        } else {
-            return nil
         }
     }
 }

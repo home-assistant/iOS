@@ -5,6 +5,14 @@ import Intents
 import MapKit
 import UIColor_Hex_Swift
 
+public protocol SingleServerIntent {
+    var server: IntentServer? { get }
+}
+
+extension CallServiceIntent: SingleServerIntent {}
+extension FireEventIntent: SingleServerIntent {}
+extension GetCameraImageIntent: SingleServerIntent {}
+
 @available(iOS 12, *)
 public extension CallServiceIntent {
     convenience init(domain: String, service: String) {
@@ -187,5 +195,9 @@ public extension WidgetOpenPageIntent {
 public extension IntentServer {
     convenience init(server: Server) {
         self.init(identifier: server.identifier.rawValue, display: server.info.name)
+    }
+
+    static var all: [IntentServer] {
+        Current.servers.all.map { IntentServer(server: $0) }
     }
 }
