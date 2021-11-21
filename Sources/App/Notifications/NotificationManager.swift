@@ -232,11 +232,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         let userInfo = response.notification.request.content.userInfo
-        let webhookID = userInfo["webhook_id"] as? String
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
 
-        guard let server = webhookID.map({ Current.servers.server(forWebhookID: $0) }) ?? Current.servers.all.first else {
+        guard let server = Current.servers.server(for: response.notification.request.content) else {
             Current.Log.info("ignoring push when unable to find server")
             completionHandler()
             return

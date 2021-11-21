@@ -94,9 +94,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         let catID = notification.request.content.categoryIdentifier.lowercased()
         Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
 
-        let webhookID = notification.request.content.userInfo["webhook_id"] as? String
-
-        guard let server = webhookID.map({ Current.servers.server(forWebhookID: $0) }) ?? Current.servers.all.first else {
+        guard let server = Current.servers.server(for: notification.request.content) else {
             Current.Log.info("ignoring push when unable to find server")
             return
         }

@@ -1,6 +1,7 @@
 import HAKit
 import KeychainAccess
 import Version
+import UserNotifications
 
 public protocol ServerObserver: AnyObject {
     func serversDidChange(_ serverManager: ServerManager)
@@ -11,6 +12,7 @@ public protocol ServerManager {
     func server(for identifier: Identifier<Server>) -> Server?
     func server(forWebhookID: String) -> Server?
     func server(for intent: SingleServerIntent) -> Server?
+    func server(for notification: UNNotificationContent) -> Server?
 
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo)
     func remove(identifier: Identifier<Server>)
@@ -107,6 +109,15 @@ public class ServerManagerImpl: ServerManager {
             } else {
                 return nil
             }
+        }
+    }
+
+    public func server(for content: UNNotificationContent) -> Server? {
+        if let webhookID = content.userInfo["webhook_id"] as? String,
+           let server = server(forWebhookID: webhookID) {
+            return server
+        } else {
+            return all.first
         }
     }
 
