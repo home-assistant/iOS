@@ -393,30 +393,28 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
             }
 
-            if let version = Current.serverVersion(), version >= .actionSyncing {
-                form +++ RealmSection(
-                    header: L10n.SettingsDetails.Actions.ActionsSynced.header,
-                    footer: nil,
-                    collection: AnyRealmCollection(actions.filter("isServerControlled == true")),
-                    emptyRows: [
-                        LabelRow {
-                            $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
-                            $0.disabled = true
-                        },
-                    ], getter: { [weak self] in self?.getActionRow($0) },
-                    didUpdate: { section, collection in
-                        if collection.isEmpty {
-                            section.footer = HeaderFooterView(
-                                title: L10n.SettingsDetails.Actions.ActionsSynced.footerNoActions
-                            )
-                        } else {
-                            section.footer = HeaderFooterView(
-                                title: L10n.SettingsDetails.Actions.ActionsSynced.footer
-                            )
-                        }
+            form +++ RealmSection(
+                header: L10n.SettingsDetails.Actions.ActionsSynced.header,
+                footer: nil,
+                collection: AnyRealmCollection(actions.filter("isServerControlled == true")),
+                emptyRows: [
+                    LabelRow {
+                        $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
+                        $0.disabled = true
+                    },
+                ], getter: { [weak self] in self?.getActionRow($0) },
+                didUpdate: { section, collection in
+                    if collection.isEmpty {
+                        section.footer = HeaderFooterView(
+                            title: L10n.SettingsDetails.Actions.ActionsSynced.footerNoActions
+                        )
+                    } else {
+                        section.footer = HeaderFooterView(
+                            title: L10n.SettingsDetails.Actions.ActionsSynced.footer
+                        )
                     }
-                )
-            }
+                }
+            )
 
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
 

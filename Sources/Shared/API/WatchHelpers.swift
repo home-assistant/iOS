@@ -9,6 +9,7 @@ import ClockKit
 
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
+    @available(*, deprecated)
     private static var watchContext: Content {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
@@ -46,6 +47,7 @@ public extension HomeAssistantAPI {
         return content
     }
 
+    @available(*, deprecated)
     static func SyncWatchContext() -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
@@ -67,6 +69,7 @@ public extension HomeAssistantAPI {
         return nil
     }
 
+    @available(*, deprecated)
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
         guard case .paired = Communicator.shared.currentWatchState else {
