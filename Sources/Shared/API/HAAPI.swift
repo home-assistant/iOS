@@ -33,7 +33,7 @@ public class HomeAssistantAPI {
     }()
 
     public let tokenManager: TokenManager
-    public let server: Server
+    public var server: Server
     public let connection: HAConnection
 
     public static var clientVersionDescription: String {

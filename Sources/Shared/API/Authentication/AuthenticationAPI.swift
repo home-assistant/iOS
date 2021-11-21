@@ -7,34 +7,19 @@ typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
 public class AuthenticationAPI {
     public enum AuthenticationError: LocalizedError {
-        case noConnectionInfo
         case serverError(statusCode: Int, errorCode: String?, error: String?)
 
         public var errorDescription: String? {
             switch self {
-            case .noConnectionInfo: return L10n.HaApi.ApiError.notConfigured
             case let .serverError(statusCode: statusCode, errorCode: errorCode, error: error):
                 return [String(describing: statusCode), errorCode, error].compactMap { $0 }.joined(separator: ", ")
             }
         }
     }
 
-    var connectionInfo: ConnectionInfo {
-        get { connectionInfoGetter() }
-        set { connectionInfoSetter(newValue) }
-    }
-
-    private let connectionInfoGetter: () -> ConnectionInfo
-    private let connectionInfoSetter: (ConnectionInfo) -> Void
-
-    init(forcedConnectionInfo: ConnectionInfo) {
-        self.connectionInfoGetter = { forcedConnectionInfo }
-        self.connectionInfoSetter = { _ in }
-    }
-
+    let server: Server
     init(server: Server) {
-        self.connectionInfoGetter = { server.info.connection }
-        self.connectionInfoSetter = { server.info.connection = $0 }
+        self.server = server
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
@@ -42,7 +27,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.refreshToken(token: token),
-                baseURL: connectionInfo.activeURL()
+                baseURL: server.info.connection.activeURL()
             )
             let request = Session.default.request(routeInfo)
 
@@ -63,7 +48,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.accessToken
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.revokeToken(token: token),
-                baseURL: connectionInfo.activeURL()
+                baseURL: server.info.connection.activeURL()
             )
             let request = Session.default.request(routeInfo)
 
@@ -77,11 +62,14 @@ public class AuthenticationAPI {
         }
     }
 
-    public func fetchTokenWithCode(_ authorizationCode: String) -> Promise<TokenInfo> {
+    public static func fetchToken(
+        authorizationCode: String,
+        baseURL: URL
+    ) -> Promise<TokenInfo> {
         Promise { seal in
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                baseURL: connectionInfo.activeURL()
+                baseURL: baseURL
             )
             let request = Session.default.request(routeInfo)
 

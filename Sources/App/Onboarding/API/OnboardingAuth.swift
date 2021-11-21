@@ -5,8 +5,8 @@ import PromiseKit
 import Shared
 
 class OnboardingAuth {
-    func successController() -> UIViewController {
-        OnboardingPermissionViewControllerFactory.next()
+    func successController(server: Server?) -> UIViewController {
+        OnboardingPermissionViewControllerFactory.next(server: server)
     }
 
     func failureController(error: Error) -> UIViewController {
@@ -30,7 +30,7 @@ class OnboardingAuth {
     func authenticate(
         to instance: DiscoveredHomeAssistant,
         sender: UIViewController
-    ) -> Promise<Void> {
+    ) -> Promise<Server> {
         firstly { () -> Promise<String> in
             let authDetails = try OnboardingAuthDetails(baseURL: instance.internalOrExternalURL)
 
@@ -40,23 +40,34 @@ class OnboardingAuth {
                 login.open(authDetails: authDetails, sender: sender)
             }
         }.then { [self] code in
-            configuredAPI(instance: instance, code: code, connectionInfo: ConnectionInfo(discovered: instance))
-        }.then { [self] api -> Promise<Void> in
-            var promise: Promise<Void> = .value(())
+            configuredAPI(instance: instance, code: code)
+        }.then { [self] api -> Promise<Server> in
+            func steps(_ steps: OnboardingAuthStepPoint...) -> Promise<Void> {
+                var promise: Promise<Void> = .value(())
 
-            for step: OnboardingAuthStepPoint in [
-                .beforeRegister,
-                .register,
-                .afterRegister,
-                .complete,
-            ] {
-                promise = promise.then {
-                    performPostSteps(checkPoint: step, api: api, sender: sender)
+                for step in steps {
+                    promise = promise.then {
+                        performPostSteps(checkPoint: step, api: api, sender: sender)
+                    }
                 }
+
+                return promise
             }
 
-            return promise.recover(policy: .allErrors) { error -> Promise<Void> in
-                when(resolved: undoConfigure(api: api)).then { _ in Promise<Void>(error: error) }
+            return firstly {
+                steps(.beforeRegister, .register, .afterRegister)
+            }.map {
+                // actually persists to outside-onboarding
+                Current.servers.add(identifier: api.server.identifier, serverInfo: api.server.info)
+            }.get { server in
+                // somewhat necessary so it points to the keychain-persisted version
+                api.server = server
+                // not super necessary but prevents making a duplicate connection during this session
+                Current.cachedApis[api.server.identifier] = api
+            }.then { server in
+                steps(.complete).map { server }
+            }.recover(policy: .allErrors) { error -> Promise<Server> in
+                when(resolved: undoConfigure(api: api)).then { _ in Promise<Server>(error: error) }
             }
         }
     }
@@ -101,14 +112,15 @@ class OnboardingAuth {
 
     private func configuredAPI(
         instance: DiscoveredHomeAssistant,
-        code: String,
-        connectionInfo: ConnectionInfo
+        code: String
     ) -> Promise<HomeAssistantAPI> {
         Current.Log.info()
 
+        var connectionInfo = ConnectionInfo(discovered: instance)
+
         return tokenExchange.tokenInfo(
             code: code,
-            connectionInfo: connectionInfo
+            connectionInfo: &connectionInfo
         ).then { tokenInfo -> Promise<HomeAssistantAPI> in
             Current.Log.verbose()
 
@@ -136,6 +148,7 @@ class OnboardingAuth {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
             api.connection.disconnect()
+            Current.servers.remove(identifier: api.server.identifier)
         }
     }
 }

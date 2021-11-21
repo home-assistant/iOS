@@ -49,14 +49,12 @@ public class TokenManager {
     /// - Parameter code: Code acquired by authenticating with an authenticaiton provider.
     public static func initialToken(
         code: String,
-        connectionInfo: ConnectionInfo
+        connectionInfo: inout ConnectionInfo
     ) -> Promise<TokenInfo> {
-        let api = AuthenticationAPI(forcedConnectionInfo: connectionInfo)
-        return api.fetchTokenWithCode(code).get { _ in
-            withExtendedLifetime(api) {
-                // keep around
-            }
-        }
+        AuthenticationAPI.fetchToken(
+            authorizationCode: code,
+            baseURL: connectionInfo.activeURL()
+        )
     }
 
     // Request the server revokes the current token.
