@@ -10,18 +10,19 @@ final class NotificationSubControllerMedia: NotificationSubController {
         case image(UIImage)
     }
 
+    let api: HomeAssistantAPI
     let media: MediaType
     let endSecurityScopeURL: URL?
 
-    convenience init?(notification: UNNotification) {
+    convenience init?(api: HomeAssistantAPI, notification: UNNotification) {
         guard let url = notification.request.content.attachments.first?.url else {
             return nil
         }
 
-        self.init(url: url)
+        self.init(api: api, url: url)
     }
 
-    init?(url: URL) {
+    init?(api: HomeAssistantAPI, url: URL) {
         let didStartSecurityScope = url.startAccessingSecurityScopedResource()
         let data: Data
 
@@ -36,6 +37,8 @@ final class NotificationSubControllerMedia: NotificationSubController {
         }
 
         Current.Log.info("creating with url \(url) data size \(data.count)")
+
+        self.api = api
 
         if let image = UIImage(data: data) {
             self.media = .image(image)

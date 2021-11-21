@@ -1,6 +1,7 @@
 import PromiseKit
 import UserNotifications
 import WatchKit
+import Shared
 
 struct NotificationElements {
     var image: WKInterfaceImage
@@ -15,8 +16,8 @@ struct NotificationElements {
 }
 
 protocol NotificationSubController: AnyObject {
-    init?(notification: UNNotification)
-    init?(url: URL)
+    init?(api: HomeAssistantAPI, notification: UNNotification)
+    init?(api: HomeAssistantAPI, url: URL)
     func start(with elements: NotificationElements) -> Promise<Void>
     func stop()
 }
