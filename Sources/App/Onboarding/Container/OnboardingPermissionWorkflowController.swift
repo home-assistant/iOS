@@ -6,9 +6,9 @@ class OnboardingPermissionViewControllerFactory {
         !permissions.isEmpty
     }
 
-    static func next() -> UIViewController {
+    static func next(server: Server?) -> UIViewController {
         if let permission = permissions.first {
-            return OnboardingPermissionViewController(permission: permission, factory: self)
+            return OnboardingPermissionViewController(server: server, permission: permission, factory: self)
         } else {
             return OnboardingTerminalViewController()
         }

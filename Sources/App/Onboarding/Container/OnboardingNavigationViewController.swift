@@ -68,7 +68,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
             case .full:
                 rootViewController = OnboardingWelcomeViewController()
             case .permissions:
-                rootViewController = OnboardingPermissionViewControllerFactory.next()
+                rootViewController = OnboardingPermissionViewControllerFactory.next(server: nil)
             }
         }
 

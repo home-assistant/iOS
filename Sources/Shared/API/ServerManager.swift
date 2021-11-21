@@ -14,7 +14,8 @@ public protocol ServerManager {
     func server(for intent: SingleServerIntent) -> Server?
     func server(for notification: UNNotificationContent) -> Server?
 
-    func add(identifier: Identifier<Server>, serverInfo: ServerInfo)
+    @discardableResult
+    func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server
     func remove(identifier: Identifier<Server>)
     func removeAll()
 
@@ -121,7 +122,8 @@ public class ServerManagerImpl: ServerManager {
         }
     }
 
-    public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) {
+    @discardableResult
+    public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
         keychain.set(
             serverInfo: with(serverInfo) {
                 $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
@@ -132,6 +134,9 @@ public class ServerManagerImpl: ServerManager {
 
         cache.all = nil
         notify()
+
+        #warning("can i remove this optional?")
+        return server(for: identifier)!
     }
 
     public func remove(identifier: Identifier<Server>) {

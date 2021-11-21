@@ -191,13 +191,13 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
             present(alert, animated: true, completion: nil)
 
             return .init(error: PMKError.cancelled)
-        }.then { [self] (url: URL) -> Promise<Void> in
+        }.then { [self] (url: URL) -> Promise<Server> in
             let instance = DiscoveredHomeAssistant(manualURL: url)
             return authentication.authenticate(to: instance, sender: self)
         }.ensure { [self] in
             isConnecting = false
-        }.done { [self] in
-            show(authentication.successController(), sender: self)
+        }.done { [self] server in
+            show(authentication.successController(server: server), sender: self)
         }.catch { [self] error in
             show(authentication.failureController(error: error), sender: self)
         }
