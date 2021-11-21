@@ -3,9 +3,10 @@ import HAKit
 import PromiseKit
 import RealmSwift
 
-public class ModelManager {
+public class ModelManager: ServerObserver {
     private var notificationTokens = [NotificationToken]()
     private var hakitTokens = [HACancellable]()
+    private var subscribedSubscriptions = [SubscribeDefinition]()
 
     deinit {
         hakitTokens.forEach { $0.cancel() }
@@ -172,13 +173,16 @@ public class ModelManager {
         definitions: [SubscribeDefinition] = SubscribeDefinition.defaults,
         on queue: DispatchQueue = .global(qos: .utility)
     ) {
+        Current.servers.add(observer: self)
+
+        subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
-            #warning("multiserver - need to observe servers changing")
             return Current.apis.flatMap { api in
                 definition.subscribe(api.connection, api.server, queue, self)
             }
         }
+        subscribedSubscriptions = definitions
     }
 
     public struct FetchDefinition {
@@ -278,5 +282,9 @@ public class ModelManager {
             UM.willDelete(objects: Array(deleteObjects), realm: realm)
             realm.delete(deleteObjects)
         }
+    }
+
+    public func serversDidChange(_ serverManager: ServerManager) {
+        subscribe(definitions: subscribedSubscriptions)
     }
 }
