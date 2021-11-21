@@ -27,7 +27,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
 
     let visibleView: ImageViewType
 
-    required init(notification: UNNotification, attachmentURL: URL?) throws {
+    required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         guard let attachmentURL = attachmentURL else {
             throw ImageAttachmentError.noAttachment
         }

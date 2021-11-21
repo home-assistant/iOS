@@ -45,6 +45,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     private func viewController(
         for notification: UNNotification,
+        api: HomeAssistantAPI,
         attachmentURL: URL?,
         allowDownloads: Bool = true
     ) -> Guarantee<(UIViewController & NotificationCategory)?> {
@@ -53,6 +54,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         for controllerType in Self.possibleControllers {
             do {
                 let controller = try controllerType.init(
+                    api: api,
                     notification: notification,
                     attachmentURL: attachmentURL
                 )
@@ -75,13 +77,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
         if allowDownloads, shouldDownload {
             return firstly {
-                Current.api
-            }.then { api in
                 // potential future optimization: feed the url into e.g. the AVPlayer instance.
                 // not super straightforward because authentication headers may be needed.
                 Current.notificationAttachmentManager.downloadAttachment(from: notification.request.content, api: api)
             }.then { [self] url in
-                viewController(for: notification, attachmentURL: url, allowDownloads: false)
+                viewController(for: notification, api: api, attachmentURL: url, allowDownloads: false)
             }.recover { _ in
                 .value(nil)
             }
@@ -94,6 +94,15 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         let catID = notification.request.content.categoryIdentifier.lowercased()
         Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
 
+        let webhookID = notification.request.content.userInfo["webhook_id"] as? String
+
+        guard let server = webhookID.map({ Current.servers.server(forWebhookID: $0) }) ?? Current.servers.all.first else {
+            Current.Log.info("ignoring push when unable to find server")
+            return
+        }
+
+        let api = Current.api(for: server)
+
         // we only do it for 'dynamic' or unconfigured existing categories, so we don't stomp old configs
         if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true {
             extensionContext?.notificationActions = notification.request.content.userInfoActions
@@ -105,6 +114,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
         viewController(
             for: notification,
+            api: api,
             attachmentURL: notification.request.content.attachments.first?.url
         ).then { [weak self] controller -> Promise<Void> in
             self?.activeViewController = controller
@@ -154,7 +164,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 }
 
 protocol NotificationCategory: NSObjectProtocol {
-    init(notification: UNNotification, attachmentURL: URL?) throws
+    init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws
     func start() -> Promise<Void>
 
     // Implementing this method and returning a button type other that "None" will

@@ -24,14 +24,16 @@ class CameraViewController: UIViewController, NotificationCategory {
     }
 
     let entityId: String
+    let api: HomeAssistantAPI
 
-    required init(notification: UNNotification, attachmentURL: URL?) throws {
+    required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String,
               entityId.starts(with: "camera.") else {
             throw CameraError.missingEntityId
         }
 
         self.entityId = entityId
+        self.api = api
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -65,16 +67,12 @@ class CameraViewController: UIViewController, NotificationCategory {
     }
 
     func start() -> Promise<Void> {
-        Current.api.then(on: nil) { [entityId] api -> Promise<(HomeAssistantAPI, StreamCameraResponse)> in
-            firstly {
-                api.StreamCamera(entityId: entityId)
-            }.recover { error -> Promise<StreamCameraResponse> in
-                Current.Log.info("falling back due to no streaming info for \(entityId) due to \(error)")
-                return .value(StreamCameraResponse(fallbackEntityID: entityId))
-            }.map {
-                (api, $0)
-            }
-        }.then { [weak self] api, result -> Promise<Void> in
+        firstly {
+            api.StreamCamera(entityId: entityId)
+        }.recover { [entityId] error -> Promise<StreamCameraResponse> in
+            Current.Log.info("falling back due to no streaming info for \(entityId) due to \(error)")
+            return .value(StreamCameraResponse(fallbackEntityID: entityId))
+        }.then { [weak self, api] result -> Promise<Void> in
             let controllers = Self.possibleControllers
                 .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
                     {

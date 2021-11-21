@@ -2,11 +2,12 @@ import Foundation
 import PromiseKit
 import UIKit
 import UserNotificationsUI
+import Shared
 
 class NotificationErrorViewController: UIViewController, NotificationCategory {
     let label = UILabel()
 
-    required init(notification: UNNotification, attachmentURL: URL?) throws {
+    required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         fatalError("not meant to be used in the list of potentials, just directly set")
     }
 
