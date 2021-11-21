@@ -49,7 +49,6 @@ class SettingsViewController: HAFormViewController {
             }
 
             rows.append(HomeAssistantAccountRow {
-                $0.hidden = .isNotDebug
                 $0.value = .add
                 $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
                     OnboardingNavigationViewController(onboardingStyle: .secondary)

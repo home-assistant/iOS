@@ -55,7 +55,6 @@ enum SettingsRootDataSource {
         SettingsButtonRow {
             $0.title = L10n.Settings.ConnectionSection.servers
             $0.icon = .serverIcon
-            $0.hidden = .isNotDebug
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 SettingsViewController(contentSections: .servers)
             }, onDismiss: nil)

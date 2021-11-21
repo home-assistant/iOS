@@ -55,12 +55,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         case "general":
             title = L10n.SettingsDetails.General.title
 
-            if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac, !Current.isDebug {
-                let (section, deallocate) = SettingsViewController.servers()
-                form +++ section
-                after(life: self).done(deallocate)
-            }
-
             form
                 +++ Section {
                     $0.hidden = .isCatalyst
