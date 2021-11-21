@@ -5,8 +5,30 @@ import Shared
 import UIKit
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
+    typealias Intent = RenderTemplateIntent
+
+    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
+        }
+    }
+
+    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, watchOS 7, *)
+    func provideServerOptionsCollection(
+        for intent: Intent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
+    }
+
     func resolveTemplate(
-        for intent: RenderTemplateIntent,
+        for intent: Intent,
         with completion: @escaping (INStringResolutionResult) -> Void
     ) {
         if let templateStr = intent.template, templateStr.isEmpty == false {
@@ -18,7 +40,7 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
         }
     }
 
-    func handle(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
+    func handle(intent: Intent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
         guard let templateStr = intent.template else {
             Current.Log.error("Unable to unwrap intent.template")
             let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
@@ -27,9 +49,14 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
             return
         }
 
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.failure(error: "no server selected"))
+            return
+        }
+
         Current.Log.verbose("Rendering template \(templateStr)")
 
-        Current.apiConnection?.subscribe(
+        Current.api(for: server).connection.subscribe(
             to: .renderTemplate(templateStr),
             initiated: { result in
                 if case let .failure(error) = result {

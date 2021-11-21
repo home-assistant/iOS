@@ -5,14 +5,6 @@ import Intents
 import MapKit
 import UIColor_Hex_Swift
 
-public protocol SingleServerIntent {
-    var server: IntentServer? { get }
-}
-
-extension CallServiceIntent: SingleServerIntent {}
-extension FireEventIntent: SingleServerIntent {}
-extension GetCameraImageIntent: SingleServerIntent {}
-
 @available(iOS 12, *)
 public extension CallServiceIntent {
     convenience init(domain: String, service: String) {

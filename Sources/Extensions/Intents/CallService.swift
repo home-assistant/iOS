@@ -6,7 +6,29 @@ import Shared
 import UIKit
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
-    func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    typealias Intent = CallServiceIntent
+
+    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
+        }
+    }
+
+    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, watchOS 7, *)
+    func provideServerOptionsCollection(
+        for intent: Intent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
+    }
+
+    func resolveService(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let serviceName = intent.service, serviceName.isEmpty == false {
             Current.Log.info("using given \(serviceName)")
             completion(.success(with: serviceName))
@@ -16,7 +38,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    func resolvePayload(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolvePayload(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let servicePayload = intent.payload, servicePayload.isEmpty == false {
             Current.Log.info("using provided \(servicePayload)")
             completion(.success(with: servicePayload))
@@ -26,18 +48,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    func resolveServer(
-        for intent: CallServiceIntent,
-        with completion: @escaping (IntentServerResolutionResult) -> Void
-    ) {
-        if let server = Current.servers.server(for: intent) {
-            completion(.success(with: .init(server: server)))
-        } else {
-            completion(.needsValue())
-        }
-    }
-
-    func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
+    func provideServiceOptions(for intent: Intent, with completion: @escaping ([String]?, Error?) -> Void) {
         guard let server = Current.servers.server(for: intent) else {
             completion(nil, nil)
             return
@@ -54,7 +65,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
     @available(iOS 14, *)
     func provideServiceOptionsCollection(
-        for intent: CallServiceIntent,
+        for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
     ) {
         provideServiceOptions(for: intent) { services, error in
@@ -62,22 +73,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    func provideServerOptions(
-        for intent: CallServiceIntent,
-        with completion: @escaping ([IntentServer]?, Error?) -> Void
-    ) {
-        completion(IntentServer.all, nil)
-    }
-
-    @available(iOS 14, *)
-    func provideServerOptionsCollection(
-        for intent: CallServiceIntent,
-        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
-    ) {
-        completion(.init(items: IntentServer.all), nil)
-    }
-
-    func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
+    func handle(intent: Intent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         var payloadDict: [String: Any] = [:]
 
         if let payload = intent.payload, payload.isEmpty == false {

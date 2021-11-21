@@ -5,7 +5,29 @@ import Shared
 import UIKit
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
-    func resolveEventName(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    typealias Intent = FireEventIntent
+
+    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
+        }
+    }
+
+    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, watchOS 7, *)
+    func provideServerOptionsCollection(
+        for intent: Intent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
+    }
+    
+    func resolveEventName(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let eventName = intent.eventName, eventName.isEmpty == false {
             Current.Log.info("using provided \(eventName)")
             completion(.success(with: eventName))
@@ -15,7 +37,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
     }
 
-    func resolveEventData(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolveEventData(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let eventData = intent.eventData, eventData.isEmpty == false {
             Current.Log.info("using provided data \(eventData)")
             completion(.success(with: eventData))
@@ -25,33 +47,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
     }
 
-    func resolveServer(
-        for intent: FireEventIntent,
-        with completion: @escaping (IntentServerResolutionResult) -> Void
-    ) {
-        if let server = Current.servers.server(for: intent) {
-            completion(.success(with: .init(server: server)))
-        } else {
-            completion(.needsValue())
-        }
-    }
-
-    func provideServerOptions(
-        for intent: FireEventIntent,
-        with completion: @escaping ([IntentServer]?, Error?) -> Void
-    ) {
-        completion(IntentServer.all, nil)
-    }
-
-    @available(iOS 14, *)
-    func provideServerOptionsCollection(
-        for intent: FireEventIntent,
-        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
-    ) {
-        completion(.init(items: IntentServer.all), nil)
-    }
-
-    func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
+    func handle(intent: Intent, completion: @escaping (FireEventIntentResponse) -> Void) {
         guard let server = Current.servers.server(for: intent) else {
             completion(.failure(error: "No server provided", eventName: intent.eventName!))
             return
