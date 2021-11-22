@@ -88,14 +88,6 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
         }()
     }
 
-    func asFirableEvent(api: HomeAssistantAPI) -> (eventType: String, eventData: [String: Any])? {
-        guard case let .region(region, state) = eventType, let zone = associatedZone else {
-            return nil
-        }
-
-        return api.zoneStateEvent(region: region, state: state, zone: zone)
-    }
-
     func asTrigger() -> LocationUpdateTrigger {
         switch eventType {
         case let .region(region, state):
