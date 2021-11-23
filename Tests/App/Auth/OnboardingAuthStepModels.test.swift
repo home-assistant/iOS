@@ -18,14 +18,11 @@ class OnboardingAuthStepModelsTests: XCTestCase {
         Current.modelManager = modelManager
 
         connection = HAMockConnection()
-        api = HomeAssistantAPI(tokenInfo: .init(
-            accessToken: "access_token",
-            refreshToken: "refresh_token",
-            expiration: .init(timeIntervalSinceNow: 100)
-        ))
+        api = HomeAssistantAPI(server: .fake())
+        api.connection = connection
         sender = UIViewController()
 
-        step = OnboardingAuthStepModels(connection: connection, api: api, sender: sender)
+        step = OnboardingAuthStepModels(api: api, sender: sender)
     }
 
     override func tearDown() {
@@ -62,7 +59,8 @@ private class FakeModelManager: ModelManager {
 
     override func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        on queue: DispatchQueue = .global(qos: .utility),
+        apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
         fetchResult
     }

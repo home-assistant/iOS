@@ -1,5 +1,6 @@
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 class SensorProviderDependenciesTests: XCTestCase {
@@ -15,7 +16,8 @@ class SensorProviderDependenciesTests: XCTestCase {
         let provider = MockSensorProvider1(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
 
         let info: MockUpdateSignaler = dependencies.updateSignaler(for: provider)
@@ -31,12 +33,14 @@ class SensorProviderDependenciesTests: XCTestCase {
         let provider1 = MockSensorProvider1(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
         let provider2 = MockSensorProvider1(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
 
         let info1: MockUpdateSignaler = dependencies.updateSignaler(for: provider1)
@@ -50,12 +54,14 @@ class SensorProviderDependenciesTests: XCTestCase {
         let provider1 = MockSensorProvider1(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
         let provider2 = MockSensorProvider2(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
 
         let info1_1: MockUpdateSignaler = dependencies.updateSignaler(for: provider1)

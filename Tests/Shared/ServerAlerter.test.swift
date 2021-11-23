@@ -7,6 +7,7 @@ import XCTest
 
 class ServerAlerterTests: XCTestCase {
     private var alerter: ServerAlerter!
+    private var servers: [Server]!
     private var stubDescriptors: [HTTPStubsDescriptor] = []
 
     private func randomURL() -> URL {
@@ -16,13 +17,17 @@ class ServerAlerterTests: XCTestCase {
     override func setUp() {
         super.setUp()
         alerter = ServerAlerter()
+
+        let serverManager = FakeServerManager(initial: 1)
+        servers = serverManager.all
+        Current.servers = serverManager
     }
 
     private func setUp(userIsAdmin: Bool = true, response: Swift.Result<[ServerAlert], Error>) throws {
         Current.settingsStore.privacy.alerts = true
 
         let mock = HAMockConnection()
-        Current.apiConnection = mock
+        Current.api(for: servers[0]).connection = mock
         _ = mock.caches.user.once { _ in }
 
         let request = try XCTUnwrap(mock.pendingRequests.first)
@@ -262,7 +267,7 @@ class ServerAlerterTests: XCTestCase {
     }
 
     func testEarlierCoreDoesntApply() throws {
-        Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
+        servers[0].info.version = Version(major: 100, minor: 0, patch: 0)
 
         try setUp(response: .success([
             ServerAlert(
@@ -279,7 +284,7 @@ class ServerAlerterTests: XCTestCase {
     }
 
     func testLaterCoreDoesntApply() throws {
-        Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
+        servers[0].info.version = Version(major: 100, minor: 0, patch: 0)
 
         try setUp(response: .success([
             ServerAlert(
@@ -296,7 +301,7 @@ class ServerAlerterTests: XCTestCase {
     }
 
     func testMiddleCoreShouldApply() throws {
-        Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
+        servers[0].info.version = Version(major: 100, minor: 0, patch: 0)
 
         let alert = ServerAlert(
             id: UUID().uuidString,
@@ -318,7 +323,7 @@ class ServerAlerterTests: XCTestCase {
     }
 
     func testMultipleApplyGivesFirst() throws {
-        Current.serverVersion = { Version(major: 100, minor: 0, patch: 0) }
+        servers[0].info.version = Version(major: 100, minor: 0, patch: 0)
         Current.clientVersion = { Version(major: 100, minor: 0, patch: 0) }
 
         let alerts = [

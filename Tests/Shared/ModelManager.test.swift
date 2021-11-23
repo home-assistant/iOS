@@ -17,17 +17,14 @@ class ModelManagerTests: XCTestCase {
 
         testQueue = DispatchQueue(label: #file)
         manager = ModelManager()
-        api = FakeHomeAssistantAPI(
-            tokenInfo: .init(
-                accessToken: "atoken",
-                refreshToken: "refreshtoken",
-                expiration: Date()
-            )
-        )
-        apiConnection = HAMockConnection()
 
-        Current.api = .value(api)
-        Current.apiConnection = apiConnection
+        let servers = FakeServerManager(initial: 1)
+        let server = try XCTUnwrap(servers.all.first)
+        api = FakeHomeAssistantAPI(server: server)
+        apiConnection = HAMockConnection()
+        api.connection = apiConnection
+        Current.servers = servers
+        Current.cachedApis = [server.identifier: api]
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {
@@ -39,7 +36,6 @@ class ModelManagerTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
-        Current.resetAPI()
         Current.realm = Realm.live
         TestStoreModel1.lastDidUpdate = []
         TestStoreModel1.lastWillDeleteIds = []
@@ -95,6 +91,10 @@ class ModelManagerTests: XCTestCase {
     func testCleanupWithoutItems() {
         let promise = manager.cleanup(definitions: [])
         XCTAssertNoThrow(try hang(promise))
+    }
+
+    func testCleanupMissingServers() {
+        // XXX
     }
 
     func testNoneToCleanUp() throws {
@@ -214,7 +214,7 @@ class ModelManagerTests: XCTestCase {
                 XCTAssertTrue(connection === self.apiConnection)
                 return fetchPromise2
             }),
-        ], on: testQueue)
+        ], on: testQueue, apis: [api])
 
         XCTAssertFalse(promise.isResolved)
         fetchSeal1.fulfill(())
@@ -229,16 +229,18 @@ class ModelManagerTests: XCTestCase {
         ]
 
         manager.subscribe(definitions: [
-            .init(subscribe: { connection, queue, manager -> [HACancellable] in
+            .init(subscribe: { connection, server, queue, manager -> [HACancellable] in
                 XCTAssertEqual(queue, self.testQueue)
                 XCTAssertTrue(manager === self.manager)
                 XCTAssertTrue(connection === self.apiConnection)
+                XCTAssertEqual(server.identifier, self.api.server.identifier)
                 return [handlers[0]]
             }),
-            .init(subscribe: { connection, queue, manager -> [HACancellable] in
+            .init(subscribe: { connection, server, queue, manager -> [HACancellable] in
                 XCTAssertEqual(queue, self.testQueue)
                 XCTAssertTrue(manager === self.manager)
                 XCTAssertTrue(connection === self.apiConnection)
+                XCTAssertEqual(server.identifier, self.api.server.identifier)
                 return Array(handlers[1...])
             }),
         ], on: testQueue)
@@ -247,11 +249,13 @@ class ModelManagerTests: XCTestCase {
 
         manager.subscribe(definitions: [], on: testQueue)
         XCTAssertTrue(handlers.allSatisfy(\.wasCancelled))
+
+        // XXX
     }
 
     func testStoreWithoutModels() throws {
         try testQueue.sync {
-            try hang(manager.store(type: TestStoreModel1.self, sourceModels: []))
+            try hang(manager.store(type: TestStoreModel1.self, from: api.server, sourceModels: []))
             XCTAssertTrue(realm.objects(TestStoreModel1.self).isEmpty)
         }
     }
@@ -259,7 +263,7 @@ class ModelManagerTests: XCTestCase {
     func testStoreWithModelLackingPrimaryKey() throws {
         func doStore() throws {
             try testQueue.sync {
-                try hang(manager.store(type: TestStoreModel2.self, sourceModels: []))
+                try hang(manager.store(type: TestStoreModel2.self, from: api.server, sourceModels: []))
             }
         }
 
@@ -275,12 +279,14 @@ class ModelManagerTests: XCTestCase {
                 .init(id: "id2", value: "val2"),
             ]
 
-            try hang(manager.store(type: TestStoreModel1.self, sourceModels: sources))
+            try hang(manager.store(type: TestStoreModel1.self, from: api.server, sourceModels: sources))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 2)
             XCTAssertEqual(models[0].identifier, "id1")
+            XCTAssertEqual(models[0].serverIdentifier, api.server.identifier.rawValue)
             XCTAssertEqual(models[0].value, "val1")
             XCTAssertEqual(models[1].identifier, "id2")
+            XCTAssertEqual(models[1].serverIdentifier, api.server.identifier.rawValue)
             XCTAssertEqual(models[1].value, "val2")
             XCTAssertEqual(Set(TestStoreModel1.lastDidUpdate), Set(models))
         }
@@ -290,18 +296,22 @@ class ModelManagerTests: XCTestCase {
         let start = [
             with(TestStoreModel1()) {
                 $0.identifier = "start_id1"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = "start_val1"
             },
             with(TestStoreModel1()) {
                 $0.identifier = "start_id2"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = "start_val2"
             },
             with(TestStoreModel1()) {
                 $0.identifier = "start_id3"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = "start_val3"
             },
             with(TestStoreModel1()) {
                 $0.identifier = "start_id4"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = "start_val4"
             },
         ]
@@ -321,7 +331,10 @@ class ModelManagerTests: XCTestCase {
                 realm.add(start)
             }
 
-            try hang(manager.store(type: TestStoreModel1.self, sourceModels: insertedSources + updatedSources))
+            try hang(
+                manager
+                    .store(type: TestStoreModel1.self, from: api.server, sourceModels: insertedSources + updatedSources)
+            )
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 4)
 
@@ -349,14 +362,17 @@ class ModelManagerTests: XCTestCase {
         let start = [
             with(TestStoreModel3()) {
                 $0.identifier = "start_id1"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = 10 // eligible
             },
             with(TestStoreModel3()) {
                 $0.identifier = "start_id2"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = 1 // not eligible
             },
             with(TestStoreModel3()) {
                 $0.identifier = "start_id3"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.value = 100 // eligible, will be deleted
             },
         ]
@@ -374,7 +390,10 @@ class ModelManagerTests: XCTestCase {
                 realm.add(start)
             }
 
-            try hang(manager.store(type: TestStoreModel3.self, sourceModels: insertedSources + updatedSources))
+            try hang(
+                manager
+                    .store(type: TestStoreModel3.self, from: api.server, sourceModels: insertedSources + updatedSources)
+            )
             let models = realm.objects(TestStoreModel3.self).sorted(byKeyPath: #keyPath(TestStoreModel3.value))
             XCTAssertEqual(models.count, 3)
 
@@ -396,7 +415,7 @@ class ModelManagerTests: XCTestCase {
 
             TestStoreModel1.updateFalseIds = ["id2"]
 
-            try hang(manager.store(type: TestStoreModel1.self, sourceModels: sources))
+            try hang(manager.store(type: TestStoreModel1.self, from: api.server, sourceModels: sources))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 1)
             XCTAssertEqual(models[0].identifier, "id1")
@@ -475,20 +494,28 @@ final class TestStoreModel1: Object, UpdatableModel {
     }
 
     @objc dynamic var identifier: String?
+    @objc dynamic var serverIdentifier: String?
     @objc dynamic var value: String?
 
     override class func primaryKey() -> String? {
         #keyPath(TestStoreModel1.identifier)
     }
 
+    static func serverIdentifierKey() -> String {
+        #keyPath(TestStoreModel1.serverIdentifier)
+    }
+
     func update(
         with object: TestStoreSource1,
+        server: Server,
         using realm: Realm
     ) -> Bool {
         if self.realm == nil {
             identifier = object.id
+            serverIdentifier = server.identifier.rawValue
         } else {
             XCTAssertEqual(identifier, object.id)
+            XCTAssertEqual(serverIdentifier, server.identifier.rawValue)
         }
         value = object.value
 
@@ -513,13 +540,19 @@ final class TestStoreModel2: Object, UpdatableModel {
     static func willDelete(objects: [TestStoreModel2], realm: Realm) {}
 
     @objc dynamic var identifier: String?
+    @objc dynamic var serverIdentifier: String?
 
     override class func primaryKey() -> String? {
         nil
     }
 
+    static func serverIdentifierKey() -> String {
+        #keyPath(TestStoreModel2.serverIdentifier)
+    }
+
     func update(
         with object: TestStoreSource1,
+        server: Server,
         using realm: Realm
     ) -> Bool {
         XCTFail("not expected to be called in error scenario")
@@ -544,20 +577,28 @@ final class TestStoreModel3: Object, UpdatableModel {
     }
 
     @objc dynamic var identifier: String?
+    @objc dynamic var serverIdentifier: String?
     @objc dynamic var value: Int = 0
 
     override class func primaryKey() -> String? {
         "identifier"
     }
 
+    static func serverIdentifierKey() -> String {
+        #keyPath(TestStoreModel3.serverIdentifier)
+    }
+
     func update(
         with object: TestStoreSource2,
+        server: Server,
         using realm: Realm
     ) -> Bool {
         if self.realm == nil {
             identifier = object.id
+            serverIdentifier = server.identifier.rawValue
         } else {
             XCTAssertEqual(identifier, object.id)
+            XCTAssertEqual(serverIdentifier, server.identifier.rawValue)
         }
         value = object.value
         return true

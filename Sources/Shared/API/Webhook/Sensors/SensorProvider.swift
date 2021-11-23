@@ -4,7 +4,7 @@ import PromiseKit
 import Version
 
 public struct SensorProviderRequest {
-    public enum Reason {
+    public enum Reason: Equatable {
         case registration
         case trigger(String)
     }

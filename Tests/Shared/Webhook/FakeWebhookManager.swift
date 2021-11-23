@@ -3,11 +3,15 @@ import PromiseKit
 @testable import Shared
 
 class FakeWebhookManager: WebhookManager {
-    var sendRequestHandler: ((WebhookResponseIdentifier, WebhookRequest, Resolver<Void>) -> Void)?
+    var sendRequestHandler: ((WebhookResponseIdentifier, Server, WebhookRequest, Resolver<Void>) -> Void)?
 
-    override func send(identifier: WebhookResponseIdentifier = .unhandled, request: WebhookRequest) -> Promise<Void> {
+    override func send(
+        identifier: WebhookResponseIdentifier = .unhandled,
+        server: Server,
+        request: WebhookRequest
+    ) -> Promise<Void> {
         let (promise, seal) = Promise<Void>.pending()
-        sendRequestHandler?(identifier, request, seal)
+        sendRequestHandler?(identifier, server, request, seal)
         return promise
     }
 }

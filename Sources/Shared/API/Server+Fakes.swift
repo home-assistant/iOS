@@ -42,7 +42,7 @@ internal class FakeServerManager: ServerManager {
     var observers = [ServerObserver]()
 
     init(initial: Int = 0) {
-        for _ in 0..<initial {
+        for _ in 0 ..< initial {
             _ = addFake()
         }
     }
@@ -53,7 +53,7 @@ internal class FakeServerManager: ServerManager {
 
     func addFake() -> Server {
         let server = Server.fake()
-        return  add(identifier: server.identifier, serverInfo: server.info)
+        return add(identifier: server.identifier, serverInfo: server.info)
     }
 
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {

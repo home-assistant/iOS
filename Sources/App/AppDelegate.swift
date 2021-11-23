@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         MaterialDesignIcons.register()
-        
+
         guard !Current.isRunningTests else {
             return true
         }

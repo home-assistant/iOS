@@ -14,14 +14,10 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        Current.settingsStore.overrideDeviceName = nil
-
         connection = HAMockConnection()
-        api = HomeAssistantAPI(tokenInfo: .init(
-            accessToken: "access_token",
-            refreshToken: "refresh_token",
-            expiration: .init(timeIntervalSinceNow: 100)
-        ))
+        api = HomeAssistantAPI(server: .fake())
+        api.connection = connection
+
         sender = FakeUIViewController()
 
         connection.automaticallyTransitionToConnecting = false
@@ -30,7 +26,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         deviceName = name
         Current.device.deviceName = { name }
 
-        step = OnboardingAuthStepDuplicate(connection: connection, api: api, sender: sender)
+        step = OnboardingAuthStepDuplicate(api: api, sender: sender)
     }
 
     func testSupportedPoints() {
@@ -142,7 +138,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         wait(for: [expectation], timeout: 10.0)
 
         XCTAssertNoThrow(try hang(result))
-        XCTAssertEqual(Current.settingsStore.overrideDeviceName, "New Name")
+        XCTAssertEqual(api.server.info.setting(for: .overrideDeviceName), "New Name")
     }
 
     func testTimeoutBeforeUserFlowFinished() throws {
@@ -188,7 +184,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         wait(for: [expectation], timeout: 10.0)
 
         XCTAssertNoThrow(try hang(result))
-        XCTAssertEqual(Current.settingsStore.overrideDeviceName, "New Name 2")
+        XCTAssertEqual(api.server.info.setting(for: .overrideDeviceName), "New Name 2")
     }
 
     func testDuplicateChangedToExistingThenExistingThenNew() throws {
@@ -202,7 +198,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         wait(for: [expectation], timeout: 10.0)
 
         XCTAssertNoThrow(try hang(result))
-        XCTAssertEqual(Current.settingsStore.overrideDeviceName, "New Name 2")
+        XCTAssertEqual(api.server.info.setting(for: .overrideDeviceName), "New Name 2")
     }
 
     private func setupSender(

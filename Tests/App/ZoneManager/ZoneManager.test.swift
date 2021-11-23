@@ -33,19 +33,18 @@ class ZoneManagerTests: XCTestCase {
         let executionIdentifier = UUID().uuidString
 
         realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
-        api = FakeHassAPI(
-            tokenInfo: TokenInfo(
-                accessToken: "token",
-                refreshToken: "token",
-                expiration: Date()
-            )
-        )
+
+        let servers = FakeServerManager(initial: 1)
+        let server = try XCTUnwrap(servers.all.first)
+        api = FakeHassAPI(server: server)
+        Current.servers = servers
+        Current.cachedApis = [server.identifier: api]
+
         loggedEvents = []
         Current.connectivity.currentWiFiSSID = { "wifi_name" }
         Current.realm = { self.realm }
         Current.clientEventStore.addEvent = { self.loggedEvents.append($0); return .value(()) }
-        Current.api = .value(api)
-        Current.location.oneShotLocation = { _ in .value(.init(latitude: 0, longitude: 0)) }
+        Current.location.oneShotLocation = { _, _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
         processor = FakeProcessor()
         regionFilter = FakeRegionFilter()
@@ -57,7 +56,6 @@ class ZoneManagerTests: XCTestCase {
 
         Current.realm = Realm.live
         Current.clientEventStore.addEvent = { _ in .value(()) }
-        Current.resetAPI()
     }
 
     private func newZoneManager() -> ZoneManager {
@@ -82,6 +80,7 @@ class ZoneManagerTests: XCTestCase {
         var zones = try addedZones([
             with(RLMZone()) {
                 $0.ID = "home"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
                 $0.Radius = 50.0
@@ -92,6 +91,7 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 100
@@ -166,6 +166,7 @@ class ZoneManagerTests: XCTestCase {
         let zones = try addedZones([
             with(RLMZone()) {
                 $0.ID = "home"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
                 $0.Radius = 100
@@ -173,6 +174,7 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 150
@@ -206,6 +208,7 @@ class ZoneManagerTests: XCTestCase {
         let zones = try addedZones([
             with(RLMZone()) {
                 $0.ID = "home"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
                 $0.Radius = 50.0
@@ -216,6 +219,7 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 100
@@ -276,6 +280,7 @@ class ZoneManagerTests: XCTestCase {
         let zones = try addedZones([
             with(RLMZone()) {
                 $0.ID = "home"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
                 $0.Radius = 50.0
@@ -286,6 +291,7 @@ class ZoneManagerTests: XCTestCase {
             },
             with(RLMZone()) {
                 $0.ID = "work"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 100
@@ -323,6 +329,7 @@ class ZoneManagerTests: XCTestCase {
         let zone = try addedZones([
             with(RLMZone()) {
                 $0.ID = "zone.zid"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 42.2222
                 $0.Longitude = 43.3333
                 $0.Radius = 100
@@ -363,6 +370,7 @@ class ZoneManagerTests: XCTestCase {
         let zone = try addedZones([
             with(RLMZone()) {
                 $0.ID = "zone.zid"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 42.2222
                 $0.Longitude = 43.3333
                 $0.Radius = 99

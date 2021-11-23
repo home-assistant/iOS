@@ -79,6 +79,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         self.TextColor = try map.value("TextColor")
         self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         self.isServerControlled = try map.value("isServerControlled")
+        self.serverIdentifier = try map.value("serverIdentifier")
         super.init()
     }
 
@@ -93,6 +94,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         TextColor >>> map["TextColor"]
         CreatedAt >>> (map["CreatedAt"], DateTransform())
         isServerControlled >>> map["isServerControlled"]
+        serverIdentifier >>> map["serverIdentifier"]
     }
 
     static func didUpdate(objects: [Action], realm: Realm) {

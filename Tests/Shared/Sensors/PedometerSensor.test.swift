@@ -10,14 +10,17 @@ class PedometerSensorTests: XCTestCase {
         case someError
     }
 
-    private var request: SensorProviderRequest = .init(
-        reason: .trigger("unit-test"),
-        dependencies: .init(),
-        location: nil
-    )
+    private var request: SensorProviderRequest!
 
     override func setUp() {
         super.setUp()
+
+        request = .init(
+            reason: .trigger("unit-test"),
+            dependencies: .init(),
+            location: nil,
+            serverVersion: Version()
+        )
 
         // start by assuming nothing is enabled/available
         Current.pedometer.isAuthorized = { false }
@@ -98,7 +101,7 @@ class PedometerSensorTests: XCTestCase {
     }
 
     func testWithFloorsAscendedBefore105() throws {
-        Current.serverVersion = { Version(major: 0, minor: 104) }
+        request.serverVersion = Version(major: 0, minor: 104)
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
@@ -120,7 +123,7 @@ class PedometerSensorTests: XCTestCase {
     }
 
     func testWithFloorsAscendedAfter105() throws {
-        Current.serverVersion = { Version(major: 0, minor: 105) }
+        request.serverVersion = Version(major: 0, minor: 105)
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
@@ -142,7 +145,7 @@ class PedometerSensorTests: XCTestCase {
     }
 
     func testWithFloorsDescendedBefore105() throws {
-        Current.serverVersion = { Version(major: 0, minor: 104) }
+        request.serverVersion = Version(major: 0, minor: 104)
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
@@ -164,7 +167,7 @@ class PedometerSensorTests: XCTestCase {
     }
 
     func testWithFloorsDescendedAfter105() throws {
-        Current.serverVersion = { Version(major: 0, minor: 105) }
+        request.serverVersion = Version(major: 0, minor: 105)
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in

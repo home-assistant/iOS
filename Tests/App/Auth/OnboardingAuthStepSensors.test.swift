@@ -14,14 +14,11 @@ class OnboardingAuthStepSensorsTests: XCTestCase {
         super.setUp()
 
         connection = HAMockConnection()
-        api = FakeHomeAssistantAPI(tokenInfo: .init(
-            accessToken: "access_token",
-            refreshToken: "refresh_token",
-            expiration: .init(timeIntervalSinceNow: 100)
-        ))
+        api = FakeHomeAssistantAPI(server: .fake())
+        api.connection = connection
         sender = UIViewController()
 
-        step = OnboardingAuthStepSensors(connection: connection, api: api, sender: sender)
+        step = OnboardingAuthStepSensors(api: api, sender: sender)
     }
 
     func testSupportedPoints() {

@@ -47,25 +47,18 @@ class ZoneManagerProcessorTests: XCTestCase {
             )
         }
 
-        api = FakeHassAPI(
-            tokenInfo: TokenInfo(
-                accessToken: "token",
-                refreshToken: "token",
-                expiration: Date()
-            )
-        )
+        let servers = FakeServerManager(initial: 1)
+        let server = try XCTUnwrap(servers.all.first)
+        api = FakeHassAPI(server: server)
+        Current.servers = servers
+        Current.cachedApis = [server.identifier: api]
+
         api.submitLocationPromise = submitLocationPromise
 
-        Current.api = .value(api)
-        Current.location.oneShotLocation = { _ in self.oneShotLocationPromise }
+        Current.location.oneShotLocation = { _, _ in self.oneShotLocationPromise }
         delegate = FakeZoneManagerProcessorDelegate()
         processor = ZoneManagerProcessorImpl()
         processor.delegate = delegate
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        Current.resetAPI()
     }
 
     func setUpZones(
@@ -91,7 +84,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testNoAPIFails() throws {
-        Current.api = .init(error: HomeAssistantAPI.APIError.notConfigured)
+        Current.servers.removeAll()
         let now = Date()
         Current.date = { now }
 
@@ -111,9 +104,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         oneShotLocationSeal.fulfill(oneShotLocation)
         submitLocationSeal.fulfill(())
 
-        XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? HomeAssistantAPI.APIError, HomeAssistantAPI.APIError.notConfigured)
-        }
+        XCTAssertNoThrow(try hang(promise))
     }
 
     func testPerformingOneShotErrors() throws {

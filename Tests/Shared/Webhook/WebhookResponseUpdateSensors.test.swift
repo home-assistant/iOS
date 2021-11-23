@@ -12,13 +12,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        api = FakeHomeAssistantAPI(
-            tokenInfo: .init(
-                accessToken: "atoken",
-                refreshToken: "refreshtoken",
-                expiration: Date()
-            )
-        )
+        api = FakeHomeAssistantAPI(server: .fake())
         webhookManager = FakeWebhookManager()
         previousWebhookManager = Current.webhooks
         Current.webhooks = webhookManager
@@ -73,7 +67,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
     func testUpdatedRequiringRegistration() throws {
         // it's probably too much work to mock out the sensors here, so this implicitly
         // depends on one of the registered sensors. to make this more obvious, grab one.
-        let sensors = try hang(Promise(Current.sensors.sensors(reason: .registration))).sensors
+        let sensors = try hang(Promise(Current.sensors.sensors(reason: .registration, serverVersion: .init()))).sensors
         let handler = WebhookResponseUpdateSensors(api: api)
         let request = WebhookRequest(type: "update_sensor_states", data: [:])
 
@@ -93,8 +87,9 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
 
         var registeredIDs = Set<String>()
 
-        webhookManager.sendRequestHandler = { _, request, seal in
+        webhookManager.sendRequestHandler = { [api] _, server, request, seal in
             XCTAssertEqual(request.type, "register_sensor")
+            XCTAssertEqual(server, api?.server)
 
             do {
                 let dictionary = try request.asDictionary()

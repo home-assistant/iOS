@@ -2,6 +2,7 @@ import CoreMotion
 import Foundation
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 class ActivitySensorTests: XCTestCase {
@@ -12,7 +13,8 @@ class ActivitySensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
-        location: nil
+        location: nil,
+        serverVersion: Version()
     )
 
     override func setUp() {

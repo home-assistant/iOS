@@ -17,14 +17,11 @@ class OnboardingAuthStepNotifyTests: XCTestCase {
         Current.onboardingObservation = .init()
 
         connection = HAMockConnection()
-        api = HomeAssistantAPI(tokenInfo: .init(
-            accessToken: "access_token",
-            refreshToken: "refresh_token",
-            expiration: .init(timeIntervalSinceNow: 100)
-        ))
+        api = HomeAssistantAPI(server: .fake())
+        api.connection = connection
         sender = UIViewController()
 
-        step = OnboardingAuthStepNotify(connection: connection, api: api, sender: sender)
+        step = OnboardingAuthStepNotify(api: api, sender: sender)
     }
 
     func testSupportedPoints() {
@@ -76,7 +73,8 @@ private class FakeModelManager: ModelManager {
 
     override func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        on queue: DispatchQueue = .global(qos: .utility),
+        apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
         fetchResult
     }

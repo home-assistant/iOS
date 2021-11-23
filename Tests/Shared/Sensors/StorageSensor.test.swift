@@ -1,13 +1,15 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 class StorageSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
-        location: nil
+        location: nil,
+        serverVersion: Version()
     )
 
     func testNilDataReturnsError() {

@@ -19,28 +19,10 @@ class NotificationAttachmentManagerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        Current.settingsStore.connectionInfo = .init(
-            externalURL: URL(string: "http://example.com")!,
-            internalURL: nil,
-            cloudhookURL: nil,
-            remoteUIURL: nil,
-            webhookID: "webhookid",
-            webhookSecret: "webhooksecret",
-            internalSSIDs: nil,
-            internalHardwareAddresses: nil,
-            isLocalPushEnabled: true
-        )
-
         image1 = .init()
         image2 = .init()
 
-        api = FakeHomeAssistantAPI(
-            tokenInfo: .init(
-                accessToken: "atoken",
-                refreshToken: "refreshtoken",
-                expiration: Date(timeIntervalSinceNow: 10000)
-            )
-        )
+        api = FakeHomeAssistantAPI(server: .fake())
 
         parser1 = FakeNotificationParser1.self
         parser1.reset()
@@ -225,7 +207,7 @@ private class Image {
     private var stubDescriptors: [HTTPStubsDescriptor] = []
 
     private class func newURL() -> URL {
-        URL(string: "http://example.com/" + UUID().uuidString + ".png")!
+        URL(string: "http://homeassistant.local:8123/" + UUID().uuidString + ".png")!
     }
 
     init() {
@@ -255,7 +237,7 @@ private class Image {
 
         stubDescriptors.append(stub(condition: { $0.url == url }, response: { [data] request in
             if needsAuth {
-                if request.allHTTPHeaderFields?["Authorization"] == "Bearer atoken" {
+                if request.allHTTPHeaderFields?["Authorization"] == "Bearer FakeAccessToken" {
                     return .init(data: data, statusCode: 200, headers: [:])
                 } else {
                     return .init(data: Data(), statusCode: 401, headers: [:])

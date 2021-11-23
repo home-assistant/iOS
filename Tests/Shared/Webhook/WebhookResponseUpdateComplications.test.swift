@@ -17,13 +17,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
         Current.realm = { self.realm }
 
-        api = FakeHomeAssistantAPI(
-            tokenInfo: .init(
-                accessToken: "atoken",
-                refreshToken: "refreshtoken",
-                expiration: Date()
-            )
-        )
+        api = FakeHomeAssistantAPI(server: .fake())
         webhookManager = FakeWebhookManager()
         Current.webhooks = webhookManager
 
@@ -48,6 +42,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         let complications = [
             with(FakeWatchComplication()) {
                 $0.identifier = "c1"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Template = .ExtraLargeColumnsText
                 $0.resultRawRendered = [
                     "fwc1k1": "fwc1v1",
@@ -56,15 +51,22 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             },
             with(FakeWatchComplication()) {
                 $0.identifier = "c2"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Template = .CircularSmallRingText
                 $0.resultRawRendered = [:]
             },
             with(FakeWatchComplication()) {
                 $0.identifier = "c3"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Template = .GraphicBezelCircularText
                 $0.resultRawRendered = [
                     "fwc3k1": "fwc3v1",
                 ]
+            },
+            with(FakeWatchComplication()) {
+                $0.identifier = "bad1"
+                $0.serverIdentifier = UUID().uuidString
+                $0.Template = .ExtraLargeColumnsText
             },
         ]
 
@@ -90,6 +92,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         let complications = [
             with(FakeWatchComplication()) {
                 $0.identifier = "c1"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Template = .ExtraLargeColumnsText
                 $0.Family = .extraLarge
                 $0.resultRawRendered = [
@@ -99,17 +102,24 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             },
             with(FakeWatchComplication()) {
                 $0.identifier = "c2"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Template = .CircularSmallRingText
                 $0.Family = .circularSmall
                 $0.resultRawRendered = [:]
             },
             with(FakeWatchComplication()) {
                 $0.identifier = "c3"
+                $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Template = .GraphicBezelCircularText
                 $0.Family = .graphicBezel
                 $0.resultRawRendered = [
                     "fwc3k1": "fwc3v1",
                 ]
+            },
+            with(FakeWatchComplication()) {
+                $0.identifier = "bad1"
+                $0.serverIdentifier = UUID().uuidString
+                $0.Template = .ExtraLargeColumnsText
             },
         ]
         try realm.write {
@@ -150,6 +160,8 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             complication2Updates?["fwc3k1"] as? Int,
             3
         )
+
+        XCTAssertNil(FakeWatchComplication.rawRenderedUpdates["bad1"])
     }
 }
 
