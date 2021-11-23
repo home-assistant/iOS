@@ -34,7 +34,7 @@ public class HomeAssistantAPI {
 
     public let tokenManager: TokenManager
     public var server: Server
-    public let connection: HAConnection
+    public internal(set) var connection: HAConnection
 
     public static var clientVersionDescription: String {
         "\(Constants.version) (\(Constants.build))"

@@ -416,6 +416,8 @@
 		11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */; };
 		11F20BC7274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */; };
 		11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */; };
+		11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */; };
+		11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */; };
 		11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */; };
@@ -1435,6 +1437,7 @@
 		11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationLoadingViewController.swift; sourceTree = "<group>"; };
 		11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectRow.swift; sourceTree = "<group>"; };
 		11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushProviderConfiguration.swift; sourceTree = "<group>"; };
+		11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+Fakes.swift"; sourceTree = "<group>"; };
 		11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.swift; sourceTree = "<group>"; };
 		11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.test.swift; sourceTree = "<group>"; };
 		11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParser.swift; sourceTree = "<group>"; };
@@ -3386,6 +3389,7 @@
 				11CFD78027364F450082D557 /* Identifier.swift */,
 				11CFD783273662DF0082D557 /* Server.swift */,
 				1120C57E274638330046C38B /* PerServerContainer.swift */,
+				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5387,6 +5391,7 @@
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
+				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				11CFD785273662DF0082D557 /* Server.swift in Sources */,
 				116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
@@ -5566,6 +5571,7 @@
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
+				11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,

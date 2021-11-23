@@ -10,9 +10,6 @@ public protocol ServerObserver: AnyObject {
 public protocol ServerManager {
     var all: [Server] { get }
     func server(for identifier: Identifier<Server>) -> Server?
-    func server(forWebhookID: String) -> Server?
-    func server(for intent: SingleServerIntent) -> Server?
-    func server(for notification: UNNotificationContent) -> Server?
 
     @discardableResult
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server
@@ -33,6 +30,34 @@ private class ServerCache {
     var info: [Identifier<Server>: ServerInfo] = [:]
     var server: [Identifier<Server>: Server] = [:]
     var all: [Server]?
+}
+
+public extension ServerManager {
+    func server(forWebhookID webhookID: String) -> Server? {
+        all.first(where: { $0.info.connection.webhookID == webhookID })
+    }
+
+    func server(for intent: SingleServerIntent) -> Server? {
+        if let server = intent.server?.identifier.flatMap({ server(for: .init(rawValue: $0)) }) {
+            return server
+        } else {
+            let all = all
+            if all.count == 1, let server = all.first {
+                return server
+            } else {
+                return nil
+            }
+        }
+    }
+
+    func server(for content: UNNotificationContent) -> Server? {
+        if let webhookID = content.userInfo["webhook_id"] as? String,
+           let server = server(forWebhookID: webhookID) {
+            return server
+        } else {
+            return all.first
+        }
+    }
 }
 
 public class ServerManagerImpl: ServerManager {
@@ -73,7 +98,7 @@ public class ServerManagerImpl: ServerManager {
         do {
             try migrateIfNeeded()
         } catch {
-            Current.Log.error("failed to load historic server: \(error)")
+//            Current.Log.error("failed to load historic server: \(error)")
         }
     }
 
@@ -93,32 +118,6 @@ public class ServerManagerImpl: ServerManager {
             return fast
         } else {
             return all.first(where: { $0.identifier == identifier })
-        }
-    }
-
-    public func server(forWebhookID webhookID: String) -> Server? {
-        all.first(where: { $0.info.connection.webhookID == webhookID })
-    }
-
-    public func server(for intent: SingleServerIntent) -> Server? {
-        if let server = intent.server?.identifier.flatMap({ server(for: .init(rawValue: $0)) }) {
-            return server
-        } else {
-            let all = all
-            if all.count == 1, let server = all.first {
-                return server
-            } else {
-                return nil
-            }
-        }
-    }
-
-    public func server(for content: UNNotificationContent) -> Server? {
-        if let webhookID = content.userInfo["webhook_id"] as? String,
-           let server = server(forWebhookID: webhookID) {
-            return server
-        } else {
-            return all.first
         }
     }
 
