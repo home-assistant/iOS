@@ -11,7 +11,7 @@ enum AccountRowValue: Equatable, CustomStringConvertible {
 
     var description: String {
         switch self {
-        case .server(let server): return String(describing: server.identifier)
+        case let .server(server): return String(describing: server.identifier)
         case .add: return "add"
         case .all: return "all"
         }

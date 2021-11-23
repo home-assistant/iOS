@@ -45,7 +45,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     }
 
     private struct Observer: Equatable {
-        var identifier: UUID = UUID()
+        var identifier = UUID()
         var server: Server
         var handler: (NotificationManagerLocalPushStatus) -> Void
 
@@ -64,7 +64,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     override init() {
         super.init()
         syncStates = PerServerContainer<LocalPushStateSync>(constructor: { server in
-            let sync = LocalPushStateSync(settingsKey: Self.settingsKey(for: server))
+            let sync = LocalPushStateSync(settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server))
             let token = sync.observe { [weak self] _ in
                 self?.notifyObservers(for: [server])
             }
@@ -92,7 +92,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             // update or create managers for the servers we have
             for (ssid, servers) in serversBySSID() {
                 Current.Log.info("configuring push for \(ssid): \(servers)")
-                
+
                 let existing = managers?.first(where: { $0.matchSSIDs == [ssid] })
                 if let existing = existing {
                     usedManagers.insert(existing)
@@ -108,7 +108,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             // remove any existing managers that didn't match
             for manager in managers ?? [] where !usedManagers.contains(manager) {
                 manager.removeFromPreferences { error in
-                    Current.Log.info("remove from preferences unused manager \(manager) result: \(String(describing: error))")
+                    Current.Log.info("remove unused manager \(manager) result: \(String(describing: error))")
                 }
             }
 
@@ -169,7 +169,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         updateAndDirty(\.matchSSIDs, [ssid])
 
         let configurations: [PushProviderConfiguration] = servers.map {
-            .init(serverIdentifier: $0.identifier, settingsKey: Self.settingsKey(for: $0))
+            .init(serverIdentifier: $0.identifier, settingsKey: PushProviderConfiguration.defaultSettingsKey(for: $0))
         }
 
         do {
@@ -194,10 +194,6 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
 
         return ConfigureManager(ssid: ssid, manager: manager, servers: servers)
-    }
-
-    private static func settingsKey(for server: Server) -> String {
-        "LocalPush:\(server.identifier.rawValue)"
     }
 
     private func serversBySSID() -> [String: [Server]] {

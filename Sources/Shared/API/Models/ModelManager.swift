@@ -178,7 +178,7 @@ public class ModelManager: ServerObserver {
         subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
-            return Current.apis.flatMap { api in
+            Current.apis.flatMap { api in
                 definition.subscribe(api.connection, api.server, queue, self)
             }
         }

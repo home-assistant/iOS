@@ -8,4 +8,8 @@ public struct PushProviderConfiguration: Codable {
         self.serverIdentifier = serverIdentifier
         self.settingsKey = settingsKey
     }
+
+    public static func defaultSettingsKey(for server: Server) -> String {
+        "LocalPush:\(server.identifier.rawValue)"
+    }
 }

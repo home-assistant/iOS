@@ -42,8 +42,9 @@ import UserNotifications
             completionHandler(error)
         }
 
-        stateObservers.append(observe(\.providerConfiguration, options: .initial) { pushProvider, change in
-            guard let data = pushProvider.providerConfiguration?[PushProviderConfiguration.providerConfigurationKey] as? Data else {
+        stateObservers.append(observe(\.providerConfiguration, options: .initial) { pushProvider, _ in
+            guard let config = pushProvider.providerConfiguration,
+                  let data = config[PushProviderConfiguration.providerConfigurationKey] as? Data else {
                 didStartSeal.reject(PushProviderError.noConfiguration)
                 return
             }
@@ -124,9 +125,9 @@ import UserNotifications
                 )):
                     seal.reject(error)
                 case .authenticating,
-                        .connecting,
-                        .disconnected(reason: .disconnected),
-                        .disconnected(reason: .waitingToReconnect(lastError: .none, atLatest: _, retryCount: _)):
+                     .connecting,
+                     .disconnected(reason: .disconnected),
+                     .disconnected(reason: .waitingToReconnect(lastError: .none, atLatest: _, retryCount: _)):
                     break
                 }
             }

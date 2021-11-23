@@ -17,7 +17,7 @@ final class ServerSelectRow: _PushRow<PushSelectorCell<AccountRowValue>>, RowTyp
                 return value?.placeholderTitle
             }
         }
-        optionsProvider = .lazy { _cell, handler in
+        optionsProvider = .lazy { _, handler in
             var values = [AccountRowValue]()
 
             if includeAll {
@@ -33,4 +33,3 @@ final class ServerSelectRow: _PushRow<PushSelectorCell<AccountRowValue>>, RowTyp
         }
     }
 }
-
