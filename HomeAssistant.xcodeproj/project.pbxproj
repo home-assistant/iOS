@@ -414,6 +414,8 @@
 		11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3C227264306000AF78B /* UIAlertAction+Additions.swift */; };
 		11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */; };
 		11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */; };
+		11F20BC7274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */; };
+		11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */; };
 		11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */; };
@@ -1432,6 +1434,7 @@
 		11EFD3C227264306000AF78B /* UIAlertAction+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Additions.swift"; sourceTree = "<group>"; };
 		11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationLoadingViewController.swift; sourceTree = "<group>"; };
 		11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectRow.swift; sourceTree = "<group>"; };
+		11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushProviderConfiguration.swift; sourceTree = "<group>"; };
 		11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.swift; sourceTree = "<group>"; };
 		11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.test.swift; sourceTree = "<group>"; };
 		11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParser.swift; sourceTree = "<group>"; };
@@ -2382,6 +2385,7 @@
 				11AA9A89266B140A00B829E1 /* NotificationParserLegacy.swift */,
 				11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */,
 				116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */,
+				11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */,
 			);
 			path = LocalPush;
 			sourceTree = "<group>";
@@ -5390,6 +5394,7 @@
 				11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */,
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
+				11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
@@ -5568,6 +5573,7 @@
 				11C4628824B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
+				11F20BC7274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
