@@ -44,25 +44,15 @@ class IncomingURLHandler {
                 return false
             }
 
-            let wasPresentingSafari: Bool
-
             if let presenting = windowController.presentedViewController,
                presenting is SFSafariViewController {
                 // Dismiss my.* controller if it's on top - we don't get any other indication
-                presenting.dismiss(animated: true, completion: nil)
-
-                wasPresentingSafari = true
+                presenting.dismiss(animated: true, completion: { [windowController] in
+                    windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: true)
+                })
             } else {
-                wasPresentingSafari = false
+                windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: isFromWidget)
             }
-
-            #warning("multiserver")
-            windowController.open(
-                from: .deeplink,
-                server: Current.servers.all.first!,
-                urlString: rawURL,
-                skipConfirm: wasPresentingSafari || isFromWidget
-            )
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))

@@ -162,6 +162,35 @@ class WebViewWindowController {
         }
     }
 
+    func openSelectingServer(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+        if let first = Current.servers.all.first, Current.servers.all.count == 1 {
+            open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+        } else if Current.servers.all.count > 1 {
+            let select = ServerSelectViewController()
+            if !skipConfirm {
+                select.prompt = from.message(with: openUrlRaw)
+            }
+            select.result.ensureThen { [weak select] in
+                Guarantee { seal in
+                    if let select = select {
+                        select.dismiss(animated: true, completion: {
+                            seal(())
+                        })
+                    } else {
+                        seal(())
+                    }
+                }
+            }.done { [self] value in
+                if let server = value.server {
+                    open(from: from, server: server, urlString: openUrlRaw, skipConfirm: true)
+                }
+            }.catch { error in
+                Current.Log.error("failed to select server: \(error)")
+            }
+            present(UINavigationController(rootViewController: select))
+        }
+    }
+
     func open(from: OpenSource, server: Server, urlString openUrlRaw: String, skipConfirm: Bool = false) {
         let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
         let externalURL = URL(string: openUrlRaw)
