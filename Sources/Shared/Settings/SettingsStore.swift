@@ -292,6 +292,7 @@ public class SettingsStore {
         }
     }
 
+    @available(*, deprecated)
     public var menuItemTemplate: String {
         get {
             prefs.string(forKey: "menuItemTemplate") ?? ""
