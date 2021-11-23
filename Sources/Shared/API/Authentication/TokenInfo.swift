@@ -7,9 +7,9 @@ public struct TokenInfo: ImmutableMappable, Codable, Equatable {
         var oldTokenInfo: TokenInfo
     }
 
-    let accessToken: String
-    let expiration: Date
-    let refreshToken: String
+    var accessToken: String
+    var expiration: Date
+    var refreshToken: String
 
     public init(accessToken: String, refreshToken: String, expiration: Date) {
         self.accessToken = accessToken
