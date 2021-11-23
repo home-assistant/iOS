@@ -1,7 +1,7 @@
 "NFCReaderUsageDescription" = "Pembacaan dan penulisan tag NFC memungkinkan Anda untuk memicu peristiwa.";
 "NSCameraUsageDescription" = "Ambil foto dan kirimkan ke server Home Assistant Anda";
 "NSCrossWebsiteTrackingUsageDescription" = "Aktifkan pelacakan lintas situs web opsional jika konfigurasi Anda memerlukannya.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
+"NSFocusStatusUsageDescription" = "Laporkan status fokus Anda sebagai sensor.";
 "NSLocalNetworkUsageDescription" = "Temukan dan terhubung dengan instans Home Assistant Anda.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";

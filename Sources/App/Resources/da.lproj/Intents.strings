@@ -18,7 +18,7 @@
 "EWqRDj" = "Failed: ${error}";
 "FBQiVD" = "Call a service on the Home Assistant instance";
 "FZ9qkT" = "Render Template";
-"FtQqoU" = "Location updated";
+"FtQqoU" = "Lokalitet opdateret";
 "HCM8Oe" = "Fire ${eventName} with data";
 "HSLcG7" = "Event Name";
 "HoH8wg" = "Actions";
@@ -39,7 +39,7 @@
 "QVD2lM" = "Service Data";
 "QmGpOH" = "Error";
 "RCQAlr" = "Get Camera Image from ${cameraID}";
-"RMQY3r" = "Send location to Home Assistant";
+"RMQY3r" = "Send lokalitet til Home Assistant";
 "RsOw3P" = "Successfully rendered template";
 "T06Fka" = "Åbn en side i brugerfladen";
 "ULka1b" = "Actions";
@@ -66,9 +66,9 @@
 "fuRWMi" = "Send ${location} to Home Assistant";
 "g8g7Af" = "Perform the action";
 "gI3mme" = "What service data do you want to send?";
-"gePUyy" = "Location";
+"gePUyy" = "Lokalitet";
 "glRCfJ" = "Failed: Home Assistant is not currently reachable";
-"gv7Gg6" = "Location";
+"gv7Gg6" = "Lokalitet";
 "h1xQ53" = "Update Sensors";
 "hLFNfv" = "Failed: ${error}";
 "hsrlTY" = "Get a single still frame from a camera";
@@ -95,12 +95,12 @@
 "r32M7N" = "Failed: ${error}";
 "r6LXFe" = "Failed";
 "rFSNpu" = "Done";
-"rOlW1x" = "What location do you want to send?";
+"rOlW1x" = "Hvilken lokalitet vil du sende?";
 "sNFoWe" = "Which camera?";
 "sQJAJS" = "Error";
 "sfDGvk" = "Rendered Template";
 "tycImk" = "Performs an action defined in the app";
-"v7TSD5" = "Send Location";
+"v7TSD5" = "Send lokalitet";
 "vAIAF2" = "Send a sensor update to Home Assistant";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
 "xhwpj4" = "Done";
