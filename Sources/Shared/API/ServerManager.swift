@@ -176,9 +176,15 @@ public class ServerManagerImpl: ServerManager {
                     cache.info[identifier] = info
                     return info
                 }
-            }, setter: { [weak self] serverInfo in
-                guard let self = self,
-                      self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
+            }, setter: { [weak self] baseServerInfo in
+                guard let self = self else { return }
+
+                var serverInfo = baseServerInfo
+
+                // update active URL so we can update just once if it's different than the save is doing
+                _ = serverInfo.connection.activeURL()
+
+                guard self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
                 fallback = serverInfo
 
                 self.cache.info[identifier] = serverInfo
