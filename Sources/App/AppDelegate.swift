@@ -63,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        MaterialDesignIcons.register()
+        
         guard !Current.isRunningTests else {
             return true
         }
@@ -105,8 +107,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         zoneManager = ZoneManager()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-
-        MaterialDesignIcons.register()
 
         setupWatchCommunicator()
         setupiOS12Features()
