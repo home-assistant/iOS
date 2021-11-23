@@ -102,7 +102,7 @@ public struct ServerInfo: Codable, Equatable {
     }
 }
 
-public class Server: Hashable, Comparable {
+public class Server: Hashable, Comparable, CustomStringConvertible {
     public static var historicId: Identifier<Server> = "historic"
 
     public let identifier: Identifier<Server>
@@ -174,5 +174,9 @@ public class Server: Hashable, Comparable {
         } else {
             return lhs.info.name.localizedCaseInsensitiveCompare(rhs.info.name) == .orderedAscending
         }
+    }
+
+    public var description: String {
+        identifier.description
     }
 }
