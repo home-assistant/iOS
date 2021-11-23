@@ -1,8 +1,9 @@
 import Eureka
 import PromiseKit
 import Shared
+import UIKit
 
-class ServerSelectViewController: HAFormViewController, ServerObserver {
+class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdaptivePresentationControllerDelegate {
     let result: Promise<AccountRowValue>
     private let resultSeal: Resolver<AccountRowValue>
 
@@ -50,15 +51,24 @@ class ServerSelectViewController: HAFormViewController, ServerObserver {
 
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
-        if #available(iOS 15, *), let parent = parent as? UINavigationController, parent.viewControllers == [self] {
-            with(parent.sheetPresentationController) {
-                $0?.detents = [.medium()]
+
+        if let parent = parent as? UINavigationController, parent.viewControllers == [self] {
+            parent.presentationController?.delegate = self
+
+            if #available(iOS 15, *) {
+                with(parent.sheetPresentationController) {
+                    $0?.detents = [.medium()]
+                }
             }
         }
     }
 
     func serversDidChange(_ serverManager: ServerManager) {
         setupForm()
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        resultSeal.reject(ServerSelectError.cancelled)
     }
 
     private func setupForm() {

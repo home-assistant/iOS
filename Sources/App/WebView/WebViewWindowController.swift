@@ -172,7 +172,7 @@ class WebViewWindowController {
             }
             select.result.ensureThen { [weak select] in
                 Guarantee { seal in
-                    if let select = select {
+                    if let select = select, select.presentingViewController != nil {
                         select.dismiss(animated: true, completion: {
                             seal(())
                         })
