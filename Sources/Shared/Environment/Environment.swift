@@ -107,7 +107,7 @@ public class AppEnvironment {
         get {
             if let value = underlyingAPI {
                 return value
-            } else if !isRunningTests || isTestingOnboarding, let server = Current.servers.all.first {
+            } else if !isRunningTests, let server = Current.servers.all.first {
                 let value = Current.api(for: server)
                 underlyingAPI = .value(value)
                 return .value(value)
@@ -239,8 +239,6 @@ public class AppEnvironment {
     public var isRunningTests: Bool {
         NSClassFromString("XCTest") != nil
     }
-
-    public var isTestingOnboarding = false
 
     public var isBackgroundRequestsImmediate = { true }
     public var isForegroundApp = { false }
