@@ -858,7 +858,7 @@ extension WebViewController: WKScriptMessageHandler {
                 return
             }
             // Possible values: connected, disconnected, auth-invalid
-            UIView.animate(withDuration: 1.0, delay: 3.0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
                 self.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
             }, completion: nil)
         case "tag/read":
