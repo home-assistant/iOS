@@ -479,10 +479,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let responseIdentifier = "PushActionResponse"
 
                 if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON) {
+                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
+                   let serverIdentifier = message.content["Server"] as? String,
+                   let server = Current.servers.server(forServerIdentifier: serverIdentifier)
+                {
                     Current.backgroundTask(withName: "watch-push-action") { _ in
-                        Current.api.then(on: nil) { api in
-                            api.handlePushAction(for: info)
+                        firstly {
+                            Current.api(for: server).handlePushAction(for: info)
                         }.ensure {
                             message.reply(.init(identifier: responseIdentifier))
                         }

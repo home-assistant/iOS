@@ -306,7 +306,8 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        guard let info = HomeAssistantAPI.PushActionInfo(response: response) else {
+        guard let info = HomeAssistantAPI.PushActionInfo(response: response),
+              let server = Current.servers.server(for: response.notification.request.content) else {
             completionHandler()
             return
         }
@@ -318,7 +319,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
                 Current.Log.info("sending via phone")
                 Communicator.shared.send(.init(
                     identifier: "PushAction",
-                    content: ["PushActionInfo": info.toJSON()],
+                    content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
                     reply: { message in
                         Current.Log.verbose("Received reply dictionary \(message)")
                         seal.fulfill(())
@@ -329,9 +330,8 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
                 })
             } else {
                 Current.Log.info("sending via local")
-                Current.api.then(on: nil) { api in
-                    api.handlePushAction(for: info)
-                }.pipe(to: seal.resolve)
+                Current.api(for: server).handlePushAction(for: info)
+                    .pipe(to: seal.resolve)
             }
 
             return promise
