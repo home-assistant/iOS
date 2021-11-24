@@ -6,7 +6,7 @@ final class ServerSelectRow: _PushRow<PushSelectorCell<AccountRowValue>>, RowTyp
         self.init(tag: tag, includeAll: false)
     }
 
-    init(tag: String?, includeAll: Bool) {
+    init(tag: String?, includeAll: Bool, _ initializer: (ServerSelectRow) -> Void = { _ in }) {
         super.init(tag: tag)
         title = NSLocalizedString("Server", comment: "")
         selectorTitle = NSLocalizedString("Server", comment: "")
@@ -31,5 +31,13 @@ final class ServerSelectRow: _PushRow<PushSelectorCell<AccountRowValue>>, RowTyp
         onPresent { _, to in
             to.enableDeselection = false
         }
+        cellUpdate { cell, row in
+            if row.isDisabled {
+                cell.accessoryType = .none
+            } else {
+                cell.accessoryType = .disclosureIndicator
+            }
+        }
+        initializer(self)
     }
 }
