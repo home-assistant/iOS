@@ -73,8 +73,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKApplicationRefreshBackgroundTask received")
 
-                Current.api.then(on: nil) {
-                    $0.updateComplications(passively: true)
+                firstly {
+                    when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
                 }.ensureThen {
                     Current.backgroundRefreshScheduler.schedule()
                 }.ensure {
@@ -273,8 +273,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         isUpdatingComplications = true
 
-        Current.api.then(on: nil) {
-            $0.updateComplications(passively: true)
+        firstly {
+            when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
         }.ensure { [self] in
             isUpdatingComplications = false
         }.ensure { [self] in
