@@ -221,7 +221,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.location.bullet.automations" = "Anwesenheitsbasierte Automatisierungen";
 "onboarding.permissions.location.bullet.history" = "Standortverlauf verfolgen";
 "onboarding.permissions.location.bullet.wifi" = "Interne URL zu Hause";
-"onboarding.permissions.location.description" = "Aktivieren Sie Standortdienste, um die automatische Erkennung von Anwesenheit zu ermöglichen für Automatisierungen.";
+"onboarding.permissions.location.description" = "Aktivieren Sie Standortdienste, um die automatische Erkennung von Anwesenheit für Automatisierungen zu ermöglichen.";
 "onboarding.permissions.location.grant_description" = "Allow location permission to create a device_tracker for your device.";
 "onboarding.permissions.location.title" = "Standort";
 "onboarding.permissions.motion.bullet.activity" = "Sensor für aktuellen Aktivitätstyp";
@@ -229,7 +229,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.motion.bullet.steps" = "Sensor für Schrittzählung";
 "onboarding.permissions.motion.description" = "Allow motion activity and pedometer data to be sent to Home Assistant";
 "onboarding.permissions.motion.grant_description" = "Erlauben Sie die Bewegungsberechtigung, um Sensoren für Bewegungs- und Schrittzählerdaten zu erstellen.";
-"onboarding.permissions.motion.title" = "Motion & Pedometer";
+"onboarding.permissions.motion.title" = "Bewegung & Schrittzähler";
 "onboarding.permissions.notification.bullet.alert" = "Erhalte Benachrichtigungen";
 "onboarding.permissions.notification.bullet.badge" = "App Symbol aktualisieren";
 "onboarding.permissions.notification.bullet.commands" = "Senden Sie Befehle an Ihr Gerät";

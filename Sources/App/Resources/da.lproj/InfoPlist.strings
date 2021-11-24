@@ -5,7 +5,7 @@
 "NSLocalNetworkUsageDescription" = "Finde og kommunikere med din Home Assistant-installation.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Vi anbefaler, at du vælger \"Tillad altid\" for at få den bedste lokalitet. Hvis du vælger \"Kun mens du bruger appen\", deaktiveres iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
 "NSLocationAlwaysUsageDescription" = "Vi har altid brug for adgang til din lokalitet for funktioner som iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
-"NSLocationUsageDescription" = "Når denne indstilling er aktiveret, sendes din enheds placering til din sporingsenhed i Home Assistant.";
+"NSLocationUsageDescription" = "Når denne indstilling er aktiveret, sendes din enheds lokalitet til din Home Assistant som en sporingsenhed.";
 "NSLocationWhenInUseUsageDescription" = "Hvis du kun tillader lokalitetsadgang, mens appen er i brug, deaktiveres iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
 "NSMicrophoneUsageDescription" = "Optag lyd ved hjælp af  Home Assistant brugerfladen";
 "NSMotionUsageDescription" = "Bevægelse bruges til at forbedre lokalitetssopdateringer med aktuel bevægelsestype samt levere grundlæggende skridttæller-data.";
@@ -13,4 +13,4 @@
 "NSPhotoLibraryUsageDescription" = "Adgang til fotobibliotek er nødvendig for at give mulighed for at gemme fotos fra webvisningen.";
 "NSSiriUsageDescription" = "Vi bruger Siri til at muliggøre, at oprettede genveje interagerer med appen.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send lokalitet";
-"TemporaryFullAccuracyReasonManualUpdate" = "Giv tilladelse til, at din sporingsenhed må benytte din aktuelle og præcise placering.";
+"TemporaryFullAccuracyReasonManualUpdate" = "Giv tilladelse til, at din sporingsenhed må benytte din aktuelle og præcise lokalitet.";

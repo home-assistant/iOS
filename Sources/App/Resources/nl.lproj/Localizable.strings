@@ -228,7 +228,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.permissions.motion.bullet.distance" = "Sensor voor afgelegde afstand";
 "onboarding.permissions.motion.bullet.steps" = "Sensor voor stappentelling";
 "onboarding.permissions.motion.description" = "Toestaan dat bewegingsactiviteiten en stappentellergegevens naar Home Assistant worden gezonden";
-"onboarding.permissions.motion.grant_description" = "Toesetmming voor beweging om sensoren te maken voor bewegings- en stappentellergegevens.";
+"onboarding.permissions.motion.grant_description" = "Toestemming geven voor beweging om sensoren te maken voor bewegings- en stappentellergegevens.";
 "onboarding.permissions.motion.title" = "Beweging en stappenteller";
 "onboarding.permissions.notification.bullet.alert" = "Ontvang waarschuwingen van meldingen";
 "onboarding.permissions.notification.bullet.badge" = "App-pictogrambadge bijwerken";

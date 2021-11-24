@@ -1,12 +1,12 @@
 "NFCReaderUsageDescription" = "NFC etiketlerini okumak ve yazmak, olayları tetiklemenizi sağlar.";
 "NSCameraUsageDescription" = "Fotoğraf çekin ve bunları Home Assistant sunucunuza gönderin.";
 "NSCrossWebsiteTrackingUsageDescription" = "Yapılandırmanız gerektiriyorsa, isteğe bağlı olarak web siteleri arası izlemeyi etkinleştirin.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
+"NSFocusStatusUsageDescription" = "Odak durumunuzu bir sensör olarak bildirin.";
 "NSLocalNetworkUsageDescription" = "Home Assistant örneğinizi bulun ve onunla iletişim kurun.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "En iyi konum deneyimi için \"Her Zaman İzin Ver\"i seçmenizi öneririz. \"Yalnızca Uygulamayı Kullanırken\" seçeneğinin seçilmesi, iBeacon'ları, coğrafi sınırları, arka planda konum güncellemelerini ve doğru raporlamayı devre dışı bırakır.";
+"NSLocationAlwaysUsageDescription" = "iBeacon'lar, coğrafi sınırlar, arka planda konum güncellemeleri ve doğru raporlama gibi özellikler için her zaman konumunuza erişmemiz gerekir.";
 "NSLocationUsageDescription" = "Etkinleştirildiğinde, cihaz konumunuz Home Assistant sunucunuza bir cihaz izleyici olarak gönderilir.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationWhenInUseUsageDescription" = "Yalnızca uygulama kullanımdayken konum erişimine izin vermek, iBeacon'ları, coğrafi sınırları, arka planda konum güncellemelerini ve doğru raporlamayı devre dışı bırakır.";
 "NSMicrophoneUsageDescription" = "Home Assistant ön uçunuzu kullanarak ses kaydedin.";
 "NSMotionUsageDescription" = "Hareket, mevcut hareket türüyle konum güncellemelerini iyileştirmek ve temel adımsayar verilerini sağlamak için kullanılır.";
 "NSPhotoLibraryAddUsageDescription" = "Web görünümünden fotoğraf kaydetmeye izin vermek için Fotoğraf Kitaplığı erişimi gereklidir.";

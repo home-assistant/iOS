@@ -251,8 +251,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "sensors.geocoded_location.setting.use_zones" = "使用區域名稱";
 "settings.connection_section.add_server" = "新增伺服器";
 "settings.connection_section.cloud_overrides_external" = "當透過 Cloud 連線時，將不使用外部 URL。不需要進行設定，除非您想關閉 Cloud 服務。";
-"settings.connection_section.connecting_via" = "連線：";
-"settings.connection_section.details" = "詳細";
+"settings.connection_section.connecting_via" = "連線模式";
+"settings.connection_section.details" = "詳細資料";
 "settings.connection_section.errors.cannot_remove_last_url" = "你無法移除唯一可用的網址";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.external_base_url.title" = "外部 URL";
@@ -384,12 +384,12 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.location.background_refresh.disabled" = "已關閉";
 "settings_details.location.background_refresh.enabled" = "已啟用";
 "settings_details.location.background_refresh.title" = "背景更新";
-"settings_details.location.location_accuracy.full" = "全滿";
-"settings_details.location.location_accuracy.reduced" = "縮小";
+"settings_details.location.location_accuracy.full" = "準確";
+"settings_details.location.location_accuracy.reduced" = "大約";
 "settings_details.location.location_accuracy.title" = "座標精確度";
-"settings_details.location.location_permission.always" = "總是允許";
+"settings_details.location.location_permission.always" = "永遠";
 "settings_details.location.location_permission.needs_request" = "已關閉";
-"settings_details.location.location_permission.never" = "從不";
+"settings_details.location.location_permission.never" = "永不";
 "settings_details.location.location_permission.title" = "座標權限";
 "settings_details.location.location_permission.while_in_use" = "使用時允許";
 "settings_details.location.motion_permission.denied" = "已拒絕";
@@ -426,7 +426,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.notifications.badge_section.automatic_setting.description" = "每次啟動 App 時即重置標記。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自動化";
 "settings_details.notifications.badge_section.button.title" = "重置標記";
-"settings_details.notifications.categories.deprecated_note" = "可回應動作通知將不再想要類別、將於未來的版本移除。";
+"settings_details.notifications.categories.deprecated_note" = "可回應動作通知將不再需要類別、將於未來的版本移除。";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.categories_synced.empty" = "無同步類別";
 "settings_details.notifications.categories_synced.footer" = "於 .yaml 中定義的類別無法於裝置上編輯。";
@@ -444,7 +444,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.notifications.permission.enabled" = "已啟用";
 "settings_details.notifications.permission.needs_request" = "已關閉";
 "settings_details.notifications.permission.title" = "權限";
-"settings_details.notifications.prompt_to_open_urls.title" = "請再次確認要打開網址";
+"settings_details.notifications.prompt_to_open_urls.title" = "於開啟網址前再次確認";
 "settings_details.notifications.push_id_section.header" = "推播 ID";
 "settings_details.notifications.push_id_section.not_registered" = "沒有可使用的遠端提示訊息";
 "settings_details.notifications.rate_limits.attempts" = "嘗試";
