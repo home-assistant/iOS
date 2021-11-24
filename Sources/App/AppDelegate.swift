@@ -460,15 +460,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
                 let responseIdentifier = "ActionRowPressedResponse"
 
-                guard let actionID = message.content["ActionID"] as? String else {
+                guard let actionID = message.content["ActionID"] as? String,
+                      let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
+                      let server = Current.servers.server(for: action) else {
                     Current.Log.warning("ActionID either does not exist or is not a string in the payload")
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
                     return
                 }
 
-                Current.api.then(on: nil) { api in
-                    api.HandleAction(actionID: actionID, source: .Watch)
-                }.done { _ in
+                firstly {
+                    Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
+                }.done {
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
                 }.catch { err -> Void in
                     Current.Log.error("Error during action event fire: \(err)")

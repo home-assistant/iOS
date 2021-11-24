@@ -124,8 +124,17 @@ class IncomingURLHandler {
                     })
                 }.asVoid()
             } else {
-                return Current.api.then(on: nil) { api -> Promise<Void> in
-                    api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+                if let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
+                   let server = Current.servers.server(for: action) {
+                    Current.sceneManager.showFullScreenConfirm(
+                        icon: MaterialDesignIcons(named: action.IconName),
+                        text: action.Text,
+                        onto: .value(windowController.window)
+                    )
+
+                    return Current.api(for: server).HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+                } else {
+                    return .init(error: HomeAssistantAPI.APIError.notConfigured)
                 }
             }
         }
@@ -368,7 +377,8 @@ extension IncomingURLHandler {
 
         let actionID = url.pathComponents[1]
 
-        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
+        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
+            let server = Current.servers.server(for: action) else {
             Current.sceneManager.showFullScreenConfirm(
                 icon: .alertCircleIcon,
                 text: L10n.UrlHandler.Error.actionNotFound,
@@ -383,8 +393,6 @@ extension IncomingURLHandler {
             onto: .value(windowController.window)
         )
 
-        Current.api.then(on: nil) { api in
-            api.HandleAction(actionID: actionID, source: source)
-        }.cauterize()
+        Current.api(for: server).HandleAction(actionID: actionID, source: source).cauterize()
     }
 }

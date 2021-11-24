@@ -13,8 +13,13 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
             return
         }
 
-        Current.api.then(on: nil) { api in
-            api.HandleAction(actionID: result.action.ID, source: .SiriShortcut)
+        guard let server = Current.servers.server(for: result.action) else {
+            completion(.init(code: .failure, userActivity: nil))
+            return
+        }
+
+        firstly {
+            Current.api(for: server).HandleAction(actionID: result.action.ID, source: .SiriShortcut)
         }.done {
             completion(.success(action: result.updated))
         }.catch { error in
