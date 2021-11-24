@@ -124,7 +124,7 @@ class ZoneManager {
 
     private func fire(event: ZoneManagerEvent) {
         guard let zone = event.associatedZone,
-              let server = Current.servers.server(for: .init(rawValue: zone.serverIdentifier)) else { return }
+              let server = Current.servers.server(forServerIdentifier: zone.serverIdentifier) else { return }
 
         switch event.eventType {
         case let .region(region, state):

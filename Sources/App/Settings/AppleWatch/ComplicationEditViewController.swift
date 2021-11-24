@@ -134,8 +134,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             }
 
             <<< ServerSelectRow("server") {
-                if let identifier = config.serverIdentifier,
-                   let server = Current.servers.server(for: .init(rawValue: identifier)) {
+                if let server = Current.servers.server(forServerIdentifier: config.serverIdentifier) {
                     $0.value = .server(server)
                 } else {
                     $0.value = Current.servers.all.first.flatMap { .server($0) }

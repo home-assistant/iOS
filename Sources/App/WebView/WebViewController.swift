@@ -274,11 +274,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 return server
             }
 
-            if let serverRawValue = serverRawValue {
-                return Current.servers.server(for: .init(rawValue: serverRawValue))
-            } else {
-                return nil
-            }
+            return Current.servers.server(forServerIdentifier: serverRawValue)
         }
     }
 
