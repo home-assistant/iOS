@@ -37,8 +37,24 @@ public extension ServerManager {
         all.first(where: { $0.info.connection.webhookID == webhookID })
     }
 
+    func server(forServerIdentifier rawIdentifier: String?) -> Server? {
+        if let rawIdentifier = rawIdentifier {
+            return server(for: .init(rawValue: rawIdentifier))
+        } else {
+            return nil
+        }
+    }
+
+    func server(for action: Action) -> Server? {
+        if let server = server(forServerIdentifier: action.serverIdentifier) {
+            return server
+        } else {
+            return Current.servers.all.first
+        }
+    }
+
     func server(for intent: SingleServerIntent) -> Server? {
-        if let server = intent.server?.identifier.flatMap({ server(for: .init(rawValue: $0)) }) {
+        if let server = server(forServerIdentifier: intent.server?.identifier) {
             return server
         } else {
             let all = all
