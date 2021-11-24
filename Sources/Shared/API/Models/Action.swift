@@ -22,7 +22,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var CreatedAt = Date()
     @objc public dynamic var Scene: RLMScene?
     @objc public dynamic var isServerControlled: Bool = false
-    @objc public dynamic var serverIdentifier: String?
+    @objc public dynamic var serverIdentifier: String = ""
 
     override public static func primaryKey() -> String? {
         #keyPath(ID)
@@ -62,6 +62,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
              \Action.Name,
              \Action.Text:
             return Scene == nil
+        case \Action.serverIdentifier:
+            return !isServerControlled
         default:
             return true
         }
