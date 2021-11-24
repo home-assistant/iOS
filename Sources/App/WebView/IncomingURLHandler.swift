@@ -39,6 +39,7 @@ class IncomingURLHandler {
             components.host = nil
 
             let isFromWidget = components.popWidgetAuthenticity()
+            let server = components.popWidgetServer(isFromWidget: isFromWidget)
 
             guard let rawURL = components.url?.absoluteString else {
                 return false
@@ -50,6 +51,8 @@ class IncomingURLHandler {
                 presenting.dismiss(animated: true, completion: { [windowController] in
                     windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: true)
                 })
+            } else if let server = server {
+                windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
             } else {
                 windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: isFromWidget)
             }
@@ -94,14 +97,21 @@ class IncomingURLHandler {
                        let panel = intent.page, let path = panel.identifier {
                         Current.Log.info("launching from shortcuts with panel \(panel)")
 
-                        #warning("multiserver")
-
-                        windowController.open(
-                            from: .deeplink,
-                            server: Current.servers.all.first!,
-                            urlString: "/" + path,
-                            skipConfirm: true
-                        )
+                        let urlString = "/" + path
+                        if let server = Current.servers.server(for: panel) {
+                            windowController.open(
+                                from: .deeplink,
+                                server: server,
+                                urlString: urlString,
+                                skipConfirm: true
+                            )
+                        } else {
+                            windowController.openSelectingServer(
+                                from: .deeplink,
+                                urlString: urlString,
+                                skipConfirm: true
+                            )
+                        }
                         return true
                     }
                 }

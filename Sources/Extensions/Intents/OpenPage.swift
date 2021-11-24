@@ -3,18 +3,31 @@ import PromiseKit
 import Shared
 
 class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
-    private func fetchOptions(completion: @escaping ([IntentPanel]?, Error?) -> Void) {
-        guard let connection = Current.apiConnection else {
-            completion(nil, nil)
-            return
+    private func panelsByServer() -> Promise<[(Server, [IntentPanel])]> {
+        when(resolved: Current.apis.map { api in
+            api.connection.send(.panels()).promise.map { (api.server, $0) }
+        }).compactMapValues { result in
+            switch result {
+            case let .fulfilled((server, panels)):
+                return (server, panels.allPanels.map { IntentPanel(panel: $0, server: server) })
+            case .rejected:
+                return nil
+            }
         }
+    }
 
-        firstly {
-            connection.send(.panels()).promise
-        }.done { panels in
-            completion(panels.allPanels.map { .init(panel: $0) }, nil)
-        }.catch { error in
-            completion(nil, error)
+    @available(iOS 14, *)
+    private func panelsIntentCollection() -> Promise<INObjectCollection<IntentPanel>> {
+        panelsByServer().map { panelsByServer in
+            .init(sections: panelsByServer.map { server, panels in
+                INObjectSection(title: server.info.name, items: panels)
+            })
+        }
+    }
+
+    private func panelsArray() -> Promise<[IntentPanel]> {
+        panelsByServer().map { panelsByServer in
+            panelsByServer.flatMap(\.1)
         }
     }
 
@@ -23,9 +36,7 @@ class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageInt
         for intent: WidgetOpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
     ) {
-        fetchOptions { dashboards, error in
-            completion(dashboards.flatMap { .init(items: $0) }, error)
-        }
+        panelsIntentCollection().done { completion($0, nil) }.catch { completion(nil, $0) }
     }
 
     @available(iOS 14, *)
@@ -33,22 +44,20 @@ class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageInt
         for intent: OpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
     ) {
-        fetchOptions { dashboards, error in
-            completion(dashboards.flatMap { .init(items: $0) }, error)
-        }
+        panelsIntentCollection().done { completion($0, nil) }.catch { completion(nil, $0) }
     }
 
     func providePagesOptions(
         for intent: WidgetOpenPageIntent,
         with completion: @escaping ([IntentPanel]?, Error?) -> Void
     ) {
-        fetchOptions(completion: completion)
+        panelsArray().done { completion($0, nil) }.catch { completion(nil, $0) }
     }
 
     func providePageOptions(
         for intent: OpenPageIntent,
         with completion: @escaping ([IntentPanel]?, Error?) -> Swift.Void
     ) {
-        fetchOptions(completion: completion)
+        panelsArray().done { completion($0, nil) }.catch { completion(nil, $0) }
     }
 }

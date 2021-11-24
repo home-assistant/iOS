@@ -128,7 +128,7 @@ public extension WidgetActionsIntent {
 
 @available(iOS 13, watchOS 7, *)
 public extension IntentPanel {
-    convenience init(panel: HAPanel) {
+    convenience init(panel: HAPanel, server: Server) {
         let image: INImage?
 
         let icon = panel.icon?.normalizingIconString
@@ -152,13 +152,16 @@ public extension IntentPanel {
                 subtitle: nil,
                 image: image
             )
-        } else {
+        } else if Current.servers.all.count > 1 {
             self.init(
                 identifier: panel.path,
-                display: panel.title
+                display: panel.title + " (\(server.info.name))"
             )
+        } else {
+            self.init(identifier: panel.path, display: panel.title)
         }
         self.icon = icon
+        self.server = IntentServer(server: server)
     }
 
     var widgetURL: URL {
@@ -166,6 +169,9 @@ public extension IntentPanel {
         components.scheme = "homeassistant"
         components.host = "navigate"
         components.path = "/" + (identifier ?? "lovelace")
+        if let server = Current.servers.server(for: self) {
+            components.insertWidgetServer(server: server)
+        }
         return components.url!
     }
 

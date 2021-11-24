@@ -52,10 +52,12 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
                 .map(\.allPanels)
         }.map { (panels: [HAPanel]) -> [IntentPanel] in
             if existing.isEmpty {
-                return panels.map(IntentPanel.init(panel:))
+                #warning("multiserver")
+                return panels.map { IntentPanel(panel: $0, server: Current.servers.all.first!) }
             } else {
                 // the configured values may be ancient, use the newer version but keep the same list
-                let intentified = panels.map(IntentPanel.init(panel:))
+                #warning("multiserver")
+                let intentified = panels.map { IntentPanel(panel: $0, server: Current.servers.all.first!) }
                 return existing.compactMap { existingValue in
                     intentified.first(where: { $0.identifier == existingValue.identifier }) ?? existingValue
                 }
