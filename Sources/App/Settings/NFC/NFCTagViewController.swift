@@ -89,7 +89,7 @@ class NFCTagViewController: HAFormViewController {
             tag: "example-triger",
             header: L10n.Nfc.Detail.exampleTrigger,
             yamlGetter: { [identifier] () -> String in
-                return """
+                """
                 - platform: tag
                   tag_id: \(identifier)
                 """

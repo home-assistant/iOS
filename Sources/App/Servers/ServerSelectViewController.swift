@@ -35,7 +35,7 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
 
         title = NSLocalizedString("Select Server", comment: "")
         navigationItem.leftBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(_:)))
+            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(_:))),
         ]
     }
 
@@ -91,7 +91,7 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
         form +++ Section(rows.map { value in
             HomeAssistantAccountRow {
                 $0.value = value
-                $0.onCellSelection { [resultSeal] cell, row in
+                $0.onCellSelection { [resultSeal] _, _ in
                     resultSeal.fulfill(value)
                 }
             }

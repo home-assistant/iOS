@@ -378,7 +378,7 @@ extension IncomingURLHandler {
         let actionID = url.pathComponents[1]
 
         guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-            let server = Current.servers.server(for: action) else {
+              let server = Current.servers.server(for: action) else {
             Current.sceneManager.showFullScreenConfirm(
                 icon: .alertCircleIcon,
                 text: L10n.UrlHandler.Error.actionNotFound,

@@ -372,7 +372,7 @@ class ActionPreview: UIView {
 
     @objc func handleGesture(gesture: UITapGestureRecognizer) {
         guard let action = action,
-                let server = Current.servers.server(forServerIdentifier: action.serverIdentifier) else {
+              let server = Current.servers.server(forServerIdentifier: action.serverIdentifier) else {
             return
         }
 
