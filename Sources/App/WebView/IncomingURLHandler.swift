@@ -230,9 +230,13 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "eventName")
             let eventData = cleanParamters
 
-            Current.api.then(on: nil) { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.done { _ in
+            firstly { () -> Promise<Void> in
+                if let api = Current.apis.first {
+                    return api.CreateEvent(eventType: eventName, eventData: eventData)
+                } else {
+                    throw XCallbackError.generalError
+                }
+            }.done {
                 success(nil)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during X-Callback-URL call: \(error)")
@@ -254,9 +258,13 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "service")
             let serviceData = cleanParamters
 
-            Current.api.then(on: nil) { api in
-                api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
-            }.done { _ in
+            firstly { () -> Promise<Void> in
+                if let api = Current.apis.first {
+                    return api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
+                } else {
+                    throw XCallbackError.generalError
+                }
+            }.done {
                 success(nil)
             }.catch { error in
                 Current.Log.error("Received error from callService during X-Callback-URL call: \(error)")
@@ -289,27 +297,35 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "template")
             let variablesDict = cleanParamters
 
-            Current.apiConnection?.subscribe(
-                to: .renderTemplate(template, variables: variablesDict),
-                initiated: { result in
-                    if case let .failure(error) = result {
-                        Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
-                        failure(XCallbackError.generalError)
+            if let api = Current.apis.first {
+                api.connection.subscribe(
+                    to: .renderTemplate(template, variables: variablesDict),
+                    initiated: { result in
+                        if case let .failure(error) = result {
+                            Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
+                            failure(XCallbackError.generalError)
+                        }
+                    }, handler: { token, data in
+                        token.cancel()
+                        success(["rendered": String(describing: data.result)])
                     }
-                }, handler: { token, data in
-                    token.cancel()
-                    success(["rendered": String(describing: data.result)])
-                }
-            )
+                )
+            } else {
+                failure(XCallbackError.generalError)
+            }
         }
     }
 
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
-        Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
-        }.done { _ in
+        firstly { () -> Promise<Void> in
+            if let api = Current.apis.first {
+                return api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
+            } else {
+                throw HomeAssistantAPI.APIError.notConfigured
+            }
+        }.done {
             self.showAlert(
                 title: L10n.UrlHandler.FireEvent.Success.title,
                 message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1])
@@ -330,8 +346,12 @@ extension IncomingURLHandler {
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
-        Current.api.then(on: nil) { api in
-            api.CallService(domain: domain, service: service, serviceData: serviceData)
+        firstly { () -> Promise<Void> in
+            if let api = Current.apis.first {
+                return api.CallService(domain: domain, service: service, serviceData: serviceData)
+            } else {
+                throw HomeAssistantAPI.APIError.notConfigured
+            }
         }.done { _ in
             self.showAlert(
                 title: L10n.UrlHandler.CallService.Success.title,
