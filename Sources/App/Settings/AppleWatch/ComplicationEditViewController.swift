@@ -139,6 +139,13 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 } else {
                     $0.value = Current.servers.all.first.flatMap { .server($0) }
                 }
+                $0.onChange { [form] row in
+                    for section in form.allSections {
+                        if let section = section as? TemplateSection, let server = row.value?.server {
+                            section.server = server
+                        }
+                    }
+                }
             }
 
             <<< PushRow<ComplicationTemplate> {
@@ -219,7 +226,6 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
                 server: server,
                 initializeInput: {
-#warning("multiserver - this server is captured initially, needs updating after")
                     $0.tag = "gauge"
                     $0.title = L10n.Watch.Configurator.Rows.Gauge.title
                     $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
@@ -294,7 +300,6 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
                 server: server,
                 initializeInput: {
-#warning("multiserver - this server is captured initially, needs updating after")
                     $0.tag = "ring_value"
                     $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
                     $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
@@ -494,7 +499,6 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             dataDict = slugDict
         }
 
-#warning("multiserver - this server is captured initially, needs updating after")
         let section = TemplateSection(
             header: location.label,
             footer: location.description,
