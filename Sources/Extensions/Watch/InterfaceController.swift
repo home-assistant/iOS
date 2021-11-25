@@ -78,7 +78,6 @@ class InterfaceController: WKInterfaceController {
         DispatchQueue.main.async {
             guard let row = self.tableView.rowController(at: index) as? ActionRowType,
                   let action = self.actions?[index] else { return }
-            Current.Log.verbose("Setup row \(index) with action \(action)")
             row.group.setBackgroundColor(UIColor(hex: action.BackgroundColor))
             row.indicator = EMTLoadingIndicator(
                 interfaceController: self,
