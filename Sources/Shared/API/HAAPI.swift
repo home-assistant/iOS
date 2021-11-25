@@ -770,8 +770,7 @@ public class HomeAssistantAPI {
     }
 
     #if os(iOS)
-    @available(*, deprecated)
-    public func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
+    public static func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
         Current.backgroundTask(withName: "manual-location-update") { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
@@ -798,9 +797,9 @@ public class HomeAssistantAPI {
                         }
                     }
                 }
-            }.then { [self] () -> Promise<Void> in
+            }.then { () -> Promise<Void> in
                 func updateWithoutLocation() -> Promise<Void> {
-                    UpdateSensors(trigger: .Manual)
+                    when(fulfilled: Current.apis.map { $0.UpdateSensors(trigger: .Manual) })
                 }
 
                 if Current.settingsStore.isLocationEnabled(for: applicationState) {

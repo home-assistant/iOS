@@ -251,8 +251,8 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                         row.value = true
                         row.updateCell()
 
-                        Current.api.then { api in
-                            api.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
+                        firstly {
+                            HomeAssistantAPI.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
                         }.ensure {
                             row.value = false
                             row.updateCell()
