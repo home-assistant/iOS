@@ -286,5 +286,6 @@ public class ModelManager: ServerObserver {
 
     public func serversDidChange(_ serverManager: ServerManager) {
         subscribe(definitions: subscribedSubscriptions)
+        cleanup().cauterize()
     }
 }
