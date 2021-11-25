@@ -4,16 +4,19 @@ import Shared
 
 public final class TemplateSection: Section {
     private var subscriptionToken: HACancellable?
+    private let server: Server
     var displayResult: (Any) throws -> String
 
     init(
         header: String? = nil,
         footer: String? = nil,
         displayResult: @escaping (Any) throws -> String = { String(describing: $0) },
+        server: Server,
         initializeInput: (TextAreaRow) -> Void,
         initializeSection: (Section) -> Void
     ) {
         self.displayResult = displayResult
+        self.server = server
         super.init(header: header, footer: footer)
 
         append(inputRow)
@@ -158,8 +161,8 @@ public final class TemplateSection: Section {
         updateResult(with: nil)
 
         let delay: TimeInterval = skipDelay ? 0 : (Current.isCatalyst ? 0.5 : 1.0)
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
-            self?.subscriptionToken = Current.apiConnection?.subscribe(
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self, server] _ in
+            self?.subscriptionToken = Current.api(for: server).connection.subscribe(
                 to: .renderTemplate(template),
                 initiated: { result in
                     if case let .failure(error) = result {

@@ -217,6 +217,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 header: L10n.Watch.Configurator.Sections.Gauge.header,
                 footer: L10n.Watch.Configurator.Sections.Gauge.footer,
                 displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
+                server: server,
                 initializeInput: {
                     $0.tag = "gauge"
                     $0.title = L10n.Watch.Configurator.Rows.Gauge.title
@@ -290,6 +291,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 header: L10n.Watch.Configurator.Sections.Ring.header,
                 footer: L10n.Watch.Configurator.Sections.Ring.footer,
                 displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
+                server: server,
                 initializeInput: {
                     $0.tag = "ring_value"
                     $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
@@ -494,6 +496,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             header: location.label,
             footer: location.description,
             displayResult: { try Self.validate(result: $0, expectingPercentile: false) },
+            server: server,
             initializeInput: {
                 $0.tag = key + "_text"
                 $0.title = location.label

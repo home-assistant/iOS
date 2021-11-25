@@ -151,6 +151,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     })
                     row.presentationMode = .show(controllerProvider: .callback(builder: {
                         TemplateEditViewController(
+                            server: Current.api.value!.server,
                             initial: Current.settingsStore.menuItemTemplate,
                             saveHandler: { Current.settingsStore.menuItemTemplate = $0 }
                         )
