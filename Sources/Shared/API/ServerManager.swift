@@ -2,6 +2,7 @@ import HAKit
 import KeychainAccess
 import UserNotifications
 import Version
+import Sodium
 
 public protocol ServerObserver: AnyObject {
     func serversDidChange(_ serverManager: ServerManager)
@@ -18,6 +19,9 @@ public protocol ServerManager {
 
     func add(observer: ServerObserver)
     func remove(observer: ServerObserver)
+
+    func restorableState() -> Data
+    func restoreState(_ state: Data)
 }
 
 private extension Identifier where ObjectType == Server {
@@ -141,7 +145,9 @@ public class ServerManagerImpl: ServerManager {
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
         keychain.set(
             serverInfo: with(serverInfo) {
-                $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
+                if $0.sortOrder == .max {
+                    $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
+                }
             },
             key: identifier.keychainKey,
             encoder: encoder
@@ -234,6 +240,44 @@ public class ServerManagerImpl: ServerManager {
 
             add(identifier: Server.historicId, serverInfo: serverInfo)
             try historicKeychain.removeAll()
+        }
+    }
+
+    public func restorableState() -> Data {
+        var state = [String: ServerInfo]()
+
+        for (id, info) in keychain.allServerInfo(decoder: decoder) {
+            state[id] = info
+        }
+
+        do {
+            return try encoder.encode(state)
+        } catch {
+            Current.Log.error("failed to encode state: \(error)")
+            return Data()
+        }
+    }
+
+    public func restoreState(_ state: Data) {
+        do {
+            let state = try decoder.decode([String: ServerInfo].self, from: state)
+
+            // delete servers that aren't present
+            for key in keychain.allKeys() where state[key] == nil {
+                try keychain.remove(key)
+            }
+
+            // set the values for the still-existing or new servers
+            for (key, serverInfo) in state {
+                let identifier = Identifier<Server>(rawValue: key)
+                if let existing = cache.server[identifier] {
+                    existing.info = serverInfo
+                } else {
+                    add(identifier: identifier, serverInfo: serverInfo)
+                }
+            }
+        } catch {
+            Current.Log.error("failed to decode state: \(error)")
         }
     }
 }

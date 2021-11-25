@@ -427,13 +427,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupWatchCommunicator() {
-        _ = NotificationCenter.default.addObserver(
-            forName: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            queue: nil
-        ) { _ in
-            _ = HomeAssistantAPI.SyncWatchContext()
-        }
+        Current.servers.add(observer: self)
 
         // This directly mutates the data structure for observations to avoid race conditions.
 
@@ -580,4 +574,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // swiftlint:disable:next file_length
+}
+
+extension AppDelegate: ServerObserver {
+    func serversDidChange(_ serverManager: ServerManager) {
+        _ = HomeAssistantAPI.SyncWatchContext()
+    }
 }

@@ -9,28 +9,21 @@ import ClockKit
 
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
-    @available(*, deprecated)
     private static var watchContext: Content {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
-        if content["iphone_permanent_id"] != nil {
-            content = [:]
-        }
-
         #if os(iOS)
-        if let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo) {
-            content["connection_info"] = connInfo
-        }
-
-        if let tokenInfo = try? JSONEncoder().encode(Current.settingsStore.tokenInfo) {
-            content["token_info"] = tokenInfo
-        }
+        content["servers"] = Current.servers.restorableState()
 
         content["actions"] = Array(Current.realm().objects(Action.self)).toJSON()
 
         content["complications"] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
-        content["isOnInternalNetwork"] = Current.settingsStore.connectionInfo?.isOnInternalNetwork
+        #if targetEnvironment(simulator)
+        content["SSID"] = "SimulatorWiFi"
+        #else
+        content["SSID"] = Current.connectivity.currentWiFiSSID()
+        #endif
 
         #elseif os(watchOS)
 
@@ -47,7 +40,6 @@ public extension HomeAssistantAPI {
         return content
     }
 
-    @available(*, deprecated)
     static func SyncWatchContext() -> NSError? {
         #if os(iOS)
         guard case .paired(.installed) = Communicator.shared.currentWatchState else {
@@ -60,12 +52,12 @@ public extension HomeAssistantAPI {
 
         do {
             try Communicator.shared.sync(context)
+            Current.Log.info("updated context")
         } catch let error as NSError {
             Current.Log.error("Updating the context failed: \(error)")
             return error
         }
 
-        Current.Log.verbose("Set the context to \(context)")
         return nil
     }
 

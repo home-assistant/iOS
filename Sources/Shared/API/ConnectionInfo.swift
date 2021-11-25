@@ -220,11 +220,6 @@ public struct ConnectionInfo: Codable, Equatable {
     public var isOnInternalNetwork: Bool {
         #if targetEnvironment(simulator)
         return true
-        #elseif os(watchOS)
-        if let isOnNetwork = Communicator.shared.mostRecentlyReceievedContext.content["isOnInternalNetwork"] as? Bool {
-            return isOnNetwork
-        }
-        return false
         #else
         if let current = Current.connectivity.currentWiFiSSID(),
            internalSSIDs?.contains(current) == true {

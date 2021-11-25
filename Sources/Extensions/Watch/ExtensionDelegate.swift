@@ -169,47 +169,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Context.observations.store[.init(queue: .main)] = { context in
+        Context.observations.store[.init(queue: .main)] = { [weak self] context in
             Current.Log.verbose("Received context: \(context)")
 
-            _ = HomeAssistantAPI.SyncWatchContext()
-
-            let realm = Current.realm()
-
-            if let connInfoData = context.content["connection_info"] as? Data {
-                let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoData)
-//                Current.settingsStore.connectionInfo = connInfo
-            }
-
-            if let tokenInfoData = context.content["token_info"] as? Data {
-                let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoData)
-//                Current.settingsStore.tokenInfo = tokenInfo
-                Current.resetAPI()
-            }
-
-            if let actionsDictionary = context.content["actions"] as? [[String: Any]] {
-                let actions = actionsDictionary.compactMap { try? Action(JSON: $0) }
-
-                Current.Log.verbose("Updating actions from context \(actions)")
-
-                realm.reentrantWrite {
-                    realm.delete(realm.objects(Action.self))
-                    realm.add(actions, update: .all)
-                }
-            }
-
-            if let complicationsDictionary = context.content["complications"] as? [[String: Any]] {
-                let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
-
-                Current.Log.verbose("Updating complications from context \(complications)")
-
-                realm.reentrantWrite {
-                    realm.delete(realm.objects(WatchComplication.self))
-                    realm.add(complications, update: .all)
-                }
-            }
-
-            self.updateComplications()
+            self?.updateContext(context.content)
         }
 
         ComplicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
@@ -264,6 +227,38 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             // and set up a new one for the next chain of updates
             (watchConnectivityBackgroundPromise, watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
         }
+    }
+
+    private func updateContext(_ content: Content) {
+        let realm = Current.realm()
+
+        if let servers = content["servers"] as? Data {
+            Current.servers.restoreState(servers)
+        }
+
+        if let actionsDictionary = content["actions"] as? [[String: Any]] {
+            let actions = actionsDictionary.compactMap { try? Action(JSON: $0) }
+
+            Current.Log.verbose("Updating actions from context \(actions)")
+
+            realm.reentrantWrite {
+                realm.delete(realm.objects(Action.self))
+                realm.add(actions, update: .all)
+            }
+        }
+
+        if let complicationsDictionary = content["complications"] as? [[String: Any]] {
+            let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
+
+            Current.Log.verbose("Updating complications from context \(complications)")
+
+            realm.reentrantWrite {
+                realm.delete(realm.objects(WatchComplication.self))
+                realm.add(complications, update: .all)
+            }
+        }
+
+        updateComplications()
     }
 
     private var isUpdatingComplications = false
