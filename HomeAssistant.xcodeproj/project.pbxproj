@@ -419,6 +419,7 @@
 		11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */; };
 		11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */; };
 		11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */; };
+		11F2E7B327500DAD00CF144C /* PickAServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2E7B227500DAD00CF144C /* PickAServerError.swift */; };
 		11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */; };
 		11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */; };
@@ -1440,6 +1441,7 @@
 		11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectRow.swift; sourceTree = "<group>"; };
 		11F20BC6274C60FF00DFB163 /* PushProviderConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushProviderConfiguration.swift; sourceTree = "<group>"; };
 		11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+Fakes.swift"; sourceTree = "<group>"; };
+		11F2E7B227500DAD00CF144C /* PickAServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickAServerError.swift; sourceTree = "<group>"; };
 		11F2F1EB2586ED6100F61F7C /* NotificationAttachmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.swift; sourceTree = "<group>"; };
 		11F2F2082586FB0C00F61F7C /* NotificationAttachmentManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentManager.test.swift; sourceTree = "<group>"; };
 		11F2F22525871C3100F61F7C /* NotificationAttachmentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAttachmentParser.swift; sourceTree = "<group>"; };
@@ -3148,6 +3150,7 @@
 				112B705A2526B1C500FEAA76 /* UpdateSensors.swift */,
 				115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */,
 				115560E4270116AF00A8F818 /* OpenPage.swift */,
+				11F2E7B227500DAD00CF144C /* PickAServerError.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -5334,6 +5337,7 @@
 				11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
+				11F2E7B327500DAD00CF144C /* PickAServerError.swift in Sources */,
 				115BC82B267704E300452430 /* FocusStatusIntentHandler.swift in Sources */,
 				112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */,
 				111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */,
