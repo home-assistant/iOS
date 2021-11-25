@@ -207,6 +207,7 @@ class NotificationActionConfigurator: HAFormViewController, TypedRowControllerTy
                     let formVals = form.values(includeHidden: true)
 
                     return NotificationAction.exampleTrigger(
+                        api: Current.api.value!,
                         identifier: formVals["identifier"] as? String ?? "",
                         category: category.Identifier,
                         textInput: formVals["textInput"] as? Bool ?? false
