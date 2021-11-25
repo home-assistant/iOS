@@ -61,7 +61,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
                     return existing.compactMap { existingValue in
                         intentified.first(where: {
                             $0.identifier == existingValue.identifier &&
-                            $0.server == existingValue.server
+                                $0.server == existingValue.server
                         }) ?? existingValue
                     }
                 }

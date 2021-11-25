@@ -9,23 +9,28 @@ struct WidgetOpenPage: Widget {
             kind: WidgetOpenPageIntent.widgetKind,
             intent: WidgetOpenPageIntent.self,
             provider: WidgetOpenPageProvider(),
-            content: {
+            content: { entry in
                 WidgetBasicContainerView(
                     emptyViewGenerator: {
                         AnyView(WidgetEmptyView(message: L10n.Widgets.OpenPage.notConfigured))
                     },
-                    contents: $0.pages.map { panel in
-                        WidgetBasicViewModel(
-                            id: panel.identifier!,
-                            title: panel.displayString,
-                            widgetURL: panel.widgetURL,
-                            icon: panel.materialDesignIcon,
-                            showsChevron: true,
-                            textColor: .white,
-                            iconColor: .white,
-                            backgroundColor: Color(Constants.darkerTintColor)
-                        )
-                    }
+                    contents: {
+                        let showSubtitle = Current.servers.all.count > 1
+
+                        return entry.pages.map { panel in
+                            WidgetBasicViewModel(
+                                id: panel.identifier!,
+                                title: panel.displayString,
+                                subtitle: showSubtitle ? Current.servers.server(for: panel)?.info.name : nil,
+                                widgetURL: panel.widgetURL,
+                                icon: panel.materialDesignIcon,
+                                showsChevron: true,
+                                textColor: .white,
+                                iconColor: .white,
+                                backgroundColor: Color(Constants.darkerTintColor)
+                            )
+                        }
+                    }()
                 )
             }
         )

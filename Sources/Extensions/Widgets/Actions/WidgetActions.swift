@@ -18,6 +18,7 @@ struct WidgetActions: Widget {
                         WidgetBasicViewModel(
                             id: action.ID,
                             title: action.Text,
+                            subtitle: nil,
                             widgetURL: action.widgetLinkURL,
                             icon: MaterialDesignIcons(serversideValueNamed: action.IconName),
                             textColor: .init(hex: action.TextColor),
