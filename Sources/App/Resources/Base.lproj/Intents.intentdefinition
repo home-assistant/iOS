@@ -1871,7 +1871,7 @@
 			<key>INTypeDisplayNameID</key>
 			<string>Zoqsph</string>
 			<key>INTypeLastPropertyTag</key>
-			<integer>108</integer>
+			<integer>111</integer>
 			<key>INTypeName</key>
 			<string>IntentPanel</string>
 			<key>INTypeProperties</key>
@@ -1949,14 +1949,10 @@
 					<integer>6</integer>
 					<key>INTypePropertyName</key>
 					<string>server</string>
-					<key>INTypePropertyObjectType</key>
-					<string>IntentServer</string>
-					<key>INTypePropertyObjectTypeNamespace</key>
-					<string>sI7YSe</string>
 					<key>INTypePropertyTag</key>
-					<integer>108</integer>
+					<integer>111</integer>
 					<key>INTypePropertyType</key>
-					<string>Object</string>
+					<string>String</string>
 				</dict>
 			</array>
 		</dict>
