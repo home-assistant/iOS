@@ -4,7 +4,11 @@ import Shared
 
 public final class TemplateSection: Section {
     private var subscriptionToken: HACancellable?
-    private let server: Server
+    var server: Server {
+        didSet {
+            updateResultSubscription(skipDelay: true)
+        }
+    }
     var displayResult: (Any) throws -> String
 
     init(
