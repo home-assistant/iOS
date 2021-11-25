@@ -46,7 +46,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         with completion: @escaping ([String]?, Error?) -> Void
     ) {
         guard let server = Current.servers.server(for: intent) else {
-            completion(nil, nil)
+            completion(nil, PickAServerError.error)
             return
         }
 
