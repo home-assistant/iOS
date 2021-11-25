@@ -161,7 +161,7 @@ public extension IntentPanel {
             self.init(identifier: panel.path, display: panel.title)
         }
         self.icon = icon
-        self.server = IntentServer(server: server)
+        self.serverIdentifier = server.identifier.rawValue
     }
 
     var widgetURL: URL {

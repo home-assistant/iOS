@@ -1942,13 +1942,13 @@
 				</dict>
 				<dict>
 					<key>INTypePropertyDisplayName</key>
-					<string>Server</string>
+					<string>Server Identifier</string>
 					<key>INTypePropertyDisplayNameID</key>
 					<string>rU3vhT</string>
 					<key>INTypePropertyDisplayPriority</key>
 					<integer>6</integer>
 					<key>INTypePropertyName</key>
-					<string>server</string>
+					<string>serverIdentifier</string>
 					<key>INTypePropertyTag</key>
 					<integer>111</integer>
 					<key>INTypePropertyType</key>
