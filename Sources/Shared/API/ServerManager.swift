@@ -124,7 +124,6 @@ public class ServerManagerImpl: ServerManager {
 
     public var all: [Server] {
         if !cache.restrictCaching, let cachedServers = cache.all {
-            #warning("multiserver, need to watch for server changes in extensions better")
             return cachedServers
         } else {
             let servers = loadServers()
@@ -143,21 +142,18 @@ public class ServerManagerImpl: ServerManager {
 
     @discardableResult
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
-        keychain.set(
-            serverInfo: with(serverInfo) {
-                if $0.sortOrder == .max {
-                    $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
-                }
-            },
-            key: identifier.keychainKey,
-            encoder: encoder
-        )
+        let setValue = with(serverInfo) {
+            if $0.sortOrder == .max {
+                $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
+            }
+        }
+
+        keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
 
         cache.all = nil
         notify()
 
-        #warning("can i remove this optional?")
-        return server(for: identifier)!
+        return server(key: identifier.keychainKey, value: setValue)
     }
 
     public func remove(identifier: Identifier<Server>) {
@@ -181,40 +177,44 @@ public class ServerManagerImpl: ServerManager {
 
     private func loadServers() -> [Server] {
         keychain.allServerInfo(decoder: decoder).map { key, value in
-            let identifier = Identifier<Server>(keychainKey: key)
-
-            if let server = cache.server[identifier] {
-                return server
-            }
-
-            var fallback = value
-
-            let server = Server(identifier: identifier, getter: { [cache, keychain, decoder] in
-                if let info = cache.info[identifier], !cache.restrictCaching {
-                    return info
-                } else {
-                    let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
-                    cache.info[identifier] = info
-                    return info
-                }
-            }, setter: { [weak self] baseServerInfo in
-                guard let self = self else { return }
-
-                var serverInfo = baseServerInfo
-
-                // update active URL so we can update just once if it's different than the save is doing
-                _ = serverInfo.connection.activeURL()
-
-                guard self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
-                fallback = serverInfo
-
-                self.cache.info[identifier] = serverInfo
-                self.keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
-                self.notify()
-            })
-            cache.server[identifier] = server
-            return server
+            server(key: key, value: value)
         }.sorted()
+    }
+
+    private func server(key: String, value: ServerInfo) -> Server {
+        let identifier = Identifier<Server>(keychainKey: key)
+
+        if let server = cache.server[identifier] {
+            return server
+        }
+
+        var fallback = value
+
+        let server = Server(identifier: identifier, getter: { [cache, keychain, decoder] in
+            if let info = cache.info[identifier], !cache.restrictCaching {
+                return info
+            } else {
+                let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
+                cache.info[identifier] = info
+                return info
+            }
+        }, setter: { [weak self] baseServerInfo in
+            guard let self = self else { return }
+
+            var serverInfo = baseServerInfo
+
+            // update active URL so we can update just once if it's different than the save is doing
+            _ = serverInfo.connection.activeURL()
+
+            guard self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
+            fallback = serverInfo
+
+            self.cache.info[identifier] = serverInfo
+            self.keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
+            self.notify()
+        })
+        cache.server[identifier] = server
+        return server
     }
 
     private func migrateIfNeeded() throws {
