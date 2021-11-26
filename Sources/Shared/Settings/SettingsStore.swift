@@ -13,24 +13,6 @@ public class SettingsStore {
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
     public static let menuRelatedSettingDidChange: Notification.Name = .init("menuRelatedSettingDidChange")
     public static let locationRelatedSettingDidChange: Notification.Name = .init("locationRelatedSettingDidChange")
-    /// This may be posted on any thread
-    @available(*, deprecated)
-    public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
-
-    @available(*, deprecated)
-    public var tokenInfo: TokenInfo? {
-        Current.servers.all.first?.info.token
-    }
-
-    @available(*, deprecated)
-    public var connectionInfo: ConnectionInfo? {
-        Current.servers.all.first?.info.connection
-    }
-
-    @available(*, deprecated)
-    internal var serverVersion: Version? {
-        Current.servers.all.first?.info.version
-    }
 
     public var pushID: String? {
         get {

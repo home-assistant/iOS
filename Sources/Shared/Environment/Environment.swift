@@ -102,35 +102,6 @@ public class AppEnvironment {
 
     private var underlyingAPI: Promise<HomeAssistantAPI>?
 
-    @available(*, deprecated)
-    public var api: Promise<HomeAssistantAPI> {
-        get {
-            if let value = underlyingAPI {
-                return value
-            } else if !isRunningTests, let server = Current.servers.all.first {
-                let value = Current.api(for: server)
-                underlyingAPI = .value(value)
-                return .value(value)
-            } else {
-                return .init(error: HomeAssistantAPI.APIError.notConfigured)
-            }
-        }
-        set {
-            underlyingAPI = newValue
-        }
-    }
-
-    @available(*, deprecated)
-    public var apiConnection: HAConnection? {
-        api.value?.connection
-    }
-
-    @available(*, deprecated)
-    public func resetAPI() {
-        apiConnection?.disconnect()
-        underlyingAPI = nil
-    }
-
     public var modelManager = ModelManager()
 
     public var settingsStore = SettingsStore()
@@ -189,8 +160,6 @@ public class AppEnvironment {
 
     public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
 
-    @available(*, deprecated)
-    public lazy var serverVersion: () -> Version? = { [settingsStore] in settingsStore.serverVersion }
     public lazy var clientVersion: () -> Version = { Constants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
