@@ -292,13 +292,26 @@ public class SettingsStore {
         }
     }
 
-    @available(*, deprecated)
-    public var menuItemTemplate: String {
+    public var menuItemTemplate: (server: Server, template: String)? {
         get {
-            prefs.string(forKey: "menuItemTemplate") ?? ""
+            let server: Server?
+
+            if let serverIdentifier = prefs.string(forKey: "menuItemTemplate-server") {
+                server = Current.servers.server(forServerIdentifier: serverIdentifier)
+            } else {
+                // backwards compatibility to before servers
+                server = Current.servers.all.first
+            }
+
+            if let server = server {
+                return (server, prefs.string(forKey: "menuItemTemplate") ?? "")
+            } else {
+                return nil
+            }
         }
         set {
-            prefs.setValue(newValue, forKey: "menuItemTemplate")
+            prefs.setValue(newValue?.0.identifier.rawValue, forKey: "menuItemTemplate-server")
+            prefs.setValue(newValue?.1, forKey: "menuItemTemplate")
             NotificationCenter.default.post(
                 name: Self.menuRelatedSettingDidChange,
                 object: nil,

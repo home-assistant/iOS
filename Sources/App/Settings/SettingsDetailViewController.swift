@@ -139,7 +139,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 <<< ButtonRow { row in
                     row.title = L10n.SettingsDetails.General.MenuBarText.title
                     row.cellStyle = .value1
-                    row.value = Current.settingsStore.menuItemTemplate
+                    row.value = Current.settingsStore.menuItemTemplate?.template
                     row.displayValueFor = { $0 }
                     row.hidden = .function(["locationVisibility"], { form in
                         if let row = form
@@ -150,13 +150,17 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                         }
                     })
                     row.presentationMode = .show(controllerProvider: .callback(builder: {
-                        TemplateEditViewController(
-                            server: Current.api.value!.server,
-                            initial: Current.settingsStore.menuItemTemplate,
-                            saveHandler: { Current.settingsStore.menuItemTemplate = $0 }
-                        )
+                        if let current = Current.settingsStore.menuItemTemplate {
+                            return TemplateEditViewController(
+                                server: current.server,
+                                initial: current.template,
+                                saveHandler: { Current.settingsStore.menuItemTemplate = ($0, $1) }
+                            )
+                        } else {
+                            return UIViewController()
+                        }
                     }), onDismiss: { [weak self, row] _ in
-                        row.value = Current.settingsStore.menuItemTemplate
+                        row.value = Current.settingsStore.menuItemTemplate?.template
                         self?.navigationController?.popViewController(animated: true)
                     })
                 }

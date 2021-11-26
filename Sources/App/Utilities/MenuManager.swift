@@ -16,10 +16,12 @@ private extension UIMenu.Identifier {
 
 public struct MenuManagerTitleSubscription: Equatable {
     private var uuid = UUID()
+    var server: Server
     var template: String
     var token: HACancellable
 
-    init(template: String, token: HACancellable) {
+    init(server: Server, template: String, token: HACancellable) {
+        self.server = server
         self.template = template
         self.token = token
     }
@@ -70,22 +72,23 @@ class MenuManager {
         existing: MenuManagerTitleSubscription?,
         update: @escaping (String) -> Void
     ) -> MenuManagerTitleSubscription? {
-        let template = Current.settingsStore.menuItemTemplate
-
-        guard Current.settingsStore.locationVisibility.isStatusItemVisible, !template.isEmpty,
-              let connection = Current.apiConnection else {
+        guard let (server, template) = Current.settingsStore.menuItemTemplate,
+              Current.settingsStore.locationVisibility.isStatusItemVisible,
+              !template.isEmpty else {
             update("")
             return nil
         }
 
-        guard existing == nil || existing?.template != template else {
+        guard existing == nil || existing?.template != template || existing?.server != server else {
             return existing
         }
 
         // if we know it's going to change, reset it for now so it doesn't show the old value
         update("")
 
-        return .init(template: template, token: connection.subscribe(
+        let connection = Current.api(for: server).connection
+
+        return .init(server: server, template: template, token: connection.subscribe(
             to: .renderTemplate(template),
             initiated: { result in
                 switch result {
