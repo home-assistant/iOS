@@ -29,7 +29,7 @@ enum AccountRowValue: Equatable, CustomStringConvertible {
         switch self {
         case .server: return nil
         case .add: return L10n.Settings.ConnectionSection.addServer
-        case .all: return NSLocalizedString("All Servers", comment: "")
+        case .all: return L10n.Settings.ConnectionSection.allServers
         }
     }
 

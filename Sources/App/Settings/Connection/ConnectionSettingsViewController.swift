@@ -38,7 +38,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         form +++ Section { _ in
 
         } <<< ButtonRow {
-            $0.title = NSLocalizedString("Activate", comment: "")
+            $0.title = L10n.Settings.ConnectionSection.activateServer
             $0.onCellSelection { [server] _, _ in
                 Current.sceneManager.webViewWindowControllerPromise.done {
                     $0.open(server: server)
@@ -158,11 +158,11 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             +++ Section()
 
             <<< ButtonRow {
-                $0.title = NSLocalizedString("Delete Server", comment: "")
+                $0.title = L10n.Settings.ConnectionSection.DeleteServer.title
                 $0.onCellSelection { [navigationController, server, view] cell, _ in
                     let alert = UIAlertController(
-                        title: NSLocalizedString("Are you sure you wish to delete this server?", comment: ""),
-                        message: NSLocalizedString("This cannot be undone.", comment: ""),
+                        title: L10n.Settings.ConnectionSection.DeleteServer.title,
+                        message: L10n.Settings.ConnectionSection.DeleteServer.message,
                         preferredStyle: .actionSheet
                     )
 
@@ -173,11 +173,11 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
                     alert
                         .addAction(UIAlertAction(
-                            title: NSLocalizedString("Delete Server", comment: ""),
+                            title: L10n.Settings.ConnectionSection.DeleteServer.title,
                             style: .destructive,
                             handler: { _ in
                                 let hud = MBProgressHUD.showAdded(to: view!, animated: true)
-                                hud.label.text = NSLocalizedString("Deleting Server…", comment: "")
+                                hud.label.text = L10n.Settings.ConnectionSection.DeleteServer.progress
                                 hud.show(animated: true)
 
                                 let waitAtLeast = after(seconds: 3.0)

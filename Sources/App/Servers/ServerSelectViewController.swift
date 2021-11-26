@@ -33,7 +33,7 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
         (self.result, self.resultSeal) = Promise<AccountRowValue>.pending()
         super.init()
 
-        title = NSLocalizedString("Select Server", comment: "")
+        title = L10n.Settings.ServerSelect.pageTitle
         navigationItem.leftBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(_:))),
         ]

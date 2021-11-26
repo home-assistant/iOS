@@ -8,8 +8,8 @@ final class ServerSelectRow: _PushRow<PushSelectorCell<AccountRowValue>>, RowTyp
 
     init(tag: String?, includeAll: Bool, _ initializer: (ServerSelectRow) -> Void = { _ in }) {
         super.init(tag: tag)
-        title = NSLocalizedString("Server", comment: "")
-        selectorTitle = NSLocalizedString("Server", comment: "")
+        title = L10n.Settings.ServerSelect.title
+        selectorTitle = L10n.Settings.ServerSelect.title
         displayValueFor = { value in
             if case let .server(server) = value {
                 return server.info.name

@@ -48,14 +48,6 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    enum MissingThingError: LocalizedError {
-        case blah
-
-        var errorDescription: String? {
-            NSLocalizedString("Select a server first to see options", comment: "")
-        }
-    }
-
     func provideServiceOptions(for intent: Intent, with completion: @escaping ([String]?, Error?) -> Void) {
         guard let server = Current.servers.server(for: intent) else {
             completion(nil, PickAServerError.error)
