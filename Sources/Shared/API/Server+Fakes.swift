@@ -85,9 +85,7 @@ internal class FakeServerManager: ServerManager {
         observers.removeAll(where: { $0 === observer })
     }
 
-    func restoreState(_ state: Data) {
-
-    }
+    func restoreState(_ state: Data) {}
 
     func restorableState() -> Data {
         Data()

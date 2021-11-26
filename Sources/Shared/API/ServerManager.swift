@@ -1,8 +1,8 @@
 import HAKit
 import KeychainAccess
+import Sodium
 import UserNotifications
 import Version
-import Sodium
 
 public protocol ServerObserver: AnyObject {
     func serversDidChange(_ serverManager: ServerManager)

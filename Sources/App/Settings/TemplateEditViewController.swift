@@ -12,6 +12,7 @@ class TemplateEditViewController: HAFormViewController, RowControllerType {
             templateSection?.server = server
         }
     }
+
     private let initialValue: String
     private var templateSection: TemplateSection?
 

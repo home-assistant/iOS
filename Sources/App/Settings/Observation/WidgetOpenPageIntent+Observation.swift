@@ -1,7 +1,7 @@
+import HAKit
 import PromiseKit
 import Shared
 import WidgetKit
-import HAKit
 
 extension WidgetOpenPageIntent {
     private class Observer {

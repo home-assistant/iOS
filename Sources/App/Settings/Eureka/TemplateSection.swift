@@ -9,6 +9,7 @@ public final class TemplateSection: Section {
             updateResultSubscription(skipDelay: true)
         }
     }
+
     var displayResult: (Any) throws -> String
 
     init(
