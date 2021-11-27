@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Ein unbekannter Fehler ist aufgetreten.";
 "ha_api.api_error.update_not_possible" = "Operation konnte nicht durchgeführt werden.";
 "help_label" = "Hilfe";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Standort über App Shortcut aktualisiert";
 "location_change_notification.background_fetch.body" = "Standortaktualisierung: Hintergrundaktualisierung";
 "location_change_notification.beacon_region_enter.body" = "%@ über iBeacon betreten";
@@ -249,9 +250,14 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "retry_label" = "Erneut versuchen";
 "sensors.active.setting.time_until_idle" = "Zeit bis zum Leerlauf";
 "sensors.geocoded_location.setting.use_zones" = "Verwenden Sie den Zonennamen";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Server hinzufügen";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine einrichten, außer du möchtest die Cloud deaktivieren.";
 "settings.connection_section.connecting_via" = "Verbinde über";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Details";
 "settings.connection_section.errors.cannot_remove_last_url" = "Du kannst die einzig verfügbare URL nicht entfernen.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.meinhaus.de";
@@ -320,6 +326,8 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings.reset_section.reset_alert.title" = "Zurücksetzen";
 "settings.reset_section.reset_row.title" = "Zurücksetzen";
 "settings.reset_section.reset_web_cache.title" = "Frontend Cache zurücksetzen";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Mein Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";

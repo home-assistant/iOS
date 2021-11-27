@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Een onbekende fout is opgetreden.";
 "ha_api.api_error.update_not_possible" = "De bewerking kon niet worden uitgevoerd.";
 "help_label" = "Help";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Locatie bijgewerkt via App-snelkoppeling";
 "location_change_notification.background_fetch.body" = "Huidige locatie levering geactiveerd via achtergrond ophalen";
 "location_change_notification.beacon_region_enter.body" = "%@ betreden via iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "retry_label" = "Probeer opnieuw";
 "sensors.active.setting.time_until_idle" = "Tijd tot inactief";
 "sensors.geocoded_location.setting.use_zones" = "Gebruik tijdzone naam";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Server toevoegen";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Als u verbinding maakt via Cloud, wordt de externe URL niet gebruikt. U hoeft er geen te configureren, tenzij u Cloud wilt uitschakelen.";
 "settings.connection_section.connecting_via" = "Verbonden via";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Details";
 "settings.connection_section.errors.cannot_remove_last_url" = "U kunt niet alleen de beschikbare URL verwijderen.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mijnhuis.com";
@@ -320,6 +326,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.reset_section.reset_alert.title" = "Herstel";
 "settings.reset_section.reset_row.title" = "Herstel";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Mijn Home Assistant";
 "settings.status_section.location_name_row.title" = "Naam";

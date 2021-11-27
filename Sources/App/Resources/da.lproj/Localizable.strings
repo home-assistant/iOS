@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Der opstod en ukendt fejl.";
 "ha_api.api_error.update_not_possible" = "Handlingen kunne ikke udføres.";
 "help_label" = "Hjælp";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Lokalitet opdateret via appgenvej";
 "location_change_notification.background_fetch.body" = "Nuværende lokalitetslevering udløst via baggrundshentning";
 "location_change_notification.beacon_region_enter.body" = "ankom til %@ via iBeacon";
@@ -249,9 +250,14 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "retry_label" = "Prøv igen";
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Brug zonenavn";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Tilføj server";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Når du opretter forbindelse via Cloud, bruges den eksterne webadresse ikke. Du behøver ikke at konfigurere en, medmindre du vil deaktivere Cloud.";
 "settings.connection_section.connecting_via" = "Tilsluttet via";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Detaljer";
 "settings.connection_section.errors.cannot_remove_last_url" = "Du kan ikke fjerne den eneste tilgængelige webadresse.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mithjem.dk";
@@ -320,6 +326,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.reset_section.reset_alert.title" = "Nulstil";
 "settings.reset_section.reset_row.title" = "Nulstil";
 "settings.reset_section.reset_web_cache.title" = "Nulstil brugerflade-cache";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Min Home Assistant";
 "settings.status_section.location_name_row.title" = "Navn";

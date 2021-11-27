@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "An unknown error occurred.";
 "ha_api.api_error.update_not_possible" = "No se pudo realizar la operación.";
 "help_label" = "Help";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Retry";
 "sensors.active.setting.time_until_idle" = "Tiempo hasta inactividad";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Al conectarse a través de la nube, no se utilizará la URL externa. No es necesario configurar una a menos que desee desactivar la nube.";
 "settings.connection_section.connecting_via" = "Connected via";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Details";
 "settings.connection_section.errors.cannot_remove_last_url" = "You cannot remove only available URL.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";

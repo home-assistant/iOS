@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Bilinmeyen bir hata oluştu.";
 "ha_api.api_error.update_not_possible" = "İşlem gerçekleştirilemedi.";
 "help_label" = "Yardım";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Konum Uygulama Kısayolu ile güncellendi";
 "location_change_notification.background_fetch.body" = "Arka plan getirme yoluyla tetiklenen geçerli konum teslimi";
 "location_change_notification.beacon_region_enter.body" = "%@ iBeacon aracılığıyla girildi";
@@ -249,9 +250,14 @@
 "retry_label" = "Yeniden dene";
 "sensors.active.setting.time_until_idle" = "Boşta Kalana Kadar Geçen Süre";
 "sensors.geocoded_location.setting.use_zones" = "Bölge Adını Kullan";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Sunucu Ekle";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Bulut yoluyla bağlanırken, Harici URL kullanılmayacaktır. Bulutu devre dışı bırakmak istemediğiniz sürece bir tane yapılandırmanıza gerek yoktur.";
 "settings.connection_section.connecting_via" = "Üzerinden bağlandı";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Ayrıntılar";
 "settings.connection_section.errors.cannot_remove_last_url" = "Yalnızca mevcut URL'yi kaldıramazsınız.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@
 "settings.reset_section.reset_alert.title" = "Sıfırla";
 "settings.reset_section.reset_row.title" = "Sıfırla";
 "settings.reset_section.reset_web_cache.title" = "Ön önbelleği sıfırla";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Durum";
 "settings.status_section.location_name_row.placeholder" = "Ev Asistanım";
 "settings.status_section.location_name_row.title" = "Ad";

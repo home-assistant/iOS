@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Wystąpił nieznany błąd.";
 "ha_api.api_error.update_not_possible" = "Nie można wykonać operacji.";
 "help_label" = "Wsparcie";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Lokalizacja aktualizowana za pomocą skrótu do aplikacji";
 "location_change_notification.background_fetch.body" = "Pobranie aktualnej lokalizacji zostało wyzwolone poprzez pobieranie jej w tle";
 "location_change_notification.beacon_region_enter.body" = "%@ wejście przez iBeacon";
@@ -247,9 +248,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Ponów próbę";
 "sensors.active.setting.time_until_idle" = "Czas do stanu bezczynności";
 "sensors.geocoded_location.setting.use_zones" = "Użyj nazwy strefy";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Dodaj serwer";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Podczas łączenia się przez chmurę, \"zewnętrzny adres URL\" nie będzie używany. Nie musisz go konfigurować, chyba że chcesz wyłączyć chmurę.";
 "settings.connection_section.connecting_via" = "Połączony przez";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Szczegóły";
 "settings.connection_section.errors.cannot_remove_last_url" = "Nie możesz usunąć jedynego dostępnego adresu URL.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mójdom.pl";
@@ -318,6 +324,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_web_cache.title" = "Wyczyść pamięć podręczną interfejsu użytkownika";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Mój Home Assistant";
 "settings.status_section.location_name_row.title" = "Nazwa";

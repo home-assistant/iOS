@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Виникла невідома помилка.";
 "ha_api.api_error.update_not_possible" = "Не вдалося виконати операцію.";
 "help_label" = "Help";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Розташування оновлюється через Команду";
 "location_change_notification.background_fetch.body" = "Отримання поточного розташування ініційоване фоновим оновленням";
 "location_change_notification.beacon_region_enter.body" = "%@ прийдено через iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Повторити";
 "sensors.active.setting.time_until_idle" = "Час до простою";
 "sensors.geocoded_location.setting.use_zones" = "Використовувати назву зони";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "При підключенні через хмару зовнішня URL-адреса не використовуватиметься. Вам не потрібно налаштовувати її, якщо ви не будете користуватись віддаленим доступом.";
 "settings.connection_section.connecting_via" = "Підключено через";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Деталі";
 "settings.connection_section.errors.cannot_remove_last_url" = "Ви не можете видалити єдину доступну URL-адресу.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Скинути";
 "settings.reset_section.reset_row.title" = "Скинути";
 "settings.reset_section.reset_web_cache.title" = "Очистити кеш інтерфейсу";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Статус";
 "settings.status_section.location_name_row.placeholder" = "Мій Home Assistant";
 "settings.status_section.location_name_row.title" = "Назва";

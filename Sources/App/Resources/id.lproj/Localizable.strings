@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Terjadi kesalahan yang tidak diketahui.";
 "ha_api.api_error.update_not_possible" = "Operasi tidak dapat dilakukan.";
 "help_label" = "Bantuan";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Lokasi diperbarui melalui Pintasan App";
 "location_change_notification.background_fetch.body" = "Pengiriman lokasi saat ini dipicu lewat pengambilan latar belakang";
 "location_change_notification.beacon_region_enter.body" = "%@ masuk melalui iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Coba Lagi";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Gunakan Nama Zona";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Tambah Server";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Ketika terhubung lewat Cloud, URL Eksternal tidak akan digunakan. Anda tidak perlu mengonfigurasinya kecuali jika ingin menonaktifkan Cloud.";
 "settings.connection_section.connecting_via" = "Terhubung via";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Detail";
 "settings.connection_section.errors.cannot_remove_last_url" = "Anda tidak dapat menghapus satu-satunya URL yang tersedia.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.example.com";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_web_cache.title" = "Setel ulang cache antarmuka";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";
