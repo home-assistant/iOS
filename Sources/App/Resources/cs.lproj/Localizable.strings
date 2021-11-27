@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Nastala neznámá chyba.";
 "ha_api.api_error.update_not_possible" = "Operaci nelze provést.";
 "help_label" = "Nápověda";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Poloha  aktualizována přes zástupce aplikace";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "location_change_notification.beacon_region_enter.body" = "Vstoupeno do %@ přes iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Opakovat";
 "sensors.active.setting.time_until_idle" = "Čas do nečinnosti";
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Přidat server";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Při připojování přes Cloud se externí adresa URL nepoužívá. Není nutné konfigurovat, pokud nechcete používat Cloud.";
 "settings.connection_section.connecting_via" = "Připojeno přes";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Podrobnosti";
 "settings.connection_section.errors.cannot_remove_last_url" = "Nelze odstranit jedinou dostupnou adresu URL.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mujdum.cz";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Obnovit";
 "settings.reset_section.reset_row.title" = "Obnovit";
 "settings.reset_section.reset_web_cache.title" = "Obnovit mezipaměť frontendu";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Stav";
 "settings.status_section.location_name_row.placeholder" = "Můj Home Assistant";
 "settings.status_section.location_name_row.title" = "Jméno";

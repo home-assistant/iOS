@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "S'ha produït un error desconegut.";
 "ha_api.api_error.update_not_possible" = "No s'ha pogut realitzar l'operació.";
 "help_label" = "Ajuda";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Ubicació actualitzada mitjançant drecera d’aplicació";
 "location_change_notification.background_fetch.body" = "Ubicació actual activada en segon pla";
 "location_change_notification.beacon_region_enter.body" = "%@ entrat a través de iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Reintentar";
 "sensors.active.setting.time_until_idle" = "Temps fins que estigui inactiu";
 "sensors.geocoded_location.setting.use_zones" = "Utilitza el nom de la zona";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Afegir Servidor";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Quan es connecti mitjançant el núvol, no s’utilitzarà la URL externa. No cal configurar-ne una tret que vulgueu desactivar el núvol.";
 "settings.connection_section.connecting_via" = "Connectat a través de";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Detalls";
 "settings.connection_section.errors.cannot_remove_last_url" = "No podeu eliminar només l'URL disponible.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Restablir";
 "settings.reset_section.reset_row.title" = "Restablir";
 "settings.reset_section.reset_web_cache.title" = "Restableix la memòria cau del frontend";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Estat";
 "settings.status_section.location_name_row.placeholder" = "Mi Home Assistant";
 "settings.status_section.location_name_row.title" = "Nom";

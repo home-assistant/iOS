@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Une erreur inconnue est survenue.";
 "ha_api.api_error.update_not_possible" = "L'opération n'a pas pu être effectuée.";
 "help_label" = "Aide";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Lieu mis à jour via l'App Shortcut";
 "location_change_notification.background_fetch.body" = "L'envoi de l'emplacement actuel a été déclenché via l'actualisation en arrière-plan";
 "location_change_notification.beacon_region_enter.body" = "%@ entré via iBeacon";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Réessayer";
 "sensors.active.setting.time_until_idle" = "Temps jusqu'à l'inactivité";
 "sensors.geocoded_location.setting.use_zones" = "Utiliser le nom de la zone";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Ajouter un serveur";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Lors de la connexion via Cloud, l'URL externe ne sera pas utilisée. Vous n'avez pas besoin d'en configurer un, sauf si vous souhaitez désactiver Cloud.";
 "settings.connection_section.connecting_via" = "Connexion via";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Détails";
 "settings.connection_section.errors.cannot_remove_last_url" = "Vous ne pouvez pas supprimer l'unique URL disponible.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Réinitialiser";
 "settings.reset_section.reset_row.title" = "Réinitialiser";
 "settings.reset_section.reset_web_cache.title" = "Réinitialisez le cache frontend";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Statut";
 "settings.status_section.location_name_row.placeholder" = "Mon Home Assistant";
 "settings.status_section.location_name_row.title" = "Nom";

@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "En ukjent feil oppstod.";
 "ha_api.api_error.update_not_possible" = "Operasjonen kunne ikke utføres.";
 "help_label" = "Hjelp";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Plasseringen oppdatert via App snarvei";
 "location_change_notification.background_fetch.body" = "Nåværende plassering utløst via bakgrunnsinnhenting";
 "location_change_notification.beacon_region_enter.body" = "%@ ankommer via iBeacon";
@@ -249,9 +250,14 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "retry_label" = "Prøv på nytt";
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Bruk sone-navn";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Legg til server";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Når du kobler til via Cloud, brukes ikke den eksterne URL-en. Du trenger ikke å konfigurere en med mindre du vil deaktivere Cloud.";
 "settings.connection_section.connecting_via" = "Tilkoblet via";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Detaljer";
 "settings.connection_section.errors.cannot_remove_last_url" = "Du kan ikke fjerne bare tilgjengelig URL.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.reset_section.reset_alert.title" = "Tilbakestill";
 "settings.reset_section.reset_row.title" = "Tilbakestille";
 "settings.reset_section.reset_web_cache.title" = "Tilbakestill frontend-hurtigbuffer";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Min Home Assistant";
 "settings.status_section.location_name_row.title" = "Navn";

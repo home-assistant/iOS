@@ -98,6 +98,7 @@
 "ha_api.api_error.unknown" = "Tapahtui tuntematon virhe.";
 "ha_api.api_error.update_not_possible" = "Operation could not be performed.";
 "help_label" = "Apua";
+"intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Sijainti päivitetty Shortcut-sovelluksen kautta";
 "location_change_notification.background_fetch.body" = "Nykyisen sijainnin toimitus käynnistynyt taustahaun kautta";
 "location_change_notification.beacon_region_enter.body" = "%@ saapunut iBeacon:in kautta";
@@ -249,9 +250,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Yritä uudelleen";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
+"settings.connection_section.activate_server" = "Activate";
 "settings.connection_section.add_server" = "Lisää palvelin";
+"settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "settings.connection_section.connecting_via" = "Yhdistetty kautta";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.title" = "Delete Server";
 "settings.connection_section.details" = "Yksityiskohdat";
 "settings.connection_section.errors.cannot_remove_last_url" = "Et voi poistaa ainoaa käytettävissä olevaa URL-osoitetta.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
@@ -320,6 +326,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Palauta";
 "settings.reset_section.reset_row.title" = "Palauta";
 "settings.reset_section.reset_web_cache.title" = "Nollaa käyttöliittymän välimuistia";
+"settings.server_select.page_title" = "Server";
+"settings.server_select.title" = "Server";
 "settings.status_section.header" = "Tila";
 "settings.status_section.location_name_row.placeholder" = "Kotiavustajani";
 "settings.status_section.location_name_row.title" = "Nimi";
