@@ -17,7 +17,7 @@ public class PerServerContainer<ObjectType>: ServerObserver {
     private var lazy: Bool
     public var constructor: Constructor {
         didSet {
-            backing.removeAll()
+            destruct(from: backing, to: [:])
             createAll()
         }
     }

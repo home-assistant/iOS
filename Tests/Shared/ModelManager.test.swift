@@ -9,22 +9,30 @@ class ModelManagerTests: XCTestCase {
     private var realm: Realm!
     private var testQueue: DispatchQueue!
     private var manager: ModelManager!
-    private var api: FakeHomeAssistantAPI!
-    private var apiConnection: HAMockConnection!
+    private var servers: FakeServerManager!
+    private var api1: FakeHomeAssistantAPI!
+    private var api2: FakeHomeAssistantAPI!
+    private var apiConnection1: HAMockConnection!
+    private var apiConnection2: HAMockConnection!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         testQueue = DispatchQueue(label: #file)
         manager = ModelManager()
+        manager.workQueue = testQueue
 
-        let servers = FakeServerManager(initial: 1)
-        let server = try XCTUnwrap(servers.all.first)
-        api = FakeHomeAssistantAPI(server: server)
-        apiConnection = HAMockConnection()
-        api.connection = apiConnection
+        servers = FakeServerManager(initial: 2)
+        let server1 = servers.all[0]
+        let server2 = servers.all[1]
+        api1 = FakeHomeAssistantAPI(server: server1)
+        api2 = FakeHomeAssistantAPI(server: server2)
+        apiConnection1 = HAMockConnection()
+        api1.connection = apiConnection1
+        apiConnection2 = HAMockConnection()
+        api2.connection = apiConnection2
         Current.servers = servers
-        Current.cachedApis = [server.identifier: api]
+        Current.cachedApis = [server1.identifier: api1, server2.identifier: api2]
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {
@@ -37,7 +45,7 @@ class ModelManagerTests: XCTestCase {
         super.tearDown()
 
         Current.realm = Realm.live
-        TestStoreModel1.lastDidUpdate = []
+        TestStoreModel1.lastDidUpdates = []
         TestStoreModel1.lastWillDeleteIds = []
         TestStoreModel1.updateFalseIds = []
     }
@@ -93,10 +101,6 @@ class ModelManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(promise))
     }
 
-    func testCleanupMissingServers() {
-        // XXX
-    }
-
     func testNoneToCleanUp() throws {
         let now = Date()
         Current.date = { now }
@@ -122,8 +126,7 @@ class ModelManagerTests: XCTestCase {
                     createdKey: #keyPath(TestDeleteModel1.createdAt),
                     duration: .init(value: 100, unit: .seconds)
                 ),
-            ],
-            on: testQueue
+            ]
         )
 
         XCTAssertNoThrow(try hang(promise))
@@ -186,8 +189,7 @@ class ModelManagerTests: XCTestCase {
                     createdKey: #keyPath(TestDeleteModel2.createdAt),
                     duration: .init(value: deletedTimeInterval2, unit: .seconds)
                 ),
-            ],
-            on: testQueue
+            ]
         )
 
         XCTAssertNoThrow(try hang(promise))
@@ -195,67 +197,175 @@ class ModelManagerTests: XCTestCase {
         XCTAssertTrue(expectedAlive.allSatisfy { !$0.isInvalidated })
     }
 
+    func testCleanupMissingServers() throws {
+        let server3 = servers.addFake()
+        let api3 = FakeHomeAssistantAPI(server: server3)
+        Current.cachedApis[server3.identifier] = api3
+
+        let start1 = [
+            TestStoreModel1(),
+            TestStoreModel1(),
+            TestStoreModel1(),
+        ]
+        let start2 = [
+            TestStoreModel1(),
+            TestStoreModel1(),
+            TestStoreModel1(),
+        ]
+        let start3 = [
+            TestStoreModel1(),
+            TestStoreModel1(),
+            TestStoreModel1(),
+        ]
+
+        start1.forEach {
+            $0.serverIdentifier = api1.server.identifier.rawValue
+            $0.identifier = UUID().uuidString
+        }
+        start2.forEach {
+            $0.serverIdentifier = api2.server.identifier.rawValue
+            $0.identifier = UUID().uuidString
+        }
+        start3.forEach {
+            $0.serverIdentifier = api3.server.identifier.rawValue
+            $0.identifier = UUID().uuidString
+        }
+
+        manager.cleanup(definitions: [
+            .init(orphansOf: TestStoreModel1.self),
+        ]).cauterize()
+
+        try testQueue.sync {
+            try realm.write {
+                realm.add(start1)
+                realm.add(start2)
+                realm.add(start3)
+            }
+        }
+
+        servers.remove(identifier: api2.server.identifier)
+        servers.notify()
+
+        testQueue.sync {
+            XCTAssertEqual(Set(realm.objects(TestStoreModel1.self)), Set(start1 + start3))
+        }
+    }
+
     func testFetchInvokesDefinition() {
         let (fetchPromise1, fetchSeal1) = Promise<Void>.pending()
         let (fetchPromise2, fetchSeal2) = Promise<Void>.pending()
 
+        var fetchApi1 = [HomeAssistantAPI]()
+        var fetchApi2 = [HomeAssistantAPI]()
+
         let promise = manager.fetch(definitions: [
-            .init(update: { api, connection, queue, manager -> Promise<Void> in
-                XCTAssertTrue(api === self.api)
+            .init(update: { api, queue, manager -> Promise<Void> in
+                fetchApi1.append(api)
                 XCTAssertEqual(queue, self.testQueue)
                 XCTAssertTrue(manager === self.manager)
-                XCTAssertTrue(connection === self.apiConnection)
                 return fetchPromise1
             }),
-            .init(update: { api, connection, queue, manager -> Promise<Void> in
-                XCTAssertTrue(api === self.api)
+            .init(update: { api, queue, manager -> Promise<Void> in
+                fetchApi2.append(api)
                 XCTAssertEqual(queue, self.testQueue)
                 XCTAssertTrue(manager === self.manager)
-                XCTAssertTrue(connection === self.apiConnection)
                 return fetchPromise2
             }),
-        ], on: testQueue, apis: [api])
+        ], apis: [api1, api2])
 
         XCTAssertFalse(promise.isResolved)
         fetchSeal1.fulfill(())
         XCTAssertFalse(promise.isResolved)
         fetchSeal2.fulfill(())
         XCTAssertNoThrow(try hang(promise))
+
+        XCTAssertEqual(fetchApi1.map(\.server), [api1.server, api2.server])
+        XCTAssertEqual(fetchApi2.map(\.server), [api1.server, api2.server])
     }
 
     func testSubscribeSubscribes() {
-        let handlers: [HAMockCancellable] = [
-            .init({}), .init({}), .init({}),
+        let handlers1_1: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        let handlers2_1: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        let handlers1_2: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        let handlers2_2: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        let handlers1_3: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+        let handlers2_3: [HAMockCancellable] = Array((0 ... 1).map { _ in HAMockCancellable({}) })
+
+        var handlers1Iterator = handlers1_1.makeIterator()
+        var handlers2Iterator = handlers2_1.makeIterator()
+
+        var handlers1APIs = [(HAConnection, Server)]()
+        var handlers2APIs = [(HAConnection, Server)]()
+
+        let definitions: [ModelManager.SubscribeDefinition] = [
+            .init(subscribe: { connection, server, queue, manager -> [HACancellable] in
+                XCTAssertEqual(queue, self.testQueue)
+                XCTAssertTrue(manager === self.manager)
+                handlers1APIs.append((connection, server))
+                return [handlers1Iterator.next()!]
+            }),
+            .init(subscribe: { connection, server, queue, manager -> [HACancellable] in
+                XCTAssertEqual(queue, self.testQueue)
+                XCTAssertTrue(manager === self.manager)
+                handlers2APIs.append((connection, server))
+                return [handlers2Iterator.next()!]
+            }),
         ]
 
-        manager.subscribe(definitions: [
-            .init(subscribe: { connection, server, queue, manager -> [HACancellable] in
-                XCTAssertEqual(queue, self.testQueue)
-                XCTAssertTrue(manager === self.manager)
-                XCTAssertTrue(connection === self.apiConnection)
-                XCTAssertEqual(server.identifier, self.api.server.identifier)
-                return [handlers[0]]
-            }),
-            .init(subscribe: { connection, server, queue, manager -> [HACancellable] in
-                XCTAssertEqual(queue, self.testQueue)
-                XCTAssertTrue(manager === self.manager)
-                XCTAssertTrue(connection === self.apiConnection)
-                XCTAssertEqual(server.identifier, self.api.server.identifier)
-                return Array(handlers[1...])
-            }),
-        ], on: testQueue)
+        manager.subscribe(definitions: definitions)
 
-        XCTAssertTrue(handlers.allSatisfy { !$0.wasCancelled })
+        func verify(apis: [HomeAssistantAPI]) {
+            XCTAssertEqual(handlers1APIs.map(\.1), apis.map(\.server))
+            XCTAssertEqual(handlers2APIs.map(\.1), apis.map(\.server))
+            XCTAssertEqual(
+                handlers1APIs.map(\.0).map(ObjectIdentifier.init(_:)),
+                apis.map(\.connection).map(ObjectIdentifier.init(_:))
+            )
+        }
 
-        manager.subscribe(definitions: [], on: testQueue)
-        XCTAssertTrue(handlers.allSatisfy(\.wasCancelled))
+        verify(apis: [api1, api2])
 
-        // XXX
+        XCTAssertTrue(handlers1_1.allSatisfy { !$0.wasCancelled })
+        XCTAssertTrue(handlers2_1.allSatisfy { !$0.wasCancelled })
+
+        handlers1Iterator = handlers1_2.makeIterator()
+        handlers2Iterator = handlers2_2.makeIterator()
+
+        handlers1APIs.removeAll()
+        handlers2APIs.removeAll()
+
+        manager.subscribe(definitions: definitions)
+
+        XCTAssertTrue(handlers1_1.allSatisfy(\.wasCancelled))
+        XCTAssertTrue(handlers2_1.allSatisfy(\.wasCancelled))
+
+        XCTAssertTrue(handlers1_2.allSatisfy { !$0.wasCancelled })
+        XCTAssertTrue(handlers2_2.allSatisfy { !$0.wasCancelled })
+
+        verify(apis: [api1, api2])
+
+        servers.remove(identifier: api1.server.identifier)
+        let new = servers.addFake()
+        let newApi = FakeHomeAssistantAPI(server: new)
+        Current.cachedApis[new.identifier] = newApi
+
+        handlers1Iterator = handlers1_3.makeIterator()
+        handlers2Iterator = handlers2_3.makeIterator()
+
+        handlers1APIs.removeAll()
+        handlers2APIs.removeAll()
+
+        servers.notify()
+
+        XCTAssertTrue(handlers1_2.allSatisfy(\.wasCancelled))
+        XCTAssertTrue(handlers2_2.allSatisfy(\.wasCancelled))
+
+        verify(apis: [api2, newApi])
     }
 
     func testStoreWithoutModels() throws {
         try testQueue.sync {
-            try hang(manager.store(type: TestStoreModel1.self, from: api.server, sourceModels: []))
+            try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: []))
             XCTAssertTrue(realm.objects(TestStoreModel1.self).isEmpty)
         }
     }
@@ -263,7 +373,7 @@ class ModelManagerTests: XCTestCase {
     func testStoreWithModelLackingPrimaryKey() throws {
         func doStore() throws {
             try testQueue.sync {
-                try hang(manager.store(type: TestStoreModel2.self, from: api.server, sourceModels: []))
+                try hang(manager.store(type: TestStoreModel2.self, from: api1.server, sourceModels: []))
             }
         }
 
@@ -274,135 +384,229 @@ class ModelManagerTests: XCTestCase {
 
     func testStoreWithoutExistingObjects() throws {
         try testQueue.sync {
-            let sources: [TestStoreSource1] = [
-                .init(id: "id1", value: "val1"),
-                .init(id: "id2", value: "val2"),
+            let sources1: [TestStoreSource1] = [
+                .init(id: "id1s1", value: "val1"),
+                .init(id: "id2s1", value: "val2"),
+            ]
+            let sources2: [TestStoreSource1] = [
+                .init(id: "id1s2", value: "val1"),
+                .init(id: "id2s2", value: "val2"),
             ]
 
-            try hang(manager.store(type: TestStoreModel1.self, from: api.server, sourceModels: sources))
+            try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: sources1))
+            try hang(manager.store(type: TestStoreModel1.self, from: api2.server, sourceModels: sources2))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
-            XCTAssertEqual(models.count, 2)
-            XCTAssertEqual(models[0].identifier, "id1")
-            XCTAssertEqual(models[0].serverIdentifier, api.server.identifier.rawValue)
+            XCTAssertEqual(models.count, 4)
+            XCTAssertEqual(models[0].identifier, "id1s1")
+            XCTAssertEqual(models[0].serverIdentifier, api1.server.identifier.rawValue)
             XCTAssertEqual(models[0].value, "val1")
-            XCTAssertEqual(models[1].identifier, "id2")
-            XCTAssertEqual(models[1].serverIdentifier, api.server.identifier.rawValue)
-            XCTAssertEqual(models[1].value, "val2")
-            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdate), Set(models))
+            XCTAssertEqual(models[1].identifier, "id1s2")
+            XCTAssertEqual(models[1].serverIdentifier, api2.server.identifier.rawValue)
+            XCTAssertEqual(models[1].value, "val1")
+            XCTAssertEqual(models[2].identifier, "id2s1")
+            XCTAssertEqual(models[2].serverIdentifier, api1.server.identifier.rawValue)
+            XCTAssertEqual(models[2].value, "val2")
+            XCTAssertEqual(models[3].identifier, "id2s2")
+            XCTAssertEqual(models[3].serverIdentifier, api2.server.identifier.rawValue)
+            XCTAssertEqual(models[3].value, "val2")
+            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdates.flatMap { $0 }), Set(models))
         }
     }
 
     func testStoreUpdatesAndDeletes() throws {
-        let start = [
+        let start1 = [
             with(TestStoreModel1()) {
-                $0.identifier = "start_id1"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id1s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
                 $0.value = "start_val1"
             },
             with(TestStoreModel1()) {
-                $0.identifier = "start_id2"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id2s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
                 $0.value = "start_val2"
             },
             with(TestStoreModel1()) {
-                $0.identifier = "start_id3"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id3s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
                 $0.value = "start_val3"
             },
             with(TestStoreModel1()) {
-                $0.identifier = "start_id4"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id4s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.value = "start_val4"
+            },
+        ]
+        let start2 = [
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id1s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.value = "start_val1"
+            },
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id2s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.value = "start_val2"
+            },
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id3s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.value = "start_val3"
+            },
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id4s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
                 $0.value = "start_val4"
             },
         ]
 
-        let insertedSources = [
-            TestStoreSource1(id: "ins_id1", value: "ins_val1"),
-            TestStoreSource1(id: "ins_id2", value: "ins_val2"),
+        let insertedSources1 = [
+            TestStoreSource1(id: "ins_id1s1", value: "ins_val1"),
+            TestStoreSource1(id: "ins_id2s1", value: "ins_val2"),
+        ]
+        let insertedSources2 = [
+            TestStoreSource1(id: "ins_id1s2", value: "ins_val1"),
+            TestStoreSource1(id: "ins_id2s2", value: "ins_val2"),
         ]
 
-        let updatedSources = [
-            TestStoreSource1(id: "start_id1", value: "start_val1-2"),
-            TestStoreSource1(id: "start_id2", value: "start_val2-2"),
+        let updatedSources1 = [
+            TestStoreSource1(id: "start_id1s1", value: "start_val1-2"),
+            TestStoreSource1(id: "start_id2s1", value: "start_val2-2"),
+        ]
+        let updatedSources2 = [
+            TestStoreSource1(id: "start_id1s2", value: "start_val1-2"),
+            TestStoreSource1(id: "start_id2s2", value: "start_val2-2"),
         ]
 
         try testQueue.sync {
             try realm.write {
-                realm.add(start)
+                realm.add(start1)
+                realm.add(start2)
             }
 
-            try hang(
-                manager
-                    .store(type: TestStoreModel1.self, from: api.server, sourceModels: insertedSources + updatedSources)
-            )
+            try hang(manager.store(
+                type: TestStoreModel1.self,
+                from: api1.server,
+                sourceModels: insertedSources1 + updatedSources1
+            ))
+            try hang(manager.store(
+                type: TestStoreModel1.self,
+                from: api2.server,
+                sourceModels: insertedSources2 + updatedSources2
+            ))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
-            XCTAssertEqual(models.count, 4)
+            XCTAssertEqual(models.count, 8)
 
             // inserted
-            XCTAssertEqual(models[0].identifier, "ins_id1")
+            XCTAssertEqual(models[0].identifier, "ins_id1s1")
             XCTAssertEqual(models[0].value, "ins_val1")
-            XCTAssertEqual(models[1].identifier, "ins_id2")
-            XCTAssertEqual(models[1].value, "ins_val2")
+            XCTAssertEqual(models[1].identifier, "ins_id1s2")
+            XCTAssertEqual(models[1].value, "ins_val1")
+            XCTAssertEqual(models[2].identifier, "ins_id2s1")
+            XCTAssertEqual(models[2].value, "ins_val2")
+            XCTAssertEqual(models[3].identifier, "ins_id2s2")
+            XCTAssertEqual(models[3].value, "ins_val2")
 
             // updated
-            XCTAssertEqual(models[2].identifier, "start_id1")
-            XCTAssertEqual(models[2].value, "start_val1-2")
-            XCTAssertEqual(models[3].identifier, "start_id2")
-            XCTAssertEqual(models[3].value, "start_val2-2")
+            XCTAssertEqual(models[4].identifier, "start_id1s1")
+            XCTAssertEqual(models[4].value, "start_val1-2")
+            XCTAssertEqual(models[5].identifier, "start_id1s2")
+            XCTAssertEqual(models[5].value, "start_val1-2")
+            XCTAssertEqual(models[6].identifier, "start_id2s1")
+            XCTAssertEqual(models[6].value, "start_val2-2")
+            XCTAssertEqual(models[7].identifier, "start_id2s2")
+            XCTAssertEqual(models[7].value, "start_val2-2")
 
             // deleted
-            XCTAssertEqual(Set(TestStoreModel1.lastWillDeleteIds), Set([
-                "start_id3",
-                "start_id4",
+            XCTAssertEqual(Set(TestStoreModel1.lastWillDeleteIds.flatMap { $0 }), Set([
+                "start_id3s1",
+                "start_id4s1",
+                "start_id3s2",
+                "start_id4s2",
             ]))
         }
     }
 
     func testIneligibleNotDeleted() throws {
-        let start = [
+        let start1 = [
             with(TestStoreModel3()) {
-                $0.identifier = "start_id1"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id1s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
                 $0.value = 10 // eligible
             },
             with(TestStoreModel3()) {
-                $0.identifier = "start_id2"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id2s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
                 $0.value = 1 // not eligible
             },
             with(TestStoreModel3()) {
-                $0.identifier = "start_id3"
-                $0.serverIdentifier = api.server.identifier.rawValue
+                $0.identifier = "start_id3s1"
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.value = 100 // eligible, will be deleted
+            },
+        ]
+        let start2 = [
+            with(TestStoreModel3()) {
+                $0.identifier = "start_id1s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.value = 10 // eligible
+            },
+            with(TestStoreModel3()) {
+                $0.identifier = "start_id2s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.value = 1 // not eligible
+            },
+            with(TestStoreModel3()) {
+                $0.identifier = "start_id3s2"
+                $0.serverIdentifier = api2.server.identifier.rawValue
                 $0.value = 100 // eligible, will be deleted
             },
         ]
 
-        let insertedSources = [
-            TestStoreSource2(id: "ins_id1", value: 100),
+        let insertedSources1 = [
+            TestStoreSource2(id: "ins_id1s1", value: 100),
+        ]
+        let insertedSources2 = [
+            TestStoreSource2(id: "ins_id1s2", value: 100),
         ]
 
-        let updatedSources = [
-            TestStoreSource2(id: "start_id1", value: 4),
+        let updatedSources1 = [
+            TestStoreSource2(id: "start_id1s1", value: 4),
+        ]
+        let updatedSources2 = [
+            TestStoreSource2(id: "start_id1s2", value: 4),
         ]
 
         try testQueue.sync {
             try realm.write {
-                realm.add(start)
+                realm.add(start1)
+                realm.add(start2)
             }
 
-            try hang(
-                manager
-                    .store(type: TestStoreModel3.self, from: api.server, sourceModels: insertedSources + updatedSources)
-            )
+            try hang(manager.store(
+                type: TestStoreModel3.self,
+                from: api1.server,
+                sourceModels: insertedSources1 + updatedSources1
+            ))
+            try hang(manager.store(
+                type: TestStoreModel3.self,
+                from: api2.server,
+                sourceModels: insertedSources2 + updatedSources2
+            ))
             let models = realm.objects(TestStoreModel3.self).sorted(byKeyPath: #keyPath(TestStoreModel3.value))
-            XCTAssertEqual(models.count, 3)
+            XCTAssertEqual(models.count, 6)
 
-            XCTAssertEqual(models[0].identifier, "start_id2")
+            XCTAssertEqual(models[0].identifier, "start_id2s1")
             XCTAssertEqual(models[0].value, 1)
-            XCTAssertEqual(models[1].identifier, "start_id1")
-            XCTAssertEqual(models[1].value, 4)
-            XCTAssertEqual(models[2].identifier, "ins_id1")
-            XCTAssertEqual(models[2].value, 100)
+            XCTAssertEqual(models[1].identifier, "start_id2s2")
+            XCTAssertEqual(models[1].value, 1)
+            XCTAssertEqual(models[2].identifier, "start_id1s1")
+            XCTAssertEqual(models[2].value, 4)
+            XCTAssertEqual(models[3].identifier, "start_id1s2")
+            XCTAssertEqual(models[3].value, 4)
+            XCTAssertEqual(models[4].identifier, "ins_id1s1")
+            XCTAssertEqual(models[4].value, 100)
+            XCTAssertEqual(models[5].identifier, "ins_id1s2")
+            XCTAssertEqual(models[5].value, 100)
         }
     }
 
@@ -415,12 +619,12 @@ class ModelManagerTests: XCTestCase {
 
             TestStoreModel1.updateFalseIds = ["id2"]
 
-            try hang(manager.store(type: TestStoreModel1.self, from: api.server, sourceModels: sources))
+            try hang(manager.store(type: TestStoreModel1.self, from: api1.server, sourceModels: sources))
             let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
             XCTAssertEqual(models.count, 1)
             XCTAssertEqual(models[0].identifier, "id1")
             XCTAssertEqual(models[0].value, "val1")
-            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdate), Set(models))
+            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdates.flatMap { $0 }), Set(models))
         }
     }
 }
@@ -483,14 +687,14 @@ class TestDeleteModel3: Object {
 final class TestStoreModel1: Object, UpdatableModel {
     static var updateFalseIds = [String]()
 
-    static var lastDidUpdate: [TestStoreModel1] = []
-    static var lastWillDeleteIds: [String] = []
+    static var lastDidUpdates: [[TestStoreModel1]] = []
+    static var lastWillDeleteIds: [[String]] = []
     static func didUpdate(objects: [TestStoreModel1], realm: Realm) {
-        lastDidUpdate = objects
+        lastDidUpdates.append(objects)
     }
 
     static func willDelete(objects: [TestStoreModel1], realm: Realm) {
-        lastWillDeleteIds = objects.compactMap(\.identifier)
+        lastWillDeleteIds.append(objects.compactMap(\.identifier))
     }
 
     @objc dynamic var identifier: String?

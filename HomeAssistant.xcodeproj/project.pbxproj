@@ -104,6 +104,9 @@
 		1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */; };
 		1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */; };
 		112B705B2526B1C500FEAA76 /* UpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensors.swift */; };
+		1130A5742751B29E00640E38 /* PerServerContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5732751B29E00640E38 /* PerServerContainer.test.swift */; };
+		1130A5762751BA1800640E38 /* Server.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5752751BA1800640E38 /* Server.test.swift */; };
+		1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5772751BDD900640E38 /* ServerManager.test.swift */; };
 		1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F531253A1E7400F371BE /* ComplicationListViewController.swift */; };
 		1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */; };
 		1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
@@ -1163,6 +1166,9 @@
 		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
 		1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonRowWithLoading.swift; sourceTree = "<group>"; };
 		112B705A2526B1C500FEAA76 /* UpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensors.swift; sourceTree = "<group>"; };
+		1130A5732751B29E00640E38 /* PerServerContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerServerContainer.test.swift; sourceTree = "<group>"; };
+		1130A5752751BA1800640E38 /* Server.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.test.swift; sourceTree = "<group>"; };
+		1130A5772751BDD900640E38 /* ServerManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.test.swift; sourceTree = "<group>"; };
 		1130F531253A1E7400F371BE /* ComplicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationListViewController.swift; sourceTree = "<group>"; };
 		1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectViewController.swift; sourceTree = "<group>"; };
 		1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.swift"; sourceTree = "<group>"; };
@@ -3465,6 +3471,9 @@
 				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
 				116570792702B9EB003906A7 /* DiskCache.test.swift */,
 				1165707F2702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift */,
+				1130A5732751B29E00640E38 /* PerServerContainer.test.swift */,
+				1130A5752751BA1800640E38 /* Server.test.swift */,
+				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -5713,11 +5722,13 @@
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
 				1104FCA125323A9C00B8BE34 /* WebhookResponseUpdateComplications.test.swift in Sources */,
 				113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */,
+				1130A5762751BA1800640E38 /* Server.test.swift in Sources */,
 				1165707C2702BAF5003906A7 /* DiskCache.test.swift in Sources */,
 				11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */,
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
 				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,
+				1130A5742751B29E00640E38 /* PerServerContainer.test.swift in Sources */,
 				116570802702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift in Sources */,
 				1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */,
 				11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */,
@@ -5726,6 +5737,7 @@
 				11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */,
 				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
+				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
 				11BC9E5724FDC1C900B9FBF7 /* ActiveSensor.test.swift in Sources */,
 				11F2F2A92587288200F61F7C /* NotificationAttachmentParserCamera.test.swift in Sources */,
 				1104FCCF253275CF00B8BE34 /* WatchBackgroundRefreshScheduler.test.swift in Sources */,

@@ -1,9 +1,8 @@
 import Foundation
 
-internal extension Server {
-    static func fake(
-        identifier: Identifier<Server> = .init(rawValue: UUID().uuidString),
-        initial: ServerInfo = .init(
+internal extension ServerInfo {
+    static func fake() -> ServerInfo {
+        .init(
             name: "Fake Server",
             connection: .init(
                 externalURL: nil,
@@ -28,7 +27,14 @@ internal extension Server {
                 prerelease: nil,
                 build: nil
             )
-        ),
+        )
+    }
+}
+
+internal extension Server {
+    static func fake(
+        identifier: Identifier<Server> = .init(rawValue: UUID().uuidString),
+        initial: ServerInfo = .fake(),
         update: (inout ServerInfo) -> Void = { _ in }
     ) -> Server {
         var serverInfo = initial
@@ -39,7 +45,7 @@ internal extension Server {
 
 internal class FakeServerManager: ServerManager {
     var all = [Server]()
-    var observers = [ServerObserver]()
+    var observers = [WeakWrapper]()
 
     init(initial: Int = 0) {
         for _ in 0 ..< initial {
@@ -77,12 +83,24 @@ internal class FakeServerManager: ServerManager {
         all.removeAll()
     }
 
+    func notify() {
+        for wrapper in observers {
+            wrapper.observer?.serversDidChange(self)
+        }
+    }
+
+    struct WeakWrapper {
+        weak var observer: ServerObserver?
+    }
+
     func add(observer: ServerObserver) {
-        observers.append(observer)
+        if !observers.contains(where: { $0.observer === observer }) {
+            observers.append(.init(observer: observer))
+        }
     }
 
     func remove(observer: ServerObserver) {
-        observers.removeAll(where: { $0 === observer })
+        observers.removeAll(where: { $0.observer === observer })
     }
 
     func restoreState(_ state: Data) {}

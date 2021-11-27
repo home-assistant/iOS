@@ -73,7 +73,6 @@ private class FakeModelManager: ModelManager {
 
     override func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility),
         apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
         fetchResult

@@ -7,7 +7,7 @@ import RealmSwift
 import XCTest
 
 class ZoneManagerProcessorTests: XCTestCase {
-    private var api: FakeHassAPI!
+    private var apis: [FakeHassAPI]!
     private var (oneShotLocationPromise, oneShotLocationSeal) = Promise<CLLocation>.pending()
     private var (submitLocationPromise, submitLocationSeal) = Promise<Void>.pending()
     private var delegate: FakeZoneManagerProcessorDelegate!
@@ -47,13 +47,18 @@ class ZoneManagerProcessorTests: XCTestCase {
             )
         }
 
-        let servers = FakeServerManager(initial: 1)
-        let server = try XCTUnwrap(servers.all.first)
-        api = FakeHassAPI(server: server)
+        let servers = FakeServerManager(initial: 2)
+        let server1 = servers.all[0]
+        let server2 = servers.all[1]
+        apis = servers.all.map {
+            with(FakeHassAPI(server: $0)) {
+                let (newPromise, newSeal) = Promise<Void>.pending()
+                submitLocationPromise.pipe(to: newSeal.resolve)
+                $0.submitLocationPromise = newPromise
+            }
+        }
         Current.servers = servers
-        Current.cachedApis = [server.identifier: api]
-
-        api.submitLocationPromise = submitLocationPromise
+        Current.cachedApis = [server1.identifier: apis[0], server2.identifier: apis[1]]
 
         Current.location.oneShotLocation = { _, _ in self.oneShotLocationPromise }
         delegate = FakeZoneManagerProcessorDelegate()
@@ -181,9 +186,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         wait(for: [expectation], timeout: 10.0)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertNil(api.submitLocationInvocation?.zone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertNil(api.submitLocationInvocation?.zone)
+        }
 
         XCTAssertTrue(promise.isFulfilled)
 
@@ -221,9 +228,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         wait(for: [expectation], timeout: 10.0)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertNil(api.submitLocationInvocation?.zone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertNil(api.submitLocationInvocation?.zone)
+        }
 
         XCTAssertTrue(promise.isFulfilled)
 
@@ -411,9 +420,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        }
 
         if let state = delegate.states.first {
             switch state {
@@ -460,9 +471,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertTrue(circularRegionZone?.inRegion ?? false)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        }
 
         if let state = delegate.states.first {
             switch state {
@@ -509,9 +522,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        }
 
         if let state = delegate.states.first {
             switch state {
@@ -558,22 +573,24 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertTrue(circularRegionZone?.inRegion ?? false)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
 
-        // difference! this is the mutated one!
-        if let sentLocation = api.submitLocationInvocation?.location {
-            let regionWithAccuracy = CLCircularRegion(
-                center: circularRegion.center,
-                radius: circularRegion.radius + sentLocation.horizontalAccuracy,
-                identifier: ""
-            )
+            // difference! this is the mutated one!
+            if let sentLocation = api.submitLocationInvocation?.location {
+                let regionWithAccuracy = CLCircularRegion(
+                    center: circularRegion.center,
+                    radius: circularRegion.radius + sentLocation.horizontalAccuracy,
+                    identifier: ""
+                )
 
-            XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
-        } else {
-            XCTFail("didn't send a location")
+                XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
+            } else {
+                XCTFail("didn't send a location")
+            }
+
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
         }
-
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
 
         if let state = delegate.states.first {
             switch state {
@@ -661,21 +678,23 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertTrue(circularRegionZone?.inRegion ?? false)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
 
-        if let sentLocation = api.submitLocationInvocation?.location {
-            let regionWithAccuracy = CLCircularRegion(
-                center: circularRegion.center,
-                radius: circularRegion.radius + sentLocation.horizontalAccuracy,
-                identifier: ""
-            )
+            if let sentLocation = api.submitLocationInvocation?.location {
+                let regionWithAccuracy = CLCircularRegion(
+                    center: circularRegion.center,
+                    radius: circularRegion.radius + sentLocation.horizontalAccuracy,
+                    identifier: ""
+                )
 
-            XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
-        } else {
-            XCTFail("didn't send a location")
+                XCTAssertTrue(regionWithAccuracy.contains(sentLocation.coordinate))
+            } else {
+                XCTFail("didn't send a location")
+            }
+
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
         }
-
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
 
         if let state = delegate.states.first {
             switch state {
@@ -744,16 +763,18 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertTrue(circularRegionZone?.inRegion ?? false)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
 
-        if let sentLocation = api.submitLocationInvocation?.location {
-            XCTAssertTrue(circularRegion.contains(sentLocation.coordinate))
-            XCTAssertNotEqual(sentLocation.coordinate.toArray(), oneShotLocationCoordinate.toArray())
-        } else {
-            XCTFail("didn't send a location")
+            if let sentLocation = api.submitLocationInvocation?.location {
+                XCTAssertTrue(circularRegion.contains(sentLocation.coordinate))
+                XCTAssertNotEqual(sentLocation.coordinate.toArray(), oneShotLocationCoordinate.toArray())
+            } else {
+                XCTFail("didn't send a location")
+            }
+
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
         }
-
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
 
         if let state = delegate.states.first {
             switch state {
@@ -831,15 +852,17 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertTrue(circularRegionZone?.inRegion ?? false)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
 
-        if let sentLocation = api.submitLocationInvocation?.location {
-            XCTAssertEqual(sentLocation, oneShotLocation)
-        } else {
-            XCTFail("didn't send a location")
+            if let sentLocation = api.submitLocationInvocation?.location {
+                XCTAssertEqual(sentLocation, oneShotLocation)
+            } else {
+                XCTFail("didn't send a location")
+            }
+
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
         }
-
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
 
         if let state = delegate.states.first {
             switch state {
@@ -875,9 +898,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, event.associatedLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, beaconRegionZone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, event.associatedLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, beaconRegionZone)
+        }
 
         if let state = delegate.states.first {
             switch state {
@@ -928,9 +953,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, nil)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, nil)
+        }
 
         guard delegate.states.count == 2 else {
             XCTFail("should have had 2 states")
@@ -980,9 +1007,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event1.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event1.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        }
 
         guard delegate.states.count == 2 else {
             XCTFail("should have had 2 states")
@@ -1035,9 +1064,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, circularRegionZone)
+        }
 
         guard delegate.states.count == 2 else {
             XCTFail("should have had 2 states")
@@ -1076,7 +1107,9 @@ class ZoneManagerProcessorTests: XCTestCase {
         (submitLocationPromise, submitLocationSeal) = Promise<Void>.pending()
         submitLocationSeal.fulfill(())
 
-        XCTAssertNil(api.submitLocationInvocation)
+        for api in apis {
+            XCTAssertNil(api.submitLocationInvocation)
+        }
 
         let event2 = ZoneManagerEvent(eventType: .locationChange([CLLocation(latitude: 1.22, longitude: 2.11)]))
         let promise2 = processor.perform(event: event2)
@@ -1094,9 +1127,11 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         XCTAssertFalse(circularRegionZone?.inRegion ?? true)
 
-        XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
-        XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
-        XCTAssertEqual(api.submitLocationInvocation?.zone, nil)
+        for api in apis {
+            XCTAssertEqual(api.submitLocationInvocation?.updateType, event2.asTrigger())
+            XCTAssertEqual(api.submitLocationInvocation?.location, oneShotLocation)
+            XCTAssertEqual(api.submitLocationInvocation?.zone, nil)
+        }
 
         guard delegate.states.count == 2 else {
             XCTFail("should have had 2 states")
@@ -1146,7 +1181,9 @@ class ZoneManagerProcessorTests: XCTestCase {
         (submitLocationPromise, submitLocationSeal) = Promise<Void>.pending()
         submitLocationSeal.fulfill(())
 
-        XCTAssertNil(api.submitLocationInvocation)
+        for api in apis {
+            XCTAssertNil(api.submitLocationInvocation)
+        }
 
         let expectation1 = expectation(description: "promise1")
         let expectation2 = expectation(description: "promise2")

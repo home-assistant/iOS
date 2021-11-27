@@ -37,12 +37,14 @@ class OnboardingAuthStepModelsTests: XCTestCase {
 
     func testPerformSuccess() {
         modelManager.fetchResult = .value(())
+        modelManager.expectedApis = [api]
         let result = step.perform(point: .afterRegister)
         XCTAssertNoThrow(try hang(result))
     }
 
     func testPerformFailure() {
         modelManager.fetchResult = .init(error: TestError.any)
+        modelManager.expectedApis = [api]
         let result = step.perform(point: .afterRegister)
         XCTAssertThrowsError(try hang(result)) { error in
             XCTAssertEqual(error as? TestError, .any)
@@ -56,12 +58,13 @@ private enum TestError: Error {
 
 private class FakeModelManager: ModelManager {
     var fetchResult: Promise<Void> = .value(())
+    var expectedApis: [HomeAssistantAPI] = []
 
     override func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility),
         apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
-        fetchResult
+        XCTAssertEqual(expectedApis.map(\.server), apis.map(\.server))
+        return fetchResult
     }
 }

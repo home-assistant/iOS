@@ -7,6 +7,9 @@ public class ModelManager: ServerObserver {
     private var notificationTokens = [NotificationToken]()
     private var hakitTokens = [HACancellable]()
     private var subscribedSubscriptions = [SubscribeDefinition]()
+    private var cleanupDefinitions = [CleanupDefinition]()
+
+    public var workQueue: DispatchQueue = .global(qos: .userInitiated)
 
     deinit {
         hakitTokens.forEach { $0.cancel() }
@@ -78,12 +81,14 @@ public class ModelManager: ServerObserver {
     }
 
     public func cleanup(
-        definitions: [CleanupDefinition] = CleanupDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        definitions: [CleanupDefinition] = CleanupDefinition.defaults
     ) -> Promise<Void> {
         let (promise, seal) = Promise<Void>.pending()
 
-        queue.async {
+        Current.servers.add(observer: self)
+
+        cleanupDefinitions = definitions
+        workQueue.async {
             let realm = Current.realm()
             let writes = definitions.map { definition in
                 realm.reentrantWrite {
@@ -170,8 +175,7 @@ public class ModelManager: ServerObserver {
     }
 
     public func subscribe(
-        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults
     ) {
         Current.servers.add(observer: self)
 
@@ -179,7 +183,7 @@ public class ModelManager: ServerObserver {
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
             Current.apis.flatMap { api in
-                definition.subscribe(api.connection, api.server, queue, self)
+                definition.subscribe(api.connection, api.server, workQueue, self)
             }
         }
         subscribedSubscriptions = definitions
@@ -188,13 +192,12 @@ public class ModelManager: ServerObserver {
     public struct FetchDefinition {
         public var update: (
             _ api: HomeAssistantAPI,
-            _ connection: HAConnection,
             _ queue: DispatchQueue,
             _ modelManager: ModelManager
         ) -> Promise<Void>
 
         public static var defaults: [Self] = [
-            FetchDefinition(update: { api, _, queue, manager in
+            FetchDefinition(update: { api, queue, manager in
                 api.GetMobileAppConfig().then(on: queue) {
                     when(fulfilled: [
                         manager.store(
@@ -211,11 +214,10 @@ public class ModelManager: ServerObserver {
 
     public func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility),
         apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
         when(fulfilled: apis.map { api in
-            when(fulfilled: definitions.map { $0.update(api, api.connection, queue, self) })
+            when(fulfilled: definitions.map { $0.update(api, workQueue, self) })
         }).asVoid()
     }
 
@@ -286,6 +288,6 @@ public class ModelManager: ServerObserver {
 
     public func serversDidChange(_ serverManager: ServerManager) {
         subscribe(definitions: subscribedSubscriptions)
-        cleanup().cauterize()
+        cleanup(definitions: cleanupDefinitions).cauterize()
     }
 }
