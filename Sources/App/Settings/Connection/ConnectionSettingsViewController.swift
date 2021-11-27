@@ -196,6 +196,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                                 }.ensure {
                                     hud.hide(animated: true)
                                 }.done {
+                                    Current.onboardingObservation.needed(.logout)
                                     navigationController?.popViewController(animated: true)
                                 }.cauterize()
                             }
