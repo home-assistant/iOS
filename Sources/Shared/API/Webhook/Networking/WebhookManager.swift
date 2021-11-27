@@ -77,7 +77,7 @@ public class WebhookManager: NSObject {
 
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
 
-    private var serverCache = [Identifier<Server>: Server]()
+    internal var serverCache = [Identifier<Server>: Server]()
 
     // MARK: - Lifecycle
 

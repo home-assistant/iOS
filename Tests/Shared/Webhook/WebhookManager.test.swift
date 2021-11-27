@@ -380,6 +380,22 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
     }
 
+    func testSendingPersistentUnhandledSucceedsWithoutServerCache() {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        Current.servers = with(FakeServerManager(initial: 0)) {
+            _ = $0.add(identifier: api1.server.identifier, serverInfo: api1.server.info)
+        }
+
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [self, api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            manager.serverCache.removeAll()
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+    }
+
     func testSendingPersistentWithExistingResolvesBothPromises() throws {
         let request1 = WebhookRequest(type: "webhook_name", data: ["json": true])
         let request2 = WebhookRequest(type: "webhook_name", data: ["elephant": true])
