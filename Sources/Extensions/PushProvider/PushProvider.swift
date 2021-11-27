@@ -6,13 +6,18 @@ import Shared
 import UserNotifications
 
 @objc class PushProvider: NEAppPushProvider, LocalPushManagerDelegate {
-    private var localPushManager: LocalPushManager?
     private let commandManager = NotificationCommandManager()
 
-    private var stateObserver: NSObjectProtocol? {
+    enum PushProviderError: Error {
+        case noSuchServer
+        case noConfiguration
+    }
+
+    private var localPushManagers = [LocalPushManager]()
+    private var stateObservers = [NSObjectProtocol]() {
         willSet {
-            if let stateObserver = stateObserver, stateObserver !== newValue {
-                NotificationCenter.default.removeObserver(stateObserver)
+            for observer in stateObservers where !newValue.contains(where: { $0 === observer }) {
+                NotificationCenter.default.removeObserver(observer)
             }
         }
     }
@@ -23,46 +28,94 @@ import UserNotifications
     }
 
     deinit {
-        if let stateObserver = stateObserver {
-            NotificationCenter.default.removeObserver(stateObserver)
-        }
+        stateObservers.forEach { NotificationCenter.default.removeObserver($0) }
     }
 
     override func start(completionHandler: @escaping (Error?) -> Void) {
         Current.Log.notify("starting", log: .info)
 
-        guard let settingsKey = providerConfiguration?[LocalPushStateSync.settingsKey] as? String else {
-            Current.Log.notify("aborting due to missing settings key", log: .error)
-            stop(with: .configurationFailed, completionHandler: {
-                Current.Log.notify("finished failing due to no settings key", log: .info)
-            })
-            return
+        // promise prevents our firing the completion handler more than once
+        let (didStartPromise, didStartSeal) = Promise<Void>.pending()
+        didStartPromise.done {
+            completionHandler(nil)
+        }.catch { error in
+            completionHandler(error)
         }
 
-        let localPushManager = with(LocalPushManager()) {
+        stateObservers.append(observe(\.providerConfiguration, options: .initial) { pushProvider, _ in
+            guard let config = pushProvider.providerConfiguration,
+                  let data = config[PushProviderConfiguration.providerConfigurationKey] as? Data else {
+                didStartSeal.reject(PushProviderError.noConfiguration)
+                return
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                let providers = try decoder.decode([PushProviderConfiguration].self, from: data)
+
+                when(fulfilled: providers.map(pushProvider.localPushManager(for:))).done { newManagers in
+                    Current.Log.notify("started push managers: \(newManagers.count)", log: .info)
+                    pushProvider.localPushManagers = newManagers
+                    didStartSeal.fulfill(())
+                }.catch { error in
+                    didStartSeal.reject(error)
+                }
+            } catch {
+                Current.Log.notify("failed to compose from settings: \(error)", log: .error)
+                didStartSeal.reject(error)
+            }
+        })
+    }
+
+    override func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
+        Current.Log.notify("stopping with reason \(reason)", log: .error)
+
+        stateObservers.removeAll()
+
+        for manager in localPushManagers {
+            manager.invalidate()
+            Current.api(for: manager.server).connection.disconnect()
+        }
+
+        localPushManagers.removeAll()
+        completionHandler()
+    }
+
+    override func handleTimerEvent() {
+        // we may be signaled that it's a good time to connect, so do so
+        for manager in localPushManagers {
+            Current.api(for: manager.server).connection.connect()
+        }
+    }
+
+    private func localPushManager(for configuration: PushProviderConfiguration) -> Promise<LocalPushManager> {
+        guard let server = Current.servers.server(for: configuration.serverIdentifier) else {
+            return .init(error: PushProviderError.noSuchServer)
+        }
+
+        let localPushManager = with(LocalPushManager(server: server)) {
             $0.delegate = self
         }
-        self.localPushManager = localPushManager
 
-        let valueSync = LocalPushStateSync(settingsKey: settingsKey)
+        let valueSync = LocalPushStateSync(settingsKey: configuration.settingsKey)
         valueSync.value = localPushManager.state
-        stateObserver = NotificationCenter.default.addObserver(
+        stateObservers.append(NotificationCenter.default.addObserver(
             forName: LocalPushManager.stateDidChange,
             object: localPushManager,
             queue: nil
         ) { [localPushManager] _ in
             valueSync.value = localPushManager.state
-        }
+        })
 
-        Current.apiConnection.connect()
+        let connection = Current.api(for: server).connection
 
         // state of the connection dictates our callback to the completion handler
         // this wraps it in a way that guarantees we only ever call it once (via the promise's guarantee of that)
-        firstly { () -> Promise<Void> in
+        return firstly { () -> Promise<Void> in
             let (promise, seal) = Promise<Void>.pending()
 
             func checkState() {
-                switch Current.apiConnection.state {
+                switch connection.state {
                 case .ready(version: _):
                     seal.fulfill(())
                 case let .disconnected(reason: .waitingToReconnect(
@@ -81,7 +134,7 @@ import UserNotifications
 
             let token = NotificationCenter.default.addObserver(
                 forName: HAConnectionState.didTransitionToStateNotification,
-                object: Current.apiConnection,
+                object: connection,
                 queue: nil
             ) { _ in
                 checkState()
@@ -91,25 +144,16 @@ import UserNotifications
 
             return promise
                 .ensure { NotificationCenter.default.removeObserver(token) }
-        }.done {
-            Current.Log.notify("reporting we connected", log: .info)
-            completionHandler(nil)
-        }.catch { error in
-            Current.Log.notify("reporting we errored", log: .info)
-            completionHandler(error)
+        }.tap { result in
+            switch result {
+            case .fulfilled:
+                Current.Log.notify("reporting we connected", log: .info)
+            case let .rejected(error):
+                Current.Log.notify("reporting we errored with \(error)", log: .info)
+            }
+        }.map {
+            localPushManager
         }
-    }
-
-    override func stop(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        Current.Log.notify("stopping with reason \(reason)", log: .error)
-        localPushManager?.invalidate()
-        localPushManager = nil
-        Current.apiConnection.disconnect()
-    }
-
-    override func handleTimerEvent() {
-        // we may be signaled that it's a good time to connect, so do so
-        Current.apiConnection.connect()
     }
 
     func localPushManager(_ manager: LocalPushManager, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {

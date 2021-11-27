@@ -13,6 +13,13 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
     let config: WatchComplication
     private var displayTemplate: ComplicationTemplate
+    private var server: Server {
+        if let value = (form.rowBy(tag: "server") as? ServerSelectRow)?.value, let server = value.server {
+            return server
+        } else {
+            return Current.servers.all.first!
+        }
+    }
 
     init(config: WatchComplication) {
         self.config = config
@@ -42,16 +49,15 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             } else {
                 config.IsPublic = true
             }
+            config.serverIdentifier = server.identifier.rawValue
             config.Template = displayTemplate
             config.Data = getValuesGroupedBySection()
 
             Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
 
             realm.add(config, update: .all)
-        }.then(on: nil) {
-            Current.api
-        }.then(on: nil) { api in
-            api.updateComplications(passively: false)
+        }.then(on: nil) { [server] in
+            Current.api(for: server).updateComplications(passively: false)
         }.cauterize()
 
         onDismissCallback?(self)
@@ -70,14 +76,12 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             $0?.sourceRect = sender.bounds
         }
         alert.addAction(UIAlertAction(
-            title: L10n.Watch.Configurator.Delete.button, style: .destructive, handler: { [config] _ in
+            title: L10n.Watch.Configurator.Delete.button, style: .destructive, handler: { [config, server] _ in
                 let realm = Current.realm()
                 realm.reentrantWrite {
                     realm.delete(config)
                 }.then(on: nil) {
-                    Current.api
-                }.then(on: nil) { api in
-                    api.updateComplications(passively: false)
+                    Current.api(for: server).updateComplications(passively: false)
                 }.cauterize()
 
                 self.onDismissCallback?(self)
@@ -127,6 +131,21 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 $0.title = L10n.Watch.Configurator.Rows.DisplayName.title
                 $0.placeholder = config.Family.name
                 $0.value = config.name
+            }
+
+            <<< ServerSelectRow("server") {
+                if let server = Current.servers.server(forServerIdentifier: config.serverIdentifier) {
+                    $0.value = .server(server)
+                } else {
+                    $0.value = Current.servers.all.first.flatMap { .server($0) }
+                }
+                $0.onChange { [form] row in
+                    for section in form.allSections {
+                        if let section = section as? TemplateSection, let server = row.value?.server {
+                            section.server = server
+                        }
+                    }
+                }
             }
 
             <<< PushRow<ComplicationTemplate> {
@@ -205,6 +224,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 header: L10n.Watch.Configurator.Sections.Gauge.header,
                 footer: L10n.Watch.Configurator.Sections.Gauge.footer,
                 displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
+                server: server,
                 initializeInput: {
                     $0.tag = "gauge"
                     $0.title = L10n.Watch.Configurator.Rows.Gauge.title
@@ -278,6 +298,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 header: L10n.Watch.Configurator.Sections.Ring.header,
                 footer: L10n.Watch.Configurator.Sections.Ring.footer,
                 displayResult: { try Self.validate(result: $0, expectingPercentile: true) },
+                server: server,
                 initializeInput: {
                     $0.tag = "ring_value"
                     $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
@@ -482,6 +503,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             header: location.label,
             footer: location.description,
             displayResult: { try Self.validate(result: $0, expectingPercentile: false) },
+            server: server,
             initializeInput: {
                 $0.tag = key + "_text"
                 $0.title = location.label

@@ -4,7 +4,45 @@ import HAKit
 import PromiseKit
 import Shared
 
-class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
+enum AccountRowValue: Equatable, CustomStringConvertible {
+    case server(Server)
+    case add
+    case all
+
+    var description: String {
+        switch self {
+        case let .server(server): return String(describing: server.identifier)
+        case .add: return "add"
+        case .all: return "all"
+        }
+    }
+
+    var server: Server? {
+        switch self {
+        case let .server(server): return server
+        case .add: return nil
+        case .all: return nil
+        }
+    }
+
+    var placeholderTitle: String? {
+        switch self {
+        case .server: return nil
+        case .add: return L10n.Settings.ConnectionSection.addServer
+        case .all: return L10n.Settings.ConnectionSection.allServers
+        }
+    }
+
+    func placeholderImage(traitCollection: UITraitCollection) -> UIImage? {
+        switch self {
+        case .server: return nil
+        case .add: return AccountInitialsImage.addImage(traitCollection: traitCollection)
+        case .all: return AccountInitialsImage.allImage(traitCollection: traitCollection)
+        }
+    }
+}
+
+class AccountCell: Cell<AccountRowValue>, CellType {
     private var accountRow: HomeAssistantAccountRow? { row as? HomeAssistantAccountRow }
 
     override func setup() {
@@ -21,9 +59,9 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
     override func update() {
         super.update()
 
-        if let value = accountRow?.value {
+        if case let .server(server) = accountRow?.value {
             let userName = accountRow?.cachedUserName
-            let locationName = value.locationName
+            let locationName = server.info.name
             let size = AccountInitialsImage.defaultSize
 
             if let imageView = imageView {
@@ -37,7 +75,7 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
                         imageView.image = image.scaledToSize(size)
                     } completion: { _ in
                     }
-                } else if accountRow?.value != nil {
+                } else {
                     imageView.image = AccountInitialsImage.image(for: userName ?? "?")
                 }
 
@@ -50,9 +88,9 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
             detailTextLabel?.text = userName ?? " "
         } else {
             accessoryType = .none
-            textLabel?.text = L10n.Settings.ConnectionSection.addServer
-            detailTextLabel?.text = "[todo]"
-            imageView?.image = AccountInitialsImage.addImage()
+            textLabel?.text = accountRow?.value?.placeholderTitle
+            detailTextLabel?.text = nil
+            imageView?.image = accountRow?.value?.placeholderImage(traitCollection: traitCollection)
         }
 
         if #available(iOS 13, *) {
@@ -60,16 +98,6 @@ class AccountCell: Cell<HomeAssistantAccountRowInfo>, CellType {
         } else {
             detailTextLabel?.textColor = .darkGray
         }
-    }
-}
-
-struct HomeAssistantAccountRowInfo: Equatable {
-    var connection: HAConnection
-    var locationName: String?
-
-    static func == (lhs: HomeAssistantAccountRowInfo, rhs: HomeAssistantAccountRowInfo) -> Bool {
-        lhs.connection === rhs.connection &&
-            lhs.locationName == rhs.locationName
     }
 }
 
@@ -124,7 +152,6 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
     enum FetchAvatarError: Error, CancellableError {
         case missingPerson
         case missingURL
-        case noActiveUrl
         case alreadySet
         case couldntDecode
 
@@ -138,12 +165,14 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
     }
 
     private func fetchAvatar() {
-        guard let connection = value?.connection else {
+        guard let server = value?.server else {
             cachedImage = nil
             cachedUserName = nil
             updateCell()
             return
         }
+
+        let connection = Current.api(for: server).connection
 
         accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
             guard let self = self else { return }
@@ -174,9 +203,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                         throw FetchAvatarError.missingURL
                     }
                 }.map { path throws -> URL in
-                    guard let url = Current.settingsStore.connectionInfo?.activeURL.appendingPathComponent(path) else {
-                        throw FetchAvatarError.noActiveUrl
-                    }
+                    let url = server.info.connection.activeURL().appendingPathComponent(path)
                     if let lastTask = lastTask, lastTask.error == nil, lastTask.originalRequest?.url == url {
                         throw FetchAvatarError.alreadySet
                     }
@@ -197,9 +224,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     Current.Log.verbose("got image \(image.size)")
                     self?.cachedImage = image
                     self?.updateCell()
-                }.catch { error in
-                    Current.Log.error("failed to grab thumbnail: \(error)")
-                }
+                }.cauterize()
             }
         }
     }

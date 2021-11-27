@@ -13,97 +13,6 @@ public class SettingsStore {
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
     public static let menuRelatedSettingDidChange: Notification.Name = .init("menuRelatedSettingDidChange")
     public static let locationRelatedSettingDidChange: Notification.Name = .init("locationRelatedSettingDidChange")
-    /// This may be posted on any thread
-    public static let connectionInfoDidChange: Notification.Name = .init("connectionInfoDidChange")
-
-    public var tokenInfo: TokenInfo? {
-        get {
-            guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
-                  let unwrappedData = tokenData else {
-                return nil
-            }
-
-            return try? JSONDecoder().decode(TokenInfo.self, from: unwrappedData)
-        }
-        set {
-            guard let info = newValue else {
-                keychain["tokenInfo"] = nil
-                return
-            }
-
-            do {
-                let data = try JSONEncoder().encode(info)
-                try keychain.set(data, key: "tokenInfo")
-            } catch {
-                assertionFailure("Error while saving token info: \(error)")
-            }
-        }
-    }
-
-    private var cachedConnectionInfo: ConnectionInfo?
-    public var connectionInfo: ConnectionInfo? {
-        get {
-            if let cachedConnectionInfo = cachedConnectionInfo {
-                return cachedConnectionInfo
-            }
-
-            if NSClassFromString("XCTest") != nil {
-                return nil
-            }
-
-            guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
-                  let unwrappedData = connectionData else {
-                return nil
-            }
-
-            do {
-                return try JSONDecoder().decode(ConnectionInfo.self, from: unwrappedData)
-            } catch {
-                Current.Log.error("Error when decoding Keychain ConnectionInfo: \(error)")
-            }
-            return nil
-        }
-        set {
-            cachedConnectionInfo = newValue
-
-            if NSClassFromString("XCTest") != nil {
-                return
-            }
-
-            guard let info = newValue else {
-                keychain["connectionInfo"] = nil
-                return
-            }
-
-            do {
-                let data = try JSONEncoder().encode(info)
-                try keychain.set(data, key: "connectionInfo")
-            } catch {
-                assertionFailure("Error while saving token info: \(error)")
-            }
-
-            NotificationCenter.default.post(
-                name: Self.connectionInfoDidChange,
-                object: nil,
-                userInfo: nil
-            )
-        }
-    }
-
-    internal var serverVersion: Version? {
-        // access this publicly using Environment
-        guard let string = prefs.string(forKey: "version") else {
-            Current.Log.info("couldn't find version string, falling back")
-            return nil
-        }
-
-        do {
-            return try Version(hassVersion: string)
-        } catch {
-            Current.Log.error("couldn't parse version '\(string)': \(error)")
-            return nil
-        }
-    }
 
     public var pushID: String? {
         get {
@@ -133,15 +42,6 @@ public class SettingsStore {
         }
         set {
             keychain["deviceID"] = newValue
-        }
-    }
-
-    public var overrideDeviceName: String? {
-        get {
-            prefs.string(forKey: "override_device_name")
-        }
-        set {
-            prefs.set(newValue, forKey: "override_device_name")
         }
     }
 
@@ -175,24 +75,6 @@ public class SettingsStore {
         }
     }
     #endif
-
-    public var showAdvancedConnectionSettings: Bool {
-        get {
-            prefs.bool(forKey: "showAdvancedConnectionSettings")
-        }
-        set {
-            prefs.set(newValue, forKey: "showAdvancedConnectionSettings")
-        }
-    }
-
-    public var timezone: String? {
-        get {
-            prefs.string(forKey: "time_zone")
-        }
-        set {
-            prefs.setValue(newValue, forKey: "time_zone")
-        }
-    }
 
     public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
         public let zoom: Int
@@ -392,12 +274,26 @@ public class SettingsStore {
         }
     }
 
-    public var menuItemTemplate: String {
+    public var menuItemTemplate: (server: Server, template: String)? {
         get {
-            prefs.string(forKey: "menuItemTemplate") ?? ""
+            let server: Server?
+
+            if let serverIdentifier = prefs.string(forKey: "menuItemTemplate-server") {
+                server = Current.servers.server(forServerIdentifier: serverIdentifier)
+            } else {
+                // backwards compatibility to before servers
+                server = Current.servers.all.first
+            }
+
+            if let server = server {
+                return (server, prefs.string(forKey: "menuItemTemplate") ?? "")
+            } else {
+                return nil
+            }
         }
         set {
-            prefs.setValue(newValue, forKey: "menuItemTemplate")
+            prefs.setValue(newValue?.0.identifier.rawValue, forKey: "menuItemTemplate-server")
+            prefs.setValue(newValue?.1, forKey: "menuItemTemplate")
             NotificationCenter.default.post(
                 name: Self.menuRelatedSettingDidChange,
                 object: nil,

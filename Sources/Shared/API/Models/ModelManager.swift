@@ -3,9 +3,13 @@ import HAKit
 import PromiseKit
 import RealmSwift
 
-public class ModelManager {
+public class ModelManager: ServerObserver {
     private var notificationTokens = [NotificationToken]()
     private var hakitTokens = [HACancellable]()
+    private var subscribedSubscriptions = [SubscribeDefinition]()
+    private var cleanupDefinitions = [CleanupDefinition]()
+
+    public var workQueue: DispatchQueue = .global(qos: .userInitiated)
 
     deinit {
         hakitTokens.forEach { $0.cancel() }
@@ -29,9 +33,13 @@ public class ModelManager {
     }
 
     public struct CleanupDefinition {
+        public enum CleanupType {
+            case age(createdKey: String, duration: Measurement<UnitDuration>)
+            case orphaned(serverIdentifierKey: String, allowedPredicate: NSPredicate)
+        }
+
         public var model: Object.Type
-        public var createdKey: String
-        public var duration: Measurement<UnitDuration>
+        public var cleanupType: CleanupType
 
         public init(
             model: Object.Type,
@@ -39,8 +47,17 @@ public class ModelManager {
             duration: Measurement<UnitDuration> = .init(value: 256, unit: .hours)
         ) {
             self.model = model
-            self.createdKey = createdKey
-            self.duration = duration
+            self.cleanupType = .age(createdKey: createdKey, duration: duration)
+        }
+
+        init<UM: Object & UpdatableModel>(
+            orphansOf model: UM.Type
+        ) {
+            self.model = model
+            self.cleanupType = .orphaned(
+                serverIdentifierKey: model.serverIdentifierKey(),
+                allowedPredicate: model.updateEligiblePredicate
+            )
         }
 
         public static var defaults: [Self] = [
@@ -56,16 +73,22 @@ public class ModelManager {
                 model: ClientEvent.self,
                 createdKey: #keyPath(ClientEvent.date)
             ),
+            CleanupDefinition(orphansOf: Action.self),
+            CleanupDefinition(orphansOf: NotificationCategory.self),
+            CleanupDefinition(orphansOf: RLMZone.self),
+            CleanupDefinition(orphansOf: RLMScene.self),
         ]
     }
 
     public func cleanup(
-        definitions: [CleanupDefinition] = CleanupDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        definitions: [CleanupDefinition] = CleanupDefinition.defaults
     ) -> Promise<Void> {
         let (promise, seal) = Promise<Void>.pending()
 
-        queue.async {
+        Current.servers.add(observer: self)
+
+        cleanupDefinitions = definitions
+        workQueue.async {
             let realm = Current.realm()
             let writes = definitions.map { definition in
                 realm.reentrantWrite {
@@ -83,11 +106,22 @@ public class ModelManager {
         using definition: CleanupDefinition,
         realm: Realm
     ) {
-        let duration = definition.duration.converted(to: .seconds).value
-        let date = Current.date().addingTimeInterval(-duration)
-        let objects = realm
-            .objects(definition.model)
-            .filter("%K < %@", definition.createdKey, date)
+        let objects: Results<Object>
+
+        switch definition.cleanupType {
+        case let .age(createdKey: createdKey, duration: duration):
+            let duration = duration.converted(to: .seconds).value
+            let date = Current.date().addingTimeInterval(-duration)
+            objects = realm
+                .objects(definition.model)
+                .filter("%K < %@", createdKey, date)
+        case let .orphaned(serverIdentifierKey: serverIdentifierKey, allowedPredicate: allowedPredicate):
+            let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
+
+            objects = realm.objects(definition.model)
+                .filter(allowedPredicate)
+                .filter("not %K in %@", serverIdentifierKey, serverIdentifiers)
+        }
 
         if objects.isEmpty == false {
             Current.Log.info("\(definition.model): \(objects.count)")
@@ -98,6 +132,7 @@ public class ModelManager {
     public struct SubscribeDefinition {
         public var subscribe: (
             _ connection: HAConnection,
+            _ server: Server,
             _ queue: DispatchQueue,
             _ modelManager: ModelManager
         ) -> [HACancellable]
@@ -108,7 +143,7 @@ public class ModelManager {
             domain: String,
             type: UM.Type
         ) -> Self where UM.Source == HAEntity {
-            .init(subscribe: { connection, queue, manager in
+            .init(subscribe: { connection, server, queue, manager in
                 // working around a swift compiler crash, xcode 12.4
                 let someManager = manager
 
@@ -124,7 +159,7 @@ public class ModelManager {
 
                             let entities = value.all.filter { $0.domain == domain }
                             if entities != lastEntities {
-                                manager.store(type: type, sourceModels: entities).cauterize()
+                                manager.store(type: type, from: server, sourceModels: entities).cauterize()
                                 lastEntities = entities
                             }
                         }
@@ -140,29 +175,37 @@ public class ModelManager {
     }
 
     public func subscribe(
-        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults
     ) {
+        Current.servers.add(observer: self)
+
+        subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
-        hakitTokens = definitions.flatMap {
-            $0.subscribe(Current.apiConnection, queue, self)
+        hakitTokens = definitions.flatMap { definition -> [HACancellable] in
+            Current.apis.flatMap { api in
+                definition.subscribe(api.connection, api.server, workQueue, self)
+            }
         }
+        subscribedSubscriptions = definitions
     }
 
     public struct FetchDefinition {
         public var update: (
             _ api: HomeAssistantAPI,
-            _ connection: HAConnection,
             _ queue: DispatchQueue,
             _ modelManager: ModelManager
         ) -> Promise<Void>
 
         public static var defaults: [Self] = [
-            FetchDefinition(update: { api, _, queue, manager in
+            FetchDefinition(update: { api, queue, manager in
                 api.GetMobileAppConfig().then(on: queue) {
                     when(fulfilled: [
-                        manager.store(type: NotificationCategory.self, sourceModels: $0.push.categories),
-                        manager.store(type: Action.self, sourceModels: $0.actions),
+                        manager.store(
+                            type: NotificationCategory.self,
+                            from: api.server,
+                            sourceModels: $0.push.categories
+                        ),
+                        manager.store(type: Action.self, from: api.server, sourceModels: $0.actions),
                     ])
                 }
             }),
@@ -171,11 +214,11 @@ public class ModelManager {
 
     public func fetch(
         definitions: [FetchDefinition] = FetchDefinition.defaults,
-        on queue: DispatchQueue = .global(qos: .utility)
+        apis: [HomeAssistantAPI] = Current.apis
     ) -> Promise<Void> {
-        Current.api.then(on: nil) { api in
-            when(fulfilled: definitions.map { $0.update(api, Current.apiConnection, queue, self) })
-        }
+        when(fulfilled: apis.map { api in
+            when(fulfilled: definitions.map { $0.update(api, workQueue, self) })
+        }).asVoid()
     }
 
     internal enum StoreError: Error {
@@ -184,6 +227,7 @@ public class ModelManager {
 
     internal func store<UM: Object & UpdatableModel, C: Collection>(
         type realmObjectType: UM.Type,
+        from server: Server,
         sourceModels: C
     ) -> Promise<Void> where C.Element == UM.Source {
         let realm = Current.realm()
@@ -193,19 +237,23 @@ public class ModelManager {
                 throw StoreError.missingPrimaryKey
             }
 
-            let existingIDs = Set(realm.objects(UM.self).compactMap { $0[realmPrimaryKey] as? String })
+            let allObjects = realm.objects(UM.self)
+                .filter(UM.updateEligiblePredicate)
+                .filter("%K = %@", UM.serverIdentifierKey(), server.identifier.rawValue)
+
+            let existingIDs = Set(allObjects.compactMap { $0[realmPrimaryKey] as? String })
             let incomingIDs = Set(sourceModels.map(\.primaryKey))
 
             let deletedIDs = existingIDs.subtracting(incomingIDs)
             let newIDs = incomingIDs.subtracting(existingIDs)
 
-            let deleteObjects = realm.objects(UM.self)
-                .filter(UM.updateEligiblePredicate)
+            let deleteObjects = allObjects
                 .filter("%K in %@", realmPrimaryKey, deletedIDs)
 
             Current.Log.verbose(
                 [
                     "updating \(UM.self)",
+                    "server(\(server.identifier))",
                     "from(\(existingIDs.count))",
                     "eligible(\(incomingIDs.count))",
                     "deleted(\(deleteObjects.count))",
@@ -224,7 +272,7 @@ public class ModelManager {
                     updating = UM()
                 }
 
-                if updating.update(with: model, using: realm) {
+                if updating.update(with: model, server: server, using: realm) {
                     return updating
                 } else {
                     return nil
@@ -236,5 +284,10 @@ public class ModelManager {
             UM.willDelete(objects: Array(deleteObjects), realm: realm)
             realm.delete(deleteObjects)
         }
+    }
+
+    public func serversDidChange(_ serverManager: ServerManager) {
+        subscribe(definitions: subscribedSubscriptions)
+        cleanup(definitions: cleanupDefinitions).cauterize()
     }
 }

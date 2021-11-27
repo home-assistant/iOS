@@ -22,9 +22,9 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func handle(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
         Current.Log.verbose("Handling send location")
 
-        Current.api.then(on: nil) { api in
+        when(fulfilled: Current.apis.map { api in
             api.SubmitLocation(updateType: .Siri, location: intent.location?.location, zone: nil)
-        }.done { _ in
+        }).done { _ in
             Current.Log.verbose("Successfully submitted location")
 
             let resp = SendLocationIntentResponse(code: .success, userActivity: nil)

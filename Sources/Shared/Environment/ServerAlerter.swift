@@ -123,9 +123,9 @@ public class ServerAlerter {
             when(
                 fulfilled:
                 URLSession.shared.dataTask(.promise, with: apiUrl).map(\.data),
-                Current.apiConnection.caches.user.once().promise
+                when(fulfilled: Current.apis.map(\.connection.caches.user).map { $0.once().promise })
             )
-        }.map { data, user -> [ServerAlert] in
+        }.map { data, users -> [ServerAlert] in
             // allows individual alerts to fail to parse, in case e.g. somebody typos something
             struct FailableServerAlert: Decodable {
                 var alert: ServerAlert?
@@ -144,7 +144,7 @@ public class ServerAlerter {
                     return false
                 }
 
-                guard !alert.adminOnly || user.isAdmin else {
+                guard !alert.adminOnly || users.contains(where: \.isAdmin) else {
                     return false
                 }
 
@@ -152,7 +152,7 @@ public class ServerAlerter {
                     return true
                 }
 
-                if let version = Current.serverVersion(), alert.core.shouldTrigger(for: version) {
+                for server in Current.servers.all where alert.core.shouldTrigger(for: server.info.version) {
                     return true
                 }
 

@@ -6,6 +6,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     init(
         id: String,
         title: String,
+        subtitle: String?,
         widgetURL: URL,
         icon: MaterialDesignIcons,
         showsChevron: Bool = false,
@@ -15,6 +16,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     ) {
         self.id = id
         self.title = title
+        self.subtitle = subtitle
         self.widgetURL = widgetURL
         self.textColor = textColor
         self.icon = icon
@@ -26,6 +28,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     var id: String
 
     var title: String
+    var subtitle: String?
     var widgetURL: URL
 
     var icon: MaterialDesignIcons
@@ -48,6 +51,15 @@ enum WidgetBasicSizeStyle {
             return .subheadline
         case .condensed, .regular:
             return .footnote
+        }
+    }
+
+    var subtextFont: Font {
+        switch self {
+        case .single, .expanded:
+            return .footnote
+        case .regular, .condensed:
+            return .system(size: 12)
         }
     }
 
@@ -110,7 +122,21 @@ struct WidgetBasicView: View {
                 .multilineTextAlignment(.leading)
                 .foregroundColor(model.textColor)
                 .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: true)
+                .minimumScaleFactor(0.5)
+
+            let subtext: AnyView? = {
+                guard let subtitle = model.subtitle else {
+                    return nil
+                }
+
+                return AnyView(
+                    Text(verbatim: subtitle)
+                        .font(sizeStyle.subtextFont)
+                        .foregroundColor(model.textColor.opacity(0.7))
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                )
+            }()
 
             let icon = HStack(alignment: .top, spacing: -1) {
                 Text(verbatim: model.icon.unicode)
@@ -131,7 +157,14 @@ struct WidgetBasicView: View {
             case .regular, .condensed:
                 HStack(alignment: .center, spacing: 6.0) {
                     icon
-                    text
+                    if let subtext = subtext {
+                        VStack(alignment: .leading, spacing: -2) {
+                            text
+                            subtext
+                        }
+                    } else {
+                        text
+                    }
                     Spacer()
                 }.padding(
                     .leading, 12
@@ -141,6 +174,9 @@ struct WidgetBasicView: View {
                     icon
                     Spacer()
                     text
+                    if let subtext = subtext {
+                        subtext
+                    }
                 }.padding(
                     [.leading, .trailing]
                 ).padding(

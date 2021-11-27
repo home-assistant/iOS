@@ -5,7 +5,29 @@ import Shared
 import UIKit
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
-    func resolveEventName(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    typealias Intent = FireEventIntent
+
+    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
+        }
+    }
+
+    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, watchOS 7, *)
+    func provideServerOptionsCollection(
+        for intent: Intent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
+    }
+
+    func resolveEventName(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let eventName = intent.eventName, eventName.isEmpty == false {
             Current.Log.info("using provided \(eventName)")
             completion(.success(with: eventName))
@@ -15,7 +37,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
     }
 
-    func resolveEventData(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolveEventData(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let eventData = intent.eventData, eventData.isEmpty == false {
             Current.Log.info("using provided data \(eventData)")
             completion(.success(with: eventData))
@@ -25,16 +47,12 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
     }
 
-    func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        Current.api.catch { error in
-            Current.Log.error("Can't get a authenticated API \(error)")
-            completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
+    func handle(intent: Intent, completion: @escaping (FireEventIntentResponse) -> Void) {
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.failure(error: "No server provided", eventName: intent.eventName!))
+            return
         }
 
-        completion(FireEventIntentResponse(code: .ready, userActivity: nil))
-    }
-
-    func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
         Current.Log.verbose("Handling fire event shortcut \(intent)")
 
         var eventDataDict: [String: Any] = [:]
@@ -77,8 +95,8 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             }
         }
 
-        Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
+        firstly {
+            Current.api(for: server).CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
         }.done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")
             let resp = FireEventIntentResponse(code: .success, userActivity: nil)

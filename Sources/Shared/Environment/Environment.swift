@@ -57,7 +57,12 @@ public class AppEnvironment {
 
         let crashReporter = CrashReporterImpl()
         self.crashReporter = crashReporter
+
+        let servers = ServerManagerImpl()
+        self.servers = servers
+
         crashReporter.setup(environment: self)
+        servers.setup(environment: self)
     }
 
     /// Crash reporting and related metadata gathering
@@ -79,50 +84,23 @@ public class AppEnvironment {
 
     public var style: Style = .init()
 
+    public var servers: ServerManager
+
+    public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
+
+    public var apis: [HomeAssistantAPI] { servers.all.map(api(for:)) }
+
+    public func api(for server: Server) -> HomeAssistantAPI {
+        if let existing = cachedApis[server.identifier] {
+            return existing
+        } else {
+            let api = HomeAssistantAPI(server: server, urlConfig: .default)
+            cachedApis[server.identifier] = api
+            return api
+        }
+    }
+
     private var underlyingAPI: Promise<HomeAssistantAPI>?
-
-    public var api: Promise<HomeAssistantAPI> {
-        get {
-            if let value = underlyingAPI {
-                return value
-            } else if !isRunningTests || isTestingOnboarding, let value = HomeAssistantAPI() {
-                underlyingAPI = .value(value)
-                return .value(value)
-            } else {
-                return .init(error: HomeAssistantAPI.APIError.notConfigured)
-            }
-        }
-        set {
-            underlyingAPI = newValue
-        }
-    }
-
-    public var apiConnection: HAConnection = HAKit.connection(configuration: .init(
-        connectionInfo: {
-            if let info = Current.settingsStore.connectionInfo {
-                do {
-                    return try .init(url: info.activeURL, userAgent: HomeAssistantAPI.userAgent)
-                } catch {
-                    Current.Log.error("couldn't create connection info: \(error)")
-                    return nil
-                }
-            } else {
-                return nil
-            }
-        },
-        fetchAuthToken: { completion in
-            Current.api.then(\.tokenManager.bearerToken).done {
-                completion(.success($0))
-            }.catch {
-                completion(.failure($0))
-            }
-        }
-    ))
-
-    public func resetAPI() {
-        underlyingAPI = nil
-        apiConnection.disconnect()
-    }
 
     public var modelManager = ModelManager()
 
@@ -182,7 +160,6 @@ public class AppEnvironment {
 
     public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
 
-    public lazy var serverVersion: () -> Version? = { [settingsStore] in settingsStore.serverVersion }
     public lazy var clientVersion: () -> Version = { Constants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
@@ -193,7 +170,11 @@ public class AppEnvironment {
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    #if os(iOS)
     public var isAppExtension = Constants.BundleID != Bundle.main.bundleIdentifier
+    #elseif os(watchOS)
+    public var isAppExtension = false
+    #endif
     public var isAppStore: Bool = {
         do {
             // https://developer.apple.com/library/archive/technotes/tn2259/_index.html suggested method
@@ -231,8 +212,6 @@ public class AppEnvironment {
     public var isRunningTests: Bool {
         NSClassFromString("XCTest") != nil
     }
-
-    public var isTestingOnboarding = false
 
     public var isBackgroundRequestsImmediate = { true }
     public var isForegroundApp = { false }
@@ -370,8 +349,11 @@ public class AppEnvironment {
 
     /// Wrapper around One Shot
     public struct Location {
-        public lazy var oneShotLocation: (_ timeout: TimeInterval) -> Promise<CLLocation> = {
-            CLLocationManager.oneShotLocation(timeout: $0)
+        public lazy var oneShotLocation: (
+            _ trigger: LocationUpdateTrigger,
+            _ remaining: TimeInterval?
+        ) -> Promise<CLLocation> = {
+            CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
     }
 

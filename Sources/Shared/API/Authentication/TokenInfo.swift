@@ -2,14 +2,14 @@ import Alamofire
 import Foundation
 import ObjectMapper
 
-public struct TokenInfo: ImmutableMappable, Codable {
+public struct TokenInfo: ImmutableMappable, Codable, Equatable {
     struct TokenInfoContext: MapContext {
         var oldTokenInfo: TokenInfo
     }
 
-    let accessToken: String
-    let expiration: Date
-    let refreshToken: String
+    var accessToken: String
+    var expiration: Date
+    var refreshToken: String
 
     public init(accessToken: String, refreshToken: String, expiration: Date) {
         self.accessToken = accessToken
@@ -27,6 +27,11 @@ public struct TokenInfo: ImmutableMappable, Codable {
 
         let ttlInSeconds: Int = try map.value("expires_in")
         self.expiration = Date(timeIntervalSinceNow: TimeInterval(ttlInSeconds))
+    }
+
+    public static func == (lhs: TokenInfo, rhs: TokenInfo) -> Bool {
+        lhs.refreshToken == rhs.refreshToken
+            && lhs.accessToken == rhs.accessToken
     }
 }
 

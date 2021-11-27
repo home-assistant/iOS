@@ -71,15 +71,15 @@ class WebViewWindowController {
             updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: style))
         } else {
             if let rootController = window.rootViewController, !rootController.children.isEmpty {
-                Current.Log.info("state restoration loaded controller, not creating a new one")
+                Current.Log.info("[iOS 12] state restoration loaded controller, not creating a new one")
                 // not changing anything, but handle the promises
                 updateRootViewController(to: rootController)
             } else {
-                Current.Log.info("state restoration didn't load anything, constructing controllers manually")
-                let webViewController = WebViewController(restorationActivity: restorationActivity)
-                let navController = webViewNavigationController(rootViewController: webViewController)
-                updateRootViewController(to: navController)
-
+                if let webViewController = WebViewController(restoring: .init(restorationActivity)) {
+                    updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
+                } else {
+                    updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
+                }
                 restorationActivity = nil
             }
         }
@@ -117,9 +117,36 @@ class WebViewWindowController {
         }
     }
 
-    func navigate(to url: URL) {
-        webViewControllerPromise.done { webViewController in
+    func navigate(to url: URL, on server: Server) {
+        open(server: server).done { webViewController in
             webViewController.open(inline: url)
+        }
+    }
+
+    @discardableResult
+    func open(server: Server) -> Guarantee<WebViewController> {
+        webViewControllerPromise.then { [self] controller -> Guarantee<WebViewController> in
+            guard controller.server != server else {
+                return .value(controller)
+            }
+
+            let (promise, resolver) = Guarantee<WebViewController>.pending()
+
+            let perform = {
+                let newController = WebViewController(server: server)
+                updateRootViewController(to: webViewNavigationController(rootViewController: newController))
+                resolver(newController)
+            }
+
+            if let rootViewController = window.rootViewController, rootViewController.presentedViewController != nil {
+                rootViewController.dismiss(animated: true, completion: {
+                    perform()
+                })
+            } else {
+                perform()
+            }
+
+            return promise
         }
     }
 
@@ -135,17 +162,64 @@ class WebViewWindowController {
         }
     }
 
-    func open(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
-        let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw)
+    func openSelectingServer(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+        if let first = Current.servers.all.first, Current.servers.all.count == 1 {
+            open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+        } else if Current.servers.all.count > 1 {
+            let select = ServerSelectViewController()
+            if !skipConfirm {
+                select.prompt = from.message(with: openUrlRaw)
+            }
+            select.result.ensureThen { [weak select] in
+                Guarantee { seal in
+                    if let select = select, select.presentingViewController != nil {
+                        select.dismiss(animated: true, completion: {
+                            seal(())
+                        })
+                    } else {
+                        seal(())
+                    }
+                }
+            }.done { [self] value in
+                if let server = value.server {
+                    open(from: from, server: server, urlString: openUrlRaw, skipConfirm: true)
+                }
+            }.catch { error in
+                Current.Log.error("failed to select server: \(error)")
+            }
+            present(UINavigationController(rootViewController: select))
+        }
+    }
+
+    func open(from: OpenSource, server: Server, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+        let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
         let externalURL = URL(string: openUrlRaw)
 
+        open(
+            from: from,
+            server: server,
+            urlString: openUrlRaw,
+            webviewURL: webviewURL,
+            externalURL: externalURL,
+            skipConfirm: skipConfirm
+        )
+    }
+
+    private func open(
+        from: OpenSource,
+        server: Server,
+        urlString openUrlRaw: String,
+        webviewURL: URL?,
+        externalURL: URL?,
+        skipConfirm: Bool
+    ) {
         guard webviewURL != nil || externalURL != nil else {
             return
         }
 
         let triggerOpen = { [self] in
             if let webviewURL = webviewURL {
-                navigate(to: webviewURL)
+                navigate(to: webviewURL, on: server)
             } else if let externalURL = externalURL {
                 openURLInBrowser(externalURL, presentedViewController)
             }
@@ -211,20 +285,27 @@ extension WebViewWindowController: OnboardingStateObserver {
             }
         case .didConnect:
             onboardingPreloadWebViewController = WebViewController(
-                restorationActivity: restorationActivity,
+                restoring: .init(restorationActivity),
                 shouldLoadImmediately: true
             )
         case .complete:
-            let controller: WebViewController
+            if window.rootViewController is OnboardingNavigationViewController {
+                let controller: WebViewController?
 
-            if let preload = onboardingPreloadWebViewController {
-                controller = preload
-            } else {
-                controller = WebViewController(restorationActivity: restorationActivity, shouldLoadImmediately: true)
+                if let preload = onboardingPreloadWebViewController {
+                    controller = preload
+                } else {
+                    controller = WebViewController(
+                        restoring: .init(restorationActivity),
+                        shouldLoadImmediately: true
+                    )
+                    restorationActivity = nil
+                }
+
+                if let controller = controller {
+                    updateRootViewController(to: webViewNavigationController(rootViewController: controller))
+                }
             }
-
-            updateRootViewController(to: webViewNavigationController(rootViewController: controller))
-            restorationActivity = nil
         }
     }
 }

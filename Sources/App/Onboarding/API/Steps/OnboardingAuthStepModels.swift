@@ -3,7 +3,6 @@ import PromiseKit
 import Shared
 
 struct OnboardingAuthStepModels: OnboardingAuthPostStep {
-    var connection: HAConnection
     var api: HomeAssistantAPI
     var sender: UIViewController
 
@@ -12,6 +11,6 @@ struct OnboardingAuthStepModels: OnboardingAuthPostStep {
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        Current.modelManager.fetch()
+        Current.modelManager.fetch(apis: [api])
     }
 }

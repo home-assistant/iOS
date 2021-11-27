@@ -10,6 +10,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         case scene = 10000
     }
 
+    #warning("multiserver - primary key duplication")
     @objc public dynamic var ID: String = UUID().uuidString
     @objc public dynamic var Name: String = ""
     @objc public dynamic var Text: String = ""
@@ -21,9 +22,14 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var CreatedAt = Date()
     @objc public dynamic var Scene: RLMScene?
     @objc public dynamic var isServerControlled: Bool = false
+    @objc public dynamic var serverIdentifier: String = ""
 
     override public static func primaryKey() -> String? {
-        "ID"
+        #keyPath(ID)
+    }
+
+    static func serverIdentifierKey() -> String {
+        #keyPath(serverIdentifier)
     }
 
     override public required init() {
@@ -56,6 +62,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
              \Action.Name,
              \Action.Text:
             return Scene == nil
+        case \Action.serverIdentifier:
+            return !isServerControlled
         default:
             return true
         }
@@ -73,6 +81,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         self.TextColor = try map.value("TextColor")
         self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         self.isServerControlled = try map.value("isServerControlled")
+        self.serverIdentifier = try map.value("serverIdentifier")
         super.init()
     }
 
@@ -87,6 +96,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         TextColor >>> map["TextColor"]
         CreatedAt >>> (map["CreatedAt"], DateTransform())
         isServerControlled >>> map["isServerControlled"]
+        serverIdentifier >>> map["serverIdentifier"]
     }
 
     static func didUpdate(objects: [Action], realm: Realm) {
@@ -101,7 +111,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: MobileAppConfigAction, using realm: Realm) -> Bool {
+    public func update(with object: MobileAppConfigAction, server: Server, using realm: Realm) -> Bool {
         if self.realm == nil {
             ID = object.name
             Name = object.name
@@ -111,6 +121,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
 
         isServerControlled = true
+        serverIdentifier = server.identifier.rawValue
         Name = object.name
 
         if let backgroundColor = object.backgroundColor {
@@ -167,10 +178,10 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
     }
 
-    public var exampleTrigger: String {
+    public func exampleTrigger(api: HomeAssistantAPI) -> String {
         switch triggerType {
         case .event:
-            let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)
+            let data = api.actionEvent(actionID: ID, actionName: Name, source: .Preview)
             let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
             let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map(\.description).sorted()
 
@@ -185,7 +196,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
                 \(eventDataStrings.joined(separator: indentation))
             """
         case .scene:
-            let data = HomeAssistantAPI.actionScene(actionID: ID, source: .Preview)
+            let data = api.actionScene(actionID: ID, source: .Preview)
             let eventDataStrings = data.serviceData.map { $0 + ": " + $1 }.sorted()
 
             let indentation = "\n      "

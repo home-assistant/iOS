@@ -1,13 +1,15 @@
 import PromiseKit
 @testable import Shared
 import SwiftUI
+import Version
 import XCTest
 
 class FocusSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
-        location: nil
+        location: nil,
+        serverVersion: Version()
     )
 
     override func setUp() {
@@ -86,7 +88,8 @@ class FocusSensorTests: XCTestCase {
         let provider = FocusSensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
         let promise = provider.sensors()
         _ = try hang(promise)

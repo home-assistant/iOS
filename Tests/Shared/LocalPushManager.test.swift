@@ -19,17 +19,18 @@ class LocalPushManagerTests: XCTestCase {
         attachmentManager = FakeNotificationAttachmentManager()
         Current.notificationAttachmentManager = attachmentManager
 
-        api = FakeHomeAssistantAPI(
-            tokenInfo: .init(
-                accessToken: "atoken",
-                refreshToken: "refreshtoken",
-                expiration: Date()
-            )
-        )
-        Current.api = .value(api)
+        let server: Server
 
+        let fakeServers = FakeServerManager()
+        Current.servers = fakeServers
+
+        server = fakeServers.addFake()
+
+        api = FakeHomeAssistantAPI(server: server)
         apiConnection = HAMockConnection()
-        Current.apiConnection = apiConnection
+        api.connection = apiConnection
+
+        Current.cachedApis[server.identifier] = api
 
         added = []
     }
@@ -46,24 +47,13 @@ class LocalPushManagerTests: XCTestCase {
         }
     }
 
-    private func setUpManager(webhookID: String?) {
-        if let webhookID = webhookID {
-            Current.settingsStore.connectionInfo = .init(
-                externalURL: URL(string: "http://example.com")!,
-                internalURL: nil,
-                cloudhookURL: nil,
-                remoteUIURL: nil,
-                webhookID: webhookID,
-                webhookSecret: "webhooksecret",
-                internalSSIDs: nil,
-                internalHardwareAddresses: nil,
-                isLocalPushEnabled: true
-            )
-        } else {
-            Current.settingsStore.connectionInfo = nil
+    private func setUpManager(webhookID: String, version: Version? = nil) {
+        api.server.info.connection.webhookID = webhookID
+        if let version = version {
+            api.server.info.version = version
         }
 
-        manager = LocalPushManager()
+        manager = LocalPushManager(server: api.server)
         manager.add = { [weak self] request in
             let (promise, resolver) = Promise<Void>.pending()
             self?.added.append((request, resolver))
@@ -73,21 +63,12 @@ class LocalPushManagerTests: XCTestCase {
     }
 
     private func fireConnectionChange() {
-        NotificationCenter.default.post(
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            userInfo: nil
-        )
+        api.server.info.connection.internalHardwareAddresses = [UUID().uuidString]
         let expectation = self.expectation(description: "loop")
         DispatchQueue.main.async {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 10)
-    }
-
-    func testStateInitialUnavailable() {
-        setUpManager(webhookID: nil)
-        XCTAssertEqual(manager.state, .unavailable)
     }
 
     func testStateInitialSuccessful() throws {
@@ -128,9 +109,7 @@ class LocalPushManagerTests: XCTestCase {
     }
 
     func testSubscriptionAtStart() throws {
-        setUpManager(webhookID: "webhook1")
-
-        Current.serverVersion = { .init(major: 2021, minor: 9) }
+        setUpManager(webhookID: "webhook1", version: .init(major: 2021, minor: 9))
 
         let sub1 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         XCTAssertEqual(sub1.request.type, "mobile_app/push_notification_channel")
@@ -143,10 +122,10 @@ class LocalPushManagerTests: XCTestCase {
         fireConnectionChange()
         XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty, "same id")
 
-        Current.serverVersion = { .init(major: 2021, minor: 10) }
+        api.server.info.version = .init(major: 2021, minor: 10)
 
         // change webhookID
-        Current.settingsStore.connectionInfo?.webhookID = "webhook2"
+        api.server.info.connection.webhookID = "webhook2"
         fireConnectionChange()
 
         XCTAssertTrue(sub1.cancellable.wasCancelled)
@@ -162,13 +141,6 @@ class LocalPushManagerTests: XCTestCase {
 
         // now succeed it (e.g. reconnect happened)
         sub2.initiated(.success(.empty))
-
-        // kill off the connection info
-        apiConnection.pendingSubscriptions.removeAll()
-        Current.settingsStore.connectionInfo = nil
-        fireConnectionChange()
-
-        XCTAssertTrue(sub2.cancellable.wasCancelled)
     }
 
     func testInvalidate() throws {
@@ -178,13 +150,13 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertTrue(sub.cancellable.wasCancelled)
     }
 
-    func testNoSubscriptionAtStart() throws {
-        setUpManager(webhookID: nil)
-        XCTAssertTrue(apiConnection.pendingSubscriptions.isEmpty)
-    }
-
     func testEventSuccessfullyAddedWithoutConfirmId() throws {
         setUpManager(webhookID: "webhook1")
+
+        let expectation1 = expectation(description: "contentRequestsChanged")
+        attachmentManager.contentRequestsChanged = {
+            expectation1.fulfill()
+        }
 
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         sub.handler(sub.cancellable, .dictionary([
@@ -193,11 +165,6 @@ class LocalPushManagerTests: XCTestCase {
                 "tag": "test_tag",
             ],
         ]))
-
-        let expectation1 = expectation(description: "contentRequestsChanged")
-        attachmentManager.contentRequestsChanged = {
-            expectation1.fulfill()
-        }
 
         waitForExpectations(timeout: 10.0)
 
@@ -228,6 +195,11 @@ class LocalPushManagerTests: XCTestCase {
     func testEventSuccessfullyAddedWithConfirmIdSuccessfullyConfirm() throws {
         setUpManager(webhookID: "webhook1")
 
+        let expectation1 = expectation(description: "contentRequestsChanged")
+        attachmentManager.contentRequestsChanged = {
+            expectation1.fulfill()
+        }
+
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         sub.handler(sub.cancellable, .dictionary([
             "message": "test_message",
@@ -236,11 +208,6 @@ class LocalPushManagerTests: XCTestCase {
                 "tag": "test_tag",
             ],
         ]))
-
-        let expectation1 = expectation(description: "contentRequestsChanged")
-        attachmentManager.contentRequestsChanged = {
-            expectation1.fulfill()
-        }
 
         waitForExpectations(timeout: 10.0)
 
@@ -276,6 +243,11 @@ class LocalPushManagerTests: XCTestCase {
     func testEventSuccessfullyAddedWithConfirmIdFailsToConfirm() throws {
         setUpManager(webhookID: "webhook1")
 
+        let expectation1 = expectation(description: "contentRequestsChanged")
+        attachmentManager.contentRequestsChanged = {
+            expectation1.fulfill()
+        }
+
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
         sub.handler(sub.cancellable, .dictionary([
             "message": "test_message",
@@ -284,11 +256,6 @@ class LocalPushManagerTests: XCTestCase {
                 "tag": "test_tag",
             ],
         ]))
-
-        let expectation1 = expectation(description: "contentRequestsChanged")
-        attachmentManager.contentRequestsChanged = {
-            expectation1.fulfill()
-        }
 
         waitForExpectations(timeout: 10.0)
 
@@ -321,48 +288,21 @@ class LocalPushManagerTests: XCTestCase {
         pendingRequest.completion(.failure(.internal(debugDescription: "unit-test")))
     }
 
-    func testEventAttachmentFails() throws {
-        setUpManager(webhookID: "webhook1")
-
-        // weird scenario, not super possible, but maybe during logout
-        Current.resetAPI()
-
-        let expectation1 = expectation(description: "addedChanged")
-        addedChanged = {
-            expectation1.fulfill()
-        }
-
-        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
-        sub.handler(sub.cancellable, .dictionary([
-            "message": "test_message",
-            "data": [
-                "tag": "test_tag",
-            ],
-        ]))
-
-        waitForExpectations(timeout: 10.0)
-
-        let final = try XCTUnwrap(added.first)
-        XCTAssertEqual(final.0.content.body, "test_message")
-        XCTAssertEqual(final.0.identifier, "test_tag")
-        final.1.fulfill(())
-    }
-
     func testEventAddFails() throws {
         setUpManager(webhookID: "webhook1")
-
-        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
-        sub.handler(sub.cancellable, .dictionary([
-            "message": "test_message",
-            "data": [
-                "tag": "test_tag",
-            ],
-        ]))
 
         let expectation1 = expectation(description: "contentRequestsChanged")
         attachmentManager.contentRequestsChanged = {
             expectation1.fulfill()
         }
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "test_message",
+            "data": [
+                "tag": "test_tag",
+            ],
+        ]))
 
         waitForExpectations(timeout: 10.0)
 

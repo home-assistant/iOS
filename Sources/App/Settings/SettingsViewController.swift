@@ -1,4 +1,5 @@
 import Eureka
+import PromiseKit
 import Shared
 
 class SettingsViewController: HAFormViewController {
@@ -20,32 +21,51 @@ class SettingsViewController: HAFormViewController {
         super.init()
     }
 
-    class func serversContents() -> [BaseRow] {
-        var rows = [BaseRow]()
+    class func servers() -> (Section, deallocate: () -> Void) {
+        class Observer: ServerObserver {
+            let updateRows: () -> Void
+            init(updateRows: @escaping () -> Void) {
+                self.updateRows = updateRows
+            }
 
-        for connection in [Current.apiConnection] {
-            rows.append(HomeAssistantAccountRow {
-                $0.value = .init(
-                    connection: connection,
-                    locationName: prefs.string(forKey: "location_name")
-                )
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    ConnectionSettingsViewController(connection: connection)
-                }, onDismiss: nil)
-            })
+            func serversDidChange(_ serverManager: ServerManager) {
+                UIView.performWithoutAnimation {
+                    updateRows()
+                }
+            }
         }
 
-        rows.append(HomeAssistantAccountRow {
-            $0.hidden = .isNotDebug
-            $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
-                OnboardingNavigationViewController(onboardingStyle: .secondary)
-            }), onDismiss: nil)
-            $0.onCellSelection { _, row in
-                row.deselect(animated: true)
-            }
-        })
+        let section = Section()
+        let observer = Observer {
+            var rows = [BaseRow]()
 
-        return rows
+            for server in Current.servers.all {
+                rows.append(HomeAssistantAccountRow {
+                    $0.value = .server(server)
+                    $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                        ConnectionSettingsViewController(server: server)
+                    }, onDismiss: nil)
+                })
+            }
+
+            rows.append(HomeAssistantAccountRow {
+                $0.value = .add
+                $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
+                    OnboardingNavigationViewController(onboardingStyle: .secondary)
+                }), onDismiss: nil)
+                $0.onCellSelection { _, row in
+                    row.deselect(animated: true)
+                }
+            })
+
+            section.removeAll()
+            section.append(contentsOf: rows)
+        }
+        Current.servers.add(observer: observer)
+
+        observer.updateRows()
+
+        return (section, { Current.servers.remove(observer: observer) })
     }
 
     override func viewDidLoad() {
@@ -76,7 +96,9 @@ class SettingsViewController: HAFormViewController {
         }
 
         if contentSections.contains(.servers) {
-            form +++ Section(Self.serversContents())
+            let (section, deallocate) = Self.servers()
+            form +++ section
+            after(life: self).done(deallocate)
         }
 
         if contentSections.contains(.general) {

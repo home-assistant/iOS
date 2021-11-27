@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 class BatterySensorTests: XCTestCase {
@@ -11,7 +12,8 @@ class BatterySensorTests: XCTestCase {
         let provider = BatterySensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
         let promise = provider.sensors()
         _ = try hang(promise)
@@ -315,7 +317,8 @@ class BatterySensorTests: XCTestCase {
         let uPromise = BatterySensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )).sensors()
         let uSensors = try hang(uPromise)
         XCTAssertEqual(uSensors.count, levels.count * 2)
@@ -371,7 +374,8 @@ class BatterySensorTests: XCTestCase {
         let cPromise = BatterySensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )).sensors()
         let cSensors = try hang(cPromise)
         XCTAssertEqual(cSensors.count, levels.count * 2)

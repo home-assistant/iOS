@@ -139,9 +139,13 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
 
         let action = actions[indexPath.row]
 
-        Current.api.then(on: nil) { api in
-            api.HandleAction(actionID: action.ID, source: .Widget)
-        }.done { _ in
+        firstly { () -> Promise<Void> in
+            if let server = Current.servers.server(for: action) {
+                return Current.api(for: server).HandleAction(actionID: action.ID, source: .Widget)
+            } else {
+                throw HomeAssistantAPI.APIError.notConfigured
+            }
+        }.done {
             feedbackGenerator.notificationOccurred(.success)
         }.ensure {
             cell.imageView.hideActivityIndicator()

@@ -6,10 +6,11 @@ import UserNotifications
 import UserNotificationsUI
 
 class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
+    let api: HomeAssistantAPI
     let location: CLLocationCoordinate2D
     let haDict: [String: Any]
 
-    required init(notification: UNNotification, attachmentURL: URL?) throws {
+    required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
             throw MapError.missingPayload
         }
@@ -20,6 +21,7 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
             throw MapError.missingLongitude
         }
 
+        self.api = api
         self.haDict = haDict
         self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         super.init(nibName: nil, bundle: nil)

@@ -6,8 +6,30 @@ import Shared
 import UIKit
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
+    typealias Intent = GetCameraImageIntent
+
+    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
+        }
+    }
+
+    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, watchOS 7, *)
+    func provideServerOptionsCollection(
+        for intent: Intent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
+    }
+
     func resolveCameraID(
-        for intent: GetCameraImageIntent,
+        for intent: Intent,
         with completion: @escaping (INStringResolutionResult) -> Void
     ) {
         if let cameraID = intent.cameraID, cameraID.hasPrefix("camera.") {
@@ -20,23 +42,25 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     }
 
     func provideCameraIDOptions(
-        for intent: GetCameraImageIntent,
+        for intent: Intent,
         with completion: @escaping ([String]?, Error?) -> Void
     ) {
-        firstly {
-            Current.apiConnection.caches.states.once().promise
-                .map(\.all)
+        guard let server = Current.servers.server(for: intent) else {
+            completion(nil, PickAServerError.error)
+            return
         }
-        .filterValues { $0.domain == "camera" }
-        .mapValues(\.entityId)
-        .sortedValues()
-        .done { completion($0, nil) }
-        .catch { completion(nil, $0) }
+
+        Current.api(for: server).connection.caches.states.once().promise.map(\.all)
+            .filterValues { $0.domain == "camera" }
+            .mapValues(\.entityId)
+            .sortedValues()
+            .done { completion($0, nil) }
+            .catch { completion(nil, $0) }
     }
 
     @available(iOS 14, *)
     func provideCameraIDOptionsCollection(
-        for intent: GetCameraImageIntent,
+        for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
     ) {
         provideCameraIDOptions(for: intent) { identifiers, error in
@@ -44,13 +68,16 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         }
     }
 
-    func handle(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
+    func handle(intent: Intent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.failure(error: "no server provided"))
+            return
+        }
+
         if let cameraID = intent.cameraID {
             Current.Log.verbose("Getting camera frame for \(cameraID)")
 
-            Current.api.then(on: nil) { api in
-                api.GetCameraImage(cameraEntityID: cameraID)
-            }.done { frame in
+            Current.api(for: server).GetCameraImage(cameraEntityID: cameraID).done { frame in
                 Current.Log.verbose("Successfully got camera image during shortcut")
 
                 guard let pngData = frame.pngData() else {

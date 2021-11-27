@@ -39,28 +39,23 @@ class IncomingURLHandler {
             components.host = nil
 
             let isFromWidget = components.popWidgetAuthenticity()
+            let server = components.popWidgetServer(isFromWidget: isFromWidget)
 
             guard let rawURL = components.url?.absoluteString else {
                 return false
             }
 
-            let wasPresentingSafari: Bool
-
             if let presenting = windowController.presentedViewController,
                presenting is SFSafariViewController {
                 // Dismiss my.* controller if it's on top - we don't get any other indication
-                presenting.dismiss(animated: true, completion: nil)
-
-                wasPresentingSafari = true
+                presenting.dismiss(animated: true, completion: { [windowController] in
+                    windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: true)
+                })
+            } else if let server = server {
+                windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
             } else {
-                wasPresentingSafari = false
+                windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: isFromWidget)
             }
-
-            windowController.open(
-                from: .deeplink,
-                urlString: rawURL,
-                skipConfirm: wasPresentingSafari || isFromWidget
-            )
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
@@ -102,7 +97,21 @@ class IncomingURLHandler {
                        let panel = intent.page, let path = panel.identifier {
                         Current.Log.info("launching from shortcuts with panel \(panel)")
 
-                        windowController.open(from: .deeplink, urlString: "/" + path, skipConfirm: true)
+                        let urlString = "/" + path
+                        if let server = Current.servers.server(for: panel) {
+                            windowController.open(
+                                from: .deeplink,
+                                server: server,
+                                urlString: urlString,
+                                skipConfirm: true
+                            )
+                        } else {
+                            windowController.openSelectingServer(
+                                from: .deeplink,
+                                urlString: urlString,
+                                skipConfirm: true
+                            )
+                        }
                         return true
                     }
                 }
@@ -116,11 +125,26 @@ class IncomingURLHandler {
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
         Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
-            Current.api.then(on: nil) { api -> Promise<Void> in
-                if shortcutItem.type == "sendLocation" {
-                    return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
+            if shortcutItem.type == "sendLocation" {
+                return firstly {
+                    Current.location.oneShotLocation(.AppShortcut, remaining)
+                }.then { location in
+                    when(fulfilled: Current.apis.map { api in
+                        api.SubmitLocation(updateType: .AppShortcut, location: location, zone: nil)
+                    })
+                }.asVoid()
+            } else {
+                if let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
+                   let server = Current.servers.server(for: action) {
+                    Current.sceneManager.showFullScreenConfirm(
+                        icon: MaterialDesignIcons(named: action.IconName),
+                        text: action.Text,
+                        onto: .value(windowController.window)
+                    )
+
+                    return Current.api(for: server).HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
                 } else {
-                    return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+                    return .init(error: HomeAssistantAPI.APIError.notConfigured)
                 }
             }
         }
@@ -206,9 +230,13 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "eventName")
             let eventData = cleanParamters
 
-            Current.api.then(on: nil) { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.done { _ in
+            firstly { () -> Promise<Void> in
+                if let api = Current.apis.first {
+                    return api.CreateEvent(eventType: eventName, eventData: eventData)
+                } else {
+                    throw XCallbackError.generalError
+                }
+            }.done {
                 success(nil)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during X-Callback-URL call: \(error)")
@@ -230,9 +258,13 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "service")
             let serviceData = cleanParamters
 
-            Current.api.then(on: nil) { api in
-                api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
-            }.done { _ in
+            firstly { () -> Promise<Void> in
+                if let api = Current.apis.first {
+                    return api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
+                } else {
+                    throw XCallbackError.generalError
+                }
+            }.done {
                 success(nil)
             }.catch { error in
                 Current.Log.error("Received error from callService during X-Callback-URL call: \(error)")
@@ -241,8 +273,12 @@ extension IncomingURLHandler {
         }
 
         Manager.shared["send_location"] = { _, success, failure, _ in
-            Current.api.then(on: nil) { api in
-                api.GetAndSendLocation(trigger: .XCallbackURL)
+            firstly {
+                Current.location.oneShotLocation(.XCallbackURL, nil)
+            }.then { location in
+                when(fulfilled: Current.apis.map { api in
+                    api.SubmitLocation(updateType: .XCallbackURL, location: location, zone: nil)
+                })
             }.done { _ in
                 success(nil)
             }.catch { error in
@@ -261,27 +297,35 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "template")
             let variablesDict = cleanParamters
 
-            Current.apiConnection.subscribe(
-                to: .renderTemplate(template, variables: variablesDict),
-                initiated: { result in
-                    if case let .failure(error) = result {
-                        Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
-                        failure(XCallbackError.generalError)
+            if let api = Current.apis.first {
+                api.connection.subscribe(
+                    to: .renderTemplate(template, variables: variablesDict),
+                    initiated: { result in
+                        if case let .failure(error) = result {
+                            Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
+                            failure(XCallbackError.generalError)
+                        }
+                    }, handler: { token, data in
+                        token.cancel()
+                        success(["rendered": String(describing: data.result)])
                     }
-                }, handler: { token, data in
-                    token.cancel()
-                    success(["rendered": String(describing: data.result)])
-                }
-            )
+                )
+            } else {
+                failure(XCallbackError.generalError)
+            }
         }
     }
 
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
-        Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
-        }.done { _ in
+        firstly { () -> Promise<Void> in
+            if let api = Current.apis.first {
+                return api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
+            } else {
+                throw HomeAssistantAPI.APIError.notConfigured
+            }
+        }.done {
             self.showAlert(
                 title: L10n.UrlHandler.FireEvent.Success.title,
                 message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1])
@@ -302,8 +346,12 @@ extension IncomingURLHandler {
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
-        Current.api.then(on: nil) { api in
-            api.CallService(domain: domain, service: service, serviceData: serviceData)
+        firstly { () -> Promise<Void> in
+            if let api = Current.apis.first {
+                return api.CallService(domain: domain, service: service, serviceData: serviceData)
+            } else {
+                throw HomeAssistantAPI.APIError.notConfigured
+            }
         }.done { _ in
             self.showAlert(
                 title: L10n.UrlHandler.CallService.Success.title,
@@ -322,8 +370,12 @@ extension IncomingURLHandler {
 
     private func sendLocationURLHandler() {
         // homeassistant://send_location/
-        Current.api.then(on: nil) { api in
-            api.GetAndSendLocation(trigger: .URLScheme)
+        firstly {
+            Current.location.oneShotLocation(.URLScheme, nil)
+        }.then { location in
+            when(fulfilled: Current.apis.map { api in
+                api.SubmitLocation(updateType: .URLScheme, location: location, zone: nil)
+            })
         }.done { _ in
             self.showAlert(
                 title: L10n.UrlHandler.SendLocation.Success.title,
@@ -355,7 +407,8 @@ extension IncomingURLHandler {
 
         let actionID = url.pathComponents[1]
 
-        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
+        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
+              let server = Current.servers.server(for: action) else {
             Current.sceneManager.showFullScreenConfirm(
                 icon: .alertCircleIcon,
                 text: L10n.UrlHandler.Error.actionNotFound,
@@ -370,8 +423,6 @@ extension IncomingURLHandler {
             onto: .value(windowController.window)
         )
 
-        Current.api.then(on: nil) { api in
-            api.HandleAction(actionID: actionID, source: source)
-        }.cauterize()
+        Current.api(for: server).HandleAction(actionID: actionID, source: source).cauterize()
     }
 }

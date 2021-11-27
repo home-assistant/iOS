@@ -6,7 +6,29 @@ import Shared
 import UIKit
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
-    func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    typealias Intent = CallServiceIntent
+
+    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+        if let server = Current.servers.server(for: intent) {
+            completion(.success(with: .init(server: server)))
+        } else {
+            completion(.needsValue())
+        }
+    }
+
+    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+        completion(IntentServer.all, nil)
+    }
+
+    @available(iOS 14, watchOS 7, *)
+    func provideServerOptionsCollection(
+        for intent: Intent,
+        with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
+    ) {
+        completion(.init(items: IntentServer.all), nil)
+    }
+
+    func resolveService(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let serviceName = intent.service, serviceName.isEmpty == false {
             Current.Log.info("using given \(serviceName)")
             completion(.success(with: serviceName))
@@ -16,19 +38,24 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    func resolvePayload(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolvePayload(for intent: Intent, with completion: @escaping (INStringResolutionResult) -> Void) {
         if let servicePayload = intent.payload, servicePayload.isEmpty == false {
             Current.Log.info("using provided \(servicePayload)")
             completion(.success(with: servicePayload))
         } else {
-            Current.Log.info("requesting a value")
-            completion(.needsValue())
+            Current.Log.info("using default empty dictionary value")
+            completion(.success(with: "{}"))
         }
     }
 
-    func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([String]?, Error?) -> Void) {
+    func provideServiceOptions(for intent: Intent, with completion: @escaping ([String]?, Error?) -> Void) {
+        guard let server = Current.servers.server(for: intent) else {
+            completion(nil, PickAServerError.error)
+            return
+        }
+
         firstly {
-            Current.apiConnection.send(.getServices()).promise
+            Current.api(for: server).connection.send(.getServices()).promise
         }
         .map(\.all)
         .mapValues(\.domainServicePair)
@@ -38,7 +65,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
     @available(iOS 14, *)
     func provideServiceOptionsCollection(
-        for intent: CallServiceIntent,
+        for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
     ) {
         provideServiceOptions(for: intent) { services, error in
@@ -46,7 +73,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
-    func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
+    func handle(intent: Intent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         var payloadDict: [String: Any] = [:]
 
         if let payload = intent.payload, payload.isEmpty == false {
@@ -77,6 +104,11 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             return
         }
 
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.failure(error: "No server provided"))
+            return
+        }
+
         let splitServiceNameInput = serviceName.split(separator: ".")
 
         guard splitServiceNameInput.count == 2 else {
@@ -92,8 +124,13 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
         Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
-        Current.api.then(on: nil) { api in
-            api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true)
+        firstly {
+            Current.api(for: server).CallService(
+                domain: domain,
+                service: service,
+                serviceData: payloadDict,
+                shouldLog: true
+            )
         }.done { _ in
             Current.Log.verbose("Successfully called service during shortcut")
             let resp = CallServiceIntentResponse(code: .success, userActivity: nil)

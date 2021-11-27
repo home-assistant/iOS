@@ -135,9 +135,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
                 Current.Log.verbose("Success, sending data \(eventData)")
 
-                Current.api.then(on: nil) { api in
+                when(fulfilled: Current.apis.map { api in
                     api.CreateEvent(eventType: eventName, eventData: eventData)
-                }.catch { error -> Void in
+                }).catch { error -> Void in
                     Current.Log.error("Received error from createEvent during shortcut run \(error)")
                 }
             }
@@ -147,9 +147,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             eventData["status"] = "failure"
             eventData["error"] = error.XCUErrorParameters
 
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
+            }).catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
         }
@@ -157,9 +157,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         let cancelHandler: CallbackURLKit.CancelCallback = {
             eventData["status"] = "cancelled"
 
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
+            }).catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
         }
@@ -179,9 +179,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             eventData["status"] = "error"
             eventData["error"] = error.localizedDescription
 
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
+            }).catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
             }
         }
@@ -235,6 +235,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
 
+        guard let server = Current.servers.server(for: response.notification.request.content) else {
+            Current.Log.info("ignoring push when unable to find server")
+            completionHandler()
+            return
+        }
+
         if let shortcutDict = userInfo["shortcut"] as? [String: String],
            let shortcutName = shortcutDict["name"] {
             handleShortcutNotification(shortcutName, shortcutDict)
@@ -243,15 +249,13 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
             Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, urlString: url)
+                $0.open(from: .notification, server: server, urlString: url)
             }
         }
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: "handle-push-action") { _ in
-                Current.api.then(on: nil) { api in
-                    api.handlePushAction(for: info)
-                }
+                Current.api(for: server).handlePushAction(for: info)
             }.ensure {
                 completionHandler()
             }.catch { err -> Void in
@@ -326,9 +330,9 @@ extension NotificationManager: MessagingDelegate {
         Current.settingsStore.pushID = fcmToken
 
         Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.updateRegistration()
-            }
+            })
         }.cauterize()
     }
 }

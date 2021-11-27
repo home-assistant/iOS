@@ -73,8 +73,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKApplicationRefreshBackgroundTask received")
 
-                Current.api.then(on: nil) {
-                    $0.updateComplications(passively: true)
+                firstly {
+                    when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
                 }.ensureThen {
                     Current.backgroundRefreshScheduler.schedule()
                 }.ensure {
@@ -169,47 +169,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Context.observations.store[.init(queue: .main)] = { context in
+        Context.observations.store[.init(queue: .main)] = { [weak self] context in
             Current.Log.verbose("Received context: \(context)")
 
-            _ = HomeAssistantAPI.SyncWatchContext()
-
-            let realm = Current.realm()
-
-            if let connInfoData = context.content["connection_info"] as? Data {
-                let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoData)
-                Current.settingsStore.connectionInfo = connInfo
-            }
-
-            if let tokenInfoData = context.content["token_info"] as? Data {
-                let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoData)
-                Current.settingsStore.tokenInfo = tokenInfo
-                Current.resetAPI()
-            }
-
-            if let actionsDictionary = context.content["actions"] as? [[String: Any]] {
-                let actions = actionsDictionary.compactMap { try? Action(JSON: $0) }
-
-                Current.Log.verbose("Updating actions from context \(actions)")
-
-                realm.reentrantWrite {
-                    realm.delete(realm.objects(Action.self))
-                    realm.add(actions, update: .all)
-                }
-            }
-
-            if let complicationsDictionary = context.content["complications"] as? [[String: Any]] {
-                let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
-
-                Current.Log.verbose("Updating complications from context \(complications)")
-
-                realm.reentrantWrite {
-                    realm.delete(realm.objects(WatchComplication.self))
-                    realm.add(complications, update: .all)
-                }
-            }
-
-            self.updateComplications()
+            self?.updateContext(context.content)
         }
 
         ComplicationInfo.observations.store[.init(queue: .main)] = { complicationInfo in
@@ -266,6 +229,38 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
+    private func updateContext(_ content: Content) {
+        let realm = Current.realm()
+
+        if let servers = content["servers"] as? Data {
+            Current.servers.restoreState(servers)
+        }
+
+        if let actionsDictionary = content["actions"] as? [[String: Any]] {
+            let actions = actionsDictionary.compactMap { try? Action(JSON: $0) }
+
+            Current.Log.verbose("Updating actions from context \(actions)")
+
+            realm.reentrantWrite {
+                realm.delete(realm.objects(Action.self))
+                realm.add(actions, update: .all)
+            }
+        }
+
+        if let complicationsDictionary = content["complications"] as? [[String: Any]] {
+            let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
+
+            Current.Log.verbose("Updating complications from context \(complications)")
+
+            realm.reentrantWrite {
+                realm.delete(realm.objects(WatchComplication.self))
+                realm.add(complications, update: .all)
+            }
+        }
+
+        updateComplications()
+    }
+
     private var isUpdatingComplications = false
     private func updateComplications() {
         // avoid double-updating due to e.g. complication info update request
@@ -273,8 +268,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         isUpdatingComplications = true
 
-        Current.api.then(on: nil) {
-            $0.updateComplications(passively: true)
+        firstly {
+            when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
         }.ensure { [self] in
             isUpdatingComplications = false
         }.ensure { [self] in
@@ -306,7 +301,8 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        guard let info = HomeAssistantAPI.PushActionInfo(response: response) else {
+        guard let info = HomeAssistantAPI.PushActionInfo(response: response),
+              let server = Current.servers.server(for: response.notification.request.content) else {
             completionHandler()
             return
         }
@@ -318,7 +314,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
                 Current.Log.info("sending via phone")
                 Communicator.shared.send(.init(
                     identifier: "PushAction",
-                    content: ["PushActionInfo": info.toJSON()],
+                    content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
                     reply: { message in
                         Current.Log.verbose("Received reply dictionary \(message)")
                         seal.fulfill(())
@@ -329,9 +325,8 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
                 })
             } else {
                 Current.Log.info("sending via local")
-                Current.api.then(on: nil) { api in
-                    api.handlePushAction(for: info)
-                }.pipe(to: seal.resolve)
+                Current.api(for: server).handlePushAction(for: info)
+                    .pipe(to: seal.resolve)
             }
 
             return promise

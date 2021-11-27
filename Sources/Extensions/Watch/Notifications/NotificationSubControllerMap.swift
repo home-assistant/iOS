@@ -5,10 +5,11 @@ import UserNotifications
 import WatchKit
 
 class NotificationSubControllerMap: NotificationSubController {
+    let api: HomeAssistantAPI
     let location: CLLocationCoordinate2D
     let secondLocation: CLLocationCoordinate2D?
 
-    required init?(notification: UNNotification) {
+    required init?(api: HomeAssistantAPI, notification: UNNotification) {
         let userInfo = notification.request.content.userInfo
 
         guard let haDict = userInfo["homeassistant"] as? [String: Any],
@@ -17,6 +18,7 @@ class NotificationSubControllerMap: NotificationSubController {
             return nil
         }
 
+        self.api = api
         self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 
         if let secondLatitude = CLLocationDegrees(templateValue: haDict["second_latitude"]),
@@ -27,7 +29,7 @@ class NotificationSubControllerMap: NotificationSubController {
         }
     }
 
-    required init?(url: URL) {
+    required init?(api: HomeAssistantAPI, url: URL) {
         nil
     }
 

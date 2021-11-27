@@ -2,6 +2,7 @@ import CoreTelephony
 import Foundation
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 #if !targetEnvironment(macCatalyst)
@@ -28,7 +29,8 @@ class ConnectivitySensorTests: XCTestCase {
         let promise = ConnectivitySensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )).sensors()
         let sensors = try hang(promise)
 
@@ -70,7 +72,8 @@ class ConnectivitySensorTests: XCTestCase {
         let provider = ConnectivitySensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
         let promise = provider.sensors()
         _ = try hang(promise)

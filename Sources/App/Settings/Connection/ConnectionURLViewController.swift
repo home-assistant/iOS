@@ -9,8 +9,10 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
     var row: RowOf<RowValue>!
     var onDismissCallback: ((UIViewController) -> Void)?
     let urlType: ConnectionInfo.URLType
+    let server: Server
 
-    init(urlType: ConnectionInfo.URLType, row: RowOf<RowValue>) {
+    init(server: Server, urlType: ConnectionInfo.URLType, row: RowOf<RowValue>) {
+        self.server = server
         self.urlType = urlType
         self.row = row
 
@@ -47,7 +49,8 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
             throw SaveError.validation(validationErrors)
         }
 
-        if url == nil, let existingInfo = Current.settingsStore.connectionInfo {
+        if url == nil {
+            let existingInfo = server.info.connection
             let other: ConnectionInfo.URLType = urlType == .internal ? .external : .internal
             if existingInfo.address(for: other) == nil,
                useCloud == false || (useCloud == nil && !existingInfo.useCloud) {
@@ -66,29 +69,31 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         let localPush = (form.rowBy(tag: RowTag.localPush.rawValue) as? SwitchRow)?.value
 
         func commit() {
-            Current.settingsStore.connectionInfo?.setAddress(givenURL, urlType)
+            server.update { info in
+                info.connection.set(address: givenURL, for: urlType)
 
-            if let useCloud = useCloud {
-                Current.settingsStore.connectionInfo?.useCloud = useCloud
-            }
+                if let useCloud = useCloud {
+                    info.connection.useCloud = useCloud
+                }
 
-            if let localPush = localPush {
-                Current.settingsStore.connectionInfo?.isLocalPushEnabled = localPush
-            }
+                if let localPush = localPush {
+                    info.connection.isLocalPushEnabled = localPush
+                }
 
-            if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
-                Current.settingsStore.connectionInfo?.internalSSIDs = section.allRows
-                    .compactMap { $0 as? TextRow }
-                    .compactMap(\.value)
-                    .filter { !$0.isEmpty }
-            }
+                if let section = form.sectionBy(tag: RowTag.ssids.rawValue) as? MultivaluedSection {
+                    info.connection.internalSSIDs = section.allRows
+                        .compactMap { $0 as? TextRow }
+                        .compactMap(\.value)
+                        .filter { !$0.isEmpty }
+                }
 
-            if let section = form.sectionBy(tag: RowTag.hardwareAddresses.rawValue) as? MultivaluedSection {
-                Current.settingsStore.connectionInfo?.internalHardwareAddresses = section.allRows
-                    .compactMap { $0 as? TextRow }
-                    .compactMap(\.value)
-                    .map { $0.lowercased() }
-                    .filter { !$0.isEmpty }
+                if let section = form.sectionBy(tag: RowTag.hardwareAddresses.rawValue) as? MultivaluedSection {
+                    info.connection.internalHardwareAddresses = section.allRows
+                        .compactMap { $0 as? TextRow }
+                        .compactMap(\.value)
+                        .map { $0.lowercased() }
+                        .filter { !$0.isEmpty }
+                }
             }
 
             onDismissCallback?(self)
@@ -99,12 +104,12 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         firstly { () -> Promise<Void> in
             try check(url: givenURL, useCloud: useCloud, validationErrors: form.validate())
 
-            if useCloud == true, let url = Current.settingsStore.connectionInfo?.remoteUIURL {
-                return Current.webhooks.sendTest(baseURL: url)
+            if useCloud == true, let url = server.info.connection.address(for: .remoteUI) {
+                return Current.webhooks.sendTest(server: server, baseURL: url)
             }
 
             if let givenURL = givenURL, useCloud != true {
-                return Current.webhooks.sendTest(baseURL: givenURL)
+                return Current.webhooks.sendTest(server: server, baseURL: givenURL)
             }
 
             return .value(())
@@ -183,17 +188,17 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
 
         updateNavigationItems(isChecking: false)
 
-        if urlType.isAffectedByCloud, Current.settingsStore.connectionInfo?.canUseCloud == true {
+        if urlType.isAffectedByCloud, server.info.connection.canUseCloud {
             form +++ SwitchRow {
                 $0.title = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                 $0.tag = RowTag.useCloud.rawValue
-                $0.value = Current.settingsStore.connectionInfo?.useCloud
+                $0.value = server.info.connection.useCloud
             }
         }
 
         form +++ Section()
             <<< URLRow(RowTag.url.rawValue) {
-                $0.value = Current.settingsStore.connectionInfo?.address(for: urlType)
+                $0.value = server.info.connection.address(for: urlType)
                 $0.hidden = .function([RowTag.useCloud.rawValue], { form in
                     if let row = form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow {
                         // if cloud's around, hide when it's turned on
@@ -235,7 +240,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 addNewLabel: L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid,
                 placeholder: L10n.Settings.ConnectionSection.InternalUrlSsids.placeholder,
                 currentValue: Current.connectivity.currentWiFiSSID,
-                existingValues: Current.settingsStore.connectionInfo?.internalSSIDs ?? [],
+                existingValues: server.info.connection.internalSSIDs ?? [],
                 valueRules: RuleSet<String>()
             )
         }
@@ -256,7 +261,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 addNewLabel: L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.addNewSsid,
                 placeholder: "aa:bb:cc:dd:ee:ff",
                 currentValue: Current.connectivity.currentNetworkHardwareAddress,
-                existingValues: Current.settingsStore.connectionInfo?.internalHardwareAddresses ?? [],
+                existingValues: server.info.connection.internalHardwareAddresses ?? [],
                 valueRules: rules
             )
         }
@@ -266,7 +271,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 footer: L10n.Settings.ConnectionSection.localPushDescription
             ) <<< SwitchRow(RowTag.localPush.rawValue) {
                 $0.title = L10n.SettingsDetails.Notifications.LocalPush.title
-                $0.value = Current.settingsStore.connectionInfo?.isLocalPushEnabled
+                $0.value = server.info.connection.isLocalPushEnabled
             } <<< LearnMoreButtonRow {
                 $0.onCellSelection { cell, _ in
                     openURLInBrowser(

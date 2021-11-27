@@ -12,13 +12,7 @@ class WebhookResponseLocationTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        api = HomeAssistantAPI(
-            tokenInfo: .init(
-                accessToken: "atoken",
-                refreshToken: "refreshtoken",
-                expiration: Date()
-            )
-        )
+        api = HomeAssistantAPI(server: .fake())
     }
 
     func testReplacement() throws {

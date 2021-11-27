@@ -30,32 +30,40 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
         updating existing: [IntentPanel],
         timeout: Measurement<UnitDuration> = .init(value: 10.0, unit: .seconds)
     ) -> Promise<[IntentPanel]> {
-        firstly { () -> Promise<[HAPanel]> in
-            let diskCacheKey = "panels"
-            let apiCache = Current.apiConnection.caches.panels
-            apiCache.shouldResetWithoutSubscribers = true
+        firstly { () -> Promise<[IntentPanel]> in
+            when(fulfilled: Current.apis.map { api -> Promise<[IntentPanel]> in
+                let diskCacheKey = "panels-\(api.server.identifier)"
+                let apiCache = api.connection.caches.panels
+                apiCache.shouldResetWithoutSubscribers = true
 
-            let result = apiCache.once().promise.get { value in
-                diskCache.set(value, for: diskCacheKey).cauterize()
-            }
+                let result = apiCache.once().promise.get { value in
+                    diskCache.set(value, for: diskCacheKey).cauterize()
+                }
 
-            let timeout: Promise<HAPanels> = firstly {
-                after(seconds: timeout.converted(to: .seconds).value)
-            }.then {
-                // grab from cache after timeout
-                diskCache.value(for: diskCacheKey)
-            }
+                let timeout: Promise<HAPanels> = firstly {
+                    after(seconds: timeout.converted(to: .seconds).value)
+                }.then {
+                    // grab from cache after timeout
+                    diskCache.value(for: diskCacheKey)
+                }
 
-            return race(Promise(result), timeout)
-                .map(\.allPanels)
-        }.map { (panels: [HAPanel]) -> [IntentPanel] in
-            if existing.isEmpty {
-                return panels.map(IntentPanel.init(panel:))
-            } else {
-                // the configured values may be ancient, use the newer version but keep the same list
-                let intentified = panels.map(IntentPanel.init(panel:))
-                return existing.compactMap { existingValue in
-                    intentified.first(where: { $0.identifier == existingValue.identifier }) ?? existingValue
+                return race(Promise(result), timeout)
+                    .map(\.allPanels)
+                    .mapValues { IntentPanel(panel: $0, server: api.server) }
+            }).map {
+                // [[IntentPanel]] -> [IntentPanel]
+                $0.flatMap { $0 }
+            }.map { intentified -> [IntentPanel] in
+                if existing.isEmpty {
+                    return intentified
+                } else {
+                    // the configured values may be ancient, use the newer version but keep the same list
+                    return existing.compactMap { existingValue in
+                        intentified.first(where: {
+                            $0.identifier == existingValue.identifier &&
+                                $0.server == existingValue.server
+                        }) ?? existingValue
+                    }
                 }
             }
         }.recover { error throws -> Promise<[IntentPanel]> in

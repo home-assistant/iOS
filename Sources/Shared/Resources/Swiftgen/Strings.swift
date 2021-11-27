@@ -363,6 +363,11 @@ public enum L10n {
     }
   }
 
+  public enum Intents {
+    /// Select a server before picking this value.
+    public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }
+  }
+
   public enum LocationChangeNotification {
     /// Location change
     public static var title: String { return L10n.tr("Localizable", "location_change_notification.title") }
@@ -866,8 +871,12 @@ public enum L10n {
 
   public enum Settings {
     public enum ConnectionSection {
+      /// Activate
+      public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
+      /// All Servers
+      public static var allServers: String { return L10n.tr("Localizable", "settings.connection_section.all_servers") }
       /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
       public static var cloudOverridesExternal: String { return L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external") }
       /// Connected via
@@ -886,6 +895,14 @@ public enum L10n {
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       /// Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.
       public static var ssidPermissionMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_message") }
+      public enum DeleteServer {
+        /// Are you sure you wish to delete this server?
+        public static var message: String { return L10n.tr("Localizable", "settings.connection_section.delete_server.message") }
+        /// Deleting Server…
+        public static var progress: String { return L10n.tr("Localizable", "settings.connection_section.delete_server.progress") }
+        /// Delete Server
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.delete_server.title") }
+      }
       public enum Errors {
         /// You cannot remove only available URL.
         public static var cannotRemoveLastUrl: String { return L10n.tr("Localizable", "settings.connection_section.errors.cannot_remove_last_url") }
@@ -1100,6 +1117,12 @@ public enum L10n {
         /// Reset frontend cache
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_web_cache.title") }
       }
+    }
+    public enum ServerSelect {
+      /// Server
+      public static var pageTitle: String { return L10n.tr("Localizable", "settings.server_select.page_title") }
+      /// Server
+      public static var title: String { return L10n.tr("Localizable", "settings.server_select.title") }
     }
     public enum StatusSection {
       /// Status

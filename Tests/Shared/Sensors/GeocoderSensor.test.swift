@@ -4,6 +4,7 @@ import Foundation
 import PromiseKit
 import RealmSwift
 @testable import Shared
+import Version
 import XCTest
 
 // forgive me but something about CLPlacemark in this file is crashing in deinit
@@ -41,7 +42,8 @@ class GeocoderSensorTests: XCTestCase {
         let promise = GeocoderSensor(request: .init(
             reason: .registration,
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
@@ -58,7 +60,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -71,7 +74,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: nil
+                location: nil,
+                serverVersion: Version()
             )
         ).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -85,7 +89,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -99,7 +104,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -116,7 +122,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -131,7 +138,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -150,7 +158,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -182,7 +191,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -229,7 +239,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -279,7 +290,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)
@@ -327,7 +339,8 @@ class GeocoderSensorTests: XCTestCase {
             request: .init(
                 reason: .trigger("unit-test"),
                 dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122)
+                location: CLLocation(latitude: 37, longitude: -122),
+                serverVersion: Version()
             )
         ).sensors()
         let sensors = try hang(promise)

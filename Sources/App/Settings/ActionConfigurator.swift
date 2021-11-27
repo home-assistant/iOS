@@ -32,6 +32,8 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
         if let action = action {
             self.action = Action(value: action)
             self.newAction = false
+        } else if let firstServer = Current.servers.all.first {
+            self.action.serverIdentifier = firstServer.identifier.rawValue
         }
     }
 
@@ -93,6 +95,22 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                 if let value = row.value {
                     self.action.Text = value
                     self.updatePreviews()
+                }
+            }
+        }
+
+        firstSection <<< ServerSelectRow("server") {
+            $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.serverIdentifier))
+
+            if let server = Current.servers.server(forServerIdentifier: action.serverIdentifier) {
+                $0.value = .server(server)
+            } else {
+                $0.value = Current.servers.all.first.flatMap { .server($0) }
+            }
+
+            $0.onChange { [action] row in
+                if case let .server(server) = row.value {
+                    action.serverIdentifier = server.identifier.rawValue
                 }
             }
         }
@@ -239,7 +257,15 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
         form +++ YamlSection(
             tag: "exampleTrigger",
             header: L10n.ActionsConfigurator.TriggerExample.title,
-            yamlGetter: { [action] in action.exampleTrigger },
+            yamlGetter: { [action] in
+                if let server = Current.servers.server(forServerIdentifier: action.serverIdentifier) {
+                    return action.exampleTrigger(api: Current.api(for: server))
+                } else if let first = Current.apis.first {
+                    return action.exampleTrigger(api: first)
+                } else {
+                    return ""
+                }
+            },
             present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
         )
     }
@@ -345,15 +371,18 @@ class ActionPreview: UIView {
     }
 
     @objc func handleGesture(gesture: UITapGestureRecognizer) {
-        guard let action = action else { return }
+        guard let action = action,
+              let server = Current.servers.server(forServerIdentifier: action.serverIdentifier) else {
+            return
+        }
 
         let feedbackGenerator = UINotificationFeedbackGenerator()
         feedbackGenerator.prepare()
 
         imageView.showActivityIndicator()
 
-        Current.api.then(on: nil) { api in
-            api.HandleAction(actionID: action.ID, source: .Preview)
+        firstly {
+            Current.api(for: server).HandleAction(actionID: action.ID, source: .Preview)
         }.done { _ in
             feedbackGenerator.notificationOccurred(.success)
         }.ensure {

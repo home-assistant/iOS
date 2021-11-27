@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 class LastUpdateSensorTests: XCTestCase {
@@ -10,7 +11,8 @@ class LastUpdateSensorTests: XCTestCase {
         let request: SensorProviderRequest = .init(
             reason: .trigger("Manual"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )
         let promise = LastUpdateSensor(request: request).sensors()
         let sensors = try hang(promise)
@@ -28,7 +30,8 @@ class LastUpdateSensorTests: XCTestCase {
         let request: SensorProviderRequest = .init(
             reason: .trigger("Manual"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )
         let promise = LastUpdateSensor(request: request).sensors()
         let sensors = try hang(promise)
@@ -46,7 +49,8 @@ class LastUpdateSensorTests: XCTestCase {
         let request: SensorProviderRequest = .init(
             reason: .trigger("Manual"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )
         let promise = LastUpdateSensor(request: request).sensors()
         let sensors = try hang(promise)
@@ -64,7 +68,8 @@ class LastUpdateSensorTests: XCTestCase {
         let request: SensorProviderRequest = .init(
             reason: .trigger("Manual"),
             dependencies: .init(),
-            location: nil
+            location: nil,
+            serverVersion: Version()
         )
         let promise = LastUpdateSensor(request: request).sensors()
         let sensors = try hang(promise)

@@ -2,16 +2,11 @@ import PromiseKit
 import Shared
 
 protocol OnboardingAuthTokenExchange {
-    func tokenInfo(code: String, connectionInfo: ConnectionInfo) -> Promise<TokenInfo>
+    func tokenInfo(code: String, connectionInfo: inout ConnectionInfo) -> Promise<TokenInfo>
 }
 
 class OnboardingAuthTokenExchangeImpl: OnboardingAuthTokenExchange {
-    func tokenInfo(code: String, connectionInfo: ConnectionInfo) -> Promise<TokenInfo> {
-        let tokenManager = TokenManager(tokenInfo: nil, forcedConnectionInfo: connectionInfo)
-        return tokenManager.initialTokenWithCode(code).ensure {
-            withExtendedLifetime(tokenManager) {
-                // preserving it until it's done
-            }
-        }
+    func tokenInfo(code: String, connectionInfo: inout ConnectionInfo) -> Promise<TokenInfo> {
+        TokenManager.initialToken(code: code, connectionInfo: &connectionInfo)
     }
 }

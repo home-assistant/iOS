@@ -6,9 +6,9 @@ class UpdateSensorsIntentHandler: NSObject, UpdateSensorsIntentHandling {
     func handle(intent: UpdateSensorsIntent, completion: @escaping (UpdateSensorsIntentResponse) -> Void) {
         Current.Log.info("starting")
 
-        Current.api.then(on: nil) {
+        when(fulfilled: Current.apis.map {
             $0.UpdateSensors(trigger: .Siri)
-        }.done {
+        }).done {
             Current.Log.info("finished successfully")
             completion(.init(code: .success, userActivity: nil))
         }.catch { error in

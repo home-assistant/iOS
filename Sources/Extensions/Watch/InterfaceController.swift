@@ -78,7 +78,6 @@ class InterfaceController: WKInterfaceController {
         DispatchQueue.main.async {
             guard let row = self.tableView.rowController(at: index) as? ActionRowType,
                   let action = self.actions?[index] else { return }
-            Current.Log.verbose("Setup row \(index) with action \(action)")
             row.group.setBackgroundColor(UIColor(hex: action.BackgroundColor))
             row.indicator = EMTLoadingIndicator(
                 interfaceController: self,
@@ -142,14 +141,12 @@ class InterfaceController: WKInterfaceController {
                 })
             }
         }.recover { error -> Promise<Void> in
-            guard error == SendError.notImmediate else {
+            guard error == SendError.notImmediate, let server = Current.servers.server(for: selectedAction) else {
                 throw error
             }
 
             Current.Log.error("recovering error \(error) by trying locally")
-            return Current.api.then(on: nil) { api -> Promise<Void> in
-                api.HandleAction(actionID: selectedAction.ID, source: .Watch)
-            }
+            return Current.api(for: server).HandleAction(actionID: selectedAction.ID, source: .Watch)
         }.done {
             self.handleActionSuccess(row, rowIndex)
         }.catch { err -> Void in

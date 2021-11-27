@@ -1,12 +1,14 @@
 import PromiseKit
 @testable import Shared
+import Version
 import XCTest
 
 class DeviceSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
-        location: nil
+        location: nil,
+        serverVersion: Version()
     )
 
     private func sensors(for screens: [DeviceScreen]) throws -> (
@@ -49,7 +51,8 @@ class DeviceSensorTests: XCTestCase {
         let provider = DisplaySensor(request: .init(
             reason: .trigger("unit-test"),
             dependencies: dependencies,
-            location: nil
+            location: nil,
+            serverVersion: Version()
         ))
         let promise = provider.sensors()
         _ = try hang(promise)

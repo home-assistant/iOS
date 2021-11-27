@@ -63,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        MaterialDesignIcons.register()
+
         guard !Current.isRunningTests else {
             return true
         }
@@ -105,8 +107,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         zoneManager = ZoneManager()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-
-        MaterialDesignIcons.register()
 
         setupWatchCommunicator()
         setupiOS12Features()
@@ -282,21 +282,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
         Current.backgroundTask(withName: "background-fetch") { remaining in
-            Current.api.then(on: nil) { api -> Promise<Void> in
-                let updatePromise: Promise<Void>
-
-                if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-                   Current.settingsStore.locationSources.backgroundFetch {
-                    updatePromise = api.GetAndSendLocation(
-                        trigger: .BackgroundFetch,
-                        maximumBackgroundTime: remaining
-                    ).asVoid()
-                } else {
-                    updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
-                }
-
-                return updatePromise
+            let updatePromise: Promise<Void>
+            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+               Current.settingsStore.locationSources.backgroundFetch {
+                updatePromise = firstly {
+                    Current.location.oneShotLocation(.BackgroundFetch, remaining)
+                }.then { location in
+                    when(fulfilled: Current.apis.map {
+                        $0.SubmitLocation(updateType: .BackgroundFetch, location: location, zone: nil)
+                    })
+                }.asVoid()
+            } else {
+                updatePromise = when(fulfilled: Current.apis.map {
+                    $0.UpdateSensors(trigger: .BackgroundFetch, location: nil)
+                })
             }
+
+            return updatePromise
         }.done {
             completionHandler(.newData)
         }.catch { error in
@@ -425,13 +427,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupWatchCommunicator() {
-        _ = NotificationCenter.default.addObserver(
-            forName: SettingsStore.connectionInfoDidChange,
-            object: nil,
-            queue: nil
-        ) { _ in
-            _ = HomeAssistantAPI.SyncWatchContext()
-        }
+        Current.servers.add(observer: self)
 
         // This directly mutates the data structure for observations to avoid race conditions.
 
@@ -458,15 +454,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
                 let responseIdentifier = "ActionRowPressedResponse"
 
-                guard let actionID = message.content["ActionID"] as? String else {
+                guard let actionID = message.content["ActionID"] as? String,
+                      let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
+                      let server = Current.servers.server(for: action) else {
                     Current.Log.warning("ActionID either does not exist or is not a string in the payload")
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
                     return
                 }
 
-                Current.api.then(on: nil) { api in
-                    api.HandleAction(actionID: actionID, source: .Watch)
-                }.done { _ in
+                firstly {
+                    Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
+                }.done {
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
                 }.catch { err -> Void in
                     Current.Log.error("Error during action event fire: \(err)")
@@ -477,10 +475,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let responseIdentifier = "PushActionResponse"
 
                 if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON) {
+                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
+                   let serverIdentifier = message.content["Server"] as? String,
+                   let server = Current.servers.server(forServerIdentifier: serverIdentifier) {
                     Current.backgroundTask(withName: "watch-push-action") { _ in
-                        Current.api.then(on: nil) { api in
-                            api.handlePushAction(for: info)
+                        firstly {
+                            Current.api(for: server).handlePushAction(for: info)
                         }.ensure {
                             message.reply(.init(identifier: responseIdentifier))
                         }
@@ -574,4 +574,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // swiftlint:disable:next file_length
+}
+
+extension AppDelegate: ServerObserver {
+    func serversDidChange(_ serverManager: ServerManager) {
+        _ = HomeAssistantAPI.SyncWatchContext()
+    }
 }

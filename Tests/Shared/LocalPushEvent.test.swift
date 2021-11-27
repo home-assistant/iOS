@@ -3,6 +3,13 @@ import HAKit
 import XCTest
 
 class LocalPushEventTests: XCTestCase {
+    var server: Server!
+
+    override func setUp() {
+        super.setUp()
+        server = .fake()
+    }
+
     func testInvalid() {
         let data = HAData.empty
         XCTAssertThrowsError(try LocalPushEvent(data: data)) { error in
@@ -37,7 +44,7 @@ class LocalPushEventTests: XCTestCase {
                 ],
             ]
         )
-        let content = event.content
+        let content = event.content(server: server)
         XCTAssertTrue(content.title.isEmpty)
         XCTAssertTrue(content.subtitle.isEmpty)
         XCTAssertEqual(content.body, "some_body")
@@ -45,7 +52,8 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertNil(content.badge)
         XCTAssertTrue(content.categoryIdentifier.isEmpty)
         XCTAssertNil(content.sound)
-        XCTAssertEqual(Set(content.userInfo.keys), Set(["aps"]))
+        XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "webhook_id"]))
+        XCTAssertEqual(content.userInfo["webhook_id"] as? String, server.info.connection.webhookID)
         if #available(iOS 15, watchOS 8, *) {
             XCTAssertEqual(content.interruptionLevel, .active)
         }
@@ -69,14 +77,15 @@ class LocalPushEventTests: XCTestCase {
                 "extra": true,
             ]
         )
-        let content = event.content
+        let content = event.content(server: server)
         XCTAssertEqual(content.title, "some_title")
         XCTAssertEqual(content.subtitle, "some_subtitle")
         XCTAssertEqual(content.body, "some_body")
         XCTAssertEqual(content.threadIdentifier, "some_thread_id")
         XCTAssertEqual(content.badge, 3)
         XCTAssertEqual(content.categoryIdentifier, "some_category")
-        XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "extra"]))
+        XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "extra", "webhook_id"]))
+        XCTAssertEqual(content.userInfo["webhook_id"] as? String, server.info.connection.webhookID)
         if #available(iOS 15, watchOS 8, *) {
             XCTAssertEqual(content.interruptionLevel, .timeSensitive)
         }
@@ -105,7 +114,7 @@ class LocalPushEventTests: XCTestCase {
                     ],
                 ]
             )
-            let content = event.content
+            let content = event.content(server: server)
             XCTAssertEqual(content.sound, .init(named: .init(rawValue: "some_sound")))
         }
     }
@@ -133,7 +142,7 @@ class LocalPushEventTests: XCTestCase {
                     ],
                 ]
             )
-            let content = event.content
+            let content = event.content(server: server)
             XCTAssertEqual(content.sound, .default)
         }
     }
@@ -156,7 +165,7 @@ class LocalPushEventTests: XCTestCase {
                     ],
                 ]
             )
-            let content = event.content
+            let content = event.content(server: server)
             XCTAssertEqual(content.sound, .criticalSoundNamed(.init(rawValue: "some_sound")))
         }
     }
@@ -183,7 +192,7 @@ class LocalPushEventTests: XCTestCase {
                     ]
                 )
                 XCTAssertEqual(
-                    event.content.sound,
+                    event.content(server: server).sound,
                     .criticalSoundNamed(.init(rawValue: "some_sound"), withAudioVolume: Float(level))
                 )
             }
@@ -214,7 +223,7 @@ class LocalPushEventTests: XCTestCase {
                     ]
                 )
                 XCTAssertEqual(
-                    event.content.sound,
+                    event.content(server: server).sound,
                     .defaultCriticalSound(withAudioVolume: Float(level))
                 )
             }
@@ -246,7 +255,7 @@ class LocalPushEventTests: XCTestCase {
                     ],
                 ]
             )
-            let content = event.content
+            let content = event.content(server: server)
             XCTAssertEqual(content.interruptionLevel, level)
         }
     }

@@ -12,24 +12,18 @@ public extension HomeAssistantAPI {
     private static var watchContext: Content {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
-        if content["iphone_permanent_id"] != nil {
-            content = [:]
-        }
-
         #if os(iOS)
-        if let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo) {
-            content["connection_info"] = connInfo
-        }
-
-        if let tokenInfo = try? JSONEncoder().encode(Current.settingsStore.tokenInfo) {
-            content["token_info"] = tokenInfo
-        }
+        content["servers"] = Current.servers.restorableState()
 
         content["actions"] = Array(Current.realm().objects(Action.self)).toJSON()
 
         content["complications"] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
-        content["isOnInternalNetwork"] = Current.settingsStore.connectionInfo?.isOnInternalNetwork
+        #if targetEnvironment(simulator)
+        content["SSID"] = "SimulatorWiFi"
+        #else
+        content["SSID"] = Current.connectivity.currentWiFiSSID()
+        #endif
 
         #elseif os(watchOS)
 
@@ -58,12 +52,12 @@ public extension HomeAssistantAPI {
 
         do {
             try Communicator.shared.sync(context)
+            Current.Log.info("updated context")
         } catch let error as NSError {
             Current.Log.error("Updating the context failed: \(error)")
             return error
         }
 
-        Current.Log.verbose("Set the context to \(context)")
         return nil
     }
 
@@ -75,7 +69,10 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let complications = Set(Current.realm().objects(WatchComplication.self))
+        let complications = Set(
+            Current.realm().objects(WatchComplication.self)
+                .filter("serverIdentifier = %@", server.identifier.rawValue)
+        )
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")
@@ -92,9 +89,9 @@ public extension HomeAssistantAPI {
         }
 
         if passively {
-            return Current.webhooks.sendPassive(identifier: .updateComplications, request: request)
+            return Current.webhooks.sendPassive(identifier: .updateComplications, server: server, request: request)
         } else {
-            return Current.webhooks.send(identifier: .updateComplications, request: request)
+            return Current.webhooks.send(identifier: .updateComplications, server: server, request: request)
         }
     }
 }

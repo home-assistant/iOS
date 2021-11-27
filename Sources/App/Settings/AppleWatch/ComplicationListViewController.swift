@@ -74,7 +74,9 @@ class ComplicationListViewController: HAFormViewController {
                 updateRow(for: Communicator.shared.currentWatchState)
 
                 let stateObserver = WatchState.observe { watchState in
-                    updateRow(for: watchState)
+                    DispatchQueue.main.async {
+                        updateRow(for: watchState)
+                    }
                 }
 
                 let updateToken = NotificationCenter.default.addObserver(

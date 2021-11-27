@@ -22,5 +22,5 @@ protocol OnboardingAuthPreStep: OnboardingAuthStep {
 }
 
 protocol OnboardingAuthPostStep: OnboardingAuthStep {
-    init(connection: HAConnection, api: HomeAssistantAPI, sender: UIViewController)
+    init(api: HomeAssistantAPI, sender: UIViewController)
 }

@@ -43,4 +43,18 @@ class URLComponentsWidgetAuthenticityTests: XCTestCase {
             }
         }
     }
+
+    func testInsertServer() throws {
+        let servers = FakeServerManager(initial: 1)
+        let server = servers.all[0]
+        Current.servers = servers
+
+        var baseUrl = try XCTUnwrap(URLComponents(string: "homeassistant://navigate/path"))
+        baseUrl.insertWidgetServer(server: server)
+
+        XCTAssertNil(baseUrl.popWidgetServer(isFromWidget: false))
+
+        let popped = baseUrl.popWidgetServer(isFromWidget: true)
+        XCTAssertEqual(popped, server)
+    }
 }

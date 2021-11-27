@@ -10,10 +10,11 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
         case noAttachment
     }
 
+    let api: HomeAssistantAPI
     let attachmentURL: URL
     let needsEndSecurityScoped: Bool
 
-    required init(notification: UNNotification, attachmentURL: URL?) throws {
+    required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
         guard let attachmentURL = attachmentURL else {
             throw PlayerAttachmentError.noAttachment
         }
@@ -28,6 +29,7 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
             throw PlayerAttachmentError.noAttachment
         }
 
+        self.api = api
         self.attachmentURL = attachmentURL
         super.init(nibName: nil, bundle: nil)
     }

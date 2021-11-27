@@ -1,4 +1,5 @@
 import PromiseKit
+import Shared
 import UserNotifications
 import WatchKit
 
@@ -15,8 +16,8 @@ struct NotificationElements {
 }
 
 protocol NotificationSubController: AnyObject {
-    init?(notification: UNNotification)
-    init?(url: URL)
+    init?(api: HomeAssistantAPI, notification: UNNotification)
+    init?(api: HomeAssistantAPI, url: URL)
     func start(with elements: NotificationElements) -> Promise<Void>
     func stop()
 }

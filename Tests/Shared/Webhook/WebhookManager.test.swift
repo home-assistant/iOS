@@ -7,35 +7,18 @@ import XCTest
 
 class WebhookManagerTests: XCTestCase {
     private var manager: WebhookManager!
-    private var api: FakeHassAPI!
-    private var webhookURL: URL!
+    private var api1: FakeHassAPI!
+    private var api2: FakeHassAPI!
+    private var webhookURL1: URL!
+    private var webhookURL2: URL!
 
     override func setUp() {
         super.setUp()
 
-        api = FakeHassAPI(
-            tokenInfo: TokenInfo(
-                accessToken: "accessToken",
-                refreshToken: "refreshToken",
-                expiration: Date()
-            )
-        )
-
-        let connectionInfo = ConnectionInfo(
-            externalURL: URL(string: "http://example.com"),
-            internalURL: nil,
-            cloudhookURL: nil,
-            remoteUIURL: nil,
-            webhookID: "given_id",
-            webhookSecret: nil,
-            internalSSIDs: nil,
-            internalHardwareAddresses: nil,
-            isLocalPushEnabled: true
-        )
-        webhookURL = connectionInfo.webhookURL
-
-        Current.settingsStore.connectionInfo = connectionInfo
-        Current.api = .value(api)
+        api1 = FakeHassAPI(server: .fake())
+        api2 = FakeHassAPI(server: .fake())
+        webhookURL1 = api1.server.info.connection.webhookURL()
+        webhookURL2 = api2.server.info.connection.webhookURL()
 
         manager = WebhookManager()
     }
@@ -46,7 +29,6 @@ class WebhookManagerTests: XCTestCase {
 
         ReplacingTestHandler.reset()
 
-        Current.settingsStore.connectionInfo = nil
         Current.isBackgroundRequestsImmediate = { true }
     }
 
@@ -138,12 +120,12 @@ class WebhookManagerTests: XCTestCase {
         let expectedError = URLError(.timedOut)
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(error: expectedError)
         })
 
-        XCTAssertThrowsError(try hang(manager.sendEphemeral(request: expectedRequest))) { error in
+        XCTAssertThrowsError(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest))) { error in
             XCTAssertEqual((error as? URLError)?.code, expectedError.code)
         }
     }
@@ -152,8 +134,8 @@ class WebhookManagerTests: XCTestCase {
         var shouldFail = true
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
 
             if shouldFail {
                 shouldFail = false
@@ -163,14 +145,14 @@ class WebhookManagerTests: XCTestCase {
             }
         })
 
-        XCTAssertNoThrow(try hang(manager.sendEphemeral(request: expectedRequest)))
+        XCTAssertNoThrow(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)))
         XCTAssertFalse(shouldFail, "aka it did a loop")
     }
 
     func testSendingEphemeralFailsOnceThenSucceedsWithAChangedURL() {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        let connectionInfo = ConnectionInfo(
+        var nextConnectionInfo = ConnectionInfo(
             externalURL: URL(string: "http://example.changed"),
             internalURL: nil,
             cloudhookURL: nil,
@@ -182,56 +164,42 @@ class WebhookManagerTests: XCTestCase {
             isLocalPushEnabled: true
         )
 
-        let nextAPI = FakeHassAPI(
-            tokenInfo: TokenInfo(
-                accessToken: "accessToken",
-                refreshToken: "refreshToken",
-                expiration: Date()
-            )
-        )
+        let nextAPIWebhookURL = nextConnectionInfo.webhookURL()
+        api1.server.info.connection = nextConnectionInfo
 
-        Current.settingsStore.connectionInfo = connectionInfo
-
-        let nextAPIWebhookURL = connectionInfo.webhookURL
-
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
-
-            self.api = nextAPI
-
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(error: URLError(.notConnectedToInternet))
         })
 
-        stub(condition: { req in req.url == nextAPIWebhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { req in req.url == nextAPIWebhookURL }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: [:])
         })
 
-        XCTAssertNoThrow(try hang(manager.sendEphemeral(request: expectedRequest)))
-
-        Current.settingsStore.connectionInfo = nil
+        XCTAssertNoThrow(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)))
     }
 
     func testSendingEphemeralExpectingString() throws {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(data: #""result""#.data(using: .utf8)!, statusCode: 200, headers: [:])
         })
 
-        XCTAssertEqual(try hang(manager.sendEphemeral(request: expectedRequest)), "result")
+        XCTAssertEqual(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)), "result")
     }
 
     func testSendingEphemeralExpectingStringButGettingObject() throws {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(jsonObject: ["bob": "your_uncle"], statusCode: 200, headers: [:])
         })
 
-        let promise: Promise<String> = manager.sendEphemeral(request: expectedRequest)
+        let promise: Promise<String> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
         XCTAssertThrowsError(try hang(promise)) { error in
             switch error as? WebhookError {
             case .unexpectedType:
@@ -260,8 +228,8 @@ class WebhookManagerTests: XCTestCase {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true, "etc": "yerp"])
         let expectedResponse = ExampleMappable(value: "this is a string, yeah")
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(
                 jsonObject: Mapper<ExampleMappable>().toJSON(expectedResponse),
                 statusCode: 200,
@@ -269,15 +237,15 @@ class WebhookManagerTests: XCTestCase {
             )
         })
 
-        let promise: Promise<ExampleMappable> = manager.sendEphemeral(request: expectedRequest)
+        let promise: Promise<ExampleMappable> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
         XCTAssertEqual(try hang(promise), expectedResponse)
     }
 
     func testSendingEphemeralExpectingMappableObjectButFailing() throws {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true, "etc": "yerp"])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(
                 data: Data(),
                 statusCode: 200,
@@ -285,7 +253,7 @@ class WebhookManagerTests: XCTestCase {
             )
         })
 
-        let promise: Promise<ExampleMappable> = manager.sendEphemeral(request: expectedRequest)
+        let promise: Promise<ExampleMappable> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
         XCTAssertThrowsError(try hang(promise)) { error in
             switch error as? WebhookError {
             case .unmappableValue:
@@ -301,8 +269,8 @@ class WebhookManagerTests: XCTestCase {
         let expectedResponse1 = ExampleMappable(value: "this is a string, yeah")
         let expectedResponse2 = ExampleMappable(value: "i to am a string")
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(
                 jsonObject: Mapper<ExampleMappable>().toJSONArray([expectedResponse1, expectedResponse2]),
                 statusCode: 200,
@@ -310,15 +278,15 @@ class WebhookManagerTests: XCTestCase {
             )
         })
 
-        let promise: Promise<[ExampleMappable]> = manager.sendEphemeral(request: expectedRequest)
+        let promise: Promise<[ExampleMappable]> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
         XCTAssertEqual(try hang(promise), [expectedResponse1, expectedResponse2])
     }
 
     func testSendingEphemeralExpectingMappableArrayButFailing() throws {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true, "etc": "yerp"])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(
                 data: Data(),
                 statusCode: 200,
@@ -326,7 +294,7 @@ class WebhookManagerTests: XCTestCase {
             )
         })
 
-        let promise: Promise<[ExampleMappable]> = manager.sendEphemeral(request: expectedRequest)
+        let promise: Promise<[ExampleMappable]> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
         XCTAssertThrowsError(try hang(promise)) { error in
             switch error as? WebhookError {
             case .unmappableValue:
@@ -340,15 +308,15 @@ class WebhookManagerTests: XCTestCase {
     func testSendingTestSucceeds() throws {
         let expectedRequest = WebhookRequest(type: "get_config", data: [:])
 
-        var newURL = URLComponents(url: webhookURL, resolvingAgainstBaseURL: false)!
+        var newURL = URLComponents(url: webhookURL1, resolvingAgainstBaseURL: false)!
         newURL.host = "new.example.com"
 
-        stub(condition: { req in req.url == newURL.url! }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { req in req.url == newURL.url! }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(data: #""result""#.data(using: .utf8)!, statusCode: 200, headers: [:])
         })
 
-        let promise = manager.sendTest(baseURL: URL(string: "http://new.example.com")!)
+        let promise = manager.sendTest(server: api1.server, baseURL: URL(string: "http://new.example.com:8123")!)
         XCTAssertNoThrow(try hang(promise))
     }
 
@@ -356,15 +324,15 @@ class WebhookManagerTests: XCTestCase {
         let expectedRequest = WebhookRequest(type: "get_config", data: [:])
         let expectedError = URLError(.timedOut)
 
-        var newURL = URLComponents(url: webhookURL, resolvingAgainstBaseURL: false)!
+        var newURL = URLComponents(url: webhookURL1, resolvingAgainstBaseURL: false)!
         newURL.host = "new.example.com"
 
-        stub(condition: { req in req.url == newURL.url! }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { req in req.url == newURL.url! }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(error: expectedError)
         })
 
-        let promise = manager.sendTest(baseURL: URL(string: "http://new.example.com")!)
+        let promise = manager.sendTest(server: api1.server, baseURL: URL(string: "http://new.example.com:8123")!)
 
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual((error as? URLError)?.code, expectedError.code)
@@ -372,7 +340,11 @@ class WebhookManagerTests: XCTestCase {
     }
 
     func testSendingUnregisteredIdentifierErrors() {
-        let promise1 = manager.send(identifier: .init(rawValue: "unregistered"), request: .init(type: "test", data: ()))
+        let promise1 = manager.send(
+            identifier: .init(rawValue: "unregistered"),
+            server: api1.server,
+            request: .init(type: "test", data: ())
+        )
         XCTAssertThrowsError(try hang(promise1)) { error in
             switch error as? WebhookError {
             case .unregisteredIdentifier:
@@ -387,12 +359,12 @@ class WebhookManagerTests: XCTestCase {
         let expectedError = URLError(.timedOut)
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(error: expectedError)
         })
 
-        XCTAssertThrowsError(try hang(manager.send(request: expectedRequest))) { error in
+        XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest))) { error in
             XCTAssertEqual((error as? URLError)?.code, expectedError.code)
         }
     }
@@ -400,12 +372,28 @@ class WebhookManagerTests: XCTestCase {
     func testSendingPersistentUnhandledSucceeds() {
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
         })
 
-        XCTAssertNoThrow(try hang(manager.send(request: expectedRequest)))
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+    }
+
+    func testSendingPersistentUnhandledSucceedsWithoutServerCache() {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        Current.servers = with(FakeServerManager(initial: 0)) {
+            _ = $0.add(identifier: api1.server.identifier, serverInfo: api1.server.info)
+        }
+
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [self, api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            manager.serverCache.removeAll()
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
     }
 
     func testSendingPersistentWithExistingResolvesBothPromises() throws {
@@ -421,26 +409,26 @@ class WebhookManagerTests: XCTestCase {
         var pendingPromise1: Promise<Void>?
         var pendingPromise2: Promise<Void>?
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
             // second one, the one we want to not be cancelled
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2)
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2, server: api1!.server)
             return HTTPStubsResponse(jsonObject: ["result": 2], statusCode: 200, headers: nil)
         })
 
         var stub1: HTTPStubsDescriptor?
-        stub1 = stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { [manager] request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1)
+        stub1 = stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [manager, api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1, server: api1!.server)
             HTTPStubs.removeStub(stub1!)
 
             // first one, the one we want to cancel
-            pendingPromise2 = manager!.send(identifier: identifier, request: request2)
+            pendingPromise2 = manager!.send(identifier: identifier, server: api1!.server, request: request2)
             request1Expectation.fulfill()
 
             self.wait(for: [request1Blocking], timeout: 100.0)
             return HTTPStubsResponse(jsonObject: ["result": 1], statusCode: 200, headers: nil)
         })
 
-        pendingPromise1 = manager.send(identifier: identifier, request: request1)
+        pendingPromise1 = manager.send(identifier: identifier, server: api1.server, request: request1)
 
         wait(for: [request1Expectation], timeout: 10.0)
 
@@ -460,7 +448,7 @@ class WebhookManagerTests: XCTestCase {
         let request = try hang(ReplacingTestHandler.createdHandlers[0].request!)
         let result = try hang(ReplacingTestHandler.createdHandlers[0].result!)
 
-        XCTAssertEqualWebhookRequest(request, request2)
+        XCTAssertEqualWebhookRequest(request, request2, server: api1.server)
         XCTAssertEqual((result as? [String: Any])?["result"] as? Int, 2)
     }
 
@@ -479,26 +467,26 @@ class WebhookManagerTests: XCTestCase {
         var pendingPromise1: Promise<[String: Int]>?
         var pendingPromise2: Promise<Void>?
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
             // second one, the one we want to not be cancelled
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2)
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2, server: api1!.server)
             return HTTPStubsResponse(jsonObject: ["result": 2], statusCode: 200, headers: nil)
         })
 
         var stub1: HTTPStubsDescriptor?
-        stub1 = stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { [manager] request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1)
+        stub1 = stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [manager, api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1, server: api1!.server)
             HTTPStubs.removeStub(stub1!)
 
             // first one, the one we want to make sure isn't cancelled
-            pendingPromise2 = manager!.send(identifier: identifier, request: request2)
+            pendingPromise2 = manager!.send(identifier: identifier, server: api1!.server, request: request2)
             request1Expectation.fulfill()
 
             self.wait(for: [request1Blocking], timeout: 100.0)
             return HTTPStubsResponse(jsonObject: ["result": 1], statusCode: 200, headers: nil)
         })
 
-        pendingPromise1 = manager.sendEphemeral(request: request1)
+        pendingPromise1 = manager.sendEphemeral(server: api1.server, request: request1)
 
         wait(for: [request1Expectation], timeout: 10.0)
 
@@ -516,7 +504,7 @@ class WebhookManagerTests: XCTestCase {
         let createdRequest = try hang(XCTUnwrap(ReplacingTestHandler.createdHandlers[0].request))
         let createdResult = try hang(XCTUnwrap(ReplacingTestHandler.createdHandlers[0].result))
 
-        XCTAssertEqualWebhookRequest(request2, createdRequest)
+        XCTAssertEqualWebhookRequest(request2, createdRequest, server: api1.server)
         XCTAssertEqual((createdResult as? [String: Any])?["result"] as? Int, 2)
     }
 
@@ -535,26 +523,26 @@ class WebhookManagerTests: XCTestCase {
         var pendingPromise1: Promise<Void>?
         var pendingPromise2: Promise<Void>?
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
             // second one, the one we want to not be cancelled
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2)
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2, server: api1!.server)
             return HTTPStubsResponse(jsonObject: ["result": 2], statusCode: 200, headers: nil)
         })
 
         var stub1: HTTPStubsDescriptor?
-        stub1 = stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { [manager] request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1)
+        stub1 = stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [manager, api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1, server: api1!.server)
             HTTPStubs.removeStub(stub1!)
 
             // first one, the one we want to cancel
-            pendingPromise2 = manager!.send(identifier: identifier, request: request2)
+            pendingPromise2 = manager!.send(identifier: identifier, server: api1!.server, request: request2)
             request1Expectation.fulfill()
 
             self.wait(for: [request1Blocking], timeout: 100.0)
             return HTTPStubsResponse(jsonObject: ["result": 1], statusCode: 200, headers: nil)
         })
 
-        pendingPromise1 = manager.send(identifier: identifier, request: request1)
+        pendingPromise1 = manager.send(identifier: identifier, server: api1.server, request: request1)
 
         wait(for: [request1Expectation], timeout: 10.0)
 
@@ -574,7 +562,7 @@ class WebhookManagerTests: XCTestCase {
         let request = try hang(ReplacingTestHandler.createdHandlers[0].request!)
         let result = try hang(ReplacingTestHandler.createdHandlers[0].result!)
 
-        XCTAssertEqualWebhookRequest(request, request2)
+        XCTAssertEqualWebhookRequest(request, request2, server: api1.server)
         XCTAssertEqual((result as? [String: Any])?["result"] as? Int, 2)
     }
 
@@ -592,25 +580,25 @@ class WebhookManagerTests: XCTestCase {
         var pendingPromise1: Promise<Void>?
         var pendingPromise2: Promise<Void>?
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request2, server: api1!.server)
             DispatchQueue.main.async { request1Blocking.fulfill() }
             return HTTPStubsResponse(jsonObject: ["result": 2], statusCode: 200, headers: nil)
         })
 
         var stub1: HTTPStubsDescriptor?
-        stub1 = stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { [manager] request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1)
+        stub1 = stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [manager, api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, request1, server: api1!.server)
             HTTPStubs.removeStub(stub1!)
 
-            pendingPromise2 = manager!.send(identifier: identifier, request: request2)
+            pendingPromise2 = manager!.send(identifier: identifier, server: api1!.server, request: request2)
             request1Expectation.fulfill()
 
             self.wait(for: [request1Blocking], timeout: 100.0)
             return HTTPStubsResponse(jsonObject: ["result": 1], statusCode: 200, headers: nil)
         })
 
-        pendingPromise1 = manager.send(identifier: identifier, request: request1)
+        pendingPromise1 = manager.send(identifier: identifier, server: api1.server, request: request1)
 
         wait(for: [request1Expectation], timeout: 10.0)
 
@@ -635,13 +623,13 @@ class WebhookManagerTests: XCTestCase {
 
         let networkSemaphore = DispatchSemaphore(value: 0)
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { _ in
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
             networkSemaphore.wait()
             return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
         })
 
-        let promise1 = manager.send(identifier: .unhandled, request: request1)
-        let promise2 = manager.send(identifier: identifier, request: request2)
+        let promise1 = manager.send(identifier: .unhandled, server: api1.server, request: request1)
+        let promise2 = manager.send(identifier: identifier, server: api1.server, request: request2)
 
         networkSemaphore.signal()
         networkSemaphore.signal()
@@ -657,12 +645,12 @@ class WebhookManagerTests: XCTestCase {
 
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
             return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
         })
 
-        XCTAssertNoThrow(try hang(manager.send(request: expectedRequest)))
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
     }
 
     func testSendPersistentWhenBackgroundRequestsForcedDiscretionaryFailsInitially() {
@@ -672,8 +660,8 @@ class WebhookManagerTests: XCTestCase {
 
         var hasFailed = false
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
 
             if !hasFailed {
                 hasFailed = true
@@ -683,7 +671,7 @@ class WebhookManagerTests: XCTestCase {
             }
         })
 
-        XCTAssertNoThrow(try hang(manager.send(request: expectedRequest)))
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
     }
 
     func testSendPersistentWhenBackgroundRequestsForcedDiscretionaryFailsEverything() {
@@ -693,8 +681,8 @@ class WebhookManagerTests: XCTestCase {
 
         var hasFailed = false
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
-            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
 
             if !hasFailed {
                 hasFailed = true
@@ -704,7 +692,7 @@ class WebhookManagerTests: XCTestCase {
             }
         })
 
-        XCTAssertThrowsError(try hang(manager.send(request: expectedRequest))) { error in
+        XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest))) { error in
             XCTAssertEqual((error as? URLError)?.code, .dnsLookupFailed)
         }
     }
@@ -715,13 +703,13 @@ class WebhookManagerTests: XCTestCase {
         let networkExpectation = expectation(description: "network was invoked")
         let networkSemaphore = DispatchSemaphore(value: 0)
 
-        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { _ in
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
             networkSemaphore.wait()
             networkExpectation.fulfill()
             return HTTPStubsResponse(jsonObject: ["result": true], statusCode: 200, headers: nil)
         })
 
-        let promise = manager.sendPassive(identifier: .unhandled, request: request)
+        let promise = manager.sendPassive(identifier: .unhandled, server: api1.server, request: request)
 
         // it should be complete before the network call completes, so wait for its signal before finishing the network
         XCTAssertNoThrow(try hang(promise))
@@ -744,13 +732,14 @@ class WebhookManagerTests: XCTestCase {
 private func XCTAssertEqualWebhookRequest(
     _ lhsData: Data?,
     _ rhs: WebhookRequest,
+    server: Server,
     file: StaticString = #filePath,
     line: UInt = #line
 ) {
     do {
-        let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server)
+        let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
         let lhs = try mapper.map(JSONObject: try JSONSerialization.jsonObject(with: lhsData ?? Data(), options: []))
-        XCTAssertEqualWebhookRequest(lhs, rhs, file: file, line: line)
+        XCTAssertEqualWebhookRequest(lhs, rhs, server: server, file: file, line: line)
     } catch {
         XCTFail("got error: \(error)", file: file, line: line)
     }
@@ -759,10 +748,11 @@ private func XCTAssertEqualWebhookRequest(
 private func XCTAssertEqualWebhookRequest(
     _ lhs: WebhookRequest,
     _ rhs: WebhookRequest,
+    server: Server,
     file: StaticString = #filePath,
     line: UInt = #line
 ) {
-    let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server)
+    let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
 
     func value(for request: WebhookRequest) throws -> String {
         var writeOptions: JSONSerialization.WritingOptions = [.prettyPrinted]

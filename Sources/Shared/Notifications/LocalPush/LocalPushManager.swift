@@ -10,6 +10,7 @@ public protocol LocalPushManagerDelegate: AnyObject {
 }
 
 public class LocalPushManager {
+    public let server: Server
     public weak var delegate: LocalPushManagerDelegate?
 
     public static var stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
@@ -79,19 +80,20 @@ public class LocalPushManager {
         }
     }
 
-    public init() {
-        updateSubscription()
+    private var tokens = [HACancellable]()
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateSubscriptionFromNotification),
-            name: SettingsStore.connectionInfoDidChange,
-            object: nil
-        )
+    public init(server: Server) {
+        self.server = server
+
+        updateSubscription()
+        tokens.append(server.observe { [weak self] _ in
+            self?.updateSubscription()
+        })
     }
 
     deinit {
         invalidate()
+        tokens.forEach { $0.cancel() }
     }
 
     public func invalidate() {
@@ -122,20 +124,8 @@ public class LocalPushManager {
 
     private var subscription: SubscriptionInstance?
 
-    @objc private func updateSubscriptionFromNotification() {
-        DispatchQueue.main.async { [self] in
-            updateSubscription()
-        }
-    }
-
     private func updateSubscription() {
-        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
-            // webhook is invalid, if there is a subscription we remove it
-            subscription?.cancel()
-            subscription = nil
-            state = .unavailable
-            return
-        }
+        let webhookID = server.info.connection.webhookID
 
         guard webhookID != subscription?.webhookID else {
             // webhookID hasn't changed, so we don't need to reset
@@ -144,8 +134,8 @@ public class LocalPushManager {
 
         subscription?.cancel()
         subscription = .init(
-            token: Current.apiConnection.subscribe(
-                to: .localPush(webhookID: webhookID),
+            token: Current.api(for: server).connection.subscribe(
+                to: .localPush(webhookID: webhookID, serverVersion: server.info.version),
                 initiated: { [weak self] result in
                     self?.handle(initiated: result.map { _ in () })
                 }, handler: { [weak self] _, value in
@@ -174,21 +164,24 @@ public class LocalPushManager {
 
         if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
             firstly {
-                Current.apiConnection.send(.localPushConfirm(webhookID: webhookID, confirmID: confirmID)).promise
+                Current.api(for: server).connection.send(.localPushConfirm(
+                    webhookID: webhookID,
+                    confirmID: confirmID
+                )).promise
             }.catch { error in
                 Current.Log.error("failed to confirm local push: \(error)")
             }
         }
 
-        delegate?.localPushManager(self, didReceiveRemoteNotification: event.content.userInfo)
+        let baseContent = event.content(server: server)
+
+        delegate?.localPushManager(self, didReceiveRemoteNotification: baseContent.userInfo)
 
         firstly {
-            Current.api
-        }.then { api in
-            Current.notificationAttachmentManager.content(from: event.content, api: api)
+            Current.notificationAttachmentManager.content(from: baseContent, api: Current.api(for: server))
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
-            return .value(event.content)
+            return .value(baseContent)
         }.then { [add] content -> Promise<Void> in
             add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
         }.done {

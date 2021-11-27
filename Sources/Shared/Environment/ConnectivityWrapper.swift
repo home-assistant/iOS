@@ -4,6 +4,7 @@ import CoreTelephony
 import Reachability
 import SystemConfiguration.CaptiveNetwork
 #endif
+import Communicator
 
 /// Wrapper around CoreTelephony, Reachability
 public class ConnectivityWrapper {
@@ -83,7 +84,7 @@ public class ConnectivityWrapper {
     #else
     init() {
         self.hasWiFi = { true }
-        self.currentWiFiSSID = { nil }
+        self.currentWiFiSSID = { Communicator.shared.mostRecentlyReceievedContext.content["SSID"] as? String }
         self.currentWiFiBSSID = { nil }
         self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
         self.simpleNetworkType = { .unknown }

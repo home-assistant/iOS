@@ -2,9 +2,12 @@ import Shared
 import UIKit
 
 class OnboardingPermissionViewController: UIViewController, OnboardingViewController {
+    let server: Server?
     let permission: PermissionType
     let factory: OnboardingPermissionViewControllerFactory.Type
-    init(permission: PermissionType, factory: OnboardingPermissionViewControllerFactory.Type) {
+
+    init(server: Server?, permission: PermissionType, factory: OnboardingPermissionViewControllerFactory.Type) {
+        self.server = server
         self.permission = permission
         self.factory = factory
         super.init(nibName: nil, bundle: nil)
@@ -109,11 +112,11 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
         permission.request { [self] granted, _ in
             if permission == .location, granted, let currentSSID = Current.connectivity.currentWiFiSSID() {
                 // update SSIDs if we have access to them, since we're gonna need it later
-                Current.settingsStore.connectionInfo?.internalSSIDs = [currentSSID]
+                server?.info.connection.internalSSIDs = [currentSSID]
             }
 
             sender.isUserInteractionEnabled = true
-            show(factory.next(), sender: self)
+            show(factory.next(server: server), sender: self)
         }
     }
 

@@ -5,15 +5,23 @@ import Shared
 
 class TemplateEditViewController: HAFormViewController, RowControllerType {
     var onDismissCallback: ((UIViewController) -> Void)?
-    var saveHandler: (String) -> Void
+    var saveHandler: (Server, String) -> Void
+
+    private var server: Server {
+        didSet {
+            templateSection?.server = server
+        }
+    }
 
     private let initialValue: String
     private var templateSection: TemplateSection?
 
     init(
+        server: Server,
         initial: String,
-        saveHandler: @escaping (String) -> Void
+        saveHandler: @escaping (Server, String) -> Void
     ) {
+        self.server = server
         self.saveHandler = saveHandler
         self.initialValue = initial
         super.init()
@@ -44,12 +52,23 @@ class TemplateEditViewController: HAFormViewController, RowControllerType {
         let section = TemplateSection(
             header: nil,
             footer: nil,
+            server: server,
             initializeInput: {
                 $0.value = initialValue
                 $0.placeholder = "{{ now() }}"
             }, initializeSection: { _ in
             }
         )
+
+        section <<< ServerSelectRow {
+            $0.value = .server(server)
+            $0.onChange { [weak self] row in
+                if case let .server(server) = row.value {
+                    self?.server = server
+                }
+            }
+        }
+
         form +++ section
         templateSection = section
     }
@@ -60,7 +79,7 @@ class TemplateEditViewController: HAFormViewController, RowControllerType {
 
     @objc private func save() {
         if let section = templateSection {
-            saveHandler(section.inputRow.value ?? "")
+            saveHandler(server, section.inputRow.value ?? "")
         }
         onDismissCallback?(self)
     }

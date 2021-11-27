@@ -115,11 +115,12 @@ public class NotificationAction: Object {
     }
 
     public class func exampleTrigger(
+        api: HomeAssistantAPI,
         identifier: String,
         category: String?,
         textInput: Bool
     ) -> String {
-        let data = HomeAssistantAPI.legacyNotificationActionEvent(
+        let data = api.legacyNotificationActionEvent(
             identifier: identifier,
             category: category,
             actionData: "# value of action_data in notify call",

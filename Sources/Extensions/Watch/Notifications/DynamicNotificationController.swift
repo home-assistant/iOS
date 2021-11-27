@@ -100,9 +100,9 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
         NotificationSubControllerMedia.self,
     ] }
 
-    private func subController(for notification: UNNotification) -> NotificationSubController? {
+    private func subController(for notification: UNNotification, api: HomeAssistantAPI) -> NotificationSubController? {
         for potential in possibleSubControllers {
-            if let controller = potential.init(notification: notification) {
+            if let controller = potential.init(api: api, notification: notification) {
                 return controller
             }
         }
@@ -110,9 +110,9 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
         return nil
     }
 
-    private func subController(for url: URL) -> NotificationSubController? {
+    private func subController(for url: URL, api: HomeAssistantAPI) -> NotificationSubController? {
         for potential in possibleSubControllers {
-            if let controller = potential.init(url: url) {
+            if let controller = potential.init(api: api, url: url) {
                 return controller
             }
         }
@@ -130,14 +130,19 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
         errorLabel.setHidden(true)
         dynamicElements.hide()
 
+        guard let server = Current.servers.server(for: notification.request.content) else {
+            return
+        }
+
+        let api = Current.api(for: server)
         notificationActions = notification.request.content.userInfoActions
 
-        if let active = subController(for: notification) {
+        if let active = subController(for: notification, api: api) {
             activeSubController = active
         } else {
             isLoading = true
 
-            Current.api.then(on: nil) { api in
+            firstly {
                 Current.notificationAttachmentManager.downloadAttachment(from: notification.request.content, api: api)
             }.tap { [self] result in
                 if case .rejected = result {
@@ -145,7 +150,7 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
                     isLoading = false
                 }
             }.map { [self] url in
-                subController(for: url)
+                subController(for: url, api: api)
             }.done { [self] controller in
                 activeSubController = controller
             }.catch { [self] error in

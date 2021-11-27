@@ -89,24 +89,10 @@ class NFCTagViewController: HAFormViewController {
             tag: "example-triger",
             header: L10n.Nfc.Detail.exampleTrigger,
             yamlGetter: { [identifier] () -> String in
-                if let version = Current.serverVersion(), version < .tagPlatformTrigger {
-                    let data = HomeAssistantAPI.tagEvent(tagPath: identifier)
-                    let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
-
-                    let indentation = "\n    "
-
-                    return """
-                    - platform: event
-                      event_type: \(data.eventType)
-                      event_data:
-                        \(eventDataStrings.joined(separator: indentation))
-                    """
-                } else {
-                    return """
-                    - platform: tag
-                      tag_id: \(identifier)
-                    """
-                }
+                """
+                - platform: tag
+                  tag_id: \(identifier)
+                """
             }, present: { [weak self] viewController in
                 self?.present(viewController, animated: true, completion: nil)
             }

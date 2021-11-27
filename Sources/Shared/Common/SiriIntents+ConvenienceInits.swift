@@ -128,7 +128,7 @@ public extension WidgetActionsIntent {
 
 @available(iOS 13, watchOS 7, *)
 public extension IntentPanel {
-    convenience init(panel: HAPanel) {
+    convenience init(panel: HAPanel, server: Server) {
         let image: INImage?
 
         let icon = panel.icon?.normalizingIconString
@@ -152,13 +152,16 @@ public extension IntentPanel {
                 subtitle: nil,
                 image: image
             )
-        } else {
+        } else if Current.servers.all.count > 1 {
             self.init(
                 identifier: panel.path,
-                display: panel.title
+                display: panel.title + " (\(server.info.name))"
             )
+        } else {
+            self.init(identifier: panel.path, display: panel.title)
         }
         self.icon = icon
+        self.serverIdentifier = server.identifier.rawValue
     }
 
     var widgetURL: URL {
@@ -166,6 +169,9 @@ public extension IntentPanel {
         components.scheme = "homeassistant"
         components.host = "navigate"
         components.path = "/" + (identifier ?? "lovelace")
+        if let server = Current.servers.server(for: self) {
+            components.insertWidgetServer(server: server)
+        }
         return components.url!
     }
 
@@ -181,4 +187,15 @@ public extension IntentPanel {
 @available(iOS 12, *)
 public extension WidgetOpenPageIntent {
     static let widgetKind = "WidgetOpenPage"
+}
+
+@available(iOS 13, *)
+public extension IntentServer {
+    convenience init(server: Server) {
+        self.init(identifier: server.identifier.rawValue, display: server.info.name)
+    }
+
+    static var all: [IntentServer] {
+        Current.servers.all.map { IntentServer(server: $0) }
+    }
 }

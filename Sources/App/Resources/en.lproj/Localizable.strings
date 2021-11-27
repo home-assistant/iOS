@@ -249,7 +249,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "retry_label" = "Retry";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
+"settings.server_select.title" = "Server";
+"settings.server_select.page_title" = "Server";
 "settings.connection_section.add_server" = "Add Server";
+"settings.connection_section.all_servers" = "All Servers";
+"settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.delete_server.title" = "Delete Server";
+"settings.connection_section.delete_server.progress" = "Deleting Server…";
+"settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "settings.connection_section.connecting_via" = "Connected via";
 "settings.connection_section.details" = "Details";
@@ -731,3 +738,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
+"intents.server_required_for_value" = "Select a server before picking this value.";

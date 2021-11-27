@@ -123,13 +123,17 @@ class ZoneManager {
     }
 
     private func fire(event: ZoneManagerEvent) {
-        guard let eventInfo = event.asFirableEvent() else {
-            return
-        }
+        guard let zone = event.associatedZone,
+              let server = Current.servers.server(forServerIdentifier: zone.serverIdentifier) else { return }
 
-        Current.api.then(on: nil) { api in
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
-        }.cauterize()
+        switch event.eventType {
+        case let .region(region, state):
+            let api = Current.api(for: server)
+            let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
+            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).cauterize()
+        case .locationChange:
+            break
+        }
     }
 
     private func sync(zones: AnyCollection<RLMZone>) {

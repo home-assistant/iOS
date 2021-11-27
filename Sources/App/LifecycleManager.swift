@@ -71,12 +71,12 @@ class LifecycleManager {
 
     func didFinishLaunching() {
         Current.backgroundTask(withName: "lifecycle-manager-didFinishLaunching") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.finished_launching",
-                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                    eventData: api.sharedEventDeviceInfo
                 )
-            }
+            })
         }.cauterize()
 
         connectAPI(reason: .cold)
@@ -90,12 +90,12 @@ class LifecycleManager {
         isActive = false
 
         Current.backgroundTask(withName: "lifecycle-manager-didEnterBackground") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.entered_background",
-                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                    eventData: api.sharedEventDeviceInfo
                 )
-            }
+            })
         }.cauterize()
 
         invalidatePeriodicUpdateTimer()
@@ -125,12 +125,12 @@ class LifecycleManager {
         }
 
         Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
-            Current.api.then(on: nil) { api in
+            when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.became_active",
-                    eventData: HomeAssistantAPI.sharedEventDeviceInfo
+                    eventData: api.sharedEventDeviceInfo
                 )
-            }
+            })
         }.cauterize()
     }
 
@@ -163,9 +163,9 @@ class LifecycleManager {
 
     private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         Current.backgroundTask(withName: "connect-api") { _ in
-            Current.api.then(on: nil) { api in
+            when(resolved: Current.apis.map { api in
                 api.Connect(reason: reason)
-            }
+            }).asVoid()
         }.done {
             Current.Log.info("Connect finished for reason \(reason)")
         }.catch { error in
