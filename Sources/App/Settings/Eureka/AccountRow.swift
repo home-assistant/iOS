@@ -33,19 +33,11 @@ enum AccountRowValue: Equatable, CustomStringConvertible {
         }
     }
 
-    var placeholderSubtitle: String? {
+    func placeholderImage(traitCollection: UITraitCollection) -> UIImage? {
         switch self {
         case .server: return nil
-        case .add: return "[todo]"
-        case .all: return "[todo]"
-        }
-    }
-
-    var placeholderImage: UIImage? {
-        switch self {
-        case .server: return nil
-        case .add: return AccountInitialsImage.addImage()
-        case .all: return AccountInitialsImage.allImage()
+        case .add: return AccountInitialsImage.addImage(traitCollection: traitCollection)
+        case .all: return AccountInitialsImage.allImage(traitCollection: traitCollection)
         }
     }
 }
@@ -97,8 +89,8 @@ class AccountCell: Cell<AccountRowValue>, CellType {
         } else {
             accessoryType = .none
             textLabel?.text = accountRow?.value?.placeholderTitle
-            detailTextLabel?.text = accountRow?.value?.placeholderSubtitle
-            imageView?.image = accountRow?.value?.placeholderImage
+            detailTextLabel?.text = nil
+            imageView?.image = accountRow?.value?.placeholderImage(traitCollection: traitCollection)
         }
 
         if #available(iOS 13, *) {
