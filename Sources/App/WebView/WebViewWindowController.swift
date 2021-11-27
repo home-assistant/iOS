@@ -265,23 +265,33 @@ extension WebViewWindowController: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
         switch state {
         case let .needed(type):
-            let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
-            updateRootViewController(to: controller)
+            guard !(window.rootViewController is OnboardingNavigationViewController) else {
+                return
+            }
 
-            if type.shouldShowError {
-                let alert = UIAlertController(
-                    title: L10n.Alerts.AuthRequired.title,
-                    message: L10n.Alerts.AuthRequired.message,
-                    preferredStyle: .alert
-                )
+            if Current.servers.all.isEmpty {
+                let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
+                updateRootViewController(to: controller)
 
-                alert.addAction(UIAlertAction(
-                    title: L10n.okLabel,
-                    style: .default,
-                    handler: nil
-                ))
+                if type.shouldShowError {
+                    let alert = UIAlertController(
+                        title: L10n.Alerts.AuthRequired.title,
+                        message: L10n.Alerts.AuthRequired.message,
+                        preferredStyle: .alert
+                    )
 
-                controller.present(alert, animated: true, completion: nil)
+                    alert.addAction(UIAlertAction(
+                        title: L10n.okLabel,
+                        style: .default,
+                        handler: nil
+                    ))
+
+                    controller.present(alert, animated: true, completion: nil)
+                }
+            } else if let existingServer = webViewControllerPromise.value?.server,
+                      !Current.servers.all.contains(existingServer),
+                      let newServer = Current.servers.all.first {
+                open(server: newServer)
             }
         case .didConnect:
             onboardingPreloadWebViewController = WebViewController(
