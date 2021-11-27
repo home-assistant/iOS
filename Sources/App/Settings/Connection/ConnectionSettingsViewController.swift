@@ -27,10 +27,11 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = L10n.Settings.ConnectionSection.header
+        title = server.info.name
 
-        tokens.append(server.observe { [weak self] _ in
+        tokens.append(server.observe { [weak self] info in
             self?.form.allRows.forEach { $0.updateCell() }
+            self?.title = info.name
         })
 
         let connection = Current.api(for: server).connection
