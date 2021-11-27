@@ -24,18 +24,6 @@ public protocol ServerManager {
     func restoreState(_ state: Data)
 }
 
-private extension Identifier where ObjectType == Server {
-    var keychainKey: String { rawValue }
-    init(keychainKey: String) { rawValue = keychainKey }
-}
-
-private class ServerCache {
-    var restrictCaching: Bool = false
-    var info: [Identifier<Server>: ServerInfo] = [:]
-    var server: [Identifier<Server>: Server] = [:]
-    var all: [Server]?
-}
-
 public extension ServerManager {
     func server(forWebhookID webhookID: String) -> Server? {
         all.first(where: { $0.info.connection.webhookID == webhookID })
@@ -49,39 +37,89 @@ public extension ServerManager {
         }
     }
 
-    func server(for action: Action) -> Server? {
-        if let server = server(forServerIdentifier: action.serverIdentifier) {
+    private var fallbackServer: Server? {
+        let all = all
+        if all.count == 1, let server = all.first {
             return server
         } else {
-            return Current.servers.all.first
+            return nil
         }
     }
 
-    func server(for intent: SingleServerIntent) -> Server? {
+    func server(for providing: ServerIdentifierProviding, fallback: Bool = true) -> Server? {
+        if let server = server(forServerIdentifier: providing.serverIdentifier) {
+            return server
+        } else if fallback {
+            return fallbackServer
+        } else {
+            return nil
+        }
+    }
+
+    func server(for intent: ServerIntentProviding, fallback: Bool = true) -> Server? {
         if let server = server(forServerIdentifier: intent.server?.identifier) {
             return server
+        } else if fallback {
+            return fallbackServer
         } else {
-            let all = all
-            if all.count == 1, let server = all.first {
-                return server
-            } else {
-                return nil
-            }
+            return nil
         }
     }
 
     func server(for content: UNNotificationContent) -> Server? {
-        if let webhookID = content.userInfo["webhook_id"] as? String,
-           let server = server(forWebhookID: webhookID) {
-            return server
+        if let webhookID = content.userInfo["webhook_id"] as? String {
+            return server(forWebhookID: webhookID)
         } else {
+            // intentionally different, because 'webhook_id' is server version dependent
+            // if the value isn't provided, assume the first server
             return all.first
         }
     }
 }
 
-public class ServerManagerImpl: ServerManager {
-    private var keychain: Keychain
+internal protocol ServerManagerKeychain {
+    func removeAll() throws
+    func allKeys() -> [String]
+    func getData(_ key: String) throws -> Data?
+    func set(_ value: Data, key: String) throws
+    func remove(_ key: String) throws
+}
+
+private extension Identifier where ObjectType == Server {
+    var keychainKey: String { rawValue }
+    init(keychainKey: String) { rawValue = keychainKey }
+}
+
+private class ServerCache {
+    var restrictCaching: Bool = false
+    var info: [Identifier<Server>: ServerInfo] = [:]
+    var server: [Identifier<Server>: Server] = [:]
+    var all: [Server]?
+
+    func reset() {
+        info = [:]
+        server = [:]
+        all = nil
+    }
+}
+
+extension Keychain: ServerManagerKeychain {
+    public func set(_ value: Data, key: String) throws {
+        try set(value, key: key, ignoringAttributeSynchronizable: true)
+    }
+
+    public func getData(_ key: String) throws -> Data? {
+        try getData(key, ignoringAttributeSynchronizable: true)
+    }
+
+    public func remove(_ key: String) throws {
+        try remove(key, ignoringAttributeSynchronizable: true)
+    }
+}
+
+internal final class ServerManagerImpl: ServerManager {
+    private var keychain: ServerManagerKeychain
+    private var historicKeychain: ServerManagerKeychain
     private var encoder: JSONEncoder
     private var decoder: JSONDecoder
 
@@ -99,9 +137,12 @@ public class ServerManagerImpl: ServerManager {
 
     private let cache = ServerCache()
 
-    init() {
-        let keychain = Keychain(service: Self.service)
+    init(
+        keychain: ServerManagerKeychain = Keychain(service: ServerManagerImpl.service),
+        historicKeychain: ServerManagerKeychain = Keychain(service: Constants.BundleID)
+    ) {
         self.keychain = keychain
+        self.historicKeychain = historicKeychain
 
         let encoder = JSONEncoder()
         self.encoder = encoder
@@ -118,7 +159,7 @@ public class ServerManagerImpl: ServerManager {
         do {
             try migrateIfNeeded()
         } catch {
-//            Current.Log.error("failed to load historic server: \(error)")
+            environment.Log.error("failed to load historic server: \(error)")
         }
     }
 
@@ -159,15 +200,20 @@ public class ServerManagerImpl: ServerManager {
     public func remove(identifier: Identifier<Server>) {
         keychain.deleteServerInfo(key: identifier.keychainKey)
 
+        cache.server[identifier] = nil
         cache.all = nil
         notify()
     }
 
     public func removeAll() {
+        cache.reset()
         _ = try? keychain.removeAll()
+        notify()
     }
 
+    private var suppressNotify = false
     private func notify() {
+        guard !suppressNotify else { return }
         DispatchQueue.main.async { [self] in
             for observer in observers.allObjects.compactMap({ $0 as? ServerObserver }) {
                 observer.serversDidChange(self)
@@ -206,11 +252,18 @@ public class ServerManagerImpl: ServerManager {
             // update active URL so we can update just once if it's different than the save is doing
             _ = serverInfo.connection.activeURL()
 
-            guard self.cache.info[identifier] != serverInfo || self.cache.restrictCaching else { return }
+            let old = self.cache.info[identifier]
+
+            guard old != serverInfo || self.cache.restrictCaching else { return }
+
+            self.keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
+            self.cache.info[identifier] = serverInfo
             fallback = serverInfo
 
-            self.cache.info[identifier] = serverInfo
-            self.keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
+            if old?.sortOrder != serverInfo.sortOrder {
+                self.cache.all = nil
+            }
+
             self.notify()
         })
         cache.server[identifier] = server
@@ -220,11 +273,11 @@ public class ServerManagerImpl: ServerManager {
     private func migrateIfNeeded() throws {
         guard all.isEmpty else { return }
 
-        let historicKeychain = Keychain(service: Constants.BundleID)
         let userDefaults = UserDefaults(suiteName: Constants.AppGroupID)!
         if let tokenInfoData = try historicKeychain.getData("tokenInfo"),
-           let connectionInfoData = try historicKeychain.getData("connectionInfo"),
-           let versionString = userDefaults.string(forKey: "version") {
+           let connectionInfoData = try historicKeychain.getData("connectionInfo") {
+            // UserDefaults may be missing due to delete/reinstall, so fill in values for those if needed
+            let versionString = userDefaults.string(forKey: "version") ?? "2021.1"
             let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
 
             var serverInfo = ServerInfo(
@@ -253,18 +306,20 @@ public class ServerManagerImpl: ServerManager {
         do {
             return try encoder.encode(state)
         } catch {
-            Current.Log.error("failed to encode state: \(error)")
+            Current.Log.error(error)
             return Data()
         }
     }
 
     public func restoreState(_ state: Data) {
+        suppressNotify = true
+
         do {
             let state = try decoder.decode([String: ServerInfo].self, from: state)
 
             // delete servers that aren't present
             for key in keychain.allKeys() where state[key] == nil {
-                try keychain.remove(key)
+                remove(identifier: .init(keychainKey: key))
             }
 
             // set the values for the still-existing or new servers
@@ -277,12 +332,15 @@ public class ServerManagerImpl: ServerManager {
                 }
             }
         } catch {
-            Current.Log.error("failed to decode state: \(error)")
+            Current.Log.error(error)
         }
+
+        suppressNotify = false
+        notify()
     }
 }
 
-private extension Keychain {
+private extension ServerManagerKeychain {
     func allServerInfo(decoder: JSONDecoder) -> [(String, ServerInfo)] {
         allKeys().compactMap { key in
             getServerInfo(key: key, decoder: decoder).map { (key, $0) }
@@ -290,32 +348,18 @@ private extension Keychain {
     }
 
     func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
-        do {
-            guard let data = try getData(key) else {
-                return nil
-            }
-
-            let server = try decoder.decode(ServerInfo.self, from: data)
-            return server
-        } catch {
-//            Current.Log.error("failed to load server \(key): \(error)")
+        guard let data = try? getData(key) else {
             return nil
         }
+
+        return try? decoder.decode(ServerInfo.self, from: data)
     }
 
     func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
-        do {
-            try set(encoder.encode(serverInfo), key: key)
-        } catch {
-//            Current.Log.error("failed to save: \(error)")
-        }
+        try? set(encoder.encode(serverInfo), key: key)
     }
 
     func deleteServerInfo(key: String) {
-        do {
-            try remove(key)
-        } catch {
-//            Current.Log.error("failed to remove \(key): \(error)")
-        }
+        try? remove(key)
     }
 }

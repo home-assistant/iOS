@@ -2,7 +2,7 @@ import Foundation
 
 internal extension ServerInfo {
     static func fake() -> ServerInfo {
-        .init(
+        var value = ServerInfo(
             name: "Fake Server",
             connection: .init(
                 externalURL: nil,
@@ -28,6 +28,8 @@ internal extension ServerInfo {
                 build: nil
             )
         )
+        _ = value.connection.activeURL()
+        return value
     }
 }
 

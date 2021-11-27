@@ -28,6 +28,11 @@ public struct TokenInfo: ImmutableMappable, Codable, Equatable {
         let ttlInSeconds: Int = try map.value("expires_in")
         self.expiration = Date(timeIntervalSinceNow: TimeInterval(ttlInSeconds))
     }
+
+    public static func == (lhs: TokenInfo, rhs: TokenInfo) -> Bool {
+        lhs.refreshToken == rhs.refreshToken
+            && lhs.accessToken == rhs.accessToken
+    }
 }
 
 extension TokenInfo: AuthenticationCredential {
