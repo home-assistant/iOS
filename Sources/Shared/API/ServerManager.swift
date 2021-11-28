@@ -184,7 +184,7 @@ internal final class ServerManagerImpl: ServerManager {
     @discardableResult
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
         let setValue = with(serverInfo) {
-            if $0.sortOrder == .max {
+            if $0.sortOrder == ServerInfo.defaultSortOrder {
                 $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
             }
         }
