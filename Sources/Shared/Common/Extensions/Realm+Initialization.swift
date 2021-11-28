@@ -176,7 +176,7 @@ public extension Realm {
 
                     migration.enumerateObjects(ofType: RLMZone.className()) { oldObject, newObject in
                         if let oldId = oldObject?["ID"] as? String,
-                           let serverId = oldObject?["serverIdentifier"] as? String {
+                           let serverId = newObject?["serverIdentifier"] as? String {
                             let newId = RLMZone.primaryKey(sourceIdentifier: oldId, serverIdentifier: serverId)
                             Current.Log.info("change \(oldId) + \(serverId) to \(newId)")
                             newObject?["identifier"] = newId
