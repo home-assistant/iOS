@@ -310,11 +310,11 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     Current.settingsStore.locationSources.pushNotifications = row.value ?? true
                 })
 
-            let zoneEntities = realm.objects(RLMZone.self).map { $0 }
+            let zoneEntities = realm.objects(RLMZone.self)
             for zone in zoneEntities {
                 form
                     +++ Section(header: zone.Name, footer: "") {
-                        $0.tag = zone.ID
+                        $0.tag = zone.identifier
                     }
                     <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.EnterExitTracked.title

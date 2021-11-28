@@ -2,7 +2,7 @@ import CoreLocation
 import Foundation
 @testable import HomeAssistant
 import RealmSwift
-import Shared
+@testable import Shared
 import XCTest
 
 class ZoneManagerCollectorTests: XCTestCase {
@@ -98,13 +98,19 @@ class ZoneManagerCollectorTests: XCTestCase {
     }
 
     func testDidDetermineStateWithZoneInRealm() throws {
+        let server = Server.fake()
+
         let region = CLCircularRegion(
             center: .init(latitude: 1.23, longitude: 4.56),
             radius: 20,
-            identifier: "zone_identifier"
+            identifier: RLMZone.primaryKey(
+                sourceIdentifier: "zone_identifier",
+                serverIdentifier: server.identifier.rawValue
+            )
         )
         let realmZone = with(RLMZone()) {
-            $0.ID = "zone_identifier"
+            $0.entityId = "zone_identifier"
+            $0.serverIdentifier = server.identifier.rawValue
         }
 
         try realm.write {
@@ -123,13 +129,18 @@ class ZoneManagerCollectorTests: XCTestCase {
     }
 
     func testDidDetermineStateWithZoneInRealmForSmallRegionSplitIntoMultiple() throws {
+        let server = Server.fake()
         let region = CLCircularRegion(
             center: .init(latitude: 1.23, longitude: 4.56),
             radius: 20,
-            identifier: "zone_identifier@100"
+            identifier: RLMZone.primaryKey(
+                sourceIdentifier: "zone_identifier",
+                serverIdentifier: server.identifier.rawValue
+            ) + "@100"
         )
         let realmZone = with(RLMZone()) {
-            $0.ID = "zone_identifier"
+            $0.entityId = "zone_identifier"
+            $0.serverIdentifier = server.identifier.rawValue
         }
 
         try realm.write {

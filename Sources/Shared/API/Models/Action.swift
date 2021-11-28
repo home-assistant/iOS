@@ -10,7 +10,6 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         case scene = 10000
     }
 
-    #warning("multiserver - primary key duplication")
     @objc public dynamic var ID: String = UUID().uuidString
     @objc public dynamic var Name: String = ""
     @objc public dynamic var Text: String = ""
@@ -23,6 +22,11 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var Scene: RLMScene?
     @objc public dynamic var isServerControlled: Bool = false
     @objc public dynamic var serverIdentifier: String = ""
+
+    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
+        #warning("multiserver - primary key duplication")
+        return sourceIdentifier
+    }
 
     override public static func primaryKey() -> String? {
         #keyPath(ID)

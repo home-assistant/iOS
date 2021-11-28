@@ -9,7 +9,7 @@ public final class NotificationCategory: Object, UpdatableModel {
     @objc public dynamic var serverIdentifier: String = ""
 
     @objc public dynamic var Name: String = ""
-    #warning("multiserver - primary key duplication")
+
     @objc public dynamic var Identifier: String = ""
     @objc public dynamic var HiddenPreviewsBodyPlaceholder: String?
     // iOS 12+ only
@@ -24,6 +24,11 @@ public final class NotificationCategory: Object, UpdatableModel {
     // @objc dynamic var AllowInCarPlay: Bool = false
 
     public var Actions = List<NotificationAction>()
+
+    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
+        #warning("multiserver - primary key duplication")
+        return sourceIdentifier
+    }
 
     override public static func primaryKey() -> String? {
         #keyPath(Identifier)

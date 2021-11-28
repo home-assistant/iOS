@@ -149,7 +149,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 "counts": counts.eventPayload,
                 "limits": limits.eventPayload,
                 "total_zones": allZones.count,
-                "stripped_zones": strippedZones.map(\.ID),
+                "stripped_zones": strippedZones.map(\.identifier),
                 "stripped_decision": decisionSource,
             ]
         )).cauterize()

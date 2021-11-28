@@ -242,7 +242,9 @@ public class ModelManager: ServerObserver {
                 .filter("%K = %@", UM.serverIdentifierKey(), server.identifier.rawValue)
 
             let existingIDs = Set(allObjects.compactMap { $0[realmPrimaryKey] as? String })
-            let incomingIDs = Set(sourceModels.map(\.primaryKey))
+            let incomingIDs = Set(sourceModels.map {
+                UM.primaryKey(sourceIdentifier: $0.primaryKey, serverIdentifier: server.identifier.rawValue)
+            })
 
             let deletedIDs = existingIDs.subtracting(incomingIDs)
             let newIDs = incomingIDs.subtracting(existingIDs)
@@ -265,12 +267,25 @@ public class ModelManager: ServerObserver {
             let updatedModels: [UM] = sourceModels.compactMap { model in
                 let updating: UM
 
-                if let existing = realm.object(ofType: UM.self, forPrimaryKey: model.primaryKey) {
+                let fullPrimaryKey = UM.primaryKey(
+                    sourceIdentifier: model.primaryKey,
+                    serverIdentifier: server.identifier.rawValue
+                )
+
+                if let existing = realm.object(ofType: UM.self, forPrimaryKey: fullPrimaryKey) {
                     updating = existing
                 } else {
-                    Current.Log.verbose("creating \(model.primaryKey)")
+                    Current.Log.verbose("creating \(fullPrimaryKey)")
                     updating = UM()
                 }
+
+                if updating.realm == nil {
+                    updating.setValue(fullPrimaryKey, forKey: realmPrimaryKey)
+                } else {
+                    assert(updating.value(forKey: realmPrimaryKey) as? String == fullPrimaryKey)
+                }
+
+                updating.setValue(server.identifier.rawValue, forKey: UM.serverIdentifierKey())
 
                 if updating.update(with: model, server: server, using: realm) {
                     return updating
