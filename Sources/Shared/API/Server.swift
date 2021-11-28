@@ -67,7 +67,7 @@ public struct ServerInfo: Codable, Equatable {
         version: Version
     ) {
         self.name = name
-        self.sortOrder = .max
+        self.sortOrder = Self.defaultSortOrder
         self.connection = connection
         self.token = token
         self.version = version
@@ -77,6 +77,8 @@ public struct ServerInfo: Codable, Equatable {
     public static var defaultName: String {
         L10n.Settings.StatusSection.LocationNameRow.placeholder
     }
+
+    public static var defaultSortOrder: Int { -1 }
 
     public mutating func setSetting<T>(value: T?, for key: ServerSettingKey<T>) {
         settings[key.rawValue] = value
