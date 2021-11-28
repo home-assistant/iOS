@@ -13,6 +13,7 @@ private var permanent: [CLPlacemark] = []
 
 class GeocoderSensorTests: XCTestCase {
     private var realm: Realm!
+    private var server: Server!
 
     enum TestError: Error {
         case someError
@@ -20,6 +21,8 @@ class GeocoderSensorTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+
+        server = .fake()
 
         let executionIdentifier = UUID().uuidString
         let realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
@@ -180,7 +183,8 @@ class GeocoderSensorTests: XCTestCase {
 
         try realm.write {
             _ = with(RLMZone()) {
-                $0.ID = "zone.outside"
+                $0.entityId = "zone.outside"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
                 realm.add($0, update: .all)
@@ -212,7 +216,8 @@ class GeocoderSensorTests: XCTestCase {
 
         try realm.write {
             _ = with(RLMZone()) {
-                $0.ID = "zone.inside_big"
+                $0.entityId = "zone.inside_big"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 37
                 $0.Longitude = -122
                 $0.Radius = 1000
@@ -220,7 +225,8 @@ class GeocoderSensorTests: XCTestCase {
             }
 
             _ = with(RLMZone()) {
-                $0.ID = "zone.inside_small"
+                $0.entityId = "zone.inside_small"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 37
                 $0.Longitude = -122
                 $0.Radius = 100
@@ -228,7 +234,8 @@ class GeocoderSensorTests: XCTestCase {
             }
 
             _ = with(RLMZone()) {
-                $0.ID = "zone.outside"
+                $0.entityId = "zone.outside"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
                 realm.add($0, update: .all)
@@ -261,7 +268,8 @@ class GeocoderSensorTests: XCTestCase {
 
         try realm.write {
             _ = with(RLMZone()) {
-                $0.ID = "zone.inside_tracking_disabled"
+                $0.entityId = "zone.inside_tracking_disabled"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 37
                 $0.Longitude = -122
                 $0.Radius = 1000
@@ -270,7 +278,8 @@ class GeocoderSensorTests: XCTestCase {
             }
 
             _ = with(RLMZone()) {
-                $0.ID = "zone.inside_passive"
+                $0.entityId = "zone.inside_passive"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 37
                 $0.Longitude = -122
                 $0.Radius = 100
@@ -279,7 +288,8 @@ class GeocoderSensorTests: XCTestCase {
             }
 
             _ = with(RLMZone()) {
-                $0.ID = "zone.outside"
+                $0.entityId = "zone.outside"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
                 realm.add($0, update: .all)
@@ -312,7 +322,8 @@ class GeocoderSensorTests: XCTestCase {
 
         try realm.write {
             _ = with(RLMZone()) {
-                $0.ID = "zone.inside_big"
+                $0.entityId = "zone.inside_big"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 37
                 $0.Longitude = -122
                 $0.Radius = 1000
@@ -320,7 +331,8 @@ class GeocoderSensorTests: XCTestCase {
             }
 
             _ = with(RLMZone()) {
-                $0.ID = "zone.inside_small"
+                $0.entityId = "zone.inside_small"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 37
                 $0.Longitude = -122
                 $0.Radius = 100
@@ -328,7 +340,8 @@ class GeocoderSensorTests: XCTestCase {
             }
 
             _ = with(RLMZone()) {
-                $0.ID = "zone.outside"
+                $0.entityId = "zone.outside"
+                $0.serverIdentifier = server.identifier.rawValue
                 $0.Latitude = 12.34
                 $0.Longitude = 1.337
                 realm.add($0, update: .all)

@@ -611,7 +611,7 @@ public class HomeAssistantAPI {
         zone: RLMZone
     ) -> (eventType: String, eventData: [String: Any]) {
         var eventData: [String: Any] = sharedEventDeviceInfo
-        eventData["zone"] = zone.ID
+        eventData["zone"] = zone.entityId
         if region.identifier.contains("@"), let subId = region.identifier.split(separator: "@").last {
             eventData["multi_region_zone_id"] = String(subId)
         }

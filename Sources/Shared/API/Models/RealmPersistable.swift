@@ -11,6 +11,8 @@ protocol UpdatableModel {
     static func primaryKey() -> String? // from realm, we use
     static func serverIdentifierKey() -> String
     static var updateEligiblePredicate: NSPredicate { get }
+
+    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String
     func update(with object: Source, server: Server, using realm: Realm) -> Bool
 }
 

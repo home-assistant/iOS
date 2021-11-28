@@ -80,7 +80,7 @@ class ZoneManagerTests: XCTestCase {
         var addedRegions = [CLRegion]()
         var zones = try addedZones([
             with(RLMZone()) {
-                $0.ID = "home"
+                $0.entityId = "home"
                 $0.serverIdentifier = apis[0].server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
@@ -91,7 +91,7 @@ class ZoneManagerTests: XCTestCase {
                 $0.BeaconMinor.value = 456
             },
             with(RLMZone()) {
-                $0.ID = "work"
+                $0.entityId = "work"
                 $0.serverIdentifier = apis[1].server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
@@ -164,18 +164,21 @@ class ZoneManagerTests: XCTestCase {
     }
 
     func testTrackingDisabledNotMonitored() throws {
+        let s1: String = apis[0].server.identifier.rawValue
+        let s2: String = apis[1].server.identifier.rawValue
+
         let zones = try addedZones([
             with(RLMZone()) {
-                $0.ID = "home"
-                $0.serverIdentifier = apis[0].server.identifier.rawValue
+                $0.entityId = "home"
+                $0.serverIdentifier = s1
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
                 $0.Radius = 100
                 $0.TrackingEnabled = false
             },
             with(RLMZone()) {
-                $0.ID = "work"
-                $0.serverIdentifier = apis[1].server.identifier.rawValue
+                $0.entityId = "work"
+                $0.serverIdentifier = s2
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
                 $0.Radius = 150
@@ -184,7 +187,7 @@ class ZoneManagerTests: XCTestCase {
         ])
 
         let manager = newZoneManager()
-        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["work"]))
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["\(s2)/work"]))
 
         try realm.write {
             zones[0].TrackingEnabled = true
@@ -192,7 +195,7 @@ class ZoneManagerTests: XCTestCase {
 
         realm.refresh()
 
-        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["work", "home"]))
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["\(s2)/work", "\(s1)/home"]))
 
         try realm.write {
             zones[1].TrackingEnabled = false
@@ -200,7 +203,7 @@ class ZoneManagerTests: XCTestCase {
 
         realm.refresh()
 
-        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["home"]))
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map(\.identifier)), Set(["\(s1)/home"]))
 
         withExtendedLifetime(manager) { /* silences unused variable */ }
     }
@@ -208,7 +211,7 @@ class ZoneManagerTests: XCTestCase {
     func testFilterChangesOnLocationChange() throws {
         let zones = try addedZones([
             with(RLMZone()) {
-                $0.ID = "home"
+                $0.entityId = "home"
                 $0.serverIdentifier = apis[0].server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
@@ -219,7 +222,7 @@ class ZoneManagerTests: XCTestCase {
                 $0.BeaconMinor.value = 456
             },
             with(RLMZone()) {
-                $0.ID = "work"
+                $0.entityId = "work"
                 $0.serverIdentifier = apis[1].server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
@@ -280,7 +283,7 @@ class ZoneManagerTests: XCTestCase {
     func testLocationUpdateSource() throws {
         let zones = try addedZones([
             with(RLMZone()) {
-                $0.ID = "home"
+                $0.entityId = "home"
                 $0.serverIdentifier = apis[0].server.identifier.rawValue
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
@@ -291,7 +294,7 @@ class ZoneManagerTests: XCTestCase {
                 $0.BeaconMinor.value = 456
             },
             with(RLMZone()) {
-                $0.ID = "work"
+                $0.entityId = "work"
                 $0.serverIdentifier = apis[1].server.identifier.rawValue
                 $0.Latitude = 37.2345
                 $0.Longitude = -122.5678
@@ -330,7 +333,7 @@ class ZoneManagerTests: XCTestCase {
         )
         let zone = try addedZones([
             with(RLMZone()) {
-                $0.ID = "zone.zid"
+                $0.entityId = "zone.zid"
                 $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 42.2222
                 $0.Longitude = 43.3333
@@ -372,7 +375,7 @@ class ZoneManagerTests: XCTestCase {
         )
         let zone = try addedZones([
             with(RLMZone()) {
-                $0.ID = "zone.zid"
+                $0.entityId = "zone.zid"
                 $0.serverIdentifier = api.server.identifier.rawValue
                 $0.Latitude = 42.2222
                 $0.Longitude = 43.3333

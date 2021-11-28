@@ -29,28 +29,32 @@ class ZoneManagerRegionFilterTests: XCTestCase {
         // sorted by distance
         beaconZones = [
             with(RLMZone()) {
-                $0.ID = "zone.b_little_skillet"
+                $0.entityId = "zone.b_little_skillet"
+                $0.serverIdentifier = "server1"
                 $0.BeaconUUID = UUID().uuidString
                 $0.Latitude = 37.7796508
                 $0.Longitude = -122.3933569
                 $0.Radius = 1
             },
             with(RLMZone()) {
-                $0.ID = "zone.b_castro_theater"
+                $0.entityId = "zone.b_castro_theater"
+                $0.serverIdentifier = "server1"
                 $0.BeaconUUID = UUID().uuidString
                 $0.Latitude = 37.7622557
                 $0.Longitude = -122.4330972
                 $0.Radius = 2
             },
             with(RLMZone()) {
-                $0.ID = "zone.b_nopa"
+                $0.entityId = "zone.b_nopa"
+                $0.serverIdentifier = "server1"
                 $0.BeaconUUID = UUID().uuidString
                 $0.Latitude = 37.7727871
                 $0.Longitude = -122.4410906
                 $0.Radius = 3
             },
             with(RLMZone()) {
-                $0.ID = "zone.b_dmv"
+                $0.entityId = "zone.b_dmv"
+                $0.serverIdentifier = "server1"
                 $0.BeaconUUID = UUID().uuidString
                 $0.Latitude = 37.7739364
                 $0.Longitude = -122.4435184
@@ -61,25 +65,29 @@ class ZoneManagerRegionFilterTests: XCTestCase {
         // sorted by distance
         circularZones = [
             with(RLMZone()) {
-                $0.ID = "zone.home" // dropbox
+                $0.entityId = "zone.home" // dropbox
+                $0.serverIdentifier = "server1"
                 $0.Latitude = 37.7660435
                 $0.Longitude = -122.3952834
                 $0.Radius = 100
             },
             with(RLMZone()) {
-                $0.ID = "zone.oracle_park"
+                $0.entityId = "zone.oracle_park"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = 37.7806336
                 $0.Longitude = -122.3946727
                 $0.Radius = 140
             },
             with(RLMZone()) {
-                $0.ID = "zone.philz_coffee"
+                $0.entityId = "zone.philz_coffee"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = 37.7909037
                 $0.Longitude = -122.3973968
                 $0.Radius = 101
             },
             with(RLMZone()) {
-                $0.ID = "zone.ferrybuilding"
+                $0.entityId = "zone.ferrybuilding"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = 37.795571
                 $0.Longitude = -122.393572
                 $0.Radius = 120
@@ -157,7 +165,7 @@ class ZoneManagerRegionFilterTests: XCTestCase {
     }
 
     func testBothExceedWithoutHomeAndWithoutLocation() {
-        circularZones[0].ID = "zone.not_home_lol"
+        circularZones[0].entityId = "zone.not_home_lol"
 
         let zones = AnyCollection(beaconZones + circularZones)
         let regions = monitoredRegions(for: AnyCollection(beaconZones[0 ..< 3] + [

@@ -16,9 +16,19 @@ private extension HAEntityAttributes {
 }
 
 public final class RLMZone: Object, UpdatableModel {
-    #warning("multiserver - primary key duplication")
-    @objc public dynamic var ID: String = ""
-    @objc public dynamic var serverIdentifier: String = ""
+    @objc public dynamic var identifier: String = ""
+    @objc public dynamic var entityId: String = "" {
+        didSet {
+            identifier = Self.primaryKey(sourceIdentifier: entityId, serverIdentifier: serverIdentifier)
+        }
+    }
+
+    @objc public dynamic var serverIdentifier: String = "" {
+        didSet {
+            identifier = Self.primaryKey(sourceIdentifier: entityId, serverIdentifier: serverIdentifier)
+        }
+    }
+
     @objc public dynamic var FriendlyName: String?
     @objc public dynamic var Latitude: Double = 0.0
     @objc public dynamic var Longitude: Double = 0.0
@@ -38,8 +48,12 @@ public final class RLMZone: Object, UpdatableModel {
     public var SSIDTrigger = List<String>()
     public var SSIDFilter = List<String>()
 
+    static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
+        serverIdentifier + "/" + sourceIdentifier
+    }
+
     public var isHome: Bool {
-        ID == "zone.home"
+        entityId == "zone.home"
     }
 
     static func didUpdate(objects: [RLMZone], realm: Realm) {}
@@ -52,9 +66,9 @@ public final class RLMZone: Object, UpdatableModel {
         }
 
         if realm == nil {
-            ID = zone.entityId
+            entityId = zone.entityId
         } else {
-            precondition(zone.entityId == ID)
+            precondition(zone.entityId == entityId)
         }
 
         serverIdentifier = server.identifier.rawValue
@@ -108,7 +122,7 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     public var circularRegion: CLCircularRegion {
-        let region = CLCircularRegion(center: center, radius: Radius, identifier: ID)
+        let region = CLCircularRegion(center: center, radius: Radius, identifier: identifier)
         region.notifyOnEntry = true
         region.notifyOnExit = true
         return region
@@ -138,14 +152,14 @@ public final class RLMZone: Object, UpdatableModel {
                     uuid: uuid,
                     major: CLBeaconMajorValue(major),
                     minor: CLBeaconMinorValue(minor),
-                    identifier: self.ID
+                    identifier: identifier
                 )
             } else {
                 beaconRegion = CLBeaconRegion(
                     proximityUUID: uuid,
                     major: CLBeaconMajorValue(major),
                     minor: CLBeaconMinorValue(minor),
-                    identifier: ID
+                    identifier: identifier
                 )
             }
         } else if let major = BeaconMajor.value {
@@ -153,20 +167,20 @@ public final class RLMZone: Object, UpdatableModel {
                 beaconRegion = CLBeaconRegion(
                     uuid: uuid,
                     major: CLBeaconMajorValue(major),
-                    identifier: self.ID
+                    identifier: identifier
                 )
             } else {
                 beaconRegion = CLBeaconRegion(
                     proximityUUID: uuid,
                     major: CLBeaconMajorValue(major),
-                    identifier: ID
+                    identifier: identifier
                 )
             }
         } else {
             if #available(iOS 13, *) {
-                beaconRegion = CLBeaconRegion(uuid: uuid, identifier: self.ID)
+                beaconRegion = CLBeaconRegion(uuid: uuid, identifier: identifier)
             } else {
-                beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: ID)
+                beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: identifier)
             }
         }
 
@@ -184,7 +198,7 @@ public final class RLMZone: Object, UpdatableModel {
     public var circularRegionsForMonitoring: [CLCircularRegion] {
         if Radius >= 100 {
             // zone is big enough to not have false-enters
-            let region = CLCircularRegion(center: center, radius: Radius, identifier: ID)
+            let region = CLCircularRegion(center: center, radius: Radius, identifier: identifier)
             region.notifyOnEntry = true
             region.notifyOnExit = true
             return [region]
@@ -207,14 +221,14 @@ public final class RLMZone: Object, UpdatableModel {
                 CLCircularRegion(
                     center: center.moving(distance: centerOffset, direction: angle),
                     radius: minimumRadius,
-                    identifier: String(format: "%@@%03.0f", ID, angle.converted(to: .degrees).value)
+                    identifier: String(format: "%@@%03.0f", identifier, angle.converted(to: .degrees).value)
                 )
             }
         }
     }
 
     override public static func primaryKey() -> String? {
-        #keyPath(ID)
+        #keyPath(identifier)
     }
 
     static func serverIdentifierKey() -> String {
@@ -224,7 +238,7 @@ public final class RLMZone: Object, UpdatableModel {
     public var Name: String {
         if isInvalidated { return "Deleted" }
         if let fName = FriendlyName { return fName }
-        return ID.replacingOccurrences(
+        return entityId.replacingOccurrences(
             of: "\(Domain).",
             with: ""
         ).replacingOccurrences(
@@ -243,6 +257,6 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     override public var debugDescription: String {
-        "Zone - ID: \(ID), state: " + (inRegion ? "inside" : "outside")
+        "Zone - ID: \(identifier), state: " + (inRegion ? "inside" : "outside")
     }
 }

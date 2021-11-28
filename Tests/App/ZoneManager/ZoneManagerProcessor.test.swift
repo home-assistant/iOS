@@ -72,7 +72,7 @@ class ZoneManagerProcessorTests: XCTestCase {
     ) throws {
         try realm.write {
             circularRegionZone = with(RLMZone()) { zone in
-                zone.ID = circularRegion.identifier
+                zone.identifier = circularRegion.identifier
                 zone.Radius = circularRegion.radius
                 zone.Latitude = circularRegion.center.latitude
                 zone.Longitude = circularRegion.center.longitude
@@ -80,7 +80,7 @@ class ZoneManagerProcessorTests: XCTestCase {
             try circular(circularRegion, circularRegionZone!)
 
             beaconRegionZone = with(RLMZone()) { zone in
-                zone.ID = beaconRegion.identifier
+                zone.identifier = beaconRegion.identifier
             }
             try beacon(beaconRegion, beaconRegionZone!)
 
@@ -717,7 +717,7 @@ class ZoneManagerProcessorTests: XCTestCase {
             zone.inRegion = false
 
             outerZone = with(RLMZone()) {
-                $0.ID = region.identifier + "-outer"
+                $0.identifier = region.identifier + "-outer"
                 $0.Radius = region.radius * 2.0
                 $0.Latitude = region.center.latitude
                 $0.Longitude = region.center.longitude
@@ -799,7 +799,7 @@ class ZoneManagerProcessorTests: XCTestCase {
 
         try setUpZones(circular: { region, zone in
             outerZone = try with(RLMZone()) {
-                $0.ID = region.identifier + "-outer"
+                $0.identifier = region.identifier + "-outer"
                 $0.Radius = region.radius * 2.0
 
                 XCTAssert(zone.regionsForMonitoring.count > 1)

@@ -10,9 +10,12 @@ class RealmZoneTests: XCTestCase {
         super.setUp()
 
         zone = RLMZone()
-        zone.ID = "monkeys"
+        zone.entityId = "monkeys"
+        zone.serverIdentifier = "fake1"
         zone.Latitude = 53.2225509
         zone.Longitude = -4.2212136
+
+        XCTAssertEqual(zone.identifier, "fake1/monkeys")
     }
 
     private func XCTAssertEqualRegions(
@@ -62,7 +65,7 @@ class RealmZoneTests: XCTestCase {
 
         XCTAssertFalse(zone.isBeaconRegion)
         XCTAssertEqualRegions(zone.regionsForMonitoring, [
-            CLCircularRegion(center: zone.center, radius: 100, identifier: zone.ID),
+            CLCircularRegion(center: zone.center, radius: 100, identifier: zone.identifier),
         ])
     }
 
@@ -82,7 +85,10 @@ class RealmZoneTests: XCTestCase {
                     direction: .init(value: angle, unit: .degrees)
                 )
                 XCTAssertTrue(zone.circularRegionsForMonitoring.allSatisfy { $0.contains(moved) })
-                XCTAssertTrue(zone.circularRegionsForMonitoring.allSatisfy { $0.identifier.starts(with: "monkeys@") })
+                XCTAssertTrue(
+                    zone.circularRegionsForMonitoring
+                        .allSatisfy { $0.identifier.starts(with: "fake1/monkeys@") }
+                )
             }
         }
     }

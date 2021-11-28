@@ -18,7 +18,8 @@ class WebhookUpdateLocationTests: XCTestCase {
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -45,7 +46,8 @@ class WebhookUpdateLocationTests: XCTestCase {
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -75,7 +77,8 @@ class WebhookUpdateLocationTests: XCTestCase {
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -105,7 +108,8 @@ class WebhookUpdateLocationTests: XCTestCase {
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
-                $0.ID = "zone.home"
+                $0.entityId = "zone.home"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -134,7 +138,8 @@ class WebhookUpdateLocationTests: XCTestCase {
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -164,7 +169,8 @@ class WebhookUpdateLocationTests: XCTestCase {
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -208,7 +214,8 @@ class WebhookUpdateLocationTests: XCTestCase {
                 timestamp: now.addingTimeInterval(-110)
             ),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -250,7 +257,8 @@ class WebhookUpdateLocationTests: XCTestCase {
                 timestamp: now.addingTimeInterval(-110)
             ),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -292,7 +300,8 @@ class WebhookUpdateLocationTests: XCTestCase {
                 timestamp: now.addingTimeInterval(-110)
             ),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -334,7 +343,8 @@ class WebhookUpdateLocationTests: XCTestCase {
                 timestamp: now.addingTimeInterval(-110)
             ),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
@@ -376,7 +386,8 @@ class WebhookUpdateLocationTests: XCTestCase {
                 timestamp: now.addingTimeInterval(-110)
             ),
             zone: with(RLMZone()) {
-                $0.ID = "zone.given_name"
+                $0.entityId = "zone.given_name"
+                $0.serverIdentifier = "server1"
                 $0.Latitude = -2.34
                 $0.Longitude = -5.67
                 $0.Radius = 88.8

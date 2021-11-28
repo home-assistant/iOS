@@ -4,7 +4,6 @@ import ObjectMapper
 import RealmSwift
 
 public final class RLMScene: Object, UpdatableModel {
-    #warning("multiserver - primary key duplication")
     @objc public dynamic var identifier: String = ""
     @objc public dynamic var serverIdentifier: String = ""
 
@@ -40,6 +39,11 @@ public final class RLMScene: Object, UpdatableModel {
     @objc public dynamic var backgroundColor: String?
     @objc public dynamic var textColor: String?
     @objc public dynamic var iconColor: String?
+
+    public static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
+        #warning("multiserver - primary key duplication")
+        return sourceIdentifier
+    }
 
     override public class func primaryKey() -> String? {
         #keyPath(identifier)
