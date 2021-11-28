@@ -14,11 +14,20 @@ public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, Expressib
 }
 
 public extension ServerSettingKey {
+    static var localName: ServerSettingKey<String> { "local_name" }
     static var overrideDeviceName: ServerSettingKey<String> { "override_device_name" }
 }
 
 public struct ServerInfo: Codable, Equatable {
-    public var name: String
+    public var name: String {
+        if let local = setting(for: .localName), !local.isEmpty {
+            return local
+        } else {
+            return remoteName
+        }
+    }
+
+    public var remoteName: String
     public var sortOrder: Int
     public var version: Version
     public var connection: ConnectionInfo
@@ -42,7 +51,7 @@ public struct ServerInfo: Codable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.name = try container.decode(String.self, forKey: .name)
+        self.remoteName = try container.decode(String.self, forKey: .name)
         self.sortOrder = try container.decode(Int.self, forKey: .sortOrder)
         self.connection = try container.decode(ConnectionInfo.self, forKey: .connectionInfo)
         self.token = try container.decode(TokenInfo.self, forKey: .tokenInfo)
@@ -52,7 +61,7 @@ public struct ServerInfo: Codable, Equatable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
+        try container.encode(remoteName, forKey: .name)
         try container.encode(sortOrder, forKey: .sortOrder)
         try container.encode(version, forKey: .version)
         try container.encode(connection, forKey: .connectionInfo)
@@ -66,7 +75,7 @@ public struct ServerInfo: Codable, Equatable {
         token: TokenInfo,
         version: Version
     ) {
-        self.name = name
+        self.remoteName = name
         self.sortOrder = Self.defaultSortOrder
         self.connection = connection
         self.token = token
@@ -97,7 +106,7 @@ public struct ServerInfo: Codable, Equatable {
             }
         }
 
-        return lhs.name == rhs.name
+        return lhs.remoteName == rhs.remoteName
             && lhs.connection == rhs.connection
             && lhs.token == rhs.token
             && equatable(lhs.settings) == equatable(rhs.settings)
@@ -174,7 +183,7 @@ public final class Server: Hashable, Comparable, CustomStringConvertible {
         } else if lhsSO > rhsSO {
             return false
         } else {
-            return lhs.info.name.localizedCaseInsensitiveCompare(rhs.info.name) == .orderedAscending
+            return lhs.info.remoteName.localizedCaseInsensitiveCompare(rhs.info.remoteName) == .orderedAscending
         }
     }
 
