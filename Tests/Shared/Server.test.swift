@@ -26,7 +26,7 @@ class ServerTests: XCTestCase {
                 identifier: "2",
                 getter: {
                     with(.fake()) {
-                        $0.name = "2"
+                        $0.remoteName = "2"
                         $0.sortOrder = 50
                     }
                 }, setter: {
@@ -37,7 +37,7 @@ class ServerTests: XCTestCase {
                 identifier: "3",
                 getter: {
                     with(.fake()) {
-                        $0.name = "1"
+                        $0.remoteName = "1"
                         $0.sortOrder = 50
                     }
                 }, setter: {
@@ -71,6 +71,24 @@ class ServerTests: XCTestCase {
         XCTAssertNotEqual(server_id1_1, server_id3)
         XCTAssertNotEqual(server_id1_2, server_id3)
         XCTAssertNotEqual(server_id2, server_id3)
+    }
+
+    func testLocalName() {
+        var serverInfo = ServerInfo.fake()
+        serverInfo.remoteName = "remote_name1"
+
+        let server = Server(identifier: "fake1", getter: { serverInfo }, setter: { serverInfo = $0 })
+
+        XCTAssertEqual(server.info.name, "remote_name1")
+
+        server.info.setSetting(value: "local_name1", for: .localName)
+        XCTAssertEqual(server.info.name, "local_name1")
+
+        server.info.setSetting(value: nil, for: .localName)
+        XCTAssertEqual(server.info.name, "remote_name1")
+
+        server.info.setSetting(value: "", for: .localName)
+        XCTAssertEqual(server.info.name, "remote_name1")
     }
 
     func testNotifyInfoChange() {

@@ -275,7 +275,7 @@ public class HomeAssistantAPI {
             server.update { server in
                 server.connection.cloudhookURL = config.CloudhookURL
                 server.connection.set(address: config.RemoteUIURL, for: .remoteUI)
-                server.name = config.LocationName ?? ServerInfo.defaultName
+                server.remoteName = config.LocationName ?? ServerInfo.defaultName
 
                 if let version = try? Version(hassVersion: config.Version) {
                     server.version = version

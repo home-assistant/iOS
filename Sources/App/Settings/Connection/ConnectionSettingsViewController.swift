@@ -36,13 +36,15 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let connection = Current.api(for: server).connection
 
-        form +++ Section { _ in
+        if Current.servers.all.count > 1 {
+            form +++ Section { _ in
 
-        } <<< ButtonRow {
-            $0.title = L10n.Settings.ConnectionSection.activateServer
-            $0.onCellSelection { [server] _, _ in
-                Current.sceneManager.webViewWindowControllerPromise.done {
-                    $0.open(server: server)
+            } <<< ButtonRow {
+                $0.title = L10n.Settings.ConnectionSection.activateServer
+                $0.onCellSelection { [server] _, _ in
+                    Current.sceneManager.webViewWindowControllerPromise.done {
+                        $0.open(server: server)
+                    }
                 }
             }
         }
@@ -52,9 +54,22 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 $0.tag = "status"
             }
 
-            <<< LabelRow("locationName") {
+            <<< TextRow("locationName") {
                 $0.title = L10n.Settings.StatusSection.LocationNameRow.title
-                $0.displayValueFor = { [server] _ in server.info.name }
+                $0.placeholder = server.info.remoteName
+                $0.value = server.info.setting(for: .localName)
+
+                var timer: Timer?
+
+                $0.onChange { [server] row in
+                    if let timer = timer, timer.isValid {
+                        timer.fireDate = Current.date().addingTimeInterval(1.0)
+                    } else {
+                        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false, block: { _ in
+                            server.info.setSetting(value: row.value, for: .localName)
+                        })
+                    }
+                }
             }
 
             <<< LabelRow("version") {
