@@ -7,7 +7,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     public enum PositionOffset: Int {
         case manual = 0
         case synced = 5000
-        case scene = 10000
+        case scene = 1_000_000
     }
 
     @objc public dynamic var ID: String = UUID().uuidString
@@ -103,13 +103,13 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         serverIdentifier >>> map["serverIdentifier"]
     }
 
-    static func didUpdate(objects: [Action], realm: Realm) {
+    static func didUpdate(objects: [Action], server: Server, realm: Realm) {
         for (idx, object) in objects.enumerated() {
-            object.Position = PositionOffset.synced.rawValue + idx
+            object.Position = PositionOffset.synced.rawValue + server.info.sortOrder + idx
         }
     }
 
-    static func willDelete(objects: [Action], realm: Realm) {}
+    static func willDelete(objects: [Action], server: Server, realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "isServerControlled == YES")

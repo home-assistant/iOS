@@ -5,8 +5,8 @@ import RealmSwift
 protocol UpdatableModel {
     associatedtype Source: UpdatableModelSource
 
-    static func didUpdate(objects: [Self], realm: Realm)
-    static func willDelete(objects: [Self], realm: Realm)
+    static func didUpdate(objects: [Self], server: Server, realm: Realm)
+    static func willDelete(objects: [Self], server: Server, realm: Realm)
 
     static func primaryKey() -> String? // from realm, we use
     static func serverIdentifierKey() -> String

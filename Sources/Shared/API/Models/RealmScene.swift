@@ -53,7 +53,7 @@ public final class RLMScene: Object, UpdatableModel {
         #keyPath(serverIdentifier)
     }
 
-    static func didUpdate(objects: [RLMScene], realm: Realm) {
+    static func didUpdate(objects: [RLMScene], server: Server, realm: Realm) {
         let sorted = objects.sorted { lhs, rhs in
             let lhsText = lhs.name ?? lhs.identifier
             let rhsText = rhs.name ?? rhs.identifier
@@ -61,11 +61,11 @@ public final class RLMScene: Object, UpdatableModel {
         }
 
         for (idx, object) in sorted.enumerated() {
-            object.position = Action.PositionOffset.scene.rawValue + idx
+            object.position = Action.PositionOffset.scene.rawValue + server.info.sortOrder + idx
         }
     }
 
-    static func willDelete(objects: [RLMScene], realm: Realm) {
+    static func willDelete(objects: [RLMScene], server: Server, realm: Realm) {
         // also delete our paired actions if they exist
         let actions = realm.objects(Action.self).filter("ID in %@", objects.map(\.identifier))
         Current.Log.info("deleting actions \(Array(actions.map(\.ID)))")
@@ -109,6 +109,7 @@ public final class RLMScene: Object, UpdatableModel {
         } else {
             precondition(action.ID == identifier)
         }
+        action.serverIdentifier = serverIdentifier
         action.IconName = (icon ?? "mdi:alert").normalizingIconString
         action.Position = position
         action.Name = name ?? identifier
