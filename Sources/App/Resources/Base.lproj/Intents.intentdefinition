@@ -40,7 +40,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call ${service} on ${server} with data</string>
+					<string>Call ${service} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>7boBzr</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -481,7 +481,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fire ${eventName} on ${server} with data</string>
+					<string>Fire ${eventName} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>HCM8Oe</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -754,7 +754,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Get camera image of ${cameraID} from ${server}</string>
+					<string>Get image of ${cameraID}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>RCQAlr</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -993,7 +993,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Render the provided template on ${server}</string>
+					<string>Render the provided template</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>Xq7UuD</string>
 				</dict>
