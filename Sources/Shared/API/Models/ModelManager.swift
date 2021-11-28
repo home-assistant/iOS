@@ -295,8 +295,8 @@ public class ModelManager: ServerObserver {
             }
 
             realm.add(updatedModels, update: .all)
-            UM.didUpdate(objects: updatedModels, realm: realm)
-            UM.willDelete(objects: Array(deleteObjects), realm: realm)
+            UM.didUpdate(objects: updatedModels, server: server, realm: realm)
+            UM.willDelete(objects: Array(deleteObjects), server: server, realm: realm)
             realm.delete(deleteObjects)
         }
     }

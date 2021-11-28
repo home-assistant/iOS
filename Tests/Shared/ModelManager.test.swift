@@ -689,11 +689,11 @@ final class TestStoreModel1: Object, UpdatableModel {
 
     static var lastDidUpdates: [[TestStoreModel1]] = []
     static var lastWillDeleteIds: [[String]] = []
-    static func didUpdate(objects: [TestStoreModel1], realm: Realm) {
+    static func didUpdate(objects: [TestStoreModel1], server: Server, realm: Realm) {
         lastDidUpdates.append(objects)
     }
 
-    static func willDelete(objects: [TestStoreModel1], realm: Realm) {
+    static func willDelete(objects: [TestStoreModel1], server: Server, realm: Realm) {
         lastWillDeleteIds.append(objects.compactMap(\.identifier))
     }
 
@@ -741,9 +741,9 @@ struct TestStoreSource1: UpdatableModelSource {
 }
 
 final class TestStoreModel2: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel2], realm: Realm) {}
+    static func didUpdate(objects: [TestStoreModel2], server: Server, realm: Realm) {}
 
-    static func willDelete(objects: [TestStoreModel2], realm: Realm) {}
+    static func willDelete(objects: [TestStoreModel2], server: Server, realm: Realm) {}
 
     @objc dynamic var identifier: String?
     @objc dynamic var serverIdentifier: String?
@@ -778,9 +778,9 @@ struct TestStoreSource2: UpdatableModelSource {
 }
 
 final class TestStoreModel3: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel3], realm: Realm) {}
+    static func didUpdate(objects: [TestStoreModel3], server: Server, realm: Realm) {}
 
-    static func willDelete(objects: [TestStoreModel3], realm: Realm) {}
+    static func willDelete(objects: [TestStoreModel3], server: Server, realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "value > 5")
