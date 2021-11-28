@@ -24,7 +24,7 @@ class ServerManagerTests: XCTestCase {
         }
 
         servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain)
-        servers.setup(environment: Current)
+        servers.setup()
     }
 
     func testInitiallyEmptyAndGainingServersWithCaching() throws {
@@ -394,7 +394,7 @@ class ServerManagerTests: XCTestCase {
         Current.settingsStore.prefs.set(locationName, forKey: "location_name")
 
         servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain)
-        servers.setup(environment: Current)
+        servers.setup()
 
         return .init(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
     }

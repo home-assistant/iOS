@@ -150,8 +150,8 @@ internal final class ServerManagerImpl: ServerManager {
         self.decoder = decoder
     }
 
-    func setup(environment: AppEnvironment) {
-        cache.restrictCaching = environment.isAppExtension
+    func setup() {
+        cache.restrictCaching = Current.isAppExtension
 
         // load to cache immediately
         _ = all
@@ -159,7 +159,7 @@ internal final class ServerManagerImpl: ServerManager {
         do {
             try migrateIfNeeded()
         } catch {
-            environment.Log.error("failed to load historic server: \(error)")
+            Current.Log.error("failed to load historic server: \(error)")
         }
     }
 
@@ -273,9 +273,11 @@ internal final class ServerManagerImpl: ServerManager {
     private func migrateIfNeeded() throws {
         guard all.isEmpty else { return }
 
-        let userDefaults = UserDefaults(suiteName: Constants.AppGroupID)!
+        let userDefaults = Current.settingsStore.prefs
         if let tokenInfoData = try historicKeychain.getData("tokenInfo"),
            let connectionInfoData = try historicKeychain.getData("connectionInfo") {
+            Current.Log.info("migrating historic server")
+
             // UserDefaults may be missing due to delete/reinstall, so fill in values for those if needed
             let versionString = userDefaults.string(forKey: "version") ?? "2021.1"
             let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
@@ -293,6 +295,8 @@ internal final class ServerManagerImpl: ServerManager {
 
             add(identifier: Server.historicId, serverInfo: serverInfo)
             try historicKeychain.removeAll()
+        } else {
+            Current.Log.info("no historic server found to import")
         }
     }
 
@@ -348,18 +352,31 @@ private extension ServerManagerKeychain {
     }
 
     func getServerInfo(key: String, decoder: JSONDecoder) -> ServerInfo? {
-        guard let data = try? getData(key) else {
+        do {
+            guard let data = try getData(key) else {
+                return nil
+            }
+
+            return try decoder.decode(ServerInfo.self, from: data)
+        } catch {
+            Current.Log.error("failed to get server info for \(key): \(error)")
             return nil
         }
-
-        return try? decoder.decode(ServerInfo.self, from: data)
     }
 
     func set(serverInfo: ServerInfo, key: String, encoder: JSONEncoder) {
-        try? set(encoder.encode(serverInfo), key: key)
+        do {
+            try set(encoder.encode(serverInfo), key: key)
+        } catch {
+            Current.Log.error("failed to set server info for \(key): \(error)")
+        }
     }
 
     func deleteServerInfo(key: String) {
-        try? remove(key)
+        do {
+            try remove(key)
+        } catch {
+            Current.Log.error("failed to get delete \(key): \(error)")
+        }
     }
 }

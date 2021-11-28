@@ -27,7 +27,25 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     }
 }
 
-public var Current = AppEnvironment()
+private var underlyingWasSetUp: UInt32 = 0
+private var underlyingCurrent = AppEnvironment()
+
+public var Current: AppEnvironment {
+    get {
+        let result = underlyingCurrent
+        if OSAtomicTestAndSetBarrier(0, &underlyingWasSetUp) == false {
+            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
+            // reentrant, which is a requirement for touching things like Log but also touching more unexpected
+            // things like accessing any L10n helper value, which funnels through Current as well.
+            result.setup()
+        }
+        return result
+    }
+    set {
+        underlyingCurrent = newValue
+    }
+}
+
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
 public class AppEnvironment {
@@ -54,19 +72,17 @@ public class AppEnvironment {
             case .error: Current.Log.error(string)
             }
         }
+    }
 
-        let crashReporter = CrashReporterImpl()
-        self.crashReporter = crashReporter
+    internal func setup() {
+        _ = Current // just to make sure we don't crash for this case
 
-        let servers = ServerManagerImpl()
-        self.servers = servers
-
-        crashReporter.setup(environment: self)
-        servers.setup(environment: self)
+        (crashReporter as? CrashReporterImpl)?.setup()
+        (servers as? ServerManagerImpl)?.setup()
     }
 
     /// Crash reporting and related metadata gathering
-    public var crashReporter: CrashReporter
+    public var crashReporter: CrashReporter = CrashReporterImpl()
 
     /// Provides URLs usable for storing data.
     public var date: () -> Date = Date.init
@@ -84,7 +100,7 @@ public class AppEnvironment {
 
     public var style: Style = .init()
 
-    public var servers: ServerManager
+    public var servers: ServerManager = ServerManagerImpl()
 
     public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
 

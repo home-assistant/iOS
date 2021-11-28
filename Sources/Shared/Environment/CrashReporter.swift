@@ -8,8 +8,8 @@ public protocol CrashReporter {
 }
 
 public class CrashReporterImpl: CrashReporter {
-    internal func setup(environment: AppEnvironment) {
-        guard environment.settingsStore.privacy.crashes else {
+    internal func setup() {
+        guard Current.settingsStore.privacy.crashes else {
             return
         }
 
@@ -17,14 +17,14 @@ public class CrashReporterImpl: CrashReporter {
             return
         }
 
-        environment.Log.add(destination: with(SentryLogDestination()) {
+        Current.Log.add(destination: with(SentryLogDestination()) {
             $0.outputLevel = .warning
         })
 
         SentrySDK.start { options in
             options.dsn = "https://762c198b86594fa2b6bedf87028db34d@o427061.ingest.sentry.io/5372775"
-            options.debug = environment.appConfiguration == .Debug
-            options.enableAutoSessionTracking = environment.settingsStore.privacy.analytics
+            options.debug = Current.appConfiguration == .Debug
+            options.enableAutoSessionTracking = Current.settingsStore.privacy.analytics
             options.maxBreadcrumbs = 1000
 
             var integrations = type(of: options).defaultIntegrations()
@@ -38,11 +38,11 @@ public class CrashReporterImpl: CrashReporter {
                 "SentryCrashIntegration",
             ])
 
-            if !environment.settingsStore.privacy.crashes {
+            if !Current.settingsStore.privacy.crashes {
                 integrations.removeAll(where: { crashesIntegrations.contains($0) })
             }
 
-            if !environment.settingsStore.privacy.analytics {
+            if !Current.settingsStore.privacy.analytics {
                 integrations.removeAll(where: { analyticsIntegrations.contains($0) })
             }
 
