@@ -278,10 +278,11 @@ public class SettingsStore {
         get {
             let server: Server?
 
-            if let serverIdentifier = prefs.string(forKey: "menuItemTemplate-server") {
-                server = Current.servers.server(forServerIdentifier: serverIdentifier)
+            if let serverIdentifier = prefs.string(forKey: "menuItemTemplate-server"),
+               let configured = Current.servers.server(forServerIdentifier: serverIdentifier) {
+                server = configured
             } else {
-                // backwards compatibility to before servers
+                // backwards compatibility to before servers, or if the server was deleted
                 server = Current.servers.all.first
             }
 
