@@ -10,7 +10,7 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.3.4)
-  - Firebase (8.8.0)
+  - Firebase (8.9.1)
   - HAKit (0.3):
     - HAKit/Core (= 0.3)
   - HAKit/Core (0.3):
@@ -50,15 +50,15 @@ PODS:
   - PromiseKit/UIKit (6.15.3):
     - PromiseKit/CorePromise
   - ReachabilitySwift (5.0.0)
-  - RealmSwift (10.17.0)
-  - Sentry (7.4.5):
-    - Sentry/Core (= 7.4.5)
-  - Sentry/Core (7.4.5)
+  - RealmSwift (10.20.0)
+  - Sentry (7.5.3):
+    - Sentry/Core (= 7.5.3)
+  - Sentry/Core (7.5.3)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.48.16)
+  - SwiftFormat/CLI (0.48.18)
   - SwiftGen (6.5.1)
-  - SwiftLint (0.44.0)
+  - SwiftLint (0.45.0)
   - SwiftMessages (9.0.5):
     - SwiftMessages/App (= 9.0.5)
   - SwiftMessages/App (9.0.5)
@@ -79,7 +79,7 @@ DEPENDENCIES:
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - Eureka (from `https://github.com/zacwest/Eureka`, branch `fix-xcode-13-compile-error`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - Firebase (from `Configuration/Podspecs/Firebase.podspec.json`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
@@ -140,8 +140,8 @@ EXTERNAL SOURCES:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :branch: fix-xcode-13-compile-error
-    :git: https://github.com/zacwest/Eureka
+    :branch: master
+    :git: https://github.com/xmartlabs/Eureka
   Firebase:
     :podspec: Configuration/Podspecs/Firebase.podspec.json
   HAKit:
@@ -176,8 +176,8 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :commit: 70e222063929260cc9425104e6c6f042a3ff74a0
-    :git: https://github.com/zacwest/Eureka
+    :commit: 94475e83a6965320283b8b39986e7481ad675ab9
+    :git: https://github.com/xmartlabs/Eureka
   HAKit:
     :commit: 0e22e80ee8626e5611f00db08f80ef9150b85345
     :git: https://github.com/home-assistant/HAKit.git
@@ -185,7 +185,7 @@ CHECKOUT OPTIONS:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
-    :commit: 1d51e8eb8a99638166aea863e7a71d568b5a06e6
+    :commit: 444e390a84e2fed29cf7f3bd6dfa743e9ff476ea
     :git: https://github.com/jedisct1/swift-sodium.git
   Starscream:
     :commit: 35db1249f572e81c480f7159051194f688c16825
@@ -202,7 +202,7 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: 60cf058f86a8fb3ed26165ba5292b9850361b0a6
-  Firebase: d28e7668bcefef272a35510ebb51ac18518bdb99
+  Firebase: 7dc46d2afc66872667798152a73bc367a425f9dd
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
@@ -212,13 +212,13 @@ SPEC CHECKSUMS:
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  RealmSwift: 594f7ae166568436a36d0a3c03d9b0ea29bd8528
-  Sentry: 67b79d8af14a9113ef28a4d798cdc01a1c9fb696
+  RealmSwift: 4bde4b661f7a58d334e91b3d668b9c9234c4d99b
+  Sentry: 10b0d88cecc4f35d66a3bce9d70d2810eb049aed
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: b8a60419c4a8680f67faa80e2da710fd9dc85ca5
+  SwiftFormat: 7dd2b33a0a3d61095b61c911b6d89ff962ae695c
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
-  SwiftLint: e96c0a8c770c7ebbc4d36c55baf9096bb65c4584
+  SwiftLint: e5c7f1fba68eccfc51509d5b2ce1699f5502e0c7
   SwiftMessages: 9cca50659fa22bb523b4dd2a958d4442e843a354
   UIColor_Hex_Swift: 31cd3e47440f07a20d2503a36bb0437a445b3c29
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
@@ -226,6 +226,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: c061eb96433303857c272fc9b4e26a5340fb68ba
+PODFILE CHECKSUM: a5dd5941845bb1cc6bf2d403eb7a229d25e7c7d8
 
 COCOAPODS: 1.10.2
