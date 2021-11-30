@@ -37,8 +37,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         let connection = Current.api(for: server).connection
 
         if Current.servers.all.count > 1 {
-            form +++ Section { _ in
-
+            form +++ Section(footer: L10n.Settings.ConnectionSection.activateSwipeHint) {
+                _ in
             } <<< ButtonRow {
                 $0.title = L10n.Settings.ConnectionSection.activateServer
                 $0.onCellSelection { [server] _, _ in

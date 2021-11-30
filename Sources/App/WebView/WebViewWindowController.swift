@@ -1,4 +1,5 @@
 import Foundation
+import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
@@ -14,6 +15,8 @@ class WebViewWindowController {
     var restorationActivity: NSUserActivity?
 
     var webViewControllerPromise: Guarantee<WebViewController>
+
+    private var cachedWebViewControllers = [Identifier<Server>: WebViewController]()
 
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
@@ -44,6 +47,8 @@ class WebViewWindowController {
             } else {
                 webViewControllerSeal(newWebViewController)
             }
+
+            update(webViewController: newWebViewController)
         } else if webViewControllerPromise.isFulfilled {
             // replacing one, so set up a new promise if necessary
             (webViewControllerPromise, webViewControllerSeal) = Guarantee<WebViewController>.pending()
@@ -130,10 +135,12 @@ class WebViewWindowController {
                 return .value(controller)
             }
 
+            cachedWebViewControllers[controller.server.identifier] = controller
+
             let (promise, resolver) = Guarantee<WebViewController>.pending()
 
             let perform = {
-                let newController = WebViewController(server: server)
+                let newController = cachedWebViewControllers[server.identifier] ?? WebViewController(server: server)
                 updateRootViewController(to: webViewNavigationController(rootViewController: newController))
                 resolver(newController)
             }
@@ -259,6 +266,56 @@ class WebViewWindowController {
             triggerOpen()
         }
     }
+
+    private lazy var serverChangeGestures: [UIGestureRecognizer] = {
+        [.left, .right].map { (direction: UISwipeGestureRecognizer.Direction) in
+            with(UISwipeGestureRecognizer()) {
+                $0.numberOfTouchesRequired = 2
+                $0.direction = direction
+                $0.addTarget(self, action: #selector(serverChangeGestureDidChange(_:)))
+            }
+        }
+    }()
+
+    private func update(webViewController: WebViewController) {
+        for gesture in serverChangeGestures {
+            webViewController.view.addGestureRecognizer(gesture)
+        }
+    }
+
+    @objc private func serverChangeGestureDidChange(_ gesture: UISwipeGestureRecognizer) {
+        guard gesture.state == .ended else {
+            return
+        }
+
+        let servers = Current.servers.all
+
+        guard servers.count > 1,
+              let current = webViewControllerPromise.value?.server,
+              let startIndex = servers.firstIndex(of: current) else {
+            return
+        }
+
+        // swiping "right" visually goes left, which is down in index
+        let nextIndex = gesture.direction == .right ? startIndex - 1 : startIndex + 1
+
+        let server: Server
+
+        if nextIndex < servers.startIndex {
+            server = servers[servers.endIndex - 1]
+        } else if nextIndex >= servers.endIndex {
+            server = servers[servers.startIndex]
+        } else {
+            server = servers[nextIndex]
+        }
+
+        open(server: server).done { controller in
+            let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
+            hud.mode = .text
+            hud.label.text = server.info.name
+            hud.hide(animated: true, afterDelay: 1.0)
+        }
+    }
 }
 
 extension WebViewWindowController: OnboardingStateObserver {
@@ -268,6 +325,8 @@ extension WebViewWindowController: OnboardingStateObserver {
             guard !(window.rootViewController is OnboardingNavigationViewController) else {
                 return
             }
+
+            cachedWebViewControllers.removeAll()
 
             if Current.servers.all.isEmpty {
                 let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
