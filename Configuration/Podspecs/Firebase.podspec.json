@@ -1,6 +1,6 @@
 {
   "name": "Firebase",
-  "version": "8.8.0",
+  "version": "8.9.1",
   "summary": "Firebase",
   "description": "Simplify your app development, grow your user base, and monetize more effectively with Firebase.",
   "homepage": "https://firebase.google.com",
@@ -10,7 +10,7 @@
   },
   "authors": "Google, Inc.",
   "source": {
-    "http": "https://github.com/firebase/firebase-ios-sdk/releases/download/8.8.0/Firebase.zip"
+    "http": "https://github.com/firebase/firebase-ios-sdk/releases/download/v8.9.1/Firebase.zip"
   },
   "preserve_paths": [
     "Firebase/NOTICES",

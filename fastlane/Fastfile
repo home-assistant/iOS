@@ -33,6 +33,8 @@ private_lane :setup do
   ENV['FASTLANE_ITC_TEAM_ID'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID']
   ENV['SIGH_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
   ENV['SIGH_PROFILE_PATHS'] = '../Configuration/Provisioning'
+
+  app_store_connect_api_key if ENV['APP_STORE_CONNECT_API_KEY_KEY']
 end
 
 lane :lint do
