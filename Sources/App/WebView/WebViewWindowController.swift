@@ -1,8 +1,8 @@
 import Foundation
+import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
-import MBProgressHUD
 
 @available(iOS, deprecated: 13.0)
 enum StateRestorationKey: String {
@@ -293,7 +293,7 @@ class WebViewWindowController {
         guard servers.count > 1,
               let current = webViewControllerPromise.value?.server,
               let startIndex = servers.firstIndex(of: current) else {
-              return
+            return
         }
 
         // swiping "right" visually goes left, which is down in index
