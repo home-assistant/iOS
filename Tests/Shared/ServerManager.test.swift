@@ -449,6 +449,22 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNotNil(servers.server(for: "existing"))
         XCTAssertNil(servers.server(for: Server.historicId))
     }
+
+    func testUpdateAfterDeleteDoesntPersist() throws {
+        try setupRegular()
+
+        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
+        servers.remove(identifier: server1.identifier)
+
+        server1.info.remoteName = "updated"
+        XCTAssertTrue(keychain.data.isEmpty)
+
+        let newInfo = with(server1.info) {
+            $0.remoteName = "new_name1"
+        }
+        servers.add(identifier: server1.identifier, serverInfo: newInfo)
+        XCTAssertEqual(keychain.data[server1.identifier.rawValue], try encoder.encode(newInfo))
+    }
 }
 
 class FakeServerManagerKeychain: ServerManagerKeychain {
