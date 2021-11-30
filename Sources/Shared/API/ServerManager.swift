@@ -123,6 +123,8 @@ internal final class ServerManagerImpl: ServerManager {
     private var encoder: JSONEncoder
     private var decoder: JSONDecoder
 
+    private var deletedServers = Set<Identifier<Server>>()
+
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
 
     public func add(observer: ServerObserver) {
@@ -183,6 +185,8 @@ internal final class ServerManagerImpl: ServerManager {
 
     @discardableResult
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
+        deletedServers.remove(identifier)
+
         let setValue = with(serverInfo) {
             if $0.sortOrder == ServerInfo.defaultSortOrder {
                 $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
@@ -198,6 +202,7 @@ internal final class ServerManagerImpl: ServerManager {
     }
 
     public func remove(identifier: Identifier<Server>) {
+        deletedServers.insert(identifier)
         keychain.deleteServerInfo(key: identifier.keychainKey)
 
         cache.server[identifier] = nil
@@ -206,6 +211,7 @@ internal final class ServerManagerImpl: ServerManager {
     }
 
     public func removeAll() {
+        deletedServers.formUnion(Set(all.map(\.identifier)))
         cache.reset()
         _ = try? keychain.removeAll()
         notify()
@@ -246,6 +252,11 @@ internal final class ServerManagerImpl: ServerManager {
             }
         }, setter: { [weak self] baseServerInfo in
             guard let self = self else { return }
+
+            guard !self.deletedServers.contains(identifier) else {
+                Current.Log.verbose("ignoring update to deleted server \(identifier)")
+                return
+            }
 
             var serverInfo = baseServerInfo
 
