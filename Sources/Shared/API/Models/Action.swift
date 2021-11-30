@@ -67,7 +67,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
              \Action.Text:
             return Scene == nil
         case \Action.serverIdentifier:
-            return !isServerControlled
+            return Scene == nil
         default:
             return true
         }
