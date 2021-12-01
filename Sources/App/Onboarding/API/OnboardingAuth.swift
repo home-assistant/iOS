@@ -28,19 +28,11 @@ class OnboardingAuth {
     ]
 
     func authenticate(
-        to instance: DiscoveredHomeAssistant,
+        to startInstance: DiscoveredHomeAssistant,
         sender: UIViewController
     ) -> Promise<Server> {
-        firstly { () -> Promise<String> in
-            let authDetails = try OnboardingAuthDetails(baseURL: instance.internalOrExternalURL)
-
-            return firstly {
-                performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, sender: sender)
-            }.then { [self] in
-                login.open(authDetails: authDetails, sender: sender)
-            }
-        }.then { [self] code in
-            configuredAPI(instance: instance, code: code)
+        firstly {
+            connect(to: startInstance, sender: sender)
         }.then { [self] api -> Promise<Server> in
             func steps(_ steps: OnboardingAuthStepPoint...) -> Promise<Void> {
                 var promise: Promise<Void> = .value(())
@@ -108,6 +100,50 @@ class OnboardingAuth {
                 return nil
             }
         })
+    }
+
+    private func connect(
+        to baseInstance: DiscoveredHomeAssistant,
+        sender: UIViewController
+    ) -> Promise<HomeAssistantAPI> {
+        // we prefer internal URL first, if it's available
+        var instances = [(URL, DiscoveredHomeAssistant)]()
+
+        if let internalURL = baseInstance.internalURL {
+            instances.append((internalURL, baseInstance))
+        }
+
+        if let externalURL = baseInstance.externalURL {
+            instances.append((externalURL, with(baseInstance) {
+                $0.internalURL = nil
+            }))
+        }
+
+        var promise: Promise<HomeAssistantAPI> = .init(error: OnboardingAuthError(kind: .invalidURL))
+
+        for (idx, (url, instance)) in instances.enumerated() {
+            promise = promise.recover { originalError -> Promise<HomeAssistantAPI> in
+                let authDetails = try OnboardingAuthDetails(baseURL: url)
+
+                return firstly { [self] in
+                    performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, sender: sender)
+                }.then { [self] in
+                    login.open(authDetails: authDetails, sender: sender)
+                }.then { [self] code in
+                    configuredAPI(instance: instance, code: code)
+                }.recover { newError -> Promise<HomeAssistantAPI> in
+                    if idx == 0 {
+                        // we're the first/internal url, so our error should break the placeholder one
+                        throw newError
+                    } else {
+                        // preserve the error we got for the internal url
+                        throw originalError
+                    }
+                }
+            }
+        }
+
+        return promise
     }
 
     private func configuredAPI(
