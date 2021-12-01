@@ -270,7 +270,7 @@ class WebViewWindowController {
     private lazy var serverChangeGestures: [UIGestureRecognizer] = {
         [.left, .right].map { (direction: UISwipeGestureRecognizer.Direction) in
             with(UISwipeGestureRecognizer()) {
-                $0.numberOfTouchesRequired = 2
+                $0.numberOfTouchesRequired = 3
                 $0.direction = direction
                 $0.addTarget(self, action: #selector(serverChangeGestureDidChange(_:)))
             }
@@ -311,6 +311,7 @@ class WebViewWindowController {
 
         open(server: server).done { controller in
             let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
+            hud.isUserInteractionEnabled = false
             hud.mode = .text
             hud.label.text = server.info.name
             hud.hide(animated: true, afterDelay: 1.0)

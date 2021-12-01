@@ -4,6 +4,7 @@ import AVKit
 import CoreLocation
 import HAKit
 import KeychainAccess
+import MBProgressHUD
 import PromiseKit
 import Shared
 import SwiftMessages
@@ -147,6 +148,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         webView = WKWebView(frame: view!.frame, configuration: config)
         webView.isOpaque = false
         view!.addSubview(webView)
+
+        for direction: UISwipeGestureRecognizer.Direction in [.left, .right] {
+            webView.addGestureRecognizer(with(UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))) {
+                $0.numberOfTouchesRequired = 2
+                $0.direction = direction
+            })
+        }
 
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self = self else { return }
@@ -592,6 +600,29 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 webView.load(URLRequest(url: webviewURL))
             }
         }
+    }
+
+    @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
+        let icon: MaterialDesignIcons
+
+        if gesture.direction == .left, webView.canGoForward {
+            _ = webView.goForward()
+            icon = .arrowRightIcon
+        } else if gesture.direction == .right, webView.canGoBack {
+            _ = webView.goBack()
+            icon = .arrowLeftIcon
+        } else {
+            // the returned WKNavigation doesn't appear to be nil/non-nil based on whether forward/back occurred
+            return
+        }
+
+        let hud = MBProgressHUD.showAdded(to: view, animated: true)
+        hud.isUserInteractionEnabled = false
+        hud.customView = with(IconImageView(frame: CGRect(x: 0, y: 0, width: 37, height: 37))) {
+            $0.iconDrawable = icon
+        }
+        hud.mode = .customView
+        hud.hide(animated: true, afterDelay: 1.0)
     }
 
     @objc private func updateSensors() {
