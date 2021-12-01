@@ -270,7 +270,7 @@ class WebViewWindowController {
     private lazy var serverChangeGestures: [UIGestureRecognizer] = {
         [.left, .right].map { (direction: UISwipeGestureRecognizer.Direction) in
             with(UISwipeGestureRecognizer()) {
-                $0.numberOfTouchesRequired = 2
+                $0.numberOfTouchesRequired = 3
                 $0.direction = direction
                 $0.addTarget(self, action: #selector(serverChangeGestureDidChange(_:)))
             }
