@@ -194,6 +194,8 @@
 "off_label" = "Вимкнено";
 "ok_label" = "ОК";
 "on_label" = "Увімкнено";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Підключення до %@";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.connection_error.title" = "Failed to Connect";
@@ -251,6 +253,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.active.setting.time_until_idle" = "Час до простою";
 "sensors.geocoded_location.setting.use_zones" = "Використовувати назву зони";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "При підключенні через хмару зовнішня URL-адреса не використовуватиметься. Вам не потрібно налаштовувати її, якщо ви не будете користуватись віддаленим доступом.";

@@ -44,7 +44,7 @@
 "Q2Qp4a" = "Action";
 "QVD2lM" = "Service Data";
 "QmGpOH" = "Error";
-"RCQAlr" = "Get Camera Image from ${cameraID}";
+"RCQAlr" = "Get image of ${cameraID}";
 "RMQY3r" = "Send location to Home Assistant";
 "RsOw3P" = "Successfully rendered template";
 "T06Fka" = "Open a page in the frontend";

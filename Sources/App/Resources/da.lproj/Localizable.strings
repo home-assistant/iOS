@@ -194,6 +194,8 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "off_label" = "Fra";
 "ok_label" = "OK";
 "on_label" = "Til";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Opretter forbindelse til %@";
 "onboarding.connection_error.more_info_button" = "Mere information";
 "onboarding.connection_error.title" = "Kunne ikke oprette forbindelse";
@@ -251,6 +253,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Brug zonenavn";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Tilføj server";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Når du opretter forbindelse via Cloud, bruges den eksterne webadresse ikke. Du behøver ikke at konfigurere en, medmindre du vil deaktivere Cloud.";

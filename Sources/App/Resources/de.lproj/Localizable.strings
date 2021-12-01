@@ -194,6 +194,8 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "off_label" = "Aus";
 "ok_label" = "OK";
 "on_label" = "An";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Verbinde zu %@";
 "onboarding.connection_error.more_info_button" = "Mehr Informationen";
 "onboarding.connection_error.title" = "Verbindung fehlgeschlagen";
@@ -251,6 +253,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "sensors.active.setting.time_until_idle" = "Zeit bis zum Leerlauf";
 "sensors.geocoded_location.setting.use_zones" = "Verwenden Sie den Zonennamen";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Server hinzufügen";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine einrichten, außer du möchtest die Cloud deaktivieren.";

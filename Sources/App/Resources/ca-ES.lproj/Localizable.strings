@@ -194,6 +194,8 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "off_label" = "Desactivat";
 "ok_label" = "D'acord";
 "on_label" = "Activat";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Connectant a %@";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.connection_error.title" = "Failed to Connect";
@@ -251,6 +253,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.active.setting.time_until_idle" = "Temps fins que estigui inactiu";
 "sensors.geocoded_location.setting.use_zones" = "Utilitza el nom de la zona";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Afegir Servidor";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Quan es connecti mitjançant el núvol, no s’utilitzarà la URL externa. No cal configurar-ne una tret que vulgueu desactivar el núvol.";

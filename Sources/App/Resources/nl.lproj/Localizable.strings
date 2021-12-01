@@ -194,6 +194,8 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "off_label" = "Uit";
 "ok_label" = "Oké";
 "on_label" = "Aan";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Verbinden met %@";
 "onboarding.connection_error.more_info_button" = "Meer informatie";
 "onboarding.connection_error.title" = "Kan geen verbinding maken";
@@ -251,6 +253,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "sensors.active.setting.time_until_idle" = "Tijd tot inactief";
 "sensors.geocoded_location.setting.use_zones" = "Gebruik tijdzone naam";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Server toevoegen";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Als u verbinding maakt via Cloud, wordt de externe URL niet gebruikt. U hoeft er geen te configureren, tenzij u Cloud wilt uitschakelen.";
