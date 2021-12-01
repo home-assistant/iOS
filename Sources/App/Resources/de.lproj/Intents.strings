@@ -44,7 +44,7 @@
 "Q2Qp4a" = "Action";
 "QVD2lM" = "Service Data";
 "QmGpOH" = "Error";
-"RCQAlr" = "Get Camera Image from ${cameraID}";
+"RCQAlr" = "Get image of ${cameraID}";
 "RMQY3r" = "Send location to Home Assistant";
 "RsOw3P" = "Successfully rendered template";
 "T06Fka" = "Öffnen Sie eine Seite im Frontend";
@@ -88,7 +88,7 @@
 "jWGtvO" = "There are ${count} options matching ‘${server}’.";
 "jtqxOg" = "Nur zur Bestätigung, du möchtest '${action}' ausführen?";
 "kGB23u" = "Aktion ausführen";
-"l2coEc" = "Which server?";
+"l2coEc" = "Welcher Server?";
 "lGqSSG" = "Aktualisierung der Sensoren fehlgeschlagen.";
 "lNmaCR" = "Vorlage";
 "lxHlyQ" = "Fire Event";
@@ -110,7 +110,7 @@
 "r6LXFe" = "Fehlgeschlagen";
 "rFSNpu" = "Done";
 "rOlW1x" = "Welchen Standort möchten Sie senden?";
-"rU3vhT" = "Server Identifier";
+"rU3vhT" = "Server ID";
 "sNFoWe" = "Welche Kamera?";
 "sQJAJS" = "Fehler";
 "sfDGvk" = "Vorlage gerendert";
@@ -119,7 +119,7 @@
 "vAIAF2" = "Send a sensor update to Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
-"xfXG6b" = "Which server?";
+"xfXG6b" = "Welcher Server?";
 "xhwpj4" = "Erledigt";
 "ypnPyU" = "Führe ${action} aus";
 "yyjTxO" = "Error";

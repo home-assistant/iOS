@@ -63,7 +63,7 @@
 "client_events.event_type.networkRequest" = "Network Request";
 "client_events.event_type.notification" = "Notification";
 "client_events.event_type.notification.title" = "Received a Push Notification: %@";
-"client_events.event_type.service_call" = "Service Call";
+"client_events.event_type.service_call" = "Pemanggilan Layanan";
 "client_events.event_type.unknown" = "Unknown";
 "client_events.view.clear" = "Clear";
 "client_events.view.clear_confirm.message" = "Ini tidak dapat diurungkan.";
@@ -173,7 +173,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notifications_configurator.action.rows.text_input_placeholder.title" = "Placeholder";
 "notifications_configurator.action.rows.title.title" = "Title";
 "notifications_configurator.action.text_input.title" = "Text Input";
-"notifications_configurator.category.example_call.title" = "Contoh Panggilan Layanan";
+"notifications_configurator.category.example_call.title" = "Contoh Pemanggilan Layanan";
 "notifications_configurator.category.navigation_bar.title" = "Category Configurator";
 "notifications_configurator.category.preview_notification.body" = "Ini adalah uji notifikasi untuk kategori notifikasi %@";
 "notifications_configurator.category.preview_notification.title" = "Uji notifikasi";
@@ -194,6 +194,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "off_label" = "Mati";
 "ok_label" = "OK";
 "on_label" = "Nyala";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Menghubungkan ke %@";
 "onboarding.connection_error.more_info_button" = "Info Lebih Lanjut";
 "onboarding.connection_error.title" = "Gagal Terhubung";
@@ -251,6 +253,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Gunakan Nama Zona";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Tambah Server";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Ketika terhubung lewat Cloud, URL Eksternal tidak akan digunakan. Anda tidak perlu mengonfigurasinya kecuali jika ingin menonaktifkan Cloud.";

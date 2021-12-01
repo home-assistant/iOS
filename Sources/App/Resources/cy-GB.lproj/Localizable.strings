@@ -194,6 +194,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "off_label" = "I ffwrdd";
 "ok_label" = "Iawn";
 "on_label" = "Ymlaen";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Cysylltu â %@";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.connection_error.title" = "Failed to Connect";
@@ -251,6 +253,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Defnyddio Enw Parth";
 "settings.connection_section.activate_server" = "Activate";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
