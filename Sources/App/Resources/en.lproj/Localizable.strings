@@ -194,6 +194,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "off_label" = "Off";
 "ok_label" = "OK";
 "on_label" = "On";
+"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
+"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
 "onboarding.connect.title" = "Connecting to %@";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.connection_error.title" = "Failed to Connect";
