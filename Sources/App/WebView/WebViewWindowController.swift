@@ -311,6 +311,7 @@ class WebViewWindowController {
 
         open(server: server).done { controller in
             let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
+            hud.isUserInteractionEnabled = false
             hud.mode = .text
             hud.label.text = server.info.name
             hud.hide(animated: true, afterDelay: 1.0)
