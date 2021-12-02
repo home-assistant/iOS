@@ -186,11 +186,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public mutating func webhookURL() -> URL {
-        if useCloud, let cloudURL = cloudhookURL {
-            return cloudURL
-        }
-
-        return activeURL().appendingPathComponent(webhookPath, isDirectory: false)
+        activeURL().appendingPathComponent(webhookPath, isDirectory: false)
     }
 
     public var webhookPath: String {

@@ -203,6 +203,9 @@ private extension ConnectionInfo {
             isLocalPushEnabled: true
         )
 
+        // default cloud to on
+        useCloud = true
+
         // if we have internal+external, we're on the internal network doing discovery
         // but we don't yet have location permission to know we're on an internal ssid
         if internalSSIDs == [] || internalSSIDs == nil,
