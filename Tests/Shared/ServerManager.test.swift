@@ -132,6 +132,19 @@ class ServerManagerTests: XCTestCase {
         }
         try XCTAssertNil(keychain.getData("fake1"))
 
+        expectingObserver {
+            // we just deleted it, so we re-add it to make sure _that_ works
+            let tempFake1 = with(info1) {
+                $0.connection.webhookID = "deleted_and_reset"
+            }
+            servers.add(identifier: "fake1", serverInfo: tempFake1)
+            XCTAssertEqual(servers.server(for: "fake1")?.info.connection.webhookID, "deleted_and_reset")
+        }
+
+        expectingObserver {
+            servers.remove(identifier: "fake1")
+        }
+
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(servers.all, [server2])
 

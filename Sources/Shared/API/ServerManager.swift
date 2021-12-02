@@ -96,6 +96,12 @@ private class ServerCache {
     var server: [Identifier<Server>: Server] = [:]
     var all: [Server]?
 
+    func remove(identifier: Identifier<Server>) {
+        info[identifier] = nil
+        server[identifier] = nil
+        all?.removeAll(where: { $0.identifier == identifier })
+    }
+
     func reset() {
         info = [:]
         server = [:]
@@ -205,8 +211,7 @@ internal final class ServerManagerImpl: ServerManager {
         deletedServers.insert(identifier)
         keychain.deleteServerInfo(key: identifier.keychainKey)
 
-        cache.server[identifier] = nil
-        cache.all = nil
+        cache.remove(identifier: identifier)
         notify()
     }
 
