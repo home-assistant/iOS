@@ -160,6 +160,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertNil(connectionInfo.address(for: .internal))
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
         XCTAssertNil(connectionInfo.overrideActiveURLType)
+        XCTAssertTrue(connectionInfo.useCloud)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
@@ -180,6 +181,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertNil(connectionInfo.address(for: .internal))
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
         XCTAssertNil(connectionInfo.overrideActiveURLType)
+        XCTAssertTrue(connectionInfo.useCloud)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
