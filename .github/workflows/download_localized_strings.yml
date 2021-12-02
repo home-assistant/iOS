@@ -45,6 +45,7 @@ jobs:
           git config --global user.name 'Home Assistant Bot'
           git config --global user.email 'hello@home-assistant.io'
           git add Sources/\*.strings
+          git add Sources/\*.swift
           git commit -m "Update Localized Strings" || true
           git checkout -- .
           git clean -xfd
