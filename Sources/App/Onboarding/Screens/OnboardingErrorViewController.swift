@@ -92,6 +92,11 @@ class OnboardingErrorViewController: UIViewController {
 
         stackView.addArrangedSubview(equalSpacers.next())
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
+            $0.setTitle(Current.Log.exportTitle, for: .normal)
+            $0.addTarget(self, action: #selector(exportTapped(_:)), for: .touchUpInside)
+            Current.style.onboardingButtonSecondary($0)
+        })
+        stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             $0.setTitle(L10n.Onboarding.ConnectionError.moreInfoButton, for: .normal)
             $0.isHidden = !(error is OnboardingAuthError)
             $0.addTarget(self, action: #selector(moreInfoTapped(_:)), for: .touchUpInside)
@@ -111,5 +116,11 @@ class OnboardingErrorViewController: UIViewController {
 
     @objc private func moreInfoTapped(_ sender: UIButton) {
         openURLInBrowser(documentationURL(for: error), self)
+    }
+
+    @objc private func exportTapped(_ sender: UIButton) {
+        Current.Log.export(from: self, sender: sender, openURLHandler: { url in
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        })
     }
 }
