@@ -731,6 +731,10 @@ public enum L10n {
         /// Client Certificate Authentication is not supported.
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.client_certificate.description") }
       }
+      public enum LocalNetworkPermission {
+        /// "Local Network" privacy permission may have been denied. You can change this in the system Settings app.
+        public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.local_network_permission.description") }
+      }
     }
     public enum DeviceNameCheck {
       public enum Error {
@@ -879,7 +883,7 @@ public enum L10n {
     public enum ConnectionSection {
       /// Activate
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
-      /// Quickly activate using a two-finger swipe left or right when viewing a server.
+      /// Quickly activate using a three-finger swipe left or right when viewing a server.
       public static var activateSwipeHint: String { return L10n.tr("Localizable", "settings.connection_section.activate_swipe_hint") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }

@@ -70,7 +70,24 @@ struct OnboardingAuthError: LocalizedError {
                 + "\n\n" + underlying.localizedDescription
         case let .sslUntrusted(underlying),
              let .other(underlying):
-            return underlying.localizedDescription
+            let extraInfo: String?
+
+            if let urlError = underlying as? URLError {
+                switch urlError.code {
+                case .notConnectedToInternet:
+                    extraInfo = L10n.Onboarding.ConnectionTestResult.LocalNetworkPermission.description
+                default:
+                    extraInfo = nil
+                }
+            } else {
+                extraInfo = nil
+            }
+
+            if let extraInfo = extraInfo {
+                return extraInfo + "\n\n" + underlying.localizedDescription
+            } else {
+                return underlying.localizedDescription
+            }
         }
     }
 
