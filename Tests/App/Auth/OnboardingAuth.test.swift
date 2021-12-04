@@ -128,7 +128,9 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertTrue(Current.servers.all.isEmpty)
     }
 
-    func testSuccessfulWithInternalAndExternalAndInternalSucceeds() throws {
+    func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithoutSSID() throws {
+        Current.connectivity.currentWiFiSSID = { nil }
+
         let result = auth()
         let server = try hang(result)
         // test api state
@@ -142,6 +144,28 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
         XCTAssertEqual(connectionInfo.overrideActiveURLType, .internal)
+
+        XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
+    }
+
+    func testSuccessfulWithInternalAndExternalAndInternalSucceedsWithSSID() throws {
+        Current.connectivity.currentWiFiSSID = { "unit_test" }
+        Current.connectivity.currentNetworkHardwareAddress = { "unit_test_addr" }
+
+        let result = auth()
+        let server = try hang(result)
+        // test api state
+        // add tests above to test negated api state
+
+        let tokenInfo = server.info.token
+        XCTAssertEqual(tokenInfo.accessToken, "access_token1")
+        XCTAssertEqual(tokenInfo.refreshToken, "refresh_token1")
+
+        let connectionInfo = server.info.connection
+        XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
+        XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
+        XCTAssertEqual(connectionInfo.internalSSIDs, ["unit_test"])
+        XCTAssertEqual(connectionInfo.internalHardwareAddresses, ["unit_test_addr"])
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
