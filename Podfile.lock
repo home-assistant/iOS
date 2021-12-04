@@ -179,7 +179,7 @@ CHECKOUT OPTIONS:
     :commit: 94475e83a6965320283b8b39986e7481ad675ab9
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :commit: 0e22e80ee8626e5611f00db08f80ef9150b85345
+    :commit: 8acdfc17884d3176ac995d89f563b54288594096
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9

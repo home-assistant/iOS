@@ -372,6 +372,84 @@ class ServerManagerTests: XCTestCase {
         )
     }
 
+    func testUpdateAfterDeleteDoesntPersist() throws {
+        try setupRegular()
+
+        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
+        servers.remove(identifier: server1.identifier)
+
+        server1.info.remoteName = "updated"
+        XCTAssertTrue(keychain.data.isEmpty)
+
+        let newInfo = with(server1.info) {
+            $0.remoteName = "new_name1"
+        }
+        servers.add(identifier: server1.identifier, serverInfo: newInfo)
+        XCTAssertEqual(keychain.data[server1.identifier.rawValue], try encoder.encode(newInfo))
+    }
+
+    func testThreadsafeChangesWithoutCaching() throws {
+        Current.isAppExtension = true
+        try base_testThreadsafeChanges()
+    }
+
+    func testThreadsafeChangesWithCaching() throws {
+        Current.isAppExtension = false
+        try base_testThreadsafeChanges()
+    }
+
+    private func base_testThreadsafeChanges() throws {
+        try setupRegular()
+
+        enum ActionType {
+            case insertExisting(newValue: Bool)
+            case insertNew
+            case mutate
+            case delete
+        }
+
+        let cases: [ActionType] = [
+            // weight a little heavier the normal ones
+            .insertNew,
+            .insertNew,
+            .mutate,
+            .mutate,
+            .delete,
+            .delete,
+            // the rest
+            .insertExisting(newValue: false),
+            .insertExisting(newValue: true),
+        ]
+
+        DispatchQueue.concurrentPerform(iterations: 1000) { _ in
+            let randomServerInfo: ServerInfo = with(.fake()) {
+                $0.connection.webhookID = UUID().uuidString
+            }
+
+            switch cases.randomElement()! {
+            case .insertNew:
+                let added = servers.add(identifier: .init(rawValue: UUID().uuidString), serverInfo: randomServerInfo)
+                _ = servers.server(for: added.identifier)
+            case let .insertExisting(newValue):
+                if let random = servers.all.randomElement() {
+                    let used: ServerInfo = newValue ? randomServerInfo : .fake()
+                    servers.add(identifier: random.identifier, serverInfo: used)
+                    _ = servers.server(for: random.identifier)
+                }
+            case .mutate:
+                if let random = servers.all.randomElement() {
+                    random.info = randomServerInfo
+                    _ = servers.server(for: random.identifier)
+                }
+            case .delete:
+                if let random = servers.all.randomElement() {
+                    servers.remove(identifier: random.identifier)
+                    _ = servers.server(for: random.identifier)
+                }
+            }
+        }
+    }
+
     private struct HistoricInfo {
         var connectionInfo: ConnectionInfo
         var tokenInfo: TokenInfo
@@ -461,22 +539,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(servers.all.count, 1)
         XCTAssertNotNil(servers.server(for: "existing"))
         XCTAssertNil(servers.server(for: Server.historicId))
-    }
-
-    func testUpdateAfterDeleteDoesntPersist() throws {
-        try setupRegular()
-
-        let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
-        servers.remove(identifier: server1.identifier)
-
-        server1.info.remoteName = "updated"
-        XCTAssertTrue(keychain.data.isEmpty)
-
-        let newInfo = with(server1.info) {
-            $0.remoteName = "new_name1"
-        }
-        servers.add(identifier: server1.identifier, serverInfo: newInfo)
-        XCTAssertEqual(keychain.data[server1.identifier.rawValue], try encoder.encode(newInfo))
     }
 }
 

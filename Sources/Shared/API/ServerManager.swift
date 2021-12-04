@@ -90,19 +90,20 @@ private extension Identifier where ObjectType == Server {
     init(keychainKey: String) { rawValue = keychainKey }
 }
 
-private class ServerCache {
+private struct ServerCache {
     var restrictCaching: Bool = false
+    var deletedServers: Set<Identifier<Server>> = .init()
     var info: [Identifier<Server>: ServerInfo] = [:]
     var server: [Identifier<Server>: Server] = [:]
     var all: [Server]?
 
-    func remove(identifier: Identifier<Server>) {
+    mutating func remove(identifier: Identifier<Server>) {
         info[identifier] = nil
         server[identifier] = nil
         all?.removeAll(where: { $0.identifier == identifier })
     }
 
-    func reset() {
+    mutating func reset() {
         info = [:]
         server = [:]
         all = nil
@@ -129,8 +130,6 @@ internal final class ServerManagerImpl: ServerManager {
     private var encoder: JSONEncoder
     private var decoder: JSONDecoder
 
-    private var deletedServers = Set<Identifier<Server>>()
-
     private var observers = NSHashTable<AnyObject>(options: .weakMemory)
 
     public func add(observer: ServerObserver) {
@@ -143,7 +142,7 @@ internal final class ServerManagerImpl: ServerManager {
 
     static let service = "io.home-assistant.servers"
 
-    private let cache = ServerCache()
+    private let cache = HAProtected<ServerCache>(value: .init())
 
     init(
         keychain: ServerManagerKeychain = Keychain(service: ServerManagerImpl.service),
@@ -159,7 +158,9 @@ internal final class ServerManagerImpl: ServerManager {
     }
 
     func setup() {
-        cache.restrictCaching = Current.isAppExtension
+        cache.mutate { value in
+            value.restrictCaching = Current.isAppExtension
+        }
 
         // load to cache immediately
         _ = all
@@ -172,17 +173,24 @@ internal final class ServerManagerImpl: ServerManager {
     }
 
     public var all: [Server] {
-        if !cache.restrictCaching, let cachedServers = cache.all {
-            return cachedServers
-        } else {
-            let servers = loadServers()
-            cache.all = servers
-            return servers
+        cache.mutate { cache -> [Server] in
+            if !cache.restrictCaching, let cachedServers = cache.all {
+                return cachedServers
+            } else {
+                // we sort outside the Server because that will reenter our cache lock
+                let all = keychain.allServerInfo(decoder: decoder).sorted(by: { lhs, rhs -> Bool in
+                    lhs.1.sortOrder < rhs.1.sortOrder
+                }).map { key, value in
+                    server(key: key, value: value, currentCache: &cache)
+                }
+                cache.all = all
+                return all
+            }
         }
     }
 
     public func server(for identifier: Identifier<Server>) -> Server? {
-        if let fast = cache.server[identifier] {
+        if let fast = cache.read({ $0.server[identifier] }) {
             return fast
         } else {
             return all.first(where: { $0.identifier == identifier })
@@ -191,34 +199,42 @@ internal final class ServerManagerImpl: ServerManager {
 
     @discardableResult
     public func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server {
-        deletedServers.remove(identifier)
-
         let setValue = with(serverInfo) {
             if $0.sortOrder == ServerInfo.defaultSortOrder {
                 $0.sortOrder = all.map(\.info.sortOrder).max().map { $0 + 1000 } ?? 0
             }
         }
 
-        keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
+        let result = cache.mutate { cache -> Server in
+            cache.deletedServers.remove(identifier)
+            keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
+            cache.all = nil
 
-        cache.all = nil
+            return server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
+        }
+
         notify()
 
-        return server(key: identifier.keychainKey, value: setValue)
+        return result
     }
 
     public func remove(identifier: Identifier<Server>) {
-        deletedServers.insert(identifier)
-        keychain.deleteServerInfo(key: identifier.keychainKey)
+        cache.mutate { cache in
+            cache.deletedServers.insert(identifier)
+            keychain.deleteServerInfo(key: identifier.keychainKey)
+            cache.remove(identifier: identifier)
+        }
 
-        cache.remove(identifier: identifier)
         notify()
     }
 
     public func removeAll() {
-        deletedServers.formUnion(Set(all.map(\.identifier)))
-        cache.reset()
-        _ = try? keychain.removeAll()
+        cache.mutate { cache in
+            cache.deletedServers.formUnion(Set(keychain.allKeys().map { Identifier<Server>(keychainKey: $0) }))
+            cache.reset()
+            _ = try? keychain.removeAll()
+        }
+
         notify()
     }
 
@@ -232,57 +248,88 @@ internal final class ServerManagerImpl: ServerManager {
         }
     }
 
-    private func loadServers() -> [Server] {
-        keychain.allServerInfo(decoder: decoder).map { key, value in
-            server(key: key, value: value)
-        }.sorted()
+    private func serverInfoGetter(
+        cache: HAProtected<ServerCache>,
+        keychain: ServerManagerKeychain,
+        identifier: Identifier<Server>,
+        decoder: JSONDecoder,
+        fallback: ServerInfo
+    ) -> () -> ServerInfo {
+        {
+            cache.mutate { cache -> ServerInfo in
+                if !cache.restrictCaching, let info = cache.info[identifier] {
+                    return info
+                } else {
+                    let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
+                    cache.info[identifier] = info
+                    return info
+                }
+            }
+        }
     }
 
-    private func server(key: String, value: ServerInfo) -> Server {
-        let identifier = Identifier<Server>(keychainKey: key)
-
-        if let server = cache.server[identifier] {
-            return server
-        }
-
-        var fallback = value
-
-        let server = Server(identifier: identifier, getter: { [cache, keychain, decoder] in
-            if let info = cache.info[identifier], !cache.restrictCaching {
-                return info
-            } else {
-                let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
-                cache.info[identifier] = info
-                return info
-            }
-        }, setter: { [weak self] baseServerInfo in
-            guard let self = self else { return }
-
-            guard !self.deletedServers.contains(identifier) else {
-                Current.Log.verbose("ignoring update to deleted server \(identifier)")
-                return
-            }
-
+    private func serverInfoSetter(
+        cache: HAProtected<ServerCache>,
+        keychain: ServerManagerKeychain,
+        identifier: Identifier<Server>,
+        encoder: JSONEncoder,
+        notify: @escaping () -> Void
+    ) -> (ServerInfo) -> Void {
+        { baseServerInfo in
             var serverInfo = baseServerInfo
 
             // update active URL so we can update just once if it's different than the save is doing
+            // intentionally not in the lock
             _ = serverInfo.connection.activeURL()
 
-            let old = self.cache.info[identifier]
+            cache.mutate { cache in
+                guard !cache.deletedServers.contains(identifier) else {
+                    Current.Log.verbose("ignoring update to deleted server \(identifier)")
+                    return
+                }
 
-            guard old != serverInfo || self.cache.restrictCaching else { return }
+                let old = cache.info[identifier]
 
-            self.keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
-            self.cache.info[identifier] = serverInfo
-            fallback = serverInfo
+                guard old != serverInfo || cache.restrictCaching else {
+                    return
+                }
 
-            if old?.sortOrder != serverInfo.sortOrder {
-                self.cache.all = nil
+                keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
+                cache.info[identifier] = serverInfo
+
+                if old?.sortOrder != serverInfo.sortOrder {
+                    cache.all = nil
+                }
+
+                notify()
             }
+        }
+    }
 
-            self.notify()
-        })
-        cache.server[identifier] = server
+    private func server(key: String, value: ServerInfo, currentCache: inout ServerCache) -> Server {
+        let identifier = Identifier<Server>(keychainKey: key)
+
+        if let server = currentCache.server[identifier] {
+            return server
+        }
+
+        let server = Server(
+            identifier: identifier,
+            getter: serverInfoGetter(
+                cache: cache,
+                keychain: keychain,
+                identifier: identifier,
+                decoder: decoder,
+                fallback: value
+            ), setter: serverInfoSetter(
+                cache: cache,
+                keychain: keychain,
+                identifier: identifier,
+                encoder: encoder,
+                notify: { [weak self] in self?.notify() }
+            )
+        )
+        currentCache.server[identifier] = server
         return server
     }
 
@@ -345,7 +392,7 @@ internal final class ServerManagerImpl: ServerManager {
             // set the values for the still-existing or new servers
             for (key, serverInfo) in state {
                 let identifier = Identifier<Server>(rawValue: key)
-                if let existing = cache.server[identifier] {
+                if let existing = cache.read({ $0.server[identifier] }) {
                     existing.info = serverInfo
                 } else {
                     add(identifier: identifier, serverInfo: serverInfo)
