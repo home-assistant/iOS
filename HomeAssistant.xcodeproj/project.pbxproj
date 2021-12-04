@@ -318,6 +318,7 @@
 		11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */; };
 		11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */; };
 		11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */; };
+		11B38EDF275BE29F00205C7B /* ConnectionInfo.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
 		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
@@ -1366,6 +1367,7 @@
 		11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocoderSensor.test.swift; sourceTree = "<group>"; };
 		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
+		11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.test.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
 		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
@@ -3476,6 +3478,7 @@
 				1130A5732751B29E00640E38 /* PerServerContainer.test.swift */,
 				1130A5752751BA1800640E38 /* Server.test.swift */,
 				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
+				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -5704,6 +5707,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11B38EDF275BE29F00205C7B /* ConnectionInfo.test.swift in Sources */,
 				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				11AA9977266B0CEC00B829E1 /* NotificationParserLegacy.test.swift in Sources */,
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,

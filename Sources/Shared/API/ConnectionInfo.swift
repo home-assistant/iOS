@@ -173,8 +173,17 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .external
             url = externalURL
         } else {
-            activeURLType = .internal
-            url = URL(string: "http://homeassistant.local:8123")!
+            // we're missing a url, so try and fall back to one that _could_ work
+            if let remoteUIURL = remoteUIURL {
+                activeURLType = .remoteUI
+                url = remoteUIURL
+            } else if let internalURL = internalURL {
+                activeURLType = .internal
+                url = internalURL
+            } else {
+                activeURLType = .internal
+                url = URL(string: "http://homeassistant.local:8123")!
+            }
         }
 
         return url.sanitized()
@@ -214,9 +223,6 @@ public struct ConnectionInfo: Codable, Equatable {
 
     /// Returns true if current SSID is SSID marked for internal URL use.
     public var isOnInternalNetwork: Bool {
-        #if targetEnvironment(simulator)
-        return true
-        #else
         if let current = Current.connectivity.currentWiFiSSID(),
            internalSSIDs?.contains(current) == true {
             return true
@@ -228,7 +234,6 @@ public struct ConnectionInfo: Codable, Equatable {
         }
 
         return false
-        #endif
     }
 }
 
