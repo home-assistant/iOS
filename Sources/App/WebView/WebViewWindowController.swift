@@ -169,16 +169,18 @@ class WebViewWindowController {
         }
     }
 
-    private func selectServer(prompt: String?) -> Promise<Server?> {
+    private func selectServer(prompt: String? = nil, includeSettings: Bool = false) -> Promise<Server?> {
         let select = ServerSelectViewController()
         if let prompt = prompt {
             select.prompt = prompt
         }
-        select.navigationItem.rightBarButtonItems = [
-            with(UIBarButtonItem(icon: .cogIcon, target: self, action: #selector(openSettings(_:)))) {
-                $0.accessibilityLabel = L10n.Settings.NavigationBar.title
-            }
-        ]
+        if includeSettings {
+            select.navigationItem.rightBarButtonItems = [
+                with(UIBarButtonItem(icon: .cogIcon, target: self, action: #selector(openSettings(_:)))) {
+                    $0.accessibilityLabel = L10n.Settings.NavigationBar.title
+                }
+            ]
+        }
         let promise = select.result.ensureThen { [weak select] in
             Guarantee { seal in
                 if let select = select, select.presentingViewController != nil {
@@ -292,18 +294,35 @@ class WebViewWindowController {
     }
 
     private lazy var serverChangeGestures: [UIGestureRecognizer] = {
-        [.left, .right, .up].map { (direction: UISwipeGestureRecognizer.Direction) in
+        class InlineDelegate: NSObject, UIGestureRecognizerDelegate {
+            func gestureRecognizer(
+                _ gestureRecognizer: UIGestureRecognizer,
+                shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+            ) -> Bool {
+                if let gestureRecognizer = gestureRecognizer as? UISwipeGestureRecognizer {
+                    return gestureRecognizer.direction == .up
+                } else {
+                    return false
+                }
+            }
+        }
+
+        var delegate = InlineDelegate()
+
+        return [.left, .right, .up].map { (direction: UISwipeGestureRecognizer.Direction) in
             with(UISwipeGestureRecognizer()) {
                 $0.numberOfTouchesRequired = 3
                 $0.direction = direction
                 $0.addTarget(self, action: #selector(serverChangeGestureDidChange(_:)))
+                $0.delegate = delegate
+
+                after(life: $0).done {
+                    withExtendedLifetime(delegate) {
+                        //
+                    }
+                }
             }
-        } + [
-            with(UITapGestureRecognizer()) {
-                $0.numberOfTouchesRequired = 3
-                $0.addTarget(self, action: #selector(serverChangeTapGestured(_:)))
-            }
-        ]
+        }
     }()
 
     private func update(webViewController: WebViewController) {
@@ -320,27 +339,24 @@ class WebViewWindowController {
         })
     }
 
-    @objc private func serverChangeTapGestured(_ gesture: UITapGestureRecognizer) {
-        guard gesture.state == .ended else {
-            return
-        }
-
-        selectServer(prompt: nil).done { [self] server in
-            if let server = server {
-                open(server: server)
-            }
-        }.catch { error in
-            Current.Log.error("failed to select server: \(error)")
-        }
-    }
-
     @objc private func serverChangeGestureDidChange(_ gesture: UISwipeGestureRecognizer) {
         guard gesture.state == .ended else {
             return
         }
 
         if gesture.direction == .up {
-            print("up")
+            with(webViewControllerPromise.value?.webView.scrollView.panGestureRecognizer) {
+                $0?.isEnabled = false
+                $0?.isEnabled = true
+            }
+
+            selectServer(includeSettings: true).done { [self] server in
+                if let server = server {
+                    open(server: server)
+                }
+            }.catch { error in
+                Current.Log.error("failed to select server: \(error)")
+            }
             return
         }
 
