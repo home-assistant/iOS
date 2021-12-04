@@ -65,7 +65,9 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
     }
 
     func serversDidChange(_ serverManager: ServerManager) {
-        setupForm()
+        UIView.performWithoutAnimation {
+            setupForm()
+        }
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
