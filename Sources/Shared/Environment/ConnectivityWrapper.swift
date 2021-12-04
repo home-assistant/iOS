@@ -56,6 +56,10 @@ public class ConnectivityWrapper {
         }
         self.hasWiFi = { true }
         self.currentWiFiSSID = {
+            #if targetEnvironment(simulator)
+            return "Simulator"
+            #endif
+
             guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
             for interface in interfaces {
                 guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {

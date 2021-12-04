@@ -214,9 +214,6 @@ public struct ConnectionInfo: Codable, Equatable {
 
     /// Returns true if current SSID is SSID marked for internal URL use.
     public var isOnInternalNetwork: Bool {
-        #if targetEnvironment(simulator)
-        return true
-        #else
         if let current = Current.connectivity.currentWiFiSSID(),
            internalSSIDs?.contains(current) == true {
             return true
@@ -228,7 +225,6 @@ public struct ConnectionInfo: Codable, Equatable {
         }
 
         return false
-        #endif
     }
 }
 
