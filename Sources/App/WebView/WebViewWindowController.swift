@@ -178,7 +178,7 @@ class WebViewWindowController {
             select.navigationItem.rightBarButtonItems = [
                 with(UIBarButtonItem(icon: .cogIcon, target: self, action: #selector(openSettings(_:)))) {
                     $0.accessibilityLabel = L10n.Settings.NavigationBar.title
-                }
+                },
             ]
         }
         let promise = select.result.ensureThen { [weak select] in
