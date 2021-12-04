@@ -229,7 +229,14 @@ public class AppEnvironment {
         NSClassFromString("XCTest") != nil
     }
 
-    public var isBackgroundRequestsImmediate = { true }
+    public var isBackgroundRequestsImmediate = {
+        #if os(watchOS)
+        true
+        #else
+        false
+        #endif
+    }
+
     public var isForegroundApp = { false }
 
     public var appConfiguration: AppConfiguration {
