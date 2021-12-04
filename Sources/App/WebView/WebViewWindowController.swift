@@ -169,32 +169,56 @@ class WebViewWindowController {
         }
     }
 
+    private func selectServer(prompt: String?) -> Promise<Server?> {
+        let select = ServerSelectViewController()
+        if let prompt = prompt {
+            select.prompt = prompt
+        }
+        select.navigationItem.rightBarButtonItems = [
+            with(UIBarButtonItem(icon: .cogIcon, target: self, action: #selector(openSettings(_:)))) {
+                $0.accessibilityLabel = L10n.Settings.NavigationBar.title
+            }
+        ]
+        let promise = select.result.ensureThen { [weak select] in
+            Guarantee { seal in
+                if let select = select, select.presentingViewController != nil {
+                    select.dismiss(animated: true, completion: {
+                        seal(())
+                    })
+                } else {
+                    seal(())
+                }
+            }
+        }
+        present(UINavigationController(rootViewController: select))
+        return promise.map {
+            if case let .server(server) = $0 {
+                return server
+            } else {
+                return nil
+            }
+        }
+    }
+
     func openSelectingServer(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false) {
         if let first = Current.servers.all.first, Current.servers.all.count == 1 {
             open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
         } else if Current.servers.all.count > 1 {
-            let select = ServerSelectViewController()
-            if !skipConfirm {
-                select.prompt = from.message(with: openUrlRaw)
+            let prompt: String?
+
+            if skipConfirm {
+                prompt = nil
+            } else {
+                prompt = from.message(with: openUrlRaw)
             }
-            select.result.ensureThen { [weak select] in
-                Guarantee { seal in
-                    if let select = select, select.presentingViewController != nil {
-                        select.dismiss(animated: true, completion: {
-                            seal(())
-                        })
-                    } else {
-                        seal(())
-                    }
-                }
-            }.done { [self] value in
-                if let server = value.server {
+
+            selectServer(prompt: prompt).done { [self] server in
+                if let server = server {
                     open(from: from, server: server, urlString: openUrlRaw, skipConfirm: true)
                 }
             }.catch { error in
                 Current.Log.error("failed to select server: \(error)")
             }
-            present(UINavigationController(rootViewController: select))
         }
     }
 
@@ -268,13 +292,18 @@ class WebViewWindowController {
     }
 
     private lazy var serverChangeGestures: [UIGestureRecognizer] = {
-        [.left, .right].map { (direction: UISwipeGestureRecognizer.Direction) in
+        [.left, .right, .up].map { (direction: UISwipeGestureRecognizer.Direction) in
             with(UISwipeGestureRecognizer()) {
                 $0.numberOfTouchesRequired = 3
                 $0.direction = direction
                 $0.addTarget(self, action: #selector(serverChangeGestureDidChange(_:)))
             }
-        }
+        } + [
+            with(UITapGestureRecognizer()) {
+                $0.numberOfTouchesRequired = 3
+                $0.addTarget(self, action: #selector(serverChangeTapGestured(_:)))
+            }
+        ]
     }()
 
     private func update(webViewController: WebViewController) {
@@ -283,8 +312,35 @@ class WebViewWindowController {
         }
     }
 
+    @objc private func openSettings(_ sender: UIBarButtonItem) {
+        presentedViewController?.dismiss(animated: true, completion: { [self] in
+            webViewControllerPromise.done { controller in
+                controller.showSettingsViewController()
+            }
+        })
+    }
+
+    @objc private func serverChangeTapGestured(_ gesture: UITapGestureRecognizer) {
+        guard gesture.state == .ended else {
+            return
+        }
+
+        selectServer(prompt: nil).done { [self] server in
+            if let server = server {
+                open(server: server)
+            }
+        }.catch { error in
+            Current.Log.error("failed to select server: \(error)")
+        }
+    }
+
     @objc private func serverChangeGestureDidChange(_ gesture: UISwipeGestureRecognizer) {
         guard gesture.state == .ended else {
+            return
+        }
+
+        if gesture.direction == .up {
+            print("up")
             return
         }
 
