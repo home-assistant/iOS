@@ -760,7 +760,7 @@ public class HomeAssistantAPI {
                 shouldIncludeNilValues: false
             )
             return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
-        }.then { [server] sensorResponse, payload -> Promise<Void> in
+        }.then { [server] _, payload -> Promise<Void> in
             if payload.isEmpty {
                 Current.Log.info("skipping network request for unchanged sensor update")
                 return .value(())

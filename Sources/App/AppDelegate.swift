@@ -3,6 +3,7 @@ import CallbackURLKit
 import Communicator
 import FirebaseCore
 import FirebaseMessaging
+import Intents
 import KeychainAccess
 import MBProgressHUD
 import ObjectMapper
@@ -12,7 +13,6 @@ import SafariServices
 import Shared
 import UIKit
 import XCGLogger
-import Intents
 
 let keychain = Constants.Keychain
 
