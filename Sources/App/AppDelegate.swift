@@ -12,6 +12,7 @@ import SafariServices
 import Shared
 import UIKit
 import XCGLogger
+import Intents
 
 let keychain = Constants.Keychain
 
@@ -369,6 +370,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Current.Log.error("couldn't find appropriate session for for \(identifier)")
             completionHandler()
         }
+    }
+
+    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
+        RoutingIntentHandler.handler(for: intent)
     }
 
     // MARK: - Private helpers

@@ -1,6 +1,5 @@
 import Intents
 import PromiseKit
-import Shared
 
 class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
     private func panelsByServer() -> Promise<[(Server, [IntentPanel])]> {

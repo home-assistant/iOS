@@ -1,7 +1,6 @@
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 
 @available(iOS 15, *)
 class FocusStatusIntentHandler: NSObject, INShareFocusStatusIntentHandling {

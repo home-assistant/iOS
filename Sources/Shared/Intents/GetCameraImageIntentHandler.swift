@@ -2,7 +2,6 @@ import Foundation
 import Intents
 import MobileCoreServices
 import PromiseKit
-import Shared
 import UIKit
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {

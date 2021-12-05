@@ -1,7 +1,6 @@
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 import UIKit
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {

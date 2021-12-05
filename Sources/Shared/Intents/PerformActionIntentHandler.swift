@@ -1,7 +1,6 @@
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 
 class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
     func handle(

@@ -2,7 +2,6 @@ import CoreLocation
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 import UIKit
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {

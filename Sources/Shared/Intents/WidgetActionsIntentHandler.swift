@@ -1,7 +1,6 @@
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 
 @available(iOS 14, *)
 class WidgetActionsIntentHandler: NSObject, WidgetActionsIntentHandling {

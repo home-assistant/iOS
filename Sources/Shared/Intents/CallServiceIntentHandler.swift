@@ -2,7 +2,6 @@ import Foundation
 import HAKit
 import Intents
 import PromiseKit
-import Shared
 import UIKit
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
