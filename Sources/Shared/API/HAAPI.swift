@@ -738,9 +738,18 @@ public class HomeAssistantAPI {
         trigger: LocationUpdateTrigger,
         location: CLLocation? = nil
     ) -> Promise<Void> {
+        UpdateSensors(trigger: trigger, limitedTo: nil, location: location)
+    }
+
+    internal func UpdateSensors(
+        trigger: LocationUpdateTrigger,
+        limitedTo: [SensorProvider.Type]?,
+        location: CLLocation? = nil
+    ) -> Promise<Void> {
         firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
+                limitedTo: limitedTo,
                 location: location,
                 serverVersion: server.info.version
             )
@@ -751,20 +760,16 @@ public class HomeAssistantAPI {
                 shouldIncludeNilValues: false
             )
             return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
-        }.then { [server] sensorResponse, payload -> Promise<Void> in
-            firstly { () -> Promise<Void> in
-                if payload.isEmpty {
-                    Current.Log.info("skipping network request for unchanged sensor update")
-                    return .value(())
-                } else {
-                    return Current.webhooks.send(
-                        identifier: .updateSensors,
-                        server: server,
-                        request: .init(type: "update_sensor_states", data: payload)
-                    )
-                }
-            }.done {
-                sensorResponse.didPersist()
+        }.then { [server] _, payload -> Promise<Void> in
+            if payload.isEmpty {
+                Current.Log.info("skipping network request for unchanged sensor update")
+                return .value(())
+            } else {
+                return Current.webhooks.send(
+                    identifier: .updateSensors,
+                    server: server,
+                    request: .init(type: "update_sensor_states", data: payload)
+                )
             }
         }
     }

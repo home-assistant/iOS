@@ -1,5 +1,4 @@
 import Foundation
-import Shared
 
 enum PickAServerError {
     // NSError because LocalizedError doesn't send messages through

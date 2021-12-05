@@ -2,9 +2,9 @@ import CoreLocation
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 import UIKit
 
+@available(iOS 13, watchOS 6, *)
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func resolveLocation(
         for intent: SendLocationIntent,

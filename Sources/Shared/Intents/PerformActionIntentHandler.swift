@@ -1,8 +1,8 @@
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 
+@available(iOS 13, watchOS 6, *)
 class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
     func handle(
         intent: PerformActionIntent,
@@ -54,7 +54,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         completion(Array(performActions), nil)
     }
 
-    @available(iOS 14, *)
+    @available(iOS 14, watchOS 7, *)
     func provideActionOptionsCollection(
         for intent: PerformActionIntent,
         with completion: @escaping (INObjectCollection<IntentAction>?, Error?) -> Void

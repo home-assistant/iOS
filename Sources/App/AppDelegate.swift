@@ -3,6 +3,7 @@ import CallbackURLKit
 import Communicator
 import FirebaseCore
 import FirebaseMessaging
+import Intents
 import KeychainAccess
 import MBProgressHUD
 import ObjectMapper
@@ -368,6 +369,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             Current.Log.error("couldn't find appropriate session for for \(identifier)")
             completionHandler()
+        }
+    }
+
+    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
+        if #available(iOS 13, *) {
+            return IntentHandlerFactory.handler(for: intent)
+        } else {
+            return nil
         }
     }
 

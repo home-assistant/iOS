@@ -554,6 +554,19 @@
 	<false/>
 	<key>FirebaseMessagingAutoInitEnabled</key>
 	<false/>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>CallServiceIntent</string>
+		<string>FireEventIntent</string>
+		<string>GetCameraImageIntent</string>
+		<string>OpenPageIntent</string>
+		<string>PerformActionIntent</string>
+		<string>RenderTemplateIntent</string>
+		<string>SendLocationIntent</string>
+		<string>UpdateSensorsIntent</string>
+		<string>WidgetActionsIntent</string>
+		<string>WidgetOpenPageIntent</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>

@@ -1,9 +1,8 @@
 import Foundation
 import Intents
 import PromiseKit
-import Shared
 
-@available(iOS 14, *)
+@available(iOS 14, watchOS 7, *)
 class WidgetActionsIntentHandler: NSObject, WidgetActionsIntentHandling {
     func provideActionsOptionsCollection(
         for intent: WidgetActionsIntent,
