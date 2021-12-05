@@ -716,7 +716,7 @@
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
-		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
 		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
 		B66F9F2E216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -5861,7 +5861,6 @@
 		};
 		B66C58AB215086F0004AB261 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilter = ios;
 			target = B66C58A4215086F0004AB261 /* Extensions-Intents */;
 			targetProxy = B66C58AA215086F0004AB261 /* PBXContainerItemProxy */;
 		};
