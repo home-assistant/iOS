@@ -45,6 +45,7 @@
 				<string>UpdateSensorsIntent</string>
 				<string>WidgetActionsIntent</string>
 				<string>WidgetOpenPageIntent</string>
+				<string>INShareFocusStatusIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>
