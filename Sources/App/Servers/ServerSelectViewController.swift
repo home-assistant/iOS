@@ -55,16 +55,19 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
         if let parent = parent as? UINavigationController, parent.viewControllers == [self] {
             parent.presentationController?.delegate = self
 
-            if #available(iOS 15, *) {
+            // sheet is a little annoying (even with large detent) with many servers
+            if #available(iOS 15, *), Current.servers.all.count <= 4 {
                 with(parent.sheetPresentationController) {
-                    $0?.detents = [.medium()]
+                    $0?.detents = [.medium(), .large()]
                 }
             }
         }
     }
 
     func serversDidChange(_ serverManager: ServerManager) {
-        setupForm()
+        UIView.performWithoutAnimation {
+            setupForm()
+        }
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
