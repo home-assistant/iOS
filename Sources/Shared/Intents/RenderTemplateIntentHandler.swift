@@ -3,6 +3,7 @@ import Intents
 import PromiseKit
 import UIKit
 
+@available(iOS 13, watchOS 6, *)
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
     typealias Intent = RenderTemplateIntent
 

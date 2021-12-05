@@ -4,6 +4,7 @@ import Intents
 import PromiseKit
 import UIKit
 
+@available(iOS 13, watchOS 6, *)
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     typealias Intent = CallServiceIntent
 
@@ -62,7 +63,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         .catch { completion(nil, $0) }
     }
 
-    @available(iOS 14, *)
+    @available(iOS 14, watchOS 7, *)
     func provideServiceOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void

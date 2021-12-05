@@ -126,7 +126,7 @@ public extension WidgetActionsIntent {
     static let widgetKind = "WidgetActions"
 }
 
-@available(iOS 13, watchOS 7, *)
+@available(iOS 13, watchOS 6, *)
 public extension IntentPanel {
     convenience init(panel: HAPanel, server: Server) {
         let image: INImage?
@@ -145,7 +145,7 @@ public extension IntentPanel {
         image = nil
         #endif
 
-        if #available(iOS 14, *) {
+        if #available(iOS 14, watchOS 7, *) {
             self.init(
                 identifier: panel.path,
                 display: panel.title,

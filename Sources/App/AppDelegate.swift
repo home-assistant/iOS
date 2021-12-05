@@ -373,7 +373,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        RoutingIntentHandler.handler(for: intent)
+        if #available(iOS 13, *) {
+            return RoutingIntentHandler.handler(for: intent)
+        } else {
+            return nil
+        }
     }
 
     // MARK: - Private helpers

@@ -4,6 +4,7 @@ import MobileCoreServices
 import PromiseKit
 import UIKit
 
+@available(iOS 13, watchOS 6, *)
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     typealias Intent = GetCameraImageIntent
 
@@ -57,7 +58,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             .catch { completion(nil, $0) }
     }
 
-    @available(iOS 14, *)
+    @available(iOS 14, watchOS 7, *)
     func provideCameraIDOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
