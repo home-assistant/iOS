@@ -203,6 +203,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.basic_auth.description" = "Autentikasi HTTP Basic tidak didukung.";
 "onboarding.connection_test_result.client_certificate.description" = "Autentikasi Sertifikat Klien tidak didukung.";
 "onboarding.connection_test_result.error_code" = "Kode Kesalahan:";
+"onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
 "onboarding.device_name_check.error.prompt" = "Nama perangkat apa yang ingin digunakan?";
 "onboarding.device_name_check.error.rename_action" = "Ganti Nama";
 "onboarding.device_name_check.error.title" = "Sudah ada perangkat dengan nama '%1$@'";
@@ -253,7 +254,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Gunakan Nama Zona";
 "settings.connection_section.activate_server" = "Activate";
-"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
+"settings.connection_section.activate_swipe_hint" = "Aktifkan dengan cepat menggunakan sapuan tiga jari ke kiri atau ke kanan saat melihat server.";
 "settings.connection_section.add_server" = "Tambah Server";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.cloud_overrides_external" = "Ketika terhubung lewat Cloud, URL Eksternal tidak akan digunakan. Anda tidak perlu mengonfigurasinya kecuali jika ingin menonaktifkan Cloud.";

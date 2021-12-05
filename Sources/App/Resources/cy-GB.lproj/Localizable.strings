@@ -203,6 +203,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.basic_auth.description" = "Ni chynhelir dilysiad sylfaenol HTTP.";
 "onboarding.connection_test_result.client_certificate.description" = "Ni chynhelir Dilysiad Tystysgrif Client.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
+"onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
 "onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
 "onboarding.device_name_check.error.rename_action" = "Rename";
 "onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";

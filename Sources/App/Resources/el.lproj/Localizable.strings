@@ -194,8 +194,8 @@
 "off_label" = "Μη Ενεργό";
 "ok_label" = "Εντάξει";
 "on_label" = "Ενεργό";
-"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
-"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
+"onboarding.connect.mac_safari_warning.message" = "Δοκιμάστε να επανεκκινήσετε το Safari, εάν η φόρμα σύνδεσης δεν ανοίγει.";
+"onboarding.connect.mac_safari_warning.title" = "Εκκίνηση του Safari";
 "onboarding.connect.title" = "Σύνδεση με %@";
 "onboarding.connection_error.more_info_button" = "Περισσότερες πληροφορίες";
 "onboarding.connection_error.title" = "Απέτυχε η σύνδεση";
@@ -203,6 +203,7 @@
 "onboarding.connection_test_result.basic_auth.description" = "Ο βασικός έλεγχος ταυτότητας HTTP δεν υποστηρίζεται.";
 "onboarding.connection_test_result.client_certificate.description" = "Ο έλεγχος ταυτότητας πιστοποιητικού πελάτη δεν υποστηρίζεται.";
 "onboarding.connection_test_result.error_code" = "Κωδικός σφάλματος:";
+"onboarding.connection_test_result.local_network_permission.description" = "Η άδεια απορρήτου \"Τοπικό δίκτυο\" ενδέχεται να μην έχει χορηγηθεί. Μπορείτε να το αλλάξετε αυτό στην εφαρμογή Ρυθμίσεις του συστήματος.";
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
 "onboarding.device_name_check.error.rename_action" = "Μετονομασία";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";

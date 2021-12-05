@@ -194,8 +194,8 @@
 "off_label" = "Kapalı";
 "ok_label" = "Tamam";
 "on_label" = "Açık";
-"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
-"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
+"onboarding.connect.mac_safari_warning.message" = "Oturum açma formu açılmazsa Safari'yi yeniden başlatmayı deneyin.";
+"onboarding.connect.mac_safari_warning.title" = "Safari'yi Başlatma";
 "onboarding.connect.title" = "Bağlanılıyor %@";
 "onboarding.connection_error.more_info_button" = "Daha fazla bilgi";
 "onboarding.connection_error.title" = "Bağlantı başarısız";
@@ -203,6 +203,7 @@
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Temel Kimlik Doğrulaması desteklenmiyor.";
 "onboarding.connection_test_result.client_certificate.description" = "İstemci Sertifikası Kimlik Doğrulaması desteklenmez.";
 "onboarding.connection_test_result.error_code" = "Hata Kodu:";
+"onboarding.connection_test_result.local_network_permission.description" = "\"Yerel Ağ\" gizlilik izni reddedilmiş olabilir. Bunu sistem Ayarları uygulamasında değiştirebilirsiniz.";
 "onboarding.device_name_check.error.prompt" = "Bunun yerine hangi cihaz adı kullanılmalıdır?";
 "onboarding.device_name_check.error.rename_action" = "Yeniden adlandır";
 "onboarding.device_name_check.error.title" = "%1$@ ' adında bir cihaz zaten var";

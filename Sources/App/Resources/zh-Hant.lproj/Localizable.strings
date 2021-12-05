@@ -194,8 +194,8 @@
 "off_label" = "關閉";
 "ok_label" = "好";
 "on_label" = "開啟";
-"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
-"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
+"onboarding.connect.mac_safari_warning.message" = "假如登入視窗未出現，請嘗試重新啟動 Safari。";
+"onboarding.connect.mac_safari_warning.title" = "開啟 Safari";
 "onboarding.connect.title" = "連線至%@";
 "onboarding.connection_error.more_info_button" = "更多資訊";
 "onboarding.connection_error.title" = "連線失敗";
@@ -203,6 +203,7 @@
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.client_certificate.description" = "不支援客戶端認證。";
 "onboarding.connection_test_result.error_code" = "錯誤代碼：";
+"onboarding.connection_test_result.local_network_permission.description" = "\"區域網絡\"隱私權限可能設為拒絕。您可以在系統設定應用中更改此設定。";
 "onboarding.device_name_check.error.prompt" = "所要使用的裝置名稱？";
 "onboarding.device_name_check.error.rename_action" = "重新命名";
 "onboarding.device_name_check.error.title" = "裝置已存在名稱 '%1$@'";

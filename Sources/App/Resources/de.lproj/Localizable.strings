@@ -203,6 +203,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.connection_test_result.basic_auth.description" = "Die HTTP-Basisauthentifizierung wird nicht unterstützt.";
 "onboarding.connection_test_result.client_certificate.description" = "Die Client-Zertifikatauthentifizierung wird nicht unterstützt.";
 "onboarding.connection_test_result.error_code" = "Fehlercode:";
+"onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.rename_action" = "Umbenennen";
 "onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen %1$@ existiert bereits";
