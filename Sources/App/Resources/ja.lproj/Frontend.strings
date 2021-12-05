@@ -1,0 +1,12 @@
+"panel::calendar" = "カレンダー";
+"panel::config" = "設定";
+"panel::developer_tools" = "開発者ツール";
+"panel::energy" = "エネルギー";
+"panel::history" = "履歴";
+"panel::logbook" = "ログブック";
+"panel::mailbox" = "メールボックス";
+"panel::map" = "地図";
+"panel::media_browser" = "メディアブラウザ";
+"panel::profile" = "プロファイル";
+"panel::shopping_list" = "買い物リスト";
+"panel::states" = "オーバービュー";
