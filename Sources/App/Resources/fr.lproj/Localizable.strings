@@ -203,6 +203,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.connection_test_result.basic_auth.description" = "L'authentification HTTP de base n'est pas prise en charge.";
 "onboarding.connection_test_result.client_certificate.description" = "L'authentification par certificat client n'est pas prise en charge.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
+"onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
 "onboarding.device_name_check.error.prompt" = "Quel nom de périphérique doit être utilisé à la place ?";
 "onboarding.device_name_check.error.rename_action" = "Renommer";
 "onboarding.device_name_check.error.title" = "Un périphérique existe déjà avec le nom ' %1$@ '";
