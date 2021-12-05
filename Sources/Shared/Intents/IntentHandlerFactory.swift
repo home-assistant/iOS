@@ -2,7 +2,7 @@ import Foundation
 import Intents
 
 @available(iOS 13, watchOS 6, *)
-public class RoutingIntentHandler {
+public class IntentHandlerFactory {
     public static func handler(for intent: INIntent) -> Any {
         let handler: Any = {
             if intent is FireEventIntent {

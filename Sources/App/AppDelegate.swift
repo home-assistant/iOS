@@ -374,7 +374,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         if #available(iOS 13, *) {
-            return RoutingIntentHandler.handler(for: intent)
+            return IntentHandlerFactory.handler(for: intent)
         } else {
             return nil
         }

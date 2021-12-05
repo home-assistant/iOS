@@ -324,7 +324,7 @@
 		11B38EE9275C54A200205C7B /* GetCameraImageIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC3221D047400370A59 /* GetCameraImageIntentHandler.swift */; };
 		11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2E7B227500DAD00CF144C /* PickAServerError.swift */; };
 		11B38EEB275C54A200205C7B /* UpdateSensorsIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */; };
-		11B38EEC275C54A200205C7B /* RoutingIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B38EE1275C547A00205C7B /* RoutingIntentHandler.swift */; };
+		11B38EEC275C54A200205C7B /* IntentHandlerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */; };
 		11B38EED275C54A200205C7B /* RenderTemplateIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplateIntentHandler.swift */; };
 		11B38EEE275C54A200205C7B /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
 		11B38EEF275C54A300205C7B /* OpenPageIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */; };
@@ -336,7 +336,7 @@
 		11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC3221D047400370A59 /* GetCameraImageIntentHandler.swift */; };
 		11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F2E7B227500DAD00CF144C /* PickAServerError.swift */; };
 		11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */; };
-		11B38EF8275C54A300205C7B /* RoutingIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B38EE1275C547A00205C7B /* RoutingIntentHandler.swift */; };
+		11B38EF8275C54A300205C7B /* IntentHandlerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */; };
 		11B38EF9275C54A300205C7B /* RenderTemplateIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplateIntentHandler.swift */; };
 		11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
@@ -1381,7 +1381,7 @@
 		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
 		11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.test.swift; sourceTree = "<group>"; };
-		11B38EE1275C547A00205C7B /* RoutingIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingIntentHandler.swift; sourceTree = "<group>"; };
+		11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandlerFactory.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
 		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
@@ -2662,7 +2662,7 @@
 				115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */,
 				115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */,
 				11F2E7B227500DAD00CF144C /* PickAServerError.swift */,
-				11B38EE1275C547A00205C7B /* RoutingIntentHandler.swift */,
+				11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -5389,7 +5389,7 @@
 				11F2F25F25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */,
 				B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
-				11B38EF8275C54A300205C7B /* RoutingIntentHandler.swift in Sources */,
+				11B38EF8275C54A300205C7B /* IntentHandlerFactory.swift in Sources */,
 				11AF4D23249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				1182620224F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
@@ -5582,7 +5582,7 @@
 				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				110ED56325A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
-				11B38EEC275C54A200205C7B /* RoutingIntentHandler.swift in Sources */,
+				11B38EEC275C54A200205C7B /* IntentHandlerFactory.swift in Sources */,
 				1182620124F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				11482AD62505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
