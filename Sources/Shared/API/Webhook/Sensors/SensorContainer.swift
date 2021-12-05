@@ -194,6 +194,7 @@ public class SensorContainer {
 
     internal func sensors(
         reason: SensorProviderRequest.Reason,
+        limitedTo: [SensorProvider.Type]? = nil,
         location: CLLocation? = nil,
         serverVersion: Version
     ) -> Guarantee<SensorResponse> {
@@ -206,6 +207,13 @@ public class SensorContainer {
 
         let generatedSensors = firstly {
             let promises = providers
+                .filter { providerType in
+                    if let limitedTo = limitedTo {
+                        return limitedTo.contains(where: { ObjectIdentifier($0) == ObjectIdentifier(providerType) })
+                    } else {
+                        return true
+                    }
+                }
                 .map { providerType in providerType.init(request: request) }
                 .map { provider in provider.sensors().map { ($0, provider) } }
 

@@ -738,9 +738,18 @@ public class HomeAssistantAPI {
         trigger: LocationUpdateTrigger,
         location: CLLocation? = nil
     ) -> Promise<Void> {
+        UpdateSensors(trigger: trigger, limitedTo: nil, location: location)
+    }
+
+    internal func UpdateSensors(
+        trigger: LocationUpdateTrigger,
+        limitedTo: [SensorProvider.Type]?,
+        location: CLLocation? = nil
+    ) -> Promise<Void> {
         firstly {
             Current.sensors.sensors(
                 reason: .trigger(trigger.rawValue),
+                limitedTo: limitedTo,
                 location: location,
                 serverVersion: server.info.version
             )
