@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import HAKit
 import PromiseKit
 import Version
 
@@ -101,31 +102,31 @@ public class SensorContainer {
         }
     }
 
-    private class LastSentSensors {
-        public private(set) var queue = DispatchQueue(label: "lastSentSensors-update")
+    private struct LastSentSensors {
         private var value = [String: WebhookSensor]()
-        private var untrustedKeys = Set<String>()
+
+        var sensors: AnyCollection<WebhookSensor> {
+            AnyCollection(value.values)
+        }
 
         private func combined(
             with sensors: [WebhookSensor],
             ignoringKeys: Set<String>
         ) -> [String: WebhookSensor] {
-            dispatchPrecondition(condition: .onQueue(queue))
-            return sensors.reduce(into: value) { result, sensor in
+            sensors.reduce(into: value) { result, sensor in
                 if let uniqueID = sensor.UniqueID, !ignoringKeys.contains(uniqueID) {
                     result[uniqueID] = sensor
                 }
             }
         }
 
-        func combined(with sensors: [WebhookSensor], ignoringExisting: Bool) -> [WebhookSensor] {
-            dispatchPrecondition(condition: .onQueue(queue))
+        mutating func combine(with sensors: [WebhookSensor], ignoringExisting: Bool) {
             let keys = ignoringExisting ? Set(value.keys) : Set()
-            return Array(combined(with: sensors, ignoringKeys: keys).values)
+            value = combined(with: sensors, ignoringKeys: keys)
         }
     }
 
-    private var lastSentSensors: LastSentSensors = .init()
+    private var lastSentSensors: HAProtected<LastSentSensors> = .init(value: .init())
 
     internal func sensors(
         reason: SensorProviderRequest.Reason,
@@ -172,7 +173,7 @@ public class SensorContainer {
             }
         }
 
-        lastUpdate = .init(sensors: generatedSensors.map(on: lastSentSensors.queue) { [self] new in
+        lastUpdate = .init(sensors: generatedSensors.map { [lastSentSensors] new in
             // doesn't store the sent values, that happens when the network request ends
             // this is just what's presented to the user, so we always have the latest version
             let ignoringExisting: Bool
@@ -185,17 +186,18 @@ public class SensorContainer {
                 ignoringExisting = false
             }
 
-            return lastSentSensors
-                .combined(with: new, ignoringExisting: ignoringExisting)
-                .sorted(by: { [weak self] lhs, rhs in
-                    guard let self = self else { return true }
-                    switch (self.isEnabled(sensor: lhs), self.isEnabled(sensor: rhs)) {
-                    case (true, true): return lhs < rhs
-                    case (false, false): return lhs < rhs
-                    case (true, false): return true
-                    case (false, true): return false
-                    }
-                })
+            return lastSentSensors.mutate { lastSentSensors -> AnyCollection<WebhookSensor> in
+                lastSentSensors.combine(with: new, ignoringExisting: ignoringExisting)
+                return lastSentSensors.sensors
+            }.sorted(by: { [weak self] lhs, rhs in
+                guard let self = self else { return true }
+                switch (self.isEnabled(sensor: lhs), self.isEnabled(sensor: rhs)) {
+                case (true, true): return lhs < rhs
+                case (false, false): return lhs < rhs
+                case (true, false): return true
+                case (false, true): return false
+                }
+            })
         })
 
         return generatedSensors.map(SensorResponse.init(sensors:))
