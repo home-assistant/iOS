@@ -18,7 +18,7 @@ enum AccountInitialsImage {
     }
 
     static var defaultSize: CGSize {
-        let height = min(64, UIFont.preferredFont(forTextStyle: .body).lineHeight * 2.0)
+        let height = ceil(min(64, UIFont.preferredFont(forTextStyle: .body).lineHeight * 2.0))
         return CGSize(width: height, height: height)
     }
 
