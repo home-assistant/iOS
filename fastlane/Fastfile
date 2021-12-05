@@ -183,6 +183,7 @@ lane :update_strings do
     'fr' => 'fr',
     'id' => 'id',
     'it' => 'it',
+    'ja' => 'ja',
     'ko' => 'ko-KR',
     'nb' => 'nb',
     'nl' => 'nl',

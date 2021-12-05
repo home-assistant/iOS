@@ -1213,6 +1213,10 @@
 		1155DD08250F4100003405C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1155DD1C250F42EA003405C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ManualPodLicenses.plist; sourceTree = "<group>"; };
+		1159935C275D37B600D805DF /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Intents.strings; sourceTree = "<group>"; };
+		1159935D275D37B600D805DF /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Frontend.strings; sourceTree = "<group>"; };
+		1159935E275D37B600D805DF /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1159935F275D37B600D805DF /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		115AD72C267C57DA0090B243 /* FocusSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSensor.test.swift; sourceTree = "<group>"; };
 		115BC8272676F44E00452430 /* FocusSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSensor.swift; sourceTree = "<group>"; };
 		115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusStatusIntentHandler.swift; sourceTree = "<group>"; };
@@ -4251,6 +4255,7 @@
 				cs,
 				el,
 				id,
+				ja,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -5934,6 +5939,7 @@
 				116570732702A40E003906A7 /* uk */,
 				116570742702A40F003906A7 /* vi */,
 				116570752702A411003906A7 /* cy-GB */,
+				1159935D275D37B600D805DF /* ja */,
 			);
 			name = Frontend.strings;
 			sourceTree = "<group>";
@@ -5969,6 +5975,7 @@
 				B64C5B2B24DCB5390038AB3D /* cs */,
 				1109B6BC25263EEF005D51C2 /* el */,
 				1164DA0025FB41AE00515E8A /* id */,
+				1159935E275D37B600D805DF /* ja */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -6004,6 +6011,7 @@
 				B64C5B2924DCB5390038AB3D /* cs */,
 				1109B6BA25263EEE005D51C2 /* el */,
 				1164D9FE25FB417D00515E8A /* id */,
+				1159935C275D37B600D805DF /* ja */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -6055,6 +6063,7 @@
 				B64C5B2C24DCB5390038AB3D /* cs */,
 				1109B6BD25263F1D005D51C2 /* el */,
 				1164DA0125FB41AE00515E8A /* id */,
+				1159935F275D37B600D805DF /* ja */,
 			);
 			name = Localizable.strings;
 			path = .;
