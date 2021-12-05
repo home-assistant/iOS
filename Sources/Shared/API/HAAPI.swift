@@ -761,19 +761,15 @@ public class HomeAssistantAPI {
             )
             return (sensorResponse, mapper.toJSONArray(sensorResponse.sensors))
         }.then { [server] sensorResponse, payload -> Promise<Void> in
-            firstly { () -> Promise<Void> in
-                if payload.isEmpty {
-                    Current.Log.info("skipping network request for unchanged sensor update")
-                    return .value(())
-                } else {
-                    return Current.webhooks.send(
-                        identifier: .updateSensors,
-                        server: server,
-                        request: .init(type: "update_sensor_states", data: payload)
-                    )
-                }
-            }.done {
-                sensorResponse.didPersist()
+            if payload.isEmpty {
+                Current.Log.info("skipping network request for unchanged sensor update")
+                return .value(())
+            } else {
+                return Current.webhooks.send(
+                    identifier: .updateSensors,
+                    server: server,
+                    request: .init(type: "update_sensor_states", data: payload)
+                )
             }
         }
     }

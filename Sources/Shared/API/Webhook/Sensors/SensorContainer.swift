@@ -32,17 +32,10 @@ public protocol SensorObserver: AnyObject {
 public struct SensorResponse {
     /// The sensors that require update
     public let sensors: [WebhookSensor]
-    /// Invoked when the sensor update's values have been successfully sent to the server
-    public func didPersist() {
-        didPersistHandler(sensors)
-    }
 
-    fileprivate init(sensors: [WebhookSensor], didPersistHandler: @escaping ([WebhookSensor]) -> Void) {
+    fileprivate init(sensors: [WebhookSensor]) {
         self.sensors = sensors
-        self.didPersistHandler = didPersistHandler
     }
-
-    private let didPersistHandler: ([WebhookSensor]) -> Void
 }
 
 public class SensorContainer {
@@ -111,37 +104,7 @@ public class SensorContainer {
     private class LastSentSensors {
         public private(set) var queue = DispatchQueue(label: "lastSentSensors-update")
         private var value = [String: WebhookSensor]()
-        private var pendingUUID = UUID()
         private var untrustedKeys = Set<String>()
-
-        private func nextPendingUUID() -> UUID {
-            dispatchPrecondition(condition: .onQueue(queue))
-
-            let uuid = UUID()
-            pendingUUID = uuid
-            return uuid
-        }
-
-        func filter(sensors: [WebhookSensor]) -> ([WebhookSensor], UUID) {
-            dispatchPrecondition(condition: .onQueue(queue))
-
-            let filteredSensors = sensors.filter { sensor in
-                if let uniqueID = sensor.UniqueID {
-                    if untrustedKeys.contains(uniqueID) {
-                        return true
-                    } else {
-                        return value[uniqueID] != sensor
-                    }
-                } else {
-                    return false
-                }
-            }
-
-            // now that we're about to send up a new value, until we hear back we can't trust our cache
-            untrustedKeys.formUnion(filteredSensors.compactMap(\.UniqueID))
-
-            return (filteredSensors, nextPendingUUID())
-        }
 
         private func combined(
             with sensors: [WebhookSensor],
@@ -159,34 +122,6 @@ public class SensorContainer {
             dispatchPrecondition(condition: .onQueue(queue))
             let keys = ignoringExisting ? Set(value.keys) : Set()
             return Array(combined(with: sensors, ignoringKeys: keys).values)
-        }
-
-        func combine(with sensors: [WebhookSensor], uuid: UUID) {
-            let isOutOfOrder = uuid != pendingUUID
-
-            if isOutOfOrder {
-                let existingKeys = Set(value.keys)
-
-                // we can't trust our local cache anymore since the out-of-order request may have overwritten
-                // this is similar to how we don't keep a cache around in-between network request start and end
-                untrustedKeys.formUnion(
-                    sensors.filter { sensor in
-                        if let uniqueID = sensor.UniqueID {
-                            return value[uniqueID] != sensor
-                        } else {
-                            return false
-                        }
-                    }.compactMap(\.UniqueID)
-                )
-
-                // don't override anything that's already persisted, but allow things in if they're not already saved
-                // we also avoid inserting into the cache anything that may have been overridden
-                value = combined(with: sensors, ignoringKeys: existingKeys)
-            } else {
-                // latest update, we can trust all the values are the latest we've sent
-                value = combined(with: sensors, ignoringKeys: Set())
-                untrustedKeys.removeAll()
-            }
         }
     }
 
@@ -263,25 +198,7 @@ public class SensorContainer {
                 })
         })
 
-        switch request.reason {
-        case .trigger:
-            let filteredSensors = firstly {
-                generatedSensors
-            }.map(on: lastSentSensors.queue) { [self] sensors -> ([WebhookSensor], UUID) in
-                lastSentSensors.filter(sensors: sensors)
-            }
-
-            return filteredSensors.map { [self] sensors, uuid in
-                SensorResponse(sensors: sensors, didPersistHandler: { sensors in
-                    lastSentSensors.queue.async {
-                        // finally store what we sent, so we can avoid sending again
-                        lastSentSensors.combine(with: sensors, uuid: uuid)
-                    }
-                })
-            }
-        case .registration:
-            return generatedSensors.map { SensorResponse(sensors: $0, didPersistHandler: { _ in }) }
-        }
+        return generatedSensors.map(SensorResponse.init(sensors:))
     }
 
     private func notifySignal(reason: SensorContainerUpdateReason) {
