@@ -433,6 +433,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.catch { error in
             Current.Log.error("check error: \(error)")
         }
+
+        showNotificationCategoryAlertIfNeeded()
+    }
+
+    private func showNotificationCategoryAlertIfNeeded() {
+        guard Current.realm().objects(NotificationCategory.self).isEmpty == false else {
+            return
+        }
+
+        let userDefaults = UserDefaults.standard
+        let seenKey = "category-deprecation-2-" + Current.clientVersion().description
+
+        guard !userDefaults.bool(forKey: seenKey) else {
+            return
+        }
+
+        when(fulfilled: Current.apis.map { $0.connection.caches.user.once().promise }).done { [sceneManager] users in
+            guard users.contains(where: \.isAdmin) else {
+                Current.Log.info("not showing because not an admin anywhere")
+                return
+            }
+
+            let alert = UIAlertController(
+                title: L10n.Alerts.Deprecations.NotificationCategory.title,
+                message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2021.2"),
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: L10n.Nfc.List.learnMore, style: .default, handler: { _ in
+                userDefaults.set(true, forKey: seenKey)
+                openURLInBrowser(
+                    URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
+                    nil
+                )
+            }))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: { _ in
+                userDefaults.set(true, forKey: seenKey)
+            }))
+            sceneManager.webViewWindowControllerPromise.done {
+                $0.present(alert)
+            }
+        }.catch { error in
+            Current.Log.error("couldn't check for if user: \(error)")
+        }
     }
 
     func setupWatchCommunicator() {
