@@ -33,6 +33,8 @@
 "alerts.auth_required.title" = "Du må logge inn for å fortsette";
 "alerts.confirm.cancel" = "Avbryt";
 "alerts.confirm.ok" = "OK";
+"alerts.deprecations.notification_category.message" = "Du må migrere til handlinger definert i selve varselet før %1$@ .";
+"alerts.deprecations.notification_category.title" = "Varslingskategorier er avviklet";
 "alerts.open_url_from_deep_link.message" = "Åpne URL-adressen (%@) fra deep koblingen?";
 "alerts.open_url_from_notification.message" = "Åpne URL ( %@ ) funnet i varsel?";
 "alerts.open_url_from_notification.title" = "Åpne URL?";

@@ -81,7 +81,7 @@
 "glRCfJ" = "Failed: Home Assistant is not currently reachable";
 "gv7Gg6" = "Location";
 "h1xQ53" = "Update Sensors";
-"hKNPaD" = "Server";
+"hKNPaD" = "サーバー";
 "hLFNfv" = "Failed: ${error}";
 "hsrlTY" = "Get a single still frame from a camera";
 "iMvUhs" = "Open Page";
@@ -117,7 +117,7 @@
 "tycImk" = "Performs an action defined in the app";
 "v7TSD5" = "Send Location";
 "vAIAF2" = "Send a sensor update to Home Assistant";
-"vebd70" = "Server";
+"vebd70" = "サーバー";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
 "xfXG6b" = "Which server?";
 "xhwpj4" = "Done";

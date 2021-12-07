@@ -33,7 +33,6 @@
 "alerts.auth_required.title" = "You must sign in to continue";
 "alerts.confirm.cancel" = "Cancel";
 "alerts.confirm.ok" = "OK";
-/* value filled in will be like iOS-2021.2 */
 "alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
 "alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
 "alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
