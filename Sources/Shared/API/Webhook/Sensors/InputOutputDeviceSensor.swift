@@ -143,18 +143,21 @@ public class InputOutputDeviceSensor: SensorProvider {
 
         return Self.sensors(
             name: "Camera",
+            uniqueID: "camera",
             iconOn: "mdi:camera",
             iconOff: "mdi:camera-off",
             all: cameras.map { $0.name ?? cameraFallback },
             active: cameras.filter(\.isOn).map { $0.name ?? cameraFallback }
         ) + Self.sensors(
             name: "Audio Input",
+            uniqueID: "microphone",
             iconOn: "mdi:microphone",
             iconOff: "mdi:microphone-off",
             all: audioInputs.map { $0.name ?? audioInputFallback },
             active: audioInputs.filter(\.isOn).map { $0.name ?? audioInputFallback }
         ) + Self.sensors(
             name: "Audio Output",
+            uniqueID: "audio_output",
             iconOn: "mdi:volume-high",
             iconOff: "mdi:volume-low",
             all: audioOutputs.map { $0.name ?? audioOutputFallback },
@@ -164,6 +167,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
     private static func sensors(
         name: String,
+        uniqueID: String,
         iconOn: String,
         iconOff: String,
         all: [String],
@@ -174,7 +178,7 @@ public class InputOutputDeviceSensor: SensorProvider {
         return [
             with(WebhookSensor(
                 name: "\(name) In Use",
-                uniqueID: "\(name.lowercased())_in_use",
+                uniqueID: "\(uniqueID)_in_use",
                 icon: anyActive ? iconOn : iconOff,
                 state: anyActive
             )) {
@@ -182,7 +186,7 @@ public class InputOutputDeviceSensor: SensorProvider {
             },
             with(WebhookSensor(
                 name: "Active \(name)",
-                uniqueID: "active_\(name.lowercased())",
+                uniqueID: "active_\(uniqueID)",
                 icon: anyActive ? iconOn : iconOff,
                 state: active.first ?? "Inactive"
             )) {
