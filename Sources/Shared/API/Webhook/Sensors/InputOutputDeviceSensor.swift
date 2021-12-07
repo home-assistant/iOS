@@ -8,7 +8,7 @@ import CoreMediaIO
 import CoreAudio
 #endif
 
-private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
+private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     let signal: () -> Void
 
     enum ObservedObjectType: Hashable {
@@ -82,9 +82,9 @@ private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     #endif
 }
 
-public class InputDeviceSensor: SensorProvider {
-    public enum InputDeviceError: Error, Equatable {
-        case noInputs
+public class InputOutputDeviceSensor: SensorProvider {
+    public enum InputOutputDeviceError: Error, Equatable {
+        case noInputsOrOutputs
     }
 
     public let request: SensorProviderRequest
@@ -107,7 +107,7 @@ public class InputDeviceSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        let updateSignaler: InputDeviceUpdateSignaler = request.dependencies.updateSignaler(for: self)
+        let updateSignaler: InputOutputDeviceUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         let sensors: Promise<[WebhookSensor]>
 
@@ -116,15 +116,16 @@ public class InputDeviceSensor: SensorProvider {
         sensors = firstly {
             Promise<Void>.value(())
         }.map(on: queue) { [cameraSystemObject, audioSystemObject] in
-            (cameraSystemObject.allCameras, audioSystemObject.allInputDevices)
-        }.get(on: queue) { cameras, microphones in
+            (cameraSystemObject.allCameras, audioSystemObject.allInputDevices, audioSystemObject.allOutputDevices)
+        }.get(on: queue) { cameras, audioInputs, audioOutputs in
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
-            microphones.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
-        }.map(on: queue) { cameras, microphones -> [WebhookSensor] in
-            Self.sensors(cameras: cameras, microphones: microphones)
+            audioInputs.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
+            audioOutputs.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
+        }.map(on: queue) { cameras, audioInputs, audioOutputs -> [WebhookSensor] in
+            Self.sensors(cameras: cameras, audioInputs: audioInputs, audioOutputs: audioOutputs)
         }
         #else
-        sensors = .init(error: InputDeviceError.noInputs)
+        sensors = .init(error: InputOutputDeviceError.noInputsOrOutputs)
         #endif
 
         return sensors
@@ -133,28 +134,40 @@ public class InputDeviceSensor: SensorProvider {
     #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
-        microphones: [HACoreAudioObjectDevice]
+        audioInputs: [HACoreAudioObjectDevice],
+        audioOutputs: [HACoreAudioObjectDevice]
     ) -> [WebhookSensor] {
         let cameraFallback = "Unknown Camera"
-        let microphoneFallback = "Unknown Microphone"
+        let audioInputFallback = "Unknown Audio Input"
+        let audioOutputFallback = "Unknown Audio Output"
 
         return Self.sensors(
             name: "Camera",
+            uniqueID: "camera",
             iconOn: "mdi:camera",
             iconOff: "mdi:camera-off",
             all: cameras.map { $0.name ?? cameraFallback },
             active: cameras.filter(\.isOn).map { $0.name ?? cameraFallback }
         ) + Self.sensors(
-            name: "Microphone",
+            name: "Audio Input",
+            uniqueID: "microphone",
             iconOn: "mdi:microphone",
             iconOff: "mdi:microphone-off",
-            all: microphones.map { $0.name ?? microphoneFallback },
-            active: microphones.filter(\.isOn).map { $0.name ?? microphoneFallback }
+            all: audioInputs.map { $0.name ?? audioInputFallback },
+            active: audioInputs.filter(\.isOn).map { $0.name ?? audioInputFallback }
+        ) + Self.sensors(
+            name: "Audio Output",
+            uniqueID: "audio_output",
+            iconOn: "mdi:volume-high",
+            iconOff: "mdi:volume-low",
+            all: audioOutputs.map { $0.name ?? audioOutputFallback },
+            active: audioOutputs.filter(\.isOn).map { $0.name ?? audioOutputFallback }
         )
     }
 
     private static func sensors(
         name: String,
+        uniqueID: String,
         iconOn: String,
         iconOff: String,
         all: [String],
@@ -165,7 +178,7 @@ public class InputDeviceSensor: SensorProvider {
         return [
             with(WebhookSensor(
                 name: "\(name) In Use",
-                uniqueID: "\(name.lowercased())_in_use",
+                uniqueID: "\(uniqueID)_in_use",
                 icon: anyActive ? iconOn : iconOff,
                 state: anyActive
             )) {
@@ -173,7 +186,7 @@ public class InputDeviceSensor: SensorProvider {
             },
             with(WebhookSensor(
                 name: "Active \(name)",
-                uniqueID: "active_\(name.lowercased())",
+                uniqueID: "active_\(uniqueID)",
                 icon: anyActive ? iconOn : iconOff,
                 state: active.first ?? "Inactive"
             )) {

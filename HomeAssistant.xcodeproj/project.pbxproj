@@ -634,8 +634,8 @@
 		B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */; };
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
-		B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
-		B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputDeviceSensor.swift */; };
+		B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */; };
+		B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */; };
 		B616B299227ED68E00828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
@@ -1688,7 +1688,7 @@
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationContent-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationContent-metadata.plist"; sourceTree = "<group>"; };
-		B613936824F728F8002B8C5D /* InputDeviceSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDeviceSensor.swift; sourceTree = "<group>"; };
+		B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputOutputDeviceSensor.swift; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveredHomeAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveredHomeAssistant.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
@@ -2622,7 +2622,7 @@
 				11AF4D18249C8253006C74C0 /* PedometerSensor.swift */,
 				119385A3249E8E360097F497 /* StorageSensor.swift */,
 				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
-				B613936824F728F8002B8C5D /* InputDeviceSensor.swift */,
+				B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */,
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
 				118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */,
@@ -5423,7 +5423,7 @@
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
-				B613936A24F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
+				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				11CFD785273662DF0082D557 /* Server.swift in Sources */,
@@ -5605,7 +5605,7 @@
 				11AA9A8A266B140A00B829E1 /* NotificationParserLegacy.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
-				B613936924F728F8002B8C5D /* InputDeviceSensor.swift in Sources */,
+				B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
