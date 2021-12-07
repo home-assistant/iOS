@@ -180,6 +180,16 @@ public enum L10n {
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.confirm.ok") }
     }
+    public enum Deprecations {
+      public enum NotificationCategory {
+        /// You must migrate to actions defined in the notification itself before %1$@.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "alerts.deprecations.notification_category.message", String(describing: p1))
+        }
+        /// Notification Categories are deprecated
+        public static var title: String { return L10n.tr("Localizable", "alerts.deprecations.notification_category.title") }
+      }
+    }
     public enum OpenUrlFromDeepLink {
       /// Open URL (%@) from deep link?
       public static func message(_ p1: Any) -> String {
