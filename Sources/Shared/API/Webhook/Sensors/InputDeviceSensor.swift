@@ -116,12 +116,13 @@ public class InputDeviceSensor: SensorProvider {
         sensors = firstly {
             Promise<Void>.value(())
         }.map(on: queue) { [cameraSystemObject, audioSystemObject] in
-            (cameraSystemObject.allCameras, audioSystemObject.allInputDevices)
-        }.get(on: queue) { cameras, microphones in
+            (cameraSystemObject.allCameras, audioSystemObject.allInputDevices, audioSystemObject.allOutputDevices)
+        }.get(on: queue) { cameras, microphones, speakers in
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
             microphones.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
-        }.map(on: queue) { cameras, microphones -> [WebhookSensor] in
-            Self.sensors(cameras: cameras, microphones: microphones)
+            speakers.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
+        }.map(on: queue) { cameras, microphones, speakers -> [WebhookSensor] in
+            Self.sensors(cameras: cameras, microphones: microphones, speakers: speakers)
         }
         #else
         sensors = .init(error: InputDeviceError.noInputs)
@@ -133,10 +134,12 @@ public class InputDeviceSensor: SensorProvider {
     #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
-        microphones: [HACoreAudioObjectDevice]
+        microphones: [HACoreAudioObjectDevice],
+        speakers: [HACoreAudioObjectDevice]
     ) -> [WebhookSensor] {
         let cameraFallback = "Unknown Camera"
         let microphoneFallback = "Unknown Microphone"
+        let speakerFallback = "Unknown Speaker"
 
         return Self.sensors(
             name: "Camera",
@@ -150,6 +153,12 @@ public class InputDeviceSensor: SensorProvider {
             iconOff: "mdi:microphone-off",
             all: microphones.map { $0.name ?? microphoneFallback },
             active: microphones.filter(\.isOn).map { $0.name ?? microphoneFallback }
+        ) + Self.sensors(
+            name: "Speaker",
+            iconOn: "mdi:volume-high",
+            iconOff: "mdi:volume-low",
+            all: speakers.map { $0.name ?? speakerFallback},
+            active: speakers.filter(\.isOn).map { $0.name ?? speakerFallback }
         )
     }
 
