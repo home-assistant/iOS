@@ -33,6 +33,8 @@
 "alerts.auth_required.title" = "Du måste logga in för att fortsätta";
 "alerts.confirm.cancel" = "Avbryt";
 "alerts.confirm.ok" = "OK";
+"alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
+"alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
 "alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Öppna URL (%@) i notisen?";
 "alerts.open_url_from_notification.title" = "Öppna URL?";

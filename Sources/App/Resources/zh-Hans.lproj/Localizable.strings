@@ -33,6 +33,8 @@
 "alerts.auth_required.title" = "您必须登录才能继续";
 "alerts.confirm.cancel" = "取消";
 "alerts.confirm.ok" = "确定";
+"alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
+"alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
 "alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "打开通知中的网址 (%@) ？";
 "alerts.open_url_from_notification.title" = "打开网址？";

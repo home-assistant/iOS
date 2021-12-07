@@ -33,6 +33,8 @@
 "alerts.auth_required.title" = "Πρέπει να συνδεθείτε για να συνεχίσετε";
 "alerts.confirm.cancel" = "Ακύρωση";
 "alerts.confirm.ok" = "Εντάξει";
+"alerts.deprecations.notification_category.message" = "Πρέπει να κάνετε μετεγκατάσταση σε ενέργειες που ορίζονται στην ίδια την ειδοποίηση πριν από το %1$@.";
+"alerts.deprecations.notification_category.title" = "Οι κατηγορίες ειδοποιήσεων έχουν καταργηθεί";
 "alerts.open_url_from_deep_link.message" = "Άνοιγμα διεύθυνσης URL (%@) από βαθιά σύνδεση;";
 "alerts.open_url_from_notification.message" = "Άνοιγμα διεύθυνσης URL ( %@ ) που βρέθηκε στην ειδοποίηση;";
 "alerts.open_url_from_notification.title" = "Άνοιγμα διεύθυνσης URL;";

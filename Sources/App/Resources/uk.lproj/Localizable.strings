@@ -33,6 +33,8 @@
 "alerts.auth_required.title" = "Ви повинні увійти, щоб продовжити";
 "alerts.confirm.cancel" = "Скасувати";
 "alerts.confirm.ok" = "ОК";
+"alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
+"alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
 "alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Відкрити URL-адресу (%@), знайдену у сповіщенні?";
 "alerts.open_url_from_notification.title" = "Відкрити URL-адресу?";
