@@ -94,6 +94,7 @@ public class WatchComplication: Object, ImmutableMappable {
         self.identifier = try map.value("identifier")
         self.name = try map.value("name")
         self.IsPublic = try map.value("IsPublic")
+        self.serverIdentifier = try map.value("serverIdentifier")
     }
 
     public func mapping(map: ObjectMapper.Map) {
@@ -104,6 +105,7 @@ public class WatchComplication: Object, ImmutableMappable {
         identifier >>> map["identifier"]
         name >>> map["name"]
         IsPublic >>> map["IsPublic"]
+        serverIdentifier >>> map["serverIdentifier"]
     }
 
     enum RenderedValueType: Hashable {
