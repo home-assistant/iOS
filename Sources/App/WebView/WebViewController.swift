@@ -129,6 +129,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         userContentController.add(self, name: "revokeExternalAuth")
         userContentController.add(self, name: "externalBus")
         userContentController.add(self, name: "updateThemeColors")
+        userContentController.add(self, name: "logError")
 
         guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
               let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
@@ -138,6 +139,21 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         userContentController.addUserScript(WKUserScript(
             source: wsBridgeJS,
             injectionTime: .atDocumentEnd,
+            forMainFrameOnly: false
+        ))
+
+        userContentController.addUserScript(.init(
+            source: """
+                window.addEventListener("error", (e) => {
+                    window.webkit.messageHandlers.logError.postMessage({
+                        "message": JSON.stringify(e.message),
+                        "filename": JSON.stringify(e.filename),
+                        "lineno": JSON.stringify(e.lineno),
+                        "colno": JSON.stringify(e.colno),
+                    });
+                });
+            """,
+            injectionTime: .atDocumentStart,
             forMainFrameOnly: false
         ))
 
@@ -763,13 +779,19 @@ extension String {
 
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard let messageBody = message.body as? [String: Any] else { return }
+        guard let messageBody = message.body as? [String: Any] else {
+            Current.Log.error("received message for \(message.name) but of type: \(type(of: message.body))")
+            return
+        }
 
-        if message.name == "externalBus" {
+        switch message.name {
+        case "externalBus":
             handleExternalMessage(messageBody)
-        } else if message.name == "updateThemeColors" {
+        case "updateThemeColors":
             handleThemeUpdate(messageBody)
-        } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
+        case "getExternalAuth":
+            guard let callbackName = messageBody["callback"] else { return }
+
             let force = messageBody["force"] as? Bool ?? false
 
             Current.Log.verbose("getExternalAuth called, forced: \(force)")
@@ -793,7 +815,9 @@ extension WebViewController: WKScriptMessageHandler {
                 self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
                 Current.Log.error("Failed to authenticate webview: \(error)")
             }
-        } else if message.name == "revokeExternalAuth", let callbackName = messageBody["callback"] {
+        case "revokeExternalAuth":
+            guard let callbackName = messageBody["callback"] else { return }
+
             Current.Log.warning("Revoking access token")
 
             firstly {
@@ -817,6 +841,10 @@ extension WebViewController: WKScriptMessageHandler {
             }.catch { error in
                 Current.Log.error("Failed to revoke token: \(error)")
             }
+        case "logError":
+            Current.Log.error("WebView error: \(messageBody.description.replacingOccurrences(of: "\n", with: " "))")
+        default:
+            Current.Log.error("unknown message: \(message.name)")
         }
     }
 
