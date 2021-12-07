@@ -8,7 +8,7 @@ import CoreMediaIO
 import CoreAudio
 #endif
 
-private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
+private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     let signal: () -> Void
 
     enum ObservedObjectType: Hashable {
@@ -82,9 +82,9 @@ private class InputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     #endif
 }
 
-public class InputDeviceSensor: SensorProvider {
-    public enum InputDeviceError: Error, Equatable {
-        case noInputs
+public class InputOutputDeviceSensor: SensorProvider {
+    public enum InputOutputDeviceError: Error, Equatable {
+        case noInputsOrOutputs
     }
 
     public let request: SensorProviderRequest
@@ -107,7 +107,7 @@ public class InputDeviceSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        let updateSignaler: InputDeviceUpdateSignaler = request.dependencies.updateSignaler(for: self)
+        let updateSignaler: InputOutputDeviceUpdateSignaler = request.dependencies.updateSignaler(for: self)
 
         let sensors: Promise<[WebhookSensor]>
 
@@ -125,7 +125,7 @@ public class InputDeviceSensor: SensorProvider {
             Self.sensors(cameras: cameras, microphones: microphones, speakers: speakers)
         }
         #else
-        sensors = .init(error: InputDeviceError.noInputs)
+        sensors = .init(error: InputOutputDeviceError.noInputsOrOutputs)
         #endif
 
         return sensors
@@ -157,7 +157,7 @@ public class InputDeviceSensor: SensorProvider {
             name: "Speaker",
             iconOn: "mdi:volume-high",
             iconOff: "mdi:volume-low",
-            all: speakers.map { $0.name ?? speakerFallback},
+            all: speakers.map { $0.name ?? speakerFallback },
             active: speakers.filter(\.isOn).map { $0.name ?? speakerFallback }
         )
     }
