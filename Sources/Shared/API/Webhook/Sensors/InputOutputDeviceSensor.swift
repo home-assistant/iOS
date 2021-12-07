@@ -117,12 +117,12 @@ public class InputOutputDeviceSensor: SensorProvider {
             Promise<Void>.value(())
         }.map(on: queue) { [cameraSystemObject, audioSystemObject] in
             (cameraSystemObject.allCameras, audioSystemObject.allInputDevices, audioSystemObject.allOutputDevices)
-        }.get(on: queue) { cameras, microphones, speakers in
+        }.get(on: queue) { cameras, audioInputs, audioOutputs in
             cameras.forEach { updateSignaler.addCoreMediaObserver(for: $0.id, property: .isRunningSomewhere) }
-            microphones.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
-            speakers.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
-        }.map(on: queue) { cameras, microphones, speakers -> [WebhookSensor] in
-            Self.sensors(cameras: cameras, microphones: microphones, speakers: speakers)
+            audioInputs.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
+            audioOutputs.forEach { updateSignaler.addCoreAudioObserver(for: $0.id, property: .isRunningSomewhere) }
+        }.map(on: queue) { cameras, audioInputs, audioOutputs -> [WebhookSensor] in
+            Self.sensors(cameras: cameras, audioInputs: audioInputs, audioOutputs: audioOutputs)
         }
         #else
         sensors = .init(error: InputOutputDeviceError.noInputsOrOutputs)
@@ -134,12 +134,12 @@ public class InputOutputDeviceSensor: SensorProvider {
     #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
-        microphones: [HACoreAudioObjectDevice],
-        speakers: [HACoreAudioObjectDevice]
+        audioInputs: [HACoreAudioObjectDevice],
+        audioOutputs: [HACoreAudioObjectDevice]
     ) -> [WebhookSensor] {
         let cameraFallback = "Unknown Camera"
-        let microphoneFallback = "Unknown Microphone"
-        let speakerFallback = "Unknown Speaker"
+        let audioInputFallback = "Unknown Audio Input"
+        let audioOutputFallback = "Unknown Audio Output"
 
         return Self.sensors(
             name: "Camera",
@@ -148,17 +148,17 @@ public class InputOutputDeviceSensor: SensorProvider {
             all: cameras.map { $0.name ?? cameraFallback },
             active: cameras.filter(\.isOn).map { $0.name ?? cameraFallback }
         ) + Self.sensors(
-            name: "Microphone",
+            name: "Audio Input",
             iconOn: "mdi:microphone",
             iconOff: "mdi:microphone-off",
-            all: microphones.map { $0.name ?? microphoneFallback },
-            active: microphones.filter(\.isOn).map { $0.name ?? microphoneFallback }
+            all: audioInputs.map { $0.name ?? audioInputFallback },
+            active: audioInputs.filter(\.isOn).map { $0.name ?? audioInputFallback }
         ) + Self.sensors(
-            name: "Speaker",
+            name: "Audio Output",
             iconOn: "mdi:volume-high",
             iconOff: "mdi:volume-low",
-            all: speakers.map { $0.name ?? speakerFallback },
-            active: speakers.filter(\.isOn).map { $0.name ?? speakerFallback }
+            all: audioOutputs.map { $0.name ?? audioOutputFallback },
+            active: audioOutputs.filter(\.isOn).map { $0.name ?? audioOutputFallback }
         )
     }
 
