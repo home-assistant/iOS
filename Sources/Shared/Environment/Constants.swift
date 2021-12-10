@@ -144,4 +144,5 @@ public extension Version {
     static var tagPlatformTrigger: Version = .init(minor: 115, prerelease: "any0")
     static var actionSyncing: Version = .init(minor: 115, prerelease: "any0")
     static var localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
+    static var externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")
 }

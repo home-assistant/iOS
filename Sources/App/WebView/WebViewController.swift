@@ -105,6 +105,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             )
         }
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(scheduleReconnectBackgroundTimer),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+
         tokens.append(server.observe { [weak self] _ in
             self?.connectionInfoDidChange()
         })
@@ -760,6 +767,44 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             webView.evaluateJavaScript("setOverrideZoomEnabled(\(zoomValue))", completionHandler: nil)
         }
     }
+
+    private var reconnectBackgroundTimer: Timer? {
+        willSet {
+            if reconnectBackgroundTimer != newValue {
+                reconnectBackgroundTimer?.invalidate()
+            }
+        }
+    }
+
+    @objc private func scheduleReconnectBackgroundTimer() {
+        precondition(Thread.isMainThread)
+
+        guard isViewLoaded, server.info.version >= .externalBusCommandRestart else { return }
+
+        // On iOS 15, Apple switched to using NSURLSession's WebSocket implementation, which is pretty bad at detecting
+        // any kind of networking failure. Even more troubling, it doesn't realize there's a failure due to background
+        // so it spends dozens of seconds waiting for a connection reset externally.
+        //
+        // We work around this by detecting being in the background for long enough that it's likely the connection will
+        // need to reconnect, anyway (similar to how we do it in HAKit). When this happens, we ask the frontend to
+        // reset its WebSocket connection, thus eliminating the wait.
+        //
+        // It's likely this doesn't apply before iOS 15, but it may improve the reconnect timing there anyhow.
+
+        reconnectBackgroundTimer = Timer.scheduledTimer(
+            withTimeInterval: 5.0,
+            repeats: true,
+            block: { [weak self] timer in
+                if let self = self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
+                    self.sendExternalBus(message: .init(command: "restart"))
+                }
+
+                if UIApplication.shared.applicationState == .active {
+                    timer.invalidate()
+                }
+            }
+        )
+    }
 }
 
 extension String {
@@ -783,6 +828,8 @@ extension WebViewController: WKScriptMessageHandler {
             Current.Log.error("received message for \(message.name) but of type: \(type(of: message.body))")
             return
         }
+
+        Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
 
         switch message.name {
         case "externalBus":
@@ -881,8 +928,6 @@ extension WebViewController: WKScriptMessageHandler {
             return
         }
 
-        // Current.Log.verbose("Received external bus message \(incomingMessage)")
-
         var response: Guarantee<WebSocketMessage>?
 
         switch incomingMessage.MessageType {
@@ -943,41 +988,38 @@ extension WebViewController: WKScriptMessageHandler {
                 Current.Log.error("couldn't write tag via external bus: \(error)")
                 seal(false)
             }
+        case "theme-update":
+            webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
         default:
-            Current.Log.error("Received unknown external message \(incomingMessage)")
+            Current.Log.error("unknown: \(incomingMessage.MessageType)")
             return
         }
 
-        response?.done(on: .main) { outgoing in
-            // Current.Log.verbose("Sending response to \(outgoing)")
+        response?.then { [self] outgoing in
+            sendExternalBus(message: outgoing)
+        }.cauterize()
+    }
 
-            var encodedMsg: Data?
-
-            do {
-                encodedMsg = try JSONEncoder().encode(outgoing)
-            } catch let error as NSError {
-                Current.Log.error("Unable to encode outgoing message! \(error)")
-                return
-            }
-
-            guard let jsonString = String(data: encodedMsg!, encoding: .utf8) else {
-                Current.Log.error("Could not convert JSON Data to JSON String")
-                return
-            }
-
-            let script = "window.externalBus(\(jsonString))"
-            // Current.Log.verbose("Sending message to externalBus \(script)")
-            self.webView.evaluateJavaScript(script, completionHandler: { _, error in
-                if let error = error {
-                    Current.Log.error("Failed to fire message to externalBus: \(error)")
+    @discardableResult
+    private func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
+        Promise<Void> { seal in
+            DispatchQueue.main.async { [self] in
+                do {
+                    let encodedMsg = try JSONEncoder().encode(message)
+                    let jsonString = String(decoding: encodedMsg, as: UTF8.self)
+                    let script = "window.externalBus(\(jsonString))"
+                    Current.Log.verbose("sending \(jsonString)")
+                    webView.evaluateJavaScript(script, completionHandler: { _, error in
+                        if let error = error {
+                            Current.Log.error("failed to fire message to externalBus: \(error)")
+                        }
+                        seal.resolve(error)
+                    })
+                } catch {
+                    Current.Log.error("failed to send \(message): \(error)")
+                    seal.reject(error)
                 }
-
-                /* if let result = result {
-                     Current.Log.verbose("Success on firing message to externalBus: \(String(describing: result))")
-                 } else {
-                     Current.Log.verbose("Sent message to externalBus")
-                 } */
-            })
+            }
         }
     }
 }
