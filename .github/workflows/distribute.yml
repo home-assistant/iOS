@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_13.1.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_13.2.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
