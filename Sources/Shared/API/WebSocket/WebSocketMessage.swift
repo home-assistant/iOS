@@ -8,6 +8,7 @@ public class WebSocketMessage: Codable {
     public var Result: [String: Any]?
     public var Message: String?
     public var HAVersion: String?
+    public var command: String?
 
     private enum CodingKeys: String, CodingKey {
         case MessageType = "type"
@@ -17,6 +18,7 @@ public class WebSocketMessage: Codable {
         case Result = "result"
         case Message = "message"
         case HAVersion = "ha_version"
+        case command = "command"
     }
 
     public required init(from decoder: Decoder) throws {
@@ -28,6 +30,7 @@ public class WebSocketMessage: Codable {
         self.Result = try? values.decode([String: Any].self, forKey: .Result)
         self.Message = try? values.decode(String.self, forKey: .Message)
         self.HAVersion = try? values.decode(String.self, forKey: .HAVersion)
+        self.command = try values.decodeIfPresent(String.self, forKey: .command)
     }
 
     public init?(_ dictionary: [String: Any]) {
@@ -39,6 +42,7 @@ public class WebSocketMessage: Codable {
         self.Payload = dictionary["payload"] as? [String: Any]
         self.Result = dictionary["result"] as? [String: Any]
         self.Success = dictionary["success"] as? Bool
+        self.command = dictionary["command"] as? String
     }
 
     public init(_ incomingMessage: WebSocketMessage, _ result: [String: Any]) {
@@ -46,6 +50,7 @@ public class WebSocketMessage: Codable {
         self.MessageType = "result"
         self.Result = result
         self.Success = true
+        self.command = nil
     }
 
     public init(id: Int, type: String, result: [String: Any], success: Bool = true) {
@@ -53,6 +58,13 @@ public class WebSocketMessage: Codable {
         self.MessageType = type
         self.Result = result
         self.Success = success
+        self.command = nil
+    }
+
+    public init(command: String) {
+        self.ID = -1
+        self.MessageType = "command"
+        self.command = command
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -70,6 +82,7 @@ public class WebSocketMessage: Codable {
         if let Result = Result {
             try container.encode(Result, forKey: .Result)
         }
+        try container.encodeIfPresent(command, forKey: .command)
     }
 
     init(_ messageType: String) {
