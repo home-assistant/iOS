@@ -33,8 +33,8 @@
 "alerts.auth_required.title" = "Devam etmek için giriş yapınız";
 "alerts.confirm.cancel" = "İptal";
 "alerts.confirm.ok" = "Tamam";
-"alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
-"alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
+"alerts.deprecations.notification_category.message" = "%1$@ önce bildirimin kendisinde tanımlanan eylemlere geçmeniz gerekir.";
+"alerts.deprecations.notification_category.title" = "Bildirim Kategorileri kullanımdan kaldırıldı";
 "alerts.open_url_from_deep_link.message" = "URL ( %@ ) derin bağlantıdan açılsın mı?";
 "alerts.open_url_from_notification.message" = "Bildirimde açık URL ( %@ ) bulundu mu?";
 "alerts.open_url_from_notification.title" = "URL Aç?";
