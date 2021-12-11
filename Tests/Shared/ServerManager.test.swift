@@ -178,10 +178,10 @@ class ServerManagerTests: XCTestCase {
 
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
-            $0.sortOrder = 2000
+            $0.sortOrder = 1000
         })
         XCTAssertEqual(servers.server(for: "fake3")?.info, with(info3) {
-            $0.sortOrder = 3000
+            $0.sortOrder = 2000
         })
 
         let server2_afterRestore = try XCTUnwrap(servers.server(for: "fake2"))
@@ -216,10 +216,10 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(Set(keychain.data.keys), Set(["fake1", "fake2"]))
 
         XCTAssertEqual(servers.server(for: "fake1")?.info, with(info1) {
-            $0.sortOrder = 1000
+            $0.sortOrder = 0
         })
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
-            $0.sortOrder = 2000
+            $0.sortOrder = 1000
         })
         XCTAssertNil(servers.server(for: "fake3"))
 
@@ -370,6 +370,42 @@ class ServerManagerTests: XCTestCase {
             servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake3"), fallback: false),
             nil
         )
+    }
+
+    func testServerUpdatePerField() throws {
+        try setupRegular([
+            "fake1": with(.fake()) {
+                $0.sortOrder = 1
+                $0.connection.webhookID = "webhook1"
+            },
+        ])
+
+        var decoded: ServerInfo {
+            get throws {
+                try JSONDecoder().decode(ServerInfo.self, from: try XCTUnwrap(keychain.data["fake1"]))
+            }
+        }
+
+        let server = try XCTUnwrap(servers.all.first)
+        server.info.remoteName = "updated_name"
+        XCTAssertEqual(server.info.remoteName, "updated_name")
+        XCTAssertEqual(try decoded.remoteName, "updated_name")
+
+        server.info.sortOrder = 3
+        XCTAssertEqual(server.info.sortOrder, 3)
+        XCTAssertEqual(try decoded.sortOrder, 3)
+
+        server.info.version = Version(major: 11)
+        XCTAssertEqual(server.info.version.major, 11)
+        XCTAssertEqual(try decoded.version.major, 11)
+
+        server.info.connection.webhookID = "webhook2"
+        XCTAssertEqual(server.info.connection.webhookID, "webhook2")
+        XCTAssertEqual(try decoded.connection.webhookID, "webhook2")
+
+        server.info.token.accessToken = "access2"
+        XCTAssertEqual(server.info.token.accessToken, "access2")
+        XCTAssertEqual(try decoded.token.accessToken, "access2")
     }
 
     func testUpdateAfterDeleteDoesntPersist() throws {
