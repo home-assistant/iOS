@@ -178,10 +178,10 @@ class ServerManagerTests: XCTestCase {
 
         XCTAssertNil(servers.server(for: "fake1"))
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
-            $0.sortOrder = 2000
+            $0.sortOrder = 1000
         })
         XCTAssertEqual(servers.server(for: "fake3")?.info, with(info3) {
-            $0.sortOrder = 3000
+            $0.sortOrder = 2000
         })
 
         let server2_afterRestore = try XCTUnwrap(servers.server(for: "fake2"))
@@ -216,10 +216,10 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(Set(keychain.data.keys), Set(["fake1", "fake2"]))
 
         XCTAssertEqual(servers.server(for: "fake1")?.info, with(info1) {
-            $0.sortOrder = 1000
+            $0.sortOrder = 0
         })
         XCTAssertEqual(servers.server(for: "fake2")?.info, with(info2) {
-            $0.sortOrder = 2000
+            $0.sortOrder = 1000
         })
         XCTAssertNil(servers.server(for: "fake3"))
 
