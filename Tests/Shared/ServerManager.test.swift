@@ -372,6 +372,42 @@ class ServerManagerTests: XCTestCase {
         )
     }
 
+    func testServerUpdatePerField() throws {
+        try setupRegular([
+            "fake1": with(.fake()) {
+                $0.sortOrder = 1
+                $0.connection.webhookID = "webhook1"
+            },
+        ])
+
+        var decoded: ServerInfo {
+            get throws {
+                try JSONDecoder().decode(ServerInfo.self, from: try XCTUnwrap(keychain.data["fake1"]))
+            }
+        }
+
+        let server = try XCTUnwrap(servers.all.first)
+        server.info.remoteName = "updated_name"
+        XCTAssertEqual(server.info.remoteName, "updated_name")
+        XCTAssertEqual(try decoded.remoteName, "updated_name")
+
+        server.info.sortOrder = 3
+        XCTAssertEqual(server.info.sortOrder, 3)
+        XCTAssertEqual(try decoded.sortOrder, 3)
+
+        server.info.version = Version(major: 11)
+        XCTAssertEqual(server.info.version.major, 11)
+        XCTAssertEqual(try decoded.version.major, 11)
+
+        server.info.connection.webhookID = "webhook2"
+        XCTAssertEqual(server.info.connection.webhookID, "webhook2")
+        XCTAssertEqual(try decoded.connection.webhookID, "webhook2")
+
+        server.info.token.accessToken = "access2"
+        XCTAssertEqual(server.info.token.accessToken, "access2")
+        XCTAssertEqual(try decoded.token.accessToken, "access2")
+    }
+
     func testUpdateAfterDeleteDoesntPersist() throws {
         try setupRegular()
 

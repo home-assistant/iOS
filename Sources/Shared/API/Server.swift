@@ -109,6 +109,8 @@ public struct ServerInfo: Codable, Equatable {
         return lhs.remoteName == rhs.remoteName
             && lhs.connection == rhs.connection
             && lhs.token == rhs.token
+            && lhs.version == rhs.version
+            && lhs.sortOrder == rhs.sortOrder
             && equatable(lhs.settings) == equatable(rhs.settings)
     }
 }
