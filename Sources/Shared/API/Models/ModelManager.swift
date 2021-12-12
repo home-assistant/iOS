@@ -33,13 +33,18 @@ public class ModelManager: ServerObserver {
     }
 
     public struct CleanupDefinition {
+        public enum OrphanMode {
+            case delete(handler: (Realm, [Object]) -> Void)
+            case replace
+        }
+
         public enum CleanupType {
             case age(createdKey: String, duration: Measurement<UnitDuration>)
-            case orphaned(serverIdentifierKey: String, allowedPredicate: NSPredicate)
+            case orphaned(serverIdentifierKey: String, allowedPredicate: NSPredicate, mode: OrphanMode)
         }
 
         public var model: Object.Type
-        public var cleanupType: CleanupType
+        public var cleanupTypes: [CleanupType]
 
         public init(
             model: Object.Type,
@@ -47,17 +52,47 @@ public class ModelManager: ServerObserver {
             duration: Measurement<UnitDuration> = .init(value: 256, unit: .hours)
         ) {
             self.model = model
-            self.cleanupType = .age(createdKey: createdKey, duration: duration)
+            self.cleanupTypes = [.age(createdKey: createdKey, duration: duration)]
         }
 
         init<UM: Object & UpdatableModel>(
             orphansOf model: UM.Type
         ) {
             self.model = model
-            self.cleanupType = .orphaned(
-                serverIdentifierKey: model.serverIdentifierKey(),
-                allowedPredicate: model.updateEligiblePredicate
-            )
+            self.cleanupTypes = [
+                .orphaned(
+                    serverIdentifierKey: model.serverIdentifierKey(),
+                    allowedPredicate: model.updateEligiblePredicate,
+                    mode: .delete(handler: { realm, objects in
+                        if let objects = objects as? [UM] {
+                            model.willDelete(objects: objects, server: nil, realm: realm)
+                        } else {
+                            preconditionFailure("invalid object type passed into delete handler")
+                        }
+                    })
+                ),
+                .orphaned(
+                    serverIdentifierKey: model.serverIdentifierKey(),
+                    allowedPredicate: NSCompoundPredicate(notPredicateWithSubpredicate: model.updateEligiblePredicate),
+                    mode: .replace
+                ),
+            ]
+        }
+
+        public init(
+            orphansOf model: Object.Type,
+            serverIdentifierKey: String,
+            allowedPredicate: NSPredicate,
+            mode: OrphanMode
+        ) {
+            self.model = model
+            self.cleanupTypes = [
+                .orphaned(
+                    serverIdentifierKey: serverIdentifierKey,
+                    allowedPredicate: allowedPredicate,
+                    mode: mode
+                ),
+            ]
         }
 
         public static var defaults: [Self] = [
@@ -73,10 +108,16 @@ public class ModelManager: ServerObserver {
                 model: ClientEvent.self,
                 createdKey: #keyPath(ClientEvent.date)
             ),
+            CleanupDefinition(orphansOf: RLMScene.self),
+            CleanupDefinition(orphansOf: RLMZone.self),
             CleanupDefinition(orphansOf: Action.self),
             CleanupDefinition(orphansOf: NotificationCategory.self),
-            CleanupDefinition(orphansOf: RLMZone.self),
-            CleanupDefinition(orphansOf: RLMScene.self),
+            CleanupDefinition(
+                orphansOf: WatchComplication.self,
+                serverIdentifierKey: #keyPath(WatchComplication.serverIdentifier),
+                allowedPredicate: .init(value: true),
+                mode: .replace
+            ),
         ]
     }
 
@@ -106,26 +147,46 @@ public class ModelManager: ServerObserver {
         using definition: CleanupDefinition,
         realm: Realm
     ) {
-        let objects: Results<Object>
-
-        switch definition.cleanupType {
-        case let .age(createdKey: createdKey, duration: duration):
-            let duration = duration.converted(to: .seconds).value
-            let date = Current.date().addingTimeInterval(-duration)
-            objects = realm
-                .objects(definition.model)
-                .filter("%K < %@", createdKey, date)
-        case let .orphaned(serverIdentifierKey: serverIdentifierKey, allowedPredicate: allowedPredicate):
-            let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
-
-            objects = realm.objects(definition.model)
-                .filter(allowedPredicate)
-                .filter("not %K in %@", serverIdentifierKey, serverIdentifiers)
+        let deleteObjects = { (_ objects: Results<Object>) in
+            if objects.isEmpty == false {
+                Current.Log.info("delete \(definition.model): \(objects.count)")
+                realm.delete(objects)
+            }
         }
 
-        if objects.isEmpty == false {
-            Current.Log.info("\(definition.model): \(objects.count)")
-            realm.delete(objects)
+        for cleanupType in definition.cleanupTypes {
+            switch cleanupType {
+            case let .age(createdKey: createdKey, duration: duration):
+                let duration = duration.converted(to: .seconds).value
+                let date = Current.date().addingTimeInterval(-duration)
+                deleteObjects(
+                    realm
+                        .objects(definition.model)
+                        .filter("%K < %@", createdKey, date)
+                )
+            case let .orphaned(
+                serverIdentifierKey: serverIdentifierKey,
+                allowedPredicate: allowedPredicate,
+                mode: mode
+            ):
+                let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
+                let objects = realm.objects(definition.model)
+                    .filter(allowedPredicate)
+                    .filter("not %K in %@", serverIdentifierKey, serverIdentifiers)
+
+                switch mode {
+                case let .delete(handler):
+                    handler(realm, Array(objects))
+                    deleteObjects(objects)
+                case .replace:
+                    if let replacement = Current.servers.all.first, !objects.isEmpty {
+                        Current.Log.info("migrate \(definition.model): \(objects.count) to \(replacement.identifier)")
+                        for object in objects {
+                            object[serverIdentifierKey] = replacement.identifier.rawValue
+                        }
+                    }
+                }
+            }
         }
     }
 

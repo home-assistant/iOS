@@ -48,6 +48,8 @@ class ModelManagerTests: XCTestCase {
         TestStoreModel1.lastDidUpdates = []
         TestStoreModel1.lastWillDeleteIds = []
         TestStoreModel1.updateFalseIds = []
+
+        TestStoreModel3.lastWillDeleteIds = []
     }
 
     func testObserve() throws {
@@ -203,36 +205,96 @@ class ModelManagerTests: XCTestCase {
         Current.cachedApis[server3.identifier] = api3
 
         let start1 = [
-            TestStoreModel1(),
-            TestStoreModel1(),
-            TestStoreModel1(),
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.identifier = "s1m1"
+            },
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.identifier = "s1m2"
+            },
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.identifier = "s1m3"
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.identifier = "s1m4"
+                $0.value = 1 // not deleted
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.identifier = "s1m5"
+                $0.value = 6 // deleted
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api1.server.identifier.rawValue
+                $0.identifier = "s1m6"
+                $0.value = 8 // deleted
+            },
         ]
         let start2 = [
-            TestStoreModel1(),
-            TestStoreModel1(),
-            TestStoreModel1(),
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.identifier = "s2m1"
+            },
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.identifier = "s2m2"
+            },
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.identifier = "s2m3"
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.identifier = "s2m4"
+                $0.value = 1 // not deleted
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.identifier = "s2m5"
+                $0.value = 6 // deleted
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api2.server.identifier.rawValue
+                $0.identifier = "s2m6"
+                $0.value = 8 // deleted
+            },
         ]
         let start3 = [
-            TestStoreModel1(),
-            TestStoreModel1(),
-            TestStoreModel1(),
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api3.server.identifier.rawValue
+                $0.identifier = "s3m1"
+            },
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api3.server.identifier.rawValue
+                $0.identifier = "s3m2"
+            },
+            with(TestStoreModel1()) {
+                $0.serverIdentifier = api3.server.identifier.rawValue
+                $0.identifier = "s3m3"
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api3.server.identifier.rawValue
+                $0.identifier = "s3m4"
+                $0.value = 1 // not deleted
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api3.server.identifier.rawValue
+                $0.identifier = "s3m5"
+                $0.value = 6 // deleted
+            },
+            with(TestStoreModel3()) {
+                $0.serverIdentifier = api3.server.identifier.rawValue
+                $0.identifier = "s3m6"
+                $0.value = 8 // deleted
+            },
         ]
-
-        start1.forEach {
-            $0.serverIdentifier = api1.server.identifier.rawValue
-            $0.identifier = UUID().uuidString
-        }
-        start2.forEach {
-            $0.serverIdentifier = api2.server.identifier.rawValue
-            $0.identifier = UUID().uuidString
-        }
-        start3.forEach {
-            $0.serverIdentifier = api3.server.identifier.rawValue
-            $0.identifier = UUID().uuidString
-        }
 
         manager.cleanup(definitions: [
             .init(orphansOf: TestStoreModel1.self),
+            .init(orphansOf: TestStoreModel3.self),
         ]).cauterize()
 
         try testQueue.sync {
@@ -246,9 +308,24 @@ class ModelManagerTests: XCTestCase {
         servers.remove(identifier: api2.server.identifier)
         servers.notify()
 
-        testQueue.sync {
-            XCTAssertEqual(Set(realm.objects(TestStoreModel1.self)), Set(start1 + start3))
+        try testQueue.sync {
+            let expected = Set(start1 + start3 + [start2[3]])
+            let present = Set<Object>(realm.objects(TestStoreModel1.self).map { $0 as Object })
+                .union(realm.objects(TestStoreModel3.self).map { $0 as Object })
+            XCTAssertEqual(present, expected)
+
+            XCTAssertEqual(
+                try XCTUnwrap(start2[3] as? TestStoreModel3).serverIdentifier,
+                api1.server.identifier.rawValue
+            )
         }
+
+        XCTAssertEqual(Set(TestStoreModel1.lastWillDeleteIds.flatMap { $0 }), Set([
+            "s2m1", "s2m2", "s2m3",
+        ]))
+        XCTAssertEqual(Set(TestStoreModel3.lastWillDeleteIds.flatMap { $0 }), Set([
+            "s2m5", "s2m6",
+        ]))
     }
 
     func testFetchInvokesDefinition() {
@@ -693,7 +770,7 @@ final class TestStoreModel1: Object, UpdatableModel {
         lastDidUpdates.append(objects)
     }
 
-    static func willDelete(objects: [TestStoreModel1], server: Server, realm: Realm) {
+    static func willDelete(objects: [TestStoreModel1], server: Server?, realm: Realm) {
         lastWillDeleteIds.append(objects.compactMap(\.identifier))
     }
 
@@ -743,7 +820,7 @@ struct TestStoreSource1: UpdatableModelSource {
 final class TestStoreModel2: Object, UpdatableModel {
     static func didUpdate(objects: [TestStoreModel2], server: Server, realm: Realm) {}
 
-    static func willDelete(objects: [TestStoreModel2], server: Server, realm: Realm) {}
+    static func willDelete(objects: [TestStoreModel2], server: Server?, realm: Realm) {}
 
     @objc dynamic var identifier: String?
     @objc dynamic var serverIdentifier: String?
@@ -780,7 +857,10 @@ struct TestStoreSource2: UpdatableModelSource {
 final class TestStoreModel3: Object, UpdatableModel {
     static func didUpdate(objects: [TestStoreModel3], server: Server, realm: Realm) {}
 
-    static func willDelete(objects: [TestStoreModel3], server: Server, realm: Realm) {}
+    static var lastWillDeleteIds: [[String]] = []
+    static func willDelete(objects: [TestStoreModel3], server: Server?, realm: Realm) {
+        lastWillDeleteIds.append(objects.compactMap(\.identifier))
+    }
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "value > 5")
