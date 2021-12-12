@@ -65,7 +65,7 @@ public final class RLMScene: Object, UpdatableModel {
         }
     }
 
-    static func willDelete(objects: [RLMScene], server: Server, realm: Realm) {
+    static func willDelete(objects: [RLMScene], server: Server?, realm: Realm) {
         // also delete our paired actions if they exist
         let actions = realm.objects(Action.self).filter("ID in %@", objects.map(\.identifier))
         Current.Log.info("deleting actions \(Array(actions.map(\.ID)))")
