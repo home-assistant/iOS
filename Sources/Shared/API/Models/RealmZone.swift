@@ -58,7 +58,7 @@ public final class RLMZone: Object, UpdatableModel {
 
     static func didUpdate(objects: [RLMZone], server: Server, realm: Realm) {}
 
-    static func willDelete(objects: [RLMZone], server: Server, realm: Realm) {}
+    static func willDelete(objects: [RLMZone], server: Server?, realm: Realm) {}
 
     func update(with zone: HAEntity, server: Server, using: Realm) -> Bool {
         guard let zoneAttributes = zone.attributes.zone else {

@@ -109,7 +109,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         }
     }
 
-    static func willDelete(objects: [Action], server: Server, realm: Realm) {}
+    static func willDelete(objects: [Action], server: Server?, realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "isServerControlled == YES")

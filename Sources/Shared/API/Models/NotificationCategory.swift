@@ -100,7 +100,7 @@ public final class NotificationCategory: Object, UpdatableModel {
 
     static func didUpdate(objects: [NotificationCategory], server: Server, realm: Realm) {}
 
-    static func willDelete(objects: [NotificationCategory], server: Server, realm: Realm) {}
+    static func willDelete(objects: [NotificationCategory], server: Server?, realm: Realm) {}
 
     static var updateEligiblePredicate: NSPredicate {
         .init(format: "isServerControlled == YES")
