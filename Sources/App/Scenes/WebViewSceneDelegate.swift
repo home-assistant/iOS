@@ -15,6 +15,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let scene = scene as? UIWindowScene else { return }
+        // if it tries to connect for an external display, decline -- it'll mirror instead
+        guard session.role != .windowExternalDisplay else { return }
 
         ScaleFactorMutator.record(sceneIdentifier: session.persistentIdentifier)
 
