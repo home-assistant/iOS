@@ -18,13 +18,3 @@ elif [[ ${ENABLE_PUSH_PROVIDER} -eq 1 ]]; then
 else
     echo "warning: Push provider disabled"
 fi
-
-if [[ $CI && $CONFIGURATION != "Release" ]]; then
-  echo "warning: Time sensitive entitlement disabled for CI"
-elif [[ ${ENABLE_TIME_SENSITIVE} -eq 1 ]]; then
-    if [[ $XCODE_VERSION_MAJOR != "1200" ]]; then
-        echo /usr/libexec/PlistBuddy -c "add com.apple.developer.usernotifications.time-sensitive bool true" "$ENTITLEMENTS_FILE"
-    fi
-else
-    echo "warning: Time sensitive entitlement disabled"
-fi
