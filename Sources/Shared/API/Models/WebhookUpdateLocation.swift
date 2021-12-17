@@ -22,18 +22,16 @@ public class WebhookUpdateLocation: Mappable {
     // Not sent
     public var Trigger: LocationUpdateTrigger = .Unknown
 
-    init() {}
+    public init(trigger: LocationUpdateTrigger) {
+        if let battery = Current.device.batteries().first {
+            self.Battery = battery.level
+        }
+    }
 
     public required init?(map: Map) {}
 
     public convenience init?(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
-        self.init()
-
-        self.Trigger = trigger
-
-        if let battery = Current.device.batteries().first {
-            self.Battery = battery.level
-        }
+        self.init(trigger: trigger)
 
         let useLocation: Bool
 
@@ -51,6 +49,11 @@ public class WebhookUpdateLocation: Mappable {
         } else {
             return nil
         }
+    }
+
+    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
+        self.init(trigger: trigger)
+        self.LocationName = zone?.Name ?? LocationNames.NotHome.rawValue
     }
 
     public func SetZone(zone: RLMZone) {

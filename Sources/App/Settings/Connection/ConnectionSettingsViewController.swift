@@ -54,22 +54,9 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 $0.tag = "status"
             }
 
-            <<< TextRow("locationName") {
-                $0.title = L10n.Settings.StatusSection.LocationNameRow.title
-                $0.placeholder = server.info.remoteName
-                $0.value = server.info.setting(for: .localName)
-
-                var timer: Timer?
-
-                $0.onChange { [server] row in
-                    if let timer = timer, timer.isValid {
-                        timer.fireDate = Current.date().addingTimeInterval(1.0)
-                    } else {
-                        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false, block: { _ in
-                            server.info.setSetting(value: row.value, for: .localName)
-                        })
-                    }
-                }
+            <<< LabelRow("connectionPath") {
+                $0.title = L10n.Settings.ConnectionSection.connectingVia
+                $0.displayValueFor = { [server] _ in server.info.connection.activeURLType.description }
             }
 
             <<< LabelRow("version") {
@@ -127,6 +114,25 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             }
 
             +++ Section(L10n.Settings.ConnectionSection.details)
+
+            <<< TextRow("locationName") {
+                $0.title = L10n.Settings.StatusSection.LocationNameRow.title
+                $0.placeholder = server.info.remoteName
+                $0.value = server.info.setting(for: .localName)
+
+                var timer: Timer?
+
+                $0.onChange { [server] row in
+                    if let timer = timer, timer.isValid {
+                        timer.fireDate = Current.date().addingTimeInterval(1.0)
+                    } else {
+                        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false, block: { _ in
+                            server.info.setSetting(value: row.value, for: .localName)
+                        })
+                    }
+                }
+            }
+
             <<< TextRow {
                 $0.title = L10n.SettingsDetails.General.DeviceName.title
                 $0.placeholder = Current.device.deviceName()
@@ -136,15 +142,23 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }
             }
 
-            <<< LabelRow("connectionPath") {
-                $0.title = L10n.Settings.ConnectionSection.connectingVia
-                $0.displayValueFor = { [server] _ in server.info.connection.activeURLType.description }
+            <<< PushRow<ServerLocationType> {
+                $0.title = "Send Location"
+                $0.value = server.info.setting(for: .locationType) ?? .default
+                $0.options = ServerLocationType.allCases
+                $0.displayValueFor = { $0?.localizedDescription }
+                $0.onPresent { _, to in
+                    to.enableDeselection = false
+                }
+                $0.onChange { [server] row in
+                    server.info.setSetting(value: row.value, for: .locationType)
+                }
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-                row.displayValueFor = { [server] _ in server.info.connection.address(for: .internal)?.absoluteString }
+                row.displayValueFor = { [server] _ in server.info.connection.address(for: .internal)?.absoluteString ?? "—" }
                 row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
                     ConnectionURLViewController(server: server, urlType: .internal, row: row)
                 }), onDismiss: { [navigationController] _ in
@@ -161,7 +175,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                     if server.info.connection.useCloud, server.info.connection.canUseCloud {
                         return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                     } else {
-                        return server.info.connection.address(for: .external)?.absoluteString
+                        return server.info.connection.address(for: .external)?.absoluteString ?? "—"
                     }
                 }
                 row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
