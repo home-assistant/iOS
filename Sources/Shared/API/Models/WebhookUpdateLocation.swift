@@ -51,7 +51,7 @@ public class WebhookUpdateLocation: Mappable {
         }
     }
 
-    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
+    public convenience init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
         self.init(trigger: trigger)
         self.LocationName = zone?.Name ?? LocationNames.NotHome.rawValue
     }

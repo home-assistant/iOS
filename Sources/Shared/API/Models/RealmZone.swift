@@ -92,6 +92,10 @@ public final class RLMZone: Object, UpdatableModel {
         return true
     }
 
+    public static var trackablePredicate: NSPredicate {
+        "TrackingEnabled == true && isPassive == false"
+    }
+
     public var center: CLLocationCoordinate2D {
         .init(
             latitude: Latitude,

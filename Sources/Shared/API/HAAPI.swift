@@ -450,7 +450,7 @@ public class HomeAssistantAPI {
         location: CLLocation?,
         zone: RLMZone?
     ) -> Promise<Void> {
-        let update: WebhookUpdateLocation
+        let update: WebhookUpdateLocation?
         let sensorLocation: CLLocation?
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
@@ -470,6 +470,7 @@ public class HomeAssistantAPI {
                 let zone = Current.realm()
                     .objects(RLMZone.self)
                     .filter("%K == %@", #keyPath(RLMZone.serverIdentifier), server.identifier.rawValue)
+                    .filter(RLMZone.trackablePredicate)
                     .filter { $0.circularRegion.containsWithAccuracy(location) }
                     .sorted { zoneA, zoneB in
                         zoneA.circularRegion.distanceWithAccuracy(from: location) < zoneB.circularRegion.distanceWithAccuracy(from: location)
@@ -483,11 +484,11 @@ public class HomeAssistantAPI {
             } else if updateType == .BeaconRegionExit || updateType == .BeaconRegionEnter {
                 update = .init(trigger: updateType, usingNameOf: zone)
             } else {
-                update = .init()
+                update = .init(trigger: updateType)
             }
             sensorLocation = nil
         case .never:
-            update = .init()
+            update = .init(trigger: updateType)
             sensorLocation = nil
         }
 
