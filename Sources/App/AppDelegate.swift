@@ -443,7 +443,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let userDefaults = UserDefaults.standard
-        let seenKey = "category-deprecation-2-" + Current.clientVersion().description
+        let seenKey = "category-deprecation-3-" + Current.clientVersion().description
 
         guard !userDefaults.bool(forKey: seenKey) else {
             return
@@ -457,7 +457,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             let alert = UIAlertController(
                 title: L10n.Alerts.Deprecations.NotificationCategory.title,
-                message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2021.2"),
+                message: L10n.Alerts.Deprecations.NotificationCategory.message("iOS-2022.4"),
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: L10n.Nfc.List.learnMore, style: .default, handler: { _ in
