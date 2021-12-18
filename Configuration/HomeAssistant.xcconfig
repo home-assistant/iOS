@@ -45,7 +45,7 @@ WATCHOS_DEPLOYMENT_TARGET = 5.0
 // Bitcode serves effectively no purpose (it was just for the 32_64 watch migration, and hasn't been used since)
 // but doubly so: starting in ~Xcode 13.2 times, Apple's backport of libConcurrency started crashing on startup
 // but only when they recompile it.
-ENABLE_BITCODE = NO
+ENABLE_BITCODE[sdk=iphoneos*] = NO
 
 CLANG_ENABLE_MODULES = YES
 CLANG_ENABLE_OBJC_ARC = YES
