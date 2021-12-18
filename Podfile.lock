@@ -152,7 +152,7 @@ PODS:
   - RealmSwift (10.20.1)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.49.1)
+  - SwiftFormat/CLI (0.48.18)
   - SwiftGen (6.5.1)
   - SwiftLint (0.45.1)
   - SwiftMessages (9.0.5):
@@ -329,7 +329,7 @@ SPEC CHECKSUMS:
   RealmSwift: c3d280ddf7e9314eb434cd72f53d5a346b7abfbb
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 16b41f3229f5e7edb130ac4cd631cceed7af7d5e
+  SwiftFormat: 7dd2b33a0a3d61095b61c911b6d89ff962ae695c
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
   SwiftMessages: 9cca50659fa22bb523b4dd2a958d4442e843a354
