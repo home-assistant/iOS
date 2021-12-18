@@ -2,7 +2,6 @@ import Eureka
 import MBProgressHUD
 import PromiseKit
 import RealmSwift
-import Sentry
 import Shared
 import WebKit
 import XCGLogger
@@ -375,7 +374,7 @@ class DebugSettingsViewController: HAFormViewController {
             )
 
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
-                SentrySDK.crash()
+//                SentrySDK.crash()
             }))
 
             self?.present(alert, animated: true, completion: nil)

@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.4.4)
+  - Alamofire (5.5.0)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
@@ -114,7 +114,7 @@ PODS:
     - HAKit/Core
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
-  - lottie-ios (3.2.3)
+  - lottie-ios (3.3.0)
   - MBProgressHUD (1.2.0)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
@@ -149,19 +149,12 @@ PODS:
     - PromiseKit/CorePromise
   - PromisesObjC (2.0.0)
   - ReachabilitySwift (5.0.0)
-  - Realm (10.20.0):
-    - Realm/Headers (= 10.20.0)
-  - Realm/Headers (10.20.0)
-  - RealmSwift (10.20.0):
-    - Realm (= 10.20.0)
-  - Sentry (7.5.3):
-    - Sentry/Core (= 7.5.3)
-  - Sentry/Core (7.5.3)
+  - RealmSwift (10.20.1)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.48.18)
+  - SwiftFormat/CLI (0.49.1)
   - SwiftGen (6.5.1)
-  - SwiftLint (0.45.0)
+  - SwiftLint (0.45.1)
   - SwiftMessages (9.0.5):
     - SwiftMessages/App (= 9.0.5)
   - SwiftMessages/App (9.0.5)
@@ -173,7 +166,7 @@ PODS:
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
     - ObjcExceptionBridging
-  - ZIPFoundation (0.9.12)
+  - ZIPFoundation (0.9.13)
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
@@ -195,8 +188,7 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift
-  - Sentry
+  - RealmSwift (from `Configuration/Podspecs/Realm.podspec.json`)
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
   - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
   - SwiftFormat/CLI
@@ -231,9 +223,6 @@ SPEC REPOS:
     - PromiseKit
     - PromisesObjC
     - ReachabilitySwift
-    - Realm
-    - RealmSwift
-    - Sentry
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -265,6 +254,8 @@ EXTERNAL SOURCES:
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  RealmSwift:
+    :podspec: Configuration/Podspecs/Realm.podspec.json
   Sodium:
     :branch: master
     :git: https://github.com/jedisct1/swift-sodium.git
@@ -292,7 +283,7 @@ CHECKOUT OPTIONS:
     :commit: 94475e83a6965320283b8b39986e7481ad675ab9
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :commit: 8acdfc17884d3176ac995d89f563b54288594096
+    :commit: c97d01d1d7d4c0fd915f361a8b73de7007384235
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -308,7 +299,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
-  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
@@ -326,7 +317,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
+  lottie-ios: 6ac74dcc09904798f59b18cb3075c089d76be9ae
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -335,21 +326,19 @@ SPEC CHECKSUMS:
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: ae32bdc1da7d19c7617e0400201a77acd4a211b9
-  RealmSwift: c95eec6a712924870b2e36c4c081d63ec07e5414
-  Sentry: 10b0d88cecc4f35d66a3bce9d70d2810eb049aed
+  RealmSwift: c3d280ddf7e9314eb434cd72f53d5a346b7abfbb
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 7dd2b33a0a3d61095b61c911b6d89ff962ae695c
+  SwiftFormat: 16b41f3229f5e7edb130ac4cd631cceed7af7d5e
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
-  SwiftLint: e5c7f1fba68eccfc51509d5b2ce1699f5502e0c7
+  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
   SwiftMessages: 9cca50659fa22bb523b4dd2a958d4442e843a354
   UIColor_Hex_Swift: 31cd3e47440f07a20d2503a36bb0437a445b3c29
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
-  ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
+  ZIPFoundation: ae5b4b813d216d3bf0a148773267fff14bd51d37
 
-PODFILE CHECKSUM: f78c2be74f531a37397df67ff017882ddb54a4bc
+PODFILE CHECKSUM: e892b81814ff82c8fd99d7fdee48695a75289baa
 
 COCOAPODS: 1.10.2
