@@ -1,4 +1,3 @@
-import Lottie
 import PromiseKit
 import Shared
 import UIKit

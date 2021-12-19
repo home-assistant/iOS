@@ -1,7 +1,6 @@
 import CoreLocation
 import CoreMotion
 import Foundation
-import Lottie
 import Shared
 import UIKit
 import UserNotifications
