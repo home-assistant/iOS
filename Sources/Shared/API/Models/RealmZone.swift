@@ -93,7 +93,7 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     public static var trackablePredicate: NSPredicate {
-        "TrackingEnabled == true && isPassive == false"
+        .init(format: "TrackingEnabled == true && isPassive == false")
     }
 
     public var center: CLLocationCoordinate2D {
@@ -262,5 +262,17 @@ public final class RLMZone: Object, UpdatableModel {
 
     override public var debugDescription: String {
         "Zone - ID: \(identifier), state: " + (inRegion ? "inside" : "outside")
+    }
+
+    public static func zone(of location: CLLocation, in server: Server) -> Self? {
+        Current.realm()
+            .objects(Self.self)
+            .filter("%K == %@", #keyPath(serverIdentifier), server.identifier.rawValue)
+            .filter(trackablePredicate)
+            .filter { $0.circularRegion.containsWithAccuracy(location) }
+            .sorted { zoneA, zoneB in
+                zoneA.circularRegion.distanceWithAccuracy(from: location) < zoneB.circularRegion.distanceWithAccuracy(from: location)
+            }
+            .first
     }
 }

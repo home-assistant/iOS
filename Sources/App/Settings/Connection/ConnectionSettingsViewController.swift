@@ -6,6 +6,7 @@ import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
+import Version
 
 class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
     public var onDismissCallback: ((UIViewController) -> Void)?
@@ -147,8 +148,20 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 $0.value = server.info.setting(for: .locationType) ?? .default
                 $0.options = ServerLocationType.allCases
                 $0.displayValueFor = { $0?.localizedDescription }
-                $0.onPresent { _, to in
+                $0.onPresent { [server] _, to in
                     to.enableDeselection = false
+                    if server.info.version <= .updateLocationGPSOptional {
+                        to.sectionKeyForValue = { _ in
+                            // so we get asked for footer title
+                            return "section"
+                        }
+                        to.selectableRowSetup = { row in
+                            row.disabled = true
+                        }
+                        to.sectionFooterTitleForKey = { _ in
+                            Version.updateLocationGPSOptional.coreRequiredString
+                        }
+                    }
                 }
                 $0.onChange { [server] row in
                     server.info.setSetting(value: row.value, for: .locationType)

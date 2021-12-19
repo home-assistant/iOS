@@ -447,11 +447,11 @@ public class HomeAssistantAPI {
 
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
-        location: CLLocation?,
+        location rawLocation: CLLocation?,
         zone: RLMZone?
     ) -> Promise<Void> {
-        let update: WebhookUpdateLocation?
-        let sensorLocation: CLLocation?
+        let update: WebhookUpdateLocation
+        let location: CLLocation?
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
@@ -459,63 +459,26 @@ public class HomeAssistantAPI {
 
         switch server.info.setting(for: .locationType) ?? .always {
         case .always:
-            update = .init(
-                trigger: updateType,
-                location: location,
-                zone: zone
-            )
-            sensorLocation = location
+            update = .init(trigger: updateType, location: rawLocation, zone: zone)
+            location = rawLocation
         case .zoneOnly:
-            if let location = location {
-                let zone = Current.realm()
-                    .objects(RLMZone.self)
-                    .filter("%K == %@", #keyPath(RLMZone.serverIdentifier), server.identifier.rawValue)
-                    .filter(RLMZone.trackablePredicate)
-                    .filter { $0.circularRegion.containsWithAccuracy(location) }
-                    .sorted { zoneA, zoneB in
-                        zoneA.circularRegion.distanceWithAccuracy(from: location) < zoneB.circularRegion.distanceWithAccuracy(from: location)
-                    }
-                    .first
-                if let zone = zone {
-                    update = .init(trigger: updateType, usingNameOf: zone)
-                } else {
-                    update = .init(trigger: updateType, usingNameOf: nil)
-                }
-            } else if updateType == .BeaconRegionExit || updateType == .BeaconRegionEnter {
+            if updateType == .BeaconRegionEnter {
                 update = .init(trigger: updateType, usingNameOf: zone)
+            } else if let rawLocation = rawLocation {
+                // note this is a different zone than the event - e.g. the zone may be the one we are exiting
+                update = .init(trigger: updateType, usingNameOf: RLMZone.zone(of: rawLocation, in: server))
             } else {
                 update = .init(trigger: updateType)
             }
-            sensorLocation = nil
+            location = nil
         case .never:
             update = .init(trigger: updateType)
-            sensorLocation = nil
+            location = nil
         }
 
-        if let update = update {
-            return submit(locationUpdate: update, localMetadata: localMetadata, sensorLocation: sensorLocation)
-        } else {
-            return UpdateSensors(trigger: updateType, location: nil).asVoid()
-        }
-    }
-
-    private func submit(locationUpdate: WebhookUpdateLocation, localMetadata: [String: Any], sensorLocation: CLLocation?) -> Promise<Void> {
         return firstly {
-            .value(locationUpdate)
-        }.map { (update: WebhookUpdateLocation?) -> WebhookUpdateLocation in
-            if let update = update {
-                return update
-            } else {
-                throw HomeAssistantAPI.APIError.updateNotPossible
-            }
-        }.then { payload -> Guarantee<WebhookUpdateLocation> in
             let realm = Current.realm()
             return when(resolved: realm.reentrantWrite {
-                var jsonPayload = "{\"missing\": \"payload\"}"
-                if let p = payload.toJSONString(prettyPrint: false) {
-                    jsonPayload = p
-                }
-
                 let accuracyAuthorization: CLAccuracyAuthorization
 
                 if #available(iOS 14, watchOS 7, *) {
@@ -524,26 +487,21 @@ public class HomeAssistantAPI {
                     accuracyAuthorization = .fullAccuracy
                 }
 
-                print("*** submitLocationUpdate \(jsonPayload.replacingOccurrences(of: "\n", with: " "))")
-
                 realm.add(LocationHistoryEntry(
-                    updateType: locationUpdate.Trigger,
-                    location: sensorLocation,
-                    zone: nil /* todo */,
+                    updateType: updateType,
+                    location: location,
+                    zone: zone,
                     accuracyAuthorization: accuracyAuthorization,
-                    payload: jsonPayload
+                    payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
                 ))
-            }).map { _ in
-                payload
-            }
-        }.map { payload -> [String: Any] in
-            let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
+            }).asVoid()
+        }.map { () -> [String: Any] in
+            let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
             Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict
-        }.then { [server] payload in
-            when(
-                resolved:
-                self.UpdateSensors(trigger: locationUpdate.Trigger, location: sensorLocation).asVoid(),
+        }.then { [self] payload in
+            when(resolved:
+                UpdateSensors(trigger: update.Trigger, location: location).asVoid(),
                 Current.webhooks.send(
                     identifier: .location,
                     server: server,

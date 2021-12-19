@@ -30,7 +30,7 @@ public class WebhookUpdateLocation: Mappable {
 
     public required init?(map: Map) {}
 
-    public convenience init?(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
+    public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
         self.init(trigger: trigger)
 
         let useLocation: Bool
@@ -46,8 +46,6 @@ public class WebhookUpdateLocation: Mappable {
             SetLocation(location: location)
         } else if let zone = zone {
             SetZone(zone: zone)
-        } else {
-            return nil
         }
     }
 

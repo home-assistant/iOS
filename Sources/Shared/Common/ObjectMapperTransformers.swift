@@ -94,7 +94,7 @@ open class CLLocationCoordinate2DTransform: TransformType {
     }
 
     open func transformToJSON(_ value: CLLocationCoordinate2D?) -> [Double]? {
-        guard let value = value else { return [] }
+        guard let value = value else { return nil }
         return value.toArray()
     }
 }
