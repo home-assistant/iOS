@@ -453,15 +453,18 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 +++ Section(
                     header: nil,
                     footer: L10n.SettingsDetails.Privacy.CrashReporting.description
-                        + "\n\n" + L10n.SettingsDetails.Privacy.CrashReporting.sentry
-                )
+                ) {
+                    $0.hidden = .init(booleanLiteral: !Current.crashReporter.hasCrashReporter)
+                }
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Privacy.CrashReporting.title
                     $0.value = Current.settingsStore.privacy.crashes
                 }.onChange { row in
                     Current.settingsStore.privacy.crashes = row.value ?? true
                 }
-                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Analytics.genericDescription)
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Analytics.genericDescription) {
+                    $0.hidden = .init(booleanLiteral: !Current.crashReporter.hasAnalytics)
+                }
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Privacy.Analytics.genericTitle
                     $0.value = Current.settingsStore.privacy.analytics
