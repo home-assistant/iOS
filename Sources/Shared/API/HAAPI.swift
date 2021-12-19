@@ -500,7 +500,8 @@ public class HomeAssistantAPI {
             Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict
         }.then { [self] payload in
-            when(resolved:
+            when(
+                resolved:
                 UpdateSensors(trigger: update.Trigger, location: location).asVoid(),
                 Current.webhooks.send(
                     identifier: .location,

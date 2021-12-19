@@ -154,7 +154,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                     if server.info.version <= .updateLocationGPSOptional {
                         to.sectionKeyForValue = { _ in
                             // so we get asked for section titles
-                            return "section"
+                            "section"
                         }
                         to.selectableRowSetup = { row in
                             row.disabled = true
@@ -175,7 +175,9 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-                row.displayValueFor = { [server] _ in server.info.connection.address(for: .internal)?.absoluteString ?? "—" }
+                row.displayValueFor = { [server] _ in
+                    server.info.connection.address(for: .internal)?.absoluteString ?? "—"
+                }
                 row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
                     ConnectionURLViewController(server: server, urlType: .internal, row: row)
                 }), onDismiss: { [navigationController] _ in

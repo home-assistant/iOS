@@ -271,7 +271,8 @@ public final class RLMZone: Object, UpdatableModel {
             .filter(trackablePredicate)
             .filter { $0.circularRegion.containsWithAccuracy(location) }
             .sorted { zoneA, zoneB in
-                zoneA.circularRegion.distanceWithAccuracy(from: location) < zoneB.circularRegion.distanceWithAccuracy(from: location)
+                zoneA.circularRegion.distanceWithAccuracy(from: location)
+                    < zoneB.circularRegion.distanceWithAccuracy(from: location)
             }
             .first
     }
