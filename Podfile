@@ -29,7 +29,7 @@ pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'
 
-pod 'RealmSwift'
+pod 'RealmSwift', git: 'https://github.com/zacwest/realm-swift', branch: 'noasync-v10.20.1'
 pod 'Sentry'
 pod 'UIColor_Hex_Swift'
 pod 'Version'

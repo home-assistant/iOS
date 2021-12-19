@@ -149,11 +149,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromisesObjC (2.0.0)
   - ReachabilitySwift (5.0.0)
-  - Realm (10.20.0):
-    - Realm/Headers (= 10.20.0)
-  - Realm/Headers (10.20.0)
-  - RealmSwift (10.20.0):
-    - Realm (= 10.20.0)
+  - Realm (10.20.1):
+    - Realm/Headers (= 10.20.1)
+  - Realm/Headers (10.20.1)
+  - RealmSwift (10.20.1):
+    - Realm (= 10.20.1)
   - Sentry (7.5.3):
     - Sentry/Core (= 7.5.3)
   - Sentry/Core (7.5.3)
@@ -195,7 +195,7 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift
+  - RealmSwift (from `https://github.com/zacwest/realm-swift`, branch `noasync-v10.20.1`)
   - Sentry
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
   - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
@@ -232,7 +232,6 @@ SPEC REPOS:
     - PromisesObjC
     - ReachabilitySwift
     - Realm
-    - RealmSwift
     - Sentry
     - SwiftFormat
     - SwiftGen
@@ -265,6 +264,9 @@ EXTERNAL SOURCES:
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  RealmSwift:
+    :branch: noasync-v10.20.1
+    :git: https://github.com/zacwest/realm-swift
   Sodium:
     :branch: master
     :git: https://github.com/jedisct1/swift-sodium.git
@@ -297,6 +299,9 @@ CHECKOUT OPTIONS:
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  RealmSwift:
+    :commit: a29707f972ee164ead0a78cd14b9be2cbe314800
+    :git: https://github.com/zacwest/realm-swift
   Sodium:
     :commit: 444e390a84e2fed29cf7f3bd6dfa743e9ff476ea
     :git: https://github.com/jedisct1/swift-sodium.git
@@ -335,8 +340,8 @@ SPEC CHECKSUMS:
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: ae32bdc1da7d19c7617e0400201a77acd4a211b9
-  RealmSwift: c95eec6a712924870b2e36c4c081d63ec07e5414
+  Realm: fac5ecd031fcb81171627b74944c885662d4b266
+  RealmSwift: 9b02d25acb46a14756bde9893abb99e2e3675923
   Sentry: 10b0d88cecc4f35d66a3bce9d70d2810eb049aed
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
@@ -350,6 +355,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: f78c2be74f531a37397df67ff017882ddb54a4bc
+PODFILE CHECKSUM: f7e9680c9aca2707460c9e70db91df2a3581fd7b
 
 COCOAPODS: 1.10.2
