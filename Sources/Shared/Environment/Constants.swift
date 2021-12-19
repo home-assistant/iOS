@@ -148,6 +148,6 @@ public extension Version {
     static var updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
 
     var coreRequiredString: String {
-        String(format: NSLocalizedString("Requires core-%d.%d or later.", comment: ""), major, minor ?? -1)
+        L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))
     }
 }

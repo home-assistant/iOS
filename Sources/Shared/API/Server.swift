@@ -14,18 +14,16 @@ public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, Expressib
 }
 
 public enum ServerLocationType: String, CaseIterable, RawRepresentable {
-    case always
+    case exact
     case zoneOnly
     case never
 
-    public static var `default`: Self { .always }
+    public static var `default`: Self { .exact }
     public var localizedDescription: String {
         switch self {
-        case .never: return NSLocalizedString("Never", comment: "")
-        case .always:
-            return NSLocalizedString("Always", comment: "")
-        case .zoneOnly:
-            return NSLocalizedString("Zone Name Only", comment: "")
+        case .never: return L10n.Settings.ConnectionSection.LocationSendType.Setting.never
+        case .exact: return L10n.Settings.ConnectionSection.LocationSendType.Setting.exact
+        case .zoneOnly: return L10n.Settings.ConnectionSection.LocationSendType.Setting.zoneOnly
         }
     }
 }

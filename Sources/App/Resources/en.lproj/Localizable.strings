@@ -745,3 +745,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
+"settings.connection_section.location_send_type.title" = "Location Sent";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.setting.never" = "Never";
+/* e.g. value here is e.g. core-2021.12 or frontend-2021.12 */
+"requires_version" = "Requires %@ or later.";

@@ -457,8 +457,8 @@ public class HomeAssistantAPI {
             zone: zone
         )
 
-        switch server.info.setting(for: .locationType) ?? .always {
-        case .always:
+        switch server.info.setting(for: .locationType) ?? .exact {
+        case .exact:
             update = .init(trigger: updateType, location: rawLocation, zone: zone)
             location = rawLocation
         case .zoneOnly:

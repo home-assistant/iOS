@@ -144,7 +144,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             }
 
             <<< PushRow<ServerLocationType> {
-                $0.title = "Send Location"
+                $0.title = L10n.Settings.ConnectionSection.LocationSendType.title
+                $0.selectorTitle = $0.title
                 $0.value = server.info.setting(for: .locationType) ?? .default
                 $0.options = ServerLocationType.allCases
                 $0.displayValueFor = { $0?.localizedDescription }

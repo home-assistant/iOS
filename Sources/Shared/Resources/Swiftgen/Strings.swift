@@ -42,6 +42,10 @@ public enum L10n {
   public static var openLabel: String { return L10n.tr("Localizable", "open_label") }
   /// Preview Output
   public static var previewOutput: String { return L10n.tr("Localizable", "preview_output") }
+  /// Requires %@ or later.
+  public static func requiresVersion(_ p1: Any) -> String {
+    return L10n.tr("Localizable", "requires_version", String(describing: p1))
+  }
   /// Retry
   public static var retryLabel: String { return L10n.tr("Localizable", "retry_label") }
   /// Success
@@ -964,6 +968,18 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.header") }
         /// MyFunnyNetworkName
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.placeholder") }
+      }
+      public enum LocationSendType {
+        /// Location Sent
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.title") }
+        public enum Setting {
+          /// Exact
+          public static var exact: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.exact") }
+          /// Never
+          public static var never: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.never") }
+          /// Zone Name Only
+          public static var zoneOnly: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.zone_only") }
+        }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL
