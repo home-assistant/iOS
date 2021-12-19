@@ -153,11 +153,14 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                     to.enableDeselection = false
                     if server.info.version <= .updateLocationGPSOptional {
                         to.sectionKeyForValue = { _ in
-                            // so we get asked for footer title
+                            // so we get asked for section titles
                             return "section"
                         }
                         to.selectableRowSetup = { row in
                             row.disabled = true
+                        }
+                        to.sectionHeaderTitleForKey = { _ in
+                            nil
                         }
                         to.sectionFooterTitleForKey = { _ in
                             Version.updateLocationGPSOptional.coreRequiredString
