@@ -143,35 +143,6 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }
             }
 
-            <<< PushRow<ServerLocationType> {
-                $0.title = L10n.Settings.ConnectionSection.LocationSendType.title
-                $0.selectorTitle = $0.title
-                $0.value = server.info.setting(for: .locationType) ?? .default
-                $0.options = ServerLocationType.allCases
-                $0.displayValueFor = { $0?.localizedDescription }
-                $0.onPresent { [server] _, to in
-                    to.enableDeselection = false
-                    if server.info.version <= .updateLocationGPSOptional {
-                        to.sectionKeyForValue = { _ in
-                            // so we get asked for section titles
-                            "section"
-                        }
-                        to.selectableRowSetup = { row in
-                            row.disabled = true
-                        }
-                        to.sectionHeaderTitleForKey = { _ in
-                            nil
-                        }
-                        to.sectionFooterTitleForKey = { _ in
-                            Version.updateLocationGPSOptional.coreRequiredString
-                        }
-                    }
-                }
-                $0.onChange { [server] row in
-                    server.info.setSetting(value: row.value, for: .locationType)
-                }
-            }
-
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
@@ -202,6 +173,37 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }), onDismiss: { [navigationController] _ in
                     navigationController?.popViewController(animated: true)
                 })
+            }
+
+            +++ Section(L10n.SettingsDetails.Privacy.title)
+
+            <<< PushRow<ServerLocationType> {
+                $0.title = L10n.Settings.ConnectionSection.LocationSendType.title
+                $0.selectorTitle = $0.title
+                $0.value = server.info.setting(for: .locationType) ?? .default
+                $0.options = ServerLocationType.allCases
+                $0.displayValueFor = { $0?.localizedDescription }
+                $0.onPresent { [server] _, to in
+                    to.enableDeselection = false
+                    if server.info.version <= .updateLocationGPSOptional || true {
+                        to.sectionKeyForValue = { _ in
+                            // so we get asked for section titles
+                            "section"
+                        }
+                        to.selectableRowSetup = { row in
+                            row.disabled = true
+                        }
+                        to.sectionHeaderTitleForKey = { _ in
+                            nil
+                        }
+                        to.sectionFooterTitleForKey = { _ in
+                            Version.updateLocationGPSOptional.coreRequiredString
+                        }
+                    }
+                }
+                $0.onChange { [server] row in
+                    server.info.setSetting(value: row.value, for: .locationType)
+                }
             }
 
             +++ Section()
