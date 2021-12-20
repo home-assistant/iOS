@@ -251,6 +251,10 @@ public final class RLMZone: Object, UpdatableModel {
         ).capitalized
     }
 
+    public var deviceTrackerName: String {
+        entityId.replacingOccurrences(of: "\(Domain).", with: "")
+    }
+
     public var Domain: String {
         "zone"
     }

@@ -9,7 +9,7 @@ class WebhookUpdateLocationTests: XCTestCase {
             .GPSRegionEnter,
             .GPSRegionExit,
             .BeaconRegionEnter,
-            .BeaconRegionExit
+            .BeaconRegionExit,
         ] {
             Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
@@ -26,7 +26,9 @@ class WebhookUpdateLocationTests: XCTestCase {
         }
     }
 
-    func testNameOfZone() {
+    func testNameOfZoneWhenSet() {
+        Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
+
         let zone = with(RLMZone()) {
             $0.entityId = "zone.given_name"
             $0.serverIdentifier = "server1"
@@ -35,13 +37,31 @@ class WebhookUpdateLocationTests: XCTestCase {
             $0.Radius = 88.8
         }
 
-        let withZone = WebhookUpdateLocation(trigger: .BeaconRegionEnter, usingNameOf: zone)
-        XCTAssertEqual(withZone.Trigger, .BeaconRegionEnter)
-        XCTAssertEqual(withZone.LocationName, "given_name")
+        let model = WebhookUpdateLocation(trigger: .BeaconRegionEnter, usingNameOf: zone)
+        let json = model.toJSON()
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["location_name"] as? String, "given_name")
+        XCTAssertNil(json["gps"])
+        XCTAssertNil(json["gps_accuracy"])
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
 
-        let withoutZone = WebhookUpdateLocation(trigger: .BeaconRegionExit, usingNameOf: nil)
-        XCTAssertEqual(withoutZone.Trigger, .BeaconRegionExit)
-        XCTAssertEqual(withoutZone.LocationName, "not_home")
+    func testNameOfZoneWithNoZone() {
+        Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
+
+        let model = WebhookUpdateLocation(trigger: .BeaconRegionEnter, usingNameOf: nil)
+        let json = model.toJSON()
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["location_name"] as? String, "not_home")
+        XCTAssertNil(json["gps"])
+        XCTAssertNil(json["gps_accuracy"])
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
     }
 
     func testBeaconEnterNotPassive() {

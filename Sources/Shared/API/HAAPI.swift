@@ -502,7 +502,7 @@ public class HomeAssistantAPI {
         }.then { [self] payload in
             when(
                 resolved:
-                UpdateSensors(trigger: update.Trigger, location: location).asVoid(),
+                UpdateSensors(trigger: updateType, location: location).asVoid(),
                 Current.webhooks.send(
                     identifier: .location,
                     server: server,
