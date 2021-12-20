@@ -5,16 +5,49 @@ import XCTest
 
 class WebhookUpdateLocationTests: XCTestCase {
     func testMissingLocationAndZone() {
-        XCTAssertNil(WebhookUpdateLocation(trigger: .GPSRegionEnter, location: nil, zone: nil))
-        XCTAssertNil(WebhookUpdateLocation(trigger: .GPSRegionExit, location: nil, zone: nil))
-        XCTAssertNil(WebhookUpdateLocation(trigger: .BeaconRegionEnter, location: nil, zone: nil))
-        XCTAssertNil(WebhookUpdateLocation(trigger: .BeaconRegionExit, location: nil, zone: nil))
+        for trigger: LocationUpdateTrigger in [
+            .GPSRegionEnter,
+            .GPSRegionExit,
+            .BeaconRegionEnter,
+            .BeaconRegionExit
+        ] {
+            Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
+
+            let model = WebhookUpdateLocation(trigger: trigger, location: nil, zone: nil)
+            let json = model.toJSON()
+            XCTAssertEqual(json["battery"] as? Int, 44)
+            XCTAssertNil(json["gps"])
+            XCTAssertNil(json["gps_accuracy"])
+            XCTAssertNil(json["location_name"])
+            XCTAssertNil(json["speed"])
+            XCTAssertNil(json["altitude"])
+            XCTAssertNil(json["course"])
+            XCTAssertNil(json["vertical_accuracy"])
+        }
+    }
+
+    func testNameOfZone() {
+        let zone = with(RLMZone()) {
+            $0.entityId = "zone.given_name"
+            $0.serverIdentifier = "server1"
+            $0.Latitude = -2.34
+            $0.Longitude = -5.67
+            $0.Radius = 88.8
+        }
+
+        let withZone = WebhookUpdateLocation(trigger: .BeaconRegionEnter, usingNameOf: zone)
+        XCTAssertEqual(withZone.Trigger, .BeaconRegionEnter)
+        XCTAssertEqual(withZone.LocationName, "given_name")
+
+        let withoutZone = WebhookUpdateLocation(trigger: .BeaconRegionExit, usingNameOf: nil)
+        XCTAssertEqual(withoutZone.Trigger, .BeaconRegionExit)
+        XCTAssertEqual(withoutZone.LocationName, "not_home")
     }
 
     func testBeaconEnterNotPassive() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
@@ -24,10 +57,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -42,7 +72,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     }
 
     func testBeaconEnterPassive() {
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
@@ -53,10 +83,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Radius = 88.8
                 $0.isPassive = true
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -73,7 +100,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     func testBeaconExitNotPassive() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
@@ -83,10 +110,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -104,7 +128,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     func testBeaconEnterHome() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .BeaconRegionEnter,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
@@ -114,10 +138,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -134,7 +155,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     func testBeaconExitHome() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
@@ -144,10 +165,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -165,7 +183,7 @@ class WebhookUpdateLocationTests: XCTestCase {
     func testBeaconExitPassive() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .BeaconRegionExit,
             location: CLLocation(latitude: 1.23, longitude: 4.56),
             zone: with(RLMZone()) {
@@ -176,10 +194,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Radius = 88.8
                 $0.isPassive = true
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -200,7 +215,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
         let now = Date()
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .GPSRegionEnter,
             location: CLLocation(
                 coordinate: .init(latitude: 1.23, longitude: 4.56),
@@ -220,10 +235,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -243,7 +255,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
         let now = Date()
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .GPSRegionEnter,
             location: CLLocation(
                 coordinate: .init(latitude: 1.23, longitude: 4.56),
@@ -263,10 +275,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -286,7 +295,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
         let now = Date()
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .GPSRegionExit,
             location: CLLocation(
                 coordinate: .init(latitude: 1.23, longitude: 4.56),
@@ -306,10 +315,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -329,7 +335,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
         let now = Date()
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .GPSRegionEnter,
             location: CLLocation(
                 coordinate: .init(latitude: 1.23, longitude: 4.56),
@@ -349,10 +355,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 
@@ -372,7 +375,7 @@ class WebhookUpdateLocationTests: XCTestCase {
 
         let now = Date()
 
-        guard let model = WebhookUpdateLocation(
+        let model = WebhookUpdateLocation(
             trigger: .GPSRegionExit,
             location: CLLocation(
                 coordinate: .init(latitude: 1.23, longitude: 4.56),
@@ -392,10 +395,7 @@ class WebhookUpdateLocationTests: XCTestCase {
                 $0.Longitude = -5.67
                 $0.Radius = 88.8
             }
-        ) else {
-            XCTFail("model was not created")
-            return
-        }
+        )
 
         let json = model.toJSON()
 

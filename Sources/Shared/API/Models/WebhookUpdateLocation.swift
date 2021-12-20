@@ -23,6 +23,7 @@ public class WebhookUpdateLocation: Mappable {
     public var Trigger: LocationUpdateTrigger = .Unknown
 
     public init(trigger: LocationUpdateTrigger) {
+        self.Trigger = trigger
         if let battery = Current.device.batteries().first {
             self.Battery = battery.level
         }
@@ -51,7 +52,7 @@ public class WebhookUpdateLocation: Mappable {
 
     public convenience init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
         self.init(trigger: trigger)
-        self.LocationName = zone?.Name ?? LocationNames.NotHome.rawValue
+        self.LocationName = zone?.entityId.replacingOccurrences(of: "zone.", with: "") ?? LocationNames.NotHome.rawValue
     }
 
     public func SetZone(zone: RLMZone) {
