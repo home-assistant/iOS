@@ -8,32 +8,34 @@ public enum LocationNames: String {
     case NotHome = "not_home"
 }
 
-public class WebhookUpdateLocation: Mappable {
-    public var HorizontalAccuracy: CLLocationAccuracy?
-    public var Battery: Int?
-    public var Location: CLLocationCoordinate2D?
-    public var LocationName: String?
+public struct WebhookUpdateLocation: ImmutableMappable {
+    public var horizontalAccuracy: CLLocationAccuracy?
+    public var battery: Int?
+    public var location: CLLocationCoordinate2D?
+    public var locationName: String?
 
-    public var Speed: CLLocationSpeed?
-    public var Altitude: CLLocationDistance?
-    public var Course: CLLocationDirection?
-    public var VerticalAccuracy: CLLocationAccuracy?
+    public var speed: CLLocationSpeed?
+    public var altitude: CLLocationDistance?
+    public var course: CLLocationDirection?
+    public var verticalAccuracy: CLLocationAccuracy?
 
     // Not sent
-    public var Trigger: LocationUpdateTrigger = .Unknown
+    public var trigger: LocationUpdateTrigger
 
-    init() {}
-
-    public required init?(map: Map) {}
-
-    public convenience init?(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
-        self.init()
-
-        self.Trigger = trigger
-
+    public init(trigger: LocationUpdateTrigger) {
+        self.trigger = trigger
         if let battery = Current.device.batteries().first {
-            self.Battery = battery.level
+            self.battery = battery.level
         }
+    }
+
+    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
+        self.init(trigger: trigger)
+        self.locationName = zone?.deviceTrackerName ?? LocationNames.NotHome.rawValue
+    }
+
+    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
+        self.init(trigger: trigger)
 
         let useLocation: Bool
 
@@ -45,87 +47,73 @@ public class WebhookUpdateLocation: Mappable {
         }
 
         if let location = location, useLocation {
-            SetLocation(location: location)
+            self.location = location.coordinate
+
+            if location.speed > -1 {
+                self.speed = location.speed
+            }
+            if location.course > -1 {
+                self.course = location.course
+            }
+            if location.altitude > -1 {
+                self.altitude = location.altitude
+            }
+            if location.verticalAccuracy > -1 {
+                self.verticalAccuracy = location.verticalAccuracy
+            }
+            if location.horizontalAccuracy > -1 {
+                self.horizontalAccuracy = location.horizontalAccuracy
+            }
         } else if let zone = zone {
-            SetZone(zone: zone)
-        } else {
-            return nil
-        }
-    }
-
-    public func SetZone(zone: RLMZone) {
-        HorizontalAccuracy = zone.Radius
-        Location = zone.center
-
-        #if os(iOS)
-        // https://github.com/home-assistant/home-assistant-iOS/issues/32
-        if let currentSSID = Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
-            LocationName = zone.Name
-            return
-        }
-        #endif
-
-        if zone.isHome {
-            switch Trigger {
-            case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
-                LocationName = LocationNames.Home.rawValue
-            case .RegionExit, .GPSRegionExit:
-                LocationName = LocationNames.NotHome.rawValue
-            case .BeaconRegionExit:
-                ClearLocation()
-            default:
-                break
+            if trigger != .BeaconRegionExit {
+                self.location = zone.center
+                self.horizontalAccuracy = zone.Radius
             }
-        } else {
-            switch Trigger {
-            case .BeaconRegionEnter where !zone.isPassive:
-                LocationName = zone.Name
-            case .BeaconRegionExit:
-                ClearLocation()
-            default:
-                break
+
+            #if os(iOS)
+            // https://github.com/home-assistant/home-assistant-iOS/issues/32
+            if let currentSSID = Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
+                self.location = zone.center
+                self.locationName = zone.Name
+                return
+            }
+            #endif
+
+            if zone.isHome {
+                switch trigger {
+                case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
+                    self.locationName = LocationNames.Home.rawValue
+                case .RegionExit, .GPSRegionExit:
+                    self.locationName = LocationNames.NotHome.rawValue
+                default:
+                    break
+                }
+            } else {
+                switch trigger {
+                case .BeaconRegionEnter where !zone.isPassive:
+                    self.locationName = zone.Name
+                case .BeaconRegionExit:
+                    break
+                default:
+                    break
+                }
             }
         }
-    }
-
-    public func SetLocation(location: CLLocation) {
-        Location = location.coordinate
-        if location.speed > -1 {
-            Speed = location.speed
-        }
-        if location.course > -1 {
-            Course = location.course
-        }
-        if location.altitude > -1 {
-            Altitude = location.altitude
-        }
-        if location.verticalAccuracy > -1 {
-            VerticalAccuracy = location.verticalAccuracy
-        }
-        if location.horizontalAccuracy > -1 {
-            HorizontalAccuracy = location.horizontalAccuracy
-        }
-    }
-
-    public func ClearLocation() {
-        HorizontalAccuracy = nil
-        Location = nil
-        Speed = nil
-        Altitude = nil
-        Course = nil
-        VerticalAccuracy = nil
     }
 
     // Mappable
-    public func mapping(map: Map) {
-        Battery <- map["battery"]
-        Location <- (map["gps"], CLLocationCoordinate2DTransform())
-        HorizontalAccuracy <- map["gps_accuracy"]
-        LocationName <- map["location_name"]
+    public init(map: Map) throws {
+        fatalError()
+    }
 
-        Speed <- map["speed"]
-        Altitude <- map["altitude"]
-        Course <- map["course"]
-        VerticalAccuracy <- map["vertical_accuracy"]
+    public func mapping(map: Map) {
+        battery >>> map["battery"]
+        location >>> (map["gps"], CLLocationCoordinate2DTransform())
+        horizontalAccuracy >>> map["gps_accuracy"]
+        locationName >>> map["location_name"]
+        speed >>> map["speed"]
+        altitude >>> map["altitude"]
+        course >>> map["course"]
+        verticalAccuracy >>> map["vertical_accuracy"]
     }
 }

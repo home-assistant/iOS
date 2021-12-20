@@ -13,9 +13,25 @@ public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, Expressib
     }
 }
 
+public enum ServerLocationType: String, CaseIterable, RawRepresentable {
+    case exact
+    case zoneOnly
+    case never
+
+    public static var `default`: Self { .exact }
+    public var localizedDescription: String {
+        switch self {
+        case .never: return L10n.Settings.ConnectionSection.LocationSendType.Setting.never
+        case .exact: return L10n.Settings.ConnectionSection.LocationSendType.Setting.exact
+        case .zoneOnly: return L10n.Settings.ConnectionSection.LocationSendType.Setting.zoneOnly
+        }
+    }
+}
+
 public extension ServerSettingKey {
     static var localName: ServerSettingKey<String> { "local_name" }
     static var overrideDeviceName: ServerSettingKey<String> { "override_device_name" }
+    static var locationType: ServerSettingKey<ServerLocationType> { "location_type" }
 }
 
 public struct ServerInfo: Codable, Equatable {
@@ -89,12 +105,24 @@ public struct ServerInfo: Codable, Equatable {
 
     public static var defaultSortOrder: Int { -1 }
 
-    public mutating func setSetting<T>(value: T?, for key: ServerSettingKey<T>) {
+    public mutating func setSetting<T: RawRepresentable>(value: T?, for key: ServerSettingKey<T>) {
+        settings[key.rawValue] = value?.rawValue
+    }
+
+    public mutating func setSetting(value: String?, for key: ServerSettingKey<String>) {
         settings[key.rawValue] = value
     }
 
-    public func setting<T>(for key: ServerSettingKey<T>) -> T? {
-        settings[key.rawValue] as? T
+    public func setting<T: RawRepresentable>(for key: ServerSettingKey<T>) -> T? {
+        if let value = settings[key.rawValue] as? T.RawValue {
+            return T(rawValue: value)
+        } else {
+            return nil
+        }
+    }
+
+    public func setting(for key: ServerSettingKey<String>) -> String? {
+        settings[key.rawValue] as? String
     }
 
     public static func == (lhs: ServerInfo, rhs: ServerInfo) -> Bool {

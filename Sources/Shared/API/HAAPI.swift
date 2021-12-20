@@ -447,29 +447,38 @@ public class HomeAssistantAPI {
 
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
-        location: CLLocation?,
+        location rawLocation: CLLocation?,
         zone: RLMZone?
     ) -> Promise<Void> {
-        firstly {
-            .value(WebhookUpdateLocation(
-                trigger: updateType,
-                location: location,
-                zone: zone
-            ))
-        }.map { (update: WebhookUpdateLocation?) -> WebhookUpdateLocation in
-            if let update = update {
-                return update
+        let update: WebhookUpdateLocation
+        let location: CLLocation?
+        let localMetadata = WebhookResponseLocation.localMetdata(
+            trigger: updateType,
+            zone: zone
+        )
+
+        switch server.info.setting(for: .locationType) ?? .exact {
+        case .exact:
+            update = .init(trigger: updateType, location: rawLocation, zone: zone)
+            location = rawLocation
+        case .zoneOnly:
+            if updateType == .BeaconRegionEnter {
+                update = .init(trigger: updateType, usingNameOf: zone)
+            } else if let rawLocation = rawLocation {
+                // note this is a different zone than the event - e.g. the zone may be the one we are exiting
+                update = .init(trigger: updateType, usingNameOf: RLMZone.zone(of: rawLocation, in: server))
             } else {
-                throw HomeAssistantAPI.APIError.updateNotPossible
+                update = .init(trigger: updateType)
             }
-        }.then { payload -> Guarantee<WebhookUpdateLocation> in
+            location = nil
+        case .never:
+            update = .init(trigger: updateType)
+            location = nil
+        }
+
+        return firstly {
             let realm = Current.realm()
             return when(resolved: realm.reentrantWrite {
-                var jsonPayload = "{\"missing\": \"payload\"}"
-                if let p = payload.toJSONString(prettyPrint: false) {
-                    jsonPayload = p
-                }
-
                 let accuracyAuthorization: CLAccuracyAuthorization
 
                 if #available(iOS 14, watchOS 7, *) {
@@ -483,29 +492,24 @@ public class HomeAssistantAPI {
                     location: location,
                     zone: zone,
                     accuracyAuthorization: accuracyAuthorization,
-                    payload: jsonPayload
+                    payload: update.toJSONString(prettyPrint: false) ?? "(unknown)"
                 ))
-            }).map { _ in
-                payload
-            }
-        }.map { payload -> [String: Any] in
-            let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
+            }).asVoid()
+        }.map { () -> [String: Any] in
+            let payloadDict = Mapper<WebhookUpdateLocation>().toJSON(update)
             Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict
-        }.then { [server] payload in
+        }.then { [self] payload in
             when(
                 resolved:
-                self.UpdateSensors(trigger: updateType, location: location).asVoid(),
+                UpdateSensors(trigger: updateType, location: location).asVoid(),
                 Current.webhooks.send(
                     identifier: .location,
                     server: server,
                     request: .init(
                         type: "update_location",
                         data: payload,
-                        localMetadata: WebhookResponseLocation.localMetdata(
-                            trigger: updateType,
-                            zone: zone
-                        )
+                        localMetadata: localMetadata
                     )
                 )
             )
