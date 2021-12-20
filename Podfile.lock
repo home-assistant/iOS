@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.5.0)
+  - Alamofire (5.4.4)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
@@ -173,7 +173,7 @@ PODS:
   - ZIPFoundation (0.9.13)
 
 DEPENDENCIES:
-  - Alamofire (~> 5.0)
+  - Alamofire (= 5.4.4)
   - CallbackURLKit
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
@@ -308,7 +308,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
-  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
+  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
@@ -349,6 +349,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: ae5b4b813d216d3bf0a148773267fff14bd51d37
 
-PODFILE CHECKSUM: cb78cdfeaeb43cc8f1fd0fed789d4b2290598a2a
+PODFILE CHECKSUM: a17fb7bc4e56e18b182879858337953464cc75bb
 
 COCOAPODS: 1.10.2

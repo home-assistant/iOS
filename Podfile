@@ -23,7 +23,8 @@ plugin 'cocoapods-acknowledgements'
 
 system('./Tools/BuildMaterialDesignIconsFont.sh')
 
-pod 'Alamofire', '~> 5.0'
+# alamofire can be upgraded when Apple stops breaking iOS 12 builds when Concurrency is referenced
+pod 'Alamofire', '5.4.4'
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
