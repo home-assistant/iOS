@@ -3,11 +3,11 @@ import HAKit
 import Version
 
 public protocol SettingValue {
-    static var `default`: Self { get }
+    static var defaultSettingValue: Self { get }
 }
 
 extension Optional: SettingValue {
-    public static var `default`: Wrapped? { .none }
+    public static var defaultSettingValue: Wrapped? { .none }
 }
 
 public struct ServerSettingKey<ValueType: SettingValue>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
@@ -26,7 +26,7 @@ public enum ServerLocationPrivacy: String, CaseIterable, RawRepresentable, Setti
     case zoneOnly
     case never
 
-    public static var `default`: Self { .exact }
+    public static var defaultSettingValue: Self { .exact }
     public var localizedDescription: String {
         switch self {
         case .never: return L10n.Settings.ConnectionSection.LocationSendType.Setting.never
@@ -40,7 +40,7 @@ public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, Setting
     case all
     case none
 
-    public static var `default`: Self { .all }
+    public static var defaultSettingValue: Self { .all }
     public var localizedDescription: String {
         switch self {
         case .all: return L10n.Settings.ConnectionSection.SensorSendType.Setting.all
@@ -128,7 +128,7 @@ public struct ServerInfo: Codable, Equatable {
     public static var defaultSortOrder: Int { -1 }
 
     public mutating func setSetting<T: RawRepresentable>(value: T?, for key: ServerSettingKey<T>) {
-        settings[key.rawValue] = value?.rawValue ?? T.default
+        settings[key.rawValue] = value?.rawValue ?? T.defaultSettingValue
     }
 
     public mutating func setSetting(value: String?, for key: ServerSettingKey<String?>) {
@@ -139,7 +139,7 @@ public struct ServerInfo: Codable, Equatable {
         if let value = settings[key.rawValue] as? T.RawValue, let result = T(rawValue: value) {
             return result
         } else {
-            return T.default
+            return T.defaultSettingValue
         }
     }
 
