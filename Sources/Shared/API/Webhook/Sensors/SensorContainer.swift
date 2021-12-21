@@ -163,14 +163,6 @@ public class SensorContainer {
                     return nil
                 }
             }.flatMap { $0 }
-        }.mapValues { [weak self] sensor -> WebhookSensor in
-            guard let self = self else { return sensor }
-
-            if self.isEnabled(sensor: sensor) {
-                return sensor
-            } else {
-                return WebhookSensor(redacting: sensor)
-            }
         }
 
         lastUpdate = .init(sensors: generatedSensors.map { [lastSentSensors] new in
@@ -200,7 +192,15 @@ public class SensorContainer {
             })
         })
 
-        return generatedSensors.map(SensorResponse.init(sensors:))
+        return generatedSensors.mapValues { [weak self] sensor -> WebhookSensor in
+            guard let self = self else { return sensor }
+
+            if self.isEnabled(sensor: sensor) {
+                return sensor
+            } else {
+                return WebhookSensor(redacting: sensor)
+            }
+        }.map(SensorResponse.init(sensors:))
     }
 
     private func notifySignal(reason: SensorContainerUpdateReason) {
