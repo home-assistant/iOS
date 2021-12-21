@@ -2,7 +2,15 @@ import Foundation
 import HAKit
 import Version
 
-public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
+public protocol SettingValue {
+    static var `default`: Self { get }
+}
+
+extension Optional: SettingValue {
+    public static var `default`: Optional<Wrapped> { .none }
+}
+
+public struct ServerSettingKey<ValueType: SettingValue>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
     public var rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
@@ -13,7 +21,7 @@ public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, Expressib
     }
 }
 
-public enum ServerLocationType: String, CaseIterable, RawRepresentable {
+public enum ServerLocationPrivacy: String, CaseIterable, RawRepresentable, SettingValue {
     case exact
     case zoneOnly
     case never
@@ -29,9 +37,9 @@ public enum ServerLocationType: String, CaseIterable, RawRepresentable {
 }
 
 public extension ServerSettingKey {
-    static var localName: ServerSettingKey<String> { "local_name" }
-    static var overrideDeviceName: ServerSettingKey<String> { "override_device_name" }
-    static var locationType: ServerSettingKey<ServerLocationType> { "location_type" }
+    static var localName: ServerSettingKey<String?> { "local_name" }
+    static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
+    static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
 }
 
 public struct ServerInfo: Codable, Equatable {
@@ -106,22 +114,22 @@ public struct ServerInfo: Codable, Equatable {
     public static var defaultSortOrder: Int { -1 }
 
     public mutating func setSetting<T: RawRepresentable>(value: T?, for key: ServerSettingKey<T>) {
-        settings[key.rawValue] = value?.rawValue
+        settings[key.rawValue] = value?.rawValue ?? T.default
     }
 
-    public mutating func setSetting(value: String?, for key: ServerSettingKey<String>) {
+    public mutating func setSetting(value: String?, for key: ServerSettingKey<String?>) {
         settings[key.rawValue] = value
     }
 
-    public func setting<T: RawRepresentable>(for key: ServerSettingKey<T>) -> T? {
-        if let value = settings[key.rawValue] as? T.RawValue {
-            return T(rawValue: value)
+    public func setting<T: RawRepresentable>(for key: ServerSettingKey<T>) -> T {
+        if let value = settings[key.rawValue] as? T.RawValue, let result = T(rawValue: value) {
+            return result
         } else {
-            return nil
+            return T.default
         }
     }
 
-    public func setting(for key: ServerSettingKey<String>) -> String? {
+    public func setting(for key: ServerSettingKey<String?>) -> String? {
         settings[key.rawValue] as? String
     }
 
