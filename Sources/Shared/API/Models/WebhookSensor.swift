@@ -40,6 +40,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.UniqueID = sensor.UniqueID
         self.State = "unavailable"
         self.Icon = "mdi:dots-square"
+        self.Type = sensor.Type
     }
 
     convenience init(name: String, uniqueID: String) {
