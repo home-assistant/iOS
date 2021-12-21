@@ -7,6 +7,8 @@ import XCTest
 class SensorContainerTests: XCTestCase {
     private var observer: MockSensorObserver!
     private var container: SensorContainer!
+    private var server1: Server!
+    private var server2: Server!
 
     private enum TestError: Error {
         case anyError
@@ -14,6 +16,11 @@ class SensorContainerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
+        let servers = FakeServerManager()
+        server1 = servers.addFake()
+        server2 = servers.addFake()
+        Current.servers = servers
 
         observer = MockSensorObserver()
         container = SensorContainer()
@@ -54,7 +61,7 @@ class SensorContainerTests: XCTestCase {
 
         let date = Date()
         Current.date = { date }
-        let promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set([
             "test1a", "test1b", "test2a", "test2b",
@@ -81,7 +88,7 @@ class SensorContainerTests: XCTestCase {
             ]),
         ]
 
-        let promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set([
             "test1a", "test1b",
@@ -100,7 +107,7 @@ class SensorContainerTests: XCTestCase {
         let date1 = Date(timeIntervalSinceNow: -200)
         Current.date = { date1 }
 
-        let promise1 = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise1 = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result1 = try hang(Promise(promise1))
         XCTAssertEqual(Set(result1.sensors.map(\.Name)), Set([
             "test1a", "test1b",
@@ -128,7 +135,7 @@ class SensorContainerTests: XCTestCase {
             ]),
         ]
 
-        let promise2 = container.sensors(reason: .registration, serverVersion: Version())
+        let promise2 = container.sensors(reason: .registration, server: server1)
         let result2 = try hang(Promise(promise2))
 
         // registration doesn't do any filtering
@@ -159,7 +166,7 @@ class SensorContainerTests: XCTestCase {
 
         let date = Date(timeIntervalSinceNow: -200)
         Current.date = { date }
-        let promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set([
             "test1a", "test1b",
@@ -185,7 +192,7 @@ class SensorContainerTests: XCTestCase {
             .value([WebhookSensor(name: "test", uniqueID: "test")]),
         ]
 
-        _ = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        _ = container.sensors(reason: .trigger("unit-test"), server: server1)
         XCTAssertTrue(observer.updates.isEmpty)
     }
 
@@ -197,7 +204,7 @@ class SensorContainerTests: XCTestCase {
             .value([WebhookSensor(name: "test", uniqueID: "test")]),
         ]
 
-        let promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result = try hang(Promise(promise))
         XCTAssertEqual(result.sensors.map(\.UniqueID), ["test"])
     }
@@ -210,7 +217,7 @@ class SensorContainerTests: XCTestCase {
             .value([]),
         ]
 
-        let promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         _ = try hang(Promise(promise))
 
         guard let lastCreated = MockSensorProvider.lastCreated else {
@@ -249,14 +256,14 @@ class SensorContainerTests: XCTestCase {
         var promise: Guarantee<SensorResponse>
         var result: SensorResponse
 
-        promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set([
             "test1a", "test1b", "test2a", "test2b",
         ]))
 
         MockSensorProvider.returnedPromises = initialValues
-        promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set([
             "test1a", "test1b", "test2a", "test2b",
@@ -275,7 +282,7 @@ class SensorContainerTests: XCTestCase {
             ]),
         ]
 
-        promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set([
             "test1a", "test1b", "test2a", "test2b", "test2c",
@@ -284,7 +291,7 @@ class SensorContainerTests: XCTestCase {
         // now return nothing, should get nothing
         MockSensorProvider.returnedPromises = [.value([]), .value([])]
 
-        promise = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        promise = container.sensors(reason: .trigger("unit-test"), server: server1)
         result = try hang(Promise(promise))
         XCTAssertTrue(result.sensors.isEmpty)
 
@@ -313,7 +320,7 @@ class SensorContainerTests: XCTestCase {
         let promises: [Promise<[WebhookSensor]>] = [.value([underlying])]
 
         MockSensorProvider.returnedPromises = promises
-        let promise1 = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise1 = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result1 = try hang(Promise(promise1))
 
         let result1sensor = try XCTUnwrap(result1.sensors.first)
@@ -327,10 +334,42 @@ class SensorContainerTests: XCTestCase {
         XCTAssertTrue(container.isEnabled(sensor: underlying))
 
         MockSensorProvider.returnedPromises = promises
-        let promise2 = container.sensors(reason: .trigger("unit-test"), serverVersion: Version())
+        let promise2 = container.sensors(reason: .trigger("unit-test"), server: server1)
         let result2 = try hang(Promise(promise2))
         let result2sensor = try XCTUnwrap(result2.sensors.first)
         XCTAssertEqual(result2sensor, underlying)
+    }
+
+    func testDisabledServersRedacted() throws {
+        container.register(provider: MockSensorProvider.self)
+
+        let underlying = with(WebhookSensor(name: "test1a", uniqueID: "testDisabled")) {
+            $0.State = "state"
+            $0.Attributes = ["test": true]
+        }
+
+        server1.info.setSetting(value: ServerSensorPrivacy.none, for: .sensorPrivacy)
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let promiseS1 = container.sensors(reason: .trigger("unit-test"), server: server1)
+        let resultS1 = try hang(Promise(promiseS1))
+
+        MockSensorProvider.returnedPromises = [.value([underlying])]
+        let promiseS2 = container.sensors(reason: .trigger("unit-test"), server: server2)
+        let resultS2 = try hang(Promise(promiseS2))
+
+        let sensorS1 = try XCTUnwrap(resultS1.sensors.first)
+        XCTAssertEqual(sensorS1.UniqueID, underlying.UniqueID)
+        XCTAssertEqual(sensorS1.State as? String, "unavailable")
+        XCTAssertNil(sensorS1.Attributes)
+        XCTAssertEqual(sensorS1.Name, underlying.Name)
+        XCTAssertEqual(sensorS1.Icon, "mdi:dots-square")
+
+        let sensorS2 = try XCTUnwrap(resultS2.sensors.first)
+        XCTAssertEqual(sensorS2.UniqueID, underlying.UniqueID)
+        XCTAssertEqual(sensorS2.State as? String, "state")
+        XCTAssertEqual(sensorS2.Attributes?["test"] as? Bool, true)
+        XCTAssertEqual(sensorS2.Name, underlying.Name)
     }
 
     func testSensorsLimitedTo() throws {
@@ -346,7 +385,7 @@ class SensorContainerTests: XCTestCase {
             reason: .registration,
             limitedTo: [MockSensorProvider.self],
             location: nil,
-            serverVersion: Version()
+            server: server1
         )
         let result = try hang(Promise(promise))
         XCTAssertEqual(Set(result.sensors.map(\.UniqueID)), Set(["included"]))
