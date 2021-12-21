@@ -52,7 +52,7 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
             }
 
             return firstly { () -> Guarantee<[WebhookSensor]> in
-                Current.sensors.sensors(reason: .registration, serverVersion: api.server.info.version).map(\.sensors)
+                Current.sensors.sensors(reason: .registration, server: api.server).map(\.sensors)
             }.filterValues { sensor in
                 if let uniqueID = sensor.UniqueID {
                     return needsRegistering.contains(uniqueID)

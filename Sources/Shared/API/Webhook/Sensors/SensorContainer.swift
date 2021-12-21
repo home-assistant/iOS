@@ -132,13 +132,13 @@ public class SensorContainer {
         reason: SensorProviderRequest.Reason,
         limitedTo: [SensorProvider.Type]? = nil,
         location: CLLocation? = nil,
-        serverVersion: Version
+        server: Server
     ) -> Guarantee<SensorResponse> {
         let request = SensorProviderRequest(
             reason: reason,
             dependencies: providerDependencies,
             location: location,
-            serverVersion: serverVersion
+            serverVersion: server.info.version
         )
 
         let generatedSensors = firstly {
