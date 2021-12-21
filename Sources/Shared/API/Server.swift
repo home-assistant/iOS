@@ -36,10 +36,24 @@ public enum ServerLocationPrivacy: String, CaseIterable, RawRepresentable, Setti
     }
 }
 
+public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, SettingValue {
+    case all
+    case none
+
+    public static var `default`: Self { .all }
+    public var localizedDescription: String {
+        switch self {
+        case .all: return L10n.Settings.ConnectionSection.SensorSendType.Setting.all
+        case .none: return L10n.Settings.ConnectionSection.SensorSendType.Setting.none
+        }
+    }
+}
+
 public extension ServerSettingKey {
     static var localName: ServerSettingKey<String?> { "local_name" }
     static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
     static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
+    static var sensorPrivacy: ServerSettingKey<ServerSensorPrivacy> { "privacy_sensor" }
 }
 
 public struct ServerInfo: Codable, Equatable {

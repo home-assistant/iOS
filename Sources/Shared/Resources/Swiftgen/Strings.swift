@@ -985,6 +985,16 @@ public enum L10n {
         /// Remote UI URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.remote_ui_url.title") }
       }
+      public enum SensorSendType {
+        /// Sensors Sent
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.sensor_send_type.title") }
+        public enum Setting {
+          /// All
+          public static var all: String { return L10n.tr("Localizable", "settings.connection_section.sensor_send_type.setting.all") }
+          /// None
+          public static var `none`: String { return L10n.tr("Localizable", "settings.connection_section.sensor_send_type.setting.none") }
+        }
+      }
       public enum ValidateError {
         /// Edit URL
         public static var editUrl: String { return L10n.tr("Localizable", "settings.connection_section.validate_error.edit_url") }
