@@ -79,7 +79,10 @@ class SensorListViewController: HAFormViewController, SensorObserver {
         refreshControl.beginRefreshing()
 
         firstly {
-            HomeAssistantAPI.manuallyUpdate(applicationState: UIApplication.shared.applicationState, type: .userRequested)
+            HomeAssistantAPI.manuallyUpdate(
+                applicationState: UIApplication.shared.applicationState,
+                type: .userRequested
+            )
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
         }.cauterize()

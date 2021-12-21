@@ -7,7 +7,7 @@ public protocol SettingValue {
 }
 
 extension Optional: SettingValue {
-    public static var `default`: Optional<Wrapped> { .none }
+    public static var `default`: Wrapped? { .none }
 }
 
 public struct ServerSettingKey<ValueType: SettingValue>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
