@@ -779,7 +779,22 @@ public class HomeAssistantAPI {
     }
 
     #if os(iOS)
-    public static func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
+    public enum ManualUpdateType {
+        case userRequested
+        case programmatic
+
+        var allowsTemporaryAccess: Bool {
+            switch self {
+            case .userRequested: return true
+            case .programmatic: return false
+            }
+        }
+    }
+
+    public static func manuallyUpdate(
+        applicationState: UIApplication.State,
+        type: ManualUpdateType
+    ) -> Promise<Void> {
         Current.backgroundTask(withName: "manual-location-update") { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
@@ -791,8 +806,11 @@ public class HomeAssistantAPI {
 
                     guard locationManager.accuracyAuthorization != .fullAccuracy else {
                         // already have full accuracy, don't need to request
-                        seal(())
-                        return
+                        return seal(())
+                    }
+
+                    guard type.allowsTemporaryAccess else {
+                        return seal(())
                     }
 
                     Current.Log.info("requesting full accuracy for manual update")

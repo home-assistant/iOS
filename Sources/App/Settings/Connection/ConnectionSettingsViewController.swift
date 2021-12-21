@@ -203,6 +203,10 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }
                 $0.onChange { [server] row in
                     server.info.setSetting(value: row.value, for: .locationType)
+                    HomeAssistantAPI.manuallyUpdate(
+                        applicationState: UIApplication.shared.applicationState,
+                        type: .programmatic
+                    ).cauterize()
                 }
             }
 
