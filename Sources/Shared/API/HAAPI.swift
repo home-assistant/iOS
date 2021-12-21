@@ -457,7 +457,7 @@ public class HomeAssistantAPI {
             zone: zone
         )
 
-        switch server.info.setting(for: .locationType) ?? .exact {
+        switch server.info.setting(for: .locationPrivacy) {
         case .exact:
             update = .init(trigger: updateType, location: rawLocation, zone: zone)
             location = rawLocation
@@ -728,7 +728,7 @@ public class HomeAssistantAPI {
 
     public func registerSensors() -> Promise<Void> {
         firstly {
-            Current.sensors.sensors(reason: .registration, serverVersion: server.info.version).map(\.sensors)
+            Current.sensors.sensors(reason: .registration, server: server).map(\.sensors)
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map(\.UniqueID))")
         }.thenMap { [server] sensor in
@@ -755,7 +755,7 @@ public class HomeAssistantAPI {
                 reason: .trigger(trigger.rawValue),
                 limitedTo: limitedTo,
                 location: location,
-                serverVersion: server.info.version
+                server: server
             )
         }.map { sensorResponse -> (SensorResponse, [[String: Any]]) in
             Current.Log.info("updating sensors \(sensorResponse.sensors.map { $0.UniqueID ?? "unknown" })")
@@ -779,7 +779,22 @@ public class HomeAssistantAPI {
     }
 
     #if os(iOS)
-    public static func manuallyUpdate(applicationState: UIApplication.State) -> Promise<Void> {
+    public enum ManualUpdateType {
+        case userRequested
+        case programmatic
+
+        var allowsTemporaryAccess: Bool {
+            switch self {
+            case .userRequested: return true
+            case .programmatic: return false
+            }
+        }
+    }
+
+    public static func manuallyUpdate(
+        applicationState: UIApplication.State,
+        type: ManualUpdateType
+    ) -> Promise<Void> {
         Current.backgroundTask(withName: "manual-location-update") { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
@@ -791,8 +806,11 @@ public class HomeAssistantAPI {
 
                     guard locationManager.accuracyAuthorization != .fullAccuracy else {
                         // already have full accuracy, don't need to request
-                        seal(())
-                        return
+                        return seal(())
+                    }
+
+                    guard type.allowsTemporaryAccess else {
+                        return seal(())
                     }
 
                     Current.Log.info("requesting full accuracy for manual update")

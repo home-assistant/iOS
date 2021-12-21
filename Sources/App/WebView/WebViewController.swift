@@ -651,7 +651,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     @objc private func updateSensors() {
         // called via menu/keyboard shortcut too
         firstly {
-            HomeAssistantAPI.manuallyUpdate(applicationState: UIApplication.shared.applicationState)
+            HomeAssistantAPI.manuallyUpdate(
+                applicationState: UIApplication.shared.applicationState,
+                type: .userRequested
+            )
         }.catch { [weak self] error in
             self?.showSwiftMessage(error: error)
         }

@@ -751,3 +751,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.location_send_type.setting.never" = "Never";
 /* e.g. value here is e.g. core-2021.12 or frontend-2021.12 */
 "requires_version" = "Requires %@ or later.";
+"settings.connection_section.sensor_send_type.title" = "Sensors Sent";
+"settings.connection_section.sensor_send_type.setting.all" = "All";
+"settings.connection_section.sensor_send_type.setting.none" = "None";

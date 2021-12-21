@@ -177,15 +177,15 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
             +++ Section(L10n.SettingsDetails.Privacy.title)
 
-            <<< PushRow<ServerLocationType> {
+            <<< PushRow<ServerLocationPrivacy> {
                 $0.title = L10n.Settings.ConnectionSection.LocationSendType.title
                 $0.selectorTitle = $0.title
-                $0.value = server.info.setting(for: .locationType) ?? .default
-                $0.options = ServerLocationType.allCases
+                $0.value = server.info.setting(for: .locationPrivacy)
+                $0.options = ServerLocationPrivacy.allCases
                 $0.displayValueFor = { $0?.localizedDescription }
                 $0.onPresent { [server] _, to in
                     to.enableDeselection = false
-                    if server.info.version <= .updateLocationGPSOptional || true {
+                    if server.info.version <= .updateLocationGPSOptional {
                         to.sectionKeyForValue = { _ in
                             // so we get asked for section titles
                             "section"
@@ -202,7 +202,26 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                     }
                 }
                 $0.onChange { [server] row in
-                    server.info.setSetting(value: row.value, for: .locationType)
+                    server.info.setSetting(value: row.value, for: .locationPrivacy)
+                    HomeAssistantAPI.manuallyUpdate(
+                        applicationState: UIApplication.shared.applicationState,
+                        type: .programmatic
+                    ).cauterize()
+                }
+            }
+
+            <<< PushRow<ServerSensorPrivacy> {
+                $0.title = L10n.Settings.ConnectionSection.SensorSendType.title
+                $0.selectorTitle = $0.title
+                $0.value = server.info.setting(for: .sensorPrivacy)
+                $0.options = ServerSensorPrivacy.allCases
+                $0.displayValueFor = { $0?.localizedDescription }
+                $0.onPresent { _, to in
+                    to.enableDeselection = false
+                }
+                $0.onChange { [server] row in
+                    server.info.setSetting(value: row.value, for: .sensorPrivacy)
+                    Current.api(for: server).registerSensors().cauterize()
                 }
             }
 

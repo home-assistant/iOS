@@ -82,6 +82,15 @@ public class SensorContainer {
         return !disabledSensorIDs.contains(id)
     }
 
+    public func isAllowedToSend(sensor: WebhookSensor, for server: Server) -> Bool {
+        guard isEnabled(sensor: sensor) else { return false }
+
+        switch server.info.setting(for: .sensorPrivacy) {
+        case .all: return true
+        case .none: return false
+        }
+    }
+
     public func setEnabled(_ value: Bool, for sensor: WebhookSensor) {
         guard let id = sensor.UniqueID else { return }
 
@@ -132,13 +141,13 @@ public class SensorContainer {
         reason: SensorProviderRequest.Reason,
         limitedTo: [SensorProvider.Type]? = nil,
         location: CLLocation? = nil,
-        serverVersion: Version
+        server: Server
     ) -> Guarantee<SensorResponse> {
         let request = SensorProviderRequest(
             reason: reason,
             dependencies: providerDependencies,
             location: location,
-            serverVersion: serverVersion
+            serverVersion: server.info.version
         )
 
         let generatedSensors = firstly {
@@ -163,14 +172,6 @@ public class SensorContainer {
                     return nil
                 }
             }.flatMap { $0 }
-        }.mapValues { [weak self] sensor -> WebhookSensor in
-            guard let self = self else { return sensor }
-
-            if self.isEnabled(sensor: sensor) {
-                return sensor
-            } else {
-                return WebhookSensor(redacting: sensor)
-            }
         }
 
         lastUpdate = .init(sensors: generatedSensors.map { [lastSentSensors] new in
@@ -200,7 +201,15 @@ public class SensorContainer {
             })
         })
 
-        return generatedSensors.map(SensorResponse.init(sensors:))
+        return generatedSensors.mapValues { [weak self] sensor -> WebhookSensor in
+            guard let self = self else { return sensor }
+
+            if self.isAllowedToSend(sensor: sensor, for: server) {
+                return sensor
+            } else {
+                return WebhookSensor(redacting: sensor)
+            }
+        }.map(SensorResponse.init(sensors:))
     }
 
     private func notifySignal(reason: SensorContainerUpdateReason) {

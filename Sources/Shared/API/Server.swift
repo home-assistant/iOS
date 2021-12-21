@@ -2,7 +2,15 @@ import Foundation
 import HAKit
 import Version
 
-public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
+public protocol SettingValue {
+    static var defaultSettingValue: Self { get }
+}
+
+extension Optional: SettingValue {
+    public static var defaultSettingValue: Wrapped? { .none }
+}
+
+public struct ServerSettingKey<ValueType: SettingValue>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
     public var rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
@@ -13,12 +21,12 @@ public struct ServerSettingKey<ValueType>: RawRepresentable, Hashable, Expressib
     }
 }
 
-public enum ServerLocationType: String, CaseIterable, RawRepresentable {
+public enum ServerLocationPrivacy: String, CaseIterable, RawRepresentable, SettingValue {
     case exact
     case zoneOnly
     case never
 
-    public static var `default`: Self { .exact }
+    public static var defaultSettingValue: Self { .exact }
     public var localizedDescription: String {
         switch self {
         case .never: return L10n.Settings.ConnectionSection.LocationSendType.Setting.never
@@ -28,10 +36,24 @@ public enum ServerLocationType: String, CaseIterable, RawRepresentable {
     }
 }
 
+public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, SettingValue {
+    case all
+    case none
+
+    public static var defaultSettingValue: Self { .all }
+    public var localizedDescription: String {
+        switch self {
+        case .all: return L10n.Settings.ConnectionSection.SensorSendType.Setting.all
+        case .none: return L10n.Settings.ConnectionSection.SensorSendType.Setting.none
+        }
+    }
+}
+
 public extension ServerSettingKey {
-    static var localName: ServerSettingKey<String> { "local_name" }
-    static var overrideDeviceName: ServerSettingKey<String> { "override_device_name" }
-    static var locationType: ServerSettingKey<ServerLocationType> { "location_type" }
+    static var localName: ServerSettingKey<String?> { "local_name" }
+    static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
+    static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
+    static var sensorPrivacy: ServerSettingKey<ServerSensorPrivacy> { "privacy_sensor" }
 }
 
 public struct ServerInfo: Codable, Equatable {
@@ -106,22 +128,22 @@ public struct ServerInfo: Codable, Equatable {
     public static var defaultSortOrder: Int { -1 }
 
     public mutating func setSetting<T: RawRepresentable>(value: T?, for key: ServerSettingKey<T>) {
-        settings[key.rawValue] = value?.rawValue
+        settings[key.rawValue] = value?.rawValue ?? T.defaultSettingValue
     }
 
-    public mutating func setSetting(value: String?, for key: ServerSettingKey<String>) {
+    public mutating func setSetting(value: String?, for key: ServerSettingKey<String?>) {
         settings[key.rawValue] = value
     }
 
-    public func setting<T: RawRepresentable>(for key: ServerSettingKey<T>) -> T? {
-        if let value = settings[key.rawValue] as? T.RawValue {
-            return T(rawValue: value)
+    public func setting<T: RawRepresentable>(for key: ServerSettingKey<T>) -> T {
+        if let value = settings[key.rawValue] as? T.RawValue, let result = T(rawValue: value) {
+            return result
         } else {
-            return nil
+            return T.defaultSettingValue
         }
     }
 
-    public func setting(for key: ServerSettingKey<String>) -> String? {
+    public func setting(for key: ServerSettingKey<String?>) -> String? {
         settings[key.rawValue] as? String
     }
 
