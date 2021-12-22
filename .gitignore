@@ -83,3 +83,4 @@ Configuration/HomeAssistant.overrides.xcconfig
 *.profraw
 Brewfile.lock.json
 vendor/bundle
+.env.development
