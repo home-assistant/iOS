@@ -2,7 +2,7 @@
     "input": {
         "message": "test",
         "data": {
-            "audio": "/test.mp3"
+            "entity_id": "camera.entity_id"
         },
         "registration_info": {
             "app_id": "io.robbie.HomeAssistant.dev",
@@ -20,12 +20,9 @@
                 "body": "test"
             },
             "category": "DYNAMIC",
-            "mutableContent": true,
+            "mutable-content": true,
             "sound": "default"
         },
-        "attachment": {
-            "url": "/test.mp3",
-            "content-type": "waveformaudio"
-        }
+        "entity_id": "camera.entity_id"
     }
 }

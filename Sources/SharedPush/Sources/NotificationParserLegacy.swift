@@ -23,11 +23,11 @@ public enum NotificationParserLegacy {
         }
     }
 
-    public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
-        let registrationInfo = input["registration_info"] as? [String: String] ?? [
-            "os_version": Current.device.systemVersion(),
-            "app_id": "io.robbie.HomeAssistant",
-        ]
+    public static func result(
+        from input: [String: Any],
+        defaultRegistrationInfo: @autoclosure () -> [String: String]
+    ) -> (headers: [String: Any], payload: [String: Any]) {
+        let registrationInfo = input["registration_info"] as? [String: String] ?? defaultRegistrationInfo()
         let data = input["data"] as? [String: Any] ?? [:]
         var headers: [String: Any] = [
             "apns-push-type": "alert",
@@ -88,10 +88,6 @@ public enum NotificationParserLegacy {
                 "sound": "default",
             ],
         ]
-
-        guard registrationInfo["app_id"]?.contains("io.robbie.HomeAssistant") == true else {
-            return (headers: headers, payload: payload)
-        }
 
         if let actions = data["actions"] {
             needsCategory = true
@@ -176,7 +172,7 @@ public enum NotificationParserLegacy {
             }
 
             if needsMutableContent {
-                aps["mutableContent"] = true
+                aps["mutable-content"] = true
             }
         }
 

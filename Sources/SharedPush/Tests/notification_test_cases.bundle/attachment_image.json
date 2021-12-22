@@ -2,12 +2,10 @@
     "input": {
         "message": "test",
         "data": {
-            "push": {
-                "badge": 3
-            }
+            "image": "/test.jpg"
         },
         "registration_info": {
-            "app_id": "some_app_id",
+            "app_id": "io.robbie.HomeAssistant.dev",
             "os_version": "10.15",
             "app_version": "2021.5"
         }
@@ -21,7 +19,13 @@
             "alert": {
                 "body": "test"
             },
+            "category": "DYNAMIC",
+            "mutable-content": true,
             "sound": "default"
+        },
+        "attachment": {
+            "url": "/test.jpg",
+            "content-type": "jpeg"
         }
     }
 }

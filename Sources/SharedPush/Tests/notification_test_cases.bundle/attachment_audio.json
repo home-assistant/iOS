@@ -2,7 +2,7 @@
     "input": {
         "message": "test",
         "data": {
-            "image": "/test.jpg"
+            "audio": "/test.mp3"
         },
         "registration_info": {
             "app_id": "io.robbie.HomeAssistant.dev",
@@ -20,12 +20,12 @@
                 "body": "test"
             },
             "category": "DYNAMIC",
-            "mutableContent": true,
+            "mutable-content": true,
             "sound": "default"
         },
         "attachment": {
-            "url": "/test.jpg",
-            "content-type": "jpeg"
+            "url": "/test.mp3",
+            "content-type": "waveformaudio"
         }
     }
 }

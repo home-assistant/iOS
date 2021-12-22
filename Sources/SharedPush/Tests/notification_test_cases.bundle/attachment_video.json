@@ -2,11 +2,7 @@
     "input": {
         "message": "test",
         "data": {
-            "attachment": {
-                "url": "/existing.mp4",
-                "content-type": "mpeg4"
-            },
-            "image": "/test.jpg"
+            "video": "/test.mov"
         },
         "registration_info": {
             "app_id": "io.robbie.HomeAssistant.dev",
@@ -24,11 +20,11 @@
                 "body": "test"
             },
             "category": "DYNAMIC",
-            "mutableContent": true,
+            "mutable-content": true,
             "sound": "default"
         },
         "attachment": {
-            "url": "/existing.mp4",
+            "url": "/test.mov",
             "content-type": "mpeg4"
         }
     }
