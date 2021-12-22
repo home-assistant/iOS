@@ -1,8 +1,8 @@
 import Foundation
 import HAKit
+import SharedPush
 import UserNotifications
 import Version
-import SharedPush
 
 extension HATypedSubscription {
     static func localPush(

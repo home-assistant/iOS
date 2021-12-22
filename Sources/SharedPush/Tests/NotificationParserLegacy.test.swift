@@ -1,6 +1,6 @@
 import Foundation
-import XCTest
 import SharedPush
+import XCTest
 
 class NotificationParserLegacyTests: XCTestCase {
     private struct NotificationCase {
