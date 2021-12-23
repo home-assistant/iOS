@@ -1199,7 +1199,7 @@
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
-		115327BF2773C14A0082ED72 /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedPush; path = Sources/SharedPush; sourceTree = "<group>"; };
+		115327BF2773C14A0082ED72 /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedPush; path = Sources/PushServer/SharedPush; sourceTree = "<group>"; };
 		115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicContainerView.swift; sourceTree = "<group>"; };
 		115560E227010DAB00A8F818 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageIntentHandler.swift; sourceTree = "<group>"; };

@@ -10,7 +10,7 @@ let package = Package(
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/apns.git", from: "2.0.0"),
-        .package(name: "SharedPush", path: "../SharedPush"),
+        .package(name: "SharedPush", path: "SharedPush"),
     ],
     targets: [
         .target(
