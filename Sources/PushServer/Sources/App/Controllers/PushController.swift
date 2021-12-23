@@ -123,7 +123,10 @@ struct PushController {
                 collapseIdentifier: apns.collapseIdentifier
             )
         }.flatMapError { error in
-            req.eventLoop.makeFailedFuture(Abort(.badRequest, reason: "Failed to send to APNS: \(String(describing: error))"))
+            req.eventLoop.makeFailedFuture(Abort(
+                .badRequest,
+                reason: "Failed to send to APNS: \(String(describing: error))"
+            ))
         }
     }
 }
