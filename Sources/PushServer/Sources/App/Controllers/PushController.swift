@@ -91,13 +91,17 @@ struct PushController {
 
         let apns: PushRequest
 
-        if input.encrypted {
-            apns = try pushRequest(req: req, input: input)
-        } else {
-            let json = try JSONSerialization
-                .jsonObject(with: req.body.data ?? ByteBuffer(), options: []) as? [String: Any] ?? [:]
-            let result = NotificationParserLegacy.result(from: json, defaultRegistrationInfo: [:])
-            apns = try pushRequest(req: req, input: input, headers: result.headers, payload: result.payload)
+        do {
+            if input.encrypted {
+                apns = try pushRequest(req: req, input: input)
+            } else {
+                let json = try JSONSerialization
+                    .jsonObject(with: req.body.data ?? ByteBuffer(), options: []) as? [String: Any] ?? [:]
+                let result = NotificationParserLegacy.result(from: json, defaultRegistrationInfo: [:])
+                apns = try pushRequest(req: req, input: input, headers: result.headers, payload: result.payload)
+            }
+        } catch {
+            throw Abort(.badRequest, reason: "Failed to parse request: \(String(describing: error))")
         }
 
         return req.apns.send(
@@ -114,6 +118,8 @@ struct PushController {
             let sentString = String(decoding: apns.payload, as: UTF8.self)
             req.logger.debug("sent: \(sentString)")
             return PushSendOutput(sentPayload: sentString)
+        }.flatMapError { error in
+            req.eventLoop.makeFailedFuture(Abort(.badRequest, reason: "Failed to send to APNS: \(String(describing: error))"))
         }
     }
 }
