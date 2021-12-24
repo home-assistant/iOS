@@ -3,6 +3,7 @@ import XCTest
 import XCTVapor
 
 class AbstractTestCase: XCTestCase {
+    // swiftlint:disable:next test_case_accessibility
     var app: Application!
 
     override func setUpWithError() throws {
