@@ -48,14 +48,16 @@ class NotificationParserLegacyTests: XCTestCase {
     }
 
     func testAllCases() throws {
+        let parser = LegacyNotificationParserImpl()
+
         for data in notificationCases {
             func prettyString(from object: [String: Any]) throws -> String {
                 let data = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
                 return try XCTUnwrap(String(data: data, encoding: .utf8))
             }
 
-            let (headers, payload) = NotificationParserLegacy.result(from: data.input, defaultRegistrationInfo: [:])
-            let result = ["headers": headers, "payload": payload]
+            let resultStruct = parser.result(from: data.input, defaultRegistrationInfo: [:])
+            let result = ["headers": resultStruct.headers, "payload": resultStruct.payload]
             let resultString = try prettyString(from: result)
             let expected = data.expected
             let expectedString = try prettyString(from: expected)

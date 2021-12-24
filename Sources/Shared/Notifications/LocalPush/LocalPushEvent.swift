@@ -50,11 +50,12 @@ struct LocalPushEvent: HADataDecodable {
             throw LocalPushEventError.invalidType
         }
 
-        let (headers, payload) = NotificationParserLegacy.result(from: value, defaultRegistrationInfo: [
+        let parser = LegacyNotificationParserImpl()
+        let result = parser.result(from: value, defaultRegistrationInfo: [
             "os_version": Current.device.systemVersion(),
             "app_id": "io.robbie.HomeAssistant",
         ])
-        self.init(headers: headers, payload: payload)
+        self.init(headers: result.headers, payload: result.payload)
         self.confirmID = data.decode("hass_confirm_id", fallback: nil)
     }
 
