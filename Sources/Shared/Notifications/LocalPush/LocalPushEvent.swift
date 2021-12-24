@@ -50,7 +50,7 @@ struct LocalPushEvent: HADataDecodable {
             throw LocalPushEventError.invalidType
         }
 
-        let parser = LegacyNotificationParserImpl()
+        let parser = LegacyNotificationParserImpl(pushSource: "local")
         let result = parser.result(from: value, defaultRegistrationInfo: [
             "os_version": Current.device.systemVersion(),
             "app_id": "io.robbie.HomeAssistant",

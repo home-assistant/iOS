@@ -18,7 +18,7 @@ public func configure(_ app: Application) throws {
         )
     }
 
-    app.legacyNotificationParser.parser = LegacyNotificationParserImpl()
+    app.legacyNotificationParser.parser = LegacyNotificationParserImpl(pushSource: "apns-vapor")
 
     // register routes
     try routes(app)

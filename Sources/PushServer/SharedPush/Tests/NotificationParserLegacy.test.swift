@@ -48,7 +48,7 @@ class NotificationParserLegacyTests: XCTestCase {
     }
 
     func testAllCases() throws {
-        let parser = LegacyNotificationParserImpl()
+        let parser = LegacyNotificationParserImpl(pushSource: "<test-push-value>")
 
         for data in notificationCases {
             func prettyString(from object: [String: Any]) throws -> String {

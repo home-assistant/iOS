@@ -20,7 +20,10 @@ public protocol LegacyNotificationParser {
 }
 
 public struct LegacyNotificationParserImpl: LegacyNotificationParser {
-    public init() {}
+    public var pushSource: String
+    public init(pushSource: String) {
+        self.pushSource = pushSource
+    }
 
     private struct CommandPayload {
         let isAlert: Bool
@@ -219,6 +222,15 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                     alert["body"] = nil
                 }
                 aps["sound"] = nil
+            }
+        }
+
+        if input["message"] as? String == "test_push_source" {
+            payload.mutateInside("aps") { aps in
+                aps.mutateInside("alert") { alert in
+                    alert["title"] = input["message"]
+                    alert["body"] = pushSource
+                }
             }
         }
 
