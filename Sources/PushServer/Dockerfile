@@ -17,7 +17,7 @@ WORKDIR /build
 # as long as your Package.swift/Package.resolved
 # files do not change.
 COPY ./Package.* ./
-COPY ./SharedPush ./
+COPY ./SharedPush/Package.* ./
 RUN swift package resolve
 
 # Copy entire repo into container
