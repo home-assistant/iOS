@@ -135,8 +135,6 @@
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
 		11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
-		115327C12773C15B0082ED72 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 115327C02773C15B0082ED72 /* SharedPush */; };
-		115327C32773C1A40082ED72 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 115327C22773C1A40082ED72 /* SharedPush */; };
 		115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
 		115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicView.swift */; };
 		115560E827011E3300A8F818 /* HAPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E727011E3300A8F818 /* HAPanel.swift */; };
@@ -182,6 +180,8 @@
 		116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */; };
 		116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */; };
 		116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */; };
+		116E2AAD27765D0100B330F2 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 116E2AAC27765D0100B330F2 /* SharedPush */; };
+		116E2AAF27765D0600B330F2 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 116E2AAE27765D0600B330F2 /* SharedPush */; };
 		1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506C24DFCDE60065E874 /* SwiftUI.framework */; };
 		1171507024DFCDE60065E874 /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171506F24DFCDE60065E874 /* Widgets.swift */; };
@@ -1199,7 +1199,6 @@
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
-		115327BF2773C14A0082ED72 /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedPush; path = Sources/PushServer/SharedPush; sourceTree = "<group>"; };
 		115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicContainerView.swift; sourceTree = "<group>"; };
 		115560E227010DAB00A8F818 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageIntentHandler.swift; sourceTree = "<group>"; };
@@ -1272,6 +1271,7 @@
 		116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuth.test.swift; sourceTree = "<group>"; };
 		116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthTokenExchange.swift; sourceTree = "<group>"; };
 		116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConfig.test.swift; sourceTree = "<group>"; };
+		116E2AAB27765CF300B330F2 /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedPush; path = Sources/PushServer/SharedPush; sourceTree = "<group>"; };
 		1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1171506A24DFCDE60065E874 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1171506C24DFCDE60065E874 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -2072,7 +2072,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF58E969432B36CC112701AC /* Pods_watchOS_Shared_watchOS.framework in Frameworks */,
-				115327C32773C1A40082ED72 /* SharedPush in Frameworks */,
+				116E2AAF27765D0600B330F2 /* SharedPush in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2103,7 +2103,7 @@
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */,
-				115327C12773C15B0082ED72 /* SharedPush in Frameworks */,
+				116E2AAD27765D0100B330F2 /* SharedPush in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2207,7 +2207,7 @@
 		115327BC2773BF290082ED72 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				115327BF2773C14A0082ED72 /* SharedPush */,
+				116E2AAB27765CF300B330F2 /* SharedPush */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -3929,7 +3929,7 @@
 			);
 			name = "Shared-watchOS";
 			packageProductDependencies = (
-				115327C22773C1A40082ED72 /* SharedPush */,
+				116E2AAE27765D0600B330F2 /* SharedPush */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -4013,7 +4013,7 @@
 			);
 			name = "Shared-iOS";
 			packageProductDependencies = (
-				115327C02773C15B0082ED72 /* SharedPush */,
+				116E2AAC27765D0100B330F2 /* SharedPush */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -7296,11 +7296,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		115327C02773C15B0082ED72 /* SharedPush */ = {
+		116E2AAC27765D0100B330F2 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
 		};
-		115327C22773C1A40082ED72 /* SharedPush */ = {
+		116E2AAE27765D0600B330F2 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
 		};

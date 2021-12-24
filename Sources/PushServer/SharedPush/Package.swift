@@ -1,8 +1,7 @@
-// swift-tools-version:5.3
-
+// swift-tools-version:5.5
 import PackageDescription
 
-/// The Package
+// Separate package so the app doesn't need to pull in packages
 public let package = Package(
     name: "SharedPush",
     platforms: [
@@ -12,25 +11,9 @@ public let package = Package(
         .watchOS(.v5),
     ],
     products: [
-        .library(
-            name: "SharedPush",
-            targets: ["SharedPush"]
-        ),
+        .library(name: "SharedPush", targets: ["SharedPush"]),
     ],
     targets: [
-        .target(
-            name: "SharedPush",
-            path: "Sources"
-        ),
-        .testTarget(
-            name: "Tests",
-            dependencies: [
-                .byName(name: "SharedPush"),
-            ],
-            path: "Tests",
-            resources: [
-                .copy("notification_test_cases.bundle"),
-            ]
-        ),
+        .target(name: "SharedPush", path: "Sources"),
     ]
 )
