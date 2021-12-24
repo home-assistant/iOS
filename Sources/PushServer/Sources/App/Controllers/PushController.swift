@@ -4,19 +4,25 @@ import Foundation
 import SharedPush
 import Vapor
 
-struct PushController {
-    let appIdPrefix: String
-    let jsonEncoder: JSONEncoder
+class PushController {
+    var appIdPrefix: String
+    var jsonEncoder: JSONEncoder = .init()
 
     init(appIdPrefix: String) {
         self.appIdPrefix = appIdPrefix
-        self.jsonEncoder = JSONEncoder()
     }
 
     private struct PushSendEncryptedNotification: APNSwiftNotification {
+        enum CodingKeys: String, CodingKey {
+            case aps = "aps"
+            case webhookId = "webhook_id"
+            case encrypted = "encrypted"
+            case encryptedData = "encrypted_data"
+        }
+
         var aps: APNSwiftPayload = .init(
             alert: .init(
-                title: "Encrypted Notification",
+                title: "Encrypted notification",
                 body: "If you're seeing this message, decryption failed."
             ),
             sound: .normal("default"),
@@ -33,17 +39,13 @@ struct PushController {
         var pushType: APNSwiftConnection.PushType
     }
 
-    private func pushRequest(req: Request, input: PushSendInput) throws -> PushRequest {
-        precondition(input.encrypted)
-
-        guard let encryptedData = input.encryptedData else {
-            throw Abort(.badRequest, reason: "Missing encrypted data")
-        }
+    private func pushRequest(input: PushSendInput) throws -> PushRequest {
+        precondition(input.encrypted && input.encryptedData != nil)
 
         let notification = PushSendEncryptedNotification(
             webhookId: input.registrationInfo.webhookId,
             encrypted: input.encrypted,
-            encryptedData: encryptedData
+            encryptedData: input.encryptedData!
         )
 
         let encoded = try jsonEncoder.encode(notification)
@@ -52,27 +54,30 @@ struct PushController {
     }
 
     private func pushRequest(
-        req: Request,
         input: PushSendInput,
-        headers: [String: Any],
-        payload: [String: Any]
+        parser: LegacyNotificationParser,
+        body: ByteBuffer
     ) throws -> PushRequest {
+        let json = try JSONSerialization.jsonObject(with: body, options: []) as? [String: Any] ?? [:]
+        var parsed = parser.result(from: json, defaultRegistrationInfo: [:])
+
         let pushType: APNSwiftConnection.PushType
         let collapseId: String?
 
-        switch headers["apns-push-type"] as? String {
+        switch parsed.headers["apns-push-type"] as? String {
         case "alert": pushType = .alert
         case "background": pushType = .background
         default: pushType = .alert
         }
 
-        if let given = headers["apns-collapse-id"] as? String {
-            collapseId = given
-        } else {
-            collapseId = nil
+        switch parsed.headers["apns-collapse-id"] as? String {
+        case let .some(given): collapseId = given
+        case .none: collapseId = nil
         }
 
-        let contents = try JSONSerialization.data(withJSONObject: payload, options: [.withoutEscapingSlashes])
+        parsed.payload["webhook_id"] = input.registrationInfo.webhookId
+
+        let contents = try JSONSerialization.data(withJSONObject: parsed.payload, options: [.withoutEscapingSlashes])
 
         return .init(
             payload: contents,
@@ -86,19 +91,20 @@ struct PushController {
         req.logger.debug("received: \(input)")
 
         guard input.registrationInfo.appId.starts(with: appIdPrefix) else {
-            throw Abort(.badRequest, reason: "Invalid app ID")
+            throw Abort(.notAcceptable, reason: "Invalid app ID '\(input.registrationInfo.appId)'")
         }
 
         let apns: PushRequest
 
         do {
             if input.encrypted {
-                apns = try pushRequest(req: req, input: input)
+                apns = try pushRequest(input: input)
             } else {
-                let json = try JSONSerialization
-                    .jsonObject(with: req.body.data ?? ByteBuffer(), options: []) as? [String: Any] ?? [:]
-                let result = NotificationParserLegacy.result(from: json, defaultRegistrationInfo: [:])
-                apns = try pushRequest(req: req, input: input, headers: result.headers, payload: result.payload)
+                apns = try pushRequest(
+                    input: input,
+                    parser: req.application.legacyNotificationParser,
+                    body: req.body.data ?? ByteBuffer()
+                )
             }
         } catch {
             throw Abort(.badRequest, reason: "Failed to parse request: \(String(describing: error))")
@@ -124,7 +130,7 @@ struct PushController {
             )
         }.flatMapError { error in
             req.eventLoop.makeFailedFuture(Abort(
-                .badRequest,
+                .unprocessableEntity,
                 reason: "Failed to send to APNS: \(String(describing: error))"
             ))
         }

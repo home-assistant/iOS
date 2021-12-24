@@ -1,18 +1,24 @@
 import APNS
 import APNSwift
 import Foundation
+import SharedPush
 import Vapor
 
 public func configure(_ app: Application) throws {
-    app.apns.configuration = try .init(
-        authenticationMethod: .jwt(
-            key: .private(pem: Environment.get("APNS_KEY_CONTENTS")!),
-            keyIdentifier: .init(string: Environment.get("APNS_KEY_IDENTIFIER")!),
-            teamIdentifier: Environment.get("APNS_KEY_TEAM_IDENTIFIER")!
-        ),
-        topic: Environment.get("APNS_TOPIC")!,
-        environment: app.environment.apnSwiftEnvironment
-    )
+    if app.environment == .testing {
+    } else {
+        app.apns.configuration = try .init(
+            authenticationMethod: .jwt(
+                key: .private(pem: Environment.get("APNS_KEY_CONTENTS")!),
+                keyIdentifier: .init(string: Environment.get("APNS_KEY_IDENTIFIER")!),
+                teamIdentifier: Environment.get("APNS_KEY_TEAM_IDENTIFIER")!
+            ),
+            topic: Environment.get("APNS_TOPIC")!,
+            environment: app.environment.apnSwiftEnvironment
+        )
+    }
+
+    app.legacyNotificationParser.parser = LegacyNotificationParserImpl()
 
     // register routes
     try routes(app)

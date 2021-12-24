@@ -2,8 +2,27 @@ import Foundation
 
 // swiftlint:disable cyclomatic_complexity
 
-public enum NotificationParserLegacy {
-    struct CommandPayload {
+public struct LegacyNotificationParserResult {
+    public init(headers: [String: Any], payload: [String: Any]) {
+        self.headers = headers
+        self.payload = payload
+    }
+
+    public var headers: [String: Any]
+    public var payload: [String: Any]
+}
+
+public protocol LegacyNotificationParser {
+    func result(
+        from input: [String: Any],
+        defaultRegistrationInfo: @autoclosure () -> [String: String]
+    ) -> LegacyNotificationParserResult
+}
+
+public struct LegacyNotificationParserImpl: LegacyNotificationParser {
+    public init() {}
+
+    private struct CommandPayload {
         let isAlert: Bool
         let payload: [String: Any]
 
@@ -23,10 +42,10 @@ public enum NotificationParserLegacy {
         }
     }
 
-    public static func result(
+    public func result(
         from input: [String: Any],
         defaultRegistrationInfo: @autoclosure () -> [String: String]
-    ) -> (headers: [String: Any], payload: [String: Any]) {
+    ) -> LegacyNotificationParserResult {
         let registrationInfo = input["registration_info"] as? [String: String] ?? defaultRegistrationInfo()
         let data = input["data"] as? [String: Any] ?? [:]
         var headers: [String: Any] = [
@@ -71,7 +90,7 @@ public enum NotificationParserLegacy {
                 }
             }
 
-            return (
+            return .init(
                 headers: ["apns-push-type": commandPayload.isAlert ? "alert" : "background"],
                 payload: payload
             )
@@ -203,7 +222,7 @@ public enum NotificationParserLegacy {
             }
         }
 
-        return (headers: headers, payload: payload)
+        return .init(headers: headers, payload: payload)
     }
 }
 

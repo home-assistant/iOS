@@ -20,6 +20,13 @@ struct PushRegistrationInfo: Content {
         self.osVersion = try container.decode(String.self, forKey: .osVersion)
         self.webhookId = try container.decodeIfPresent(String.self, forKey: .webhookId)
     }
+
+    internal init(appId: String, appVersion: String, osVersion: String, webhookId: String?) {
+        self.appId = appId
+        self.appVersion = appVersion
+        self.osVersion = osVersion
+        self.webhookId = webhookId
+    }
 }
 
 struct PushSendInput: Content {
@@ -40,6 +47,17 @@ struct PushSendInput: Content {
         self.pushToken = try container.decode(String.self, forKey: .pushToken)
         self.registrationInfo = try container.decode(PushRegistrationInfo.self, forKey: .registrationInfo)
         self.encrypted = try container.decodeIfPresent(Bool.self, forKey: .encrypted) ?? false
-        self.encryptedData = try container.decodeIfPresent(String.self, forKey: .encryptedData)
+        if encrypted {
+            self.encryptedData = try container.decode(String.self, forKey: .encryptedData)
+        } else {
+            self.encryptedData = try container.decodeIfPresent(String.self, forKey: .encryptedData)
+        }
+    }
+
+    internal init(encrypted: Bool, encryptedData: String?, registrationInfo: PushRegistrationInfo, pushToken: String) {
+        self.encrypted = encrypted
+        self.encryptedData = encryptedData
+        self.registrationInfo = registrationInfo
+        self.pushToken = pushToken
     }
 }
