@@ -66,16 +66,6 @@
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Tests"
-               BuildableName = "Tests"
-               BlueprintName = "Tests"
-               ReferencedContainer = "container:Sources/SharedPush">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
