@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Run",
+            "program": "${workspaceFolder}/.build/debug/Run",
+            "args": [],
+            "cwd": "${workspaceFolder:PushServer}",
+            "preLaunchTask": "swift: Build Debug Run"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Release Run",
+            "program": "${workspaceFolder}/.build/release/Run",
+            "args": [],
+            "cwd": "${workspaceFolder:PushServer}",
+            "preLaunchTask": "swift: Build Release Run"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Test PushServer",
+            // not sure how to get around this absolute path requirement
+            "program": "/Applications/Xcode-13.2.1.app/Contents/Developer/usr/bin/xctest",
+            "args": [
+                ".build/debug/PushServerPackageTests.xctest"
+            ],
+            "cwd": "${workspaceFolder:PushServer}",
+            "preLaunchTask": "swift: Build All"
+        }
+    ]
+}
