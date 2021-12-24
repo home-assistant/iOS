@@ -1,0 +1,27 @@
+name: Push CI
+
+on:
+  pull_request:
+    paths:
+      - 'Sources/PushServer/**'
+  push:
+    branches:
+      - master
+    paths:
+      - 'Sources/PushServer/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.5"
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: .build/checkouts
+          key: ${{ runner.os }}-spm-checkouts-${{ hashFiles('**/Package.resolved') }}
+      - name: Run Tests
+        run: swift test
+        working-directory: Sources/PushServer
