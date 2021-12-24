@@ -4,6 +4,7 @@
 .AppleDouble
 .LSOverride
 .swiftpm
+.build
 
 # Icon must end with two \r
 Icon
