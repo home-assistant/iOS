@@ -110,29 +110,45 @@ class PushController {
             throw Abort(.badRequest, reason: "Failed to parse request: \(String(describing: error))")
         }
 
-        return req.apns.send(
-            raw: apns.payload,
-            pushType: apns.pushType,
-            to: input.pushToken,
-            expiration: nil,
-            priority: nil,
-            collapseIdentifier: apns.collapseIdentifier,
-            topic: input.registrationInfo.appId,
-            logger: req.logger,
-            apnsID: nil
-        ).map {
-            let sentString = String(decoding: apns.payload, as: UTF8.self)
-            req.logger.debug("sent: \(sentString)")
-            return PushSendOutput(
-                sentPayload: sentString,
-                pushType: apns.pushType.rawValue,
-                collapseIdentifier: apns.collapseIdentifier
-            )
-        }.flatMapError { error in
-            req.eventLoop.makeFailedFuture(Abort(
-                .unprocessableEntity,
-                reason: "Failed to send to APNS: \(String(describing: error))"
-            ))
+        func send() -> EventLoopFuture<PushSendOutput> {
+            req.apns.send(
+                raw: apns.payload,
+                pushType: apns.pushType,
+                to: input.pushToken,
+                expiration: nil,
+                priority: nil,
+                collapseIdentifier: apns.collapseIdentifier,
+                topic: input.registrationInfo.appId,
+                logger: req.logger,
+                apnsID: nil
+            ).map {
+                let sentString = String(decoding: apns.payload, as: UTF8.self)
+                req.logger.debug("sent: \(sentString)")
+                return PushSendOutput(
+                    sentPayload: sentString,
+                    pushType: apns.pushType.rawValue,
+                    collapseIdentifier: apns.collapseIdentifier
+                )
+            }
+        }
+
+        return send().flatMapError { error in
+            if error is NoResponseWithinTimeoutError {
+                return req.application.apns.pool.withConnection(
+                    logger: req.logger,
+                    on: req.eventLoop
+                ) { conn in
+                    req.logger.warning("got timeout error, closing connection and retrying")
+                    return conn.close()
+                }.flatMap {
+                    send()
+                }
+            } else {
+                return req.eventLoop.makeFailedFuture(Abort(
+                    .unprocessableEntity,
+                    reason: "Failed to send to APNS: \(String(describing: error))"
+                ))
+            }
         }
     }
 }
