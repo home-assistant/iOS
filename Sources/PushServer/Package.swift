@@ -4,12 +4,13 @@ import PackageDescription
 let package = Package(
     name: "PushServer",
     platforms: [
-        .macOS(.v10_15),
+        .macOS(.v12),
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/apns.git", from: "2.0.0"),
+        .package(url: "https://github.com/vapor/redis.git", from: "4.5.0"),
         .package(name: "SharedPush", path: "SharedPush"),
     ],
     targets: [
@@ -19,6 +20,7 @@ let package = Package(
                 .product(name: "SharedPush", package: "SharedPush"),
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "APNS", package: "apns"),
+                .product(name: "Redis", package: "redis"),
             ],
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of

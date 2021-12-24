@@ -86,7 +86,7 @@ class PushController {
         )
     }
 
-    func send(req: Request) throws -> EventLoopFuture<PushSendOutput> {
+    func send(req: Request) async throws -> PushSendOutput {
         let input = try req.content.decode(PushSendInput.self)
         req.logger.debug("received: \(input)")
 
@@ -94,6 +94,12 @@ class PushController {
             throw Abort(.notAcceptable, reason: "Invalid app ID '\(input.registrationInfo.appId)'")
         }
 
+        if let startLimits = try? await req.application.rateLimits.rateLimit(for: input.pushToken),
+           startLimits.exceedsMaximum {
+            // if the redis call fails, we still permit the notification to be sent
+            throw Abort(.tooManyRequests, reason: "Exceeded rate limit")
+        }
+        
         let apns: PushRequest
 
         do {
@@ -110,8 +116,8 @@ class PushController {
             throw Abort(.badRequest, reason: "Failed to parse request: \(String(describing: error))")
         }
 
-        func send() -> EventLoopFuture<PushSendOutput> {
-            req.apns.send(
+        func send() async throws {
+            try await req.apns.send(
                 raw: apns.payload,
                 pushType: apns.pushType,
                 to: input.pushToken,
@@ -121,34 +127,38 @@ class PushController {
                 topic: input.registrationInfo.appId,
                 logger: req.logger,
                 apnsID: nil
-            ).map {
-                let sentString = String(decoding: apns.payload, as: UTF8.self)
-                req.logger.debug("sent: \(sentString)")
-                return PushSendOutput(
-                    sentPayload: sentString,
-                    pushType: apns.pushType.rawValue,
-                    collapseIdentifier: apns.collapseIdentifier
-                )
-            }
+            ).get()
         }
 
-        return send().flatMapError { error in
-            if error is NoResponseWithinTimeoutError {
-                return req.application.apns.pool.withConnection(
-                    logger: req.logger,
-                    on: req.eventLoop
-                ) { conn in
-                    req.logger.warning("got timeout error, closing connection and retrying")
-                    return conn.close()
-                }.flatMap {
-                    send()
-                }
-            } else {
-                return req.eventLoop.makeFailedFuture(Abort(
-                    .unprocessableEntity,
-                    reason: "Failed to send to APNS: \(String(describing: error))"
-                ))
-            }
+        do {
+            try await send()
+        } catch is NoResponseWithinTimeoutError {
+            try await req.application.apns.pool.withConnection(
+                logger: req.logger,
+                on: req.eventLoop
+            ) { conn -> EventLoopFuture<Void> in
+                req.logger.warning("got timeout error, closing connection and retrying")
+                return conn.close()
+            }.get()
+
+            try await send()
+        } catch {
+            _ = try? await req.application.rateLimits.increment(kind: .error, for: input.pushToken)
+
+            throw Abort(
+                .unprocessableEntity,
+                reason: "Failed to send to APNS: \(String(describing: error))"
+            )
         }
+
+        let rateLimits = try await req.application.rateLimits.increment(kind: .successful, for: input.pushToken)
+        let sentString = String(decoding: apns.payload, as: UTF8.self)
+        req.logger.debug("sent: \(sentString)")
+        return PushSendOutput(
+            sentPayload: sentString,
+            pushType: apns.pushType.rawValue,
+            collapseIdentifier: apns.collapseIdentifier,
+            rateLimits: rateLimits
+        )
     }
 }

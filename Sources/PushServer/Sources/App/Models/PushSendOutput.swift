@@ -4,4 +4,5 @@ struct PushSendOutput: Content {
     var sentPayload: String
     var pushType: String
     var collapseIdentifier: String?
+    var rateLimits: RateLimitsValues
 }

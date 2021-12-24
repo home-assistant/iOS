@@ -3,6 +3,7 @@ import APNSwift
 import Foundation
 import SharedPush
 import Vapor
+import Redis
 
 public func configure(_ app: Application) throws {
     if app.environment == .testing {
@@ -20,7 +21,13 @@ public func configure(_ app: Application) throws {
         )
     }
 
+    app.redis.configuration = try RedisConfiguration(
+        hostname: Environment.get("REDIS_SERVER") ?? "localhost",
+        password: Environment.get("REDIS_PASSWORD")
+    )
+
     app.legacyNotificationParser.parser = LegacyNotificationParserImpl(pushSource: "apns-vapor")
+    app.rateLimits.rateLimits = RateLimitsImpl(cache: app.caches.redis)
 
     // register routes
     try routes(app)
