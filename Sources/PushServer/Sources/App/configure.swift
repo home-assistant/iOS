@@ -14,7 +14,8 @@ public func configure(_ app: Application) throws {
                 teamIdentifier: Environment.get("APNS_KEY_TEAM_IDENTIFIER")!
             ),
             topic: Environment.get("APNS_TOPIC")!,
-            environment: app.environment.apnSwiftEnvironment
+            environment: app.environment.apnSwiftEnvironment,
+            timeout: .seconds(10)
         )
     }
 
