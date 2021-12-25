@@ -21,13 +21,17 @@ public func configure(_ app: Application) throws {
         )
     }
 
-    app.redis.configuration = try RedisConfiguration(
-        hostname: Environment.get("REDIS_SERVER") ?? "localhost",
-        password: Environment.get("REDIS_PASSWORD")
-    )
+    if let server = Environment.get("REDIS_SERVER") {
+        app.redis.configuration = try RedisConfiguration(
+            hostname: server,
+            password: Environment.get("REDIS_PASSWORD")
+        )
+        app.rateLimits.rateLimits = RateLimitsImpl(cache: app.caches.redis)
+    } else {
+        app.rateLimits.rateLimits = RateLimitsImpl(cache: app.caches.memory)
+    }
 
     app.legacyNotificationParser.parser = LegacyNotificationParserImpl(pushSource: "apns-vapor")
-    app.rateLimits.rateLimits = RateLimitsImpl(cache: app.caches.redis)
 
     // register routes
     try routes(app)
