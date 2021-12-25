@@ -16,9 +16,22 @@ public struct RateLimitsValues: Codable {
         (successful + errors) >= Self.dailyMaximum
     }
 
-    init() {
+    public init() {
         self.successful = 0
         self.errors = 0
+    }
+
+    public init(successful: Int, errors: Int) {
+        self.successful = successful
+        self.errors = errors
+    }
+
+    mutating func apply(_ increment: RateLimitsIncrementKind) {
+        switch increment {
+        case .attempts: break
+        case .successful: successful += 1
+        case .error: errors += 1
+        }
     }
 }
 
@@ -47,13 +60,7 @@ class RateLimitsImpl: RateLimits {
 
     func increment(kind: RateLimitsIncrementKind, for identifier: String) async throws -> RateLimitsValues {
         var updated = try await rateLimit(for: identifier)
-
-        switch kind {
-        case .attempts: break
-        case .successful: updated.successful += 1
-        case .error: updated.errors += 1
-        }
-
+        updated.apply(kind)
         try await cache.set(Self.key(for: identifier), to: updated)
         return updated
     }

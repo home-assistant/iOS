@@ -7,6 +7,14 @@ struct RateLimitsGetOutput: Content {
     }
 
     struct OutputRateLimits: Content {
+        enum CodingKeys: String, CodingKey {
+            case successful
+            case errors
+            case maximum
+            case remaining
+            case resetsAt = "resets_at"
+        }
+
         var successful: Int
         var errors: Int
         var maximum: Int
@@ -15,6 +23,30 @@ struct RateLimitsGetOutput: Content {
         }
 
         var resetsAt: Date
+
+        init(successful: Int, errors: Int, maximum: Int, resetsAt: Date) {
+            self.successful = successful
+            self.errors = errors
+            self.maximum = maximum
+            self.resetsAt = resetsAt
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.successful = try container.decode(Int.self, forKey: .successful)
+            self.errors = try container.decode(Int.self, forKey: .errors)
+            self.maximum = try container.decode(Int.self, forKey: .maximum)
+            self.resetsAt = try container.decode(Date.self, forKey: .resetsAt)
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(successful, forKey: .successful)
+            try container.encode(errors, forKey: .errors)
+            try container.encode(maximum, forKey: .maximum)
+            try container.encode(remaining, forKey: .remaining)
+            try container.encode(resetsAt, forKey: .resetsAt)
+        }
     }
 
     var target: String
