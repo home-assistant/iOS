@@ -289,7 +289,7 @@ CHECKOUT OPTIONS:
     :commit: 94475e83a6965320283b8b39986e7481ad675ab9
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :commit: c97d01d1d7d4c0fd915f361a8b73de7007384235
+    :commit: 84c56c29310c1edf7479a9c3a7efb088a9c84c2d
     :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -301,7 +301,7 @@ CHECKOUT OPTIONS:
     :commit: 444e390a84e2fed29cf7f3bd6dfa743e9ff476ea
     :git: https://github.com/jedisct1/swift-sodium.git
   Starscream:
-    :commit: 35db1249f572e81c480f7159051194f688c16825
+    :commit: 1871b44435eb636633dce9eb0ca84ed3aac6e0dc
     :git: https://github.com/zacwest/starscream
   ViewRow:
     :commit: 3428a3b825a5641ae7fb65f3f787aba2b1b4dab9
