@@ -34,6 +34,14 @@ public extension Application {
 }
 
 extension Application.RateLimits: RateLimits {
+    public func expirationDate(for identifier: String) async -> Date {
+        if let rateLimits = rateLimits {
+            return await rateLimits.expirationDate(for: identifier)
+        } else {
+            fatalError("rate limits not configured before use")
+        }
+    }
+
     public func rateLimit(for identifier: String) async throws -> RateLimitsValues {
         if let rateLimits = rateLimits {
             return try await rateLimits.rateLimit(for: identifier)

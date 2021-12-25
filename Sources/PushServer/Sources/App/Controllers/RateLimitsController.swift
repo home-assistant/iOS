@@ -11,7 +11,7 @@ class RateLimitsController {
                 successful: rateLimits.successful,
                 errors: rateLimits.errors,
                 maximum: RateLimitsValues.dailyMaximum,
-                resetsAt: Date()
+                resetsAt: await req.application.rateLimits.expirationDate(for: input.pushToken)
             )
         )
     }
