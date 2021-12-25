@@ -6,12 +6,12 @@ import XCTest
 import XCTVapor
 
 final class RateLimitsControllerTests: AbstractTestCase {
-    private var rateLimits: FakeRateLimits!
+    private var cache: FakeCache!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        rateLimits = .init()
-        app.rateLimits.rateLimits = rateLimits
+        cache = .init(eventLoop: app.eventLoopGroup.next())
+        app.rateLimits.cache = cache
     }
 
     func testMissingToken() throws {
@@ -29,7 +29,7 @@ final class RateLimitsControllerTests: AbstractTestCase {
     }
 
     func testValues() throws {
-        rateLimits.rateLimits["token"] = RateLimitsValues(
+        cache.values[RateLimitsImpl.key(for: "token")] = RateLimitsValues(
             successful: 3,
             errors: 4
         )

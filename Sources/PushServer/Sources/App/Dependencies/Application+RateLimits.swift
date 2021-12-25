@@ -2,18 +2,18 @@ import SharedPush
 import Vapor
 
 public extension Application {
-    var rateLimits: RateLimitsInternal {
+    var rateLimits: RateLimits {
         .init(application: self)
     }
 
-    struct RateLimitsInternal {
+    struct RateLimits {
         let application: Application
 
         struct RateLimitsKey: StorageKey {
-            typealias Value = RateLimits
+            typealias Value = RateLimitsImpl
         }
 
-        public var rateLimits: RateLimits? {
+        private var rateLimits: RateLimitsImpl? {
             get {
                 application.storage[RateLimitsKey.self]
             }
@@ -21,10 +21,19 @@ public extension Application {
                 self.application.storage[RateLimitsKey.self] = newValue
             }
         }
+
+        var cache: Cache? {
+            get {
+                rateLimits?.cache
+            }
+            nonmutating set {
+                self.application.storage[RateLimitsKey.self] = newValue.flatMap { RateLimitsImpl(cache: $0) }
+            }
+        }
     }
 }
 
-extension Application.RateLimitsInternal: RateLimits {
+extension Application.RateLimits: RateLimits {
     public func rateLimit(for identifier: String) async throws -> RateLimitsValues {
         if let rateLimits = rateLimits {
             return try await rateLimits.rateLimit(for: identifier)

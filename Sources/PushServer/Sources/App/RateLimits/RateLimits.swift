@@ -46,7 +46,7 @@ class RateLimitsImpl: RateLimits {
         self.cache = cache
     }
 
-    private static func key(for identifier: String) -> String {
+    static func key(for identifier: String) -> String {
         "rateLimits:\(identifier)"
     }
 

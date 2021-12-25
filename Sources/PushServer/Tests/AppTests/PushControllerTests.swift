@@ -6,15 +6,15 @@ import XCTVapor
 
 final class PushControllerTests: AbstractTestCase {
     private var parser: FakeLegacyNotificationParser!
-    private var rateLimits: FakeRateLimits!
+    private var rateLimitsCache: FakeCache!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         parser = .init()
-        rateLimits = .init()
+        rateLimitsCache = .init(eventLoop: app.eventLoopGroup.next())
 
         app.legacyNotificationParser.parser = parser
-        app.rateLimits.rateLimits = rateLimits
+        app.rateLimits.cache = rateLimitsCache
     }
 
     func testMissingInformation() throws {
@@ -60,7 +60,7 @@ final class PushControllerTests: AbstractTestCase {
             XCTAssertEqual(res.status, .badRequest)
         })
 
-        XCTAssertNil(rateLimits.rateLimits["push_token"])
+        XCTAssertNil(rateLimitsCache.values[RateLimitsImpl.key(for: "push_token")])
     }
 
     func testEncryptedNotificationWithDataSucceeds() throws {
@@ -105,7 +105,9 @@ final class PushControllerTests: AbstractTestCase {
             XCTAssertEqual(res.status, .ok)
         })
 
-        let rateLimits = try XCTUnwrap(rateLimits.rateLimits["given_push_token"])
+        let rateLimits = try XCTUnwrap(
+            rateLimitsCache.values[RateLimitsImpl.key(for: "given_push_token")] as? RateLimitsValues
+        )
         XCTAssertEqual(rateLimits.successful, 1)
         XCTAssertEqual(rateLimits.errors, 0)
     }
@@ -136,7 +138,9 @@ final class PushControllerTests: AbstractTestCase {
             XCTAssertContains(res.body.string, "Failed to send to APNS")
         })
 
-        let rateLimits = try XCTUnwrap(rateLimits.rateLimits["given_push_token"])
+        let rateLimits = try XCTUnwrap(
+            rateLimitsCache.values[RateLimitsImpl.key(for: "given_push_token")] as? RateLimitsValues
+        )
         XCTAssertEqual(rateLimits.successful, 0)
         XCTAssertEqual(rateLimits.errors, 1)
     }
@@ -239,14 +243,19 @@ final class PushControllerTests: AbstractTestCase {
                 XCTAssertEqual(res.status, .ok)
             })
 
-            let rateLimits = try XCTUnwrap(rateLimits.rateLimits[pushToken])
+            let rateLimits = try XCTUnwrap(
+                rateLimitsCache.values[RateLimitsImpl.key(for: pushToken)] as? RateLimitsValues
+            )
             XCTAssertEqual(rateLimits.successful, 1)
             XCTAssertEqual(rateLimits.errors, 0)
         }
     }
 
     func testSendBeyondRateLimits() throws {
-        rateLimits.rateLimits["given_push_token"] = .init(successful: RateLimitsValues.dailyMaximum, errors: 0)
+        rateLimitsCache.values[RateLimitsImpl.key(for: "given_push_token")] = RateLimitsValues(
+            successful: RateLimitsValues.dailyMaximum,
+            errors: 0
+        )
 
         try app.test(.POST, "push/send", beforeRequest: { req in
             try req.content.encode(PushSendInput(
@@ -264,7 +273,9 @@ final class PushControllerTests: AbstractTestCase {
             XCTAssertEqual(res.status, .tooManyRequests)
         })
 
-        let rateLimits = try XCTUnwrap(rateLimits.rateLimits["given_push_token"])
+        let rateLimits = try XCTUnwrap(
+            rateLimitsCache.values[RateLimitsImpl.key(for: "given_push_token")] as? RateLimitsValues
+        )
         XCTAssertEqual(rateLimits.successful, RateLimitsValues.dailyMaximum)
         XCTAssertEqual(rateLimits.errors, 0)
     }

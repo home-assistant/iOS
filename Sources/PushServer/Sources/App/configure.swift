@@ -26,9 +26,9 @@ public func configure(_ app: Application) throws {
             hostname: server,
             password: Environment.get("REDIS_PASSWORD")
         )
-        app.rateLimits.rateLimits = RateLimitsImpl(cache: app.caches.redis)
+        app.rateLimits.cache = app.caches.redis
     } else {
-        app.rateLimits.rateLimits = RateLimitsImpl(cache: app.caches.memory)
+        app.rateLimits.cache = app.caches.memory
     }
 
     app.legacyNotificationParser.parser = LegacyNotificationParserImpl(pushSource: "apns-vapor")
