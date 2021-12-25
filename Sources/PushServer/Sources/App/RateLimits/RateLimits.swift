@@ -8,7 +8,7 @@ public enum RateLimitsIncrementKind {
 }
 
 public struct RateLimitsValues: Codable {
-    public static let dailyMaximum: Int = 1_000
+    public static let dailyMaximum: Int = 1000
     public var successful: Int
     public var errors: Int
 

@@ -99,7 +99,7 @@ class PushController {
             // if the redis call fails, we still permit the notification to be sent
             throw Abort(.tooManyRequests, reason: "Exceeded rate limit")
         }
-        
+
         let apns: PushRequest
 
         do {

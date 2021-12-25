@@ -1,9 +1,9 @@
 import APNS
 import APNSwift
 import Foundation
+import Redis
 import SharedPush
 import Vapor
-import Redis
 
 public func configure(_ app: Application) throws {
     if app.environment == .testing {

@@ -13,6 +13,7 @@ struct RateLimitsGetOutput: Content {
         var remaining: Int {
             maximum - (successful + errors)
         }
+
         var resetsAt: Date
     }
 
