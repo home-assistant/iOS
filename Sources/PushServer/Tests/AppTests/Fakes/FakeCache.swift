@@ -2,6 +2,7 @@ import Vapor
 
 final class FakeCache: Cache {
     var values = [String: Any]()
+    var expirations = [String: CacheExpirationTime]()
     let eventLoop: EventLoop
 
     init(values: [String: Any] = [:], eventLoop: EventLoop) {
@@ -20,6 +21,7 @@ final class FakeCache: Cache {
     func set<T>(_ key: String, to value: T?, expiresIn expirationTime: CacheExpirationTime?) -> EventLoopFuture<Void>
         where T: Encodable {
         values[key] = value
+        expirations[key] = value != nil ? expirationTime : nil
         return eventLoop.makeSucceededFuture(())
     }
 

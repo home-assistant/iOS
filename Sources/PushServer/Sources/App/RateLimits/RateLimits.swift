@@ -7,7 +7,7 @@ public enum RateLimitsIncrementKind {
     case error
 }
 
-public struct RateLimitsValues: Codable {
+public struct RateLimitsValues: Codable, Equatable {
     public static let dailyMaximum: Int = 1000
     public var successful: Int
     public var errors: Int
@@ -47,8 +47,11 @@ struct StartOfDayStorageKey: StorageKey {
 
 class RateLimitsImpl: RateLimits {
     let cache: Cache
-    init(cache: Cache) {
+    let nowProvider: () -> Date
+
+    init(cache: Cache, nowProvider: @escaping () -> Date = Date.init) {
         self.cache = cache
+        self.nowProvider = nowProvider
         self.lock = .init()
     }
 
@@ -59,31 +62,29 @@ class RateLimitsImpl: RateLimits {
         "rateLimits:\(identifier)"
     }
 
-    private var currentExpirationValue: CacheExpirationTime {
+    private var currentExpirationDate: Date {
         lock.lock()
+        defer { lock.unlock() }
 
-        let now = Date()
-        let expiration: Date
+        let now = nowProvider()
 
         if let existing = expirationDate, existing > now {
-            expiration = existing
+            return existing
         } else {
             let tomorrow = Calendar.current.startOfDay(for: now).addingTimeInterval(86400)
-            expiration = tomorrow
             expirationDate = tomorrow
+            return tomorrow
         }
+    }
 
-        lock.unlock()
-
+    private var currentExpirationValue: CacheExpirationTime {
+        let now = nowProvider()
+        let expiration = currentExpirationDate
         return .seconds(Int(expiration.timeIntervalSince(now)))
     }
 
     func expirationDate(for identifier: String) async -> Date {
-        if let expirationDate = expirationDate {
-            return expirationDate
-        } else {
-            return Date(timeIntervalSinceNow: TimeInterval(currentExpirationValue.seconds))
-        }
+        currentExpirationDate
     }
 
     func rateLimit(for identifier: String) async throws -> RateLimitsValues {
