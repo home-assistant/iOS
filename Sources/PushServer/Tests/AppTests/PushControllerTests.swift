@@ -6,12 +6,15 @@ import XCTVapor
 
 final class PushControllerTests: AbstractTestCase {
     private var parser: FakeLegacyNotificationParser!
+    private var rateLimits: FakeRateLimits!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         parser = .init()
+        rateLimits = .init()
 
         app.legacyNotificationParser.parser = parser
+        app.rateLimits.rateLimits = rateLimits
     }
 
     func testMissingInformation() throws {
@@ -56,6 +59,8 @@ final class PushControllerTests: AbstractTestCase {
         }, afterResponse: { res in
             XCTAssertEqual(res.status, .badRequest)
         })
+
+        XCTAssertNil(rateLimits.rateLimits["push_token"])
     }
 
     func testEncryptedNotificationWithDataSucceeds() throws {
@@ -99,6 +104,10 @@ final class PushControllerTests: AbstractTestCase {
         }, afterResponse: { res in
             XCTAssertEqual(res.status, .ok)
         })
+
+        let rateLimits = try XCTUnwrap(rateLimits.rateLimits["given_push_token"])
+        XCTAssertEqual(rateLimits.successful, 1)
+        XCTAssertEqual(rateLimits.errors, 0)
     }
 
     func testEncryptedNotificationWithDataFails() throws {
@@ -126,6 +135,10 @@ final class PushControllerTests: AbstractTestCase {
             XCTAssertEqual(res.status, .unprocessableEntity)
             XCTAssertContains(res.body.string, "Failed to send to APNS")
         })
+
+        let rateLimits = try XCTUnwrap(rateLimits.rateLimits["given_push_token"])
+        XCTAssertEqual(rateLimits.successful, 0)
+        XCTAssertEqual(rateLimits.errors, 1)
     }
 
     func testUnencrypted() throws {
@@ -156,9 +169,10 @@ final class PushControllerTests: AbstractTestCase {
         }
 
         for testCase in testCases {
+            let pushToken = UUID().uuidString
             let rawInput: [String: Any] = [
                 "message": "message",
-                "push_token": "a_p_t",
+                "push_token": pushToken,
                 "registration_info": [
                     "app_id": "io.robbie.HomeAssistant.unit-test",
                     "app_version": "1.0",
@@ -208,7 +222,7 @@ final class PushControllerTests: AbstractTestCase {
                 XCTAssertNil(aps["mutable-content"])
 
                 XCTAssertEqual(pending.pushType, testCase.pushType)
-                XCTAssertEqual(pending.deviceToken, "a_p_t")
+                XCTAssertEqual(pending.deviceToken, pushToken)
                 XCTAssertNil(pending.expiration)
                 XCTAssertNil(pending.priority)
                 XCTAssertEqual(pending.collapseIdentifier, testCase.collapseId)
@@ -224,6 +238,34 @@ final class PushControllerTests: AbstractTestCase {
             }, afterResponse: { res in
                 XCTAssertEqual(res.status, .ok)
             })
+
+            let rateLimits = try XCTUnwrap(rateLimits.rateLimits[pushToken])
+            XCTAssertEqual(rateLimits.successful, 1)
+            XCTAssertEqual(rateLimits.errors, 0)
         }
+    }
+
+    func testSendBeyondRateLimits() throws {
+        rateLimits.rateLimits["given_push_token"] = .init(successful: RateLimitsValues.dailyMaximum, errors: 0)
+
+        try app.test(.POST, "push/send", beforeRequest: { req in
+            try req.content.encode(PushSendInput(
+                encrypted: true,
+                encryptedData: "given_encrypted_data",
+                registrationInfo: .init(
+                    appId: "io.robbie.HomeAssistant.test_app_id",
+                    appVersion: "1.0",
+                    osVersion: "10.0",
+                    webhookId: "given_webhook_id"
+                ),
+                pushToken: "given_push_token"
+            ))
+        }, afterResponse: { res in
+            XCTAssertEqual(res.status, .tooManyRequests)
+        })
+
+        let rateLimits = try XCTUnwrap(rateLimits.rateLimits["given_push_token"])
+        XCTAssertEqual(rateLimits.successful, RateLimitsValues.dailyMaximum)
+        XCTAssertEqual(rateLimits.errors, 0)
     }
 }
