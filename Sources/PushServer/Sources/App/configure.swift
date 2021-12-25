@@ -22,12 +22,14 @@ public func configure(_ app: Application) throws {
     }
 
     if let server = Environment.get("REDIS_SERVER") {
+        app.logger.info("using redis server for rate limits")
         app.redis.configuration = try RedisConfiguration(
             hostname: server,
             password: Environment.get("REDIS_PASSWORD")
         )
         app.rateLimits.cache = app.caches.redis
     } else {
+        app.logger.info("using in-memory for rate limits")
         app.rateLimits.cache = app.caches.memory
     }
 
