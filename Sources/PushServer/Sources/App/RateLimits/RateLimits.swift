@@ -49,6 +49,7 @@ class RateLimitsImpl: RateLimits {
         var updated = try await rateLimit(for: identifier)
 
         switch kind {
+        case .attempts: break
         case .successful: updated.successful += 1
         case .error: updated.errors += 1
         }
