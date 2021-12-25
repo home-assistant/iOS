@@ -9,4 +9,12 @@ func routes(_ app: Application) throws {
             try await pushController.send(req: req)
         }
     }
+
+    app.group("rate_limits") { rateLimits in
+        let rateLimitsController = RateLimitsController()
+
+        rateLimits.post("check") { req in
+            try await rateLimitsController.check(req: req)
+        }
+    }
 }
