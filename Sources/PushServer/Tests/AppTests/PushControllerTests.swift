@@ -102,7 +102,7 @@ final class PushControllerTests: AbstractTestCase {
                 pushToken: "given_push_token"
             ))
         }, afterResponse: { res in
-            XCTAssertEqual(res.status, .ok)
+            XCTAssertEqual(res.status, .created)
         })
 
         let rateLimits = try XCTUnwrap(
@@ -240,7 +240,7 @@ final class PushControllerTests: AbstractTestCase {
                 try req.content.encode(body, as: .plainText)
                 req.headers.replaceOrAdd(name: .contentType, value: "application/json")
             }, afterResponse: { res in
-                XCTAssertEqual(res.status, .ok)
+                XCTAssertEqual(res.status, .created)
             })
 
             let rateLimits = try XCTUnwrap(

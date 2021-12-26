@@ -86,7 +86,7 @@ class PushController {
         )
     }
 
-    func send(req: Request) async throws -> PushSendOutput {
+    func send(req: Request) async throws -> Response {
         let input = try req.content.decode(PushSendInput.self)
         req.logger.debug("received: \(input)")
 
@@ -154,11 +154,14 @@ class PushController {
         let rateLimits = try await req.application.rateLimits.increment(kind: .successful, for: input.pushToken)
         let sentString = String(decoding: apns.payload, as: UTF8.self)
         req.logger.debug("sent: \(sentString)")
-        return PushSendOutput(
+        let response = Response(status: .created)
+        try response.content.encode(PushSendOutput(
             sentPayload: sentString,
             pushType: apns.pushType.rawValue,
+            target: input.pushToken,
             collapseIdentifier: apns.collapseIdentifier,
             rateLimits: rateLimits
-        )
+        ))
+        return response
     }
 }
