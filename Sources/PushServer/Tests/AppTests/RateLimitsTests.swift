@@ -19,7 +19,6 @@ class RateLimitsTests: AbstractTestCase {
         let expirationDate1 = await rateLimits.expirationDate(for: "token1")
         let expirationDate2 = await rateLimits.expirationDate(for: "token2")
         XCTAssertEqual(expirationDate1, expirationDate2)
-        XCTAssertTrue(expirationDate1 as NSDate === expirationDate2 as NSDate, "reuse dates")
 
         now = Calendar.current.date(byAdding: .day, value: 1, to: now, wrappingComponents: true)
 
