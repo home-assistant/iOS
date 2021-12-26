@@ -1,8 +1,6 @@
 import Alamofire
 import CallbackURLKit
 import Communicator
-import FirebaseCore
-import FirebaseMessaging
 import Intents
 import KeychainAccess
 import MBProgressHUD
@@ -93,7 +91,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         notificationManager.setupNotifications()
-        setupFirebase()
         setupModels()
         setupLocalization()
         setupMenus()
@@ -579,24 +576,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return nil
             }
         })
-    }
-
-    func setupFirebase() {
-        let optionsFile: String = {
-            switch Current.appConfiguration {
-            case .Beta: return "GoogleService-Info-Beta"
-            case .Debug, .FastlaneSnapshot: return "GoogleService-Info-Debug"
-            case .Release: return "GoogleService-Info-Release"
-            }
-        }()
-        if let optionsPath = Bundle.main.path(forResource: optionsFile, ofType: "plist"),
-           let options = FirebaseOptions(contentsOfFile: optionsPath) {
-            FirebaseApp.configure(options: options)
-        } else {
-            fatalError("no firebase config found")
-        }
-
-        notificationManager.setupFirebase()
     }
 
     func setupModels() {

@@ -1,6 +1,4 @@
 import Eureka
-import FirebaseInstallations
-import FirebaseMessaging
 import PromiseKit
 import RealmSwift
 import Shared
@@ -208,37 +206,6 @@ class NotificationSettingsViewController: HAFormViewController {
                     }
                     self?.present(vc, animated: true, completion: nil)
                     row.deselect(animated: true)
-                }
-            }
-
-            <<< ButtonRow {
-                $0.tag = "resetPushID"
-                $0.title = L10n.Settings.ResetSection.ResetRow.title
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textColor = .red
-            }.onCellSelection { [weak self] cell, _ in
-                Current.Log.verbose("Resetting push token!")
-
-                firstly {
-                    Current.notificationManager.resetPushID()
-                }.done { token in
-                    guard let idRow = self?.form.rowBy(tag: "pushID") as? LabelRow else { return }
-                    idRow.value = token
-                    idRow.updateCell()
-                }.then { _ in
-                    when(fulfilled: Current.apis.map { $0.updateRegistration() })
-                }.catch { error in
-                    Current.Log.error("Error resetting push token: \(error)")
-                    let alert = UIAlertController(
-                        title: L10n.errorLabel,
-                        message: error.localizedDescription,
-                        preferredStyle: .alert
-                    )
-
-                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-
-                    self?.present(alert, animated: true, completion: nil)
-                    alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
             }
     }
