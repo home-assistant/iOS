@@ -24,6 +24,13 @@ struct RateLimitsGetOutput: Content {
 
         var resetsAt: Date
 
+        init(rateLimits: RateLimitsValues, resetsAt: Date) {
+            self.successful = rateLimits.successful
+            self.errors = rateLimits.errors
+            self.maximum = RateLimitsValues.dailyMaximum
+            self.resetsAt = resetsAt
+        }
+
         init(successful: Int, errors: Int, maximum: Int, resetsAt: Date) {
             self.successful = successful
             self.errors = errors

@@ -116,6 +116,9 @@ class PushController {
             throw Abort(.badRequest, reason: "Failed to parse request: \(String(describing: error))")
         }
 
+        let messageId = UUID()
+        req.logger[metadataKey: "apnsID"] = .stringConvertible(messageId)
+
         func send() async throws {
             try await req.apns.send(
                 raw: apns.payload,
@@ -126,7 +129,7 @@ class PushController {
                 collapseIdentifier: apns.collapseIdentifier,
                 topic: input.registrationInfo.appId,
                 logger: req.logger,
-                apnsID: nil
+                apnsID: messageId
             ).get()
         }
 
@@ -156,11 +159,15 @@ class PushController {
         req.logger.debug("sent: \(sentString)")
         let response = Response(status: .created)
         try response.content.encode(PushSendOutput(
-            sentPayload: sentString,
-            pushType: apns.pushType.rawValue,
             target: input.pushToken,
+            messageId: messageId,
+            pushType: apns.pushType.rawValue,
             collapseIdentifier: apns.collapseIdentifier,
-            rateLimits: rateLimits
+            rateLimits: .init(
+                rateLimits: rateLimits,
+                resetsAt: await req.application.rateLimits.expirationDate(for: input.pushToken)
+            ),
+            sentPayload: sentString
         ))
         return response
     }

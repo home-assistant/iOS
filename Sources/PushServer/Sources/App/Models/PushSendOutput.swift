@@ -1,9 +1,10 @@
 import Vapor
 
 struct PushSendOutput: Content {
-    var sentPayload: String
-    var pushType: String
     var target: String
+    var messageId: UUID
+    var pushType: String
     var collapseIdentifier: String?
-    var rateLimits: RateLimitsValues
+    var rateLimits: RateLimitsGetOutput.OutputRateLimits
+    var sentPayload: String
 }
