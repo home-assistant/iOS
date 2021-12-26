@@ -84,7 +84,7 @@ final class PushControllerTests: AbstractTestCase {
             XCTAssertNil(pending.priority)
             XCTAssertNil(pending.collapseIdentifier)
             XCTAssertEqual(pending.topic, "io.robbie.HomeAssistant.test_app_id")
-            XCTAssertNil(pending.apnsID)
+            XCTAssertNotNil(pending.apnsID)
 
             pending.promise.completeWith(.success(()))
         }
@@ -231,7 +231,7 @@ final class PushControllerTests: AbstractTestCase {
                 XCTAssertNil(pending.priority)
                 XCTAssertEqual(pending.collapseIdentifier, testCase.collapseId)
                 XCTAssertEqual(pending.topic, "io.robbie.HomeAssistant.unit-test")
-                XCTAssertNil(pending.apnsID)
+                XCTAssertNotNil(pending.apnsID)
 
                 pending.promise.completeWith(.success(()))
             }

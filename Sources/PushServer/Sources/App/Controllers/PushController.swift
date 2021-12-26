@@ -6,7 +6,6 @@ import Vapor
 
 class PushController {
     var appIdPrefix: String
-    var jsonEncoder: JSONEncoder = .init()
 
     init(appIdPrefix: String) {
         self.appIdPrefix = appIdPrefix
@@ -39,7 +38,7 @@ class PushController {
         var pushType: APNSwiftConnection.PushType
     }
 
-    private func pushRequest(input: PushSendInput) throws -> PushRequest {
+    private static func pushRequest(encryptedInput input: PushSendInput) throws -> PushRequest {
         precondition(input.encrypted && input.encryptedData != nil)
 
         let notification = PushSendEncryptedNotification(
@@ -48,41 +47,28 @@ class PushController {
             encryptedData: input.encryptedData!
         )
 
-        let encoded = try jsonEncoder.encode(notification)
+        let encoded = try JSONEncoder().encode(notification)
 
         return .init(payload: encoded, collapseIdentifier: nil, pushType: .alert)
     }
 
-    private func pushRequest(
+    private static func pushRequest(
         input: PushSendInput,
         parser: LegacyNotificationParser,
         body: ByteBuffer
     ) throws -> PushRequest {
         let json = try JSONSerialization.jsonObject(with: body, options: []) as? [String: Any] ?? [:]
         var parsed = parser.result(from: json, defaultRegistrationInfo: [:])
-
-        let pushType: APNSwiftConnection.PushType
-        let collapseId: String?
-
-        switch parsed.headers["apns-push-type"] as? String {
-        case "alert": pushType = .alert
-        case "background": pushType = .background
-        default: pushType = .alert
-        }
-
-        switch parsed.headers["apns-collapse-id"] as? String {
-        case let .some(given): collapseId = given
-        case .none: collapseId = nil
-        }
-
         parsed.payload["webhook_id"] = input.registrationInfo.webhookId
 
-        let contents = try JSONSerialization.data(withJSONObject: parsed.payload, options: [.withoutEscapingSlashes])
+        let contents = try JSONSerialization.data(withJSONObject: parsed.payload, options: [])
+        let collapseId = parsed.headers["apns-collapse-id"] as? String
+        let pushType = parsed.headers["apns-push-type"] as? String
 
         return .init(
             payload: contents,
             collapseIdentifier: collapseId,
-            pushType: pushType
+            pushType: pushType.flatMap { .init(rawValue: $0) } ?? .alert
         )
     }
 
@@ -102,18 +88,14 @@ class PushController {
 
         let apns: PushRequest
 
-        do {
-            if input.encrypted {
-                apns = try pushRequest(input: input)
-            } else {
-                apns = try pushRequest(
-                    input: input,
-                    parser: req.application.legacyNotificationParser,
-                    body: req.body.data ?? ByteBuffer()
-                )
-            }
-        } catch {
-            throw Abort(.badRequest, reason: "Failed to parse request: \(String(describing: error))")
+        if input.encrypted {
+            apns = try Self.pushRequest(encryptedInput: input)
+        } else {
+            apns = try Self.pushRequest(
+                input: input,
+                parser: req.application.legacyNotificationParser,
+                body: req.body.data ?? ByteBuffer()
+            )
         }
 
         let messageId = UUID()
