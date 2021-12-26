@@ -12,7 +12,7 @@ class RateLimitsTests: AbstractTestCase {
 
         now = Date()
         cache = .init(eventLoop: app.eventLoopGroup.next())
-        rateLimits = .init(cache: cache, nowProvider: { [unowned self] in now })
+        rateLimits = .init(cache: cache, nowProvider: { [weak self] in self?.now ?? .init() })
     }
 
     func testExpirationDate() async throws {
