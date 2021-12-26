@@ -2,7 +2,6 @@ import Redis
 import Vapor
 
 public enum RateLimitsIncrementKind {
-    case attempts
     case successful
     case error
 }
@@ -28,7 +27,6 @@ public struct RateLimitsValues: Codable, Equatable {
 
     mutating func apply(_ increment: RateLimitsIncrementKind) {
         switch increment {
-        case .attempts: break
         case .successful: successful += 1
         case .error: errors += 1
         }
