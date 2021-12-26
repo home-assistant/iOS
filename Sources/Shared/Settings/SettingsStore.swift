@@ -16,10 +16,10 @@ public class SettingsStore {
 
     public var pushID: String? {
         get {
-            prefs.string(forKey: "pushID")
+            prefs.string(forKey: "pushID-APNS")
         }
         set {
-            prefs.setValue(newValue, forKeyPath: "pushID")
+            prefs.set(newValue, forKey: "pushID-APNS")
         }
     }
 
@@ -177,7 +177,6 @@ public class SettingsStore {
     }
 
     public struct Privacy {
-        public var messaging: Bool
         public var crashes: Bool
         public var analytics: Bool
         public var alerts: Bool
@@ -186,7 +185,6 @@ public class SettingsStore {
 
         internal static func key(for keyPath: KeyPath<Privacy, Bool>) -> String {
             switch keyPath {
-            case \.messaging: return "messagingEnabled"
             case \.crashes: return "crashesEnabled"
             case \.analytics: return "analyticsEnabled"
             case \.alerts: return "alertsEnabled"
@@ -198,7 +196,6 @@ public class SettingsStore {
 
         internal static func `default`(for keyPath: KeyPath<Privacy, Bool>) -> Bool {
             switch keyPath {
-            case \.messaging: return true
             case \.crashes: return false
             case \.analytics: return false
             case \.alerts: return true
@@ -221,7 +218,6 @@ public class SettingsStore {
             }
 
             return .init(
-                messaging: boolValue(for: \.messaging),
                 crashes: boolValue(for: \.crashes),
                 analytics: boolValue(for: \.analytics),
                 alerts: boolValue(for: \.alerts),
@@ -230,7 +226,6 @@ public class SettingsStore {
             )
         }
         set {
-            prefs.set(newValue.messaging, forKey: Privacy.key(for: \.messaging))
             prefs.set(newValue.crashes, forKey: Privacy.key(for: \.crashes))
             prefs.set(newValue.analytics, forKey: Privacy.key(for: \.analytics))
             prefs.set(newValue.alerts, forKey: Privacy.key(for: \.alerts))

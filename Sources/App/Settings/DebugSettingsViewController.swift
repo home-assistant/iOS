@@ -413,8 +413,6 @@ class DebugSettingsViewController: HAFormViewController {
             Current.servers.removeAll()
             resetStores()
             setDefaults()
-        }.then {
-            Current.notificationManager.resetPushID().asVoid().recover { _ in }
         }.ensure {
             hud.hide(animated: true)
             Current.onboardingObservation.needed(.logout)

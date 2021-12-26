@@ -112,10 +112,8 @@ class NotificationRateLimitListViewController: HAFormViewController {
                 section.removeAll()
 
                 section
-                    <<< response.rateLimits.row(for: \.attempts)
                     <<< response.rateLimits.row(for: \.successful)
                     <<< response.rateLimits.row(for: \.errors)
-                    <<< response.rateLimits.row(for: \.total)
                     <<< response.rateLimits.row(for: \.resetsAt)
             }
 

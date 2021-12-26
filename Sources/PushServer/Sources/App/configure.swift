@@ -17,7 +17,7 @@ public func configure(_ app: Application) throws {
             topic: Environment.get("APNS_TOPIC")!,
             environment: app.environment.apnSwiftEnvironment,
             logger: app.logger,
-            timeout: .seconds(10)
+            timeout: .seconds(8)
         )
     }
 
