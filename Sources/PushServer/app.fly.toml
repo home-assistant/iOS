@@ -8,6 +8,7 @@ processes = []
   dockerfile = "Dockerfile"
 
 [env]
+  LOG_LEVEL = "info"
 
 [experimental]
   allowed_public_ports = []
