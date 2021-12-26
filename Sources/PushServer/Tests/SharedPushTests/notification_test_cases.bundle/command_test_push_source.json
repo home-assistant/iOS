@@ -1,9 +1,6 @@
 {
     "input": {
-        "message": "test",
-        "data": {
-            "entity_id": "camera.entity_id"
-        },
+        "message": "test_push_source",
         "registration_info": {
             "app_id": "io.robbie.HomeAssistant.dev",
             "os_version": "10.15",
@@ -17,12 +14,10 @@
     "payload": {
         "aps": {
             "alert": {
-                "body": "test"
+                "title": "test_push_source",
+                "body": "<test-push-value>"
             },
-            "category": "DYNAMIC",
-            "mutableContent": true,
             "sound": "default"
-        },
-        "entity_id": "camera.entity_id"
+        }
     }
 }

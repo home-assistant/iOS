@@ -1,5 +1,6 @@
 import Foundation
 import HAKit
+import SharedPush
 import UserNotifications
 import Version
 
@@ -49,8 +50,12 @@ struct LocalPushEvent: HADataDecodable {
             throw LocalPushEventError.invalidType
         }
 
-        let (headers, payload) = NotificationParserLegacy.result(from: value)
-        self.init(headers: headers, payload: payload)
+        let parser = LegacyNotificationParserImpl(pushSource: "local")
+        let result = parser.result(from: value, defaultRegistrationInfo: [
+            "os_version": Current.device.systemVersion(),
+            "app_id": "io.robbie.HomeAssistant",
+        ])
+        self.init(headers: result.headers, payload: result.payload)
         self.confirmID = data.decode("hass_confirm_id", fallback: nil)
     }
 

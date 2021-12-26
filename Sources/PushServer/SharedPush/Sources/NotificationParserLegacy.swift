@@ -2,8 +2,30 @@ import Foundation
 
 // swiftlint:disable cyclomatic_complexity
 
-public enum NotificationParserLegacy {
-    struct CommandPayload {
+public struct LegacyNotificationParserResult {
+    public init(headers: [String: Any], payload: [String: Any]) {
+        self.headers = headers
+        self.payload = payload
+    }
+
+    public var headers: [String: Any]
+    public var payload: [String: Any]
+}
+
+public protocol LegacyNotificationParser {
+    func result(
+        from input: [String: Any],
+        defaultRegistrationInfo: @autoclosure () -> [String: String]
+    ) -> LegacyNotificationParserResult
+}
+
+public struct LegacyNotificationParserImpl: LegacyNotificationParser {
+    public var pushSource: String
+    public init(pushSource: String) {
+        self.pushSource = pushSource
+    }
+
+    private struct CommandPayload {
         let isAlert: Bool
         let payload: [String: Any]
 
@@ -23,11 +45,11 @@ public enum NotificationParserLegacy {
         }
     }
 
-    public static func result(from input: [String: Any]) -> (headers: [String: Any], payload: [String: Any]) {
-        let registrationInfo = input["registration_info"] as? [String: String] ?? [
-            "os_version": Current.device.systemVersion(),
-            "app_id": "io.robbie.HomeAssistant",
-        ]
+    public func result(
+        from input: [String: Any],
+        defaultRegistrationInfo: @autoclosure () -> [String: String]
+    ) -> LegacyNotificationParserResult {
+        let registrationInfo = input["registration_info"] as? [String: String] ?? defaultRegistrationInfo()
         let data = input["data"] as? [String: Any] ?? [:]
         var headers: [String: Any] = [
             "apns-push-type": "alert",
@@ -71,7 +93,7 @@ public enum NotificationParserLegacy {
                 }
             }
 
-            return (
+            return .init(
                 headers: ["apns-push-type": commandPayload.isAlert ? "alert" : "background"],
                 payload: payload
             )
@@ -88,10 +110,6 @@ public enum NotificationParserLegacy {
                 "sound": "default",
             ],
         ]
-
-        guard registrationInfo["app_id"]?.contains("io.robbie.HomeAssistant") == true else {
-            return (headers: headers, payload: payload)
-        }
 
         if let actions = data["actions"] {
             needsCategory = true
@@ -176,7 +194,7 @@ public enum NotificationParserLegacy {
             }
 
             if needsMutableContent {
-                aps["mutableContent"] = true
+                aps["mutable-content"] = true
             }
         }
 
@@ -207,7 +225,16 @@ public enum NotificationParserLegacy {
             }
         }
 
-        return (headers: headers, payload: payload)
+        if input["message"] as? String == "test_push_source" {
+            payload.mutateInside("aps") { aps in
+                aps.mutateInside("alert") { alert in
+                    alert["title"] = input["message"]
+                    alert["body"] = pushSource
+                }
+            }
+        }
+
+        return .init(headers: headers, payload: payload)
     }
 }
 

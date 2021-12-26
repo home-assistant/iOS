@@ -1,0 +1,18 @@
+app = "haapns-redis"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  image = "flyio/redis:6.2.6"
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[metrics]
+  port = 9091
+  path = "/metrics"

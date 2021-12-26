@@ -22,7 +22,7 @@
                 "body": "test"
             },
             "category": "DYNAMIC",
-            "mutableContent": true,
+            "mutable-content": true,
             "sound": "default"
         },
         "attachment": {
