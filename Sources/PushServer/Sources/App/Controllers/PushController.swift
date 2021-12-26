@@ -117,7 +117,7 @@ class PushController {
         }
 
         let messageId = UUID()
-        req.logger[metadataKey: "apnsID"] = .stringConvertible(messageId)
+        req.logger[metadataKey: "apns-id"] = .stringConvertible(messageId)
 
         func send() async throws {
             try await req.apns.send(
