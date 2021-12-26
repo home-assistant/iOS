@@ -8,6 +8,10 @@ on:
     paths:
       - 'Sources/PushServer/**'
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -19,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions@1.1
         with:
-          args: "deploy Sources/PushServer -c app.fly.toml"
+          args: "deploy Sources/PushServer -c app.fly.toml --detach"
       - uses: superfly/flyctl-actions@1.1
         with:
-          args: "deploy Sources/PushServer -c redis.fly.toml"
+          args: "deploy Sources/PushServer -c redis.fly.toml --detach"

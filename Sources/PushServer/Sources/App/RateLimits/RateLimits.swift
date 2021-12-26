@@ -11,6 +11,12 @@ public struct RateLimitsValues: Codable, Equatable {
     public var successful: Int
     public var errors: Int
 
+    // minimizing storage cost
+    enum CodingKeys: String, CodingKey {
+        case successful = "s"
+        case errors = "e"
+    }
+
     public var exceedsMaximum: Bool {
         (successful + errors) >= Self.dailyMaximum
     }
@@ -57,7 +63,7 @@ class RateLimitsImpl: RateLimits {
     private var expirationDate: Date?
 
     static func key(for identifier: String) -> String {
-        "rateLimits:\(identifier)"
+        "r\(identifier)"
     }
 
     private var currentExpirationDate: Date {
