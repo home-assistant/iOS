@@ -1,5 +1,9 @@
 name: Push Deploy
 
+concurrency: 
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
   push:
@@ -20,6 +24,3 @@ jobs:
       - uses: superfly/flyctl-actions@1.1
         with:
           args: "deploy Sources/PushServer -c app.fly.toml"
-      - uses: superfly/flyctl-actions@1.1
-        with:
-          args: "deploy Sources/PushServer -c redis.fly.toml"
