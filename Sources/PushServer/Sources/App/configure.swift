@@ -25,7 +25,11 @@ public func configure(_ app: Application) throws {
         app.logger.notice("using redis server for rate limits")
         app.redis.configuration = try RedisConfiguration(
             hostname: server,
-            password: Environment.get("REDIS_PASSWORD")
+            password: Environment.get("REDIS_PASSWORD"),
+            pool: .init(
+                maximumConnectionCount: .maximumPreservedConnections(6),
+                connectionRetryTimeout: .seconds(60)
+            )
         )
         app.rateLimits.cache = app.caches.redis
     } else {
