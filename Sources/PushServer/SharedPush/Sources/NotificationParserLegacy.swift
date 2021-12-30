@@ -93,6 +93,10 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 }
             }
 
+            if let webhookId = registrationInfo["webhook_id"] {
+                payload["webhook_id"] = webhookId
+            }
+
             return .init(
                 headers: ["apns-push-type": commandPayload.isAlert ? "alert" : "background"],
                 payload: payload
@@ -196,6 +200,10 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             if needsMutableContent {
                 aps["mutable-content"] = true
             }
+        }
+
+        if let webhookId = registrationInfo["webhook_id"] {
+            payload["webhook_id"] = webhookId
         }
 
         if let tag = data["tag"] as? String, headers["apns-collapse-id"] == nil {

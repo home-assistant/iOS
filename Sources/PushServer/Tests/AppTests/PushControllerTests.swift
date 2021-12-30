@@ -208,6 +208,7 @@ final class PushControllerTests: AbstractTestCase {
                     "homeassistant": [
                         "test": true,
                     ],
+                    "webhook_id": testCase.webhookId as Any,
                 ])
             }
 

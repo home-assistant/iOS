@@ -26,7 +26,7 @@ class RateLimitsTests: AbstractTestCase {
         XCTAssertGreaterThan(expirationDate3, expirationDate2)
 
         let expected = Calendar.current.startOfDay(for: try XCTUnwrap(
-            Calendar.current.date(byAdding: .day, value: 1, to: now, wrappingComponents: true)
+            Calendar.current.date(byAdding: .day, value: 1, to: now, wrappingComponents: false)
         )).timeIntervalSince(now)
         XCTAssertGreaterThan(expected, 0)
         XCTAssertLessThan(expected, 86400)
