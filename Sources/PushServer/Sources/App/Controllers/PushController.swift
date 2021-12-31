@@ -58,8 +58,8 @@ class PushController {
         body: ByteBuffer
     ) throws -> PushRequest {
         let json = try JSONSerialization.jsonObject(with: body, options: []) as? [String: Any] ?? [:]
-        var parsed = parser.result(from: json, defaultRegistrationInfo: [:])
-        parsed.payload["webhook_id"] = input.registrationInfo.webhookId
+        let parsed = parser.result(from: json, defaultRegistrationInfo: [:])
+        assert(parsed.payload["webhook_id"] as? String == input.registrationInfo.webhookId)
 
         let contents = try JSONSerialization.data(withJSONObject: parsed.payload, options: [])
         let collapseId = parsed.headers["apns-collapse-id"] as? String
