@@ -40,7 +40,7 @@ final class RateLimitsControllerTests: AbstractTestCase {
             let json = (try? JSONSerialization.jsonObject(with: res.body) as? [String: Any]) ?? [:]
             XCTAssertEqual(json["target"] as? String, "token")
 
-            let sub = (json["rateLimits"] as? [String: Any]) ?? [:]
+            let sub = (json["rate_limits"] as? [String: Any]) ?? [:]
 
             XCTAssertEqual(sub["successful"] as? Int, 3)
             XCTAssertEqual(sub["errors"] as? Int, 4)
