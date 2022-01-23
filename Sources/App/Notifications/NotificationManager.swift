@@ -1,5 +1,6 @@
 import CallbackURLKit
 import Communicator
+import FirebaseMessaging
 import Foundation
 import PromiseKit
 import Shared
@@ -30,7 +31,6 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     func setupNotifications() {
-        UIApplication.shared.registerForRemoteNotifications()
         UNUserNotificationCenter.current().delegate = self
         _ = localPushManager
     }
@@ -41,34 +41,50 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         }
     }
 
+    func resetPushID() -> Promise<String> {
+        firstly {
+            Promise<Void> { seal in
+                Messaging.messaging().deleteToken(completion: seal.resolve)
+            }
+        }.then {
+            Promise<String> { seal in
+                Messaging.messaging().token(completion: seal.resolve)
+            }
+        }
+    }
+
+    func setupFirebase() {
+        Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
+        UIApplication.shared.registerForRemoteNotifications()
+
+        Messaging.messaging().delegate = self
+        Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
+    }
+
     func didFailToRegisterForRemoteNotifications(error: Error) {
         Current.Log.error("failed to register for remote notifications: \(error)")
-
-        #if targetEnvironment(simulator)
-        Current.settingsStore.pushID = "simulator"
-        #endif
     }
 
     func didRegisterForRemoteNotifications(deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Current.Log.verbose("got token: \(apnsToken)")
+        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
         Current.crashReporter.setUserProperty(value: apnsToken, name: "APNS Token")
 
-        if apnsToken != Current.settingsStore.pushID {
-            Current.settingsStore.pushID = apnsToken
+        var tokenType: MessagingAPNSTokenType = .prod
 
-            Current.backgroundTask(withName: "notificationManager-didRegisterForRemoteNotifications") { _ in
-                when(fulfilled: Current.apis.map { api in
-                    api.updateRegistration()
-                })
-            }.cauterize()
+        if Current.appConfiguration == .Debug {
+            tokenType = .sandbox
         }
+
+        Messaging.messaging().setAPNSToken(deviceToken, type: tokenType)
     }
 
     func didReceiveRemoteNotification(
         userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
+        Messaging.messaging().appDidReceiveMessage(userInfo)
+
         firstly {
             handleRemoteNotification(userInfo: userInfo)
         }.done(
@@ -207,6 +223,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
+        Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
+
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             Current.Log.info("ignoring dismiss action for notification")
             completionHandler()
@@ -253,6 +271,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
         if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
            UIApplication.shared.applicationState != .background {
             completionHandler([])
@@ -292,5 +312,27 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 rootViewController?.present(navController, animated: true, completion: nil)
             })
         }
+    }
+}
+
+extension NotificationManager: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        let loggableCurrent = Current.settingsStore.pushID ?? "(null)"
+        let loggableNew = fcmToken ?? "(null)"
+
+        Current.Log.info("Firebase registration token refreshed, new token: \(loggableNew)")
+
+        if loggableCurrent != loggableNew {
+            Current.Log.warning("FCM token has changed from \(loggableCurrent) to \(loggableNew)")
+        }
+
+        Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")
+        Current.settingsStore.pushID = fcmToken
+
+        Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
+            when(fulfilled: Current.apis.map { api in
+                api.updateRegistration()
+            })
+        }.cauterize()
     }
 }

@@ -412,7 +412,7 @@ public class HomeAssistantAPI {
         with(MobileAppRegistrationRequest()) {
             if let pushID = Current.settingsStore.pushID {
                 $0.AppData = [
-                    "push_url": "https://haapns.fly.dev/push/send",
+                    "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
                     "push_token": pushID,
                 ]
             }

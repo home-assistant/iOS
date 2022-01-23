@@ -2,8 +2,8 @@ import Vapor
 
 struct RateLimitsGetOutput: Content {
     enum CodingKeys: String, CodingKey {
-        case target
-        case rateLimits
+        case target = "target"
+        case rateLimits = "rate_limits"
     }
 
     struct OutputRateLimits: Content {
@@ -12,7 +12,7 @@ struct RateLimitsGetOutput: Content {
             case errors
             case maximum
             case remaining
-            case resetsAt
+            case resetsAt = "resets_at"
         }
 
         var successful: Int

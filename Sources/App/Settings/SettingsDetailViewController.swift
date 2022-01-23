@@ -1,5 +1,6 @@
 import CoreMotion
 import Eureka
+import FirebaseMessaging
 import Intents
 import IntentsUI
 import PromiseKit
@@ -437,6 +438,14 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             title = L10n.SettingsDetails.Privacy.title
 
             form
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Messaging.description)
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Privacy.Messaging.title
+                    $0.value = Current.settingsStore.privacy.messaging
+                }.onChange { row in
+                    Current.settingsStore.privacy.messaging = row.value ?? true
+                    Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
+                }
                 +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Alerts.description)
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Privacy.Alerts.title
