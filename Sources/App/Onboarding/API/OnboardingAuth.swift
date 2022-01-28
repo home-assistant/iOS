@@ -38,7 +38,7 @@ class OnboardingAuth {
                 var promise: Promise<Void> = .value(())
 
                 for step in steps {
-                    promise = promise.then {
+                    promise = promise.then { [self] in
                         performPostSteps(checkPoint: step, api: api, sender: sender)
                     }
                 }
@@ -58,7 +58,7 @@ class OnboardingAuth {
                 Current.cachedApis[api.server.identifier] = api
             }.then { server in
                 steps(.complete).map { server }
-            }.recover(policy: .allErrors) { error -> Promise<Server> in
+            }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
                 when(resolved: undoConfigure(api: api)).then { _ in Promise<Server>(error: error) }
             }
         }
@@ -122,10 +122,10 @@ class OnboardingAuth {
         var promise: Promise<HomeAssistantAPI> = .init(error: OnboardingAuthError(kind: .invalidURL))
 
         for (idx, (url, instance)) in instances.enumerated() {
-            promise = promise.recover { originalError -> Promise<HomeAssistantAPI> in
+            promise = promise.recover { [self] originalError -> Promise<HomeAssistantAPI> in
                 let authDetails = try OnboardingAuthDetails(baseURL: url)
 
-                return firstly { [self] in
+                return firstly {
                     performPreSteps(checkPoint: .beforeAuth, authDetails: authDetails, sender: sender)
                 }.then { [self] in
                     login.open(authDetails: authDetails, sender: sender)

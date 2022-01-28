@@ -125,7 +125,7 @@ public class ServerAlerter {
                 URLSession.shared.dataTask(.promise, with: apiUrl).map(\.data),
                 when(fulfilled: Current.apis.map(\.connection.caches.user).map { $0.once().promise })
             )
-        }.map { data, users -> [ServerAlert] in
+        }.map { [self] data, users -> [ServerAlert] in
             // allows individual alerts to fail to parse, in case e.g. somebody typos something
             struct FailableServerAlert: Decodable {
                 var alert: ServerAlert?
@@ -139,7 +139,7 @@ public class ServerAlerter {
             }
             .decode([FailableServerAlert].self, from: data)
             .compactMap(\.alert)
-            .filter { [self] alert in
+            .filter { alert in
                 guard !isHandled(alert: alert) else {
                     return false
                 }
