@@ -252,6 +252,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Odprto";
 "preview_output" = "Preview Output";
+"requires_version" = "Requires %@ or later.";
 "retry_label" = "Retry";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
@@ -281,8 +282,15 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.internal_url_ssids.header" = "SSID-ji";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Never";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Prijavljen kot";
 "settings.connection_section.remote_ui_url.title" = "Oddaljeni URL uporabniškega vmesnika";
+"settings.connection_section.sensor_send_type.setting.all" = "All";
+"settings.connection_section.sensor_send_type.setting.none" = "None";
+"settings.connection_section.sensor_send_type.title" = "Sensors Sent";
 "settings.connection_section.servers" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";

@@ -6,7 +6,7 @@
 "panel::logbook" = "Kayıt defteri";
 "panel::mailbox" = "Posta kutusu";
 "panel::map" = "Harita";
-"panel::media_browser" = "Medya Tarayıcısı";
+"panel::media_browser" = "Medya";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Alışveriş listesi";
 "panel::states" = "Durumlar";

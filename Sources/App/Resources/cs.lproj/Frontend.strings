@@ -6,7 +6,7 @@
 "panel::logbook" = "Záznamy";
 "panel::mailbox" = "Schránka";
 "panel::map" = "Mapa";
-"panel::media_browser" = "Prohlížeč médií";
+"panel::media_browser" = "Média";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Nákupní seznam";
 "panel::states" = "Přehled";

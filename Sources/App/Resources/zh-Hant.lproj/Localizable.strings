@@ -252,6 +252,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "onboarding.welcome.title" = "歡迎使用 Home Assistant %@！";
 "open_label" = "開啟";
 "preview_output" = "預覽輸出";
+"requires_version" = "需要 %@ 或更新版本。";
 "retry_label" = "重試";
 "sensors.active.setting.time_until_idle" = "閒置前時間";
 "sensors.geocoded_location.setting.use_zones" = "使用區域名稱";
@@ -281,8 +282,15 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.local_push_description" = "當使用內部 SSID 網路時，直接連線至 Home Assistant 伺服器以進行推播通知。";
+"settings.connection_section.location_send_type.setting.exact" = "精確";
+"settings.connection_section.location_send_type.setting.never" = "未執行";
+"settings.connection_section.location_send_type.setting.zone_only" = "僅區域名稱";
+"settings.connection_section.location_send_type.title" = "座標傳送";
 "settings.connection_section.logged_in_as" = "登入帳號：";
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
+"settings.connection_section.sensor_send_type.setting.all" = "全部";
+"settings.connection_section.sensor_send_type.setting.none" = "無";
+"settings.connection_section.sensor_send_type.title" = "感測器傳送";
 "settings.connection_section.servers" = "伺服器";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "於背景存取 SSID 無線網路需要於定位服務權限中開啟 '永遠' 與 '精確位置'。點選此處以變更設定。";
 "settings.connection_section.ssid_permission_message" = "於背景存取 SSID 需要「總是允許」權限。點選以進行設定變更。";

@@ -4,9 +4,9 @@
 "panel::energy" = "能源";
 "panel::history" = "歷史";
 "panel::logbook" = "日誌";
-"panel::mailbox" = "郵箱";
+"panel::mailbox" = "信箱";
 "panel::map" = "地圖";
-"panel::media_browser" = "媒體瀏覽器";
+"panel::media_browser" = "媒體";
 "panel::profile" = "個人設定";
 "panel::shopping_list" = "購物清單";
 "panel::states" = "總覽";

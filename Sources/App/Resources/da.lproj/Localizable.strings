@@ -252,6 +252,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@!";
 "open_label" = "Åbn";
 "preview_output" = "Forhåndsvisning af output";
+"requires_version" = "Requires %@ or later.";
 "retry_label" = "Prøv igen";
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Brug zonenavn";
@@ -281,8 +282,15 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.internal_url_ssids.header" = "SSID'er";
 "settings.connection_section.internal_url_ssids.placeholder" = "MitSjoveNetværksnavn";
 "settings.connection_section.local_push_description" = "Opret direkte forbindelse til Home Assistant -serveren for push -notifikationer, når der tilsluttes via  interne SSID'er.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Never";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Logget ind som";
 "settings.connection_section.remote_ui_url.title" = "Web-adresse til ekstern UI";
+"settings.connection_section.sensor_send_type.setting.all" = "All";
+"settings.connection_section.sensor_send_type.setting.none" = "None";
+"settings.connection_section.sensor_send_type.title" = "Sensors Sent";
 "settings.connection_section.servers" = "Servere";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Adgang til at tilgå SSID'er i baggrunden kræver, at lokalitetstilladelse er sat til 'Altid'  og at 'Præcis lokalitet' er slået til. Tryk her for at ændre dine indstillinger.";
 "settings.connection_section.ssid_permission_message" = "Adgang til SSID'er i baggrunden kræver 'Altid'-lokalitetstilladelse. Tryk her for at ændre dine indstillinger.";
