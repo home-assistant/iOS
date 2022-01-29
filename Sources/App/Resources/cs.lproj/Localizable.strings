@@ -252,6 +252,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Otevřít";
 "preview_output" = "Preview Output";
+"requires_version" = "Requires %@ or later.";
 "retry_label" = "Opakovat";
 "sensors.active.setting.time_until_idle" = "Čas do nečinnosti";
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
@@ -281,8 +282,15 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.local_push_description" = "Přímé připojení k serveru Home Assistant pro push oznámení na interních SSID.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Never";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Přihlášen jako";
 "settings.connection_section.remote_ui_url.title" = "Vzdálená adresa UI URL";
+"settings.connection_section.sensor_send_type.setting.all" = "All";
+"settings.connection_section.sensor_send_type.setting.none" = "None";
+"settings.connection_section.sensor_send_type.title" = "Sensors Sent";
 "settings.connection_section.servers" = "Servery";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Přístup k SSID na pozadí vyžaduje ' vždy' oprávnění k umístění. Klepnutím sem změníte nastavení.";
@@ -738,7 +746,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "watch.labels.no_action" = "Nejsou nakonfigurovány žádné akce. Nakonfigurujte v telefonu akce pro nezobrazování této zprávy.";
 "watch.placeholder_complication_name" = "Placeholder";
-"widgets.actions.description" = "Provést akce Home Assistent";
+"widgets.actions.description" = "Provést akce Home Assistant";
 "widgets.actions.not_configured" = "Akce nejsou nakonfigurovány";
 "widgets.actions.title" = "Akce";
 "widgets.open_page.description" = "Open a frontend page in Home Assistant.";

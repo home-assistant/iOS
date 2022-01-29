@@ -63,7 +63,7 @@
 "ZmUm9Q" = "What template would you like to render?";
 "Zoqsph" = "Pagina";
 "aXZJt9" = "Just to confirm, you wanted ‘${server}’?";
-"am5G4A" = "Just to confirm, you wanted ‘${server}’?";
+"am5G4A" = "Solo per confermare, volevi \" ${server} \"?";
 "cK9jdK" = "Failed: ${error}";
 "cLmTme" = "Azione";
 "cuflz3" = "Failed: Home Assistant is not currently reachable";
@@ -88,7 +88,7 @@
 "jWGtvO" = "There are ${count} options matching ‘${server}’.";
 "jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
 "kGB23u" = "Perform Action";
-"l2coEc" = "Which server?";
+"l2coEc" = "Quale server?";
 "lGqSSG" = "Failed to update sensors.";
 "lNmaCR" = "Template";
 "lxHlyQ" = "Fire Event";
@@ -119,7 +119,7 @@
 "vAIAF2" = "Send a sensor update to Home Assistant";
 "vebd70" = "Server";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
-"xfXG6b" = "Which server?";
+"xfXG6b" = "Quale server?";
 "xhwpj4" = "Done";
 "ypnPyU" = "Perform ${action}";
 "yyjTxO" = "Error";

@@ -6,7 +6,7 @@
 "panel::logbook" = "Logbook";
 "panel::mailbox" = "Mailbox";
 "panel::map" = "Map";
-"panel::media_browser" = "Media Browser";
+"panel::media_browser" = "Media";
 "panel::profile" = "Profile";
 "panel::shopping_list" = "Shopping List";
 "panel::states" = "Overview";

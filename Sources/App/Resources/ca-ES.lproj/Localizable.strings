@@ -252,6 +252,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Obrir";
 "preview_output" = "Previsualització de la sortida";
+"requires_version" = "Requires %@ or later.";
 "retry_label" = "Reintentar";
 "sensors.active.setting.time_until_idle" = "Temps fins que estigui inactiu";
 "sensors.geocoded_location.setting.use_zones" = "Utilitza el nom de la zona";
@@ -281,8 +282,15 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "ElMeuNomDeXarxaDivertit";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Never";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Sessió iniciada com";
 "settings.connection_section.remote_ui_url.title" = "URL UI Remota";
+"settings.connection_section.sensor_send_type.setting.all" = "All";
+"settings.connection_section.sensor_send_type.setting.none" = "None";
+"settings.connection_section.sensor_send_type.title" = "Sensors Sent";
 "settings.connection_section.servers" = "Servidors";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "L'accés a SSIDs en segon pla requereix el permís de localització establert com a \"Sempre\". Toca aquí per canviar la configuració.";

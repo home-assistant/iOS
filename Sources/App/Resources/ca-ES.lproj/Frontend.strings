@@ -6,7 +6,7 @@
 "panel::logbook" = "Diari de registre";
 "panel::mailbox" = "Bústia";
 "panel::map" = "Mapa";
-"panel::media_browser" = "Navegador multimèdia";
+"panel::media_browser" = "Multimèdia";
 "panel::profile" = "Perfil";
 "panel::shopping_list" = "Llista de la compra";
 "panel::states" = "Visualització principal";

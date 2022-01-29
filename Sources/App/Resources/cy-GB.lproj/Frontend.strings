@@ -6,7 +6,7 @@
 "panel::logbook" = "Llyfr llogi";
 "panel::mailbox" = "Blwch post";
 "panel::map" = "Map";
-"panel::media_browser" = "Media Browser";
+"panel::media_browser" = "Media";
 "panel::profile" = "Profile";
 "panel::shopping_list" = "Rhestr siopa";
 "panel::states" = "Trosolwg";

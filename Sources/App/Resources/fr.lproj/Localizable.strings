@@ -252,6 +252,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.welcome.title" = "Bienvenue dans Home Assistant %@ !";
 "open_label" = "Ouvert";
 "preview_output" = "Aperçu du résultat";
+"requires_version" = "Nécessite %@ ou une version ultérieure.";
 "retry_label" = "Réessayer";
 "sensors.active.setting.time_until_idle" = "Temps jusqu'à l'inactivité";
 "sensors.geocoded_location.setting.use_zones" = "Utiliser le nom de la zone";
@@ -281,8 +282,15 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MonNomDeReseauSympa";
 "settings.connection_section.local_push_description" = "Connectez-vous directement au serveur Home Assistant pour les notifications push lorsque vous utilisez des SSID internes.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Jamais";
+"settings.connection_section.location_send_type.setting.zone_only" = "Nom de zone uniquement";
+"settings.connection_section.location_send_type.title" = "Emplacement envoyé";
 "settings.connection_section.logged_in_as" = "Connecté en tant que";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
+"settings.connection_section.sensor_send_type.setting.all" = "Tout";
+"settings.connection_section.sensor_send_type.setting.none" = "Aucun";
+"settings.connection_section.sensor_send_type.title" = "Capteurs envoyés";
 "settings.connection_section.servers" = "Serveurs";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours» et une précision de localisation «complète». Appuyez ici pour modifier vos paramètres.";
 "settings.connection_section.ssid_permission_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours». Appuyez ici pour modifier vos paramètres.";

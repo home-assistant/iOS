@@ -182,7 +182,7 @@
 "notifications_configurator.category.rows.actions.footer" = "Οι κατηγορίες μπορούν να έχουν έως και 10 ενέργειες.";
 "notifications_configurator.category.rows.actions.header" = "Ενέργειες";
 "notifications_configurator.category.rows.category_summary.default" = "%%u ειδοποιήσεις σε %%@";
-"notifications_configurator.category.rows.category_summary.footer" = "Μια συμβολοσειρά μορφής για την περιγραφή σύνοψης που χρησιμοποιείται όταν το σύστημα ομαδοποιεί τις ειδοποιήσεις της κατηγορίας. Μπορείτε προαιρετικά να χρησιμοποιήσετε το '%%u' για να εμφανίσετε τον αριθμό των ειδοποιήσεων στην ομάδα και '%%@' για να εμφανίσετε το όρισμα σύνοψης που παρέχεται στο ωφέλιμο φορτίο ώθησης.";
+"notifications_configurator.category.rows.category_summary.footer" = "Ένα πεδίο διαμόρφωσης για την περιγραφή σύνοψης που χρησιμοποιείται όταν το σύστημα ομαδοποιεί τις ειδοποιήσεις της κατηγορίας. Μπορείτε προαιρετικά να χρησιμοποιήσετε το '%%u' για να εμφανίσετε τον αριθμό των ειδοποιήσεων στην ομάδα και '%%@' για να εμφανίσετε το όρισμα σύνοψης που παρέχεται μέσα στο πακέτο push.";
 "notifications_configurator.category.rows.category_summary.header" = "Περίληψη κατηγορίας";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u ειδοποιήσεις";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Αυτό το κείμενο εμφανίζεται μόνο εάν έχετε αποκρύψει τις προεπισκοπήσεις ειδοποιήσεων. Χρησιμοποιήστε το '%%u ' για τον αριθμό των μηνυμάτων με το ίδιο αναγνωριστικό νήματος.";
@@ -252,6 +252,7 @@
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "open_label" = "Άνοιγμα";
 "preview_output" = "Έξοδος προεπισκόπησης";
+"requires_version" = "Απαιτεί %@ ή μεταγενέστερη έκδοση.";
 "retry_label" = "Επανάληψη";
 "sensors.active.setting.time_until_idle" = "Χρόνος μέχρι την αδράνεια";
 "sensors.geocoded_location.setting.use_zones" = "Χρήση ονόματος ζώνης";
@@ -281,8 +282,15 @@
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.local_push_description" = "Συνδεθείτε απευθείας στο διακομιστή Home Assistant για ειδοποιήσεις push όταν βρίσκεστε σε εσωτερικά SSID.";
+"settings.connection_section.location_send_type.setting.exact" = "Ακριβής";
+"settings.connection_section.location_send_type.setting.never" = "Ποτέ";
+"settings.connection_section.location_send_type.setting.zone_only" = "Μόνο όνομα ζώνης";
+"settings.connection_section.location_send_type.title" = "Η τοποθεσία εστάλη";
 "settings.connection_section.logged_in_as" = "Συνδεδεμένος ως";
 "settings.connection_section.remote_ui_url.title" = "Απομακρυσμένη διεύθυνση URL διεπαφής χρήστη";
+"settings.connection_section.sensor_send_type.setting.all" = "Όλα";
+"settings.connection_section.sensor_send_type.setting.none" = "Κανένα";
+"settings.connection_section.sensor_send_type.title" = "Αισθητήρες που απεστάλησαν";
 "settings.connection_section.servers" = "Διακομιστές";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
 "settings.connection_section.ssid_permission_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
@@ -439,7 +447,7 @@
 "settings_details.location.zones.radius.title" = "Ακτίνα";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Επαναφέρει το σήμα στο 0 κάθε φορά που ξεκινάτε την εφαρμογή.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Αυτόματα";
-"settings_details.notifications.badge_section.button.title" = "Επαναφορά σήματος στο 0";
+"settings_details.notifications.badge_section.button.title" = "Επαναφορά Σήματος";
 "settings_details.notifications.categories.deprecated_note" = "Οι κατηγορίες δεν απαιτούνται πλέον για ειδοποιήσεις με δυνατότητα ενέργειας και θα καταργηθούν σε μελλοντική έκδοση.";
 "settings_details.notifications.categories.header" = "Κατηγορίες";
 "settings_details.notifications.categories_synced.empty" = "Καμία συγχρονισμένη κατηγορία";

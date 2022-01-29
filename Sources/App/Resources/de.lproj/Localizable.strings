@@ -252,6 +252,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
 "preview_output" = "Vorschau der Ausgabe";
+"requires_version" = "Requires %@ or later.";
 "retry_label" = "Erneut versuchen";
 "sensors.active.setting.time_until_idle" = "Zeit bis zum Leerlauf";
 "sensors.geocoded_location.setting.use_zones" = "Verwenden Sie den Zonennamen";
@@ -281,8 +282,15 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MeinWlanName";
 "settings.connection_section.local_push_description" = "Direkte Verbindung zum Home Assistant-Server für Push-Benachrichtigungen bei internen SSIDs.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Never";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Angemeldet als";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
+"settings.connection_section.sensor_send_type.setting.all" = "All";
+"settings.connection_section.sensor_send_type.setting.none" = "None";
+"settings.connection_section.sensor_send_type.title" = "Sensors Sent";
 "settings.connection_section.servers" = "Server";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung \"Immer\" und die Standortgenauigkeit \"Vollständig\" erforderlich. Tippen Sie hier, um Ihre Einstellungen zu ändern.";
 "settings.connection_section.ssid_permission_message" = "Zugriff auf SSIDs im Hintergrund erfordern die Standortberechtigung \"Immer\". Tippe hier um die Einstellung zu ändern.";

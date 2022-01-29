@@ -252,6 +252,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@ !";
 "open_label" = "Åpen";
 "preview_output" = "Forhåndsvisning";
+"requires_version" = "Krever %@ eller nyere.";
 "retry_label" = "Prøv på nytt";
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Bruk sone-navn";
@@ -281,8 +282,15 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.connection_section.internal_url_ssids.header" = "SSIDer";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRareNettverksNavn";
 "settings.connection_section.local_push_description" = "Koble direkte til Home Assistant-serveren for push-varsler når du er på interne SSIDer.";
+"settings.connection_section.location_send_type.setting.exact" = "Nøyaktig";
+"settings.connection_section.location_send_type.setting.never" = "Aldri";
+"settings.connection_section.location_send_type.setting.zone_only" = "Kun sonenavn";
+"settings.connection_section.location_send_type.title" = "Plassering sendt";
 "settings.connection_section.logged_in_as" = "Pålogget som";
 "settings.connection_section.remote_ui_url.title" = "Ekstern UI URL";
+"settings.connection_section.sensor_send_type.setting.all" = "Alt";
+"settings.connection_section.sensor_send_type.setting.none" = "Ingen";
+"settings.connection_section.sensor_send_type.title" = "Sensorer sendt";
 "settings.connection_section.servers" = "Servere";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "For å få tilgang til SSID-er i bakgrunnen, krever 'Alltid' plasseringstillatelse og 'Full' posisjonsnøyaktighet. Trykk her for å endre innstillingene.";
 "settings.connection_section.ssid_permission_message" = "Tilgang til SSID-er i bakgrunnen krever \"Alltid\" posisjonstillatelse. Trykk her for å endre innstillingene dine.";

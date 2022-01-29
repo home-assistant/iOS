@@ -252,6 +252,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
 "preview_output" = "Voorbeeld Output";
+"requires_version" = "Vereist %@ of later.";
 "retry_label" = "Probeer opnieuw";
 "sensors.active.setting.time_until_idle" = "Tijd tot inactief";
 "sensors.geocoded_location.setting.use_zones" = "Gebruik tijdzone naam";
@@ -269,7 +270,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mijnhuis.com";
 "settings.connection_section.external_base_url.title" = "Externe URL";
 "settings.connection_section.header" = "Verbinding";
-"settings.connection_section.home_assistant_cloud.title" = "Home Assistent Cloud";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "bijv. http: //homeassistant.local:8123/";
 "settings.connection_section.internal_base_url.title" = "Interne URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Nieuw hardware-adres toevoegen";
@@ -281,8 +282,15 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.internal_url_ssids.header" = "SSID's";
 "settings.connection_section.internal_url_ssids.placeholder" = "MijnLeukeNetwerkNaam";
 "settings.connection_section.local_push_description" = "Maak rechtstreeks verbinding met de Home Assistant-server voor pushmeldingen op interne SSID's.";
+"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.never" = "Nooit";
+"settings.connection_section.location_send_type.setting.zone_only" = "Alleen zonenaam";
+"settings.connection_section.location_send_type.title" = "Locatie verzonden";
 "settings.connection_section.logged_in_as" = "Ingelogd als";
 "settings.connection_section.remote_ui_url.title" = "Gebruikersinterface op afstand URL";
+"settings.connection_section.sensor_send_type.setting.all" = "Alle";
+"settings.connection_section.sensor_send_type.setting.none" = "Geen";
+"settings.connection_section.sensor_send_type.title" = "Sensoren verzonden";
 "settings.connection_section.servers" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Voor toegang tot SSID's op de achtergrond is locatietoestemming 'Altijd' en 'Exacte locatie' vereist. Tik hier om je instellingen te wijzigen.";
 "settings.connection_section.ssid_permission_message" = "Toegang tot SSID's op de achtergrond vereist locatietoestemming 'Altijd'. Tik hier om uw instellingen te wijzigen.";
