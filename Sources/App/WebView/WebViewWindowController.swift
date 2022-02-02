@@ -139,7 +139,7 @@ class WebViewWindowController {
 
             let (promise, resolver) = Guarantee<WebViewController>.pending()
 
-            let perform = {
+            let perform = { [self] in
                 let newController = cachedWebViewControllers[server.identifier] ?? WebViewController(server: server)
                 updateRootViewController(to: webViewNavigationController(rootViewController: newController))
                 resolver(newController)

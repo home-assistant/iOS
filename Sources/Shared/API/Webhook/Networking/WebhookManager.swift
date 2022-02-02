@@ -464,12 +464,12 @@ public class WebhookManager: NSObject {
         }
 
         currentRegularSessionInfo.session.getAllTasks { [self] tasks in
-            dataQueue.async {
+            dataQueue.async { [self] in
                 evaluate(currentRegularSessionInfo, tasks)
             }
         }
         currentBackgroundSessionInfo.session.getAllTasks { [self] tasks in
-            dataQueue.async {
+            dataQueue.async { [self] in
                 evaluate(currentBackgroundSessionInfo, tasks)
             }
         }

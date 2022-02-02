@@ -164,8 +164,8 @@ public class HomeAssistantAPI {
                 let message = "Integration is missing; registering."
                 return Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                     "error": String(describing: error),
-                ])).then {
-                    return register()
+                ])).then { [self] in
+                    register()
                 }
             case .unregisteredIdentifier,
                  .unacceptableStatusCode,
