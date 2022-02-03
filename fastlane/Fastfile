@@ -188,6 +188,7 @@ lane :update_strings do
     'nb' => 'nb',
     'nl' => 'nl',
     'pl' => 'pl-PL',
+    'pt-BR' => 'pt-BR',
     'ru' => 'ru',
     'sl' => 'sl',
     'sv' => 'sv',

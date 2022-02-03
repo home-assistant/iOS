@@ -6,7 +6,7 @@
 "panel::logbook" = "Журнал";
 "panel::mailbox" = "Поштова скринька";
 "panel::map" = "Мапа";
-"panel::media_browser" = "Переглядач мультимедіа";
+"panel::media_browser" = "Медіа";
 "panel::profile" = "Профіль";
 "panel::shopping_list" = "Список покупок";
 "panel::states" = "Огляд";

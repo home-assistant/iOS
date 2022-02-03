@@ -6,7 +6,7 @@
 "panel::logbook" = "Logboek";
 "panel::mailbox" = "Postvak";
 "panel::map" = "Kaart";
-"panel::media_browser" = "Mediabrowser";
+"panel::media_browser" = "Media";
 "panel::profile" = "Profiel";
 "panel::shopping_list" = "Boodschappenlijst";
 "panel::states" = "Overzicht";
