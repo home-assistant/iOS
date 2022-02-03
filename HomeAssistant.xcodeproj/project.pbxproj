@@ -1378,6 +1378,10 @@
 		11AF4D2B249D965C006C74C0 /* BatterySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatterySensor.test.swift; sourceTree = "<group>"; };
 		11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocoderSensor.test.swift; sourceTree = "<group>"; };
 		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
+		11B154A227ABAADA00462185 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Intents.strings"; sourceTree = "<group>"; };
+		11B154A327ABAADA00462185 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Frontend.strings"; sourceTree = "<group>"; };
+		11B154A427ABAADA00462185 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		11B154A527ABAADA00462185 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
 		11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.test.swift; sourceTree = "<group>"; };
 		11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandlerFactory.swift; sourceTree = "<group>"; };
@@ -4262,6 +4266,7 @@
 				el,
 				id,
 				ja,
+				"pt-BR",
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -5940,6 +5945,7 @@
 				116570742702A40F003906A7 /* vi */,
 				116570752702A411003906A7 /* cy-GB */,
 				1159935D275D37B600D805DF /* ja */,
+				11B154A327ABAADA00462185 /* pt-BR */,
 			);
 			name = Frontend.strings;
 			sourceTree = "<group>";
@@ -5976,6 +5982,7 @@
 				1109B6BC25263EEF005D51C2 /* el */,
 				1164DA0025FB41AE00515E8A /* id */,
 				1159935E275D37B600D805DF /* ja */,
+				11B154A427ABAADA00462185 /* pt-BR */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -6012,6 +6019,7 @@
 				1109B6BA25263EEE005D51C2 /* el */,
 				1164D9FE25FB417D00515E8A /* id */,
 				1159935C275D37B600D805DF /* ja */,
+				11B154A227ABAADA00462185 /* pt-BR */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -6064,6 +6072,7 @@
 				1109B6BD25263F1D005D51C2 /* el */,
 				1164DA0125FB41AE00515E8A /* id */,
 				1159935F275D37B600D805DF /* ja */,
+				11B154A527ABAADA00462185 /* pt-BR */,
 			);
 			name = Localizable.strings;
 			path = .;
