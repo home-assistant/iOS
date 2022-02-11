@@ -6,7 +6,10 @@
 //  Copyright © 2018 AudioKit. All rights reserved.
 //  From https://bit.ly/2Uw4wGZ
 //
-//  Only mods were adding imports, replacing AKLog with Current.Log.* and disabling SwiftLint
+//  Mods to this file:
+//  - replacing AKLog with Current.Log.*
+//  - disabling SwiftLint
+//  - allowing already-correct-format to not fail (see // HASS below)
 //
 // swiftlint:disable all
 // swiftformat:disable all
@@ -441,7 +444,10 @@ open class AKConverter: NSObject {
             outputSampleRate != srcFormat.mSampleRate ||
             outputChannels != srcFormat.mChannelsPerFrame ||
             outputBitRate != srcFormat.mBitsPerChannel else {
-            completionHandler?(createError(message: "No conversion is needed, formats are the same."))
+            // HASS
+            _ = try? FileManager.default.copyItem(at: inputURL, to: outputURL)
+            completionHandler?(nil)
+            // HASS
             return
         }
 
