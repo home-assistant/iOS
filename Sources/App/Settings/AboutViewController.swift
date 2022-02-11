@@ -219,8 +219,15 @@ class AboutViewController: HAFormViewController {
         )
         alert.addAction(UIAlertAction(
             title: "<3",
-            style: UIAlertAction.Style.default,
+            style: .cancel,
             handler: nil
+        ))
+        alert.addAction(UIAlertAction(
+            title: L10n.copyLabel,
+            style: .default,
+            handler: { _ in
+                UIPasteboard.general.string = HomeAssistantAPI.clientVersionDescription
+            }
         ))
         present(alert, animated: true, completion: nil)
         if let popOver = alert.popoverPresentationController,
