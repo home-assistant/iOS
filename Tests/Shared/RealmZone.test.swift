@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import RealmSwift
 @testable import Shared
 import XCTest
 
@@ -91,5 +92,79 @@ class RealmZoneTests: XCTestCase {
                 )
             }
         }
+    }
+
+    func testZoneOfLocation() throws {
+        let executionIdentifier = UUID().uuidString
+
+        let realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
+        Current.realm = { realm }
+        addTeardownBlock { Current.realm = Realm.live }
+
+        let zones = [
+            with(RLMZone()) {
+                $0.entityId = "zone1_a"
+                $0.serverIdentifier = "fake1"
+                // gus's, mission bay
+                $0.Latitude = 37.774299403042754
+                $0.Longitude = -122.3914772411471
+                $0.Radius = 100.0
+            },
+            with(RLMZone()) {
+                $0.entityId = "zone1_b"
+                $0.serverIdentifier = "fake1"
+                // gus's, mission bay
+                $0.Latitude = 37.774299403042754
+                $0.Longitude = -122.3914772411471
+                $0.Radius = 50.0
+            },
+            with(RLMZone()) {
+                $0.entityId = "zone2"
+                $0.serverIdentifier = "fake1"
+                // gus's, mission
+                $0.Latitude = 37.76421375578578
+                $0.Longitude = -122.41263128786335
+                $0.Radius = 100.0
+            },
+            with(RLMZone()) {
+                $0.entityId = "zone3"
+                $0.serverIdentifier = "fake2"
+                // gus's, mission
+                $0.Latitude = 37.76421375578578
+                $0.Longitude = -122.41263128786335
+                $0.Radius = 90.0
+            },
+        ]
+
+        try realm.write {
+            realm.add(zones)
+        }
+
+        let server1 = Server.fake(identifier: "fake1")
+        let server2 = Server.fake(identifier: "fake2")
+
+        let outside = RLMZone.zone(
+            of: CLLocation(latitude: 37.771796641675984, longitude: -122.42665440151637),
+            in: server1
+        )
+        XCTAssertNil(outside, "should not find any here")
+
+        let inside1 = RLMZone.zone(
+            of: CLLocation(latitude: 37.77427675230296, longitude: -122.39145063179514),
+            in: server1
+        )
+        XCTAssertEqual(inside1?.entityId, "zone1_b", "should prefer smaller")
+
+        let inside2 = RLMZone.zone(
+            of: CLLocation(latitude: 37.76392336744542, longitude: -122.41274993932525),
+            in: server1
+        )
+        XCTAssertEqual(inside2?.entityId, "zone2")
+
+        let inside3 = RLMZone.zone(
+            of: CLLocation(latitude: 37.76392336744542, longitude: -122.41274993932525),
+            in: server2
+        )
+        XCTAssertEqual(inside3?.entityId, "zone3")
     }
 }
