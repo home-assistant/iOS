@@ -3,9 +3,9 @@ import Foundation
 extension URL {
     /// Return true if receiver's host and scheme is equal to `otherURL`
     public func baseIsEqual(to otherURL: URL) -> Bool {
-        host == otherURL.host
+        host?.lowercased() == otherURL.host?.lowercased()
             && portWithFallback == otherURL.portWithFallback
-            && scheme == otherURL.scheme
+            && scheme?.lowercased() == otherURL.scheme?.lowercased()
             && user == otherURL.user
             && password == otherURL.password
     }
