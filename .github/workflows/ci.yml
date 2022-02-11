@@ -88,6 +88,20 @@ jobs:
           key: >-
             ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
 
+      - uses: actions/cache@v2
+        name: "Cache Derived Data"
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/SourcePackages
+          key: ${{ runner.os }}-derivedData-cache-${{ hashFiles('**/Podfile.lock',
+            'HomeAssistant.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-derivedData-cache
+
+      - name: Avoid inode changes for DerivedData
+        run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
+
       - name: Install Brews
         # right now, we don't need anything from brew for tests, so save some time
         if: ${{ false }}
