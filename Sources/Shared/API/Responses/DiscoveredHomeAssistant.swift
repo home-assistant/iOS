@@ -30,6 +30,12 @@ public struct DiscoveredHomeAssistant: ImmutableMappable {
         self.version = try map.value("version", using: VersionTransform())
         self.externalURL = try? map.value("external_url", using: URLTransform())
         self.internalURL = try? map.value("internal_url", using: URLTransform())
+
+        if externalURL == nil, internalURL == nil {
+            // compatibility with HA <0.110
+            self.externalURL = try? map.value("base_url", using: URLTransform())
+        }
+
         self.locationName = (try? map.value("location_name")) ?? "Home"
 
         if let url = internalURL ?? externalURL {
