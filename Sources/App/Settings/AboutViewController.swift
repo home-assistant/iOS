@@ -213,14 +213,21 @@ class AboutViewController: HAFormViewController {
 
     @objc func tapAbout(_ sender: Any) {
         let alert = UIAlertController(
-            title: L10n.About.EasterEgg.title,
-            message: L10n.About.EasterEgg.message,
+            title: nil,
+            message: HomeAssistantAPI.clientVersionDescription,
             preferredStyle: UIAlertController.Style.alert
         )
         alert.addAction(UIAlertAction(
-            title: "<3",
-            style: UIAlertAction.Style.default,
+            title: L10n.cancelLabel,
+            style: .cancel,
             handler: nil
+        ))
+        alert.addAction(UIAlertAction(
+            title: L10n.copyLabel,
+            style: .default,
+            handler: { _ in
+                UIPasteboard.general.string = HomeAssistantAPI.clientVersionDescription
+            }
         ))
         present(alert, animated: true, completion: nil)
         if let popOver = alert.popoverPresentationController,
