@@ -213,12 +213,12 @@ class AboutViewController: HAFormViewController {
 
     @objc func tapAbout(_ sender: Any) {
         let alert = UIAlertController(
-            title: L10n.About.EasterEgg.title,
-            message: L10n.About.EasterEgg.message,
+            title: nil,
+            message: HomeAssistantAPI.clientVersionDescription,
             preferredStyle: UIAlertController.Style.alert
         )
         alert.addAction(UIAlertAction(
-            title: "<3",
+            title: L10n.cancelLabel,
             style: .cancel,
             handler: nil
         ))
