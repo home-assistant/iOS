@@ -6,7 +6,7 @@
 "panel::logbook" = "Catatan Log";
 "panel::mailbox" = "Kotak Pesan";
 "panel::map" = "Peta";
-"panel::media_browser" = "Browser Media";
+"panel::media_browser" = "Media";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Daftar Belanja";
 "panel::states" = "Ikhtisar";
