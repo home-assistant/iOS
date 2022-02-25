@@ -260,6 +260,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadActiveURLIfNeeded()
+
+        try? AVAudioSession.sharedInstance().setCategory(.playback)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
