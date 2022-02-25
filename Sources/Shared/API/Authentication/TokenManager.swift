@@ -62,56 +62,59 @@ public class TokenManager {
         authenticationAPI.revokeToken(tokenInfo: server.info.token)
     }
 
-    public var bearerToken: Promise<String> {
+    public var bearerToken: Promise<(String, Date)> {
         firstly {
             self.currentToken
-        }.recover { [self] error -> Promise<String> in
+        }.recover { [self] error -> Promise<(String, Date)> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired else {
                 Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
 
-            return refreshToken().map(\.accessToken)
+            return refreshToken().map {
+                Current.Log.info("providing token \($0.accessToken.hash)")
+                return ($0.accessToken, $0.expiration)
+            }
         }
     }
 
     public func authDictionaryForWebView(forceRefresh: Bool) -> Promise<[String: Any]> {
-        firstly { () -> Promise<String> in
+        firstly { () -> Promise<(String, Date)> in
             if forceRefresh {
                 Current.Log.info("forcing a refresh of token")
-                return refreshToken().map(\.accessToken)
+                return refreshToken().map { ($0.accessToken, $0.expiration) }
             } else {
                 Current.Log.info("using existing token")
                 return bearerToken
             }
-        }.map { [server] _ -> [String: Any] in
-            let info = server.info.token
+        }.map { token, expiration -> [String: Any] in
+            Current.Log.info("creating webview token with \(token.hash)")
             var dictionary: [String: Any] = [:]
-            dictionary["access_token"] = info.accessToken
-            dictionary["expires_in"] = Int(info.expiration.timeIntervalSince(Current.date()))
+            dictionary["access_token"] = token
+            dictionary["expires_in"] = Int(expiration.timeIntervalSince(Current.date()))
             return dictionary
         }
     }
 
     // MARK: - Private helpers
 
-    private var currentToken: Promise<String> {
-        Promise<String> { seal in
+    private var currentToken: Promise<(String, Date)> {
+        Promise<(String, Date)> { seal in
             let tokenInfo = server.info.token
 
             // Add a margin to -10 seconds so that we never get into a state where we return a token
             // that immediately fails.
             if tokenInfo.expiration.addingTimeInterval(-10) > Current.date() {
-                seal.fulfill(tokenInfo.accessToken)
+                seal.fulfill((tokenInfo.accessToken, tokenInfo.expiration))
             } else {
                 if let expirationAmount = Calendar.current.dateComponents(
                     [.second],
                     from: tokenInfo.expiration,
                     to: Current.date()
                 ).second {
-                    Current.Log.error("Token is expired by \(expirationAmount) seconds: \(tokenInfo.accessToken)")
+                    Current.Log.error("Token \(tokenInfo.accessToken.hash) is expired by \(expirationAmount) seconds")
                 } else {
-                    Current.Log.error("Token is expired by an unknown amount of time: \(tokenInfo.accessToken)")
+                    Current.Log.error("Token \(tokenInfo.accessToken.hash) is expired by unknown")
                 }
 
                 seal.reject(TokenError.expired)

@@ -74,7 +74,7 @@ public class HomeAssistantAPI {
             },
             fetchAuthToken: { completion in
                 tokenManager.bearerToken.done {
-                    completion(.success($0))
+                    completion(.success($0.0))
                 }.catch {
                     completion(.failure($0))
                 }
