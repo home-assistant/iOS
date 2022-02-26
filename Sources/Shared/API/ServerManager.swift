@@ -93,8 +93,18 @@ private extension Identifier where ObjectType == Server {
 private struct ServerCache {
     var restrictCaching: Bool = false
     var deletedServers: Set<Identifier<Server>> = .init()
-    var info: [Identifier<Server>: ServerInfo] = [:]
-    var server: [Identifier<Server>: Server] = [:]
+    var info: [Identifier<Server>: ServerInfo] = [:] {
+        didSet {
+            precondition(deletedServers.isDisjoint(with: info.keys))
+        }
+    }
+
+    var server: [Identifier<Server>: Server] = [:] {
+        didSet {
+            precondition(deletedServers.isDisjoint(with: server.keys))
+        }
+    }
+
     var all: [Server]?
 
     mutating func remove(identifier: Identifier<Server>) {
@@ -208,6 +218,7 @@ internal final class ServerManagerImpl: ServerManager {
         let result = cache.mutate { cache -> Server in
             cache.deletedServers.remove(identifier)
             keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
+            cache.info[identifier] = setValue
             cache.all = nil
 
             return server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
@@ -261,7 +272,9 @@ internal final class ServerManagerImpl: ServerManager {
                     return info
                 } else {
                     let info = keychain.getServerInfo(key: identifier.keychainKey, decoder: decoder) ?? fallback
-                    cache.info[identifier] = info
+                    if !cache.deletedServers.contains(identifier) {
+                        cache.info[identifier] = info
+                    }
                     return info
                 }
             }
