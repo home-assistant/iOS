@@ -132,6 +132,9 @@ class ServerManagerTests: XCTestCase {
         }
         try XCTAssertNil(keychain.getData("fake1"))
 
+        // grab it, which may also side-effect insert into cache, if buggy
+        _ = server1.info
+
         expectingObserver {
             // we just deleted it, so we re-add it to make sure _that_ works
             let tempFake1 = with(info1) {
