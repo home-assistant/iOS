@@ -6,7 +6,7 @@
 "panel::logbook" = "Αρχείο Συμβάντων";
 "panel::mailbox" = "Γραμματοκιβώτιο";
 "panel::map" = "Χάρτης";
-"panel::media_browser" = "Πρόγραμμα περιήγησης πολυμέσων";
+"panel::media_browser" = "Πολυμέσα";
 "panel::profile" = "Προφίλ";
 "panel::shopping_list" = "Λίστα αγορών";
 "panel::states" = "Επισκόπηση";
