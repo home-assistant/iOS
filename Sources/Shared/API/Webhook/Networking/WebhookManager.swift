@@ -223,7 +223,7 @@ public class WebhookManager: NSObject {
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
                 statusCode: (response as? HTTPURLResponse)?.statusCode,
-                secretGetter: { server.info.connection.webhookSecret }
+                secretGetter: { server.info.connection.webhookSecretBytes }
             )
         }.map { possible in
             if let value = possible as? ResponseType {
@@ -423,7 +423,7 @@ public class WebhookManager: NSObject {
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
                 statusCode: (response as? HTTPURLResponse)?.statusCode,
-                secretGetter: { server.info.connection.webhookSecret }
+                secretGetter: { server.info.connection.webhookSecretBytes }
             )
         }.asVoid()
     }
@@ -561,7 +561,7 @@ extension WebhookManager: URLSessionDataDelegate {
             }.webhookJson(
                 on: DispatchQueue.global(qos: .utility),
                 statusCode: statusCode,
-                secretGetter: { server.info.connection.webhookSecret }
+                secretGetter: { server.info.connection.webhookSecretBytes }
             )
 
             // logging

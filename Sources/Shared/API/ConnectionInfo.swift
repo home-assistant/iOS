@@ -239,6 +239,23 @@ public struct ConnectionInfo: Codable, Equatable {
 
         return false
     }
+
+    /// Secret as byte array
+    var webhookSecretBytes: [UInt8]? {
+        guard let webhookSecret = webhookSecret, webhookSecret.count.isMultiple(of: 2) else {
+            return nil
+        }
+
+        var stringIterator = webhookSecret.makeIterator()
+
+        return Array(AnyIterator<UInt8> {
+            guard let first = stringIterator.next(), let second = stringIterator.next() else {
+                return nil
+            }
+
+            return UInt8(String(first) + String(second), radix: 16)
+        })
+    }
 }
 
 class ServerRequestAdapter: RequestAdapter {

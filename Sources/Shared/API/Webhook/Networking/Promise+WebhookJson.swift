@@ -14,7 +14,7 @@ extension Promise where T == Data? {
         on queue: DispatchQueue? = nil,
         statusCode: Int? = nil,
         sodium: Sodium = Sodium(),
-        secretGetter: @escaping () -> String?,
+        secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         then { optionalData -> Promise<Any> in
@@ -38,7 +38,7 @@ extension Promise where T == Data {
         on queue: DispatchQueue? = nil,
         statusCode: Int? = nil,
         sodium: Sodium = Sodium(),
-        secretGetter: @escaping () -> String?,
+        secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         definitelyWebhookJson(
@@ -55,7 +55,7 @@ extension Promise where T == Data {
         on queue: DispatchQueue?,
         statusCode: Int?,
         sodium: Sodium,
-        secretGetter: @escaping () -> String?,
+        secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         if let statusCode = statusCode {
@@ -97,7 +97,7 @@ extension Promise where T == Data {
 
             guard let decrypted = sodium.secretBox.open(
                 nonceAndAuthenticatedCipherText: decoded,
-                secretKey: secret.bytes
+                secretKey: .init(secret)
             ) else {
                 throw WebhookJsonParseError.decrypt
             }
