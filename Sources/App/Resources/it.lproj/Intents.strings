@@ -1,7 +1,7 @@
 "0aqrcy" = "Fallito: ${error}";
 "2KWKqM" = "Fallito: Home Assistant non è raggiungibile";
 "2b0Uo4" = "Servizio";
-"3jKamg" = "{{ adesso() }}";
+"3jKamg" = "{{ now() }}";
 "4fFx9y" = "Aggiornato";
 "4tpAXn" = "Solo per confermare, volevi '${server}'?";
 "5ZzwZD" = "Fallito: Home Assistant non è attualmente raggiungibile";
@@ -42,7 +42,7 @@
 "NdG9Jz" = "Renderizza il modello di Home Assistant";
 "NsbUTz" = "Entità Fotocamera";
 "Q2Qp4a" = "Azione";
-"QVD2lM" = "Service Data";
+"QVD2lM" = "Dati del servizio";
 "QmGpOH" = "Errore";
 "RCQAlr" = "Ottieni immagine di ${cameraID}";
 "RMQY3r" = "Invia la posizione a Home Assistant";
@@ -56,7 +56,7 @@
 "X4A8Cc" = "Dominio del servizio";
 "Xq7UuD" = "Renderizza il modello fornito";
 "YNQXwq" = "Errore";
-"YxAau3" = "There are ${count} options matching ‘${server}’.";
+"YxAau3" = "Ci sono ${count} opzioni che corrispondono a '${server}'.";
 "ZApPxB" = "Nome del Servizio";
 "ZRPVYO" = "Apri una pagina nel frontend";
 "ZT9Mld" = "Nome dell'evento";
@@ -93,7 +93,7 @@
 "lNmaCR" = "Modello";
 "lxHlyQ" = "Lancia evento";
 "mAibJP" = "Fallito: Home Assistant non è attualmente raggiungibile";
-"mJ6CrP" = "Fallito l'invio di ${eventName}: ${error}";
+"mJ6CrP" = "Invio di ${eventName} fallito: ${error}";
 "mZnRHS" = "${eventName} attivato";
 "mi6B62" = "Quali dati vuoi inviare con l'evento?";
 "ns9RRU" = "Aprire la pagina";

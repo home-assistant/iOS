@@ -6,7 +6,7 @@
 "panel::logbook" = "Journal";
 "panel::mailbox" = "Boîtes aux lettres";
 "panel::map" = "Carte";
-"panel::media_browser" = "Navigateur multimédia";
+"panel::media_browser" = "Multimédia";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Liste de courses";
 "panel::states" = "Aperçu";
