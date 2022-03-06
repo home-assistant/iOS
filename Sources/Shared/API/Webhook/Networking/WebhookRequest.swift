@@ -56,7 +56,7 @@ public struct WebhookRequest: ImmutableMappable {
     }
 
     private func encryptedData(server: Server) -> String? {
-        guard let secret = server.info.connection.webhookSecret else {
+        guard let secret = server.info.connection.webhookSecretBytes(version: server.info.version) else {
             return nil
         }
 
@@ -72,11 +72,9 @@ public struct WebhookRequest: ImmutableMappable {
             return nil
         }
 
-        let key: Bytes = Array(secret.bytes[0 ..< sodium.secretBox.KeyBytes])
-
         guard let encryptedData: Bytes = sodium.secretBox.seal(
             message: jsonStr.bytes,
-            secretKey: key
+            secretKey: .init(secret)
         ) else {
             Current.Log.error("Unable to generate encrypted webhook payload! Secret: \(secret), JSON: \(jsonStr)")
             return nil

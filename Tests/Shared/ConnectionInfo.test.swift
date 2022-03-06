@@ -1,4 +1,5 @@
 @testable import Shared
+import Version
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
@@ -356,5 +357,109 @@ class ConnectionInfoTests: XCTestCase {
 
         Current.connectivity.currentWiFiSSID = { nil }
         XCTAssertEqual(info.webhookURL(), cloudhookURL)
+    }
+
+    func testWebhookSecret() {
+        var info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: URL(string: "http://internal.example.com/"),
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false
+        )
+
+        let oldVersion = Version(major: 2022, minor: 2)
+        let newVersion = Version(major: 2022, minor: 3)
+
+        XCTAssertNil(info.webhookSecretBytes(version: oldVersion))
+        XCTAssertNil(info.webhookSecretBytes(version: newVersion))
+
+        info.webhookSecret = String(repeating: "0", count: 33)
+        XCTAssertNil(info.webhookSecretBytes(version: oldVersion))
+        XCTAssertNil(info.webhookSecretBytes(version: newVersion))
+        info.webhookSecret = String(repeating: "0", count: 31)
+        XCTAssertNil(info.webhookSecretBytes(version: oldVersion))
+        XCTAssertNil(info.webhookSecretBytes(version: newVersion))
+
+        info.webhookSecret = "abcdef0fedcba0abcdef0fedcba0abcdef0abcdef0fedcba0abcdef0fedcba"
+        XCTAssertEqual(
+            info.webhookSecretBytes(version: oldVersion),
+            // incorrectly using ascii/utf8 of the first 32 characters
+            [
+                97,
+                98,
+                99,
+                100,
+                101,
+                102,
+                48,
+                102,
+                101,
+                100,
+                99,
+                98,
+                97,
+                48,
+                97,
+                98,
+                99,
+                100,
+                101,
+                102,
+                48,
+                102,
+                101,
+                100,
+                99,
+                98,
+                97,
+                48,
+                97,
+                98,
+                99,
+                100,
+            ]
+        )
+        XCTAssertEqual(
+            info.webhookSecretBytes(version: newVersion),
+            // using the full hex representation
+            [
+                0xAB,
+                0xCD,
+                0xEF,
+                0x0F,
+                0xED,
+                0xCB,
+                0xA0,
+                0xAB,
+                0xCD,
+                0xEF,
+                0x0F,
+                0xED,
+                0xCB,
+                0xA0,
+                0xAB,
+                0xCD,
+                0xEF,
+                0x0A,
+                0xBC,
+                0xDE,
+                0xF0,
+                0xFE,
+                0xDC,
+                0xBA,
+                0x0A,
+                0xBC,
+                0xDE,
+                0xF0,
+                0xFE,
+                0xDC,
+                0xBA,
+            ]
+        )
     }
 }

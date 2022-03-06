@@ -4,26 +4,21 @@ import Sodium
 import XCTest
 
 class PromiseWebhookJsonTests: XCTestCase {
-    private static var secretKey: SecretBox.Key!
-    private static var secretString: String!
+    private static var secret: [UInt8]!
 
     override class func setUp() {
         super.setUp()
 
         let sodium = Sodium()
-        let randomString = (0 ..< sodium.secretBox.KeyBytes / 2)
+        secret = (0 ..< sodium.secretBox.KeyBytes)
             .map { _ in UInt8.random(in: 0 ..< UInt8.max) }
-            .reduce(into: "") { $0 += String(format: "%02x", $1) }
-
-        secretKey = randomString.bytes
-        secretString = randomString
     }
 
     static func encryptedResponse(data: Data) throws -> Data {
         let sodium = Sodium()
         let encryptedData: Bytes? = sodium.secretBox.seal(
             message: data.map { UInt8($0) },
-            secretKey: secretString.bytes
+            secretKey: .init(secret)
         )
 
         XCTAssertNotNil(encryptedData)
@@ -136,7 +131,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedEmptyData() throws {
         let response = try Self.encryptedResponse(data: Data())
         let promise = Promise<Data>.value(response)
-        let json = promise.webhookJson(secretGetter: { Self.secretString })
+        let json = promise.webhookJson(secretGetter: { Self.secret })
         XCTAssertNotNil(try hang(json))
     }
 
@@ -144,7 +139,7 @@ class PromiseWebhookJsonTests: XCTestCase {
         let dictionary = ["key": "value"]
         let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
         let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
-        let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secretString })
+        let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
         XCTAssertEqual(try hang(json) as? [String: String], dictionary)
     }
@@ -153,7 +148,7 @@ class PromiseWebhookJsonTests: XCTestCase {
         let array = ["one", "two"]
         let data = try JSONSerialization.data(withJSONObject: array, options: [])
         let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
-        let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secretString })
+        let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
         XCTAssertEqual(try hang(json) as? [String], array)
     }
@@ -162,7 +157,7 @@ class PromiseWebhookJsonTests: XCTestCase {
         let string = "value"
         let data = try JSONSerialization.data(withJSONObject: string, options: [.fragmentsAllowed])
         let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
-        let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secretString })
+        let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
         XCTAssertEqual(try hang(json) as? String, string)
     }
@@ -184,7 +179,7 @@ class PromiseWebhookJsonTests: XCTestCase {
             "encrypted_data": "moo======",
         ], options: [])
         let promise = Promise<Data>.value(data)
-        let json = promise.webhookJson(statusCode: 200, secretGetter: { "tacos" })
+        let json = promise.webhookJson(statusCode: 200, secretGetter: { [0, 1, 2, 3, 4] })
 
         XCTAssertThrowsError(try hang(json)) { error in
             XCTAssertEqual(error as? WebhookJsonParseError, .base64)
@@ -194,7 +189,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedBadKey() throws {
         let data = try JSONSerialization.data(withJSONObject: ["test": true], options: [])
         let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
-        let json = promise.webhookJson(statusCode: 200, secretGetter: { "tacos" })
+        let json = promise.webhookJson(statusCode: 200, secretGetter: { [0, 1, 2, 3, 4] })
 
         XCTAssertThrowsError(try hang(json)) { error in
             XCTAssertEqual(error as? WebhookJsonParseError, .decrypt)

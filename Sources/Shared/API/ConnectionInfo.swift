@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+import Version
 #if os(watchOS)
 import Communicator
 #endif
@@ -238,6 +239,35 @@ public struct ConnectionInfo: Codable, Equatable {
         }
 
         return false
+    }
+
+    /// Secret as byte array
+    func webhookSecretBytes(version: Version) -> [UInt8]? {
+        guard let webhookSecret = webhookSecret, webhookSecret.count.isMultiple(of: 2) else {
+            return nil
+        }
+
+        guard version >= .fullWebhookSecretKey else {
+            if let end = webhookSecret.index(
+                webhookSecret.startIndex,
+                offsetBy: 32,
+                limitedBy: webhookSecret.endIndex
+            ) {
+                return .init(webhookSecret.utf8[webhookSecret.startIndex ..< end])
+            } else {
+                return nil
+            }
+        }
+
+        var stringIterator = webhookSecret.makeIterator()
+
+        return Array(AnyIterator<UInt8> {
+            guard let first = stringIterator.next(), let second = stringIterator.next() else {
+                return nil
+            }
+
+            return UInt8(String(first) + String(second), radix: 16)
+        })
     }
 }
 

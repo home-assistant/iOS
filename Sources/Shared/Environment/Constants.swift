@@ -146,6 +146,7 @@ public extension Version {
     static var localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
     static var externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")
     static var updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
+    static var fullWebhookSecretKey: Version = .init(major: 2022, minor: 3)
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))
