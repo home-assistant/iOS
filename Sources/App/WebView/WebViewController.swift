@@ -82,6 +82,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
     }
 
+    override var prefersStatusBarHidden: Bool {
+        Current.settingsStore.fullScreen
+    }
+
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        Current.settingsStore.fullScreen
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -768,6 +776,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         if !Current.isCatalyst {
             let zoomValue = Current.settingsStore.pinchToZoom ? "true" : "false"
             webView.evaluateJavaScript("setOverrideZoomEnabled(\(zoomValue))", completionHandler: nil)
+        }
+
+        if reason == .settingChange {
+            setNeedsStatusBarAppearanceUpdate()
+            setNeedsUpdateOfHomeIndicatorAutoHidden()
         }
     }
 

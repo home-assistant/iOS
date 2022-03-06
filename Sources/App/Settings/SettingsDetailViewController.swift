@@ -238,6 +238,15 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     }
                 }
 
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.General.FullScreen.title
+                    $0.hidden = .isCatalyst
+                    $0.value = Current.settingsStore.fullScreen
+                    $0.onChange { row in
+                        Current.settingsStore.fullScreen = row.value ?? false
+                    }
+                }
+
         case "location":
             title = L10n.SettingsDetails.Location.title
             form

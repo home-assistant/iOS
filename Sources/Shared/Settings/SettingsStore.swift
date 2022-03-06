@@ -157,6 +157,16 @@ public class SettingsStore {
         }
     }
 
+    public var fullScreen: Bool {
+        get {
+            prefs.bool(forKey: "fullScreen")
+        }
+        set {
+            prefs.set(newValue, forKey: "fullScreen")
+            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+        }
+    }
+
     public var periodicUpdateInterval: TimeInterval? {
         get {
             if prefs.object(forKey: "periodicUpdateInterval") == nil {
