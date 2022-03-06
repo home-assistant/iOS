@@ -1,5 +1,6 @@
 @testable import Shared
 import XCTest
+import Version
 
 class ConnectionInfoTests: XCTestCase {
     func testInternalOnlyURL() {
@@ -356,5 +357,44 @@ class ConnectionInfoTests: XCTestCase {
 
         Current.connectivity.currentWiFiSSID = { nil }
         XCTAssertEqual(info.webhookURL(), cloudhookURL)
+    }
+
+    func testWebhookSecret() {
+        var info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: URL(string: "http://internal.example.com/"),
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false
+        )
+
+        let oldVersion = Version(major: 2022, minor: 2)
+        let newVersion = Version(major: 2022, minor: 3)
+
+        XCTAssertNil(info.webhookSecretBytes(version: oldVersion))
+        XCTAssertNil(info.webhookSecretBytes(version: newVersion))
+
+        info.webhookSecret = String(repeating: "0", count: 33)
+        XCTAssertNil(info.webhookSecretBytes(version: oldVersion))
+        XCTAssertNil(info.webhookSecretBytes(version: newVersion))
+        info.webhookSecret = String(repeating: "0", count: 31)
+        XCTAssertNil(info.webhookSecretBytes(version: oldVersion))
+        XCTAssertNil(info.webhookSecretBytes(version: newVersion))
+
+        info.webhookSecret = "abcdef0fedcba0abcdef0fedcba0abcdef0abcdef0fedcba0abcdef0fedcba"
+        XCTAssertEqual(
+            info.webhookSecretBytes(version: oldVersion),
+            // incorrectly using ascii/utf8 of the first 32 characters
+            [97, 98, 99, 100, 101, 102, 48, 102, 101, 100, 99, 98, 97, 48, 97, 98, 99, 100, 101, 102, 48, 102, 101, 100, 99, 98, 97, 48, 97, 98, 99, 100]
+        )
+        XCTAssertEqual(
+            info.webhookSecretBytes(version: newVersion),
+            // using the full hex representation
+            [0xab, 0xcd, 0xef, 0x0f, 0xed, 0xcb, 0xa0, 0xab, 0xcd, 0xef, 0x0f, 0xed, 0xcb, 0xa0, 0xab, 0xcd, 0xef, 0x0a, 0xbc, 0xde, 0xf0, 0xfe, 0xdc, 0xba, 0x0a, 0xbc, 0xde, 0xf0, 0xfe, 0xdc, 0xba]
+        )
     }
 }
