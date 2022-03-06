@@ -1,6 +1,6 @@
 @testable import Shared
-import XCTest
 import Version
+import XCTest
 
 class ConnectionInfoTests: XCTestCase {
     func testInternalOnlyURL() {
@@ -389,12 +389,77 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(
             info.webhookSecretBytes(version: oldVersion),
             // incorrectly using ascii/utf8 of the first 32 characters
-            [97, 98, 99, 100, 101, 102, 48, 102, 101, 100, 99, 98, 97, 48, 97, 98, 99, 100, 101, 102, 48, 102, 101, 100, 99, 98, 97, 48, 97, 98, 99, 100]
+            [
+                97,
+                98,
+                99,
+                100,
+                101,
+                102,
+                48,
+                102,
+                101,
+                100,
+                99,
+                98,
+                97,
+                48,
+                97,
+                98,
+                99,
+                100,
+                101,
+                102,
+                48,
+                102,
+                101,
+                100,
+                99,
+                98,
+                97,
+                48,
+                97,
+                98,
+                99,
+                100,
+            ]
         )
         XCTAssertEqual(
             info.webhookSecretBytes(version: newVersion),
             // using the full hex representation
-            [0xab, 0xcd, 0xef, 0x0f, 0xed, 0xcb, 0xa0, 0xab, 0xcd, 0xef, 0x0f, 0xed, 0xcb, 0xa0, 0xab, 0xcd, 0xef, 0x0a, 0xbc, 0xde, 0xf0, 0xfe, 0xdc, 0xba, 0x0a, 0xbc, 0xde, 0xf0, 0xfe, 0xdc, 0xba]
+            [
+                0xAB,
+                0xCD,
+                0xEF,
+                0x0F,
+                0xED,
+                0xCB,
+                0xA0,
+                0xAB,
+                0xCD,
+                0xEF,
+                0x0F,
+                0xED,
+                0xCB,
+                0xA0,
+                0xAB,
+                0xCD,
+                0xEF,
+                0x0A,
+                0xBC,
+                0xDE,
+                0xF0,
+                0xFE,
+                0xDC,
+                0xBA,
+                0x0A,
+                0xBC,
+                0xDE,
+                0xF0,
+                0xFE,
+                0xDC,
+                0xBA,
+            ]
         )
     }
 }

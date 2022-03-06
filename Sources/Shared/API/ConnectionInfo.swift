@@ -248,7 +248,11 @@ public struct ConnectionInfo: Codable, Equatable {
         }
 
         guard version >= .fullWebhookSecretKey else {
-            if let end = webhookSecret.index(webhookSecret.startIndex, offsetBy: 32, limitedBy: webhookSecret.endIndex) {
+            if let end = webhookSecret.index(
+                webhookSecret.startIndex,
+                offsetBy: 32,
+                limitedBy: webhookSecret.endIndex
+            ) {
                 return .init(webhookSecret.utf8[webhookSecret.startIndex ..< end])
             } else {
                 return nil
