@@ -56,7 +56,7 @@ public struct WebhookRequest: ImmutableMappable {
     }
 
     private func encryptedData(server: Server) -> String? {
-        guard let secret = server.info.connection.webhookSecretBytes else {
+        guard let secret = server.info.connection.webhookSecretBytes(version: server.info.version) else {
             return nil
         }
 
