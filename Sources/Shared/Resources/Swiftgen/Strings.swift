@@ -1286,6 +1286,10 @@ public enum L10n {
         /// Device Name
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.device_name.title") }
       }
+      public enum FullScreen {
+        /// Full Screen
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.full_screen.title") }
+      }
       public enum LaunchOnLogin {
         /// Launch App on Login
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.launch_on_login.title") }
