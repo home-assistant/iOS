@@ -453,7 +453,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
     @objc
     func getInfoAction(_ sender: Any) {
-        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
+        openURLInBrowser(URL(string: "https://companion.home-assistant.io/docs/apple-watch/")!, self)
     }
 
     enum RenderValueError: LocalizedError {

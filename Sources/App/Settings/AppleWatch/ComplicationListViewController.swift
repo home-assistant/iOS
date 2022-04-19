@@ -45,7 +45,7 @@ class ComplicationListViewController: HAFormViewController {
         }
 
             <<< LearnMoreButtonRow {
-                $0.value = URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!
+                $0.value = URL(string: "https://companion.home-assistant.io/docs/apple-watch/")!
             }
 
         form +++ Section(
