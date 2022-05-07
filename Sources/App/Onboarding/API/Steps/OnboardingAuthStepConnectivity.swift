@@ -43,6 +43,8 @@ struct OnboardingAuthStepConnectivity: OnboardingAuthPreStep {
                             return nil
                         }
 
+                        Current.Log.error("received SSL error: \((error as NSError).debugDescription)")
+
                         if let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? Error {
                             // higher-level error is like:
                             // > “fake.example.com” certificate is not trusted
