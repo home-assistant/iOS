@@ -29,7 +29,30 @@ struct OnboardingAuthStepConnectivity: OnboardingAuthPreStep {
 
                 let errorKind: OnboardingAuthError.ErrorKind? = {
                     switch challenge.protectionSpace.authenticationMethod {
-                    case NSURLAuthenticationMethodServerTrust: return nil
+                    case NSURLAuthenticationMethodServerTrust:
+                        guard let secTrust = challenge.protectionSpace.serverTrust else {
+                            // weird stuff is abound
+                            return nil
+                        }
+
+                        var error: CFError?
+                        let isTrusted = SecTrustEvaluateWithError(secTrust, &error)
+
+                        guard !isTrusted, let error = error as Error? else {
+                            // continue normally
+                            return nil
+                        }
+
+                        if let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? Error {
+                            // higher-level error is like:
+                            // > “fake.example.com” certificate is not trusted
+                            // underlying error is like:
+                            // > “fake.example.com” has errors: SSL hostname does not match name(s) in certificate,
+                            // > Extended key usage does not match certificate usage, Root is not trusted;
+                            return .sslUntrusted(underlying)
+                        } else {
+                            return .sslUntrusted(error)
+                        }
                     case NSURLAuthenticationMethodHTTPBasic: return .basicAuth
                     case NSURLAuthenticationMethodClientCertificate:
                         clientCertificateErrorOccurred = true
