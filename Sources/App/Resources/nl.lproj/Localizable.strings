@@ -201,7 +201,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.connect.title" = "Verbinden met %@";
 "onboarding.connection_error.more_info_button" = "Meer informatie";
 "onboarding.connection_error.title" = "Kan geen verbinding maken";
-"onboarding.connection_test_result.authentication_unsupported.description" = "Verificatietype wordt niet ondersteund %@ .";
+"onboarding.connection_test_result.authentication_unsupported.description" = "Verificatietype wordt niet ondersteund %@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP-basisverificatie wordt niet ondersteund.";
 "onboarding.connection_test_result.client_certificate.description" = "Verificatie van cliëntcertificaten wordt niet ondersteund.";
 "onboarding.connection_test_result.error_code" = "Foutcode:";
@@ -271,7 +271,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.external_base_url.title" = "Externe URL";
 "settings.connection_section.header" = "Verbinding";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
-"settings.connection_section.internal_base_url.placeholder" = "bijv. http: //homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "bijv. http://homeassistant.local:8123/";
 "settings.connection_section.internal_base_url.title" = "Interne URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Nieuw hardware-adres toevoegen";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Interne URL wordt gebruikt als de primaire netwerkinterface een MAC-adres heeft dat overeenkomt met een van deze hardwareadressen.";
@@ -386,6 +386,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.app_icon.enum.white" = "Wit";
 "settings_details.general.app_icon.title" = "App Icoon";
 "settings_details.general.device_name.title" = "Apparaatnaam";
+"settings_details.general.full_screen.title" = "Volledig scherm";
 "settings_details.general.launch_on_login.title" = "Start de app bij het inloggen";
 "settings_details.general.menu_bar_text.title" = "Menubalk Tekst";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

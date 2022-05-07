@@ -36,7 +36,7 @@
 "alerts.deprecations.notification_category.message" = "Sie müssen zu Aktionen migrieren, die in der Benachrichtigung selbst vor %1$@ definiert sind.";
 "alerts.deprecations.notification_category.title" = "Benachrichtigungskategorien sind veraltet";
 "alerts.open_url_from_deep_link.message" = "Soll der Link (%@) aus der Mitteilung wirklich geöffnet werden?";
-"alerts.open_url_from_notification.message" = "Adresse aus der Notifikation (%@) öffnen?";
+"alerts.open_url_from_notification.message" = "Adresse aus der Benachrichtigung (%@) öffnen?";
 "alerts.open_url_from_notification.title" = "Adresse öffnen?";
 "alerts.prompt.cancel" = "Abbrechen";
 "alerts.prompt.ok" = "OK";
@@ -221,7 +221,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.change_later_note" = "Diese Berechtigung kann später in den Einstellungen geändert werden";
 "onboarding.permissions.focus.bullet.automations" = "Fokus basierte Automatisierungen";
 "onboarding.permissions.focus.bullet.instant" = "Sofortige Updates, wenn sich der Status ändert";
-"onboarding.permissions.focus.description" = "Allow whether you are in focus mode to be sent to Home Assistant";
+"onboarding.permissions.focus.description" = "Erlauben, dass der Fokusmodus an Home Assistant gesendet werden darf.";
 "onboarding.permissions.focus.grant_description" = "Erlauben Sie die Fokussierungserlaubnis, um Sensoren für Ihren Fokussierungsstatus zu erstellen, auch bekannt als \"Nicht stören\".";
 "onboarding.permissions.focus.title" = "Fokus";
 "onboarding.permissions.location.bullet.automations" = "Anwesenheitsbasierte Automatisierungen";
@@ -386,6 +386,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings_details.general.app_icon.enum.white" = "Weiß";
 "settings_details.general.app_icon.title" = "App-Symbol";
 "settings_details.general.device_name.title" = "Gerätename";
+"settings_details.general.full_screen.title" = "Vollbild";
 "settings_details.general.launch_on_login.title" = "App bei Login starten";
 "settings_details.general.menu_bar_text.title" = "Menüleisten Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
@@ -515,7 +516,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings_sensors.detail.icon" = "Symbol";
 "settings_sensors.detail.state" = "Zustand";
 "settings_sensors.disabled_state_replacement" = "Deaktiviert";
-"settings_sensors.focus_permission.title" = "Focus Permission";
+"settings_sensors.focus_permission.title" = "Zugriff auf Fokus";
 "settings_sensors.last_updated.footer" = "Zuletzt aktualisiert %@";
 "settings_sensors.loading_error.title" = "Fehler beim Laden der Sensoren";
 "settings_sensors.periodic_update.description" = "Wenn diese Option aktiviert ist, werden diese Sensoren mit dieser Frequenz aktualisiert, während die App im Vordergrund geöffnet ist.";

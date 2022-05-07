@@ -269,7 +269,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.external_base_url.title" = "Внешний адрес";
 "settings.connection_section.header" = "Подключение";
 "settings.connection_section.home_assistant_cloud.title" = "Облако Home Assistant";
-"settings.connection_section.internal_base_url.placeholder" = "Например http: //homeassistant.local: 8123";
+"settings.connection_section.internal_base_url.placeholder" = "Например http://homeassistant.local:8123/";
 "settings.connection_section.internal_base_url.title" = "Внутренний адрес";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Add New Hardware Address";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
@@ -384,6 +384,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "Белый";
 "settings_details.general.app_icon.title" = "Значок приложения";
 "settings_details.general.device_name.title" = "Название устройства";
+"settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.menu_bar_text.title" = "Текст панели меню";
 "settings_details.general.open_in_browser.chrome" = "Гугл Хром";

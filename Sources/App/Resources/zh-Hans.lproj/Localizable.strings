@@ -383,6 +383,7 @@
 "settings_details.general.app_icon.enum.white" = "白色";
 "settings_details.general.app_icon.title" = "应用图标";
 "settings_details.general.device_name.title" = "设备名称";
+"settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "登录时启动应用程序";
 "settings_details.general.menu_bar_text.title" = "菜单栏文本";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

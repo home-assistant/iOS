@@ -182,7 +182,7 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "notifications_configurator.category.rows.actions.footer" = "Kategorioissa voi olla enintään 10 toimintoa.";
 "notifications_configurator.category.rows.actions.header" = "Toiminnot";
 "notifications_configurator.category.rows.category_summary.default" = "%%u ilmoitusta kohteessa %%@";
-"notifications_configurator.category.rows.category_summary.footer" = "Muotomerkkijono, jota käytetään, kun järjestelmä ryhmittelee luokkailmoituksia. Voit halutessasi käyttää '%%u' näyttääksesi ilmoitusten määrän ja  '%%@', jos haluat näyttää push-hyötykuormalla annettua yhteenvetoargumenttia.";
+"notifications_configurator.category.rows.category_summary.footer" = "Muotomerkkijono, jota käytetään, kun järjestelmä ryhmittelee luokkailmoituksia. Voit halutessasi käyttää '%%@' näyttääksesi ilmoitusten määrän ja  '%%u', jos haluat näyttää push-hyötykuormalla annettua yhteenvetoargumenttia.";
 "notifications_configurator.category.rows.category_summary.header" = "Luokan yhteenveto";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u  ilmoitusta";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Tämä teksti näkyy vain, jos Ilmoitusten esikatselut on piilotettu. Käytä '%%u'-tunnusta niiden viestien määrälle, joilla on sama säikeentunnus.";
@@ -201,7 +201,7 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.connect.title" = "Muodostetaan yhteyttä kohteeseen %@";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.connection_error.title" = "Failed to Connect";
-"onboarding.connection_test_result.authentication_unsupported.description" = "Todennustapa ei tueta%@.";
+"onboarding.connection_test_result.authentication_unsupported.description" = "Todennustapa ei tueta %@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP-perustodennus ei ole tuettu.";
 "onboarding.connection_test_result.client_certificate.description" = "Client Certificate Authentication ei ole tuettu.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
@@ -386,6 +386,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "Valkoinen";
 "settings_details.general.app_icon.title" = "Sovelluksen kuvake";
 "settings_details.general.device_name.title" = "Laitteen nimi";
+"settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Käynnistä sovellus kirjautumisen yhteydessä";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
@@ -483,7 +484,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.notifications.sounds.error.cant_get_file_sharing_path" = "Ei ole pääsyä äänitiedostojen jakemishakemistoon: %@";
 "settings_details.notifications.sounds.error.conversion_failed" = "Ääntä ei voitu muuntaa muotoon PCM 32 bit 48khz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Tiedoston kopiointi epäonnistui: %@";
-"settings_details.notifications.sounds.error.delete_error" = "Tiedostoa ei voitu poistaa:%@";
+"settings_details.notifications.sounds.error.delete_error" = "Tiedostoa ei voitu poistaa: %@";
 "settings_details.notifications.sounds.footer" = "Built-in, system, or custom sounds can be used with your notifications.";
 "settings_details.notifications.sounds.import_custom" = "Tuo mukautettu ääni";
 "settings_details.notifications.sounds.import_file_sharing" = "Tuo ääniä iTunes-tiedojakamisesta";

@@ -23,7 +23,7 @@
 "FBQiVD" = "Rufe einen Dienst in der Home Assistant-Instanz auf";
 "FZ9qkT" = "Render Template";
 "FtQqoU" = "Position aktualisiert";
-"HCM8Oe" = "Fire ${eventName} with data";
+"HCM8Oe" = "Ereignis ${eventName} mit Daten auslösen";
 "HSLcG7" = "Event Name";
 "HoH8wg" = "Aktionen";
 "J3qct4" = "Server";
@@ -42,11 +42,11 @@
 "NdG9Jz" = "Rendert die Home Assistant Vorlage";
 "NsbUTz" = "Kamera-Entität";
 "Q2Qp4a" = "Aktion";
-"QVD2lM" = "Service Data";
+"QVD2lM" = "Servicedaten";
 "QmGpOH" = "Fehler";
 "RCQAlr" = "Bild von ${cameraID} abrufen";
 "RMQY3r" = "Standort an Home Assistant senden";
-"RsOw3P" = "Successfully rendered template";
+"RsOw3P" = "Vorlage erfolgreich gerendert";
 "T06Fka" = "Öffnen Sie eine Seite im Frontend";
 "U4u9Xz" = "Es gibt ${count} Optionen, die mit ‘${server}’ übereinstimmen.";
 "ULka1b" = "Aktionen";
@@ -104,7 +104,7 @@
 "pQhTjo" = "Fehler: Home Assistant ist zurzeit nicht verfügbar.";
 "pjQR7t" = "Sensoren aktualisieren";
 "qYpzmu" = "Welche Seiten?";
-"qayMH6" = "Call Service";
+"qayMH6" = "Dienst aufrufen";
 "qzje4k" = "Fehlgeschlagen: ${error}";
 "r32M7N" = "Fehlgeschlagen: ${error}";
 "r6LXFe" = "Fehlgeschlagen";

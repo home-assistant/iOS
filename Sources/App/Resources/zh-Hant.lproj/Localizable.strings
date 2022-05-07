@@ -96,7 +96,7 @@
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistant 版次（%@）太舊，必須更新至最新 %@ 版方能使用應用程式。";
 "ha_api.api_error.not_configured" = "HA API 尚未設定";
 "ha_api.api_error.unacceptable_status_code" = "不可接受狀態代碼 %1$li。";
-"ha_api.api_error.unexpected_type" = "接收回應為 %1$@ 類型之結果，但預期為 %2$@ 類型。";
+"ha_api.api_error.unexpected_type" = "接收回應為 %1$@ 類別之結果，但預期為 %2$@ 類別。";
 "ha_api.api_error.unknown" = "發生未知錯誤。";
 "ha_api.api_error.update_not_possible" = "動作無法執行。";
 "help_label" = "說明";
@@ -177,7 +177,7 @@
 "notifications_configurator.action.text_input.title" = "文字輸入";
 "notifications_configurator.category.example_call.title" = "服務執行範例";
 "notifications_configurator.category.navigation_bar.title" = "類別編輯器";
-"notifications_configurator.category.preview_notification.body" = "這是通知類型 %@ 的一則測試通知訊息";
+"notifications_configurator.category.preview_notification.body" = "這是通知類別 %@ 的一則測試通知訊息";
 "notifications_configurator.category.preview_notification.title" = "測試通知";
 "notifications_configurator.category.rows.actions.footer" = "Categories 最多可包含 10 個 Actions 參數。";
 "notifications_configurator.category.rows.actions.header" = "Actions";
@@ -201,7 +201,7 @@
 "onboarding.connect.title" = "連線至%@";
 "onboarding.connection_error.more_info_button" = "更多資訊";
 "onboarding.connection_error.title" = "連線失敗";
-"onboarding.connection_test_result.authentication_unsupported.description" = "不支援認證類型%@。";
+"onboarding.connection_test_result.authentication_unsupported.description" = "不支援認證類別%@。";
 "onboarding.connection_test_result.basic_auth.description" = "不支援 HTTP 基本驗證。";
 "onboarding.connection_test_result.client_certificate.description" = "不支援客戶端認證。";
 "onboarding.connection_test_result.error_code" = "錯誤代碼：";
@@ -230,7 +230,7 @@
 "onboarding.permissions.location.description" = "開啟定位服務以允許根據所在位置執行自動化";
 "onboarding.permissions.location.grant_description" = "允許定位權限以新增裝置 device_tracker 追蹤。";
 "onboarding.permissions.location.title" = "定位服務";
-"onboarding.permissions.motion.bullet.activity" = "目前活動類型感測器";
+"onboarding.permissions.motion.bullet.activity" = "目前活動類別感測器";
 "onboarding.permissions.motion.bullet.distance" = "移動距離感測器";
 "onboarding.permissions.motion.bullet.steps" = "計步感測器";
 "onboarding.permissions.motion.description" = "允許動作與健身活動資料傳送至 Home Assistant";
@@ -386,6 +386,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.general.app_icon.enum.white" = "白色";
 "settings_details.general.app_icon.title" = "App 圖示";
 "settings_details.general.device_name.title" = "裝置名稱";
+"settings_details.general.full_screen.title" = "全螢幕";
 "settings_details.general.launch_on_login.title" = "登入時啟動 App";
 "settings_details.general.menu_bar_text.title" = "選單列文字";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
@@ -563,7 +564,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.configurator.list.manual_updates.state.not_installed" = "未安裝";
 "watch.configurator.list.manual_updates.state.not_paired" = "無裝置";
 "watch.configurator.list.manual_updates.title" = "手動更新";
-"watch.configurator.new.multiple_complication_info" = "使用現有相同類型新增另一個複雜功能需要 watchOS 7 或更新版本。";
+"watch.configurator.new.multiple_complication_info" = "使用現有相同類別新增另一個複雜功能需要 watchOS 7 或更新版本。";
 "watch.configurator.new.title" = "新增複雜功能";
 "watch.configurator.preview_error.not_number" = "預期為數字。但收到%1$@：'%2$@'";
 "watch.configurator.preview_error.out_of_range" = "預期為介於 0.0 至 1.0 間的數字。但收到 %1$f";

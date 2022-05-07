@@ -1,5 +1,5 @@
 "panel::calendar" = "Календарь";
-"panel::config" = "Конфигурация";
+"panel::config" = "Настройки";
 "panel::developer_tools" = "Панель разработчика";
 "panel::energy" = "Энергия";
 "panel::history" = "История";

@@ -6,7 +6,7 @@
 "panel::logbook" = "Logbog";
 "panel::mailbox" = "Postkasse";
 "panel::map" = "Kort";
-"panel::media_browser" = "Mediebrowser";
+"panel::media_browser" = "Medier";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Indkøbsliste";
 "panel::states" = "Oversigt";
