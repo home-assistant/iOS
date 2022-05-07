@@ -9,6 +9,8 @@ def support_modules
   pod 'SwiftFormat/CLI'
 end
 
+system('./Tools/BuildMaterialDesignIconsFont.sh')
+
 if ENV['ONLY_SUPPORT_MODULES']
   # some of our CI scripts only need e.g. SwiftLint
   # this allows us to skip a lot of installation when unnecessary
@@ -20,8 +22,6 @@ if ENV['ONLY_SUPPORT_MODULES']
 end
 
 plugin 'cocoapods-acknowledgements'
-
-system('./Tools/BuildMaterialDesignIconsFont.sh')
 
 # alamofire can be upgraded when Apple stops breaking iOS 12 builds when Concurrency is referenced
 pod 'Alamofire', '5.4.4'
