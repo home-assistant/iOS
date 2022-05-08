@@ -386,7 +386,21 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     public func open(inline url: URL) {
         loadViewIfNeeded()
-        webView.load(URLRequest(url: url))
+
+        // these paths do not show frontend pages, and so we don't want to display them in our webview
+        // otherwise the user will get stuck. e.g. /api is loaded by frigate to show video clips and images
+        let ignoredPaths = [
+            "/api",
+            "/static",
+            "/hacsfiles",
+            "/local",
+        ]
+
+        if ignoredPaths.allSatisfy({ !url.path.hasPrefix($0) }) {
+            webView.load(URLRequest(url: url))
+        } else {
+            openURLInBrowser(url, self)
+        }
     }
 
     private var lastNavigationWasServerError = false
