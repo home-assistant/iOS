@@ -261,7 +261,7 @@
 "settings.connection_section.add_server" = "Προσθήκη διακομιστή";
 "settings.connection_section.all_servers" = "Όλοι οι διακομιστές";
 "settings.connection_section.cloud_overrides_external" = "Κατά τη σύνδεση μέσω Cloud, το εξωτερικό URL δεν θα χρησιμοποιηθεί. Δεν χρειάζεται να διαμορφώσετε κανένα, εκτός εάν θέλετε να απενεργοποιήσετε το Cloud.";
-"settings.connection_section.connecting_via" = "Συνδεδεμένος μέσω";
+"settings.connection_section.connecting_via" = "Συνδεδεμένο μέσω";
 "settings.connection_section.delete_server.message" = "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτόν τον διακομιστή;";
 "settings.connection_section.delete_server.progress" = "Διαγραφή διακομιστή…";
 "settings.connection_section.delete_server.title" = "Διαγραφή διακομιστή";
@@ -271,7 +271,7 @@
 "settings.connection_section.external_base_url.title" = "Εξωτερική διεύθυνση URL";
 "settings.connection_section.header" = "Σύνδεση";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
-"settings.connection_section.internal_base_url.placeholder" = "π.χ. http: //homeassistant.local: 8123";
+"settings.connection_section.internal_base_url.placeholder" = "π.χ. http://homeassistant.local:8123";
 "settings.connection_section.internal_base_url.title" = "Εσωτερική διεύθυνση URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Προσθήκη νέας διεύθυνσης υλικού";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Η εσωτερική διεύθυνση URL θα χρησιμοποιείται όταν η κύρια διασύνδεση δικτύου έχει διεύθυνση MAC που ταιριάζει με μία από αυτές τις διευθύνσεις υλικού.";
@@ -285,12 +285,12 @@
 "settings.connection_section.location_send_type.setting.exact" = "Ακριβής";
 "settings.connection_section.location_send_type.setting.never" = "Ποτέ";
 "settings.connection_section.location_send_type.setting.zone_only" = "Μόνο όνομα ζώνης";
-"settings.connection_section.location_send_type.title" = "Η τοποθεσία εστάλη";
-"settings.connection_section.logged_in_as" = "Συνδεδεμένος ως";
+"settings.connection_section.location_send_type.title" = "Αποστολή τοποθεσίας";
+"settings.connection_section.logged_in_as" = "Συνδεδεμένο ως";
 "settings.connection_section.remote_ui_url.title" = "Απομακρυσμένη διεύθυνση URL διεπαφής χρήστη";
 "settings.connection_section.sensor_send_type.setting.all" = "Όλα";
 "settings.connection_section.sensor_send_type.setting.none" = "Κανένα";
-"settings.connection_section.sensor_send_type.title" = "Αισθητήρες που απεστάλησαν";
+"settings.connection_section.sensor_send_type.title" = "Αποστολή αισθητήρων";
 "settings.connection_section.servers" = "Διακομιστές";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
 "settings.connection_section.ssid_permission_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
@@ -386,6 +386,7 @@
 "settings_details.general.app_icon.enum.white" = "Λευκό";
 "settings_details.general.app_icon.title" = "Εικονίδιο εφαρμογής";
 "settings_details.general.device_name.title" = "Όνομα συσκευής";
+"settings_details.general.full_screen.title" = "Πλήρης οθόνη";
 "settings_details.general.launch_on_login.title" = "Εκκίνηση εφαρμογής κατά τη σύνδεση";
 "settings_details.general.menu_bar_text.title" = "Κείμενο Γραμμής Μενού";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

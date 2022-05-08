@@ -288,8 +288,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Logged in as";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
-"settings.connection_section.sensor_send_type.setting.all" = "All";
-"settings.connection_section.sensor_send_type.setting.none" = "None";
+"settings.connection_section.sensor_send_type.setting.all" = "모두";
+"settings.connection_section.sensor_send_type.setting.none" = "없음";
 "settings.connection_section.sensor_send_type.title" = "Sensors Sent";
 "settings.connection_section.servers" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
@@ -386,6 +386,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "White";
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.general.device_name.title" = "Device Name";
+"settings_details.general.full_screen.title" = "전체 화면";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

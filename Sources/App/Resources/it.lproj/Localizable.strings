@@ -386,6 +386,7 @@
 "settings_details.general.app_icon.enum.white" = "Bianca";
 "settings_details.general.app_icon.title" = "Scegli l'icona dell'App";
 "settings_details.general.device_name.title" = "Nome del dispositivo";
+"settings_details.general.full_screen.title" = "Schermo intero";
 "settings_details.general.launch_on_login.title" = "Avvia l'app all'accesso";
 "settings_details.general.menu_bar_text.title" = "Testo barra dei menu";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

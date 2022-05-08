@@ -1,7 +1,7 @@
 "NFCReaderUsageDescription" = "Odczytywanie i zapisywanie tagów NFC umożliwia wyzwalanie zdarzeń.";
 "NSCameraUsageDescription" = "Zrób zdjęcia i wyślij je do serwera Home Assistant.";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
-"NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
+"NSCrossWebsiteTrackingUsageDescription" = "Opcjonalnie włącz śledzenie w wielu witrynach, jeśli wymaga tego Twoja konfiguracja.";
+"NSFocusStatusUsageDescription" = "Zgłoś swój stan skupienia jako czujnik.";
 "NSLocalNetworkUsageDescription" = "Zlokalizuj i komunikuj się z Twoją instancją Home Assistant'a.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Zalecamy wybranie opcji „Zawsze”, aby uzyskać najlepszą jakość lokalizacji. Wybranie opcji „Gdy używam aplikacji” spowoduje wyłączenie iBeacons, geofence, aktualizacji lokalizacji w tle i dokładnego raportowania.";
 "NSLocationAlwaysUsageDescription" = "Zawsze potrzebujemy dostępu do Twojej lokalizacji, aby korzystać z takich funkcji jak iBeacons, geofence, aktualizacje lokalizacji w tle i dokładne raportowanie lokalizacji.";

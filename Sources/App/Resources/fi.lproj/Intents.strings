@@ -1,8 +1,8 @@
 "0aqrcy" = "Failed: ${error}";
-"2KWKqM" = "Failed: Home Assistant is not reachable";
+"2KWKqM" = "Epäonnistui: Home Assistant ei ole saavutettavissa";
 "2b0Uo4" = "Service";
 "3jKamg" = "{{ now() }}";
-"4fFx9y" = "Updated";
+"4fFx9y" = "Päivitetty";
 "4tpAXn" = "Just to confirm, you wanted ‘${server}’?";
 "5ZzwZD" = "Failed: Home Assistant is not currently reachable";
 "5bVvn0" = "Failed to update location: ${error}";

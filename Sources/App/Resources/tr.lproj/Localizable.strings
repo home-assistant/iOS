@@ -386,6 +386,7 @@
 "settings_details.general.app_icon.enum.white" = "Beyaz";
 "settings_details.general.app_icon.title" = "Uygulama Simgesi";
 "settings_details.general.device_name.title" = "Cihaz adı";
+"settings_details.general.full_screen.title" = "Tam ekran";
 "settings_details.general.launch_on_login.title" = "Girişte Uygulamayı Başlat";
 "settings_details.general.menu_bar_text.title" = "Menü Çubuğu Metni";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

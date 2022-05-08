@@ -1,12 +1,12 @@
 "panel::calendar" = "캘린더";
-"panel::config" = "구성하기";
+"panel::config" = "설정";
 "panel::developer_tools" = "개발자 도구";
 "panel::energy" = "에너지";
 "panel::history" = "기록 그래프";
 "panel::logbook" = "로그북";
 "panel::mailbox" = "메일함";
 "panel::map" = "지도";
-"panel::media_browser" = "미디어 브라우저";
+"panel::media_browser" = "미디어";
 "panel::profile" = "프로필";
 "panel::shopping_list" = "장보기 목록";
 "panel::states" = "둘러보기";

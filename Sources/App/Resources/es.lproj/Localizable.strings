@@ -201,7 +201,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connect.title" = "Conectando a %@";
 "onboarding.connection_error.more_info_button" = "More Info";
 "onboarding.connection_error.title" = "Failed to Connect";
-"onboarding.connection_test_result.authentication_unsupported.description" = "El tipo de autenticación no es compatible %@ .";
+"onboarding.connection_test_result.authentication_unsupported.description" = "El tipo de autenticación no es compatible %@.";
 "onboarding.connection_test_result.basic_auth.description" = "La autenticación básica HTTP no es compatible.";
 "onboarding.connection_test_result.client_certificate.description" = "La autenticación de certificado de cliente no es compatible.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
@@ -386,6 +386,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "Blanco";
 "settings_details.general.app_icon.title" = "Icono de la aplicación";
 "settings_details.general.device_name.title" = "Nombre del dispositivo";
+"settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Iniciar aplicación al iniciar sesión";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

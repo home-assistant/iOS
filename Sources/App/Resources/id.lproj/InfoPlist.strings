@@ -3,12 +3,12 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Aktifkan pelacakan lintas situs web opsional jika konfigurasi Anda memerlukannya.";
 "NSFocusStatusUsageDescription" = "Laporkan status fokus Anda sebagai sensor.";
 "NSLocalNetworkUsageDescription" = "Temukan dan terhubung dengan instans Home Assistant Anda.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Kami sarankan untuk memilih \"Selalu Izinkan\" untuk pengalaman lokasi terbaik. Memilih \"Hanya Saat Menggunakan Aplikasi\" akan menonaktifkan iBeacon, geofence, pembaruan lokasi latar belakang, dan pelaporan yang akurat.";
+"NSLocationAlwaysUsageDescription" = "Kami selalu membutuhkan akses ke lokasi Anda untuk fitur seperti iBeacon, geofence, pembaruan lokasi latar belakang, dan pelaporan yang akurat.";
 "NSLocationUsageDescription" = "Jika diaktifkan, lokasi perangkat Anda akan dikirim ke server Home Assistant untuk data pelacak perangkat.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationWhenInUseUsageDescription" = "Hanya mengizinkan akses lokasi saat aplikasi sedang digunakan akan menonaktifkan iBeacon, geofences, pembaruan lokasi latar belakang, dan pelaporan yang akurat.";
 "NSMicrophoneUsageDescription" = "Rekam audio menggunakan antarmuka Home Assistant Anda.";
-"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
+"NSMotionUsageDescription" = "Gerakan digunakan untuk meningkatkan pembaruan lokasi dengan jenis gerakan saat ini, serta menyediakan data pedometer dasar.";
 "NSPhotoLibraryAddUsageDescription" = "Akses Perpustakaan Foto diperlukan agar bisa menyimpan foto dari tampilan web.";
 "NSPhotoLibraryUsageDescription" = "Akses Perpustakaan Foto diperlukan agar bisa menyimpan foto dari tampilan web.";
 "NSSiriUsageDescription" = "Kami menggunakan Siri untuk mengizinkan pintasan yang dibuat untuk berinteraksi dengan aplikasi.";

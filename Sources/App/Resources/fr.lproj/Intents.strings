@@ -13,7 +13,7 @@
 "8BMgur" = "Fait";
 "8skKro" = "Quelles actions ?";
 "B4bXyc" = "Fait";
-"BwZv3u" = "Quel serveur?";
+"BwZv3u" = "Quel serveur ?";
 "CmlkE4" = "événement_raccourci";
 "DFWJB8" = "Ouvrir ${page}";
 "DdnZyl" = "Reçu la dernière photo de ${cameraID}.";
@@ -67,10 +67,10 @@
 "cK9jdK" = "Échec : ${error}";
 "cLmTme" = "Action";
 "cuflz3" = "Échec du rendu du modèle, Home Assistant n'est pas accessible pour le moment.";
-"dFHPYK" = "Effectué ${action}";
+"dFHPYK" = "${action} effectuée";
 "eObn2i" = "Page";
 "f1KX0Q" = "Afficher et exécuter des actions";
-"fkQXDn" = "Il existe ${count} options correspondant à \"${action} \".";
+"fkQXDn" = "${count} options correspondent à ‘${action}‘.";
 "flUgtx" = "Quelle action ?";
 "fnz838" = "Capteurs mis à jour";
 "foI0Fv" = "Échec du rendu du modèle, Home Assistant n'est pas accessible pour le moment.";
@@ -88,7 +88,7 @@
 "jWGtvO" = "Il y a ${count} options correspondant à ' ${server} '.";
 "jtqxOg" = "Juste pour confirmer, vous vouliez '${action}' ?";
 "kGB23u" = "Effectuer l'action";
-"l2coEc" = "Quel serveur?";
+"l2coEc" = "Quel serveur ?";
 "lGqSSG" = "Échec de la mise à jour des capteurs.";
 "lNmaCR" = "Modèle";
 "lxHlyQ" = "Déclencher l'événement";
@@ -119,7 +119,7 @@
 "vAIAF2" = "Envoyer une mise à jour du capteur à Home Assistant";
 "vebd70" = "Serveur";
 "wfPQQQ" = "Déclencher un événement dans le bus d'événement d'Home Assistant";
-"xfXG6b" = "Quel serveur?";
+"xfXG6b" = "Quel serveur ?";
 "xhwpj4" = "Terminé !";
 "ypnPyU" = "Effectuer ${action}";
 "yyjTxO" = "Erreur";

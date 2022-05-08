@@ -1,5 +1,5 @@
 "panel::calendar" = "Calendar";
-"panel::config" = "Configuration";
+"panel::config" = "Settings";
 "panel::developer_tools" = "Developer Tools";
 "panel::energy" = "Energy";
 "panel::history" = "History";

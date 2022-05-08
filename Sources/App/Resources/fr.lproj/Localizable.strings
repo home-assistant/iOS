@@ -86,7 +86,7 @@
 "extensions.map.value_missing_or_uncastable.longitude.message" = "La longitude n'a pas été trouvée ou n'a pas pu être convertie en texte !";
 "extensions.notification_content.error.no_entity_id" = "Aucune entity_id trouvée dans la trame !";
 "extensions.notification_content.error.request.auth_failed" = "L'authentification a échoué !";
-"extensions.notification_content.error.request.entity_not_found" = "Entité'%@' introuvable !";
+"extensions.notification_content.error.request.entity_not_found" = "Entité '%@' introuvable !";
 "extensions.notification_content.error.request.hls_unavailable" = "Le flux HLS n'est pas disponible";
 "extensions.notification_content.error.request.other" = "Code de statut non-200 (%li)";
 "ha_api.api_error.cant_build_url" = "Impossible de construire l'URL de l'API";
@@ -386,6 +386,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.app_icon.enum.white" = "Blanc";
 "settings_details.general.app_icon.title" = "Icône de l'application";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
+"settings_details.general.full_screen.title" = "Plein écran";
 "settings_details.general.launch_on_login.title" = "Lancer l'application lors de la connexion";
 "settings_details.general.menu_bar_text.title" = "Texte de la barre de menus";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

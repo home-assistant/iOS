@@ -70,7 +70,7 @@
 "client_events.view.clear" = "Esborrar";
 "client_events.view.clear_confirm.message" = "Això no es pot desfer.";
 "client_events.view.clear_confirm.title" = "Esteu segur que voleu esborrar tots els esdeveniments?";
-"continue_label" = "Continue";
+"continue_label" = "Continua";
 "copy_label" = "Copiar";
 "database.problem.delete" = "Eliminar la base de dades i sortir de l'aplicació";
 "database.problem.quit" = "Surt de l'aplicació";
@@ -100,7 +100,7 @@
 "ha_api.api_error.unknown" = "S'ha produït un error desconegut.";
 "ha_api.api_error.update_not_possible" = "No s'ha pogut realitzar l'operació.";
 "help_label" = "Ajuda";
-"intents.server_required_for_value" = "Select a server before picking this value.";
+"intents.server_required_for_value" = "Seleccioneu un servidor abans d'escollir aquest valor.";
 "location_change_notification.app_shortcut.body" = "Ubicació actualitzada mitjançant drecera d’aplicació";
 "location_change_notification.background_fetch.body" = "Ubicació actual activada en segon pla";
 "location_change_notification.beacon_region_enter.body" = "%@ entrat a través de iBeacon";
@@ -199,8 +199,8 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
 "onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Connectant a %@";
-"onboarding.connection_error.more_info_button" = "More Info";
-"onboarding.connection_error.title" = "Failed to Connect";
+"onboarding.connection_error.more_info_button" = "Més informació";
+"onboarding.connection_error.title" = "No s'ha pogut connectar";
 "onboarding.connection_test_result.authentication_unsupported.description" = "El tipus d'autenticació no és compatible %@.";
 "onboarding.connection_test_result.basic_auth.description" = "L'autenticació bàsica HTTP no és compatible.";
 "onboarding.connection_test_result.client_certificate.description" = "L'autenticació del certificat de client no és compatible.";
@@ -209,13 +209,13 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
 "onboarding.device_name_check.error.rename_action" = "Rename";
 "onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
-"onboarding.manual_setup.connect" = "Connect";
+"onboarding.manual_setup.connect" = "Connecta't";
 "onboarding.manual_setup.couldnt_make_url.message" = "El valor \" %@ \" no és una URL vàlida.";
 "onboarding.manual_setup.couldnt_make_url.title" = "No s'ha pogut crear una URL";
-"onboarding.manual_setup.description" = "The URL of your Home Assistant server. Make sure it includes the protocol and port.";
+"onboarding.manual_setup.description" = "L'adreça URL del servidor Home Assistant. Assegureu-vos que inclou el protocol i el port.";
 "onboarding.manual_setup.no_scheme.message" = "Hauríem d'intentar connectar-nos utilitzant http:// o https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL introduïda sense esquema";
-"onboarding.manual_setup.title" = "Enter URL";
+"onboarding.manual_setup.title" = "Introduïu l'adreça URL";
 "onboarding.permissions.allow" = "Allow";
 "onboarding.permissions.allowed" = "Done";
 "onboarding.permissions.change_later_note" = "You can change this permission later in Settings";
@@ -224,12 +224,12 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.permissions.focus.description" = "Allow whether you are in focus mode to be sent to Home Assistant";
 "onboarding.permissions.focus.grant_description" = "Allow focus permission to create sensors for your focus status, also known as do-not-disturb.";
 "onboarding.permissions.focus.title" = "Focus";
-"onboarding.permissions.location.bullet.automations" = "Presence-based automations";
+"onboarding.permissions.location.bullet.automations" = "Automatismes basats en la presència";
 "onboarding.permissions.location.bullet.history" = "Track location history";
-"onboarding.permissions.location.bullet.wifi" = "Internal URL at home";
-"onboarding.permissions.location.description" = "Enable location services to allow presence detection automations.";
+"onboarding.permissions.location.bullet.wifi" = "URL intern de casa";
+"onboarding.permissions.location.description" = "Activa els serveis d'ubicació per permetre automatitzacions de detecció de presència.";
 "onboarding.permissions.location.grant_description" = "Allow location permission to create a device_tracker for your device.";
-"onboarding.permissions.location.title" = "Location";
+"onboarding.permissions.location.title" = "Ubicació";
 "onboarding.permissions.motion.bullet.activity" = "Sensor for current activity type";
 "onboarding.permissions.motion.bullet.distance" = "Sensor for distance moved";
 "onboarding.permissions.motion.bullet.steps" = "Sensor for step counts";
@@ -238,18 +238,18 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.permissions.motion.title" = "Motion & Pedometer";
 "onboarding.permissions.notification.bullet.alert" = "Get alerted from notifications";
 "onboarding.permissions.notification.bullet.badge" = "Update app icon badge";
-"onboarding.permissions.notification.bullet.commands" = "Send commands to your device";
+"onboarding.permissions.notification.bullet.commands" = "Enviament d'ordres al dispositiu";
 "onboarding.permissions.notification.description" = "Allow push notifications to be sent from your Home Assistant";
 "onboarding.permissions.notification.grant_description" = "Allow notification permission to create a notify service for your device.";
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Discovered: %@";
-"onboarding.scanning.manual" = "Enter Address Manually";
+"onboarding.scanning.manual" = "Introduïu l'adreça manualment";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
-"onboarding.scanning.title" = "Scanning for Servers";
-"onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
+"onboarding.scanning.title" = "S'està cercant servidors";
+"onboarding.welcome.description" = "Aquesta aplicació es connecta al vostre servidor Home Assistant i permet integrar dades sobre tu i el teu telèfon. \
 \
-Home Assistant is free and open source home automation software with a focus on local control and privacy.";
-"onboarding.welcome.title" = "Welcome to Home Assistant %@!";
+Home Assistant és un programari d'automatització de la llar gratuït i de codi obert, centrat en el control local i la privadesa.";
+"onboarding.welcome.title" = "Benvinguts a Home Assistant %@!";
 "open_label" = "Obrir";
 "preview_output" = "Previsualització de la sortida";
 "requires_version" = "Requereix %@ o posterior";
@@ -285,7 +285,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Mai";
 "settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
-"settings.connection_section.location_send_type.title" = "Location Sent";
+"settings.connection_section.location_send_type.title" = "Ubicació enviada";
 "settings.connection_section.logged_in_as" = "Sessió iniciada com";
 "settings.connection_section.remote_ui_url.title" = "URL UI Remota";
 "settings.connection_section.sensor_send_type.setting.all" = "Tot";
@@ -386,6 +386,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "Blanc";
 "settings_details.general.app_icon.title" = "Icona de l'aplicació";
 "settings_details.general.device_name.title" = "Nom del dispositiu";
+"settings_details.general.full_screen.title" = "Pantalla completa";
 "settings_details.general.launch_on_login.title" = "Launch App on Login";
 "settings_details.general.menu_bar_text.title" = "Text de la barra de menús";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
