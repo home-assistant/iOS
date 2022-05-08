@@ -157,7 +157,7 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
             }
 
             XCTAssertThrowsError(try hang(step.perform(point: .beforeAuth))) { error in
-                XCTAssertEqual((error as? OnboardingAuthError)?.kind, .sslUntrusted(URLError(code)))
+                XCTAssertEqual((error as? OnboardingAuthError)?.kind, .sslUntrusted([URLError(code)]))
             }
         }
     }
