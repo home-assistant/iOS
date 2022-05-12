@@ -1,12 +1,9 @@
 name: Push Deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'The tag to give the image'
-        required: true 
-        type: string
+  release:
+    types: 
+      - published
 
 concurrency:
   group: '${{ github.workflow }}'
@@ -26,9 +23,15 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get version number
+        id: version
+        run: |
+          version=${{ github.ref }}
+          echo "::set-output name=version::$version"
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: ./Sources/PushServer
           push: true
-          tags: "ghcr.io/${{ github.repository_owner }}/ios-pushserver:${{ github.event.inputs.tag }}"
+          tags: "ghcr.io/${{ github.repository_owner }}/ios-pushserver:${{ steps.version.outputs.version }}"
