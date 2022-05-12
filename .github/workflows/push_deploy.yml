@@ -2,7 +2,7 @@ name: Push Deploy
 
 on:
   release:
-    types: 
+    types:
       - published
 
 concurrency:
