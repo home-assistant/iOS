@@ -31,6 +31,4 @@ jobs:
         with:
           context: ./Sources/PushServer
           push: true
-          tags: 
-            - ghcr.io/${{ github.repository_owner }}/ios-pushserver:latest
-            - ghcr.io/${{ github.repository_owner }}/ios-pushserver:${{ inputs.tag }}
+          tags: "ghcr.io/${{ github.repository_owner }}/ios-pushserver:${{ inputs.tag }}"
