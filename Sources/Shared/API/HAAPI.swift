@@ -12,6 +12,28 @@ import Version
 import Reachability
 #endif
 
+final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating {
+    let exceptions: () -> HASecTrustExceptionContainer
+
+    init(server: Server) {
+        self.exceptions = { server.info.connection.secTrustExceptions }
+        super.init(evaluators: [:])
+    }
+
+    init(exceptions: HASecTrustExceptionContainer) {
+        self.exceptions = { exceptions }
+        super.init(evaluators: [:])
+    }
+
+    override func serverTrustEvaluator(forHost host: String) -> ServerTrustEvaluating? {
+        return self
+    }
+
+    func evaluate(_ trust: SecTrust, forHost host: String) throws {
+        try exceptions().evaluate(trust)
+    }
+}
+
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
         case managerNotAvailable
@@ -82,7 +104,8 @@ public class HomeAssistantAPI {
         ))
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
-            interceptor: newInterceptor()
+            interceptor: newInterceptor(),
+            trustManager: newServerTrustManager()
         )
         self.manager = manager
 
@@ -102,7 +125,8 @@ public class HomeAssistantAPI {
     private static func configureSessionManager(
         urlConfig: URLSessionConfiguration = .default,
         delegate: SessionDelegate = SessionDelegate(),
-        interceptor: Interceptor = .init()
+        interceptor: Interceptor = .init(),
+        trustManager: ServerTrustManager? = nil
     ) -> Session {
         let configuration = urlConfig
 
@@ -110,7 +134,12 @@ public class HomeAssistantAPI {
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
-        return Alamofire.Session(configuration: configuration, delegate: delegate, interceptor: interceptor)
+        return Alamofire.Session(
+            configuration: configuration,
+            delegate: delegate,
+            interceptor: interceptor,
+            serverTrustManager: trustManager
+        )
     }
 
     private func newInterceptor() -> Interceptor {
@@ -125,10 +154,15 @@ public class HomeAssistantAPI {
         )
     }
 
+    private func newServerTrustManager() -> ServerTrustManager {
+        return CustomServerTrustManager(server: server)
+    }
+
     public func VideoStreamer() -> MJPEGStreamer {
         MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: MJPEGStreamerSessionDelegate(),
-            interceptor: newInterceptor()
+            interceptor: newInterceptor(),
+            trustManager: newServerTrustManager()
         ))
     }
 

@@ -276,7 +276,7 @@ public class WebhookManager: NSObject {
 
             let promise: Promise<Void>
 
-            if Current.isBackgroundRequestsImmediate() {
+            if Current.isBackgroundRequestsImmediate() || true {
                 promise = sendBackground()
             } else {
                 Current.Log.info("in background, choosing to not use background session")
@@ -534,7 +534,35 @@ extension WebhookManager: URLSessionDelegate {
     }
 }
 
-extension WebhookManager: URLSessionDataDelegate {
+extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
+    public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let secTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        guard SecTrustEvaluateWithError(secTrust, nil) == false else {
+            // no problems with this trust, so no exceptions are needed
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        if let (_, persisted) = responseInfo(from: task),
+           let server = serverCache[persisted.server] ?? Current.servers.server(for: persisted.server) {
+            do {
+                try server.info.connection.secTrustExceptions.evaluate(secTrust)
+                completionHandler(.useCredential, .init(trust: secTrust))
+            } catch {
+                completionHandler(.rejectProtectionSpace, nil)
+            }
+        }
+    }
+
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: dataTask)
         pendingDataForTask[taskKey, default: Data()].append(data)

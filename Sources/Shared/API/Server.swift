@@ -10,6 +10,10 @@ extension Optional: SettingValue {
     public static var defaultSettingValue: Wrapped? { .none }
 }
 
+extension Array: SettingValue where Element: Codable {
+    public static var defaultSettingValue: Array<Element> { [] }
+}
+
 public struct ServerSettingKey<ValueType: SettingValue>: RawRepresentable, Hashable, ExpressibleByStringLiteral {
     public var rawValue: String
     public init(rawValue: String) {
@@ -49,11 +53,35 @@ public enum ServerSensorPrivacy: String, CaseIterable, RawRepresentable, Setting
     }
 }
 
+public struct ServerSecurityException: Codable {
+    private var data: Data
+
+    public init(secTrust: SecTrust) {
+        self.data = SecTrustCopyExceptions(secTrust) as Data
+    }
+
+    public init(data: Data) {
+        self.data = data
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let string = try container.decode(String.self)
+        self.data = Data(base64Encoded: string) ?? Data()
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(data.base64EncodedString())
+    }
+}
+
 public extension ServerSettingKey {
     static var localName: ServerSettingKey<String?> { "local_name" }
     static var overrideDeviceName: ServerSettingKey<String?> { "override_device_name" }
     static var locationPrivacy: ServerSettingKey<ServerLocationPrivacy> { "privacy_location" }
     static var sensorPrivacy: ServerSettingKey<ServerSensorPrivacy> { "privacy_sensor" }
+    static var securityExceptions: ServerSettingKey<[ServerSecurityException]> { "security_exceptions" }
 }
 
 public struct ServerInfo: Codable, Equatable {

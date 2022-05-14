@@ -340,6 +340,8 @@
 		11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
+		11B6774D28303D35006E9B1A /* HASecTrustException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* HASecTrustException.swift */; };
+		11B6774E28303D35006E9B1A /* HASecTrustException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* HASecTrustException.swift */; };
 		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
@@ -1390,6 +1392,7 @@
 		11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandlerFactory.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
+		11B6774C28303D35006E9B1A /* HASecTrustException.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HASecTrustException.swift; sourceTree = "<group>"; };
 		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
 		11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.test.swift; sourceTree = "<group>"; };
 		11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.test.swift; sourceTree = "<group>"; };
@@ -3450,6 +3453,7 @@
 				1120C57E274638330046C38B /* PerServerContainer.swift */,
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
+				11B6774C28303D35006E9B1A /* HASecTrustException.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5450,6 +5454,7 @@
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
+				11B6774E28303D35006E9B1A /* HASecTrustException.swift in Sources */,
 				110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
@@ -5642,6 +5647,7 @@
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
+				11B6774D28303D35006E9B1A /* HASecTrustException.swift in Sources */,
 				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,

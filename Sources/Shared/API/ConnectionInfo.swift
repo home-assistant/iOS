@@ -39,6 +39,8 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    public var secTrustExceptions: HASecTrustExceptionContainer = .init()
+
     public init(
         externalURL: URL?,
         internalURL: URL?,
@@ -48,7 +50,8 @@ public struct ConnectionInfo: Codable, Equatable {
         webhookSecret: String?,
         internalSSIDs: [String]?,
         internalHardwareAddresses: [String]?,
-        isLocalPushEnabled: Bool
+        isLocalPushEnabled: Bool,
+        secTrustExceptions: HASecTrustExceptionContainer
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -59,6 +62,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalSSIDs = internalSSIDs
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
+        self.secTrustExceptions = secTrustExceptions
     }
 
     public init(from decoder: Decoder) throws {
@@ -74,6 +78,7 @@ public struct ConnectionInfo: Codable, Equatable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
+        self.secTrustExceptions = try container.decodeIfPresent(HASecTrustExceptionContainer.self, forKey: .secTrustExceptions) ?? .init()
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {

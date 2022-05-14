@@ -18,8 +18,11 @@ public class AuthenticationAPI {
     }
 
     let server: Server
+    let session: Session
+    
     init(server: Server) {
         self.server = server
+        self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
@@ -29,7 +32,7 @@ public class AuthenticationAPI {
                 route: AuthenticationRoute.refreshToken(token: token),
                 baseURL: server.info.connection.activeURL()
             )
-            let request = Session.default.request(routeInfo)
+            let request = session.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
             request.validateAuth().responseObject(context: context) { (response: DataResponse<TokenInfo, AFError>) in
@@ -50,7 +53,7 @@ public class AuthenticationAPI {
                 route: AuthenticationRoute.revokeToken(token: token),
                 baseURL: server.info.connection.activeURL()
             )
-            let request = Session.default.request(routeInfo)
+            let request = session.request(routeInfo)
 
             request.validateAuth().response { _ in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
@@ -64,14 +67,17 @@ public class AuthenticationAPI {
 
     public static func fetchToken(
         authorizationCode: String,
-        baseURL: URL
+        baseURL: URL,
+        exceptions: HASecTrustExceptionContainer
     ) -> Promise<TokenInfo> {
-        Promise { seal in
+        let session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+
+        return Promise { seal in
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.token(authorizationCode: authorizationCode),
                 baseURL: baseURL
             )
-            let request = Session.default.request(routeInfo)
+            let request = session.request(routeInfo)
 
             request.validateAuth().responseObject { (dataresponse: DataResponse<TokenInfo, AFError>) in
                 switch dataresponse.result {
@@ -80,6 +86,10 @@ public class AuthenticationAPI {
                 case let .success(value):
                     seal.fulfill(value)
                 }
+            }
+        }.ensure {
+            withExtendedLifetime(session) {
+                // keeping session around until we're done
             }
         }
     }
