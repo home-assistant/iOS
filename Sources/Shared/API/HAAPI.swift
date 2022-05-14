@@ -91,10 +91,12 @@ public class HomeAssistantAPI {
                     return try .init(
                         url: server.info.connection.activeURL(),
                         userAgent: HomeAssistantAPI.userAgent,
-                        evaluateCertificate: { secTrust in
-                            Swift.Result<Void, Error> {
-                                try server.info.connection.secTrustExceptions.evaluate(secTrust)
-                            }
+                        evaluateCertificate: { secTrust, completion in
+                            completion(
+                                Swift.Result<Void, Error> {
+                                    try server.info.connection.secTrustExceptions.evaluate(secTrust)
+                                }
+                            )
                         }
                     )
                 } catch {
