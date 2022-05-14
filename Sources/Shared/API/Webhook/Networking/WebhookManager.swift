@@ -213,8 +213,9 @@ public class WebhookManager: NSObject {
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request, server: server)
-                }.get { _, _ in
+                }.get { [self] _, _ in
                     Current.Log.info("sending to \(server.identifier): \(request)")
+                    serverCache[server.identifier] = server
                 }.then(on: dataQueue) { urlRequest, data in
                     self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
                 }
@@ -558,6 +559,22 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
                 try server.info.connection.secTrustExceptions.evaluate(secTrust)
                 completionHandler(.useCredential, .init(trust: secTrust))
             } catch {
+                completionHandler(.rejectProtectionSpace, nil)
+            }
+        } else {
+            // tmp: todo, how do i get a server from this
+            let hasPassing = serverCache.values.contains(where: { server in
+                do {
+                    try server.info.connection.secTrustExceptions.evaluate(secTrust)
+                    return true
+                } catch {
+                    return false
+                }
+            })
+
+            if hasPassing {
+                completionHandler(.useCredential, .init(trust: secTrust))
+            } else {
                 completionHandler(.rejectProtectionSpace, nil)
             }
         }

@@ -407,6 +407,24 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     func webView(
         _ webView: WKWebView,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let secTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        do {
+            try server.info.connection.secTrustExceptions.evaluate(secTrust)
+            completionHandler(.useCredential, .init(trust: secTrust))
+        } catch {
+            completionHandler(.rejectProtectionSpace, nil)
+        }
+    }
+
+    func webView(
+        _ webView: WKWebView,
         createWebViewWith configuration: WKWebViewConfiguration,
         for navigationAction: WKNavigationAction,
         windowFeatures: WKWindowFeatures

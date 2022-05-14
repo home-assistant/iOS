@@ -13,7 +13,7 @@ public struct DiscoveredHomeAssistant: ImmutableMappable {
     public var bonjourName: String?
 
     public init(manualURL: URL, name: String = "Home") {
-        self.version = Version(major: 2021, minor: 9)
+        self.version = Version(major: 2022, minor: 4)
         self.uuid = nil
         self.internalOrExternalURL = manualURL
         self.internalURL = nil

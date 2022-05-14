@@ -88,7 +88,15 @@ public class HomeAssistantAPI {
         self.connection = HAKit.connection(configuration: .init(
             connectionInfo: {
                 do {
-                    return try .init(url: server.info.connection.activeURL(), userAgent: HomeAssistantAPI.userAgent)
+                    return try .init(
+                        url: server.info.connection.activeURL(),
+                        userAgent: HomeAssistantAPI.userAgent,
+                        evaluateCertificate: { secTrust in
+                            Swift.Result<Void, Error> {
+                                try server.info.connection.secTrustExceptions.evaluate(secTrust)
+                            }
+                        }
+                    )
                 } catch {
                     Current.Log.error("couldn't create connection info: \(error)")
                     return nil
