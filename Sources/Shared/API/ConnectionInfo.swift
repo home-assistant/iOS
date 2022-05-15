@@ -40,6 +40,9 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public var secTrustExceptions: HASecTrustExceptionContainer = .init()
+    public func evaluate(_ secTrust: SecTrust) throws {
+        try secTrustExceptions.evaluate(secTrust)
+    }
 
     public init(
         externalURL: URL?,

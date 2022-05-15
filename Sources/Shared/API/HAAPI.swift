@@ -94,7 +94,7 @@ public class HomeAssistantAPI {
                         evaluateCertificate: { secTrust, completion in
                             completion(
                                 Swift.Result<Void, Error> {
-                                    try server.info.connection.secTrustExceptions.evaluate(secTrust)
+                                    try server.info.connection.evaluate(secTrust)
                                 }
                             )
                         }

@@ -416,7 +416,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
 
         do {
-            try server.info.connection.secTrustExceptions.evaluate(secTrust)
+            try server.info.connection.evaluate(secTrust)
             completionHandler(.useCredential, .init(trust: secTrust))
         } catch {
             completionHandler(.rejectProtectionSpace, nil)
