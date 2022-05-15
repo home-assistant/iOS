@@ -96,7 +96,10 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
                     previousFailureCount: 0,
                     failureResponse: nil,
                     error: nil,
-                    sender: FakeURLAuthenticationChallengeSender()
+                    sender: FakeURLAuthenticationChallengeSender(defaultHandling: {
+                        // this is not expected to happen, so error with something obviously incorrect
+                        client.urlProtocol(proto, didFailWithError: URLError(.badServerResponse))
+                    })
                 ))
             }
 
@@ -184,10 +187,12 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
                 Self.finish(authDetails: authDetails, client: client, proto: proto, statusCode: statusCode)
             }
 
+            let response = try XCTUnwrap(HTTPURLResponse(url: authDetails.url, statusCode: statusCode, httpVersion: nil, headerFields: nil))
+
             XCTAssertThrowsError(try hang(step.perform(point: .beforeAuth))) { error in
                 XCTAssertEqual(
                     (error as? OnboardingAuthError)?.kind,
-                    .other(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: statusCode)))
+                    .other(PMKHTTPError.badStatusCode(statusCode, Data(), response))
                 )
             }
         }

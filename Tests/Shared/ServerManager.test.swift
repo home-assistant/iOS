@@ -508,7 +508,8 @@ class ServerManagerTests: XCTestCase {
             webhookSecret: "webhook_secret",
             internalSSIDs: ["internal_ssid"],
             internalHardwareAddresses: ["internal_hardware"],
-            isLocalPushEnabled: true
+            isLocalPushEnabled: true,
+            secTrustExceptions: .init()
         )
 
         let tokenInfo = TokenInfo(

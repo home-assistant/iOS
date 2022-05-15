@@ -299,7 +299,7 @@ public class WebhookManager: NSObject {
 
             let promise: Promise<Void>
 
-            if Current.isBackgroundRequestsImmediate() || true {
+            if Current.isBackgroundRequestsImmediate() {
                 promise = sendBackground()
             } else {
                 Current.Log.info("in background, choosing to not use background session")
@@ -569,35 +569,39 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
         guard let secTrust = challenge.protectionSpace.serverTrust else {
+            Current.Log.error("unknown protection space: \(challenge)")
             completionHandler(.performDefaultHandling, nil)
             return
         }
 
         guard SecTrustEvaluateWithError(secTrust, nil) == false else {
             // no problems with this trust, so no exceptions are needed
+            Current.Log.info("authentication challenge does not require special handling")
             completionHandler(.performDefaultHandling, nil)
             return
         }
 
+        let potentialServer: Server?
+
         if let (_, persisted) = responseInfo(from: task), let server = server(for: persisted) {
+            potentialServer = server
+        } else {
+            let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: task)
+            potentialServer = serverForEphemeralTask[taskKey]
+        }
+
+        if let server = potentialServer {
             do {
                 try server.info.connection.evaluate(secTrust)
+                Current.Log.error("auth challenge succeeded")
                 completionHandler(.useCredential, .init(trust: secTrust))
             } catch {
+                Current.Log.error("failed auth challenge: \(error)")
                 completionHandler(.rejectProtectionSpace, nil)
             }
         } else {
-            let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: task)
-            if let server = serverForEphemeralTask[taskKey] {
-                do {
-                    try server.info.connection.evaluate(secTrust)
-                    completionHandler(.useCredential, .init(trust: secTrust))
-                } catch {
-                    completionHandler(.rejectProtectionSpace, nil)
-                }
-            } else {
-                completionHandler(.performDefaultHandling, nil)
-            }
+            Current.Log.error("couldn't locate server for \(task)")
+            completionHandler(.performDefaultHandling, nil)
         }
     }
 

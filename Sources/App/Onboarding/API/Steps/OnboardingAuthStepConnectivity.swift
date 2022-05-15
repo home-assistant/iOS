@@ -4,7 +4,7 @@ import Shared
 import UIKit
 import QuickLook
 
-class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessionDelegate {
+class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessionTaskDelegate {
     let authDetails: OnboardingAuthDetails
     let sender: UIViewController
 
@@ -18,87 +18,41 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         Set([.beforeAuth])
     }
 
+    private var taskIdentifierToResolver = [Int: Resolver<Void>]()
     var prepareSessionConfiguration: ((URLSessionConfiguration) -> Void)?
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         Current.Log.verbose()
 
         let (promise, resolver) = Promise<Void>.pending()
-        self.pendingResolver = resolver
-
-        performConnection()
+        performConnection(resolver: resolver)
         return promise
-
-
-//        var clientCertificateErrorOccurred: Bool = false
-//
-//        let eventMonitor = with(ClosureEventMonitor()) {
-//            $0.taskDidReceiveChallenge = { _, task, challenge in
-//                Current.Log.verbose(challenge.protectionSpace.authenticationMethod)
-//
-//                let errorKind: OnboardingAuthError.ErrorKind? = {
-//                    switch challenge.protectionSpace.authenticationMethod {
-//                    case NSURLAuthenticationMethodServerTrust:
-//                        guard let secTrust = challenge.protectionSpace.serverTrust else {
-//                            // weird stuff is abound
-//                            return nil
-//                        }
-//
-//                        var error: CFError?
-//                        let isTrusted = SecTrustEvaluateWithError(secTrust, &error)
-//
-//                        guard !isTrusted, let error = error as Error? else {
-//                            // continue normally
-//                            return nil
-//                        }
-//
-//                        Current.Log.error("received SSL error: \((error as NSError).debugDescription)")
-//
-//                        var errors = [Error]()
-//                        errors.append(error)
-//
-//                        if let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? Error {
-//                            // higher-level error is like:
-//                            // > “fake.example.com” certificate is not trusted
-//                            // underlying error is like:
-//                            // > “fake.example.com” has errors: SSL hostname does not match name(s) in certificate,
-//                            // > Extended key usage does not match certificate usage, Root is not trusted;
-//                            errors.append(underlying)
-//                        }
-//
-//                        return .sslUntrusted(errors)
-//                    case NSURLAuthenticationMethodHTTPBasic: return .basicAuth
-//                    case NSURLAuthenticationMethodClientCertificate:
-//                        clientCertificateErrorOccurred = true
-//                        return nil
-//                    default: return .authenticationUnsupported(challenge.protectionSpace.authenticationMethod)
-//                    }
-//                }()
-//
-//                if let errorKind = errorKind {
-//                    resolver.reject(OnboardingAuthError(kind: errorKind, data: nil))
-//                    task.cancel()
-//                }
-//            }
-//        }
-//
-//
-//
-//
-//
-//
-//        return promise
     }
 
-    private func performConnection() {
-        guard let pendingResolver = pendingResolver else { return }
-
+    private func performConnection(resolver: Resolver<Void>) {
         let configuration = URLSessionConfiguration.ephemeral
         prepareSessionConfiguration?(configuration)
-        let session = URLSession(configuration: configuration, delegate: self, delegateQueue: .main)
+        let session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
 
-        session.dataTask(.promise, with: authDetails.url)
+        let (requestPromise, requestResolver) = Promise<(data: Data, response: URLResponse)>.pending()
+
+        let task = session.dataTask(with: authDetails.url) { data, response, error in
+            if let data = data, let response = response {
+                requestResolver.fulfill((data, response))
+            } else {
+                requestResolver.resolve(nil, error)
+            }
+        }
+        taskIdentifierToResolver[task.taskIdentifier] = resolver
+        task.resume()
+
+        requestPromise
             .validate()
+            .ensure {
+                withExtendedLifetime(session) {
+                    // keep the session around
+                }
+            }
             .map { _ in () }
             .recover { [self] error throws -> Void in
                 let kind: OnboardingAuthError.ErrorKind
@@ -111,7 +65,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                     data = nil
                 }
 
-                if clientCertificateErrorOccurred {
+                if clientCertificateErrorOccurred[task.taskIdentifier] == true {
                     kind = .clientCertificateRequired(error)
                 } else if let error = error as? URLError {
                     switch error.code {
@@ -127,18 +81,16 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
 
                 throw OnboardingAuthError(kind: kind, data: data)
             }
-            .pipe(to: pendingResolver.resolve)
+            .pipe(to: resolver.resolve)
     }
 
-    private var clientCertificateErrorOccurred = false
-    private var pendingResolver: Resolver<Void>?
+    private var clientCertificateErrorOccurred = [Int: Bool]()
 
-    private func confirm(secTrust: SecTrust, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        guard let pendingResolver = pendingResolver else {
-            completionHandler(.rejectProtectionSpace, nil)
-            return
-        }
-
+    private func confirm(
+        secTrust: SecTrust,
+        resolver: Resolver<Void>,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
         do {
             try authDetails.exceptions.evaluate(secTrust)
             completionHandler(.performDefaultHandling, nil)
@@ -160,11 +112,11 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             let alert = UIAlertController(title: "Could not make secure connection", message: errors.map { $0.localizedDescription }.joined(separator: "\n\n"), preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Trust Certificate", style: .destructive, handler: { [self] _ in
                 authDetails.exceptions.add(for: secTrust)
-                confirm(secTrust: secTrust, completionHandler: completionHandler)
+                confirm(secTrust: secTrust, resolver: resolver, completionHandler: completionHandler)
             }))
 
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-                pendingResolver.reject(OnboardingAuthError(kind: .sslUntrusted(errors)))
+                resolver.reject(OnboardingAuthError(kind: .sslUntrusted(errors)))
                 completionHandler(.rejectProtectionSpace, nil)
             }))
 
@@ -174,10 +126,11 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
 
     func urlSession(
         _ session: URLSession,
+        task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard let pendingResolver = pendingResolver else {
+        guard let pendingResolver = taskIdentifierToResolver[task.taskIdentifier] else {
             completionHandler(.rejectProtectionSpace, nil)
             return
         }
@@ -189,12 +142,12 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 return
             }
 
-            confirm(secTrust: secTrust, completionHandler: completionHandler)
+            confirm(secTrust: secTrust, resolver: pendingResolver, completionHandler: completionHandler)
         case NSURLAuthenticationMethodHTTPBasic:
             pendingResolver.reject(OnboardingAuthError(kind: .basicAuth))
             completionHandler(.rejectProtectionSpace, nil)
         case NSURLAuthenticationMethodClientCertificate:
-            clientCertificateErrorOccurred = true
+            clientCertificateErrorOccurred[task.taskIdentifier] = true
             completionHandler(.performDefaultHandling, nil)
         default:
             pendingResolver.reject(OnboardingAuthError(kind: .authenticationUnsupported(challenge.protectionSpace.authenticationMethod)))
