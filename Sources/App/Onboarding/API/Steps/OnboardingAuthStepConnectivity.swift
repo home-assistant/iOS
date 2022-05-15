@@ -109,9 +109,13 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 errors.append(underlying)
             }
 
+            // swift compiler crashes with \.localizedDescription below, xcode 13.3
+            // swiftformat:disable:next preferKeyPath
+            let alertMessage = errors.map { $0.localizedDescription }.joined(separator: "\n\n")
+
             let alert = UIAlertController(
                 title: "Could not make secure connection",
-                message: errors.map(\.localizedDescription).joined(separator: "\n\n"),
+                message: alertMessage,
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: "Trust Certificate", style: .destructive, handler: { [self] _ in
