@@ -1,8 +1,8 @@
 import Foundation
 import PromiseKit
+import QuickLook
 import Shared
 import UIKit
-import QuickLook
 
 class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessionTaskDelegate {
     let authDetails: OnboardingAuthDetails
@@ -70,7 +70,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 } else if let error = error as? URLError {
                     switch error.code {
                     case .serverCertificateUntrusted, .serverCertificateHasUnknownRoot, .serverCertificateHasBadDate,
-                            .serverCertificateNotYetValid:
+                         .serverCertificateNotYetValid:
                         kind = .sslUntrusted([error])
                     default:
                         kind = .other(error)
@@ -109,7 +109,11 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 errors.append(underlying)
             }
 
-            let alert = UIAlertController(title: "Could not make secure connection", message: errors.map { $0.localizedDescription }.joined(separator: "\n\n"), preferredStyle: .alert)
+            let alert = UIAlertController(
+                title: "Could not make secure connection",
+                message: errors.map(\.localizedDescription).joined(separator: "\n\n"),
+                preferredStyle: .alert
+            )
             alert.addAction(UIAlertAction(title: "Trust Certificate", style: .destructive, handler: { [self] _ in
                 authDetails.exceptions.add(for: secTrust)
                 confirm(secTrust: secTrust, resolver: resolver, completionHandler: completionHandler)
@@ -150,7 +154,10 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             clientCertificateErrorOccurred[task.taskIdentifier] = true
             completionHandler(.performDefaultHandling, nil)
         default:
-            pendingResolver.reject(OnboardingAuthError(kind: .authenticationUnsupported(challenge.protectionSpace.authenticationMethod)))
+            pendingResolver
+                .reject(OnboardingAuthError(kind: .authenticationUnsupported(
+                    challenge.protectionSpace.authenticationMethod
+                )))
             completionHandler(.rejectProtectionSpace, nil)
         }
     }

@@ -187,7 +187,12 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
                 Self.finish(authDetails: authDetails, client: client, proto: proto, statusCode: statusCode)
             }
 
-            let response = try XCTUnwrap(HTTPURLResponse(url: authDetails.url, statusCode: statusCode, httpVersion: nil, headerFields: nil))
+            let response = try XCTUnwrap(HTTPURLResponse(
+                url: authDetails.url,
+                statusCode: statusCode,
+                httpVersion: nil,
+                headerFields: nil
+            ))
 
             XCTAssertThrowsError(try hang(step.perform(point: .beforeAuth))) { error in
                 XCTAssertEqual(

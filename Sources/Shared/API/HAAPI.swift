@@ -26,7 +26,7 @@ final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating 
     }
 
     override func serverTrustEvaluator(forHost host: String) -> ServerTrustEvaluating? {
-        return self
+        self
     }
 
     func evaluate(_ trust: SecTrust, forHost host: String) throws {
@@ -165,7 +165,7 @@ public class HomeAssistantAPI {
     }
 
     private func newServerTrustManager() -> ServerTrustManager {
-        return CustomServerTrustManager(server: server)
+        CustomServerTrustManager(server: server)
     }
 
     public func VideoStreamer() -> MJPEGStreamer {

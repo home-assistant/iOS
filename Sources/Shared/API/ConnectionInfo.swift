@@ -81,7 +81,10 @@ public struct ConnectionInfo: Codable, Equatable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
-        self.secTrustExceptions = try container.decodeIfPresent(HASecTrustExceptionContainer.self, forKey: .secTrustExceptions) ?? .init()
+        self.secTrustExceptions = try container.decodeIfPresent(
+            HASecTrustExceptionContainer.self,
+            forKey: .secTrustExceptions
+        ) ?? .init()
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {

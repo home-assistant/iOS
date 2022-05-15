@@ -19,7 +19,7 @@ public class AuthenticationAPI {
 
     let server: Server
     let session: Session
-    
+
     init(server: Server) {
         self.server = server
         self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))

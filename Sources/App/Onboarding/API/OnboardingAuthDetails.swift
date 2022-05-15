@@ -1,6 +1,5 @@
 import Foundation
 import Shared
-import Shared
 
 class OnboardingAuthDetails: Equatable {
     var url: URL
