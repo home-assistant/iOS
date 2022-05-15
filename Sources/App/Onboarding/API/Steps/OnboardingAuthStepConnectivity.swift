@@ -32,7 +32,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
     private func performConnection(resolver: Resolver<Void>) {
         let configuration = URLSessionConfiguration.ephemeral
         prepareSessionConfiguration?(configuration)
-        let session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        let session = URLSession(configuration: configuration, delegate: self, delegateQueue: .main)
 
         let (requestPromise, requestResolver) = Promise<(data: Data, response: URLResponse)>.pending()
 
@@ -115,7 +115,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 confirm(secTrust: secTrust, resolver: resolver, completionHandler: completionHandler)
             }))
 
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            alert.addAction(UIAlertAction(title: "Don't Trust", style: .cancel, handler: { _ in
                 resolver.reject(OnboardingAuthError(kind: .sslUntrusted(errors)))
                 completionHandler(.rejectProtectionSpace, nil)
             }))
