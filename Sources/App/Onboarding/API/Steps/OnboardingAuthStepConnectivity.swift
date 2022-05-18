@@ -125,7 +125,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
 
             alert.addAction(UIAlertAction(title: "Don't Trust", style: .cancel, handler: { _ in
                 resolver.reject(OnboardingAuthError(kind: .sslUntrusted(errors)))
-                completionHandler(.rejectProtectionSpace, nil)
+                completionHandler(.cancelAuthenticationChallenge, nil)
             }))
 
             sender.present(alert, animated: true)
