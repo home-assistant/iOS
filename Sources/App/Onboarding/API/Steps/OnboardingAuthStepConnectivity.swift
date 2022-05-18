@@ -114,19 +114,28 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             let alertMessage = errors.map { $0.localizedDescription }.joined(separator: "\n\n")
 
             let alert = UIAlertController(
-                title: "Could not make secure connection",
+                title: L10n.Onboarding.ConnectionTestResult.CertificateError.title,
                 message: alertMessage,
                 preferredStyle: .alert
             )
-            alert.addAction(UIAlertAction(title: "Trust Certificate", style: .destructive, handler: { [self] _ in
-                authDetails.exceptions.add(for: secTrust)
-                confirm(secTrust: secTrust, resolver: resolver, completionHandler: completionHandler)
-            }))
 
-            alert.addAction(UIAlertAction(title: "Don't Trust", style: .cancel, handler: { _ in
-                resolver.reject(OnboardingAuthError(kind: .sslUntrusted(errors)))
-                completionHandler(.cancelAuthenticationChallenge, nil)
-            }))
+            alert.addAction(UIAlertAction(
+                title: L10n.Onboarding.ConnectionTestResult.CertificateError.actionTrust,
+                style: .destructive,
+                handler: { [self] _ in
+                    authDetails.exceptions.add(for: secTrust)
+                    confirm(secTrust: secTrust, resolver: resolver, completionHandler: completionHandler)
+                }
+            ))
+
+            alert.addAction(UIAlertAction(
+                title: L10n.Onboarding.ConnectionTestResult.CertificateError.actionDontTrust,
+                style: .cancel,
+                handler: { _ in
+                    resolver.reject(OnboardingAuthError(kind: .sslUntrusted(errors)))
+                    completionHandler(.cancelAuthenticationChallenge, nil)
+                }
+            ))
 
             sender.present(alert, animated: true)
         }
