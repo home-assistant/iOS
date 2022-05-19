@@ -597,7 +597,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
                 completionHandler(.useCredential, .init(trust: secTrust))
             } catch {
                 Current.Log.error("failed auth challenge: \(error)")
-                completionHandler(.rejectProtectionSpace, nil)
+                completionHandler(.cancelAuthenticationChallenge, nil)
             }
         } else {
             Current.Log.error("couldn't locate server for \(task)")

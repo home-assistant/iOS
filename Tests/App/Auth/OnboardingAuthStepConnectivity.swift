@@ -212,6 +212,11 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
                     error: nil,
                     sender: FakeURLAuthenticationChallengeSender(
                         defaultHandling: {
+                            client.urlProtocol(proto, didFailWithError: URLError(.serverCertificateUntrusted))
+                        },
+                        cancelChallenge: {
+                            client.urlProtocol(proto, didFailWithError: URLError(.serverCertificateUntrusted))
+                        }, useCredential: { _ in
                             XCTAssertTrue(SecTrustEvaluateWithError(secTrust, nil))
                             Self.finish(
                                 authDetails: authDetails,
@@ -219,9 +224,6 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
                                 proto: proto,
                                 statusCode: testCase.statusCode
                             )
-                        },
-                        cancelChallenge: {
-                            client.urlProtocol(proto, didFailWithError: URLError(.serverCertificateUntrusted))
                         }
                     )
                 ))
@@ -380,19 +382,23 @@ class ConnectivityURLProtocol: URLProtocol {
 class FakeURLAuthenticationChallengeSender: NSObject, URLAuthenticationChallengeSender {
     var defaultHandling: () -> Void
     var cancelChallenge: () -> Void
+    var useCredential: (URLCredential) -> Void
 
-    init(defaultHandling: @escaping () -> Void = {}, cancelChallenge: @escaping () -> Void = {}) {
+    init(
+        defaultHandling: @escaping () -> Void = {},
+        cancelChallenge: @escaping () -> Void = {},
+        useCredential: @escaping (URLCredential) -> Void = { _ in }
+    ) {
         self.defaultHandling = defaultHandling
         self.cancelChallenge = cancelChallenge
+        self.useCredential = useCredential
     }
 
     func use(_ credential: URLCredential, for challenge: URLAuthenticationChallenge) {
-        XCTFail()
+        useCredential(credential)
     }
 
-    func continueWithoutCredential(for challenge: URLAuthenticationChallenge) {
-        XCTFail()
-    }
+    func continueWithoutCredential(for challenge: URLAuthenticationChallenge) {}
 
     func cancel(_ challenge: URLAuthenticationChallenge) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [self] in

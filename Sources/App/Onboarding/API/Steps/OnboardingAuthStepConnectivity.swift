@@ -93,7 +93,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
     ) {
         do {
             try authDetails.exceptions.evaluate(secTrust)
-            completionHandler(.performDefaultHandling, nil)
+            completionHandler(.useCredential, .init(trust: secTrust))
         } catch {
             Current.Log.error("received SSL error: \((error as NSError).debugDescription)")
 
@@ -148,21 +148,21 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
         guard let pendingResolver = taskIdentifierToResolver[task.taskIdentifier] else {
-            completionHandler(.rejectProtectionSpace, nil)
+            completionHandler(.cancelAuthenticationChallenge, nil)
             return
         }
 
         switch challenge.protectionSpace.authenticationMethod {
         case NSURLAuthenticationMethodServerTrust:
             guard let secTrust = challenge.protectionSpace.serverTrust else {
-                completionHandler(.rejectProtectionSpace, nil)
+                completionHandler(.performDefaultHandling, nil)
                 return
             }
 
             confirm(secTrust: secTrust, resolver: pendingResolver, completionHandler: completionHandler)
         case NSURLAuthenticationMethodHTTPBasic:
             pendingResolver.reject(OnboardingAuthError(kind: .basicAuth))
-            completionHandler(.rejectProtectionSpace, nil)
+            completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
             clientCertificateErrorOccurred[task.taskIdentifier] = true
             completionHandler(.performDefaultHandling, nil)
@@ -171,7 +171,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 .reject(OnboardingAuthError(kind: .authenticationUnsupported(
                     challenge.protectionSpace.authenticationMethod
                 )))
-            completionHandler(.rejectProtectionSpace, nil)
+            completionHandler(.cancelAuthenticationChallenge, nil)
         }
     }
 }
