@@ -19,19 +19,19 @@ before_all do
 end
 
 private_lane :setup do
-  ENV['FASTLANE_USER'] = ENV['HOMEASSISTANT_APPLE_ID']
-  ENV['DELIVER_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
-  ENV['FASTLANE_TEAM_ID'] = ENV['HOMEASSISTANT_TEAM_ID']
-  ENV['FL_NOTARIZE_ASC_PROVIDER'] = ENV['HOMEASSISTANT_TEAM_ID']
-  ENV['PILOT_APPLE_ID'] = ENV['HOMEASSISTANT_APPLE_ID']
-  ENV['SIGH_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
-  ENV['FL_NOTARIZE_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
-  ENV['LOKALISE_API_TOKEN'] = ENV['HOMEASSISTANT_LOKALIZE_TOKEN']
-  ENV['LOKALISE_PROJECT_ID'] = ENV['HOMEASSISTANT_LOKALIZE_PROJECT_ID']
-  ENV['LOKALISE_PROJECT_ID_FRONTEND'] = ENV['HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND']
-  ENV['PILOT_ITC_PROVIDER'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID']
-  ENV['FASTLANE_ITC_TEAM_ID'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID']
-  ENV['SIGH_USERNAME'] = ENV['HOMEASSISTANT_APPLE_ID']
+  ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['DELIVER_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['FASTLANE_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
+  ENV['FL_NOTARIZE_ASC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
+  ENV['PILOT_APPLE_ID'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['SIGH_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['FL_NOTARIZE_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['LOKALISE_API_TOKEN'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_TOKEN', nil)
+  ENV['LOKALISE_PROJECT_ID'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_ID', nil)
+  ENV['LOKALISE_PROJECT_ID_FRONTEND'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND', nil)
+  ENV['PILOT_ITC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
+  ENV['FASTLANE_ITC_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
+  ENV['SIGH_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['SIGH_PROFILE_PATHS'] = '../Configuration/Provisioning'
 
   app_store_connect_api_key if ENV['APP_STORE_CONNECT_API_KEY_KEY']
@@ -53,15 +53,15 @@ lane :download_provisioning_profiles do
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
-      '-b', ENV['HOMEASSISTANT_TEAM_ID'],
-      '-u', ENV['SIGH_USERNAME']
+      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
       '-p', platform,
       '-o', '../Configuration/Provisioning/',
-      '-b', ENV['HOMEASSISTANT_TEAM_ID'],
-      '-u', ENV['SIGH_USERNAME']
+      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
   end
 end
@@ -135,20 +135,26 @@ end
 
 desc 'Download latest localization files from Lokalize'
 lane :update_strings do
-  token = ENV['LOKALISE_API_TOKEN'] || prompt(
-    text: 'API token',
-    secure_text: true
-  )
+  token = ENV.fetch('LOKALISE_API_TOKEN') do
+    prompt(
+      text: 'API token',
+      secure_text: true
+    )
+  end
 
-  project_id = ENV['LOKALISE_PROJECT_ID'] || prompt(
-    text: 'Project ID',
-    secure_text: true
-  )
+  project_id = ENV.fetch('LOKALISE_PROJECT_ID') do
+    prompt(
+      text: 'Project ID',
+      secure_text: true
+    )
+  end
 
-  frontend_project_id = ENV['LOKALISE_PROJECT_ID_FRONTEND'] || prompt(
-    text: 'Frontend Project ID',
-    secure_text: true
-  )
+  frontend_project_id = ENV.fetch('LOKALISE_PROJECT_ID_FRONTEND') do
+    prompt(
+      text: 'Frontend Project ID',
+      secure_text: true
+    )
+  end
 
   resources_dir_full = File.expand_path('../Sources/App/Resources')
 
@@ -257,15 +263,19 @@ lane :push_strings do
     '../Sources/App/Resources/en.lproj'
   ]
 
-  token = ENV['LOKALISE_API_TOKEN'] || prompt(
-    text: 'API token',
-    secure_text: true
-  )
+  token = ENV.fetch('LOKALISE_API_TOKEN') do
+    prompt(
+      text: 'API token',
+      secure_text: true
+    )
+  end
 
-  project_id = ENV['LOKALISE_PROJECT_ID'] || prompt(
-    text: 'Project ID',
-    secure_text: true
-  )
+  project_id = ENV.fetch('LOKALISE_PROJECT_ID') do
+    prompt(
+      text: 'Project ID',
+      secure_text: true
+    )
+  end
 
   source_directories.each do |directory|
     puts "Enumerating #{directory}..."
@@ -356,13 +366,13 @@ lane :setup_ha_ci do
 
   set_version_info(
     version: get_xcconfig_marketing_version,
-    build: get_xcconfig_build_number + '.' + ENV['GITHUB_RUN_NUMBER'] # rubocop:disable Style/StringConcatenation
+    build: get_xcconfig_build_number + '.' + ENV.fetch('GITHUB_RUN_NUMBER', nil) # rubocop:disable Style/StringConcatenation
   )
 
   # we only expose these keys in ci when appropriate
   ENV['FASTLANE_DONT_STORE_PASSWORD'] = '1'
-  ENV['FASTLANE_PASSWORD'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD']
-  ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'] = ENV['HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD']
+  ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
+  ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
 
   keychain_name = 'HomeAssistant-Keychain'
   keychain_password = SecureRandom.hex
@@ -384,9 +394,9 @@ lane :setup_ha_ci do
   KeyAndValue = Struct.new(:key, :value) # rubocop:disable Lint/ConstantDefinitionInBlock
 
   [
-    KeyAndValue.new(ENV['P12_KEY_IOS_APP_STORE'], ENV['P12_VALUE_IOS_APP_STORE']),
-    KeyAndValue.new(ENV['P12_KEY_MAC_APP_STORE'], ENV['P12_VALUE_MAC_APP_STORE']),
-    KeyAndValue.new(ENV['P12_KEY_MAC_DEVELOPER_ID'], ENV['P12_VALUE_MAC_DEVELOPER_ID'])
+    KeyAndValue.new(ENV.fetch('P12_KEY_IOS_APP_STORE', nil), ENV.fetch('P12_VALUE_IOS_APP_STORE', nil)),
+    KeyAndValue.new(ENV.fetch('P12_KEY_MAC_APP_STORE', nil), ENV.fetch('P12_VALUE_MAC_APP_STORE', nil)),
+    KeyAndValue.new(ENV.fetch('P12_KEY_MAC_DEVELOPER_ID', nil), ENV.fetch('P12_VALUE_MAC_DEVELOPER_ID', nil))
   ].each do |info|
     tmp_file = '/tmp/import.p12'
     File.write(tmp_file, Base64.decode64(info.value))
@@ -466,7 +476,7 @@ private_lane :upload_binary_to_apple do |options|
     sh(
       'xcrun', 'altool', '--upload-app', '--type', options[:type],
       '--file', options[:path],
-      '--username', ENV['DELIVER_USERNAME'],
+      '--username', ENV.fetch('DELIVER_USERNAME', nil),
       '--password', '@env:FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'
     )
   rescue StandardError => e

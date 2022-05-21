@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_13.2.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_13.3.1.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
@@ -34,7 +34,7 @@ jobs:
         run: bundle exec rubocop --format github
 
   SwiftLint:
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
 
@@ -58,13 +58,10 @@ jobs:
         run: Pods/SwiftFormat/CommandLineTool/swiftformat --lint --config .swiftformat .
 
   test:
-    runs-on: macos-11
-    strategy:
-      matrix:
-        xcode: ['13.2']
+    runs-on: macos-12
     timeout-minutes: 60
     env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_13.3.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
 
@@ -77,7 +74,7 @@ jobs:
             Tools/MaterialDesignIcons.ttf
             Tools/MaterialDesignIcons.json
           key: >-
-            ${{ runner.os }}-pods-${{ matrix.xcode }}-
+            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
       - uses: actions/cache@v2
@@ -118,7 +115,7 @@ jobs:
       - name: Run tests
         run: bundle exec fastlane test
 
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v3.1.0
         name: "Upload Code Coverage"
 
       - uses: actions/upload-artifact@v2

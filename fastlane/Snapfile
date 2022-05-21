@@ -44,7 +44,7 @@ result_bundle(true)
 
 # rubocop:disable Layout/LineLength
 
-base_args = "-useDemo YES -url #{ENV['HOMEASSISTANT_SNAPSHOT_URL']} -token #{ENV['HOMEASSISTANT_SNAPSHOT_TOKEN']} -webhookID #{ENV['HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID']} -webhookSecret #{ENV['HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET']} -cameraEntityID camera.staticshot"
+base_args = "-useDemo YES -url #{ENV.fetch('HOMEASSISTANT_SNAPSHOT_URL', nil)} -token #{ENV.fetch('HOMEASSISTANT_SNAPSHOT_TOKEN', nil)} -webhookID #{ENV.fetch('HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID', nil)} -webhookSecret #{ENV.fetch('HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET', nil)} -cameraEntityID camera.staticshot"
 launch_arguments([
                    # Lat/Long is NYC
                    "#{base_args} -mapPin1Latitude 40.785091 -mapPin1Longitude -73.968285 -mapPin2Latitude 40.758896 -mapPin2Latitude -73.985130"
