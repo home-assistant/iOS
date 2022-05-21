@@ -119,6 +119,7 @@ jobs:
         name: "Upload Code Coverage"
         with:
           xcode: true
+          xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult
 
       - uses: actions/upload-artifact@v2
         name: "Upload Test Logs"
