@@ -50,7 +50,7 @@ public struct SecurityExceptions: Codable, Equatable {
             try evaluate(secTrust)
             return (.useCredential, .init(trust: secTrust))
         } catch {
-            return (.cancelAuthenticationChallenge, nil)
+            return (.rejectProtectionSpace, nil)
         }
     }
 }
