@@ -436,7 +436,7 @@
 		11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDD924F5FE0600314D85 /* SceneActivity.swift */; };
 		11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */; };
 		11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */; };
-		11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */; };
+		11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */; };
 		11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */; };
 		11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3C227264306000AF78B /* UIAlertAction+Additions.swift */; };
 		11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */; };
@@ -1469,7 +1469,7 @@
 		11EFCDD924F5FE0600314D85 /* SceneActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneActivity.swift; sourceTree = "<group>"; };
 		11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSceneDelegate.swift; sourceTree = "<group>"; };
-		11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConnectivity.swift; sourceTree = "<group>"; };
+		11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConnectivity.test.swift; sourceTree = "<group>"; };
 		11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepDuplicate.test.swift; sourceTree = "<group>"; };
 		11EFD3C227264306000AF78B /* UIAlertAction+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Additions.swift"; sourceTree = "<group>"; };
 		11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationLoadingViewController.swift; sourceTree = "<group>"; };
@@ -2334,7 +2334,7 @@
 			children = (
 				116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */,
 				116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */,
-				11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.swift */,
+				11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */,
 				11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */,
 				11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */,
 				11ED439727265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift */,
@@ -5343,7 +5343,7 @@
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
-				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.swift in Sources */,
+				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
