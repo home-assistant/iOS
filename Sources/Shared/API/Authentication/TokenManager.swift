@@ -54,7 +54,7 @@ public class TokenManager {
         AuthenticationAPI.fetchToken(
             authorizationCode: code,
             baseURL: connectionInfo.activeURL(),
-            exceptions: connectionInfo.secTrustExceptions
+            exceptions: connectionInfo.securityExceptions
         )
     }
 

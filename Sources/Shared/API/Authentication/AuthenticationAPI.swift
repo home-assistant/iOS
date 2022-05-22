@@ -68,7 +68,7 @@ public class AuthenticationAPI {
     public static func fetchToken(
         authorizationCode: String,
         baseURL: URL,
-        exceptions: HASecTrustExceptionContainer
+        exceptions: SecurityExceptions
     ) -> Promise<TokenInfo> {
         let session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
 

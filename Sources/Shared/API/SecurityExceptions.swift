@@ -1,13 +1,13 @@
 import Foundation
 
-public enum HASecTrustExceptionUnknownError: Error {
+public enum SecurityExceptionError: Error {
     case invariantFailure
 }
 
-public struct HASecTrustExceptionContainer: Codable, Equatable {
-    public var exceptions: [HASecTrustException] = []
+public struct SecurityExceptions: Codable, Equatable {
+    private var exceptions: [SecurityException] = []
 
-    public init(exceptions: [HASecTrustException] = []) {
+    public init(exceptions: [SecurityException] = []) {
         self.exceptions = exceptions
     }
 
@@ -23,12 +23,7 @@ public struct HASecTrustExceptionContainer: Codable, Equatable {
             return
         }
 
-        let baseThrowable = baseError as Error? ?? HASecTrustExceptionUnknownError.invariantFailure
-
-        guard !exceptions.isEmpty else {
-            // without exceptions, we still need to throw
-            throw baseThrowable
-        }
+        let baseThrowable = baseError as Error? ?? SecurityExceptionError.invariantFailure
 
         for exception in exceptions {
             do {
@@ -41,11 +36,26 @@ public struct HASecTrustExceptionContainer: Codable, Equatable {
             }
         }
 
+        // always throw if we don't find a successful one above
         throw baseThrowable
     }
+
+    public func evaluate(_ challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        guard let secTrust = challenge.protectionSpace.serverTrust else {
+            return (.performDefaultHandling, nil)
+        }
+
+        do {
+            try evaluate(secTrust)
+            return (.useCredential, .init(trust: secTrust))
+        } catch {
+            return (.cancelAuthenticationChallenge, nil)
+        }
+    }
+
 }
 
-public struct HASecTrustException: Codable, Equatable {
+public struct SecurityException: Codable, Equatable {
     private var data: Data
 
     public init(secTrust: SecTrust) {
@@ -75,7 +85,7 @@ public struct HASecTrustException: Codable, Equatable {
         if SecTrustEvaluateWithError(secTrust, &error) {
             return
         } else {
-            throw error as Error? ?? HASecTrustExceptionUnknownError.invariantFailure
+            throw error as Error? ?? SecurityExceptionError.invariantFailure
         }
     }
 }

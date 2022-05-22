@@ -132,6 +132,8 @@
 		1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148A44F24E9AF9200345050 /* MDIMigration.swift */; };
 		1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148A44F24E9AF9200345050 /* MDIMigration.swift */; };
+		114CBAE82839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */; };
+		114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */; };
 		114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
@@ -340,8 +342,8 @@
 		11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
-		11B6774D28303D35006E9B1A /* HASecTrustException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* HASecTrustException.swift */; };
-		11B6774E28303D35006E9B1A /* HASecTrustException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* HASecTrustException.swift */; };
+		11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
+		11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
 		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
@@ -1201,6 +1203,7 @@
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
 		11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreAudioObjectDevice.swift; sourceTree = "<group>"; };
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
+		114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomServerTrustManager.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
@@ -1392,7 +1395,7 @@
 		11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandlerFactory.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
-		11B6774C28303D35006E9B1A /* HASecTrustException.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HASecTrustException.swift; sourceTree = "<group>"; };
+		11B6774C28303D35006E9B1A /* SecurityExceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityExceptions.swift; sourceTree = "<group>"; };
 		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
 		11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.test.swift; sourceTree = "<group>"; };
 		11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.test.swift; sourceTree = "<group>"; };
@@ -2210,6 +2213,7 @@
 				11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */,
 				117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */,
 				11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */,
+				114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -3454,6 +3458,7 @@
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
 				11B6774C28303D35006E9B1A /* HASecTrustException.swift */,
+				11B6774C28303D35006E9B1A /* SecurityExceptions.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5454,11 +5459,12 @@
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
-				11B6774E28303D35006E9B1A /* HASecTrustException.swift in Sources */,
+				11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
 				110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
+				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
@@ -5647,11 +5653,12 @@
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
-				11B6774D28303D35006E9B1A /* HASecTrustException.swift in Sources */,
+				11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
 				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
+				114CBAE82839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
 				11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */,

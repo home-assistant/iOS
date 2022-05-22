@@ -202,7 +202,7 @@ private extension ConnectionInfo {
             internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
             internalHardwareAddresses: Current.connectivity.currentNetworkHardwareAddress().map { [$0] },
             isLocalPushEnabled: true,
-            secTrustExceptions: authDetails.exceptions
+            securityExceptions: authDetails.exceptions
         )
 
         // default cloud to on

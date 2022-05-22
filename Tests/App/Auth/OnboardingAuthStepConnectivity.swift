@@ -165,7 +165,7 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
         }
 
         for testCase in TestCase.allCases {
-            authDetails.exceptions.exceptions.removeAll()
+            authDetails.exceptions = .init()
 
             let secTrust = try newSecTrust()
             XCTAssertFalse(SecTrustEvaluateWithError(secTrust, nil), "we should start without it being trusted")

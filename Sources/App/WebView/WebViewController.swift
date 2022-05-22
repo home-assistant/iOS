@@ -410,17 +410,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard let secTrust = challenge.protectionSpace.serverTrust else {
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-
-        do {
-            try server.info.connection.evaluate(secTrust)
-            completionHandler(.useCredential, .init(trust: secTrust))
-        } catch {
-            completionHandler(.cancelAuthenticationChallenge, nil)
-        }
+        let result = server.info.connection.evaluate(challenge)
+        completionHandler(result.0, result.1)
     }
 
     func webView(

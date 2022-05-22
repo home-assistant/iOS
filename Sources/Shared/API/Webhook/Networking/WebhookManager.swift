@@ -568,19 +568,6 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard let secTrust = challenge.protectionSpace.serverTrust else {
-            Current.Log.error("unknown protection space: \(challenge)")
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-
-        guard SecTrustEvaluateWithError(secTrust, nil) == false else {
-            // no problems with this trust, so no exceptions are needed
-            Current.Log.info("authentication challenge does not require special handling")
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-
         let potentialServer: Server?
 
         if let (_, persisted) = responseInfo(from: task), let server = server(for: persisted) {
@@ -591,14 +578,8 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         }
 
         if let server = potentialServer {
-            do {
-                try server.info.connection.evaluate(secTrust)
-                Current.Log.error("auth challenge succeeded")
-                completionHandler(.useCredential, .init(trust: secTrust))
-            } catch {
-                Current.Log.error("failed auth challenge: \(error)")
-                completionHandler(.cancelAuthenticationChallenge, nil)
-            }
+            let result = server.info.connection.evaluate(challenge)
+            completionHandler(result.0, result.1)
         } else {
             Current.Log.error("couldn't locate server for \(task)")
             completionHandler(.performDefaultHandling, nil)

@@ -39,9 +39,9 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
-    public var secTrustExceptions: HASecTrustExceptionContainer = .init()
-    public func evaluate(_ secTrust: SecTrust) throws {
-        try secTrustExceptions.evaluate(secTrust)
+    public var securityExceptions: SecurityExceptions = .init()
+    public func evaluate(_ challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        return securityExceptions.evaluate(challenge)
     }
 
     public init(
@@ -54,7 +54,7 @@ public struct ConnectionInfo: Codable, Equatable {
         internalSSIDs: [String]?,
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
-        secTrustExceptions: HASecTrustExceptionContainer
+        securityExceptions: SecurityExceptions
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -65,7 +65,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalSSIDs = internalSSIDs
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
-        self.secTrustExceptions = secTrustExceptions
+        self.securityExceptions = securityExceptions
     }
 
     public init(from decoder: Decoder) throws {
@@ -81,9 +81,9 @@ public struct ConnectionInfo: Codable, Equatable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
-        self.secTrustExceptions = try container.decodeIfPresent(
-            HASecTrustExceptionContainer.self,
-            forKey: .secTrustExceptions
+        self.securityExceptions = try container.decodeIfPresent(
+            SecurityExceptions.self,
+            forKey: .securityExceptions
         ) ?? .init()
     }
 

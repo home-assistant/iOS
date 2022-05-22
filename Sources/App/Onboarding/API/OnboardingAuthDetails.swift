@@ -4,7 +4,7 @@ import Shared
 class OnboardingAuthDetails: Equatable {
     var url: URL
     var scheme: String
-    var exceptions: HASecTrustExceptionContainer = .init()
+    var exceptions: SecurityExceptions = .init()
 
     init(baseURL: URL) throws {
         guard var components = URLComponents(url: baseURL.sanitized(), resolvingAgainstBaseURL: false) else {

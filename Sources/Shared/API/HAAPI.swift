@@ -12,28 +12,6 @@ import Version
 import Reachability
 #endif
 
-final class CustomServerTrustManager: ServerTrustManager, ServerTrustEvaluating {
-    let exceptions: () -> HASecTrustExceptionContainer
-
-    init(server: Server) {
-        self.exceptions = { server.info.connection.secTrustExceptions }
-        super.init(evaluators: [:])
-    }
-
-    init(exceptions: HASecTrustExceptionContainer) {
-        self.exceptions = { exceptions }
-        super.init(evaluators: [:])
-    }
-
-    override func serverTrustEvaluator(forHost host: String) -> ServerTrustEvaluating? {
-        self
-    }
-
-    func evaluate(_ trust: SecTrust, forHost host: String) throws {
-        try exceptions().evaluate(trust)
-    }
-}
-
 public class HomeAssistantAPI {
     public enum APIError: Error, Equatable {
         case managerNotAvailable
@@ -94,7 +72,7 @@ public class HomeAssistantAPI {
                         evaluateCertificate: { secTrust, completion in
                             completion(
                                 Swift.Result<Void, Error> {
-                                    try server.info.connection.evaluate(secTrust)
+                                    try server.info.connection.securityExceptions.evaluate(secTrust)
                                 }
                             )
                         }

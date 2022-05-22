@@ -509,7 +509,7 @@ class ServerManagerTests: XCTestCase {
             internalSSIDs: ["internal_ssid"],
             internalHardwareAddresses: ["internal_hardware"],
             isLocalPushEnabled: true,
-            secTrustExceptions: .init()
+            securityExceptions: .init()
         )
 
         let tokenInfo = TokenInfo(
