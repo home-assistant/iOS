@@ -40,7 +40,8 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public var securityExceptions: SecurityExceptions = .init()
-    public func evaluate(_ challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+    public func evaluate(_ challenge: URLAuthenticationChallenge)
+        -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         return securityExceptions.evaluate(challenge)
     }
 

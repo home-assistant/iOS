@@ -40,7 +40,8 @@ public struct SecurityExceptions: Codable, Equatable {
         throw baseThrowable
     }
 
-    public func evaluate(_ challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+    public func evaluate(_ challenge: URLAuthenticationChallenge)
+        -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         guard let secTrust = challenge.protectionSpace.serverTrust else {
             return (.performDefaultHandling, nil)
         }
@@ -52,7 +53,6 @@ public struct SecurityExceptions: Codable, Equatable {
             return (.cancelAuthenticationChallenge, nil)
         }
     }
-
 }
 
 public struct SecurityException: Codable, Equatable {
@@ -60,10 +60,6 @@ public struct SecurityException: Codable, Equatable {
 
     public init(secTrust: SecTrust) {
         self.data = SecTrustCopyExceptions(secTrust) as Data
-    }
-
-    public init(data: Data) {
-        self.data = data
     }
 
     public init(from decoder: Decoder) throws {

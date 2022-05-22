@@ -134,6 +134,7 @@
 		1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1148A44F24E9AF9200345050 /* MDIMigration.swift */; };
 		114CBAE82839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */; };
 		114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */; };
+		114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */; };
 		114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
@@ -1204,6 +1205,7 @@
 		11482AD52505CB6E00C48C58 /* HACoreAudioObjectDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreAudioObjectDevice.swift; sourceTree = "<group>"; };
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
 		114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomServerTrustManager.swift; sourceTree = "<group>"; };
+		114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityExceptions.test.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
@@ -3523,6 +3525,7 @@
 				1130A5752751BA1800640E38 /* Server.test.swift */,
 				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
+				114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -5780,6 +5783,7 @@
 				11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */,
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
+				114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */,
 				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,
 				1130A5742751B29E00640E38 /* PerServerContainer.test.swift in Sources */,
 				116570802702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift in Sources */,
