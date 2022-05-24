@@ -545,12 +545,28 @@ platform :mac do
       }
     )
     upload_archive_to_sentry
-    notarize(
-      package: developer_id_app_path,
-      # not the _app_ bundle id, just an id that notarize uses for referencing
-      bundle_id: 'io.home-assistant.fastlane.developer-id',
-      verbose: true
-    )
+    
+    notarize_attempts = 0
+    
+    begin
+      notarize(
+        package: developer_id_app_path,
+        # not the _app_ bundle id, just an id that notarize uses for referencing
+        bundle_id: 'io.home-assistant.fastlane.developer-id',
+        verbose: true
+      )
+    rescue StandardError => e
+      puts "Failed with #{e}; retrying notarize in a few seconds..."
+      
+      sleep 5
+    
+      # retry a few times, then give up
+      notarize_attempts += 1
+    
+      retry if notarize_attempts <= 3
+      raise e
+    end
+    
     sh(
       'ditto',
       '-c',
