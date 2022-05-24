@@ -4,18 +4,9 @@ import Shared
 import UIKit
 
 class LifecycleManager {
-    private var periodicUpdateTimer: Timer? {
-        willSet {
-            if periodicUpdateTimer != newValue {
-                periodicUpdateTimer?.invalidate()
-            }
-        }
-    }
-
-    static var supportsBackgroundPeriodicUpdates: Bool {
-        Current.isCatalyst
-    }
-
+    private let periodicUpdateManager = PeriodicUpdateManager(
+        applicationStateGetter: { UIApplication.shared.applicationState }
+    )
     private var underlyingActive: UInt32 = 0
     private(set) var isActive: Bool {
         get {
@@ -79,7 +70,7 @@ class LifecycleManager {
             })
         }.cauterize()
 
-        connectAPI(reason: .cold)
+        periodicUpdateManager.connectAPI(reason: .cold)
     }
 
     @objc private func willEnterForeground() {
@@ -98,7 +89,7 @@ class LifecycleManager {
             })
         }.cauterize()
 
-        invalidatePeriodicUpdateTimer()
+        periodicUpdateManager.invalidatePeriodicUpdateTimer(forBackground: true)
     }
 
     private var hasTriggeredWarm = false
@@ -107,10 +98,10 @@ class LifecycleManager {
         if #available(iOS 13, *) {
             if hasTriggeredWarm {
                 // iOS 13+ scene API triggers foreground on initial launch, too, so we ignore it
-                connectAPI(reason: .warm)
+                periodicUpdateManager.connectAPI(reason: .warm)
             }
         } else {
-            connectAPI(reason: .warm)
+            periodicUpdateManager.connectAPI(reason: .warm)
         }
 
         hasTriggeredWarm = true
@@ -132,47 +123,5 @@ class LifecycleManager {
                 )
             })
         }.cauterize()
-    }
-
-    private func invalidatePeriodicUpdateTimer() {
-        if !Self.supportsBackgroundPeriodicUpdates {
-            periodicUpdateTimer = nil
-        }
-    }
-
-    private func schedulePeriodicUpdateTimer() {
-        guard periodicUpdateTimer == nil || periodicUpdateTimer?.isValid == false else {
-            return
-        }
-
-        guard Self.supportsBackgroundPeriodicUpdates || UIApplication.shared.applicationState != .background else {
-            // it's fine to schedule, but we don't wanna fire two when we come back to foreground later
-            Current.Log.info("not scheduling periodic update; backgrounded")
-            return
-        }
-
-        guard let interval = Current.settingsStore.periodicUpdateInterval else {
-            Current.Log.info("not scheduling periodic update; disabled")
-            return
-        }
-
-        periodicUpdateTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-            self?.connectAPI(reason: .periodic)
-        }
-    }
-
-    private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
-        Current.backgroundTask(withName: "connect-api") { _ in
-            when(resolved: Current.apis.map { api in
-                api.Connect(reason: reason)
-            }).asVoid()
-        }.done {
-            Current.Log.info("Connect finished for reason \(reason)")
-        }.catch { error in
-            // if the error is e.g. token is invalid, we'll force onboarding through status-code-watching mechanisms
-            Current.Log.error("Couldn't connect for reason \(reason): \(error)")
-        }.finally {
-            self.schedulePeriodicUpdateTimer()
-        }
     }
 }

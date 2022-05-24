@@ -114,6 +114,8 @@
 		11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */; };
 		11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
 		11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */; };
+		113A8D49283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */; };
+		113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */; };
 		113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
@@ -1186,6 +1188,7 @@
 		1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.test.swift"; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
 		11358AEE24FCA8BE0074C4E2 /* ActiveStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStateManager.swift; sourceTree = "<group>"; };
+		113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicUpdateManager.swift; sourceTree = "<group>"; };
 		113D04E124D76CD3003CE877 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		113D04E324D76CDB003CE877 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
 		113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocation.swift"; sourceTree = "<group>"; };
@@ -3446,6 +3449,7 @@
 				11CFD783273662DF0082D557 /* Server.swift */,
 				1120C57E274638330046C38B /* PerServerContainer.swift */,
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
+				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5431,6 +5435,7 @@
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
+				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
@@ -5622,6 +5627,7 @@
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
 				11B38EE9275C54A200205C7B /* GetCameraImageIntentHandler.swift in Sources */,
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
+				113A8D49283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
