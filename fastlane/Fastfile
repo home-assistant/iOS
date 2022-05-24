@@ -545,9 +545,9 @@ platform :mac do
       }
     )
     upload_archive_to_sentry
-    
+
     notarize_attempts = 0
-    
+
     begin
       notarize(
         package: developer_id_app_path,
@@ -557,16 +557,16 @@ platform :mac do
       )
     rescue StandardError => e
       puts "Failed with #{e}; retrying notarize in a few seconds..."
-      
+
       sleep 5
-    
+
       # retry a few times, then give up
       notarize_attempts += 1
-    
+
       retry if notarize_attempts <= 3
       raise e
     end
-    
+
     sh(
       'ditto',
       '-c',
