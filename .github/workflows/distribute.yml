@@ -18,6 +18,7 @@ jobs:
   build:
     runs-on: macos-11
     strategy:
+      fail-fast: false
       matrix:
         kind: [mac, ios]
     steps:
