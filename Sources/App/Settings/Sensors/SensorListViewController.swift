@@ -24,7 +24,7 @@ class SensorListViewController: HAFormViewController, SensorObserver {
 
         let periodicDescription: String
 
-        if LifecycleManager.supportsBackgroundPeriodicUpdates {
+        if PeriodicUpdateManager.supportsBackgroundPeriodicUpdates {
             periodicDescription = L10n.SettingsSensors.PeriodicUpdate.descriptionMac
         } else {
             periodicDescription = L10n.SettingsSensors.PeriodicUpdate.description

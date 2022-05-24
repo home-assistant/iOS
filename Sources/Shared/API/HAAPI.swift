@@ -136,10 +136,11 @@ public class HomeAssistantAPI {
         case cold
         case warm
         case periodic
+        case background
 
         var updateSensorTrigger: LocationUpdateTrigger {
             switch self {
-            case .cold, .warm:
+            case .cold, .warm, .background:
                 return .Launch
             case .periodic:
                 return .Periodic

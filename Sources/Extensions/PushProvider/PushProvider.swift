@@ -7,6 +7,7 @@ import UserNotifications
 
 @objc class PushProvider: NEAppPushProvider, LocalPushManagerDelegate {
     private let commandManager = NotificationCommandManager()
+    private let periodicUpdateManager = PeriodicUpdateManager(applicationStateGetter: { .background })
 
     enum PushProviderError: Error {
         case noSuchServer
@@ -33,6 +34,8 @@ import UserNotifications
 
     override func start(completionHandler: @escaping (Error?) -> Void) {
         Current.Log.notify("starting", log: .info)
+
+        periodicUpdateManager.connectAPI(reason: .background)
 
         // promise prevents our firing the completion handler more than once
         let (didStartPromise, didStartSeal) = Promise<Void>.pending()
@@ -71,6 +74,7 @@ import UserNotifications
         Current.Log.notify("stopping with reason \(reason)", log: .error)
 
         stateObservers.removeAll()
+        periodicUpdateManager.invalidatePeriodicUpdateTimer()
 
         for manager in localPushManagers {
             manager.invalidate()
