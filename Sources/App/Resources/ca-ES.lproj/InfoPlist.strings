@@ -5,7 +5,7 @@
 "NSLocalNetworkUsageDescription" = "Cerqueu i comuniqueu-vos amb la vostra instància de Home Assistant.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Us recomanem que seleccioneu \"Permet sempre\" per obtenir la millor experiència d'ubicació. Si seleccioneu \"Només mentre feu servir l'aplicació\", es desactivaran els iBeacons, les barres geogràfiques, les actualitzacions de la ubicació en segon pla i els informes precisos.";
 "NSLocationAlwaysUsageDescription" = "Sempre necessitem accés a la vostra ubicació per a funcions com ara iBeacons, geofences, actualitzacions de la ubicació en segon pla i informes precisos.";
-"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSLocationUsageDescription" = "Quan està activat, la ubicació del teu dispositiu s'envia al teu Home Assistant i apareixerà com un dispositiu rastrejat.";
 "NSLocationWhenInUseUsageDescription" = "Només permetent l'accés a la ubicació mentre l'aplicació està en ús deshabilitarà iBeacons, geocercas, actualitzacions d'ubicació en segon pla i informes precisos.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSMotionUsageDescription" = "El moviment s’utilitza per millorar les actualitzacions d’ubicació amb el tipus de moviment actual, així com per proporcionar dades bàsiques del podòmetre.";
