@@ -172,7 +172,8 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        let connection = Current.api(for: server).connection
+        let api = Current.api(for: server)
+        let connection = api.connection
 
         accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
             guard let self = self else { return }
@@ -210,9 +211,9 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     return url
                 }.then { url -> Promise<Data> in
                     Promise<Data> { seal in
-                        lastTask = URLSession.shared.dataTask(with: url, completionHandler: { data, _, error in
-                            seal.resolve(data, error)
-                        })
+                        api.manager.download(url).validate().responseData { result in
+                            seal.resolve(result.result)
+                        }
                     }
                 }.map { data throws -> UIImage in
                     if let image = UIImage(data: data) {
