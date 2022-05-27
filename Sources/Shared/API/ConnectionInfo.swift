@@ -39,6 +39,12 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    public var securityExceptions: SecurityExceptions = .init()
+    public func evaluate(_ challenge: URLAuthenticationChallenge)
+        -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        return securityExceptions.evaluate(challenge)
+    }
+
     public init(
         externalURL: URL?,
         internalURL: URL?,
@@ -48,7 +54,8 @@ public struct ConnectionInfo: Codable, Equatable {
         webhookSecret: String?,
         internalSSIDs: [String]?,
         internalHardwareAddresses: [String]?,
-        isLocalPushEnabled: Bool
+        isLocalPushEnabled: Bool,
+        securityExceptions: SecurityExceptions
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -59,6 +66,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalSSIDs = internalSSIDs
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
+        self.securityExceptions = securityExceptions
     }
 
     public init(from decoder: Decoder) throws {
@@ -74,6 +82,10 @@ public struct ConnectionInfo: Codable, Equatable {
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
+        self.securityExceptions = try container.decodeIfPresent(
+            SecurityExceptions.self,
+            forKey: .securityExceptions
+        ) ?? .init()
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {

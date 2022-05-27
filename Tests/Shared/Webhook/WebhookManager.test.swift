@@ -116,6 +116,27 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertFalse(manager.sessionInfos.contains(where: { $0.identifier == testIdentifier }))
     }
 
+    func testAuthenticationChallengeUnknownServer() throws {
+        let task = manager.currentRegularSessionInfo.session.dataTask(
+            with: URLRequest(url: URL(string: "http://example.com")!),
+            completionHandler: { _, _, _ in }
+        )
+
+        let expectation = expectation(description: "completion handler")
+        manager.urlSession(
+            manager.currentRegularSessionInfo.session,
+            task: task,
+            didReceive: try SecTrust.unitTestDotExampleDotCom1.authenticationChallenge(),
+            completionHandler: { disposition, credential in
+                XCTAssertEqual(disposition, .performDefaultHandling)
+                XCTAssertNil(credential)
+                expectation.fulfill()
+            }
+        )
+
+        wait(for: [expectation], timeout: 10.0)
+    }
+
     func testSendingEphemeralFailsEntirely() {
         let expectedError = URLError(.timedOut)
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
@@ -161,7 +182,8 @@ class WebhookManagerTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: true
+            isLocalPushEnabled: true,
+            securityExceptions: .init()
         )
 
         let nextAPIWebhookURL = nextConnectionInfo.webhookURL()
@@ -302,6 +324,71 @@ class WebhookManagerTests: XCTestCase {
             default:
                 XCTFail("unexpected error: \(error)")
             }
+        }
+    }
+
+    func testSendEphemeralProtectionSpace() throws {
+        for shouldAddException in [true, false] {
+            let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+            let networkSemaphore = DispatchSemaphore(value: 0)
+
+            let trust = try SecTrust.unitTestDotExampleDotCom1
+
+            if shouldAddException {
+                api1.server.info.connection.securityExceptions.add(for: trust)
+            } else {
+                api1.server.info.connection.securityExceptions = .init()
+            }
+
+            let manager = manager!
+
+            let stub = stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+                for session in [
+                    manager.currentRegularSessionInfo.session,
+                    manager.currentBackgroundSessionInfo.session,
+                ] {
+                    session.getAllTasks { [manager] tasks in
+                        guard let task = tasks.first, tasks.count == 1 else {
+                            // in the other session
+                            return
+                        }
+
+                        manager.urlSession(
+                            session,
+                            task: task,
+                            didReceive: trust.authenticationChallenge(),
+                            completionHandler: { disposition, credential in
+                                if shouldAddException {
+                                    XCTAssertEqual(disposition, .useCredential)
+                                    XCTAssertNotNil(credential)
+                                    XCTAssertTrue(SecTrustEvaluateWithError(trust, nil))
+                                } else {
+                                    XCTAssertEqual(disposition, .rejectProtectionSpace)
+                                    XCTAssertNil(credential)
+                                }
+
+                                networkSemaphore.signal()
+                            }
+                        )
+                    }
+                }
+
+                networkSemaphore.wait()
+
+                if shouldAddException {
+                    return HTTPStubsResponse(data: #""result""#.data(using: .utf8)!, statusCode: 200, headers: [:])
+                } else {
+                    return HTTPStubsResponse(error: URLError(.secureConnectionFailed))
+                }
+            })
+
+            if shouldAddException {
+                XCTAssertEqual(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)), "result")
+            } else {
+                XCTAssertThrowsError(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)))
+            }
+
+            HTTPStubs.removeStub(stub)
         }
     }
 
@@ -719,6 +806,74 @@ class WebhookManagerTests: XCTestCase {
 
         // but we do want to make sure the network call actually took place
         wait(for: [networkExpectation], timeout: 10.0)
+    }
+
+    func testSendPersistentProtectionSpace() throws {
+        // we want to fail through both regular & background, when failing
+        Current.isBackgroundRequestsImmediate = { false }
+
+        for shouldAddException in [true, false] {
+            let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+            let networkSemaphore = DispatchSemaphore(value: 0)
+
+            let trust = try SecTrust.unitTestDotExampleDotCom1
+
+            if shouldAddException {
+                api1.server.info.connection.securityExceptions.add(for: trust)
+            } else {
+                api1.server.info.connection.securityExceptions = .init()
+            }
+
+            let manager = manager!
+
+            let stub = stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+                for session in [
+                    manager.currentRegularSessionInfo.session,
+                    manager.currentBackgroundSessionInfo.session,
+                ] {
+                    session.getAllTasks { [manager] tasks in
+                        guard let task = tasks.first, tasks.count == 1 else {
+                            // in the other session
+                            return
+                        }
+
+                        manager.urlSession(
+                            session,
+                            task: task,
+                            didReceive: trust.authenticationChallenge(),
+                            completionHandler: { disposition, credential in
+                                if shouldAddException {
+                                    XCTAssertEqual(disposition, .useCredential)
+                                    XCTAssertNotNil(credential)
+                                    XCTAssertTrue(SecTrustEvaluateWithError(trust, nil))
+                                } else {
+                                    XCTAssertEqual(disposition, .rejectProtectionSpace)
+                                    XCTAssertNil(credential)
+                                }
+
+                                networkSemaphore.signal()
+                            }
+                        )
+                    }
+                }
+
+                networkSemaphore.wait()
+
+                if shouldAddException {
+                    return HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: nil)
+                } else {
+                    return HTTPStubsResponse(error: URLError(.secureConnectionFailed))
+                }
+            })
+
+            if shouldAddException {
+                XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+            } else {
+                XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest)))
+            }
+
+            HTTPStubs.removeStub(stub)
+        }
     }
 
     private func sendDidFinishEvents(for sessionInfo: WebhookSessionInfo) {

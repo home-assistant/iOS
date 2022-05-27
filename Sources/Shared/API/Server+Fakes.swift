@@ -13,7 +13,8 @@ internal extension ServerInfo {
                 webhookSecret: nil,
                 internalSSIDs: nil,
                 internalHardwareAddresses: nil,
-                isLocalPushEnabled: true
+                isLocalPushEnabled: true,
+                securityExceptions: .init()
             ),
             token: .init(
                 accessToken: "FakeAccessToken",

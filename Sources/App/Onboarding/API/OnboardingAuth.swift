@@ -130,7 +130,7 @@ class OnboardingAuth {
                 }.then { [self] in
                     login.open(authDetails: authDetails, sender: sender)
                 }.then { [self] code in
-                    configuredAPI(instance: instance, code: code)
+                    configuredAPI(authDetails: authDetails, instance: instance, code: code)
                 }.recover { newError -> Promise<HomeAssistantAPI> in
                     if idx == 0 {
                         // we're the first/internal url, so our error should break the placeholder one
@@ -147,12 +147,13 @@ class OnboardingAuth {
     }
 
     private func configuredAPI(
+        authDetails: OnboardingAuthDetails,
         instance: DiscoveredHomeAssistant,
         code: String
     ) -> Promise<HomeAssistantAPI> {
         Current.Log.info()
 
-        var connectionInfo = ConnectionInfo(discovered: instance)
+        var connectionInfo = ConnectionInfo(discovered: instance, authDetails: authDetails)
 
         return tokenExchange.tokenInfo(
             code: code,
@@ -190,7 +191,7 @@ class OnboardingAuth {
 }
 
 private extension ConnectionInfo {
-    init(discovered: DiscoveredHomeAssistant) {
+    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails) {
         self.init(
             externalURL: discovered.externalURL,
             internalURL: discovered.internalURL,
@@ -200,7 +201,8 @@ private extension ConnectionInfo {
             webhookSecret: nil,
             internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
             internalHardwareAddresses: Current.connectivity.currentNetworkHardwareAddress().map { [$0] },
-            isLocalPushEnabled: true
+            isLocalPushEnabled: true,
+            securityExceptions: authDetails.exceptions
         )
 
         // default cloud to on

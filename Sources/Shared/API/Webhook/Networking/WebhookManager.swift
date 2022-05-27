@@ -75,6 +75,12 @@ public class WebhookManager: NSObject {
         }
     }
 
+    private var serverForEphemeralTask: [TaskKey: Server] = [:] {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
 
     internal var serverCache = [Identifier<Server>: Server]()
@@ -215,8 +221,25 @@ public class WebhookManager: NSObject {
                     Self.urlRequest(for: request, server: server)
                 }.get { _, _ in
                     Current.Log.info("sending to \(server.identifier): \(request)")
-                }.then(on: dataQueue) { urlRequest, data in
-                    self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
+                }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
+                    let (promise, seal) = Promise<(Data, URLResponse)>.pending()
+                    let task = currentRegularSessionInfo.session.uploadTask(
+                        with: urlRequest,
+                        from: data,
+                        completionHandler: { data, response, error in
+                            if let data = data, let response = response {
+                                seal.fulfill((data, response))
+                            } else {
+                                seal.resolve(nil, error)
+                            }
+                        }
+                    )
+                    let taskKey = TaskKey(sessionInfo: currentRegularSessionInfo, task: task)
+                    serverForEphemeralTask[taskKey] = server
+                    task.resume()
+                    return promise.ensure(on: dataQueue) { [self] in
+                        serverForEphemeralTask[taskKey] = nil
+                    }
                 }
             }
         }.then { data, response in
@@ -534,7 +557,35 @@ extension WebhookManager: URLSessionDelegate {
     }
 }
 
-extension WebhookManager: URLSessionDataDelegate {
+extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
+    private func server(for persisted: WebhookPersisted) -> Server? {
+        serverCache[persisted.server] ?? Current.servers.server(for: persisted.server)
+    }
+
+    public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        let potentialServer: Server?
+
+        if let (_, persisted) = responseInfo(from: task), let server = server(for: persisted) {
+            potentialServer = server
+        } else {
+            let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: task)
+            potentialServer = serverForEphemeralTask[taskKey]
+        }
+
+        if let server = potentialServer {
+            let result = server.info.connection.evaluate(challenge)
+            completionHandler(result.0, result.1)
+        } else {
+            Current.Log.error("couldn't locate server for \(task)")
+            completionHandler(.performDefaultHandling, nil)
+        }
+    }
+
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: dataTask)
         pendingDataForTask[taskKey, default: Data()].append(data)
@@ -553,7 +604,7 @@ extension WebhookManager: URLSessionDataDelegate {
 
         // dispatch
         if let (handlerType, persisted) = responseInfo(from: task),
-           let server = serverCache[persisted.server] ?? Current.servers.server(for: persisted.server) {
+           let server = server(for: persisted) {
             let result = Promise<Data?> { seal in
                 let data = self.pendingDataForTask[taskKey]
                 self.pendingDataForTask.removeValue(forKey: taskKey)

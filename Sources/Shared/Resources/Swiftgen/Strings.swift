@@ -741,6 +741,14 @@ public enum L10n {
         /// HTTP Basic Authentication is unsupported.
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.basic_auth.description") }
       }
+      public enum CertificateError {
+        /// Don't Trust
+        public static var actionDontTrust: String { return L10n.tr("Localizable", "onboarding.connection_test_result.certificate_error.action_dont_trust") }
+        /// Trust Certificate
+        public static var actionTrust: String { return L10n.tr("Localizable", "onboarding.connection_test_result.certificate_error.action_trust") }
+        /// Failed to connect securely
+        public static var title: String { return L10n.tr("Localizable", "onboarding.connection_test_result.certificate_error.title") }
+      }
       public enum ClientCertificate {
         /// Client Certificate Authentication is not supported.
         public static var description: String { return L10n.tr("Localizable", "onboarding.connection_test_result.client_certificate.description") }

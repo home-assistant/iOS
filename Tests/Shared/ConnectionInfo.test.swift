@@ -14,7 +14,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         Current.connectivity.currentWiFiSSID = { nil }
@@ -44,7 +45,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         info.useCloud = false
@@ -71,7 +73,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         XCTAssertEqual(info.activeURL(), url)
@@ -109,7 +112,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -147,7 +151,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -175,7 +180,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         XCTAssertEqual(info.activeURL(), remoteURL)
@@ -221,7 +227,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -269,7 +276,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         // valid override states
@@ -319,7 +327,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         XCTAssertEqual(info.activeURL(), URL(string: "http://homeassistant.local:8123"))
@@ -341,7 +350,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: ["unit_tests"],
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         Current.connectivity.currentWiFiSSID = { nil }
@@ -369,7 +379,8 @@ class ConnectionInfoTests: XCTestCase {
             webhookSecret: nil,
             internalSSIDs: nil,
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: false
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
         )
 
         let oldVersion = Version(major: 2022, minor: 2)

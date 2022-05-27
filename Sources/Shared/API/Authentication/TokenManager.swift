@@ -53,7 +53,8 @@ public class TokenManager {
     ) -> Promise<TokenInfo> {
         AuthenticationAPI.fetchToken(
             authorizationCode: code,
-            baseURL: connectionInfo.activeURL()
+            baseURL: connectionInfo.activeURL(),
+            exceptions: connectionInfo.securityExceptions
         )
     }
 

@@ -407,6 +407,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     func webView(
         _ webView: WKWebView,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        let result = server.info.connection.evaluate(challenge)
+        completionHandler(result.0, result.1)
+    }
+
+    func webView(
+        _ webView: WKWebView,
         createWebViewWith configuration: WKWebViewConfiguration,
         for navigationAction: WKNavigationAction,
         windowFeatures: WKWindowFeatures

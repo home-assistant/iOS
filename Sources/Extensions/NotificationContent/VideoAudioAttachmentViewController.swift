@@ -71,7 +71,7 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
     }
 
     func start() -> Promise<Void> {
-        let controller = with(CameraStreamHLSViewController(url: attachmentURL)) {
+        let controller = with(CameraStreamHLSViewController(api: api, url: attachmentURL)) {
             var lastState: CameraStreamHandlerState?
             $0.didUpdateState = { [extensionContext] state in
                 guard lastState != state else {

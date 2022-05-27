@@ -66,7 +66,17 @@ public class HomeAssistantAPI {
         self.connection = HAKit.connection(configuration: .init(
             connectionInfo: {
                 do {
-                    return try .init(url: server.info.connection.activeURL(), userAgent: HomeAssistantAPI.userAgent)
+                    return try .init(
+                        url: server.info.connection.activeURL(),
+                        userAgent: HomeAssistantAPI.userAgent,
+                        evaluateCertificate: { secTrust, completion in
+                            completion(
+                                Swift.Result<Void, Error> {
+                                    try server.info.connection.securityExceptions.evaluate(secTrust)
+                                }
+                            )
+                        }
+                    )
                 } catch {
                     Current.Log.error("couldn't create connection info: \(error)")
                     return nil
@@ -82,7 +92,8 @@ public class HomeAssistantAPI {
         ))
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
-            interceptor: newInterceptor()
+            interceptor: newInterceptor(),
+            trustManager: newServerTrustManager()
         )
         self.manager = manager
 
@@ -102,7 +113,8 @@ public class HomeAssistantAPI {
     private static func configureSessionManager(
         urlConfig: URLSessionConfiguration = .default,
         delegate: SessionDelegate = SessionDelegate(),
-        interceptor: Interceptor = .init()
+        interceptor: Interceptor = .init(),
+        trustManager: ServerTrustManager? = nil
     ) -> Session {
         let configuration = urlConfig
 
@@ -110,7 +122,12 @@ public class HomeAssistantAPI {
         headers["User-Agent"] = Self.userAgent
         configuration.httpAdditionalHeaders = headers
 
-        return Alamofire.Session(configuration: configuration, delegate: delegate, interceptor: interceptor)
+        return Alamofire.Session(
+            configuration: configuration,
+            delegate: delegate,
+            interceptor: interceptor,
+            serverTrustManager: trustManager
+        )
     }
 
     private func newInterceptor() -> Interceptor {
@@ -125,10 +142,15 @@ public class HomeAssistantAPI {
         )
     }
 
+    private func newServerTrustManager() -> ServerTrustManager {
+        CustomServerTrustManager(server: server)
+    }
+
     public func VideoStreamer() -> MJPEGStreamer {
         MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: MJPEGStreamerSessionDelegate(),
-            interceptor: newInterceptor()
+            interceptor: newInterceptor(),
+            trustManager: newServerTrustManager()
         ))
     }
 
