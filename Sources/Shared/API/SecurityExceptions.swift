@@ -11,6 +11,8 @@ public struct SecurityExceptions: Codable, Equatable {
         self.exceptions = exceptions
     }
 
+    public var hasExceptions: Bool { !exceptions.isEmpty }
+
     public mutating func add(for secTrust: SecTrust) {
         exceptions.append(.init(secTrust: secTrust))
     }

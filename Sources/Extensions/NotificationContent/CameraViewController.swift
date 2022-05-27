@@ -129,8 +129,7 @@ class CameraViewController: UIViewController, NotificationCategory {
     ) -> Promise<UIViewController & CameraStreamHandler> {
         var accumulatedErrors = [Error]()
         var promise: Promise<UIViewController & CameraStreamHandler> = .init(
-            error:
-            CameraViewControllerError.noControllers
+            error: CameraViewControllerError.noControllers
         )
 
         for nextPromise in controllerPromises {

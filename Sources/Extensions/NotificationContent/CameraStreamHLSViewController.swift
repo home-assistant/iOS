@@ -5,6 +5,7 @@ import Shared
 import UIKit
 
 class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
+    let api: HomeAssistantAPI
     let url: URL
     let playerViewController: AVPlayerViewController
     let promise: Promise<Void>
@@ -32,10 +33,11 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         }
 
         let url = api.server.info.connection.activeURL().appendingPathComponent(path)
-        self.init(url: url)
+        self.init(api: api, url: url)
     }
 
-    init(url: URL) {
+    init(api: HomeAssistantAPI, url: URL) {
+        self.api = api
         self.url = url
         self.playerViewController = AVPlayerViewController()
         (self.promise, self.seal) = Promise<Void>.pending()
@@ -101,7 +103,25 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     private func setupVideo() {
         try? AVAudioSession.sharedInstance().setCategory(.playback)
 
-        let videoPlayer = AVPlayer(url: url)
+        let asset: AVURLAsset
+
+        if api.server.info.connection.securityExceptions.hasExceptions {
+            asset = .init(url: url, options: [
+                // from WebKit, which has the same behavioral requirements we have
+                // see https://cs.github.com/WebKit/WebKit/blob/f822d46cdb31d1d3df1915a99c0413acbcb06fd1/Source/WebCore/platform/graphics/avfoundation/objc/MediaPlayerPrivateAVFoundationObjC.mm?q=resourceloaderdelegate#L894
+                // without this, we can't load the video content (non-playlists) of the hls stream, which means
+                // we cannot support security exceptions, because auth challenges do not occur
+                "AVURLAssetUseClientURLLoadingExclusively": true,
+                "AVURLAssetRequiresCustomURLLoadingKey": true,
+            ])
+        } else {
+            asset = .init(url: url)
+        }
+
+        asset.resourceLoader.setDelegate(self, queue: .main)
+
+        let playerItem = AVPlayerItem(asset: asset)
+        let videoPlayer = AVPlayer(playerItem: playerItem)
         playerViewController.player = videoPlayer
 
         // assume 16:9
@@ -142,5 +162,40 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
             self?.lastSize = sizes?.first
         })
+    }
+}
+
+extension CameraStreamHLSViewController: AVAssetResourceLoaderDelegate {
+    func resourceLoader(
+        _ resourceLoader: AVAssetResourceLoader,
+        shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest
+    ) -> Bool {
+        // this is only invoked when we force custom url handling above, for use with auth challenges, because
+        // auth challenges do not work in AVFoundation (for as many years as i can find dev forums posts)
+        // not happening here: taking the loadingRequest.dataRequest.requestedOffset and handling it + requestedLength
+        api.manager.streamRequest(loadingRequest.request).validate().responseStream(stream: { stream in
+            switch stream.event {
+            case let .complete(completion):
+                // not happening here: contentInformationRequest handling
+                if let error = completion.error {
+                    loadingRequest.finishLoading(with: error)
+                } else {
+                    loadingRequest.finishLoading()
+                }
+            case let .stream(.success(data)):
+                loadingRequest.dataRequest?.respond(with: data)
+            }
+        })
+
+        return true
+    }
+
+    @objc public func resourceLoader(
+        _ resourceLoader: AVAssetResourceLoader,
+        shouldWaitForResponseTo authenticationChallenge: URLAuthenticationChallenge
+    ) -> Bool {
+        // this method is not invoked in any situation. though it probably should be.
+        // if this starts working, we can stop doing custom resource loading above
+        false
     }
 }
