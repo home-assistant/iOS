@@ -315,7 +315,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.developer.copy_realm.alert.message" = "Realm disalin dari %@ ke %@";
 "settings.developer.copy_realm.alert.title" = "Realm yang Disalin";
 "settings.developer.copy_realm.title" = "Salin Realm dari grup aplikasi ke Dokumen";
-"settings.developer.crashlytics_test.fatal.notification.body" = "NOTE: This will not work if the debugger is connected! When you press OK, the app will crash. You must then re-open the app and wait up to 5 minutes for the crash to appear in the console";
+"settings.developer.crashlytics_test.fatal.notification.body" = "CATATAN: Ini tidak akan berfungsi jika debugger sedang terhubung! Ketika Anda menekan Oke, aplikasi akan macet. Setelah itu Anda harus membuka kembali aplikasi dan menunggu hingga 5 menit hingga peristiwa macet tersebut muncul di konsol";
 "settings.developer.crashlytics_test.fatal.notification.title" = "Akan mogok";
 "settings.developer.crashlytics_test.fatal.title" = "Uji Kesalahan Fatal Crashlytics";
 "settings.developer.crashlytics_test.non_fatal.notification.body" = "Ketika Anda menekan oke, kesalahan non-fatal akan dikirim ke Crashlytics. Mungkin perlu waktu hingga 5 menit untuk muncul di konsol.";
@@ -591,7 +591,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "watch.configurator.rows.ring.value.title" = "Nilai pecahan";
 "watch.configurator.rows.template.selector_title" = "Pilih templat";
 "watch.configurator.rows.template.title" = "Templat";
-"watch.configurator.sections.gauge.footer" = "The gauge to display in the complication.";
+"watch.configurator.sections.gauge.footer" = "Gauge yang akan ditampilkan dalam komplikasi.";
 "watch.configurator.sections.gauge.header" = "Gauge";
 "watch.configurator.sections.icon.footer" = "Gambar yang akan ditampilkan dalam komplikasi.";
 "watch.configurator.sections.icon.header" = "Ikon";

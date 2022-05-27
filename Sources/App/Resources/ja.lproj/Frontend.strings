@@ -6,7 +6,7 @@
 "panel::logbook" = "ログブック";
 "panel::mailbox" = "メールボックス";
 "panel::map" = "地図";
-"panel::media_browser" = "メディアブラウザ";
+"panel::media_browser" = "メディア";
 "panel::profile" = "プロファイル";
-"panel::shopping_list" = "買い物リスト";
+"panel::shopping_list" = "ショッピングリスト";
 "panel::states" = "オーバービュー";

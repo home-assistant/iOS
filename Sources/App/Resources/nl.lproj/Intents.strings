@@ -3,7 +3,7 @@
 "2b0Uo4" = "Service";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Bijgewerkt";
-"4tpAXn" = "Even ter bevestiging, u wilde ' ${server} '?";
+"4tpAXn" = "Ter bevestiging, je wilde ' ${server} '?";
 "5ZzwZD" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
 "5bVvn0" = "Kan locatie niet bijwerken: ${error}";
 "637QjD" = "Fout";
@@ -27,7 +27,7 @@
 "HSLcG7" = "Gebeurtenisnaam";
 "HoH8wg" = "Acties";
 "J3qct4" = "Server";
-"JBMp1T" = "Even ter bevestiging, u wilde ' ${server} '?";
+"JBMp1T" = "Ter bevestiging, je wilde ' ${server} '?";
 "KHH48D" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
 "KJS2jk" = "Mislukt: ${error}";
 "KM7mXC" = "Actie";
@@ -62,8 +62,8 @@
 "ZT9Mld" = "Gebeurtenisnaam";
 "ZmUm9Q" = "Welk sjabloon wilt u weergeven?";
 "Zoqsph" = "Pagina";
-"aXZJt9" = "Even ter bevestiging, u wilde ' ${server} '?";
-"am5G4A" = "Even ter bevestiging, u wilde ' ${server} '?";
+"aXZJt9" = "Ter bevestiging, je wilde ' ${server} '?";
+"am5G4A" = "Ter bevestiging, je wilde ' ${server} '?";
 "cK9jdK" = "Mislukt: ${error}";
 "cLmTme" = "Actie";
 "cuflz3" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
@@ -110,7 +110,7 @@
 "r6LXFe" = "Mislukt";
 "rFSNpu" = "Klaar";
 "rOlW1x" = "Welke locatie wilt u verzenden?";
-"rU3vhT" = "Serveridentificatie";
+"rU3vhT" = "Serveridentiteit";
 "sNFoWe" = "Welke camera?";
 "sQJAJS" = "Fout";
 "sfDGvk" = "Gerenderde Sjabloon";
