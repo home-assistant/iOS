@@ -1,3 +1,4 @@
+import Alamofire
 import Eureka
 import Foundation
 import HAKit
@@ -172,7 +173,8 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        let connection = Current.api(for: server).connection
+        let api = Current.api(for: server)
+        let connection = api.connection
 
         accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
             guard let self = self else { return }
@@ -180,7 +182,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             self.cachedUserName = user.name
             self.updateCell()
 
-            var lastTask: URLSessionDataTask? {
+            var lastTask: Request? {
                 didSet {
                     oldValue?.cancel()
                     lastTask?.resume()
@@ -204,15 +206,15 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     }
                 }.map { path throws -> URL in
                     let url = server.info.connection.activeURL().appendingPathComponent(path)
-                    if let lastTask = lastTask, lastTask.error == nil, lastTask.originalRequest?.url == url {
+                    if let lastTask = lastTask, lastTask.error == nil, lastTask.request?.url == url {
                         throw FetchAvatarError.alreadySet
                     }
                     return url
                 }.then { url -> Promise<Data> in
                     Promise<Data> { seal in
-                        lastTask = URLSession.shared.dataTask(with: url, completionHandler: { data, _, error in
-                            seal.resolve(data, error)
-                        })
+                        lastTask = api.manager.download(url).validate().responseData { result in
+                            seal.resolve(result.result)
+                        }
                     }
                 }.map { data throws -> UIImage in
                     if let image = UIImage(data: data) {
