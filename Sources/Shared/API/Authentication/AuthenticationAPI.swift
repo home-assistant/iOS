@@ -20,9 +20,18 @@ public class AuthenticationAPI {
     let server: Server
     let session: Session
 
+    private static func configuration(credentialStorage: CustomURLCredentialStorage) -> URLSessionConfiguration {
+        with(URLSessionConfiguration.ephemeral) {
+            $0.urlCredentialStorage = credentialStorage
+        }
+    }
+
     init(server: Server) {
         self.server = server
-        self.session = Session(serverTrustManager: CustomServerTrustManager(server: server))
+        self.session = Session(
+            configuration: Self.configuration(credentialStorage: .init(server: server)),
+            serverTrustManager: CustomServerTrustManager(server: server)
+        )
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
@@ -70,7 +79,10 @@ public class AuthenticationAPI {
         baseURL: URL,
         exceptions: SecurityExceptions
     ) -> Promise<TokenInfo> {
-        let session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
+        let session = Session(
+            configuration: Self.configuration(credentialStorage: .init(exceptions: exceptions)),
+            serverTrustManager: CustomServerTrustManager(exceptions: exceptions)
+        )
 
         return Promise { seal in
             let routeInfo = RouteInfo(

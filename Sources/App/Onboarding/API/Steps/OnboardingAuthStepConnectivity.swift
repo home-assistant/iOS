@@ -1,3 +1,4 @@
+import CoreServices
 import Foundation
 import PromiseKit
 import QuickLook
@@ -165,13 +166,92 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
             clientCertificateErrorOccurred[task.taskIdentifier] = true
-            completionHandler(.performDefaultHandling, nil)
+
+            let alert = UIAlertController(title: "Client certificate requested", message: "A client certificate was requested. Do you wish to provide one?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Choose Certificate", style: .default, handler: { [sender, authDetails] _ in
+                let document: UIDocumentPickerViewController
+
+                if #available(iOS 14, *) {
+                    document = .init(forOpeningContentTypes: [
+                        .pkcs12
+                    ], asCopy: false)
+                } else {
+                    document = .init(documentTypes: [ kUTTypePKCS12 as String ], in: .open)
+                }
+
+                let delegate = OnboardingAuthStepConnectivityDocumentPickerHandler()
+                document.delegate = delegate
+
+                delegate.promise.ensure {
+                    withExtendedLifetime(delegate) {
+                        // keep it around
+                    }
+                }.get { [authDetails] data in
+                    print("*** cert ***: \(data)")
+                    do {
+                        let identity = try SecurityIdentity(data: data!, passphrase: "")
+                        authDetails.exceptions.identity = identity
+
+                        let result = authDetails.exceptions.evaluate(challenge)
+                        completionHandler(result.0, result.1)
+                    } catch SecurityIdentity.IdentityError.incorrectPassphrase {
+                        fatalError()
+                    }
+                }.catch { error in
+                    completionHandler(.cancelAuthenticationChallenge, nil)
+                    pendingResolver.reject(error)
+                }
+
+                sender.present(document, animated: true, completion: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Continue Without Certificate", style: .cancel, handler: { _ in
+                completionHandler(.performDefaultHandling, nil)
+            }))
+            sender.present(alert, animated: true, completion: nil)
         default:
             pendingResolver
                 .reject(OnboardingAuthError(kind: .authenticationUnsupported(
                     challenge.protectionSpace.authenticationMethod
                 )))
             completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
+}
+
+class OnboardingAuthStepConnectivityDocumentPickerHandler: NSObject, UIDocumentPickerDelegate {
+    let promise: Promise<Data?>
+    private let seal: Resolver<Data?>
+
+    override init() {
+        (promise, seal) = Promise<Data?>.pending()
+        super.init()
+    }
+
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        seal.reject(PMKError.cancelled)
+    }
+
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let url = urls.first else {
+            seal.fulfill(nil)
+            return
+        }
+
+        let didStartSecurityScoped = url.startAccessingSecurityScopedResource()
+        let coordinator = NSFileCoordinator()
+
+        var error: NSError?
+        coordinator.coordinate(readingItemAt: url, error: &error) { url in
+            seal.resolve(Swift.Result { try Data(contentsOf: url) })
+        }
+
+        if let error = error {
+            // if it was successful, it would have resolved the result
+            seal.reject(error)
+        }
+
+        if didStartSecurityScoped {
+            url.stopAccessingSecurityScopedResource()
         }
     }
 }

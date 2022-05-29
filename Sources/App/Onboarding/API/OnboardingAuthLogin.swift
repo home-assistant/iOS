@@ -2,9 +2,120 @@ import AuthenticationServices
 import Foundation
 import PromiseKit
 import Shared
+import WebKit
 
 protocol OnboardingAuthLogin {
     func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String>
+}
+
+class OnboardingAuthLoginViewController: UIViewController, WKNavigationDelegate {
+    let authDetails: OnboardingAuthDetails
+    let promise: Promise<URL>
+    private let resolver: Resolver<URL>
+
+    init(authDetails: OnboardingAuthDetails) {
+        (self.promise, self.resolver) = Promise<URL>.pending()
+        self.authDetails = authDetails
+        super.init(nibName: nil, bundle: nil)
+
+        title = "Login"
+
+        if #available(iOS 13, *) {
+            isModalInPresentation = true
+
+            let appearance = with(UINavigationBarAppearance()) {
+                $0.configureWithDefaultBackground()
+            }
+
+            navigationItem.standardAppearance = appearance
+            navigationItem.scrollEdgeAppearance = appearance
+            navigationItem.compactAppearance = appearance
+
+            if #available(iOS 15, *) {
+                navigationItem.compactScrollEdgeAppearance = appearance
+            }
+        }
+
+        navigationItem.leftBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel)),
+        ]
+
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refresh)),
+        ]
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError() }
+    
+
+    @objc private func cancel() {
+        resolver.reject(PMKError.cancelled)
+    }
+
+    @objc private func refresh() {
+        webView?.load(.init(url: authDetails.url))
+    }
+
+    private var webView: WKWebView?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let configuration = WKWebViewConfiguration()
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        self.webView = webView
+        webView.navigationDelegate = self
+
+        if #available(iOS 15, *) {
+            setContentScrollView(webView.scrollView)
+        }
+
+        if #available(iOS 13, *) {
+            view.backgroundColor = .systemBackground
+        } else {
+            view.backgroundColor = .white
+        }
+
+        edgesForExtendedLayout = []
+
+        view.addSubview(webView)
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+
+        refresh()
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        let result = authDetails.exceptions.evaluate(challenge)
+        completionHandler(result.0, result.1)
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        resolver.reject(error)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        if let url = navigationAction.request.url, url.scheme?.hasPrefix("homeassistant") == true {
+            resolver.fulfill(url)
+            decisionHandler(.cancel)
+        } else {
+            decisionHandler(.allow)
+        }
+    }
 }
 
 class OnboardingAuthLoginImpl: OnboardingAuthLogin {
@@ -17,79 +128,29 @@ class OnboardingAuthLoginImpl: OnboardingAuthLogin {
         }
     }
 
+    enum OnboardingAuthLoginError: Error {
+        case invalidURL
+    }
+
     func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String> {
         Current.Log.verbose(authDetails.url)
 
-        class PresentationDelegate: NSObject, ASWebAuthenticationPresentationContextProviding {
-            let view: UIView
-            init(view: UIView) {
-                self.view = view
-                super.init()
+        let controller = OnboardingAuthLoginViewController(authDetails: authDetails)
+        let navigationController = UINavigationController(rootViewController: controller)
+        sender.present(navigationController, animated: true, completion: nil)
+
+        return controller.promise.map { url in
+            if let code = url.queryItems?["code"] {
+                return code
+            } else {
+                throw OnboardingAuthLoginError.invalidURL
             }
-
-            func presentationAnchor(for: ASWebAuthenticationSession) -> ASPresentationAnchor {
-                view.window ?? UIWindow()
-            }
-        }
-
-        var (promise, resolver) = Promise<String>.pending()
-        let session = authenticationSessionClass.init(
-            url: authDetails.url,
-            callbackURLScheme: authDetails.scheme,
-            completionHandler: { url, error in
-                if let error = error as? ASWebAuthenticationSessionError, error.code == .canceledLogin {
-                    resolver.reject(PMKError.cancelled)
-                } else {
-                    resolver.resolve(url?.queryItems?["code"], error)
-                }
-            }
-        )
-
-        var delegate: PresentationDelegate? = PresentationDelegate(view: sender.view)
-        var presentationSession: ASWebAuthenticationSession? = session
-
-        if #available(iOS 13.0, *) {
-            session.presentationContextProvider = delegate
-            session.prefersEphemeralWebBrowserSession = true
-        }
-
-        session.start()
-
-        if Current.isCatalyst {
-            let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [promise] _ in
-                guard !promise.isResolved else { return }
-
-                let alert = UIAlertController(
-                    title: L10n.Onboarding.Connect.MacSafariWarning.title,
-                    message: L10n.Onboarding.Connect.MacSafariWarning.message,
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: { _ in
-                    session.cancel()
-                }))
-                sender.present(alert, animated: true, completion: nil)
-
-                promise.ensure {
-                    if sender.presentedViewController == alert {
-                        sender.dismiss(animated: true, completion: nil)
-                    }
-                }.cauterize()
-            }
-            macPresentTimer = timer
-
-            promise = promise.ensure {
-                timer.invalidate()
+        }.ensureThen {
+            Guarantee<Void> { seal in
+                navigationController.dismiss(animated: true, completion: {
+                    seal(())
+                })
             }
         }
-
-        promise = promise.ensure {
-            // keep the session and its presentation context around until it's done
-            withExtendedLifetime(presentationSession) { /* avoiding warnings of write-only */ }
-
-            delegate = nil
-            presentationSession = nil
-        }
-
-        return promise
     }
 }

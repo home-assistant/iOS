@@ -139,6 +139,8 @@
 		114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
+		114FBFFD28433D0900EE6BE6 /* CustomURLCredentialStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FBFFC28433D0900EE6BE6 /* CustomURLCredentialStorage.swift */; };
+		114FBFFE28433D0900EE6BE6 /* CustomURLCredentialStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FBFFC28433D0900EE6BE6 /* CustomURLCredentialStorage.swift */; };
 		11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
@@ -1210,6 +1212,7 @@
 		114CBAEC283AB92D00A9BAFF /* SecTrust+TestAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SecTrust+TestAdditions.swift"; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
+		114FBFFC28433D0900EE6BE6 /* CustomURLCredentialStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomURLCredentialStorage.swift; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
 		115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicContainerView.swift; sourceTree = "<group>"; };
 		115560E227010DAB00A8F818 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
@@ -2218,6 +2221,7 @@
 				117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */,
 				11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */,
 				114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */,
+				114FBFFC28433D0900EE6BE6 /* CustomURLCredentialStorage.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -3461,7 +3465,6 @@
 				1120C57E274638330046C38B /* PerServerContainer.swift */,
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
-				11B6774C28303D35006E9B1A /* HASecTrustException.swift */,
 				11B6774C28303D35006E9B1A /* SecurityExceptions.swift */,
 			);
 			path = API;
@@ -5539,6 +5542,7 @@
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
+				114FBFFE28433D0900EE6BE6 /* CustomURLCredentialStorage.swift in Sources */,
 				11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
@@ -5733,6 +5737,7 @@
 				11F2F27E258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
 				1148A45024E9AF9200345050 /* MDIMigration.swift in Sources */,
 				110ED58F25A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
+				114FBFFD28433D0900EE6BE6 /* CustomURLCredentialStorage.swift in Sources */,
 				116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */,
 				11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,

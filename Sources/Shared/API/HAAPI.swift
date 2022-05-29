@@ -93,7 +93,8 @@ public class HomeAssistantAPI {
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
             interceptor: newInterceptor(),
-            trustManager: newServerTrustManager()
+            trustManager: newServerTrustManager(),
+            credentialStorage: newCredentialStorage()
         )
         self.manager = manager
 
@@ -114,9 +115,11 @@ public class HomeAssistantAPI {
         urlConfig: URLSessionConfiguration = .default,
         delegate: SessionDelegate = SessionDelegate(),
         interceptor: Interceptor = .init(),
-        trustManager: ServerTrustManager? = nil
+        trustManager: ServerTrustManager? = nil,
+        credentialStorage: URLCredentialStorage? = nil
     ) -> Session {
         let configuration = urlConfig
+        configuration.urlCredentialStorage = credentialStorage
 
         var headers = configuration.httpAdditionalHeaders ?? [:]
         headers["User-Agent"] = Self.userAgent
@@ -146,11 +149,16 @@ public class HomeAssistantAPI {
         CustomServerTrustManager(server: server)
     }
 
+    private func newCredentialStorage() -> CustomURLCredentialStorage {
+        CustomURLCredentialStorage(server: server)
+    }
+
     public func VideoStreamer() -> MJPEGStreamer {
         MJPEGStreamer(manager: HomeAssistantAPI.configureSessionManager(
             delegate: MJPEGStreamerSessionDelegate(),
             interceptor: newInterceptor(),
-            trustManager: newServerTrustManager()
+            trustManager: newServerTrustManager(),
+            credentialStorage: newCredentialStorage()
         ))
     }
 
