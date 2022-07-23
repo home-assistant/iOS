@@ -57,7 +57,7 @@ class LastUpdateSensorTests: XCTestCase {
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].UniqueID, "last_update_trigger")
         XCTAssertEqual(sensors[0].Name, "Last Update Trigger")
-        XCTAssertEqual(sensors[0].Icon, "mdi:desktop-mac")
+        XCTAssertEqual(sensors[0].Icon, "mdi:monitor")
         XCTAssertEqual(sensors[0].State as? String, "Manual")
     }
 
@@ -76,7 +76,7 @@ class LastUpdateSensorTests: XCTestCase {
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].UniqueID, "last_update_trigger")
         XCTAssertEqual(sensors[0].Name, "Last Update Trigger")
-        XCTAssertEqual(sensors[0].Icon, "mdi:desktop-mac")
+        XCTAssertEqual(sensors[0].Icon, "mdi:monitor")
         XCTAssertEqual(sensors[0].State as? String, "Manual")
     }
 }
