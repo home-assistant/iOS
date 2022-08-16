@@ -10,3 +10,6 @@ Metrics/BlockLength:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
