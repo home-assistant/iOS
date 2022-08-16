@@ -3461,7 +3461,6 @@
 				1120C57E274638330046C38B /* PerServerContainer.swift */,
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
-				11B6774C28303D35006E9B1A /* HASecTrustException.swift */,
 				11B6774C28303D35006E9B1A /* SecurityExceptions.swift */,
 			);
 			path = API;
