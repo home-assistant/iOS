@@ -203,6 +203,9 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.connection_error.title" = "Tilkobling mislyktes";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Godkjenningstypen støttes ikke%@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic-godkjenning støttes ikke.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Ikke stol på";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Klareringssertifikat";
+"onboarding.connection_test_result.certificate_error.title" = "Kunne ikke koble til på en sikker måte";
 "onboarding.connection_test_result.client_certificate.description" = "Klientsertifikatgodkjenning støttes ikke.";
 "onboarding.connection_test_result.error_code" = "Feilkode:";
 "onboarding.connection_test_result.local_network_permission.description" = "Personverntillatelse for «Lokalt nettverk» kan ha blitt nektet. Du kan endre dette i appen for systeminnstillinger.";
@@ -288,7 +291,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.connection_section.location_send_type.title" = "Plassering sendt";
 "settings.connection_section.logged_in_as" = "Pålogget som";
 "settings.connection_section.remote_ui_url.title" = "Ekstern UI URL";
-"settings.connection_section.sensor_send_type.setting.all" = "Alt";
+"settings.connection_section.sensor_send_type.setting.all" = "Alle";
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
 "settings.connection_section.sensor_send_type.title" = "Sensorer sendt";
 "settings.connection_section.servers" = "Servere";
@@ -386,7 +389,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.general.app_icon.enum.white" = "Hvit";
 "settings_details.general.app_icon.title" = "App-ikon";
 "settings_details.general.device_name.title" = "Enhetsnavn";
-"settings_details.general.full_screen.title" = "Full skjerm";
+"settings_details.general.full_screen.title" = "Fullskjerm";
 "settings_details.general.launch_on_login.title" = "Start appen ved pålogging";
 "settings_details.general.menu_bar_text.title" = "Tekst på menylinjen";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";

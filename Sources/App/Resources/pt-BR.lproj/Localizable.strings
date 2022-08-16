@@ -203,6 +203,9 @@
 "onboarding.connection_error.title" = "Falha ao conectar";
 "onboarding.connection_test_result.authentication_unsupported.description" = "O tipo de autenticação não tem suporte%@.";
 "onboarding.connection_test_result.basic_auth.description" = "A autenticação básica HTTP não tem suporte.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Não confiar";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Certificado de Confiança";
+"onboarding.connection_test_result.certificate_error.title" = "Falha ao conectar com segurança";
 "onboarding.connection_test_result.client_certificate.description" = "A autenticação de certificado de cliente não é suportada.";
 "onboarding.connection_test_result.error_code" = "Erro de código:";
 "onboarding.connection_test_result.local_network_permission.description" = "A permissão de privacidade da \"Rede Local\" pode ter sido negada. Você pode alterar isso no aplicativo em Configurações do sistema.";

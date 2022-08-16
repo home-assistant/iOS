@@ -203,6 +203,9 @@
 "onboarding.connection_error.title" = "Connessione fallita";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Il tipo di autenticazione non è supportato %@.";
 "onboarding.connection_test_result.basic_auth.description" = "L'autenticazione di base HTTP non è supportata.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Non fidarti";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Certificati di fiducia";
+"onboarding.connection_test_result.certificate_error.title" = "Impossibile connettersi in modo sicuro";
 "onboarding.connection_test_result.client_certificate.description" = "Autenticazione del certificato client non è supportata.";
 "onboarding.connection_test_result.error_code" = "Codice di errore:";
 "onboarding.connection_test_result.local_network_permission.description" = "L'autorizzazione alla privacy \"Rete locale\" potrebbe essere stata negata. Puoi modificarla nell'app Impostazioni di sistema.";

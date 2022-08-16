@@ -203,6 +203,9 @@
 "onboarding.connection_error.title" = "Bağlantı başarısız";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Kimlik doğrulama türü desteklenmiyor %@ .";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Temel Kimlik Doğrulaması desteklenmiyor.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Güvenme";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Güven Sertifikası";
+"onboarding.connection_test_result.certificate_error.title" = "Güvenli bir şekilde bağlanılamadı";
 "onboarding.connection_test_result.client_certificate.description" = "İstemci Sertifikası Kimlik Doğrulaması desteklenmez.";
 "onboarding.connection_test_result.error_code" = "Hata Kodu:";
 "onboarding.connection_test_result.local_network_permission.description" = "\"Yerel Ağ\" gizlilik izni reddedilmiş olabilir. Bunu sistem Ayarları uygulamasında değiştirebilirsiniz.";

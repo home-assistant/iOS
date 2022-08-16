@@ -203,6 +203,9 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_error.title" = "No se ha podido conectar";
 "onboarding.connection_test_result.authentication_unsupported.description" = "El tipo de autenticación no es compatible %@.";
 "onboarding.connection_test_result.basic_auth.description" = "La autenticación básica HTTP no es compatible.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Don't Trust";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Trust Certificate";
+"onboarding.connection_test_result.certificate_error.title" = "Failed to connect securely";
 "onboarding.connection_test_result.client_certificate.description" = "La autenticación de certificado de cliente no es compatible.";
 "onboarding.connection_test_result.error_code" = "Código de error:";
 "onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";

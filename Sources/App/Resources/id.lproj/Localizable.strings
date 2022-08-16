@@ -203,6 +203,9 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.connection_error.title" = "Gagal Terhubung";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Jenis autentikasi tidak didukung %@.";
 "onboarding.connection_test_result.basic_auth.description" = "Autentikasi HTTP Basic tidak didukung.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Jangan Percayai";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Percayai Sertifikat";
+"onboarding.connection_test_result.certificate_error.title" = "Gagal terhubung secara aman";
 "onboarding.connection_test_result.client_certificate.description" = "Autentikasi Sertifikat Klien tidak didukung.";
 "onboarding.connection_test_result.error_code" = "Kode Kesalahan:";
 "onboarding.connection_test_result.local_network_permission.description" = "Izin privasi \"Jaringan Lokal\" mungkin telah ditolak. Anda dapat mengubahnya di aplikasi Pengaturan sistem.";
