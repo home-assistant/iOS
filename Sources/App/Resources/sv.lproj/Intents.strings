@@ -37,7 +37,7 @@
 "Lgymq2" = "Which service?";
 "LsEMMg" = "Ikon";
 "MTPojJ" = "What is the event name?";
-"MwEpGz" = "Done";
+"MwEpGz" = "Klar";
 "N9iJpK" = "Get Camera Image";
 "NdG9Jz" = "Renders the Home Assistant template";
 "NsbUTz" = "Camera Entity";
@@ -49,7 +49,7 @@
 "RsOw3P" = "Successfully rendered template";
 "T06Fka" = "Öppna en sida i frontend";
 "U4u9Xz" = "Det finns ${count} alternativ som matchar '${server}'.";
-"ULka1b" = "Actions";
+"ULka1b" = "Åtgärder";
 "VP2XpM" = "Event Data";
 "Wk7m4V" = "Server";
 "X02YQ2" = "${action}";
@@ -72,7 +72,7 @@
 "f1KX0Q" = "View and run actions";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Which action?";
-"fnz838" = "Sensors updated";
+"fnz838" = "Sensorer uppdaterade";
 "foI0Fv" = "Failed: Home Assistant is not currently reachable";
 "fuRWMi" = "Send ${location} to Home Assistant";
 "g8g7Af" = "Perform the action";
@@ -80,7 +80,7 @@
 "gePUyy" = "Location";
 "glRCfJ" = "Failed: Home Assistant is not currently reachable";
 "gv7Gg6" = "Location";
-"h1xQ53" = "Update Sensors";
+"h1xQ53" = "Uppdatera sensorer";
 "hKNPaD" = "Server";
 "hLFNfv" = "Failed: ${error}";
 "hsrlTY" = "Get a single still frame from a camera";
@@ -89,7 +89,7 @@
 "jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
 "kGB23u" = "Perform Action";
 "l2coEc" = "Vilken server?";
-"lGqSSG" = "Failed to update sensors.";
+"lGqSSG" = "Missyckades att uppdatera sensorer.";
 "lNmaCR" = "Template";
 "lxHlyQ" = "Fire Event";
 "mAibJP" = "Failed: Home Assistant is not currently reachable";
@@ -102,16 +102,16 @@
 "oIWFyR" = "Failed: ${error}";
 "onq5yE" = "Misslyckades att anropa tjänsten med fel: ${error}";
 "pQhTjo" = "Failed: Home Assistant is not currently reachable";
-"pjQR7t" = "Update Sensors";
+"pjQR7t" = "Uppdatera sensorer";
 "qYpzmu" = "Vilka sidor?";
 "qayMH6" = "Call Service";
 "qzje4k" = "Failed: ${error}";
 "r32M7N" = "Failed: ${error}";
-"r6LXFe" = "Failed";
+"r6LXFe" = "Misslyckades";
 "rFSNpu" = "Done";
 "rOlW1x" = "What location do you want to send?";
 "rU3vhT" = "Serveridentifierare";
-"sNFoWe" = "Which camera?";
+"sNFoWe" = "Vilken kamera?";
 "sQJAJS" = "Error";
 "sfDGvk" = "Rendered Template";
 "tycImk" = "Performs an action defined in the app";

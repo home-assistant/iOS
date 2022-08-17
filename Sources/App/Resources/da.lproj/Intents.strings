@@ -1,10 +1,10 @@
 "0aqrcy" = "Failed: ${error}";
 "2KWKqM" = "Mislykkedes: Home Assistant er ikke tilgængelig";
-"2b0Uo4" = "Service";
+"2b0Uo4" = "Tjeneste";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Opdateret";
 "4tpAXn" = "Bekræft venligt valg af '${server}'?";
-"5ZzwZD" = "Failed: Home Assistant is not currently reachable";
+"5ZzwZD" = "Mislykkedes: Home Assistant er ikke tilgængelig i øjeblikket";
 "5bVvn0" = "Failed to update location: ${error}";
 "637QjD" = "Fejl";
 "6ozAdN" = "Kamerabillede";
@@ -20,7 +20,7 @@
 "DqfwpO" = "Server";
 "DsasVx" = "Fejl";
 "EWqRDj" = "Mislykkedes: ${error}";
-"FBQiVD" = "Call a service on the Home Assistant instance";
+"FBQiVD" = "Kald en tjeneste på Home Assistant-instansen";
 "FZ9qkT" = "Render Template";
 "FtQqoU" = "Lokalitet opdateret";
 "HCM8Oe" = "Afsend ${eventName} med data";
@@ -28,7 +28,7 @@
 "HoH8wg" = "Handlinger";
 "J3qct4" = "Server";
 "JBMp1T" = "Bekræft venligt valg af '${server}'?";
-"KHH48D" = "Failed: Home Assistant is not currently reachable";
+"KHH48D" = "Mislykkedes: Home Assistant er ikke tilgængelig i øjeblikket";
 "KJS2jk" = "Failed: ${error}";
 "KM7mXC" = "Handling";
 "KSmKl0" = "Kaldte ${domain}.${service}";
@@ -104,11 +104,11 @@
 "pQhTjo" = "Fejl: Home Assistant er ikke tilgængelig i øjeblikket";
 "pjQR7t" = "Opdater sensorer";
 "qYpzmu" = "Hvilke sider?";
-"qayMH6" = "Call Service";
+"qayMH6" = "Kald tjeneste";
 "qzje4k" = "Failed: ${error}";
 "r32M7N" = "Mislykkedes: ${error}";
 "r6LXFe" = "Mislykkedes";
-"rFSNpu" = "Done";
+"rFSNpu" = "Færdig";
 "rOlW1x" = "Hvilken lokalitet vil du sende?";
 "rU3vhT" = "Server-id";
 "sNFoWe" = "Hvilket kamera?";

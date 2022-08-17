@@ -203,6 +203,9 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.connection_error.title" = "Verbindung fehlgeschlagen";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Authentifizierungsart wird nicht unterstützt %@.";
 "onboarding.connection_test_result.basic_auth.description" = "Die HTTP-Basisauthentifizierung wird nicht unterstützt.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Nicht vertrauen";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Zertifikat vertrauen";
+"onboarding.connection_test_result.certificate_error.title" = "Sichere Verbindung fehlgeschlagen";
 "onboarding.connection_test_result.client_certificate.description" = "Die Client-Zertifikatauthentifizierung wird nicht unterstützt.";
 "onboarding.connection_test_result.error_code" = "Fehlercode:";
 "onboarding.connection_test_result.local_network_permission.description" = "Die Datenschutzgenehmigung \"Lokales Netzwerk\" wurde möglicherweise verweigert. Sie können dies in der App \"Systemeinstellungen\" ändern.";

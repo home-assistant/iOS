@@ -203,6 +203,9 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.connection_error.title" = "Kunne ikke oprette forbindelse";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Autentificeringstype understøttes ikke %@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic-autentificering understøttes ikke.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Stol ikke på certifikat";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Stol på certifikat";
+"onboarding.connection_test_result.certificate_error.title" = "Kunne ikke oprette en sikker forbindelse";
 "onboarding.connection_test_result.client_certificate.description" = "Klientcertifikatgodkendelse understøttes ikke.";
 "onboarding.connection_test_result.error_code" = "Fejlkode:";
 "onboarding.connection_test_result.local_network_permission.description" = "Privatlivstilladelse til \"Local Network\" kan være blevet nægtet. Du kan ændre dette under Systemindstillinger.";
@@ -448,7 +451,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Nulstiller mærket til 0, hver gang du starter appen.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisk";
-"settings_details.notifications.badge_section.button.title" = "Nulstil badge til 0";
+"settings_details.notifications.badge_section.button.title" = "Nulstil badge";
 "settings_details.notifications.categories.deprecated_note" = "Kategorier er ikke længere påkrævet for notifikationer og vil blive fjernet i en fremtidig version.";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.categories_synced.empty" = "Ingen synkroniserede kategorier";
@@ -519,7 +522,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_sensors.focus_permission.title" = "Fokus-tilladelse";
 "settings_sensors.last_updated.footer" = "Sidst opdateret %@";
 "settings_sensors.loading_error.title" = "Sensorer kunne ikke indlæses";
-"settings_sensors.periodic_update.description" = "Når aktiveret, opdateres disse sensorer, når appen har været konstant åben i så lang tid.";
+"settings_sensors.periodic_update.description" = "Når aktiveret, opdateres disse sensorer, med denne frekvens, når appen er åben.";
 "settings_sensors.periodic_update.description_mac" = "Når dette er aktiveret, opdateres sensorer med den angivne frekvens, mens appen er åben. Nogle sensorer opdateres automatisk hyppigere.";
 "settings_sensors.periodic_update.off" = "Fra";
 "settings_sensors.periodic_update.title" = "Periodisk opdatering";

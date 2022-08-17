@@ -70,7 +70,7 @@
 "client_events.view.clear" = "Wyczyść";
 "client_events.view.clear_confirm.message" = "Tego nie można cofnąć.";
 "client_events.view.clear_confirm.title" = "Czy na pewno chcesz wyczyścić wszystkie wydarzenia?";
-"continue_label" = "Continue";
+"continue_label" = "Kontynuuj";
 "copy_label" = "Kopiuj";
 "database.problem.delete" = "Usuń bazę i opuść aplikację";
 "database.problem.quit" = "Zamknij aplikację";
@@ -201,6 +201,9 @@
 "onboarding.connection_error.title" = "Nie udało się połączyć";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Typ uwierzytelnienia nie jest obsługiwany %@.";
 "onboarding.connection_test_result.basic_auth.description" = "Podstawowe uwierzytelnianie HTTP nie jest obsługiwane.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Nie ufaj";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Zaufaj";
+"onboarding.connection_test_result.certificate_error.title" = "Nie udało się połączyć bezpiecznie";
 "onboarding.connection_test_result.client_certificate.description" = "Uwierzytelnianie certyfikatu klienta nie jest obsługiwane.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
 "onboarding.connection_test_result.local_network_permission.description" = "Uprawnienie do prywatności \"Sieć lokalna\" mogło zostać odrzucone. Można to zmienić w systemowej aplikacji Ustawienia.";
@@ -243,7 +246,7 @@
 "onboarding.scanning.discovered_announcement" = "Odkryto: %@";
 "onboarding.scanning.manual" = "Wprowadź adres ręcznie";
 "onboarding.scanning.manual_hint" = "Nie możesz znaleźć swojego serwera?";
-"onboarding.scanning.title" = "Scanning for Servers";
+"onboarding.scanning.title" = "Wyszukiwanie serwerów Home Assistanta";
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
