@@ -1,4 +1,5 @@
 import Foundation
+import CoreGraphics
 
 // Must be @objc so we get the same reference in memory, since we're not directly loading the bundle
 @objc(MacBridge) public protocol MacBridge: NSObjectProtocol {

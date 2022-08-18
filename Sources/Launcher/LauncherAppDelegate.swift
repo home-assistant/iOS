@@ -29,7 +29,7 @@ class LauncherAppDelegate: NSObject, NSApplicationDelegate {
                 print("failed to launch app: \(error)")
             }
 
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 didFinishLaunchingMainApp()
             }
         }
