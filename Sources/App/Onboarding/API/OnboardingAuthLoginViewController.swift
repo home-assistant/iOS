@@ -1,7 +1,7 @@
-import WebKit
-import UIKit
 import PromiseKit
 import Shared
+import UIKit
+import WebKit
 
 class OnboardingAuthLoginViewController: UIViewController, WKNavigationDelegate {
     let authDetails: OnboardingAuthDetails
@@ -42,7 +42,6 @@ class OnboardingAuthLoginViewController: UIViewController, WKNavigationDelegate 
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
-
 
     @objc private func cancel() {
         resolver.reject(PMKError.cancelled)
@@ -112,4 +111,3 @@ class OnboardingAuthLoginViewController: UIViewController, WKNavigationDelegate 
         }
     }
 }
-
