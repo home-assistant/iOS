@@ -107,6 +107,7 @@
 		1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5772751BDD900640E38 /* ServerManager.test.swift */; };
 		1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F531253A1E7400F371BE /* ComplicationListViewController.swift */; };
 		1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */; };
+		113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113199DB28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift */; };
 		1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
 		1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */; };
 		1133F5F625F1DBF000AD776F /* CLLocation+Sanitize.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */; };
@@ -1190,6 +1191,7 @@
 		1130A5772751BDD900640E38 /* ServerManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManager.test.swift; sourceTree = "<group>"; };
 		1130F531253A1E7400F371BE /* ComplicationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationListViewController.swift; sourceTree = "<group>"; };
 		1130F57D253A2ED500F371BE /* ComplicationFamilySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationFamilySelectViewController.swift; sourceTree = "<group>"; };
+		113199DB28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthLoginViewController.swift; sourceTree = "<group>"; };
 		1133F59B25F1DA5D00AD776F /* CLLocation+Sanitize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.swift"; sourceTree = "<group>"; };
 		1133F5E425F1DBEA00AD776F /* CLLocation+Sanitize.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Sanitize.test.swift"; sourceTree = "<group>"; };
 		11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSensor.swift; sourceTree = "<group>"; };
@@ -2307,6 +2309,7 @@
 				1168BF32271809C600DD4D15 /* OnboardingAuthError.swift */,
 				1185DF95271FBB9800ED7D9A /* OnboardingAuthLogin.swift */,
 				116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */,
+				113199DB28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5268,6 +5271,7 @@
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
 				11B7ECDB274DA531009AD634 /* ServerSelectViewController.swift in Sources */,
+				113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */,
 				11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
 				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
