@@ -12,10 +12,12 @@ class OnboardingAuthLoginImpl: OnboardingAuthLogin {
         case invalidURL
     }
 
+    var loginViewControllerClass: OnboardingAuthLoginViewController.Type = OnboardingAuthLoginViewControllerImpl.self
+
     func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<String> {
         Current.Log.verbose(authDetails.url)
 
-        let controller = OnboardingAuthLoginViewController(authDetails: authDetails)
+        let controller = loginViewControllerClass.init(authDetails: authDetails)
         let navigationController = UINavigationController(rootViewController: controller)
         sender.present(navigationController, animated: true, completion: nil)
 

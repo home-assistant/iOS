@@ -3,12 +3,17 @@ import Shared
 import UIKit
 import WebKit
 
-class OnboardingAuthLoginViewController: UIViewController, WKNavigationDelegate {
+protocol OnboardingAuthLoginViewController: UIViewController {
+    var promise: Promise<URL> { get }
+    init(authDetails: OnboardingAuthDetails)
+}
+
+class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLoginViewController, WKNavigationDelegate {
     let authDetails: OnboardingAuthDetails
     let promise: Promise<URL>
     private let resolver: Resolver<URL>
 
-    init(authDetails: OnboardingAuthDetails) {
+    required init(authDetails: OnboardingAuthDetails) {
         (self.promise, self.resolver) = Promise<URL>.pending()
         self.authDetails = authDetails
         super.init(nibName: nil, bundle: nil)

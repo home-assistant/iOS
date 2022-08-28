@@ -387,6 +387,7 @@
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C8E8AD24F36535003E7F89 /* DeviceWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */; };
 		11C8E8AE24F3778E003E7F89 /* DeviceWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */; };
+		11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C95E3528BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift */; };
 		11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */; };
 		11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */; };
 		11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */; };
@@ -1431,6 +1432,7 @@
 		11C590EC24A832CA0066085D /* YamlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamlSection.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
 		11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWrapper.swift; sourceTree = "<group>"; };
+		11C95E3528BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthLoginViewController.test.swift; sourceTree = "<group>"; };
 		11C9E43A2505B04E00492A88 /* HACoreAudioObjectSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACoreAudioObjectSystem.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.test.swift; sourceTree = "<group>"; };
@@ -2348,6 +2350,7 @@
 				11ED439927265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift */,
 				11ED439B2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift */,
 				11ED439F27279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift */,
+				11C95E3528BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -5350,6 +5353,7 @@
 			files = (
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
+				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
