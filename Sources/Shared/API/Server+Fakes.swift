@@ -42,7 +42,7 @@ internal extension Server {
     ) -> Server {
         var serverInfo = initial
         update(&serverInfo)
-        return Server(identifier: identifier, getter: { serverInfo }, setter: { serverInfo = $0 })
+        return Server(identifier: identifier, getter: { serverInfo }, setter: { serverInfo = $0; return true })
     }
 }
 

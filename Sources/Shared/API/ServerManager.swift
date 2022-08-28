@@ -287,7 +287,7 @@ internal final class ServerManagerImpl: ServerManager {
         identifier: Identifier<Server>,
         encoder: JSONEncoder,
         notify: @escaping () -> Void
-    ) -> (ServerInfo) -> Void {
+    ) -> (ServerInfo) -> Bool {
         { baseServerInfo in
             var serverInfo = baseServerInfo
 
@@ -295,16 +295,16 @@ internal final class ServerManagerImpl: ServerManager {
             // intentionally not in the lock
             _ = serverInfo.connection.activeURL()
 
-            cache.mutate { cache in
+            return cache.mutate { cache in
                 guard !cache.deletedServers.contains(identifier) else {
                     Current.Log.verbose("ignoring update to deleted server \(identifier)")
-                    return
+                    return false
                 }
 
                 let old = cache.info[identifier]
 
                 guard old != serverInfo || cache.restrictCaching else {
-                    return
+                    return false
                 }
 
                 keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: self.encoder)
@@ -315,6 +315,7 @@ internal final class ServerManagerImpl: ServerManager {
                 }
 
                 notify()
+                return true
             }
         }
     }

@@ -175,8 +175,8 @@ public final class Server: Hashable, Comparable, CustomStringConvertible {
         }
         set {
             let oldValue = getter()
-            setter(newValue)
-            if newValue != oldValue {
+            let didUpdate = setter(newValue)
+            if newValue != oldValue, didUpdate {
                 observers.values.forEach { observer in
                     DispatchQueue.main.async {
                         observer(newValue)
@@ -201,7 +201,7 @@ public final class Server: Hashable, Comparable, CustomStringConvertible {
     }
 
     public typealias Getter = () -> ServerInfo
-    public typealias Setter = (ServerInfo) -> Void
+    public typealias Setter = (ServerInfo) -> Bool
     public typealias Observer = (ServerInfo) -> Void
 
     private let getter: Getter
