@@ -166,7 +166,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         if let current = Current.connectivity.currentWiFiSSID(), zone.SSIDFilter.contains(current) {
             // If current SSID is in the filter list stop processing region event.
             // This is to cut down on false exits.
-            // https://github.com/home-assistant/home-assistant-iOS/issues/32
+            // https://github.com/home-assistant/iOS/issues/32
             return ignore(.ignoredSSID(current))
         }
 
