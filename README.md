@@ -18,12 +18,13 @@ cd iOS
 
 ## install cocoapods via homebrew, use that
 brew install cocoapods
+$(brew --prefix)/opt/ruby/bin/gem install cocoapods-acknowledgements
 pod install --repo-update
 
 ## install ruby via homebrew, use that
 brew install ruby@3.1
-/usr/local/opt/ruby@3.1/bin/bundle install
-/usr/local/opt/ruby@3.1/bin/bundle exec pod install --repo-update
+$(brew --prefix)/opt/ruby@3.1/bin/bundle install
+$(brew --prefix)/opt/ruby@3.1/bin/bundle exec pod install --repo-update
 
 ## install ruby via rbenv, use that
 brew install rbenv ruby-build
