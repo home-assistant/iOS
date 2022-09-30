@@ -21,9 +21,9 @@ brew install cocoapods
 pod install --repo-update
 
 ## install ruby via homebrew, use that
-brew install ruby@2.7
-/usr/local/opt/ruby@2.7/bin/bundle install
-/usr/local/opt/ruby@2.7/bin/bundle exec pod install --repo-update
+brew install ruby@3.1
+/usr/local/opt/ruby@3.1/bin/bundle install
+/usr/local/opt/ruby@3.1/bin/bundle exec pod install --repo-update
 
 ## install ruby via rbenv, use that
 brew install rbenv ruby-build

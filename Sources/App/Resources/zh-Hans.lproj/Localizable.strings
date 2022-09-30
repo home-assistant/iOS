@@ -202,6 +202,9 @@
 "onboarding.connection_error.title" = "连接失败";
 "onboarding.connection_test_result.authentication_unsupported.description" = "不支持的身份验证类型%@。";
 "onboarding.connection_test_result.basic_auth.description" = "不支持HTTP基本身份验证。";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Don't Trust";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Trust Certificate";
+"onboarding.connection_test_result.certificate_error.title" = "Failed to connect securely";
 "onboarding.connection_test_result.client_certificate.description" = "不支持客户端证书身份验证。";
 "onboarding.connection_test_result.error_code" = "错误代码：";
 "onboarding.connection_test_result.local_network_permission.description" = "\"本地网络\"许可可能已被拒绝。您可以在\"设置\"中更改此设置。";

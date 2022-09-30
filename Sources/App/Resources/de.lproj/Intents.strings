@@ -21,7 +21,7 @@
 "DsasVx" = "Fehler";
 "EWqRDj" = "Fehlgeschlagen: ${error}";
 "FBQiVD" = "Rufe einen Dienst in der Home Assistant-Instanz auf";
-"FZ9qkT" = "Render Template";
+"FZ9qkT" = "Vorlage rendern";
 "FtQqoU" = "Position aktualisiert";
 "HCM8Oe" = "Ereignis ${eventName} mit Daten auslösen";
 "HSLcG7" = "Event Name";

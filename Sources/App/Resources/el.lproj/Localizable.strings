@@ -203,6 +203,9 @@
 "onboarding.connection_error.title" = "Απέτυχε η σύνδεση";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Ο τύπος ελέγχου ταυτότητας δεν υποστηρίζεται%@.";
 "onboarding.connection_test_result.basic_auth.description" = "Ο βασικός έλεγχος ταυτότητας HTTP δεν υποστηρίζεται.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Μην εμπιστεύεστε";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Πιστοποιητικό εμπιστοσύνης";
+"onboarding.connection_test_result.certificate_error.title" = "Απέτυχε η ασφαλής σύνδεση";
 "onboarding.connection_test_result.client_certificate.description" = "Ο έλεγχος ταυτότητας πιστοποιητικού πελάτη δεν υποστηρίζεται.";
 "onboarding.connection_test_result.error_code" = "Κωδικός σφάλματος:";
 "onboarding.connection_test_result.local_network_permission.description" = "Η άδεια απορρήτου \"Τοπικό δίκτυο\" ενδέχεται να μην έχει χορηγηθεί. Μπορείτε να το αλλάξετε αυτό στην εφαρμογή Ρυθμίσεις του συστήματος.";

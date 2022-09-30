@@ -211,6 +211,33 @@ struct MDIMigration {
         "twitter_retweet": "repeat_variant",
         "voice_off": "account_voice_off",
         "xamarian_outline": "xamarian",
+
+        // 7
+        "android-messages": "message-text",
+        "book-variant-multiple": "bookmark-box-multiple",
+        "desktop-mac-dashboard": "monitor-dashboard",
+        "desktop-mac": "monitor",
+        "diving-scuba": "diving-scuba-mask",
+        "email-receive-outline": "email-arrow-left-outline",
+        "email-receive": "email-arrow-left",
+        "email-send-outline": "email-arrow-right-outline",
+        "email-send": "email-arrow-right",
+        "format-textdirection-l-to-r": "format-pilcrow-arrow-right",
+        "format-textdirection-r-to-l": "format-pilcrow-arrow-left",
+        "globe-light": "globe-light-outline",
+        "google-controller-off": "controller-off",
+        "google-controller": "controller",
+        "lecturn": "lectern",
+        "mosque": "mosque-outline",
+        "receipt-outline": "receipt-text-outline",
+        "receipt": "receipt-text",
+        "silo": "silo-outline",
+        "tablet-android": "tablet",
+        "text-to-speech-off": "microphone-message-off",
+        "text-to-speech": "microphone-message",
+        "timeline-help-outline": "timeline-question-outline",
+        "timeline-help": "timeline-question",
+        "vector-point": "vector-point-select",
     ]
 
     private static let removed = Set([
@@ -309,5 +336,9 @@ struct MDIMigration {
         "vk",
         "xing",
         "y_combinator",
+
+        // 7
+        "discord",
+        "google-home",
     ])
 }

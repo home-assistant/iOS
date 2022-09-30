@@ -16,14 +16,14 @@
 "BwZv3u" = "Quin servidor?";
 "CmlkE4" = "esdeveniment_drecera";
 "DFWJB8" = "Obre ${page}";
-"DdnZyl" = "Got the latest still from ${cameraID}";
+"DdnZyl" = "S'ha rebut l'última instantània de ${cameraID}";
 "DqfwpO" = "Servidor";
 "DsasVx" = "Error";
 "EWqRDj" = "Ha fallat: ${error}";
 "FBQiVD" = "Crida un servei de la instància de Home Assistant";
 "FZ9qkT" = "Renderitza la plantilla";
 "FtQqoU" = "Ubicació actualitzada";
-"HCM8Oe" = "Fire ${eventName} with data";
+"HCM8Oe" = "Dispara l'esdeveniment ${eventName} amb dades";
 "HSLcG7" = "Nom de l'esdeveniment";
 "HoH8wg" = "Accions";
 "J3qct4" = "Servidor";
@@ -91,7 +91,7 @@
 "l2coEc" = "Quin servidor?";
 "lGqSSG" = "No s'han pogut actualitzar els sensors.";
 "lNmaCR" = "Plantilla";
-"lxHlyQ" = "Fire Event";
+"lxHlyQ" = "Dispara un esdeveniment";
 "mAibJP" = "Ha Fallat: Home Assistant no està accessible actualment";
 "mJ6CrP" = "No s'ha pogut enviar ${eventName}: ${error}";
 "mZnRHS" = "${eventName} fired";
@@ -118,7 +118,7 @@
 "v7TSD5" = "Envia la ubicació";
 "vAIAF2" = "Envia una actualització del sensor a Home Assistant";
 "vebd70" = "Servidor";
-"wfPQQQ" = "Fire an event to the Home Assistant event bus";
+"wfPQQQ" = "Dispara un esdeveniment al bus d’esdeveniments del Home Assistant";
 "xfXG6b" = "Quin servidor?";
 "xhwpj4" = "Fet!";
 "ypnPyU" = "Realitza ${action}";

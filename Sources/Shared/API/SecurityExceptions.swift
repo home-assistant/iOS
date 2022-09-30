@@ -14,7 +14,9 @@ public struct SecurityExceptions: Codable, Equatable {
     public var hasExceptions: Bool { !exceptions.isEmpty }
 
     public mutating func add(for secTrust: SecTrust) {
-        exceptions.append(.init(secTrust: secTrust))
+        if let exception = SecurityException(secTrust: secTrust) {
+            exceptions.append(exception)
+        }
     }
 
     public func evaluate(_ secTrust: SecTrust) throws {
@@ -60,8 +62,12 @@ public struct SecurityExceptions: Codable, Equatable {
 public struct SecurityException: Codable, Equatable {
     private var data: Data
 
-    public init(secTrust: SecTrust) {
-        self.data = SecTrustCopyExceptions(secTrust) as Data
+    public init?(secTrust: SecTrust) {
+        if let data = SecTrustCopyExceptions(secTrust) as Data? {
+            self.data = data
+        } else {
+            return nil
+        }
     }
 
     public init(from decoder: Decoder) throws {

@@ -203,6 +203,9 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.connection_error.title" = "Failed to Connect";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Authentication type is unsupported%@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic Authentication is unsupported.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Don't Trust";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Trust Certificate";
+"onboarding.connection_test_result.certificate_error.title" = "Failed to connect securely";
 "onboarding.connection_test_result.client_certificate.description" = "Client Certificate Authentication is not supported.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
 "onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";

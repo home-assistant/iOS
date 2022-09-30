@@ -201,6 +201,9 @@
 "onboarding.connection_error.title" = "Failed to Connect";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Тип авторизации не поддерживается %@.";
 "onboarding.connection_test_result.basic_auth.description" = "Авторизация HTTP basic не поддерживается";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Don't Trust";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Trust Certificate";
+"onboarding.connection_test_result.certificate_error.title" = "Failed to connect securely";
 "onboarding.connection_test_result.client_certificate.description" = "Аутентификация по клиентскому сертификату не поддерживается.";
 "onboarding.connection_test_result.error_code" = "Error Code:";
 "onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";

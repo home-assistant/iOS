@@ -203,6 +203,9 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.connection_error.title" = "Kan geen verbinding maken";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Verificatietype wordt niet ondersteund %@.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP-basisverificatie wordt niet ondersteund.";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "Certificaat niet vertrouwen";
+"onboarding.connection_test_result.certificate_error.action_trust" = "Certificaat vertrouwen";
+"onboarding.connection_test_result.certificate_error.title" = "Kan geen veilige verbinding maken";
 "onboarding.connection_test_result.client_certificate.description" = "Verificatie van cliëntcertificaten wordt niet ondersteund.";
 "onboarding.connection_test_result.error_code" = "Foutcode:";
 "onboarding.connection_test_result.local_network_permission.description" = "De privacy toestemming \"Lokaal netwerk\" is mogelijk geweigerd. Je kan dit wijzigen in de systeem instellingen app.";

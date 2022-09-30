@@ -78,15 +78,14 @@ public extension Realm {
         // 17 - 2021-09-20 v2021.10 (added notification action key icon)
         // 18 - 2021-11-15 v2021.12 (added server identifier keys to various models)
         // 19 - 2021-11-27 v2021.12 (zone property renames)
-        let schemaVersion: UInt64 = 19
-        let mdiVersion = UInt64(MDIMigration.migrationNumber)
+        // 20…25 - 2022-08-13 v2022.x undoing realm automatic migration
+        // 26 - 2022-08-13 v2022.x bumping mdi version
+        let schemaVersion: UInt64 = 26
 
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: schemaVersion + mdiVersion,
-            migrationBlock: { migration, oldVersionIncludingMDI in
-                let oldVersion = oldVersionIncludingMDI - mdiVersion
-
+            schemaVersion: schemaVersion,
+            migrationBlock: { migration, oldVersion in
                 Current.Log.info("migrating from \(oldVersion)")
                 if oldVersion < 9 {
                     migration.enumerateObjects(ofType: NotificationAction.className()) { _, newObject in

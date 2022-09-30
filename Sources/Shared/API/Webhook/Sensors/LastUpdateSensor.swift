@@ -14,7 +14,7 @@ public class LastUpdateSensor: SensorProvider {
             if Current.device.systemModel().lowercased().contains("book") {
                 icon = "mdi:laptop"
             } else {
-                icon = "mdi:desktop-mac"
+                icon = "mdi:monitor"
             }
         } else {
             icon = "mdi:cellphone-wireless"
