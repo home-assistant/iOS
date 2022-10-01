@@ -395,6 +395,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System Default";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Open Links In";

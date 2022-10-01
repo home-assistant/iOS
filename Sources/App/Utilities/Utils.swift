@@ -33,6 +33,10 @@ func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
         OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
     case .Firefox where OpenInFirefoxControllerSwift().isFirefoxInstalled():
         OpenInFirefoxControllerSwift().openInFirefox(urlToOpen)
+    case .FirefoxFocus where OpenInFirefoxControllerSwift(type: .focus).isFirefoxInstalled():
+        OpenInFirefoxControllerSwift(type: .focus).openInFirefox(urlToOpen)
+    case .FirefoxKlar where OpenInFirefoxControllerSwift(type: .klar).isFirefoxInstalled():
+        OpenInFirefoxControllerSwift(type: .klar).openInFirefox(urlToOpen)
     case .SafariInApp where sender != nil:
         let sfv = SFSafariViewController(url: urlToOpen)
         sender!.present(sfv, animated: true)

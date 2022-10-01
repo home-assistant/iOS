@@ -1313,6 +1313,10 @@ public enum L10n {
         public static var `default`: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.default") }
         /// Mozilla Firefox
         public static var firefox: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefox") }
+        /// Mozilla Firefox Focus
+        public static var firefoxFocus: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefoxFocus") }
+        /// Mozilla Firefox Klar
+        public static var firefoxKlar: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefoxKlar") }
         /// Apple Safari
         public static var safari: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.safari") }
         /// Apple Safari (in app)
