@@ -1324,6 +1324,10 @@ public enum L10n {
         /// Open Links In
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.title") }
       }
+      public enum OpenInPrivateTab {
+        /// Open in Private Tab
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.open_in_private_tab.title") }
+      }
       public enum PageZoom {
         /// %@ (Default)
         public static func `default`(_ p1: Any) -> String {

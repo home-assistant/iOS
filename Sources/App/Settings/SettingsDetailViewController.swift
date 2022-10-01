@@ -201,6 +201,21 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
                 }
 
+                <<< SwitchRow("openInPrivateTab") {
+                    $0.hidden = .function(["openInBrowser"], { form in
+                        if let row = form
+                            .rowBy(tag: "openInBrowser") as? PushRow<OpenInBrowser> {
+                            return row.value?.supportsPrivateTabs == false
+                        } else {
+                            return true
+                        }
+                    })
+                    $0.title = L10n.SettingsDetails.General.OpenInPrivateTab.title
+                    $0.value = prefs.bool(forKey: "openInPrivateTab")
+                }.onChange { row in
+                    prefs.setValue(row.value, forKey: "openInPrivateTab")
+                }
+
                 <<< SwitchRow("confirmBeforeOpeningUrl") {
                     $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
                     $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
@@ -949,6 +964,15 @@ enum OpenInBrowser: String, CaseIterable {
             return OpenInFirefoxControllerSwift(type: .klar).isFirefoxInstalled()
         default:
             return true
+        }
+    }
+
+    var supportsPrivateTabs: Bool {
+        switch self {
+        case .Firefox:
+            return true
+        default:
+            return false
         }
     }
 }
