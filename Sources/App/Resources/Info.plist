@@ -581,6 +581,8 @@
 		<string>twitter</string>
 		<string>shortcuts</string>
 		<string>firefox</string>
+		<string>firefox-focus</string>
+		<string>firefox-klar</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

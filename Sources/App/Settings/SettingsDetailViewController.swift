@@ -911,6 +911,8 @@ enum AppIcon: String, CaseIterable {
 enum OpenInBrowser: String, CaseIterable {
     case Chrome
     case Firefox
+    case FirefoxFocus
+    case FirefoxKlar
     case Safari
     case SafariInApp
 
@@ -920,6 +922,10 @@ enum OpenInBrowser: String, CaseIterable {
             return L10n.SettingsDetails.General.OpenInBrowser.chrome
         case .Firefox:
             return L10n.SettingsDetails.General.OpenInBrowser.firefox
+        case .FirefoxFocus:
+            return L10n.SettingsDetails.General.OpenInBrowser.firefoxFocus
+        case .FirefoxKlar:
+            return L10n.SettingsDetails.General.OpenInBrowser.firefoxKlar
         case .Safari:
             if #available(iOS 14, *) {
                 return L10n.SettingsDetails.General.OpenInBrowser.default
@@ -937,6 +943,10 @@ enum OpenInBrowser: String, CaseIterable {
             return OpenInChromeController.sharedInstance.isChromeInstalled()
         case .Firefox:
             return OpenInFirefoxControllerSwift().isFirefoxInstalled()
+        case .FirefoxFocus:
+            return OpenInFirefoxControllerSwift(type: .focus).isFirefoxInstalled()
+        case .FirefoxKlar:
+            return OpenInFirefoxControllerSwift(type: .klar).isFirefoxInstalled()
         default:
             return true
         }
