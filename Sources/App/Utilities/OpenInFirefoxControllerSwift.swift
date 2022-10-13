@@ -45,11 +45,12 @@ open class OpenInFirefoxControllerSwift {
         app.canOpenURL(URL(string: "\(type.urlScheme)://")!)
     }
 
-    open func openInFirefox(_ url: URL) {
+    open func openInFirefox(_ url: URL, privateTab: Bool = false) {
         let scheme = url.scheme
         if scheme == "http" || scheme == "https" {
             let escaped = encodeByAddingPercentEscapes(url.absoluteString)
-            if let firefoxURL = URL(string: "\(self.type.urlScheme)://open-url?url=\(escaped)") {
+            if let firefoxURL =
+                URL(string: "\(self.type.urlScheme)://open-url?\(privateTab ? "private=true&" : "")url=\(escaped)") {
                 app.open(firefoxURL, options: [:], completionHandler: nil)
             }
         }
