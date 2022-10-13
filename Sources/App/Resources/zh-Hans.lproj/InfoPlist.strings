@@ -1,6 +1,6 @@
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
+"NFCReaderUsageDescription" = "读取和写入 NFC 标签可让您触发事件。";
 "NSCameraUsageDescription" = "拍照并将其发送到您的Home Assistant服务器。";
-"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
+"NSCrossWebsiteTrackingUsageDescription" = "如果您的配置需要，可以选择启用跨网站跟踪。";
 "NSFocusStatusUsageDescription" = "以传感器形式报告您的专注模式状态。";
 "NSLocalNetworkUsageDescription" = "定位并与您的 Home Assistant 实例通信。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "我们建议选择“始终允许”以获得最佳位置体验。选择“使用应用期间”时，iBeacons，地理围栏，后台位置更新和准确性报告等功能将无法使用。";

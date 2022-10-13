@@ -66,7 +66,7 @@
 "am5G4A" = "確認のために、 ‘${server}’ が必要ですか？";
 "cK9jdK" = "失敗: ${error}";
 "cLmTme" = "アクション";
-"cuflz3" = "Failed: Home Assistant is not currently reachable";
+"cuflz3" = "失敗しました: Home Assistantに現在アクセスできません";
 "dFHPYK" = "${action} を実行しました";
 "eObn2i" = "ページ";
 "f1KX0Q" = "アクションの表示と実行";
@@ -109,7 +109,7 @@
 "r32M7N" = "失敗: ${error}";
 "r6LXFe" = "失敗しました";
 "rFSNpu" = "完了";
-"rOlW1x" = "What location do you want to send?";
+"rOlW1x" = "どの場所に送信しますか？";
 "rU3vhT" = "サーバー識別子";
 "sNFoWe" = "どのカメラ？";
 "sQJAJS" = "エラー";
@@ -118,7 +118,7 @@
 "v7TSD5" = "場所を送信";
 "vAIAF2" = "センサーの更新をHome Assistantに送信する";
 "vebd70" = "サーバー";
-"wfPQQQ" = "Fire an event to the Home Assistant event bus";
+"wfPQQQ" = "Home Assistantのイベントバスにイベントを発生させる";
 "xfXG6b" = "どのサーバーですか？";
 "xhwpj4" = "完了";
 "ypnPyU" = "${action} を実行";

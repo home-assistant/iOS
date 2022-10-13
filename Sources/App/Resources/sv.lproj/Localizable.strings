@@ -279,7 +279,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Add New Hardware Address";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
 "settings.connection_section.internal_url_hardware_addresses.header" = "Hardware Addresses";
-"settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardware addresses must look like aa:bb:cc:dd:ee:ff";
+"settings.connection_section.internal_url_hardware_addresses.invalid" = "Hårdvaruadresser måste se ut så här aa:bb:cc:dd:ee:ff";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Lägg till nytt SSID";
 "settings.connection_section.internal_url_ssids.footer" = "Internt URL kommer att användas vid anslutning till angivna SSID";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
@@ -395,9 +395,12 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System Default";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Open Links In";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@ (Default)";
 "settings_details.general.page_zoom.title" = "Page Zoom";
 "settings_details.general.pinch_to_zoom.title" = "Nyp för att zooma";
