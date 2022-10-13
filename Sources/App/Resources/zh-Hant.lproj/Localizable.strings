@@ -75,7 +75,7 @@
 "database.problem.delete" = "刪除資料數據並退出 App";
 "database.problem.quit" = "退出 App";
 "database.problem.title" = "資料數據錯誤";
-"debug_section_label" = "除錯";
+"debug_section_label" = "回報錯誤";
 "delete" = "刪除";
 "done_label" = "完成";
 "error_label" = "錯誤";
@@ -395,9 +395,12 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "系統預設";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "開啟連結方式";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@（預設）";
 "settings_details.general.page_zoom.title" = "頁面大小";
 "settings_details.general.pinch_to_zoom.title" = "手指拖拉縮放";

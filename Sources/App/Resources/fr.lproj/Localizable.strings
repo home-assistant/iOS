@@ -395,9 +395,12 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Défaut du système";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (dans l'application)";
 "settings_details.general.open_in_browser.title" = "Ouvrir les liens dans";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@ (par défaut)";
 "settings_details.general.page_zoom.title" = "Zoom sur la page";
 "settings_details.general.pinch_to_zoom.title" = "Pincer pour zoomer";

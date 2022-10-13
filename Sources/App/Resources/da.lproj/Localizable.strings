@@ -182,7 +182,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "notifications_configurator.category.rows.actions.footer" = "Kategorier kan maksimalt have 10 handlinger.";
 "notifications_configurator.category.rows.actions.header" = "Handlinger";
 "notifications_configurator.category.rows.category_summary.default" = "%%u notifikationer i %%@";
-"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng til den oversigtsbeskrivelse, der bruges, når systemet grupperer kategoriens notifikationer. Du kan valgfrit bruge '%%u' til at vise antallet af notifkationer i gruppen og '%%@' til at vise det resume, der er angivet i push-payload.";
+"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for den sammenfattende beskrivelse, der bruges, når systemet grupperer kategoriens meddelelser. Du kan valgfrit bruge '%%u ' til at vise antallet af meddelelser i gruppen og '%%@ ' til at vise det sammenfattende argument, der er angivet i push-nyttelasten.";
 "notifications_configurator.category.rows.category_summary.header" = "Kategori-resume";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u notifikationer";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne tekst vises kun, hvis du har skjult notifikationseksempler. Brug '%%u' for antallet af meddelelser med samme trådidentifikator.";
@@ -395,9 +395,12 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Systemstandard";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (i app)";
 "settings_details.general.open_in_browser.title" = "Åbn links i";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
 "settings_details.general.page_zoom.title" = "Sidezoom";
 "settings_details.general.pinch_to_zoom.title" = "Knib sammen for at zoome";
@@ -477,7 +480,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.notifications.rate_limits.delivered" = "Leverede";
 "settings_details.notifications.rate_limits.errors" = "Fejl";
 "settings_details.notifications.rate_limits.footer" = "Du har mulighed for 300 push-notifikationer pr. 24 timer. Forbrugsgrænser nulstilles ved midnat Universel koordineret tid (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Du har mulighed for at sende %u push-notifikationer pr. 24 timer. Forbrugstælleren nulstilles ved midnat Universel koordineret tid (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Du er tilladt %u push-meddelelser pr. 24 timer. Takstgrænser nulstilles ved midnat Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.header" = "Forbrugsgrænser";
 "settings_details.notifications.rate_limits.resets_in" = "Nulstiller om";
 "settings_details.notifications.rate_limits.total" = "Total";
