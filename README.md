@@ -11,22 +11,26 @@ Home Assistant for Apple Platforms
 Home Assistant uses Bundler, Homebrew and Cocoapods to manage build dependencies. You'll need Xcode 13.1 (or later) which you can download from the [App Store](https://developer.apple.com/download/). You can get the app running using the following commands:
 
 ```bash
-git clone https://github.com/home-assistant/iOS.git
-cd iOS
+git clone https://github.com/home-assistant/iOS.git && cd iOS
+```
 
-# you must do one of the following, but you do not need to do all of them:
 
-## install cocoapods via homebrew, use that
+   you must do one of the following, but you do not need to do all of them:
+
+### To install cocoapods via homebrew, use this
+```bash
 brew install cocoapods
 $(brew --prefix)/opt/ruby/bin/gem install cocoapods-acknowledgements
 pod install --repo-update
-
-## install ruby via homebrew, use that
+```
+### To install ruby via homebrew, use this
+```bash
 brew install ruby@3.1
 $(brew --prefix)/opt/ruby@3.1/bin/bundle install
 $(brew --prefix)/opt/ruby@3.1/bin/bundle exec pod install --repo-update
-
-## install ruby via rbenv, use that
+```
+### To install ruby via rbenv, use this
+```bash
 brew install rbenv ruby-build
 rbenv install
 bundle install
@@ -82,10 +86,12 @@ Xcode should generate provisioning profiles in your Team ID and our configuratio
 
 Linters run as part of Pull Request checks. Additionally, some linting requirements can be autocorrected.
 
+### Checks for linting problems, does NOT fix them
 ```bash
-# checks for linting problems, doesn't fix
 bundle exec fastlane lint
-# checks for linting problems and fixes them
+```
+### Checks for linting problems and fixes them
+```bash
 bundle exec fastlane autocorrect
 ```
 
@@ -110,9 +116,8 @@ Although all the deployment is done through Github Actions, you can do it manual
 
 ### Deployment to App Store Connect
 
+Creates the builds and uploads to the app store and each save their artifacts to build :
 ```bash
-# creates the builds and uploads to the app store
-# each save their artifacts to build/
 bundle exec fastlane mac build
 bundle exec fastlane ios build
 ```
