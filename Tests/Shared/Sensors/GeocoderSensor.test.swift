@@ -365,18 +365,18 @@ class GeocoderSensorTests: XCTestCase {
 
 private final class FakePlacemark: CLPlacemark {
     static var empty: FakePlacemark {
-        with(FakePlacemark()) { _ in
+        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) { _ in
         }
     }
 
     static var addressless: FakePlacemark {
-        with(FakePlacemark()) {
+        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) {
             $0.overrideLocation = CLLocation(latitude: 37.123, longitude: -122.123)
         }
     }
 
     static var bobsBurgers: FakePlacemark {
-        with(FakePlacemark()) {
+        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) {
             $0.overrideName = "Bob's Burgers"
             $0.overrideThoroughfare = "Ocean Ave"
             $0.overrideSubThoroughfare = "100"

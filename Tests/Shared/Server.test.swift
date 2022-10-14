@@ -18,8 +18,8 @@ class ServerTests: XCTestCase {
                     with(.fake()) {
                         $0.sortOrder = 100
                     }
-                }, setter: {
-                    _ in
+                }, setter: { _ in
+                    true
                 }
             ),
             Server(
@@ -29,8 +29,8 @@ class ServerTests: XCTestCase {
                         $0.remoteName = "2"
                         $0.sortOrder = 50
                     }
-                }, setter: {
-                    _ in
+                }, setter: { _ in
+                    true
                 }
             ),
             Server(
@@ -40,8 +40,8 @@ class ServerTests: XCTestCase {
                         $0.remoteName = "1"
                         $0.sortOrder = 50
                     }
-                }, setter: {
-                    _ in
+                }, setter: { _ in
+                    true
                 }
             ),
             Server(
@@ -50,8 +50,8 @@ class ServerTests: XCTestCase {
                     with(.fake()) {
                         $0.sortOrder = 1000
                     }
-                }, setter: {
-                    _ in
+                }, setter: { _ in
+                    true
                 }
             ),
         ]
@@ -61,10 +61,10 @@ class ServerTests: XCTestCase {
     }
 
     func testEquality() {
-        let server_id1_1 = Server(identifier: "1", getter: { .fake() }, setter: { _ in })
-        let server_id1_2 = Server(identifier: "1", getter: { .fake() }, setter: { _ in })
-        let server_id2 = Server(identifier: "2", getter: { .fake() }, setter: { _ in })
-        let server_id3 = Server(identifier: "3", getter: { .fake() }, setter: { _ in })
+        let server_id1_1 = Server(identifier: "1", getter: { .fake() }, setter: { _ in true })
+        let server_id1_2 = Server(identifier: "1", getter: { .fake() }, setter: { _ in true })
+        let server_id2 = Server(identifier: "2", getter: { .fake() }, setter: { _ in true })
+        let server_id3 = Server(identifier: "3", getter: { .fake() }, setter: { _ in true })
 
         XCTAssertEqual(server_id1_1, server_id1_1)
         XCTAssertEqual(server_id1_1, server_id1_2)
@@ -77,7 +77,7 @@ class ServerTests: XCTestCase {
         var serverInfo = ServerInfo.fake()
         serverInfo.remoteName = "remote_name1"
 
-        let server = Server(identifier: "fake1", getter: { serverInfo }, setter: { serverInfo = $0 })
+        let server = Server(identifier: "fake1", getter: { serverInfo }, setter: { serverInfo = $0; return true })
 
         XCTAssertEqual(server.info.name, "remote_name1")
 
@@ -94,10 +94,12 @@ class ServerTests: XCTestCase {
     func testNotifyInfoChange() {
         var info: ServerInfo = .fake()
 
+        var setterResponseValue = true
+
         let server = Server(
             identifier: "test",
             getter: { info },
-            setter: { info = $0 }
+            setter: { info = $0; return setterResponseValue }
         )
 
         var notifiedInfos = [ServerInfo]()
@@ -121,12 +123,23 @@ class ServerTests: XCTestCase {
         XCTAssertEqual(notifiedInfos.count, 1)
         XCTAssertEqual(notifiedInfos[0].connection.webhookSecret, "update_1")
 
+        setterResponseValue = false
+
+        server.update { info in
+            info.connection.webhookSecret = "update_2"
+        }
+
+        waitLoop()
+        XCTAssertTrue(notifiedInfos.isEmpty)
+
+        setterResponseValue = true
+
         token.cancel()
 
         notifiedInfos.removeAll()
 
         server.update { info in
-            info.connection.webhookSecret = "update_2"
+            info.connection.webhookSecret = "update_3"
         }
 
         waitLoop()

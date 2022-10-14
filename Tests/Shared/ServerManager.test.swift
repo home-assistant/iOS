@@ -14,6 +14,8 @@ class ServerManagerTests: XCTestCase {
         encoder = .init()
         keychain = .init()
         historicKeychain = .init()
+
+        Current.settingsStore.prefs.removeObject(forKey: "deletedServers")
     }
 
     private func setupRegular(
@@ -414,8 +416,31 @@ class ServerManagerTests: XCTestCase {
     func testUpdateAfterDeleteDoesntPersist() throws {
         try setupRegular()
 
+        let oldServers = try XCTUnwrap(servers)
+        let oldServer1 = oldServers.add(identifier: "fake1", serverInfo: .fake())
+
+        try setupRegular()
+
+        let newServer1 = try XCTUnwrap(servers.server(for: oldServer1.identifier))
+        oldServers.remove(identifier: oldServer1.identifier)
+
+        newServer1.info.remoteName = "updated"
+        XCTAssertTrue(keychain.data.isEmpty)
+
+        let newInfo = with(newServer1.info) {
+            $0.remoteName = "new_name1"
+        }
+        servers.add(identifier: newServer1.identifier, serverInfo: newInfo)
+        XCTAssertEqual(keychain.data[newServer1.identifier.rawValue], try encoder.encode(newInfo))
+    }
+
+    func testUpdateAfterDeleteInAnotherProcessDoesntPersist() throws {
+        try setupRegular()
+
         let server1 = servers.add(identifier: "fake1", serverInfo: .fake())
         servers.remove(identifier: server1.identifier)
+
+        try setupRegular()
 
         server1.info.remoteName = "updated"
         XCTAssertTrue(keychain.data.isEmpty)
@@ -426,6 +451,7 @@ class ServerManagerTests: XCTestCase {
         servers.add(identifier: server1.identifier, serverInfo: newInfo)
         XCTAssertEqual(keychain.data[server1.identifier.rawValue], try encoder.encode(newInfo))
     }
+
 
     func testThreadsafeChangesWithoutCaching() throws {
         Current.isAppExtension = true

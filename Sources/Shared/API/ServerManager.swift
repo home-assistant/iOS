@@ -92,7 +92,15 @@ private extension Identifier where ObjectType == Server {
 
 private struct ServerCache {
     var restrictCaching: Bool = false
-    var deletedServers: Set<Identifier<Server>> = .init()
+    var deletedServers: Set<Identifier<Server>> {
+        get {
+            let identifiers = Current.settingsStore.prefs.array(forKey: "deletedServers") as? [String] ?? []
+            return Set(identifiers.map { Identifier<Server>(rawValue: $0) })
+        }
+        set {
+            Current.settingsStore.prefs.set(newValue.map { $0.rawValue }, forKey: "deletedServers")
+        }
+    }
     var info: [Identifier<Server>: ServerInfo] = [:] {
         didSet {
             precondition(deletedServers.isDisjoint(with: info.keys))
