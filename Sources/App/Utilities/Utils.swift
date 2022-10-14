@@ -27,12 +27,17 @@ func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
 
     let browserPreference = prefs.string(forKey: "openInBrowser")
         .flatMap { OpenInBrowser(rawValue: $0) } ?? .Safari
+    let privateTabPreference = prefs.bool(forKey: "openInPrivateTab")
 
     switch browserPreference {
     case .Chrome where OpenInChromeController.sharedInstance.isChromeInstalled():
         OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
     case .Firefox where OpenInFirefoxControllerSwift().isFirefoxInstalled():
-        OpenInFirefoxControllerSwift().openInFirefox(urlToOpen)
+        OpenInFirefoxControllerSwift().openInFirefox(urlToOpen, privateTab: privateTabPreference)
+    case .FirefoxFocus where OpenInFirefoxControllerSwift(type: .focus).isFirefoxInstalled():
+        OpenInFirefoxControllerSwift(type: .focus).openInFirefox(urlToOpen)
+    case .FirefoxKlar where OpenInFirefoxControllerSwift(type: .klar).isFirefoxInstalled():
+        OpenInFirefoxControllerSwift(type: .klar).openInFirefox(urlToOpen)
     case .SafariInApp where sender != nil:
         let sfv = SFSafariViewController(url: urlToOpen)
         sender!.present(sfv, animated: true)

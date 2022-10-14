@@ -83,7 +83,7 @@
 "h1xQ53" = "Actualitzar sensors";
 "hKNPaD" = "Servidor";
 "hLFNfv" = "Ha fallat: ${error}";
-"hsrlTY" = "Get a single still frame from a camera";
+"hsrlTY" = "Obteniu una única instantània d'una càmera";
 "iMvUhs" = "Obre la pàgina";
 "jWGtvO" = "Hi ha ${count} opcions que coincideixen amb ´${server}´.";
 "jtqxOg" = "Només per confirmar, volies ´${action}´?";
@@ -94,8 +94,8 @@
 "lxHlyQ" = "Dispara un esdeveniment";
 "mAibJP" = "Ha Fallat: Home Assistant no està accessible actualment";
 "mJ6CrP" = "No s'ha pogut enviar ${eventName}: ${error}";
-"mZnRHS" = "${eventName} fired";
-"mi6B62" = "What data do you want to send with the event?";
+"mZnRHS" = "${eventName} disparat";
+"mi6B62" = "Quines dades voleu enviar amb l’esdeveniment?";
 "ns9RRU" = "Obre la pàgina";
 "nzqmFA" = "Fet!";
 "oHn0vD" = "Pàgines";

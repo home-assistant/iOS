@@ -395,9 +395,12 @@
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Sistem varsayılanı";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (uygulama içi)";
 "settings_details.general.open_in_browser.title" = "Bağlantıları Aç";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@ (Varsayılan)";
 "settings_details.general.page_zoom.title" = "Sayfa Yakınlaştırma";
 "settings_details.general.pinch_to_zoom.title" = "Yakınlaştırmak için kıstırın";
