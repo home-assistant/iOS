@@ -98,9 +98,10 @@ private struct ServerCache {
             return Set(identifiers.map { Identifier<Server>(rawValue: $0) })
         }
         set {
-            Current.settingsStore.prefs.set(newValue.map { $0.rawValue }, forKey: "deletedServers")
+            Current.settingsStore.prefs.set(newValue.map(\.rawValue), forKey: "deletedServers")
         }
     }
+
     var info: [Identifier<Server>: ServerInfo] = [:] {
         didSet {
             precondition(deletedServers.isDisjoint(with: info.keys))

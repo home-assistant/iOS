@@ -452,7 +452,6 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(keychain.data[server1.identifier.rawValue], try encoder.encode(newInfo))
     }
 
-
     func testThreadsafeChangesWithoutCaching() throws {
         Current.isAppExtension = true
         try base_testThreadsafeChanges()
