@@ -1313,12 +1313,20 @@ public enum L10n {
         public static var `default`: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.default") }
         /// Mozilla Firefox
         public static var firefox: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefox") }
+        /// Mozilla Firefox Focus
+        public static var firefoxFocus: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefoxFocus") }
+        /// Mozilla Firefox Klar
+        public static var firefoxKlar: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.firefoxKlar") }
         /// Apple Safari
         public static var safari: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.safari") }
         /// Apple Safari (in app)
         public static var safariInApp: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.safari_in_app") }
         /// Open Links In
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.open_in_browser.title") }
+      }
+      public enum OpenInPrivateTab {
+        /// Open in Private Tab
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.open_in_private_tab.title") }
       }
       public enum PageZoom {
         /// %@ (Default)

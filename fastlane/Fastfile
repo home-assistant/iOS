@@ -506,7 +506,6 @@ platform :ios do
         provisioningProfiles: specifiers
       }
     )
-    upload_archive_to_sentry
     upload_binary_to_apple(
       type: 'ios',
       path: ipa_path
@@ -544,7 +543,6 @@ platform :mac do
         provisioningProfiles: specifiers.transform_values { |v| v.sub(/Mac Dev ID/, 'Mac App Store') }
       }
     )
-    upload_archive_to_sentry
 
     notarize_attempts = 0
 

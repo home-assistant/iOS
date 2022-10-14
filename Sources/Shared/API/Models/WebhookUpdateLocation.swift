@@ -71,7 +71,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
             }
 
             #if os(iOS)
-            // https://github.com/home-assistant/home-assistant-iOS/issues/32
+            // https://github.com/home-assistant/iOS/issues/32
             if let currentSSID = Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
                 self.location = zone.center
                 self.locationName = zone.Name

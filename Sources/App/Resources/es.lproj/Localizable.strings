@@ -395,9 +395,12 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Sistema por defecto";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (en la aplicación)";
 "settings_details.general.open_in_browser.title" = "Abrir enlaces en";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@ (Por defecto)";
 "settings_details.general.page_zoom.title" = "Zoom de página";
 "settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";

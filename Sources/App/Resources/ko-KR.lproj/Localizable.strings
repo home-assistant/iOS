@@ -33,8 +33,8 @@
 "alerts.auth_required.title" = "You must sign in to continue";
 "alerts.confirm.cancel" = "Cancel";
 "alerts.confirm.ok" = "OK";
-"alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
-"alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
+"alerts.deprecations.notification_category.message" = "%1$@ 이전에 알림 자체에 정의된 작업으로 마이그레이션해야 합니다.";
+"alerts.deprecations.notification_category.title" = "알림 카테고리는 더 이상 사용되지 않습니다.";
 "alerts.open_url_from_deep_link.message" = "Open URL (%@) from deep link?";
 "alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
 "alerts.open_url_from_notification.title" = "Open URL?";
@@ -196,8 +196,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "off_label" = "Off";
 "ok_label" = "OK";
 "on_label" = "On";
-"onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
-"onboarding.connect.mac_safari_warning.title" = "Launching Safari";
+"onboarding.connect.mac_safari_warning.message" = "로그인 양식이 열리지 않으면 Safari를 다시 시작해 보십시오.";
+"onboarding.connect.mac_safari_warning.title" = "사파리 시작";
 "onboarding.connect.title" = "Connecting to %@";
 "onboarding.connection_error.more_info_button" = "추가 정보";
 "onboarding.connection_error.title" = "연결에 실패했습니다";
@@ -208,7 +208,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.certificate_error.title" = "보안 연결에 실패했습니다";
 "onboarding.connection_test_result.client_certificate.description" = "Client Certificate Authentication is not supported.";
 "onboarding.connection_test_result.error_code" = "오류 코드:";
-"onboarding.connection_test_result.local_network_permission.description" = "\"Local Network\" privacy permission may have been denied. You can change this in the system Settings app.";
+"onboarding.connection_test_result.local_network_permission.description" = "\"로컬 네트워크\" 개인 정보 보호 권한이 거부되었을 수 있습니다. 시스템 설정 앱에서 변경할 수 있습니다.";
 "onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
 "onboarding.device_name_check.error.rename_action" = "이름 변경하기";
 "onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
@@ -260,7 +260,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "settings.connection_section.activate_server" = "활성화";
-"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
+"settings.connection_section.activate_swipe_hint" = "서버를 볼 때 세 손가락으로 왼쪽이나 오른쪽으로 스와이프하여 빠르게 활성화합니다.";
 "settings.connection_section.add_server" = "서버 추가";
 "settings.connection_section.all_servers" = "모든 서버";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
@@ -285,10 +285,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
-"settings.connection_section.location_send_type.setting.exact" = "Exact";
+"settings.connection_section.location_send_type.setting.exact" = "정확한";
 "settings.connection_section.location_send_type.setting.never" = "Never";
-"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
-"settings.connection_section.location_send_type.title" = "Location Sent";
+"settings.connection_section.location_send_type.setting.zone_only" = "영역 이름만";
+"settings.connection_section.location_send_type.title" = "위치 전송됨";
 "settings.connection_section.logged_in_as" = "Logged in as";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "모두";
@@ -395,9 +395,12 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "시스템 기본값";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
+"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Open Links In";
+"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
 "settings_details.general.page_zoom.default" = "%@ (Default)";
 "settings_details.general.page_zoom.title" = "Page Zoom";
 "settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";

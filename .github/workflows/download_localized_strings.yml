@@ -13,7 +13,7 @@ jobs:
   update_strings:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
 
@@ -51,7 +51,7 @@ jobs:
           git clean -xfd
           echo ::set-output name=pr_title::"$(git log -1 --pretty='%s')"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           base: master
           branch: create-pull-request/download_strings

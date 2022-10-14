@@ -18,14 +18,14 @@ jobs:
   YamlLint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: YamlLint
         run: yamllint --strict --format github .
 
   RuboCop:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
@@ -36,9 +36,9 @@ jobs:
   SwiftLint:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -63,9 +63,9 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_13.4.1.app/Contents/Developer
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -77,7 +77,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: "Cache: Gems"
         id: cache_gems
         with:
@@ -85,7 +85,7 @@ jobs:
           key: >-
             ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         name: "Cache Derived Data"
         with:
           path: |
@@ -121,7 +121,7 @@ jobs:
           xcode: true
           xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: "Upload Test Logs"
         if: ${{ always() }}
         with:
@@ -131,7 +131,7 @@ jobs:
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: "Upload Simulator App"
         with:
           name: ios-simulator
