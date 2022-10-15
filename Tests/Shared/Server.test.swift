@@ -125,6 +125,8 @@ class ServerTests: XCTestCase {
 
         setterResponseValue = false
 
+        notifiedInfos.removeAll()
+
         server.update { info in
             info.connection.webhookSecret = "update_2"
         }
