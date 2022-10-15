@@ -374,7 +374,11 @@ private final class FakePlacemark: CLPlacemark {
     }
 
     static var bobsBurgers: FakePlacemark {
-        with(FakePlacemark(location: CLLocation(latitude: 40.7549323, longitude: -73.741804), name: nil, postalAddress: nil)) {
+        with(FakePlacemark(
+            location: CLLocation(latitude: 40.7549323, longitude: -73.741804),
+            name: nil,
+            postalAddress: nil
+        )) {
             $0.overrideName = "Bob's Burgers"
             $0.overrideThoroughfare = "Ocean Ave"
             $0.overrideSubThoroughfare = "100"
