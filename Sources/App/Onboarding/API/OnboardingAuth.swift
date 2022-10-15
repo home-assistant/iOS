@@ -172,7 +172,7 @@ class OnboardingAuth {
             let server = Server(
                 identifier: identifier,
                 getter: { serverInfo },
-                setter: { serverInfo = $0 }
+                setter: { serverInfo = $0; return true }
             )
 
             return .value(HomeAssistantAPI(server: server))
