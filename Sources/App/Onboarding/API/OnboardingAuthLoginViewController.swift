@@ -118,7 +118,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
 #if DEBUG
 extension OnboardingAuthLoginViewControllerImpl {
-    internal var webViewForTests: WKWebView {
+    var webViewForTests: WKWebView {
         webView
     }
 }

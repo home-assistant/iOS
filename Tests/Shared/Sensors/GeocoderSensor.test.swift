@@ -368,6 +368,7 @@ private final class FakePlacemark: CLPlacemark {
         super.init(placemark: .init(location: .init(latitude: 0, longitude: 0), name: nil, postalAddress: nil))
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

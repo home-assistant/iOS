@@ -1,8 +1,8 @@
 @testable import HomeAssistant
 import PromiseKit
 import Shared
-import XCTest
 import WebKit
+import XCTest
 
 class OnboardingAuthLoginViewControllerImplTests: XCTestCase {
     private var controller: OnboardingAuthLoginViewControllerImpl!
@@ -14,7 +14,7 @@ class OnboardingAuthLoginViewControllerImplTests: XCTestCase {
     }
 
     func testError() {
-        controller.webView(controller.webViewForTests, didFail: nil, withError: URLError.init(.badServerResponse))
+        controller.webView(controller.webViewForTests, didFail: nil, withError: URLError(.badServerResponse))
         XCTAssertTrue(controller.promise.isRejected)
     }
 
