@@ -12,6 +12,10 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     let authDetails: OnboardingAuthDetails
     let promise: Promise<URL>
     private let resolver: Resolver<URL>
+    private let webView: WKWebView = {
+        let configuration = WKWebViewConfiguration()
+        return WKWebView(frame: .zero, configuration: configuration)
+    }()
 
     required init(authDetails: OnboardingAuthDetails) {
         (self.promise, self.resolver) = Promise<URL>.pending()
@@ -53,17 +57,12 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     }
 
     @objc private func refresh() {
-        webView?.load(.init(url: authDetails.url))
+        webView.load(.init(url: authDetails.url))
     }
-
-    private var webView: WKWebView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let configuration = WKWebViewConfiguration()
-        let webView = WKWebView(frame: .zero, configuration: configuration)
-        self.webView = webView
         webView.navigationDelegate = self
 
         if #available(iOS 15, *) {
@@ -116,3 +115,11 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         }
     }
 }
+
+#if DEBUG
+extension OnboardingAuthLoginViewControllerImpl {
+    internal var webViewForTests: WKWebView {
+        webView
+    }
+}
+#endif
