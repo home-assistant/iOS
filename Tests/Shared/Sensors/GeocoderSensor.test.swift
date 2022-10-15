@@ -365,20 +365,18 @@ class GeocoderSensorTests: XCTestCase {
 
 private final class FakePlacemark: CLPlacemark {
     static var empty: FakePlacemark {
-        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) { _ in
+        with(FakePlacemark()) { _ in
         }
     }
 
     static var addressless: FakePlacemark {
-        FakePlacemark(location: CLLocation(latitude: 37.123, longitude: -122.123), name: nil, postalAddress: nil)
+        with(FakePlacemark()) {
+            $0.overrideLocation = CLLocation(latitude: 37.123, longitude: -122.123)
+        }
     }
 
     static var bobsBurgers: FakePlacemark {
-        with(FakePlacemark(
-            location: CLLocation(latitude: 40.7549323, longitude: -73.741804),
-            name: nil,
-            postalAddress: nil
-        )) {
+        with(FakePlacemark()) {
             $0.overrideName = "Bob's Burgers"
             $0.overrideThoroughfare = "Ocean Ave"
             $0.overrideSubThoroughfare = "100"
@@ -389,6 +387,7 @@ private final class FakePlacemark: CLPlacemark {
             $0.overrideIsoCountryCode = "US"
             $0.overrideCountry = "United States"
             $0.areasOfInterest = ["Ocean Ave"]
+            $0.location = CLLocation(latitude: 40.7549323, longitude: -73.741804)
             $0.timeZone = TimeZone(abbreviation: "EST")
         }
     }
@@ -415,6 +414,12 @@ private final class FakePlacemark: CLPlacemark {
     override var timeZone: TimeZone? {
         get { overrideTimeZone }
         set { overrideTimeZone = newValue }
+    }
+
+    var overrideLocation: CLLocation?
+    override var location: CLLocation? {
+        get { overrideLocation }
+        set { overrideLocation = newValue }
     }
 
     var overrideName: String?
