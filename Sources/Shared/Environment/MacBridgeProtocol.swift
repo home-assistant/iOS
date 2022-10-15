@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 // Must be @objc so we get the same reference in memory, since we're not directly loading the bundle
