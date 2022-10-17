@@ -518,7 +518,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
                 }.done {
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-                }.catch { err -> Void in
+                }.catch { err in
                     Current.Log.error("Error during action event fire: \(err)")
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
                 }

@@ -118,7 +118,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         Current.Log.verbose("Sending params in shortcut \(inputParams)")
 
-        let eventName: String = "ios.shortcut_run"
+        let eventName = "ios.shortcut_run"
         let deviceDict: [String: String] = [
             "sourceDevicePermanentID": Constants.PermanentID, "sourceDeviceName": UIDevice.current.name,
             "sourceDeviceID": Current.settingsStore.deviceID,
@@ -137,7 +137,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
                 when(fulfilled: Current.apis.map { api in
                     api.CreateEvent(eventType: eventName, eventData: eventData)
-                }).catch { error -> Void in
+                }).catch { error in
                     Current.Log.error("Received error from createEvent during shortcut run \(error)")
                 }
             }
@@ -149,7 +149,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }).catch { error -> Void in
+            }).catch { error in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
         }
@@ -159,7 +159,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }).catch { error -> Void in
+            }).catch { error in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
         }
@@ -181,7 +181,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(eventType: eventName, eventData: eventData)
-            }).catch { error -> Void in
+            }).catch { error in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
             }
         }
@@ -258,7 +258,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 Current.api(for: server).handlePushAction(for: info)
             }.ensure {
                 completionHandler()
-            }.catch { err -> Void in
+            }.catch { err in
                 Current.Log.error("Error when handling push action: \(err)")
             }
         } else {

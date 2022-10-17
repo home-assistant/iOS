@@ -3,7 +3,7 @@ import UserNotifications
 
 public extension UNNotificationContent {
     var clientEventTitle: String {
-        var eventText: String = ""
+        var eventText = ""
         if !title.isEmpty {
             eventText = "\(title)"
             if !subtitle.isEmpty {

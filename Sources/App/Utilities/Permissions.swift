@@ -247,7 +247,7 @@ public enum PermissionType {
             let manager = CMMotionActivityManager()
             let now = Date()
 
-            manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { (_, error: Error?) -> Void in
+            manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { (_, error: Error?) in
                 if let error = error as NSError?,
                    error.domain == CMErrorDomain,
                    error.code == CMErrorMotionActivityNotAuthorized.rawValue {
@@ -306,9 +306,7 @@ public extension UNAuthorizationOptions {
 private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
     static var shared: PermissionsLocationDelegate?
 
-    lazy var locationManager: CLLocationManager = {
-        CLLocationManager()
-    }()
+    lazy var locationManager: CLLocationManager = .init()
 
     typealias LocationPermissionCompletionBlock = (PermissionStatus) -> Void
     var completionHandler: LocationPermissionCompletionBlock?

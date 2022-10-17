@@ -149,7 +149,7 @@ class InterfaceController: WKInterfaceController {
             return Current.api(for: server).HandleAction(actionID: selectedAction.ID, source: .Watch)
         }.done {
             self.handleActionSuccess(row, rowIndex)
-        }.catch { err -> Void in
+        }.catch { err in
             Current.Log.error("Error during action event fire: \(err)")
             self.handleActionFailure(row, rowIndex)
         }

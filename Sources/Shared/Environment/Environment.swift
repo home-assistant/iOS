@@ -174,7 +174,7 @@ public class AppEnvironment {
     }()
     #endif
 
-    public lazy var activeState: ActiveStateManager = { ActiveStateManager() }()
+    public lazy var activeState: ActiveStateManager = .init()
 
     public lazy var clientVersion: () -> Version = { Constants.clientVersion }
 

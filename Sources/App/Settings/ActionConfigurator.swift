@@ -387,7 +387,7 @@ class ActionPreview: UIView {
             feedbackGenerator.notificationOccurred(.success)
         }.ensure {
             self.imageView.hideActivityIndicator()
-        }.catch { err -> Void in
+        }.catch { err in
             Current.Log.error("Error during action event fire: \(err)")
             feedbackGenerator.notificationOccurred(.error)
         }

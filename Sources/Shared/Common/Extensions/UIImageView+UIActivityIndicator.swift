@@ -33,18 +33,18 @@ public extension UIImageView {
             ]
             activityIndicator.isUserInteractionEnabled = false
 
-            OperationQueue.main.addOperation({ () -> Void in
+            OperationQueue.main.addOperation({ () in
                 self.addSubview(self.activityIndicator)
             })
         }
 
-        OperationQueue.main.addOperation({ () -> Void in
+        OperationQueue.main.addOperation({ () in
             self.activityIndicator.startAnimating()
         })
     }
 
     func hideActivityIndicator() {
-        OperationQueue.main.addOperation({ () -> Void in
+        OperationQueue.main.addOperation({ () in
             self.activityIndicator.stopAnimating()
         })
     }

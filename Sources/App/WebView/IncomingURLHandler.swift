@@ -238,7 +238,7 @@ extension IncomingURLHandler {
                 }
             }.done {
                 success(nil)
-            }.catch { error -> Void in
+            }.catch { error in
                 Current.Log.error("Received error from createEvent during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
             }
@@ -330,7 +330,7 @@ extension IncomingURLHandler {
                 title: L10n.UrlHandler.FireEvent.Success.title,
                 message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1])
             )
-        }.catch { error -> Void in
+        }.catch { error in
             self.showAlert(
                 title: L10n.errorLabel,
                 message: L10n.UrlHandler.FireEvent.Error.message(
