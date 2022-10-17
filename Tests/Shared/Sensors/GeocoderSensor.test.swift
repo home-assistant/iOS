@@ -7,10 +7,6 @@ import RealmSwift
 import Version
 import XCTest
 
-// forgive me but something about CLPlacemark in this file is crashing in deinit
-// it is almost certainly a testing issue, and this... well, this solves it.
-private var permanent: [CLPlacemark] = []
-
 class GeocoderSensorTests: XCTestCase {
     private var realm: Realm!
     private var server: Server!
@@ -30,8 +26,7 @@ class GeocoderSensorTests: XCTestCase {
         self.realm = realm
     }
 
-    private func setUp(placemarks: [FakePlacemark]) {
-        permanent.append(contentsOf: placemarks)
+    private func setUp(placemarks: [CLPlacemark]) {
         Current.geocoder.geocode = { _ in .value(placemarks) }
     }
 
@@ -120,42 +115,6 @@ class GeocoderSensorTests: XCTestCase {
     func testOnePlacemark() throws {
         setUp(placemarks: [
             .bobsBurgers,
-        ])
-        let promise = GeocoderSensor(
-            request: .init(
-                reason: .trigger("unit-test"),
-                dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122),
-                serverVersion: Version()
-            )
-        ).sensors()
-        let sensors = try hang(promise)
-        XCTAssertEqual(sensors.count, 1)
-        XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
-        XCTAssertEqual(sensors[0].Attributes?["Location"] as? [Double], [40.7549323, -73.741804])
-    }
-
-    func testTwoPlacemarksFirstOneEmpty() throws {
-        setUp(placemarks: [.empty, .bobsBurgers])
-        let promise = GeocoderSensor(
-            request: .init(
-                reason: .trigger("unit-test"),
-                dependencies: .init(),
-                location: CLLocation(latitude: 37, longitude: -122),
-                serverVersion: Version()
-            )
-        ).sensors()
-        let sensors = try hang(promise)
-        XCTAssertEqual(sensors.count, 1)
-        XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
-        XCTAssertEqual(sensors[0].Attributes?["Location"] as? [Double], [40.7549323, -73.741804])
-    }
-
-    func testPlacemarkLacksAddress() throws {
-        setUp(placemarks: [
-            with(.bobsBurgers) {
-                $0.hasPostalAddress = false
-            },
         ])
         let promise = GeocoderSensor(
             request: .init(
@@ -363,140 +322,20 @@ class GeocoderSensorTests: XCTestCase {
     }
 }
 
-private final class FakePlacemark: CLPlacemark {
-    static var empty: FakePlacemark {
-        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) { _ in
-        }
+private extension CLPlacemark {
+    static var addressless: CLPlacemark {
+        .init(location: CLLocation(latitude: 37.123, longitude: -122.123), name: nil, postalAddress: nil)
     }
 
-    static var addressless: FakePlacemark {
-        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) {
-            $0.overrideLocation = CLLocation(latitude: 37.123, longitude: -122.123)
-        }
-    }
+    static var bobsBurgers: CLPlacemark {
+        .init(location: CLLocation(latitude: 40.7549323, longitude: -73.741804), name: "Bob's Burgers", postalAddress: with(CNMutablePostalAddress()) {
+            $0.street = "Ocean Ave"
+            $0.city = "Long Island"
+            $0.state = "NY"
+            $0.postalCode = "11001"
+            $0.isoCountryCode = "US"
+            $0.country = "US"
+        })
 
-    static var bobsBurgers: FakePlacemark {
-        with(FakePlacemark(location: .init(), name: nil, postalAddress: nil)) {
-            $0.overrideName = "Bob's Burgers"
-            $0.overrideThoroughfare = "Ocean Ave"
-            $0.overrideSubThoroughfare = "100"
-            $0.overrideLocality = "Long Island"
-            $0.overrideAdministrativeArea = "NY"
-            $0.overrideSubAdministrativeArea = "Nassau"
-            $0.overridePostalCode = "11001"
-            $0.overrideIsoCountryCode = "US"
-            $0.overrideCountry = "United States"
-            $0.areasOfInterest = ["Ocean Ave"]
-            $0.location = CLLocation(latitude: 40.7549323, longitude: -73.741804)
-            $0.timeZone = TimeZone(abbreviation: "EST")
-        }
-    }
-
-    var hasPostalAddress: Bool = true
-    override var postalAddress: CNPostalAddress? {
-        if hasPostalAddress {
-            return with(CNMutablePostalAddress()) {
-                $0.street = thoroughfare ?? ""
-                $0.subLocality = subLocality ?? ""
-                $0.city = locality ?? ""
-                $0.subAdministrativeArea = subAdministrativeArea ?? ""
-                $0.state = administrativeArea ?? ""
-                $0.postalCode = postalCode ?? ""
-                $0.country = isoCountryCode ?? ""
-                $0.isoCountryCode = isoCountryCode ?? ""
-            }
-        } else {
-            return nil
-        }
-    }
-
-    var overrideTimeZone: TimeZone?
-    override var timeZone: TimeZone? {
-        get { overrideTimeZone }
-        set { overrideTimeZone = newValue }
-    }
-
-    var overrideLocation: CLLocation?
-    override var location: CLLocation? {
-        get { overrideLocation }
-        set { overrideLocation = newValue }
-    }
-
-    var overrideName: String?
-    override var name: String? {
-        get { overrideName }
-        set { overrideName = newValue }
-    }
-
-    var overrideThoroughfare: String?
-    override var thoroughfare: String? {
-        get { overrideThoroughfare }
-        set { overrideThoroughfare = newValue }
-    }
-
-    var overrideSubThoroughfare: String?
-    override var subThoroughfare: String? {
-        get { overrideSubThoroughfare }
-        set { overrideSubThoroughfare = newValue }
-    }
-
-    var overrideLocality: String?
-    override var locality: String? {
-        get { overrideLocality }
-        set { overrideLocality = newValue }
-    }
-
-    var overrideSubLocality: String?
-    override var subLocality: String? {
-        get { overrideSubLocality }
-        set { overrideSubLocality = newValue }
-    }
-
-    var overrideAdministrativeArea: String?
-    override var administrativeArea: String? {
-        get { overrideAdministrativeArea }
-        set { overrideAdministrativeArea = newValue }
-    }
-
-    var overrideSubAdministrativeArea: String?
-    override var subAdministrativeArea: String? {
-        get { overrideSubAdministrativeArea }
-        set { overrideSubAdministrativeArea = newValue }
-    }
-
-    var overridePostalCode: String?
-    override var postalCode: String? {
-        get { overridePostalCode }
-        set { overridePostalCode = newValue }
-    }
-
-    var overrideIsoCountryCode: String?
-    override var isoCountryCode: String? {
-        get { overrideIsoCountryCode }
-        set { overrideIsoCountryCode = newValue }
-    }
-
-    var overrideCountry: String?
-    override var country: String? {
-        get { overrideCountry }
-        set { overrideCountry = newValue }
-    }
-
-    var overrideInlandWater: String?
-    override var inlandWater: String? {
-        get { overrideInlandWater }
-        set { overrideInlandWater = newValue }
-    }
-
-    var overrideOcean: String?
-    override var ocean: String? {
-        get { overrideOcean }
-        set { overrideOcean = newValue }
-    }
-
-    var overrideAreasOfInterest: [String]?
-    override var areasOfInterest: [String]? {
-        get { overrideAreasOfInterest }
-        set { overrideAreasOfInterest = newValue }
     }
 }

@@ -121,7 +121,7 @@ post_install do |installer|
     if target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
       target.build_configurations.each do |config|
         config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
-        
+
         # works around a bug where SwiftMessages resource bundle requires code signing
         config.build_settings['DEVELOPMENT_TEAM'] = 'QMQYCKL255'
       end
