@@ -30,7 +30,7 @@ pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'
 
-pod 'RealmSwift', git: 'https://github.com/zacwest/realm-swift', branch: 'noasync-v10.20.1'
+pod 'RealmSwift', podspec: 'Configuration/Podspecs/Realm.podspec.json'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
@@ -70,8 +70,7 @@ abstract_target 'iOS' do
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka', git: 'https://github.com/xmartlabs/Eureka', branch: 'master'
 
-    pod 'Firebase'
-    pod 'Firebase/Messaging'
+    pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
     pod 'lottie-ios'
     pod 'SwiftMessages'
