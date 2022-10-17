@@ -171,40 +171,54 @@ public class HomeAssistantAPI {
     }
 
     public func Connect(reason: ConnectReason) -> Promise<Void> {
+        Current.Log.info("running connect for \(reason)")
+
+        // websocket
         connection.connect()
 
-        return firstly {
-            updateRegistration().asVoid()
-        }.recover { [self] error -> Promise<Void> in
-            switch error as? WebhookError {
-            case .unmappableValue,
-                 .unexpectedType,
-                 .unacceptableStatusCode(404),
-                 .unacceptableStatusCode(410):
-                // cloudhook will send a 404 for deleted
-                // ha directly will send a 200 with an empty body for deleted
-
-                let message = "Integration is missing; registering."
-                return Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
-                    "error": String(describing: error),
-                ])).then { [self] in
-                    register()
-                }
-            case .unregisteredIdentifier,
-                 .unacceptableStatusCode,
-                 .replaced,
-                 .none:
-                // not a WebhookError, or not one we think requires reintegration
-                Current.Log.info("not re-registering, but failed to update registration: \(error)")
-                throw error
+        return firstly { () -> Promise<Void> in
+            guard !Current.isAppExtension else {
+                Current.Log.info("skipping registration changes in extension")
+                return Promise<Void>.value(())
             }
-        }.then { [self] in
-            when(fulfilled: [
-                getConfig(),
-                Current.modelManager.fetch(apis: [self]),
-                UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
-                updateComplications(passively: false).asVoid(),
-            ]).asVoid()
+
+            return updateRegistration().asVoid().recover { [self] error -> Promise<Void> in
+                switch error as? WebhookError {
+                case .unmappableValue,
+                     .unexpectedType,
+                     .unacceptableStatusCode(404),
+                     .unacceptableStatusCode(410):
+                    // cloudhook will send a 404 for deleted
+                    // ha directly will send a 200 with an empty body for deleted
+
+                    let message = "Integration is missing; registering."
+                    return Current.clientEventStore
+                        .addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
+                            "error": String(describing: error),
+                        ])).then { [self] in
+                            register()
+                        }
+                case .unregisteredIdentifier,
+                     .unacceptableStatusCode,
+                     .replaced,
+                     .none:
+                    // not a WebhookError, or not one we think requires reintegration
+                    Current.Log.info("not re-registering, but failed to update registration: \(error)")
+                    throw error
+                }
+            }
+        }.then { [self] () -> Promise<Void> in
+            var promises: [Promise<Void>] = []
+
+            if !Current.isAppExtension {
+                promises.append(getConfig())
+                promises.append(Current.modelManager.fetch(apis: [self]))
+                promises.append(updateComplications(passively: false).asVoid())
+            }
+
+            promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())
+
+            return when(fulfilled: promises).asVoid()
         }.get { _ in
             NotificationCenter.default.post(
                 name: Self.didConnectNotification,
