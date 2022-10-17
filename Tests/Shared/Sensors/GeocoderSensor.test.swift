@@ -328,14 +328,17 @@ private extension CLPlacemark {
     }
 
     static var bobsBurgers: CLPlacemark {
-        .init(location: CLLocation(latitude: 40.7549323, longitude: -73.741804), name: "Bob's Burgers", postalAddress: with(CNMutablePostalAddress()) {
-            $0.street = "Ocean Ave"
-            $0.city = "Long Island"
-            $0.state = "NY"
-            $0.postalCode = "11001"
-            $0.isoCountryCode = "US"
-            $0.country = "US"
-        })
-
+        .init(
+            location: CLLocation(latitude: 40.7549323, longitude: -73.741804),
+            name: "Bob's Burgers",
+            postalAddress: with(CNMutablePostalAddress()) {
+                $0.street = "Ocean Ave"
+                $0.city = "Long Island"
+                $0.state = "NY"
+                $0.postalCode = "11001"
+                $0.isoCountryCode = "US"
+                $0.country = "US"
+            }
+        )
     }
 }
