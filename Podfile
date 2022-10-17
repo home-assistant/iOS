@@ -53,6 +53,9 @@ abstract_target 'iOS' do
   pod 'MBProgressHUD', '~> 1.2.0'
   pod 'ReachabilitySwift'
 
+  # fixes newer cocoapods search path issues for Clibsodium build failures
+  shared_fwk_pods
+
   target 'Shared-iOS' do
     shared_fwk_pods
     pod 'ZIPFoundation', '~> 0.9'
