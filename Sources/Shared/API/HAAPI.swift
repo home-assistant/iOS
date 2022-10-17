@@ -179,7 +179,7 @@ public class HomeAssistantAPI {
         return firstly { () -> Promise<Void> in
             guard !Current.isAppExtension else {
                 Current.Log.info("skipping registration changes in extension")
-                return .value(())
+                return Promise<Void>.value(())
             }
 
             return updateRegistration().asVoid().recover { [self] error -> Promise<Void> in
@@ -207,7 +207,7 @@ public class HomeAssistantAPI {
                     throw error
                 }
             }
-        }.then { [self] in
+        }.then { [self] () -> Promise<Void> in
             var promises: [Promise<Void>] = []
 
             if !Current.isAppExtension {
