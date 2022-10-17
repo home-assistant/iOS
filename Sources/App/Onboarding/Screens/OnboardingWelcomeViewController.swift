@@ -6,7 +6,7 @@ import Shared
 import UIKit
 
 class OnboardingWelcomeViewController: UIViewController, OnboardingViewController {
-    private var animationView: AnimationView?
+    private var animationView: LottieAnimationView?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -23,7 +23,7 @@ class OnboardingWelcomeViewController: UIViewController, OnboardingViewControlle
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
 
         stackView.addArrangedSubview(equalSpacers.next())
-        stackView.addArrangedSubview(with(AnimationView(animation: .named("ha-loading"))) {
+        stackView.addArrangedSubview(with(LottieAnimationView(animation: .named("ha-loading"))) {
             animationView = $0
             $0.loopMode = .playOnce
 

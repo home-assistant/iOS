@@ -82,6 +82,7 @@ struct WidgetBasicContainerView: View {
 
     static func columnCount(family: WidgetFamily, modelCount: Int) -> Int {
         switch family {
+        case .accessoryCircular, .accessoryInline, .accessoryRectangular: return 1
         case .systemSmall: return 1
         case .systemMedium: return 2
         case .systemLarge:
@@ -107,6 +108,7 @@ struct WidgetBasicContainerView: View {
     /// more than this number: show compact (icon left, text right) version
     static func compactSizeBreakpoint(for family: WidgetFamily) -> Int {
         switch family {
+        case .accessoryCircular, .accessoryInline, .accessoryRectangular: return 1
         case .systemSmall: return 1
         case .systemMedium: return 4
         case .systemLarge: return 8
@@ -117,6 +119,7 @@ struct WidgetBasicContainerView: View {
 
     static func maximumCount(family: WidgetFamily) -> Int {
         switch family {
+        case .accessoryCircular, .accessoryInline, .accessoryRectangular: return 1
         case .systemSmall: return 1
         case .systemMedium: return 8
         case .systemLarge: return 16

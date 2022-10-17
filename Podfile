@@ -4,7 +4,7 @@ inhibit_all_warnings!
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
 
 def support_modules
-  pod 'SwiftGen', '~> 6.5.0'
+  pod 'SwiftGen', '~> 6.6.0'
   pod 'SwiftLint'
   pod 'SwiftFormat/CLI'
 end
@@ -23,8 +23,7 @@ plugin 'cocoapods-acknowledgements'
 
 system('./Tools/BuildMaterialDesignIconsFont.sh')
 
-# alamofire can be upgraded when Apple stops breaking iOS 12 builds when Concurrency is referenced
-pod 'Alamofire', '5.4.4'
+pod 'Alamofire', '~> 5.6'
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'

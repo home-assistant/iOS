@@ -68,10 +68,8 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
             self.name = try data.decode("name")
             self.id = try {
                 let identifiers: [[String]] = try data.decode("identifiers")
-                for identifier in identifiers {
-                    if identifier.count == 2, identifier.starts(with: ["mobile_app"]) {
-                        return identifier[1]
-                    }
+                for identifier in identifiers where identifier.count == 2 && identifier.starts(with: ["mobile_app"]) {
+                    return identifier[1]
                 }
 
                 throw HADataError.couldntTransform(key: "identifiers")
