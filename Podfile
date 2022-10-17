@@ -4,7 +4,7 @@ inhibit_all_warnings!
 project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :release
 
 def support_modules
-  pod 'SwiftGen', '~> 6.6.0'
+  pod 'SwiftGen', '~> 6.5.0'
   pod 'SwiftLint'
   pod 'SwiftFormat/CLI'
 end
