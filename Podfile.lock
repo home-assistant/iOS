@@ -89,7 +89,7 @@ DEPENDENCIES:
   - PromiseKit
   - ReachabilitySwift
   - RealmSwift (from `Configuration/Podspecs/Realm.podspec.json`)
-  - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
+  - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
   - SwiftFormat/CLI
   - SwiftGen (~> 6.5.0)
@@ -148,8 +148,8 @@ EXTERNAL SOURCES:
   RealmSwift:
     :podspec: Configuration/Podspecs/Realm.podspec.json
   Sodium:
-    :branch: master
-    :git: https://github.com/jedisct1/swift-sodium.git
+    :branch: xcode-14.0.1
+    :git: https://github.com/zacwest/swift-sodium.git
   Starscream:
     :branch: ha-swift-api
     :git: https://github.com/zacwest/starscream
@@ -183,8 +183,8 @@ CHECKOUT OPTIONS:
     :commit: a29707f972ee164ead0a78cd14b9be2cbe314800
     :git: https://github.com/zacwest/realm-swift
   Sodium:
-    :commit: 54d520eb1c0a3d54bfa3175b5310c13fab15bea8
-    :git: https://github.com/jedisct1/swift-sodium.git
+    :commit: c66991f2ea610d437b31656795226c8e52002abd
+    :git: https://github.com/zacwest/swift-sodium.git
   Starscream:
     :commit: 1871b44435eb636633dce9eb0ca84ed3aac6e0dc
     :git: https://github.com/zacwest/starscream
@@ -223,6 +223,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: 063163dc828bf699c5be160eb4f58f676322d94f
 
-PODFILE CHECKSUM: a60a0d14ccd491ce3cbd637538ae89612d2597a5
+PODFILE CHECKSUM: 5ec212e7efc69257a3f0ed8466f3d9170cf9040d
 
 COCOAPODS: 1.11.3
