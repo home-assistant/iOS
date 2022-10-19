@@ -23,14 +23,13 @@ plugin 'cocoapods-acknowledgements'
 
 system('./Tools/BuildMaterialDesignIconsFont.sh')
 
-# alamofire can be upgraded when Apple stops breaking iOS 12 builds when Concurrency is referenced
-pod 'Alamofire', '5.4.4'
+pod 'Alamofire', '~> 5.6'
 pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 'observation-memory-direct'
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'
 
-pod 'RealmSwift', git: 'https://github.com/zacwest/realm-swift', branch: 'noasync-v10.20.1'
+pod 'RealmSwift', podspec: 'Configuration/Podspecs/Realm.podspec.json'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
@@ -45,7 +44,7 @@ def test_pods
 end
 
 def shared_fwk_pods
-  pod 'Sodium', git: 'https://github.com/jedisct1/swift-sodium.git', branch: 'master'
+  pod 'Sodium', git: 'https://github.com/zacwest/swift-sodium.git', branch: 'xcode-14.0.1'
 end
 
 abstract_target 'iOS' do
@@ -53,6 +52,9 @@ abstract_target 'iOS' do
 
   pod 'MBProgressHUD', '~> 1.2.0'
   pod 'ReachabilitySwift'
+
+  # fixes newer cocoapods search path issues for Clibsodium build failures
+  shared_fwk_pods
 
   target 'Shared-iOS' do
     shared_fwk_pods
@@ -70,8 +72,7 @@ abstract_target 'iOS' do
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka', git: 'https://github.com/xmartlabs/Eureka', branch: 'master'
 
-    pod 'Firebase'
-    pod 'Firebase/Messaging'
+    pod 'Firebase', podspec: 'Configuration/Podspecs/Firebase.podspec.json'
 
     pod 'lottie-ios'
     pod 'SwiftMessages'
@@ -112,6 +113,9 @@ post_install do |installer|
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
+
+      # disabled arch to stay under the 75 MB limit imposed by apple
+      config.build_settings['EXCLUDED_ARCHS[sdk=watchos*]'] = 'arm64'
     end
 
     # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
@@ -120,6 +124,7 @@ post_install do |installer|
     if target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
       target.build_configurations.each do |config|
         config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+        config.build_settings['CODE_SIGNING_ALLOWED[sdk=iphoneos*]'] = 'NO'
       end
     end
     # rubocop:enable Style/Next

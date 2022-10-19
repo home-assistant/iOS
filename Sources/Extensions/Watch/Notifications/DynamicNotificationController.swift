@@ -29,9 +29,11 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
         }
     }
 
-    private lazy var dynamicElements: NotificationElements = {
-        .init(image: notificationImage, map: notificationMap, movie: notificationVideo)
-    }()
+    private lazy var dynamicElements: NotificationElements = .init(
+        image: notificationImage,
+        map: notificationMap,
+        movie: notificationVideo
+    )
 
     private var isActive: Bool = false {
         didSet {

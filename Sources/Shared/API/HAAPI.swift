@@ -28,9 +28,7 @@ public class HomeAssistantAPI {
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
 
     public private(set) var manager: Alamofire.Session!
-    public static var unauthenticatedManager: Alamofire.Session = {
-        configureSessionManager()
-    }()
+    public static var unauthenticatedManager: Alamofire.Session = configureSessionManager()
 
     public let tokenManager: TokenManager
     public var server: Server

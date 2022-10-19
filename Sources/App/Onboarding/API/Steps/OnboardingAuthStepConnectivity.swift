@@ -54,7 +54,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
                 }
             }
             .map { _ in () }
-            .recover { [self] error throws -> Void in
+            .recover { [self] error throws in
                 let kind: OnboardingAuthError.ErrorKind
                 let data: Data?
 

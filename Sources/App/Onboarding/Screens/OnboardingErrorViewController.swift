@@ -3,7 +3,7 @@ import Shared
 import UIKit
 
 class OnboardingErrorViewController: UIViewController {
-    private var animationView: AnimationView?
+    private var animationView: LottieAnimationView?
     private var moreInfoButton: UIButton?
     private var goBackButton: UIButton?
 
@@ -30,8 +30,8 @@ class OnboardingErrorViewController: UIViewController {
             Current.style.onboardingTitle($0)
         })
 
-        stackView.addArrangedSubview(with(AnimationView()) {
-            $0.animation = Animation.named("error")
+        stackView.addArrangedSubview(with(LottieAnimationView()) {
+            $0.animation = LottieAnimation.named("error")
             $0.loopMode = .playOnce
             $0.play()
         })

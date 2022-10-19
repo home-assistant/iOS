@@ -108,7 +108,8 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         if !url.isFileURL, api.server.info.connection.securityExceptions.hasExceptions {
             asset = .init(url: url, options: [
                 // from WebKit, which has the same behavioral requirements we have
-                // see https://cs.github.com/WebKit/WebKit/blob/f822d46cdb31d1d3df1915a99c0413acbcb06fd1/Source/WebCore/platform/graphics/avfoundation/objc/MediaPlayerPrivateAVFoundationObjC.mm?q=resourceloaderdelegate#L894
+                // see
+                // https://cs.github.com/WebKit/WebKit/blob/f822d46cdb31d1d3df1915a99c0413acbcb06fd1/Source/WebCore/platform/graphics/avfoundation/objc/MediaPlayerPrivateAVFoundationObjC.mm?q=resourceloaderdelegate#L894
                 // without this, we can't load the video content (non-playlists) of the hls stream, which means
                 // we cannot support security exceptions, because auth challenges do not occur
                 "AVURLAssetUseClientURLLoadingExclusively": true,

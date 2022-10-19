@@ -116,7 +116,7 @@ public class DeviceWrapper {
 
     private static func sysctlModel() -> String {
         let name = "hw.model"
-        var charCount: Int = 0
+        var charCount = 0
         sysctlbyname(name, nil, &charCount, nil, 0)
         let ptr = UnsafeMutablePointer<CChar>.allocate(capacity: charCount)
         defer { ptr.deallocate() }

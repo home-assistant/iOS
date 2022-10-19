@@ -24,7 +24,8 @@ func snapshot(_ name: String, waitForLoadingIndicator: Bool) {
 
 /// - Parameters:
 ///   - name: The name of the snapshot
-///   - timeout: Amount of seconds to wait until the network loading indicator disappears. Pass `0` if you don't want to wait.
+///   - timeout: Amount of seconds to wait until the network loading indicator disappears. Pass `0` if you don't want to
+/// wait.
 func snapshot(_ name: String, timeWaitingForIdle timeout: TimeInterval = 20) {
     Snapshot.snapshot(name, timeWaitingForIdle: timeout)
 }
@@ -148,7 +149,8 @@ open class Snapshot: NSObject {
             waitForLoadingIndicatorToDisappear(within: timeout)
         }
 
-        NSLog("snapshot: \(name)") // more information about this, check out https://docs.fastlane.tools/actions/snapshot/#how-does-it-work
+        NSLog("snapshot: \(name)") // more information about this, check out
+        // https://docs.fastlane.tools/actions/snapshot/#how-does-it-work
 
         if Snapshot.waitForAnimations {
             sleep(1) // Waiting for the animation to be finished (kind of)

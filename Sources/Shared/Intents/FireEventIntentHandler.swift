@@ -63,7 +63,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
                     with: data,
                     options: .allowFragments
                 ) as? [String: Any] {
-                    var isGenericPayload: Bool = true
+                    var isGenericPayload = true
 
                     if let eventName = jsonArray["eventName"] as? String {
                         intent.eventName = eventName

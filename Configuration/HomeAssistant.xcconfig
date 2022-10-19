@@ -57,6 +57,9 @@ SKIP_INSTALL = YES
 PRODUCT_NAME = HomeAssistant-$(TARGET_NAME)
 PRODUCT_MODULE_NAME = $(TARGET_NAME:c99extidentifier)
 
+// watchOS-specific, to keep us under the 75 MB size limit
+EXCLUDED_ARCHS[sdk=watchos*] = arm64
+
 // Catalyst-specific
 ENABLE_HARDENED_RUNTIME[sdk=macosx*] = YES
 

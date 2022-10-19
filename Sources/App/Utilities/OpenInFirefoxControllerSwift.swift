@@ -50,7 +50,7 @@ open class OpenInFirefoxControllerSwift {
         if scheme == "http" || scheme == "https" {
             let escaped = encodeByAddingPercentEscapes(url.absoluteString)
             if let firefoxURL =
-                URL(string: "\(self.type.urlScheme)://open-url?\(privateTab ? "private=true&" : "")url=\(escaped)") {
+                URL(string: "\(type.urlScheme)://open-url?\(privateTab ? "private=true&" : "")url=\(escaped)") {
                 app.open(firefoxURL, options: [:], completionHandler: nil)
             }
         }

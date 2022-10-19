@@ -1,6 +1,6 @@
 {
   "name": "Firebase",
-  "version": "8.9.1",
+  "version": "10.0.0",
   "summary": "Firebase",
   "description": "Simplify your app development, grow your user base, and monetize more effectively with Firebase.",
   "homepage": "https://firebase.google.com",
@@ -10,33 +10,33 @@
   },
   "authors": "Google, Inc.",
   "source": {
-    "http": "https://github.com/firebase/firebase-ios-sdk/releases/download/v8.9.1/Firebase.zip"
+    "http": "https://github.com/firebase/firebase-ios-sdk/releases/download/10.0.0/Firebase.zip"
   },
   "preserve_paths": [
     "Firebase/NOTICES",
+    "Firebase/FirebaseAnalytics/FBLPromises.xcframework",
     "Firebase/FirebaseAnalytics/FirebaseCore.xcframework",
-    "Firebase/FirebaseAnalytics/FirebaseCoreDiagnostics.xcframework",
+    "Firebase/FirebaseAnalytics/FirebaseCoreInternal.xcframework",
     "Firebase/FirebaseAnalytics/FirebaseInstallations.xcframework",
-    "Firebase/FirebaseAnalytics/GoogleDataTransport.xcframework",
     "Firebase/FirebaseAnalytics/GoogleUtilities.xcframework",
     "Firebase/FirebaseAnalytics/nanopb.xcframework",
-    "Firebase/FirebaseAnalytics/PromisesObjC.xcframework",
-    "Firebase/FirebaseMessaging/FirebaseMessaging.xcframework"
+    "Firebase/FirebaseMessaging/FirebaseMessaging.xcframework",
+    "Firebase/FirebaseMessaging/GoogleDataTransport.xcframework"
   ],
   "vendored_frameworks": [
+    "Firebase/FirebaseAnalytics/FBLPromises.xcframework",
     "Firebase/FirebaseAnalytics/FirebaseCore.xcframework",
-    "Firebase/FirebaseAnalytics/FirebaseCoreDiagnostics.xcframework",
+    "Firebase/FirebaseAnalytics/FirebaseCoreInternal.xcframework",
     "Firebase/FirebaseAnalytics/FirebaseInstallations.xcframework",
-    "Firebase/FirebaseAnalytics/GoogleDataTransport.xcframework",
     "Firebase/FirebaseAnalytics/GoogleUtilities.xcframework",
     "Firebase/FirebaseAnalytics/nanopb.xcframework",
-    "Firebase/FirebaseAnalytics/PromisesObjC.xcframework",
-    "Firebase/FirebaseMessaging/FirebaseMessaging.xcframework"
+    "Firebase/FirebaseMessaging/FirebaseMessaging.xcframework",
+    "Firebase/FirebaseMessaging/GoogleDataTransport.xcframework"
   ],
   "social_media_url": "https://twitter.com/Firebase",
   "platforms": {
     "ios": "11.0",
-    "osx": "1.13",
-    "tvos": "11.0"
+    "osx": "10.13",
+    "tvos": "12.0"
   }
 }

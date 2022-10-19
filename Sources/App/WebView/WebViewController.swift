@@ -713,8 +713,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         var config = swiftMessagesConfig()
         config.eventListeners.append({ event in
-            if event == .didHide {
+            switch event {
+            case .didHide:
                 Current.serverAlerter.markHandled(alert: alert)
+            default:
+                break
             }
         })
 

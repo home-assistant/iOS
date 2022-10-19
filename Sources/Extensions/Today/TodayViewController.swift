@@ -149,7 +149,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
             feedbackGenerator.notificationOccurred(.success)
         }.ensure {
             cell.imageView.hideActivityIndicator()
-        }.catch { err -> Void in
+        }.catch { err in
             Current.Log.error("Error during action event fire: \(err)")
             feedbackGenerator.notificationOccurred(.error)
         }
