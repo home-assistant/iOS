@@ -113,7 +113,7 @@ post_install do |installer|
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
-      
+
       # disabled arch to stay under the 75 MB limit imposed by apple
       config.build_settings['EXCLUDED_ARCHS[sdk=watchos*]'] = 'arm64'
     end
