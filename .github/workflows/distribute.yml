@@ -47,6 +47,7 @@ jobs:
           P12_VALUE_IOS_APP_STORE: ${{ secrets.P12_VALUE_IOS_APP_STORE }}
           P12_VALUE_MAC_APP_STORE: ${{ secrets.P12_VALUE_MAC_APP_STORE }}
           P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
+          EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           # hard-coded so it doesn't cause 'ios' to be *** everywhere in the logs

@@ -510,6 +510,7 @@ platform :ios do
       type: 'ios',
       path: ipa_path
     )
+    emerge if ENV['EMERGE_API_TOKEN']
   end
 end
 
