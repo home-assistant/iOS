@@ -505,7 +505,13 @@ platform :ios do
         provisioningProfiles: specifiers
       }
     )
-    emerge if ENV['EMERGE_API_TOKEN']
+    if ENV['EMERGE_API_TOKEN']
+      emerge(
+        repo_name: ENV.fetch('EMERGE_REPO_NAME', nil),
+        pr_number: ENV.fetch('EMERGE_PR_NUMBER', nil),
+        sha: ENV.fetch('EMERGE_SHA', nil)
+      )
+    end
     ipa_path
   end
 
