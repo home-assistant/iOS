@@ -121,7 +121,6 @@ post_install do |installer|
 
       # cocoapods defaults to not stripping the frameworks it creates
       config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'YES'
-      config.build_settings['STRIP_STYLE'] = 'all'
     end
 
     # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
