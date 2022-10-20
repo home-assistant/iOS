@@ -154,6 +154,14 @@ Run tests
 
 
 
+### ios size
+
+```sh
+[bundle exec] fastlane ios size
+```
+
+
+
 ----
 
 

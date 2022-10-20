@@ -1,0 +1,41 @@
+name: Size build
+
+on:
+  pull_request:
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.0.1.app/Contents/Developer
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  FASTLANE_XCODE_LIST_TIMEOUT: 60
+  FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
+  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
+  BUNDLE_PATH: vendor/bundle
+
+jobs:
+  build:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Brews
+        run: brew bundle
+
+      - name: Install Gems
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Install Pods
+        run: bundle exec pod install --repo-update
+
+      - name: Build app
+        run: |
+          bundle exec fastlane ios size
+        env:
+          P12_KEY_IOS_APP_STORE: ${{ secrets.P12_KEY_IOS_APP_STORE }}
+          P12_KEY_MAC_APP_STORE: ${{ secrets.P12_KEY_MAC_APP_STORE }}
+          P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.P12_KEY_MAC_DEVELOPER_ID }}
+          P12_VALUE_IOS_APP_STORE: ${{ secrets.P12_VALUE_IOS_APP_STORE }}
+          P12_VALUE_MAC_APP_STORE: ${{ secrets.P12_VALUE_MAC_APP_STORE }}
+          P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
+          EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
+          # hard-coded so it doesn't cause 'ios' to be *** everywhere in the logs
+          SENTRY_PROJECT: ios
