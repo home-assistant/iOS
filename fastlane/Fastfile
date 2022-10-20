@@ -491,9 +491,8 @@ private_lane :upload_binary_to_apple do |options|
 end
 
 platform :ios do
-  lane :build do
+  private_lane :create_archive do
     setup_ha_ci if is_ci
-
     specifiers = provisioning_profile_specifiers(sdk: 'iphoneos')
     ipa_path = build_ios_app(
       export_method: 'app-store',
@@ -506,11 +505,20 @@ platform :ios do
         provisioningProfiles: specifiers
       }
     )
+    emerge if ENV['EMERGE_API_TOKEN']
+    ipa_path
+  end
+
+  lane :build do
+    ipa_path = create_archive
     upload_binary_to_apple(
       type: 'ios',
       path: ipa_path
     )
-    emerge if ENV['EMERGE_API_TOKEN']
+  end
+
+  lane :size do
+    create_archive
   end
 end
 
