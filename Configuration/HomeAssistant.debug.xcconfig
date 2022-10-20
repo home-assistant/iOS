@@ -8,6 +8,8 @@ PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_Extensions_PushProvider = Local Develo
 // apple did not give us the device name permission in the dev app
 ENABLE_DEVICE_NAME_QMQYCKL255 = 0
 
+STRIP_INSTALLED_PRODUCT = NO
+
 BUNDLE_ID_SUFFIX = .dev
 VALIDATE_PRODUCT = NO
 DEBUG_INFORMATION_FORMAT = dwarf

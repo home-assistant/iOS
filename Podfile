@@ -116,6 +116,12 @@ post_install do |installer|
 
       # disabled arch to stay under the 75 MB limit imposed by apple
       config.build_settings['EXCLUDED_ARCHS[sdk=watchos*]'] = 'arm64'
+
+      next unless config.name == 'Release'
+
+      # cocoapods defaults to not stripping the frameworks it creates
+      config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'YES'
+      config.build_settings['STRIP_STYLE'] = 'all'
     end
 
     # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
