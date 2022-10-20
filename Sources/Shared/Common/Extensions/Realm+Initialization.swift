@@ -212,7 +212,14 @@ public extension Realm {
                     }
                 }
             },
-            deleteRealmIfMigrationNeeded: false
+            deleteRealmIfMigrationNeeded: false,
+            shouldCompactOnLaunch: { realmFileSizeInBytes, usedBytes in
+                // from https://www.mongodb.com/docs/realm/sdk/swift/realm-files/compacting/
+                let maxFileSize = 10 * 1024 * 1024
+                // Check for the realm file size to be greater than the max file size, and the amount of bytes
+                // currently used to be less than 50% of the total realm file size
+                return (realmFileSizeInBytes > maxFileSize) && (Double(usedBytes) / Double(realmFileSizeInBytes)) < 0.5
+            }
         )
 
         do {
