@@ -27,8 +27,7 @@ jobs:
         run: bundle exec pod install --repo-update
 
       - name: Build app
-        run: |
-          bundle exec fastlane ios size
+        run: bundle exec fastlane ios size
         env:
           P12_KEY_IOS_APP_STORE: ${{ secrets.P12_KEY_IOS_APP_STORE }}
           P12_KEY_MAC_APP_STORE: ${{ secrets.P12_KEY_MAC_APP_STORE }}
@@ -37,5 +36,8 @@ jobs:
           P12_VALUE_MAC_APP_STORE: ${{ secrets.P12_VALUE_MAC_APP_STORE }}
           P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
           EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
+          EMERGE_REPO_NAME: ${{ github.repository }}
+          EMERGE_PR_NUMBER: ${{ github.event.number }}
+          EMERGE_SHA: ${{ github.sha }}
           # hard-coded so it doesn't cause 'ios' to be *** everywhere in the logs
           SENTRY_PROJECT: ios
