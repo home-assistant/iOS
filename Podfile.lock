@@ -10,34 +10,6 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.4.0)
-  - Firebase (10.0.0):
-    - Firebase/Core (= 10.0.0)
-  - Firebase/Core (10.0.0):
-    - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 10.0.0)
-  - Firebase/CoreOnly (10.0.0):
-    - FirebaseCore (= 10.0.0)
-  - Firebase/Messaging (10.0.0):
-    - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.0.0)
-  - FirebaseAnalytics (10.0.0):
-    - FirebaseAnalytics/AdIdSupport (= 10.0.0)
-    - FirebaseCore (~> 10.0)
-    - FirebaseInstallations (~> 10.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAnalytics/AdIdSupport (10.0.0):
-    - FirebaseCore (~> 10.0)
-    - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement (= 10.0.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseCore (10.0.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
@@ -58,26 +30,6 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement (10.0.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.0.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.0.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.0.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.0.0):
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
   - GoogleDataTransport (9.2.0):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
@@ -90,8 +42,6 @@ PODS:
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.8.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (7.8.0):
-    - GoogleUtilities/Logger
   - GoogleUtilities/Network (7.8.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
@@ -177,8 +127,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
-  - Firebase
-  - Firebase/Messaging
+  - FirebaseMessaging
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
@@ -206,13 +155,10 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - CallbackURLKit
-    - Firebase
-    - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreInternal
     - FirebaseInstallations
     - FirebaseMessaging
-    - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
     - KeychainAccess
@@ -307,13 +253,10 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: fadaa9fa3d6e402d3c60f78f24edf3d7bafc9c29
-  Firebase: 1b810f3d0c0532e27a48f1961f8c0400a668a2cf
-  FirebaseAnalytics: 9921a52739f4ab66099da31b6e0243db78a3ac0a
   FirebaseCore: 97f48a3a567a72b8d4daa0f03c3aadb78df4e995
   FirebaseCoreInternal: 5eb3960335da5ea30115d57d39db6988c4ad06f3
   FirebaseInstallations: 7f1c9ae6bd9df6abe9c74124b38fa8740aba5df4
   FirebaseMessaging: 8916bf5edb1dbfac74665a181e4d1ab3a78a08a2
-  GoogleAppMeasurement: 7e48a3249792ac35d6f18f107f63f199a7e9d0ce
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
@@ -341,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: 063163dc828bf699c5be160eb4f58f676322d94f
 
-PODFILE CHECKSUM: 2da6cbe8dddea17564678a15ca81d2cc72efcd5f
+PODFILE CHECKSUM: 0ab684c6300bc3d9dee93c429d029c3e199b2173
 
 COCOAPODS: 1.11.3

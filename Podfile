@@ -72,8 +72,7 @@ abstract_target 'iOS' do
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka', git: 'https://github.com/xmartlabs/Eureka', branch: 'master'
 
-    pod 'Firebase'
-    pod 'Firebase/Messaging'
+    pod 'FirebaseMessaging'
 
     pod 'lottie-ios'
     pod 'SwiftMessages'
@@ -113,7 +112,10 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
-      config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
+      
+      if not target.name.include? "Firebase"
+        config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
+      end
 
       # disabled arch to stay under the 75 MB limit imposed by apple
       config.build_settings['EXCLUDED_ARCHS[sdk=watchos*]'] = 'arm64'
