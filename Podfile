@@ -112,10 +112,8 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
-      
-      if not target.name.include? "Firebase"
-        config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO'
-      end
+
+      config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO' unless target.name.include? 'Firebase'
 
       # disabled arch to stay under the 75 MB limit imposed by apple
       config.build_settings['EXCLUDED_ARCHS[sdk=watchos*]'] = 'arm64'
