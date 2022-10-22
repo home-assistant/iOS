@@ -86,7 +86,6 @@ lane :update_dsyms do
     output_directory: directory
   )
 
-  upload_path_to_sentry(path: directory)
   FileUtils.rm_r directory
 end
 
@@ -459,14 +458,6 @@ private_lane :provisioning_profile_specifiers do |options|
   end
 
   specifiers
-end
-
-private_lane :upload_path_to_sentry do |options|
-  sh('sentry-cli', 'upload-dif', options[:path])
-end
-
-private_lane :upload_archive_to_sentry do
-  sh('sentry-cli', 'upload-dif', lane_context[SharedValues::XCODEBUILD_ARCHIVE])
 end
 
 private_lane :upload_binary_to_apple do |options|

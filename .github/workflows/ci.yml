@@ -60,8 +60,6 @@ jobs:
   test:
     runs-on: macos-12
     timeout-minutes: 60
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_14.0.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v3
 
@@ -122,3 +120,57 @@ jobs:
         with:
           name: ios-simulator
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
+
+  size:
+    runs-on: macos-12
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        name: "Cache: Pods"
+        id: cache_pods
+        with:
+          path: |
+            Pods
+            Tools/MaterialDesignIcons.ttf
+            Tools/MaterialDesignIcons.json
+          key: >-
+            ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
+            ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
+
+      - uses: actions/cache@v3
+        name: "Cache: Gems"
+        id: cache_gems
+        with:
+          path: vendor/bundle
+          key: >-
+            ${{ runner.os }}-gems-${{ env.ImageVersion }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('**/Gemfile.lock') }}
+
+      - name: Install Brews
+        # right now, we don't need anything from brew for sizing, so save some time
+        if: ${{ false }}
+        run: brew bundle
+
+      - name: Install Gems
+        if: steps.cache_gems.outputs.cache-hit != 'true'
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Install Pods Release
+        if: steps.cache_pods.outputs.cache-hit != 'true'
+        run: bundle exec pod install --repo-update
+
+      - name: Build app
+        run: bundle exec fastlane ios size
+        env:
+          P12_KEY_IOS_APP_STORE: ${{ secrets.P12_KEY_IOS_APP_STORE }}
+          P12_KEY_MAC_APP_STORE: ${{ secrets.P12_KEY_MAC_APP_STORE }}
+          P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.P12_KEY_MAC_DEVELOPER_ID }}
+          P12_VALUE_IOS_APP_STORE: ${{ secrets.P12_VALUE_IOS_APP_STORE }}
+          P12_VALUE_MAC_APP_STORE: ${{ secrets.P12_VALUE_MAC_APP_STORE }}
+          P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
+          EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
+          EMERGE_REPO_NAME: ${{ github.repository }}
+          EMERGE_PR_NUMBER: ${{ github.event.number }}
+          EMERGE_SHA: ${{ github.event.pull_request.head.sha }}
+          EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
