@@ -160,9 +160,6 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
-    fastlane-plugin-appicon (0.16.0)
-      json
-      mini_magick (>= 4.9.4, < 5.0.0)
     fastlane-plugin-clean_testflight_testers (0.3.0)
     fastlane-plugin-emerge (0.5.1)
       faraday (~> 1.1)
@@ -311,7 +308,6 @@ DEPENDENCIES
   cocoapods
   cocoapods-acknowledgements
   fastlane
-  fastlane-plugin-appicon
   fastlane-plugin-clean_testflight_testers
   fastlane-plugin-emerge
   rubocop

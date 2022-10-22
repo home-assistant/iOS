@@ -61,14 +61,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Update the test cases from the fcm repo
 
-### icons
-
-```sh
-[bundle exec] fastlane icons
-```
-
-Generate proper icons for all build trains
-
 ### update_swiftgen_config
 
 ```sh

@@ -85,7 +85,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                         cell.imageView?.layer.masksToBounds = true
                         cell.imageView?.layer.cornerRadius = 12.63
                         guard let newIcon = row.selectableValue else { return }
-                        cell.imageView?.image = UIImage(named: newIcon.rawValue)
+                        cell.imageView?.image = UIImage(named: newIcon.rawValue + "60x60")
 
                         cell.textLabel?.text = newIcon.title
                     }
