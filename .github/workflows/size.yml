@@ -62,6 +62,7 @@ jobs:
           EMERGE_API_TOKEN: ${{ secrets.EMERGE_API_TOKEN }}
           EMERGE_REPO_NAME: ${{ github.repository }}
           EMERGE_PR_NUMBER: ${{ github.event.number }}
-          EMERGE_SHA: ${{ github.sha }}
+          EMERGE_SHA: ${{ github.event.pull_request.head.sha }}
+          EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           # hard-coded so it doesn't cause 'ios' to be *** everywhere in the logs
           SENTRY_PROJECT: ios
