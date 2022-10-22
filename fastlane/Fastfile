@@ -509,7 +509,8 @@ platform :ios do
       emerge(
         repo_name: ENV.fetch('EMERGE_REPO_NAME', nil),
         pr_number: ENV.fetch('EMERGE_PR_NUMBER', nil),
-        sha: ENV.fetch('EMERGE_SHA', nil)
+        sha: ENV.fetch('EMERGE_SHA', nil),
+        base_sha: ENV.fetch('EMERGE_BASE_SHA', nil)
       )
     end
     ipa_path
