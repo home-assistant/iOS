@@ -39,7 +39,6 @@ jobs:
             --lint --config .swiftformat .
 
   test:
-    if: ${{ false }}
     runs-on: macos-12
     timeout-minutes: 60
     steps:
@@ -104,7 +103,6 @@ jobs:
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
 
   size:
-    if: ${{ false }}
     runs-on: macos-12
     timeout-minutes: 60
     steps:
