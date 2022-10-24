@@ -15,14 +15,7 @@ env:
   BUNDLE_PATH: vendor/bundle
 
 jobs:
-  YamlLint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: YamlLint
-        run: yamllint --strict --format github .
-
-  RuboCop:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,32 +23,20 @@ jobs:
         with:
           ruby-version: '3.1'
           bundler-cache: true
+      - name: YamlLint
+        run: yamllint --strict --format github .
       - name: RuboCop
         run: bundle exec rubocop --format github
-
-  SwiftLint:
-    runs-on: macos-12
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/cache@v3
-        name: "Cache: Pods"
-        id: cache_pods
-        with:
-          path: Pods
-          key: ${{ runner.os }}-lint-pods-${{ hashFiles('**/Podfile.lock') }}
-
-      - name: Install Pods
-        if: steps.cache_pods.outputs.cache-hit != 'true'
-        run: |
-          bundle install
-          ONLY_SUPPORT_MODULES=1 bundle exec pod install --repo-update
-
       - name: SwiftLint
-        run: Pods/SwiftLint/swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
-
+        run: |
+          docker run --rm -it -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/realm/swiftlint:latest \
+            swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
       - name: SwiftFormat
-        run: Pods/SwiftFormat/CommandLineTool/swiftformat --lint --config .swiftformat .
+        run: |
+          docker run --rm -it -v `pwd`:`pwd` -w `pwd` \
+            ghcr.io/nicklockwood/swiftformat:latest \
+            swiftformat --lint --config .swiftformat .
 
   test:
     runs-on: macos-12
