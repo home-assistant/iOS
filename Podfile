@@ -5,8 +5,8 @@ project 'HomeAssistant', 'Debug' => :debug, 'Release' => :release, 'Beta' => :re
 
 def support_modules
   pod 'SwiftGen', '~> 6.5.0'
-  pod 'SwiftLint'
-  pod 'SwiftFormat/CLI'
+  pod 'SwiftLint', '0.49.1' # also update ci.yml GHA
+  pod 'SwiftFormat/CLI', '0.50.3' # also update ci.yml GHA
 end
 
 if ENV['ONLY_SUPPORT_MODULES']
