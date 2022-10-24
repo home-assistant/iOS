@@ -36,7 +36,7 @@ jobs:
         run: |
           docker run --rm -v `pwd`:`pwd` -w `pwd` \
             ghcr.io/nicklockwood/swiftformat:0.50.3 \
-            swiftformat --lint --config .swiftformat .
+            --lint --config .swiftformat .
 
   test:
     if: ${{ false }}
