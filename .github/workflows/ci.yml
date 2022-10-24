@@ -29,12 +29,12 @@ jobs:
         run: bundle exec rubocop --format github
       - name: SwiftLint
         run: |
-          docker run --rm -it -v `pwd`:`pwd` -w `pwd` \
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
             ghcr.io/realm/swiftlint:latest \
             swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
       - name: SwiftFormat
         run: |
-          docker run --rm -it -v `pwd`:`pwd` -w `pwd` \
+          docker run --rm -v `pwd`:`pwd` -w `pwd` \
             ghcr.io/nicklockwood/swiftformat:latest \
             swiftformat --lint --config .swiftformat .
 
