@@ -169,7 +169,7 @@ public struct SecurityException: Codable, Equatable {
     private var data: Data
 
     public init(secTrust: SecTrust) {
-        self.data = SecTrustCopyExceptions(secTrust) as Data
+        self.data = SecTrustCopyExceptions(secTrust)! as Data
     }
 
     public init(from decoder: Decoder) throws {
