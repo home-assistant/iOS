@@ -87,6 +87,7 @@ abstract_target 'iOS' do
   end
 
   target 'Extensions-Intents'
+  target 'Extensions-Matter'
   target 'Extensions-NotificationContent'
   target 'Extensions-NotificationService'
   target 'Extensions-PushProvider'
