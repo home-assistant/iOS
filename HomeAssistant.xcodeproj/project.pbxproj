@@ -353,6 +353,7 @@
 		11B6B58E2949002000B8B552 /* HATypedRequest+Matter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B58D2949002000B8B552 /* HATypedRequest+Matter.swift */; };
 		11B6B592294917E800B8B552 /* MatterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B5902949178700B8B552 /* MatterWrapper.swift */; };
 		11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B5902949178700B8B552 /* MatterWrapper.swift */; };
+		11B6B59429497C5800B8B552 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
@@ -950,6 +951,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 11B6B57A2948F8E100B8B552;
 			remoteInfo = "Extensions-Matter";
+		};
+		11B6B59629497C5800B8B552 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D03D891620E0A85200D4F28D;
+			remoteInfo = "Shared-iOS";
 		};
 		11B92911266F145000786588 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2036,6 +2044,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07B254BADB23F6A60E82D615 /* Pods_iOS_Extensions_Matter.framework in Frameworks */,
+				11B6B59429497C5800B8B552 /* Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3845,6 +3854,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				11B6B59729497C5800B8B552 /* PBXTargetDependency */,
 			);
 			name = "Extensions-Matter";
 			productName = "Extensions-Matter";
@@ -5998,6 +6008,11 @@
 			isa = PBXTargetDependency;
 			target = 11B6B57A2948F8E100B8B552 /* Extensions-Matter */;
 			targetProxy = 11B6B5802948F8E100B8B552 /* PBXContainerItemProxy */;
+		};
+		11B6B59729497C5800B8B552 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
+			targetProxy = 11B6B59629497C5800B8B552 /* PBXContainerItemProxy */;
 		};
 		11B92912266F145000786588 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
