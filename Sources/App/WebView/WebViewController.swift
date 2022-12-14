@@ -982,6 +982,7 @@ extension WebViewController: WKScriptMessageHandler {
                         result: [
                             "hasSettingsScreen": !Current.isCatalyst,
                             "canWriteTag": Current.tags.isNFCAvailable,
+                            "canCommissionMatter": Current.matter.isAvailable,
                         ]
                     ))
                 }
@@ -1032,6 +1033,8 @@ extension WebViewController: WKScriptMessageHandler {
             }
         case "theme-update":
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        case "matter/commission":
+            Current.matter.comission().cauterize()
         default:
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
             return
