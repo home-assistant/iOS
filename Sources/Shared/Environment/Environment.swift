@@ -363,6 +363,8 @@ public class AppEnvironment {
 
     public var device = DeviceWrapper()
 
+    public var matter = MatterWrapper()
+
     /// Wrapper around CLGeocoder
     public struct Geocoder {
         public var geocode: (CLLocation) -> Promise<[CLPlacemark]> = CLGeocoder.geocode(location:)

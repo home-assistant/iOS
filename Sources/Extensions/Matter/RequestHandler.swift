@@ -1,16 +1,10 @@
-//
-//  RequestHandler.swift
-//  Extensions-Matter
-//
-//  Created by Zac West on 2022-12-13.
-//  Copyright © 2022 Home Assistant. All rights reserved.
-//
-
+import Shared
+import HAKit
+import PromiseKit
 import MatterSupport
 
 // The extension is launched in response to `MatterAddDeviceRequest.perform()` and this class is the entry point
 // for the extension operations.
-@available(iOS 16.1, *)
 class RequestHandler: MatterAddDeviceExtensionRequestHandler {
     override func validateDeviceCredential(_ deviceCredential: MatterAddDeviceExtensionRequestHandler.DeviceCredential) async throws {
         // Use this function to perform additional attestation checks if that is useful for your ecosystem.
@@ -25,7 +19,28 @@ class RequestHandler: MatterAddDeviceExtensionRequestHandler {
     }
 
     override func commissionDevice(in home: MatterAddDeviceRequest.Home?, onboardingPayload: String, commissioningID: UUID) async throws {
-        
+        guard let payload = Int(onboardingPayload) else {
+            struct SomeError: Error {}
+            throw SomeError()
+        }
+
+        try await withCheckedThrowingContinuation { continuation in
+            when(resolved: Current.apis.map { api in
+                api.connection.send(.matterComissionOnNetwork(pin: payload)).promise.map { _ in () }
+            }).done { results in
+                if results.contains(where: { result in
+                    switch result {
+                    case .fulfilled: return true
+                    case .rejected: return false
+                    }
+                }) {
+                    continuation.resume()
+                } else {
+                    enum SomeError: Error { case error }
+                    continuation.resume(with: .failure(SomeError.error))
+                }
+            }
+        }
     }
 
     override func rooms(in home: MatterAddDeviceRequest.Home?) async -> [MatterAddDeviceRequest.Room] {

@@ -350,6 +350,9 @@
 		11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
 		11B6B5822948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		11B6B58C2948FB4B00B8B552 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B58A2948FB4B00B8B552 /* RequestHandler.swift */; };
+		11B6B58E2949002000B8B552 /* HATypedRequest+Matter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B58D2949002000B8B552 /* HATypedRequest+Matter.swift */; };
+		11B6B592294917E800B8B552 /* MatterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B5902949178700B8B552 /* MatterWrapper.swift */; };
+		11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6B5902949178700B8B552 /* MatterWrapper.swift */; };
 		11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
@@ -1418,6 +1421,8 @@
 		11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Matter.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B6B5892948FB4B00B8B552 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11B6B58A2948FB4B00B8B552 /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
+		11B6B58D2949002000B8B552 /* HATypedRequest+Matter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+Matter.swift"; sourceTree = "<group>"; };
+		11B6B5902949178700B8B552 /* MatterWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatterWrapper.swift; sourceTree = "<group>"; };
 		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
 		11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.test.swift; sourceTree = "<group>"; };
 		11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.test.swift; sourceTree = "<group>"; };
@@ -2731,6 +2736,7 @@
 			children = (
 				11B6B5882948FB4B00B8B552 /* Resources */,
 				11B6B58A2948FB4B00B8B552 /* RequestHandler.swift */,
+				11B6B58D2949002000B8B552 /* HATypedRequest+Matter.swift */,
 			);
 			path = Matter;
 			sourceTree = "<group>";
@@ -3494,6 +3500,7 @@
 				110AA55B25B36630005061A0 /* ServerAlerter.swift */,
 				115BC82C267708CA00452430 /* FocusStatusWrapper.swift */,
 				1121CD4B271295AD0071C2AA /* Style.swift */,
+				11B6B5902949178700B8B552 /* MatterWrapper.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -5288,6 +5295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11B6B58E2949002000B8B552 /* HATypedRequest+Matter.swift in Sources */,
 				11B6B58C2948FB4B00B8B552 /* RequestHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5623,6 +5631,7 @@
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
+				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
@@ -5817,6 +5826,7 @@
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
+				11B6B592294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
@@ -6443,6 +6453,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Matter/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PROVISIONING_SUFFIX = .Matter;
 				SDKROOT = iphoneos;
 			};
@@ -6455,6 +6466,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Matter/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PROVISIONING_SUFFIX = .Matter;
 				SDKROOT = iphoneos;
 			};
@@ -6467,6 +6479,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
 				INFOPLIST_FILE = Sources/Extensions/Matter/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PROVISIONING_SUFFIX = .Matter;
 				SDKROOT = iphoneos;
 			};
