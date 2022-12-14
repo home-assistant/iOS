@@ -595,6 +595,7 @@
 	<array>
 		<string>_hass-mobile-app._tcp</string>
 		<string>_home-assistant._tcp</string>
+		<string>_matter._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
