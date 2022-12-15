@@ -27,8 +27,10 @@ public struct MatterWrapper {
                 do {
                     try await MatterAddDeviceRequest(topology: .init(ecosystemName: "Home Assistant", homes: []))
                         .perform()
+                    Current.Log.info("matter pairing successful")
                     seal.fulfill(())
                 } catch {
+                    Current.Log.error("matter pairing failed: \(error)")
                     seal.reject(error)
                 }
             }
