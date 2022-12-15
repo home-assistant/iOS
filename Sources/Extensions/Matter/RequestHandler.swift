@@ -1,24 +1,34 @@
-import Shared
 import HAKit
-import PromiseKit
 import MatterSupport
+import PromiseKit
+import Shared
 
 // The extension is launched in response to `MatterAddDeviceRequest.perform()` and this class is the entry point
 // for the extension operations.
 class RequestHandler: MatterAddDeviceExtensionRequestHandler {
-    override func validateDeviceCredential(_ deviceCredential: MatterAddDeviceExtensionRequestHandler.DeviceCredential) async throws {
+    override func validateDeviceCredential(
+        _ deviceCredential: MatterAddDeviceExtensionRequestHandler.DeviceCredential
+    ) async throws {
         // Use this function to perform additional attestation checks if that is useful for your ecosystem.
     }
 
-    override func selectWiFiNetwork(from wifiScanResults: [MatterAddDeviceExtensionRequestHandler.WiFiScanResult]) async throws -> MatterAddDeviceExtensionRequestHandler.WiFiNetworkAssociation {
-        return .defaultSystemNetwork
+    override func selectWiFiNetwork(from wifiScanResults: [
+        MatterAddDeviceExtensionRequestHandler.WiFiScanResult
+    ]) async throws -> MatterAddDeviceExtensionRequestHandler.WiFiNetworkAssociation {
+        .defaultSystemNetwork
     }
 
-    override func selectThreadNetwork(from threadScanResults: [MatterAddDeviceExtensionRequestHandler.ThreadScanResult]) async throws -> MatterAddDeviceExtensionRequestHandler.ThreadNetworkAssociation {
-        return .defaultSystemNetwork
+    override func selectThreadNetwork(from threadScanResults: [
+        MatterAddDeviceExtensionRequestHandler.ThreadScanResult
+    ]) async throws -> MatterAddDeviceExtensionRequestHandler.ThreadNetworkAssociation {
+        .defaultSystemNetwork
     }
 
-    override func commissionDevice(in home: MatterAddDeviceRequest.Home?, onboardingPayload: String, commissioningID: UUID) async throws {
+    override func commissionDevice(
+        in home: MatterAddDeviceRequest.Home?,
+        onboardingPayload: String,
+        commissioningID: UUID
+    ) async throws {
         guard let payload = Int(onboardingPayload) else {
             struct SomeError: Error {}
             throw SomeError()
@@ -44,7 +54,7 @@ class RequestHandler: MatterAddDeviceExtensionRequestHandler {
     }
 
     override func rooms(in home: MatterAddDeviceRequest.Home?) async -> [MatterAddDeviceRequest.Room] {
-        return []
+        []
     }
 
     override func configureDevice(named name: String, in room: MatterAddDeviceRequest.Room?) async {
