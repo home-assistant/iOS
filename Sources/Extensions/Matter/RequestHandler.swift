@@ -29,14 +29,9 @@ class RequestHandler: MatterAddDeviceExtensionRequestHandler {
         onboardingPayload: String,
         commissioningID: UUID
     ) async throws {
-        guard let payload = Int(onboardingPayload) else {
-            struct SomeError: Error {}
-            throw SomeError()
-        }
-
         try await withCheckedThrowingContinuation { continuation in
             when(resolved: Current.apis.map { api in
-                api.connection.send(.matterComissionOnNetwork(pin: payload)).promise.map { _ in () }
+                api.connection.send(.matterComission(code: onboardingPayload)).promise.map { _ in () }
             }).done { results in
                 if results.contains(where: { result in
                     switch result {
@@ -46,6 +41,7 @@ class RequestHandler: MatterAddDeviceExtensionRequestHandler {
                 }) {
                     continuation.resume()
                 } else {
+                    // TODO:
                     enum SomeError: Error { case error }
                     continuation.resume(with: .failure(SomeError.error))
                 }

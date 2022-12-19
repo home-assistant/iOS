@@ -1,12 +1,12 @@
 import HAKit
 
 extension HATypedRequest {
-    static func matterComissionOnNetwork(
-        pin: Int
+    static func matterComission(
+        code: String
     ) -> HATypedRequest<HAResponseVoid> {
         HATypedRequest<HAResponseVoid>(request: .init(
-            type: "matter/commission_on_network",
-            data: ["pin": pin]
+            type: "matter/commission",
+            data: ["code": code]
         ))
     }
 }
