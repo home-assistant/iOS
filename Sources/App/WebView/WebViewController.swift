@@ -1036,10 +1036,10 @@ extension WebViewController: WKScriptMessageHandler {
         case "matter/commission":
             Current.matter.commission(server).done {
                 Current.Log.info("commission call completed")
-            }.catch { [weak self] error in
-                let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel))
-                self?.present(alert, animated: true)
+            }.catch { error in
+                // we don't show a user-visible error because even a successful operation will return 'cancelled'
+                // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
+                Current.Log.error(error)
             }
         default:
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
