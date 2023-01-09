@@ -1,4 +1,5 @@
 import HAKit
+import Shared
 
 extension HATypedRequest {
     static func matterComission(
