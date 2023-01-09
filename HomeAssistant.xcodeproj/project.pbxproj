@@ -6006,6 +6006,7 @@
 		};
 		11B6B5812948F8E100B8B552 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 11B6B57A2948F8E100B8B552 /* Extensions-Matter */;
 			targetProxy = 11B6B5802948F8E100B8B552 /* PBXContainerItemProxy */;
 		};
