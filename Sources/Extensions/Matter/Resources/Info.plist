@@ -30,7 +30,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.matter.support.extension.device-setup</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>$(PRODUCT_MODULE_NAME).RequestHandler</string>
+		<string>$(PRODUCT_MODULE_NAME).MatterRequestHandler</string>
 	</dict>
 </dict>
 </plist>

@@ -5,7 +5,7 @@ import Shared
 
 // The extension is launched in response to `MatterAddDeviceRequest.perform()` and this class is the entry point
 // for the extension operations.
-class RequestHandler: MatterAddDeviceExtensionRequestHandler {
+class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
     enum RequestError: Error {
         case unknownServer
         case missingServer
