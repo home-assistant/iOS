@@ -18,7 +18,7 @@ public class MatterWrapper {
 
     public var lastCommissionServerIdentifier: Identifier<Server>? {
         get { Current.settingsStore.prefs.string(forKey: "lastCommissionServerID").flatMap { .init(rawValue: $0) } }
-        set { Current.settingsStore.prefs.set(newValue?.rawValue, forKey: "lastCommissionServerID")}
+        set { Current.settingsStore.prefs.set(newValue?.rawValue, forKey: "lastCommissionServerID") }
     }
 
     public lazy var commission: (_ server: Server) -> Promise<Void> = { [self] server in
