@@ -1034,8 +1034,8 @@ extension WebViewController: WKScriptMessageHandler {
         case "theme-update":
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
         case "matter/commission":
-            Current.matter.comission().done {
-                Current.Log.info("comission call completed")
+            Current.matter.commission(server).done {
+                Current.Log.info("commission call completed")
             }.catch { [weak self] error in
                 let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel))

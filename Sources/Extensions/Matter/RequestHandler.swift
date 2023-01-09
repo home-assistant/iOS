@@ -6,6 +6,11 @@ import Shared
 // The extension is launched in response to `MatterAddDeviceRequest.perform()` and this class is the entry point
 // for the extension operations.
 class RequestHandler: MatterAddDeviceExtensionRequestHandler {
+    enum RequestError: Error {
+        case unknownServer
+        case missingServer
+    }
+
     override func validateDeviceCredential(
         _ deviceCredential: MatterAddDeviceExtensionRequestHandler.DeviceCredential
     ) async throws {
@@ -29,24 +34,21 @@ class RequestHandler: MatterAddDeviceExtensionRequestHandler {
         onboardingPayload: String,
         commissioningID: UUID
     ) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            when(resolved: Current.apis.map { api in
-                api.connection.send(.matterComission(code: onboardingPayload)).promise.map { _ in () }
-            }).done { results in
-                if results.contains(where: { result in
-                    switch result {
-                    case .fulfilled: return true
-                    case .rejected: return false
-                    }
-                }) {
-                    continuation.resume()
-                } else {
-                    // TODO:
-                    enum SomeError: Error { case error }
-                    continuation.resume(with: .failure(SomeError.error))
-                }
-            }
+        guard let identifier = Current.matter.lastCommissionServerIdentifier else {
+            Current.Log.error("couldn't find server id for commission")
+            throw RequestError.unknownServer
         }
+
+        guard let server = Current.servers.server(for: identifier) else {
+            Current.Log.error("couldn't locate server \(identifier)")
+            throw RequestError.missingServer
+        }
+
+        try await Current.api(for: server).connection
+            .send(.matterCommission(code: onboardingPayload))
+            .promise
+            .map { _ in () }
+            .async()
     }
 
     override func rooms(in home: MatterAddDeviceRequest.Home?) async -> [MatterAddDeviceRequest.Room] {

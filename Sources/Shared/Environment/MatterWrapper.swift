@@ -3,7 +3,7 @@ import MatterSupport
 #endif
 import PromiseKit
 
-public struct MatterWrapper {
+public class MatterWrapper {
     public var isAvailable: Bool = {
         #if canImport(MatterSupport)
         if #available(iOS 16.1, *) {
@@ -16,11 +16,18 @@ public struct MatterWrapper {
         #endif
     }()
 
-    public var comission: () -> Promise<Void> = {
+    public var lastCommissionServerIdentifier: Identifier<Server>? {
+        get { Current.settingsStore.prefs.string(forKey: "lastCommissionServerID").flatMap { .init(rawValue: $0) } }
+        set { Current.settingsStore.prefs.set(newValue?.rawValue, forKey: "lastCommissionServerID")}
+    }
+
+    public lazy var commission: (_ server: Server) -> Promise<Void> = { [self] server in
         #if canImport(MatterSupport)
         guard #available(iOS 16.1, *) else {
             return .value(())
         }
+
+        lastCommissionServerIdentifier = server.identifier
 
         return Promise<Void> { seal in
             Task {
