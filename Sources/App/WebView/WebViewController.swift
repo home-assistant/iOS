@@ -982,6 +982,7 @@ extension WebViewController: WKScriptMessageHandler {
                         result: [
                             "hasSettingsScreen": !Current.isCatalyst,
                             "canWriteTag": Current.tags.isNFCAvailable,
+                            "canCommissionMatter": Current.matter.isAvailable,
                         ]
                     ))
                 }
@@ -1032,6 +1033,14 @@ extension WebViewController: WKScriptMessageHandler {
             }
         case "theme-update":
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        case "matter/commission":
+            Current.matter.commission(server).done {
+                Current.Log.info("commission call completed")
+            }.catch { error in
+                // we don't show a user-visible error because even a successful operation will return 'cancelled'
+                // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
+                Current.Log.error(error)
+            }
         default:
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
             return

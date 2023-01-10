@@ -53,6 +53,7 @@ public enum Constants {
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".Widgets", with: "")
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".ShareExtension", with: "")
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".PushProvider", with: "")
+        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".Matter", with: "")
 
         return removeBundleSuffix
     }
