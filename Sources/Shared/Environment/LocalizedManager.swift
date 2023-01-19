@@ -30,6 +30,11 @@ public class LocalizedManager {
         stringProviders.insert(stringProvider, at: 0)
     }
 
+    public var currentLanguage: String {
+        // in practice, this array will not be empty
+        Locale.preferredLanguages.first ?? "unknown"
+    }
+
     public func frontend(_ key: String) -> String? {
         let result = string(key, "Frontend")
         guard result != key else {

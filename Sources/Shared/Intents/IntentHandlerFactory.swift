@@ -26,6 +26,9 @@ public enum IntentHandlerFactory {
             if intent is UpdateSensorsIntent {
                 return UpdateSensorsIntentHandler()
             }
+            if intent is AssistIntent {
+                return AssistIntentHandler()
+            }
             if intent is OpenPageIntent || intent is WidgetOpenPageIntent {
                 return OpenPageIntentHandler()
             }

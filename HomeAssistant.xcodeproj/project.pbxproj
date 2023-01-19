@@ -346,6 +346,8 @@
 		11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
+		11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
+		11B63B0B2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
 		11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
 		11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
 		11B6B5822948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1425,6 +1427,7 @@
 		11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandlerFactory.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
+		11B63B092979A07000D908ED /* AssistIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistIntentHandler.swift; sourceTree = "<group>"; };
 		11B6774C28303D35006E9B1A /* SecurityExceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityExceptions.swift; sourceTree = "<group>"; };
 		11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Matter.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B6B5892948FB4B00B8B552 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2724,18 +2727,19 @@
 		11B38EE0275C545C00205C7B /* Intents */ = {
 			isa = PBXGroup;
 			children = (
+				11B63B092979A07000D908ED /* AssistIntentHandler.swift */,
 				B66C58B02150891B004AB261 /* CallServiceIntentHandler.swift */,
 				B66C58B22150892A004AB261 /* FireEventIntentHandler.swift */,
-				B66C58B42150898A004AB261 /* SendLocationIntentHandler.swift */,
-				B6DF8BC3221D047400370A59 /* GetCameraImageIntentHandler.swift */,
-				B62817EF221D269B000BA86A /* RenderTemplateIntentHandler.swift */,
-				111858D324CB5B8900B8CDDC /* PerformActionIntentHandler.swift */,
-				11BD8BBC24E76BAD004B9A54 /* WidgetActionsIntentHandler.swift */,
-				112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */,
 				115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */,
-				115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */,
-				11F2E7B227500DAD00CF144C /* PickAServerError.swift */,
+				B6DF8BC3221D047400370A59 /* GetCameraImageIntentHandler.swift */,
 				11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */,
+				115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */,
+				111858D324CB5B8900B8CDDC /* PerformActionIntentHandler.swift */,
+				11F2E7B227500DAD00CF144C /* PickAServerError.swift */,
+				B62817EF221D269B000BA86A /* RenderTemplateIntentHandler.swift */,
+				B66C58B42150898A004AB261 /* SendLocationIntentHandler.swift */,
+				112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */,
+				11BD8BBC24E76BAD004B9A54 /* WidgetActionsIntentHandler.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -5581,6 +5585,7 @@
 				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
 				119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
+				11B63B0B2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
 				1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */,
 				1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
@@ -5776,6 +5781,7 @@
 				B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
+				11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,

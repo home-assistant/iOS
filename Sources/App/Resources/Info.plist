@@ -566,6 +566,7 @@
 		<string>UpdateSensorsIntent</string>
 		<string>WidgetActionsIntent</string>
 		<string>WidgetOpenPageIntent</string>
+		<string>AssistIntent</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
@@ -644,6 +645,7 @@
 		<string>UpdateSensorsIntent</string>
 		<string>WidgetActionsIntent</string>
 		<string>WidgetOpenPageIntent</string>
+		<string>AssistIntent</string>
 	</array>
 	<key>UIApplicationShortcutItems</key>
 	<array>
