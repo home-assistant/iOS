@@ -89,7 +89,11 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
 
         mapView.accessibilityIdentifier = "notification_map"
 
-        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        let span = MKCoordinateSpan(
+            latitudeDelta: CLLocationDegrees(templateValue: haDict["latitude_delta"]) ?? 0.1,
+            longitudeDelta: CLLocationDegrees(templateValue: haDict["longitude_delta"]) ?? 0.1
+        )
+
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: true)
 
