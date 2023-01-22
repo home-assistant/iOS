@@ -1,6 +1,6 @@
 import Intents
-import PromiseKit
 import ObjectMapper
+import PromiseKit
 
 @available(iOS 13, watchOS 6, *)
 class AssistIntentHandler: NSObject, AssistIntentHandling {
