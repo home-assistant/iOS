@@ -32,6 +32,14 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
             return
         }
 
+        guard server.info.version >= .conversationWebhook else {
+            completion(.failure(error: HomeAssistantAPI.APIError.mustUpgradeHomeAssistant(
+                current: server.info.version,
+                minimum: .conversationWebhook
+            ).localizedDescription))
+            return
+        }
+
         struct ConversationResponse: ImmutableMappable {
             var speech: String
 
