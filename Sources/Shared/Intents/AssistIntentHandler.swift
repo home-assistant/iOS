@@ -46,7 +46,7 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
                 type: "conversation_process",
                 data: [
                     "text": intent.text,
-                    "language": Current.localized.currentLanguage,
+                    "language": Locale.current.identifier,
                 ]
             )
         )
