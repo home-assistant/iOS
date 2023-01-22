@@ -20,11 +20,10 @@ public class HomeAssistantAPI {
         case notConfigured
         case updateNotPossible
         case mobileAppComponentNotLoaded
-        case mustUpgradeHomeAssistant(Version)
+        case mustUpgradeHomeAssistant(current: Version, minimum: Version)
         case unknown
     }
 
-    static let minimumRequiredVersion = Version(major: 0, minor: 92, patch: 2)
     public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
 
     public private(set) var manager: Alamofire.Session!
@@ -903,10 +902,10 @@ extension HomeAssistantAPI.APIError: LocalizedError {
             return L10n.HaApi.ApiError.updateNotPossible
         case .mobileAppComponentNotLoaded:
             return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
-        case let .mustUpgradeHomeAssistant(current):
+        case let .mustUpgradeHomeAssistant(current: current, minimum: minimum):
             return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(
                 current.description,
-                HomeAssistantAPI.minimumRequiredVersion.description
+                minimum.description
             )
         case .unknown:
             return L10n.HaApi.ApiError.unknown

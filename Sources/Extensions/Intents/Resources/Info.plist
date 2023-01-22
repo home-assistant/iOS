@@ -35,6 +35,7 @@
 			<array/>
 			<key>IntentsSupported</key>
 			<array>
+				<string>AssistIntent</string>
 				<string>CallServiceIntent</string>
 				<string>FireEventIntent</string>
 				<string>GetCameraImageIntent</string>
@@ -46,6 +47,7 @@
 				<string>WidgetActionsIntent</string>
 				<string>WidgetOpenPageIntent</string>
 				<string>INShareFocusStatusIntent</string>
+				<string>AssistIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

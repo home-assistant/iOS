@@ -3,6 +3,7 @@ import Intents
 
 @available(iOS 13, watchOS 6, *)
 public enum IntentHandlerFactory {
+    // swiftlint:disable:next cyclomatic_complexity
     public static func handler(for intent: INIntent) -> Any {
         let handler: Any = {
             if intent is FireEventIntent {
@@ -25,6 +26,9 @@ public enum IntentHandlerFactory {
             }
             if intent is UpdateSensorsIntent {
                 return UpdateSensorsIntentHandler()
+            }
+            if intent is AssistIntent {
+                return AssistIntentHandler()
             }
             if intent is OpenPageIntent || intent is WidgetOpenPageIntent {
                 return OpenPageIntentHandler()
