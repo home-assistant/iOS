@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>21A559</string>
+	<string>22D5038i</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>13A1030d</string>
+	<string>14B47b</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>13.1</string>
+	<string>14.1</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -1441,6 +1441,30 @@
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>ExtraLarge</string>
 						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryInline</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryCorner</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryCircular</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>2</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryRectangular</string>
+						</dict>
 					</array>
 					<key>INIntentParameterConfigurable</key>
 					<true/>
@@ -1728,6 +1752,30 @@
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>ExtraLarge</string>
 						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryInline</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryCorner</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryCircular</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>2</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>AccessoryRectangular</string>
+						</dict>
 					</array>
 					<key>INIntentParameterConfigurable</key>
 					<true/>
@@ -1798,6 +1846,233 @@
 			<string>Custom</string>
 			<key>INIntentVerb</key>
 			<string>Open</string>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>request</string>
+			<key>INIntentConfigurable</key>
+			<true/>
+			<key>INIntentDescription</key>
+			<string>Ask for Assistance</string>
+			<key>INIntentDescriptionID</key>
+			<string>A1pokw</string>
+			<key>INIntentInput</key>
+			<string>text</string>
+			<key>INIntentKeyParameter</key>
+			<string>text</string>
+			<key>INIntentLastParameterTag</key>
+			<integer>2</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>text,server</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Assist with "${text}"</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>d65H6l</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
+			<key>INIntentName</key>
+			<string>Assist</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key>text,server</key>
+				<dict>
+					<key>INIntentParameterCombinationIsLinked</key>
+					<true/>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Assist with "${text}"</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>YmPx5q</string>
+				</dict>
+			</dict>
+			<key>INIntentParameters</key>
+			<array>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
+					<key>INIntentParameterCustomDisambiguation</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Server</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>hXWHln</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterName</key>
+					<string>server</string>
+					<key>INIntentParameterObjectType</key>
+					<string>IntentServer</string>
+					<key>INIntentParameterObjectTypeNamespace</key>
+					<string>sI7YSe</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which server?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>ftQHJw</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${server}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>EA0zLv</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${server}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>ni0OSe</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsDynamicEnumeration</key>
+					<true/>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
+					<key>INIntentParameterTag</key>
+					<integer>2</integer>
+					<key>INIntentParameterType</key>
+					<string>Object</string>
+				</dict>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Text</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>txfcnn</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>2</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>Sentences</string>
+						<key>INIntentParameterMetadataDefaultValueID</key>
+						<string>adkcOI</string>
+					</dict>
+					<key>INIntentParameterName</key>
+					<string>text</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterTag</key>
+					<integer>1</integer>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+				</dict>
+			</array>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>${result}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>zIiPij</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>${result}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>NUF0Pa</string>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed: ${error}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>2LIxe4</string>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>GiSjQE</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+				</array>
+				<key>INIntentResponseLastParameterTag</key>
+				<integer>2</integer>
+				<key>INIntentResponseOutput</key>
+				<string>result</string>
+				<key>INIntentResponseParameters</key>
+				<array>
+					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Result</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>xN51te</string>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>1</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>result</string>
+						<key>INIntentResponseParameterTag</key>
+						<integer>1</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Error</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>K4xrvF</string>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterTag</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentTitle</key>
+			<string>Assist</string>
+			<key>INIntentTitleID</key>
+			<string>B28HAk</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentVerb</key>
+			<string>Request</string>
 		</dict>
 	</array>
 	<key>INTypes</key>

@@ -86,6 +86,7 @@
 		<string>UpdateSensorsIntent</string>
 		<string>WidgetActionsIntent</string>
 		<string>WidgetOpenPageIntent</string>
+		<string>AssistIntent</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
@@ -115,6 +116,7 @@
 	<array>
 		<string>_hass-mobile-app._tcp</string>
 		<string>_home-assistant._tcp</string>
+		<string>_matter._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
@@ -163,6 +165,7 @@
 		<string>UpdateSensorsIntent</string>
 		<string>WidgetActionsIntent</string>
 		<string>WidgetOpenPageIntent</string>
+		<string>AssistIntent</string>
 	</array>
 	<key>UIApplicationShortcutItems</key>
 	<array>

@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1330"
-   version = "1.8">
+   LastUpgradeVersion = "1410"
+   wasCreatedForAppExtension = "YES"
+   version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "11B6B57A2948F8E100B8B552"
+               BuildableName = "HomeAssistant-Extensions-Matter.appex"
+               BlueprintName = "Extensions-Matter"
+               ReferencedContainer = "container:HomeAssistant.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
@@ -26,59 +41,22 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES">
-      <CodeCoverageTargets>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D03D891620E0A85200D4F28D"
-            BuildableName = "Shared.framework"
-            BlueprintName = "Shared-iOS"
-            ReferencedContainer = "container:HomeAssistant.xcodeproj">
-         </BuildableReference>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B657A8E51CA646EB00121384"
-            BuildableName = "Home Assistant.app"
-            BlueprintName = "App"
-            ReferencedContainer = "container:HomeAssistant.xcodeproj">
-         </BuildableReference>
-      </CodeCoverageTargets>
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B657A8FB1CA646EB00121384"
-               BuildableName = "HomeAssistant-Tests-App.xctest"
-               BlueprintName = "Tests-App"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D03D894120E0BC1800D4F28D"
-               BuildableName = "HomeAssistant-Tests-Shared.xctest"
-               BlueprintName = "Tests-Shared"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
+      askForAppToLaunch = "Yes"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
-      migratedStopOnEveryIssue = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
+      allowLocationSimulation = "YES"
+      launchAutomaticallySubstyle = "2">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
@@ -95,7 +73,9 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
+      debugDocumentVersioning = "YES"
+      askForAppToLaunch = "Yes"
+      launchAutomaticallySubstyle = "2">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

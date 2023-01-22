@@ -96,14 +96,14 @@ PODS:
     - PromiseKit/CorePromise
   - PromisesObjC (2.1.1)
   - ReachabilitySwift (5.0.0)
-  - Realm (10.32.0):
-    - Realm/Headers (= 10.32.0)
-  - Realm/Headers (10.32.0)
-  - RealmSwift (10.32.0):
-    - Realm (= 10.32.0)
+  - Realm (10.33.0):
+    - Realm/Headers (= 10.33.0)
+  - Realm/Headers (10.33.0)
+  - RealmSwift (10.33.0):
+    - Realm (= 10.33.0)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.50.2)
+  - SwiftFormat/CLI (0.50.3)
   - SwiftGen (6.5.1)
   - SwiftLint (0.49.1)
   - SwiftMessages (9.0.6):
@@ -141,9 +141,9 @@ DEPENDENCIES:
   - RealmSwift
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
-  - SwiftFormat/CLI
+  - SwiftFormat/CLI (= 0.50.3)
   - SwiftGen (~> 6.5.0)
-  - SwiftLint
+  - SwiftLint (= 0.49.1)
   - SwiftMessages
   - UIColor_Hex_Swift
   - Version
@@ -270,11 +270,11 @@ SPEC CHECKSUMS:
   PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: a00e93347b8d26d372c7a82f6c0b08d6536a21c8
-  RealmSwift: fe09c29ca409f8f905fe4086f2a52936193f2e3d
+  Realm: d4f810e161fa2c2c589b9860b6eb09238deacd73
+  RealmSwift: cef9946f09f2333a8f2ac8bac4f8de52fb9f5ac3
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 710117321c55c82675c0dc03055128efbb13c38f
+  SwiftFormat: 61cda3819dc3a7d69795ce0430e1e1d53c4a4fb2
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
@@ -284,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: 063163dc828bf699c5be160eb4f58f676322d94f
 
-PODFILE CHECKSUM: ae78143cb4ee276e80c7563eb6274aa4cb5fb7a3
+PODFILE CHECKSUM: dbabd8a80327f940e581f74d98d0812e6fc9514a
 
 COCOAPODS: 1.11.3
