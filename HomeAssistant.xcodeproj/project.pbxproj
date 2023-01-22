@@ -348,6 +348,9 @@
 		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
 		11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
 		11B63B0B2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
+		11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
+		11B63B0B2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
+		11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11B63B0E297A19DC00D908ED /* MatterSupport.framework */; platformFilter = ios; settings = {ATTRIBUTES = (Weak, ); }; };
 		11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
 		11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B6774C28303D35006E9B1A /* SecurityExceptions.swift */; };
 		11B6B5822948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1428,6 +1431,8 @@
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
 		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
 		11B63B092979A07000D908ED /* AssistIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistIntentHandler.swift; sourceTree = "<group>"; };
+		11B63B092979A07000D908ED /* AssistIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistIntentHandler.swift; sourceTree = "<group>"; };
+		11B63B0E297A19DC00D908ED /* MatterSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MatterSupport.framework; path = System/Library/Frameworks/MatterSupport.framework; sourceTree = SDKROOT; };
 		11B6774C28303D35006E9B1A /* SecurityExceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityExceptions.swift; sourceTree = "<group>"; };
 		11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Matter.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B6B5892948FB4B00B8B552 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2165,6 +2170,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
@@ -2877,6 +2883,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				11B63B0E297A19DC00D908ED /* MatterSupport.framework */,
 				1112EA92271B78690038BBFC /* UserNotifications.framework */,
 				117318AC25199E220013E010 /* Foundation.framework */,
 				117318AA25199E1A0013E010 /* AppKit.framework */,
