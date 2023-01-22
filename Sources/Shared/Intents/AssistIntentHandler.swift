@@ -43,7 +43,7 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         let promise: Promise<ConversationResponse> = Current.webhooks.sendEphemeral(
             server: server,
             request: .init(
-                type: "assist",
+                type: "conversation_process",
                 data: [
                     "text": intent.text,
                     "language": Current.localized.currentLanguage,
@@ -52,10 +52,10 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         )
 
         promise.done { result in
-            let value = AssistIntentResponse()
-            value.result = result.speech
-            completion(value)
+            Current.Log.info("finishing with \(result)")
+            completion(.success(result: result.speech))
         }.catch { error in
+            Current.Log.error("erroring with \(error)")
             completion(.failure(error: error.localizedDescription))
         }
     }
