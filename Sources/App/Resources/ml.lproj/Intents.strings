@@ -8,7 +8,7 @@
 "5bVvn0" = "Failed to update location: ${error}";
 "637QjD" = "Error";
 "6ozAdN" = "Camera Image";
-"6qSzZG" = "'$ {server} ' എന്നതുമായി ചേർച്ചയുള്ള $ {count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
+"6qSzZG" = "'${server} ' എന്നതുമായി ചേർച്ചയുള്ള ${count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
 "7boBzr" = "Call ${service} with data";
 "8BMgur" = "Done";
 "8skKro" = "Which actions?";
@@ -27,7 +27,7 @@
 "HSLcG7" = "Event Name";
 "HoH8wg" = "Actions";
 "J3qct4" = "സെർവർ";
-"JBMp1T" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '$ {server} ' വേണോ?";
+"JBMp1T" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '${server} ' വേണോ?";
 "KHH48D" = "Failed: Home Assistant is not currently reachable";
 "KJS2jk" = "Failed: ${error}";
 "KM7mXC" = "Action";
@@ -85,7 +85,7 @@
 "hLFNfv" = "Failed: ${error}";
 "hsrlTY" = "Get a single still frame from a camera";
 "iMvUhs" = "പേജ് തുറക്കുക";
-"jWGtvO" = "'$ {server} ' എന്നതുമായി ചേർച്ചയുള്ള $ {count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
+"jWGtvO" = "'${server} ' എന്നതുമായി ചേർച്ചയുള്ള ${count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
 "jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
 "kGB23u" = "Perform Action";
 "l2coEc" = "ഏത് സെർവർ?";
