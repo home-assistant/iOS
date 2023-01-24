@@ -1214,6 +1214,10 @@
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
 		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
 		1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonRowWithLoading.swift; sourceTree = "<group>"; };
+		1128FF37297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Intents.strings; sourceTree = "<group>"; };
+		1128FF38297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Frontend.strings; sourceTree = "<group>"; };
+		1128FF39297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1128FF3A297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+IntentLanguage.swift"; sourceTree = "<group>"; };
 		112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensorsIntentHandler.swift; sourceTree = "<group>"; };
 		1130A5732751B29E00640E38 /* PerServerContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerServerContainer.test.swift; sourceTree = "<group>"; };
@@ -4394,6 +4398,7 @@
 				id,
 				ja,
 				"pt-BR",
+				ml,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -6140,6 +6145,7 @@
 				116570752702A411003906A7 /* cy-GB */,
 				1159935D275D37B600D805DF /* ja */,
 				11B154A327ABAADA00462185 /* pt-BR */,
+				1128FF38297E5F7D00BAAFD9 /* ml */,
 			);
 			name = Frontend.strings;
 			sourceTree = "<group>";
@@ -6177,6 +6183,7 @@
 				1164DA0025FB41AE00515E8A /* id */,
 				1159935E275D37B600D805DF /* ja */,
 				11B154A427ABAADA00462185 /* pt-BR */,
+				1128FF39297E5F7D00BAAFD9 /* ml */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -6214,6 +6221,7 @@
 				1164D9FE25FB417D00515E8A /* id */,
 				1159935C275D37B600D805DF /* ja */,
 				11B154A227ABAADA00462185 /* pt-BR */,
+				1128FF37297E5F7D00BAAFD9 /* ml */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -6267,6 +6275,7 @@
 				1164DA0125FB41AE00515E8A /* id */,
 				1159935F275D37B600D805DF /* ja */,
 				11B154A527ABAADA00462185 /* pt-BR */,
+				1128FF3A297E5F7D00BAAFD9 /* ml */,
 			);
 			name = Localizable.strings;
 			path = .;

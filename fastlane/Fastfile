@@ -190,6 +190,7 @@ lane :update_strings do
     'it' => 'it',
     'ja' => 'ja',
     'ko' => 'ko-KR',
+    'ml' => 'ml',
     'nb' => 'nb',
     'nl' => 'nl',
     'pl' => 'pl-PL',
