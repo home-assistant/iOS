@@ -103,6 +103,8 @@
 		11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11267D0825BBA9FE00F28E5C /* Updater.test.swift */; };
 		1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */; };
 		1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */; };
+		1128FF3C297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */; };
+		1128FF3D297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */; };
 		1130A5742751B29E00640E38 /* PerServerContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5732751B29E00640E38 /* PerServerContainer.test.swift */; };
 		1130A5762751BA1800640E38 /* Server.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5752751BA1800640E38 /* Server.test.swift */; };
 		1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5772751BDD900640E38 /* ServerManager.test.swift */; };
@@ -1216,6 +1218,7 @@
 		1128FF38297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Frontend.strings; sourceTree = "<group>"; };
 		1128FF39297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1128FF3A297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+IntentLanguage.swift"; sourceTree = "<group>"; };
 		112B705A2526B1C500FEAA76 /* UpdateSensorsIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSensorsIntentHandler.swift; sourceTree = "<group>"; };
 		1130A5732751B29E00640E38 /* PerServerContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerServerContainer.test.swift; sourceTree = "<group>"; };
 		1130A5752751BA1800640E38 /* Server.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.test.swift; sourceTree = "<group>"; };
@@ -3774,6 +3777,7 @@
 				1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */,
 				116570762702B0F6003906A7 /* DiskCache.swift */,
 				1120C5832749C6350046C38B /* ServerProviding.swift */,
+				1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -5623,6 +5627,7 @@
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
+				1128FF3D297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
@@ -5819,6 +5824,7 @@
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				114CBAE82839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
+				1128FF3C297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
 				11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */,
