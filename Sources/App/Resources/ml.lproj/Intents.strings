@@ -3,7 +3,7 @@
 "2b0Uo4" = "Service";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Updated";
-"4tpAXn" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '$ {server} ' വേണോ?";
+"4tpAXn" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '${server} ' വേണോ?";
 "5ZzwZD" = "Failed: Home Assistant is not currently reachable";
 "5bVvn0" = "Failed to update location: ${error}";
 "637QjD" = "Error";
@@ -15,7 +15,7 @@
 "B4bXyc" = "Done";
 "BwZv3u" = "ഏത് സെർവർ?";
 "CmlkE4" = "shortcut_event";
-"DFWJB8" = "$ {page} തുറക്കുക";
+"DFWJB8" = "${page} തുറക്കുക";
 "DdnZyl" = "Got the latest still from ${cameraID}";
 "DqfwpO" = "സെർവർ";
 "DsasVx" = "Error";
@@ -31,7 +31,7 @@
 "KHH48D" = "Failed: Home Assistant is not currently reachable";
 "KJS2jk" = "Failed: ${error}";
 "KM7mXC" = "Action";
-"KSmKl0" = "$ {domain} .$ {service} വിളിച്ചു";
+"KSmKl0" = "${domain}.${service} വിളിച്ചു";
 "KzOHYA" = "Failed: ${error}";
 "LVEY3e" = "Camera ID";
 "Lgymq2" = "Which service?";
@@ -48,7 +48,7 @@
 "RMQY3r" = "Send location to Home Assistant";
 "RsOw3P" = "Successfully rendered template";
 "T06Fka" = "മുൻവശത്ത് ഒരു പേജ് തുറക്കുക";
-"U4u9Xz" = "'$ {server} ' എന്നതുമായി ചേർച്ചയുള്ള $ {count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
+"U4u9Xz" = "'${server} ' എന്നതുമായി ചേർച്ചയുള്ള ${count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
 "ULka1b" = "Actions";
 "VP2XpM" = "Event Data";
 "Wk7m4V" = "സെർവർ";
@@ -56,14 +56,14 @@
 "X4A8Cc" = "Service Domain";
 "Xq7UuD" = "Render the provided template";
 "YNQXwq" = "Error";
-"YxAau3" = "'$ {server} ' എന്നതുമായി ചേർച്ചയുള്ള $ {count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
+"YxAau3" = "'${server} ' എന്നതുമായി ചേർച്ചയുള്ള ${count} തിരഞ്ഞെടുപ്പുകൾ ഉണ്ട്.";
 "ZApPxB" = "Service Name";
 "ZRPVYO" = "മുൻവശത്ത് ഒരു പേജ് തുറക്കുക";
 "ZT9Mld" = "Event Name";
 "ZmUm9Q" = "What template would you like to render?";
 "Zoqsph" = "പേജ്";
-"aXZJt9" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '$ {server} ' വേണോ?";
-"am5G4A" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '$ {server} ' വേണോ?";
+"aXZJt9" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '${server} ' വേണോ?";
+"am5G4A" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '${server} ' വേണോ?";
 "cK9jdK" = "Failed: ${error}";
 "cLmTme" = "Action";
 "cuflz3" = "Failed: Home Assistant is not currently reachable";
