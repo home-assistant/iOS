@@ -400,7 +400,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (dalam aplikasi)";
 "settings_details.general.open_in_browser.title" = "Buka Tautan Di";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "Buka di Tab Privat";
 "settings_details.general.page_zoom.default" = "%@ (Bawaan)";
 "settings_details.general.page_zoom.title" = "Perbesaran Halaman";
 "settings_details.general.pinch_to_zoom.title" = "Cubit untuk Perbesaran";

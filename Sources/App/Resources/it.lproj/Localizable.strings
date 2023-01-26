@@ -400,7 +400,7 @@
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Apri collegamenti con";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "Apri nella scheda privata";
 "settings_details.general.page_zoom.default" = "%@ (Predefinito)";
 "settings_details.general.page_zoom.title" = "Zoom Della Pagina";
 "settings_details.general.pinch_to_zoom.title" = "Pizzica con le dita per ingrandire";

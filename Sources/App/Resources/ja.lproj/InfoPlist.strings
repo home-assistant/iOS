@@ -5,7 +5,7 @@
 "NSLocalNetworkUsageDescription" = "Home Assistantのインスタンスを見つけて通信します。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "最高のロケーション エクスペリエンスを得るには、[常に許可] を選択することをお勧めします。 「アプリの使用中のみ」を選択すると、iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、および正確なレポートが無効になります。";
 "NSLocationAlwaysUsageDescription" = "iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、正確なレポートなどの機能のために、常に位置情報にアクセスする必要があります。";
-"NSLocationUsageDescription" = "有効にすると、デバイスの位置情報がデバイス トラッカーとしてホーム アシスタント サーバーに送信されます。";
+"NSLocationUsageDescription" = "有効にすると、デバイスの位置情報がデバイス トラッカーとしてHome Assistantに送信されます。";
 "NSLocationWhenInUseUsageDescription" = "アプリの使用中にのみ位置情報へのアクセスを許可すると、iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、正確なレポートが無効になります。";
 "NSMicrophoneUsageDescription" = "HomeAssistantフロントエンドを使用してオーディオを録音します。";
 "NSMotionUsageDescription" = "モーションは、現在のモーション タイプで位置情報の更新を改善し、基本的な歩数計データを提供するために使用されます。";
