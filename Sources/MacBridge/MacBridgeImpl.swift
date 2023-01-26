@@ -116,7 +116,6 @@ import ServiceManagement
     @objc private func fixWindows() {
         // macOS 13 when using Xcode 14 breaks our window display, see: https://developer.apple.com/forums/thread/716623
         guard #available(macOS 13, *) else { return }
-        print(NSApplication.shared.windows.map(\.toolbar))
         for window in NSApplication.shared.windows {
             if window.toolbar == nil || window.toolbar?.items.isEmpty == true {
                 window.titlebarAppearsTransparent = true
