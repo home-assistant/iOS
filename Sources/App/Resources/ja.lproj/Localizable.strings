@@ -93,7 +93,7 @@
 "ha_api.api_error.invalid_response" = "Home Assistantから無効な応答を受け取りました";
 "ha_api.api_error.manager_not_available" = "HA APIマネージャーが使用できません。";
 "ha_api.api_error.mobile_app_component_not_loaded" = "mobile_appコンポーネントがロードされていません。設定に追加して、Home Assistantを再起動してから、もう一度やり直してください。";
-"ha_api.api_error.must_upgrade_home_assistant" = "ホーム アシスタントのバージョン ( %@ ) が古すぎます。アプリを使用するには、少なくともバージョン%@にアップグレードする必要があります。";
+"ha_api.api_error.must_upgrade_home_assistant" = "Home Assistantのバージョン (%@)が古すぎます。アプリを使用するには、少なくともバージョン %@ にアップグレードする必要があります。";
 "ha_api.api_error.not_configured" = "HA APIが設定されていません";
 "ha_api.api_error.unacceptable_status_code" = "受け入れ不可なステータスコード %1$li。";
 "ha_api.api_error.unexpected_type" = "タイプ %1$@ の結果を含む応答を受け取りましたが、タイプ %2$@ が必要です。";
@@ -138,7 +138,7 @@
 "nfc.generic_tag_read" = "タグ読み取り";
 "nfc.list.description" = "アプリによって書き込まれた NFC タグにデバイスを近づけると、通知が表示されます。通知を有効にすると、アプリが起動し、イベントが発生します。 \
 \
-タグは、ホーム アシスタントがインストールされていて、タグの読み取りをハードウェアでサポートしているすべてのデバイスで機能します。";
+タグは、Home Assistantがインストールされていて、タグの読み取りをハードウェアでサポートしているすべてのデバイスで機能します。";
 "nfc.list.learn_more" = "さらに詳しく";
 "nfc.list.read_tag" = "タグを読み取る";
 "nfc.list.title" = "NFCタグ";
@@ -400,7 +400,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari(アプリ内)";
 "settings_details.general.open_in_browser.title" = "リンクを開く";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "プライベートタブで開く";
 "settings_details.general.page_zoom.default" = "%@(デフォルト)";
 "settings_details.general.page_zoom.title" = "ページズーム";
 "settings_details.general.pinch_to_zoom.title" = "ピンチしてズーム";
@@ -505,7 +505,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.notifications.title" = "通知";
 "settings_details.privacy.alerts.description" = "セキュリティの脆弱性などの重要な警告をチェックできます。";
 "settings_details.privacy.alerts.title" = "アラート";
-"settings_details.privacy.analytics.generic_description" = "デバイスとアプリとのやり取りに関する基本情報の収集を許可します。ホーム アシスタントの URL やトークンなど、ユーザーを特定できるデータは共有されません。この設定の変更を有効にするには、アプリを再起動する必要があります。";
+"settings_details.privacy.analytics.generic_description" = "デバイスとアプリとのやり取りに関する基本情報の収集を許可します。Home Assistantの URL やトークンなど、ユーザーを特定できるデータは共有されません。この設定の変更を有効にするには、アプリを再起動する必要があります。";
 "settings_details.privacy.analytics.generic_title" = "分析";
 "settings_details.privacy.crash_reporting.description" = "アプリのクラッシュやその他のエラーをより詳細に追跡できるため、より迅速に修正を公開できます。基本的なデバイス情報以外に、ユーザーを特定できる情報は送信されません。この設定の変更を有効にするには、アプリを再起動する必要があります。";
 "settings_details.privacy.crash_reporting.sentry" = "この機能は現在、レポートの送信先としてSentryを使用しています。";

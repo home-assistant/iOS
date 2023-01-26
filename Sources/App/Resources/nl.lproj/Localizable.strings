@@ -400,7 +400,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Open links in";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "Openen in een privé tabblad";
 "settings_details.general.page_zoom.default" = "%@ (Standaard)";
 "settings_details.general.page_zoom.title" = "Pagina Zoom";
 "settings_details.general.pinch_to_zoom.title" = "Knijpen om te zoomen";

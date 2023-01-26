@@ -13,7 +13,7 @@
 "8BMgur" = "Done";
 "8skKro" = "Jaké akce?";
 "B4bXyc" = "Done";
-"BwZv3u" = "Which server?";
+"BwZv3u" = "Který server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Open ${page}";
 "DdnZyl" = "Got the latest still from ${cameraID}";
@@ -35,7 +35,7 @@
 "KzOHYA" = "Failed: ${error}";
 "LVEY3e" = "ID kamery";
 "Lgymq2" = "Jakou službu?";
-"LsEMMg" = "Icon";
+"LsEMMg" = "Ikona";
 "MTPojJ" = "Jaký je název události?";
 "MwEpGz" = "Hotovo!";
 "N9iJpK" = "Get Camera Image";
@@ -61,14 +61,14 @@
 "ZRPVYO" = "Open a page in the frontend";
 "ZT9Mld" = "Název události";
 "ZmUm9Q" = "What template would you like to render?";
-"Zoqsph" = "Page";
+"Zoqsph" = "Strana";
 "aXZJt9" = "Just to confirm, you wanted ‘${server}’?";
 "am5G4A" = "Just to confirm, you wanted ‘${server}’?";
 "cK9jdK" = "Failed: ${error}";
 "cLmTme" = "Akce";
 "cuflz3" = "Failed: Home Assistant is not currently reachable";
 "dFHPYK" = "Provedeno ${action}";
-"eObn2i" = "Page";
+"eObn2i" = "Strana";
 "f1KX0Q" = "Zobrazit a spustit akce";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Která akce?";
@@ -88,7 +88,7 @@
 "jWGtvO" = "There are ${count} options matching ‘${server}’.";
 "jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
 "kGB23u" = "Provést akci";
-"l2coEc" = "Which server?";
+"l2coEc" = "Který server?";
 "lGqSSG" = "Aktualizace senzorů se nezdařila.";
 "lNmaCR" = "Šablona";
 "lxHlyQ" = "Fire Event";
@@ -119,7 +119,7 @@
 "vAIAF2" = "Odeslat aktualizaci senzoru do Home Assistanta";
 "vebd70" = "Server";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
-"xfXG6b" = "Which server?";
+"xfXG6b" = "Který server?";
 "xhwpj4" = "Hotovo";
 "ypnPyU" = "Provést ${action}";
 "yyjTxO" = "Chyba";

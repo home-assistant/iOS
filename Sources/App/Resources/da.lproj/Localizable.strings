@@ -333,7 +333,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.developer.show_log_files.title" = "Vis logfiler i Finder";
 "settings.developer.sync_watch_context.title" = "Synkroniser urkontekst";
 "settings.event_log.title" = "Hændelseslog";
-"settings.location_history.detail.explanation" = "Den lilla cirkel er din placering og dens nøjagtighed. Blå cirkler er dine zoner. Du er inde i en zone, hvis den lilla cirkel overlapper en blå cirkel. Orange cirkler er yderligere områder, der bruges til zoner under 100 m.";
+"settings.location_history.detail.explanation" = "Den lilla cirkel er din lokalitet og dens nøjagtighed. Blå cirkler er dine zoner. Du er inde i en zone, hvis den lilla cirkel overlapper en blå cirkel. Orange cirkler er yderligere områder, der bruges til zoner under 100 m.";
 "settings.location_history.empty" = "Ingen lokalitetshistorik";
 "settings.location_history.title" = "Lokalitetshistorik";
 "settings.navigation_bar.about_button.title" = "Om";
@@ -400,7 +400,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (i app)";
 "settings_details.general.open_in_browser.title" = "Åbn links i";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "Åbn i privat fane";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
 "settings_details.general.page_zoom.title" = "Sidezoom";
 "settings_details.general.pinch_to_zoom.title" = "Knib sammen for at zoome";

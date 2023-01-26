@@ -202,7 +202,7 @@
 "onboarding.connection_error.title" = "连接失败";
 "onboarding.connection_test_result.authentication_unsupported.description" = "不支持的身份验证类型%@。";
 "onboarding.connection_test_result.basic_auth.description" = "不支持HTTP基本身份验证。";
-"onboarding.connection_test_result.certificate_error.action_dont_trust" = "不要相信";
+"onboarding.connection_test_result.certificate_error.action_dont_trust" = "不要信任证书";
 "onboarding.connection_test_result.certificate_error.action_trust" = "信任证书";
 "onboarding.connection_test_result.certificate_error.title" = "无法安全连接";
 "onboarding.connection_test_result.client_certificate.description" = "不支持客户端证书身份验证。";
@@ -392,12 +392,12 @@
 "settings_details.general.open_in_browser.chrome" = "谷歌浏览器";
 "settings_details.general.open_in_browser.default" = "系统默认";
 "settings_details.general.open_in_browser.firefox" = "火狐浏览器";
-"settings_details.general.open_in_browser.firefoxFocus" = "Mozilla Firefox Focus";
-"settings_details.general.open_in_browser.firefoxKlar" = "Mozilla Firefox Klar";
+"settings_details.general.open_in_browser.firefoxFocus" = "从火狐隐私保护浏览器打开";
+"settings_details.general.open_in_browser.firefoxKlar" = "从火狐隐私保护浏览器打开";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari（应用内）";
 "settings_details.general.open_in_browser.title" = "链接打开方式";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "以无痕式视窗开启";
 "settings_details.general.page_zoom.default" = "%@（默认）";
 "settings_details.general.page_zoom.title" = "页面缩放";
 "settings_details.general.pinch_to_zoom.title" = "双指缩放";

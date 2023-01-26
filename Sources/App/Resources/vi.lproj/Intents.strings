@@ -51,7 +51,7 @@
 "U4u9Xz" = "There are ${count} options matching ‘${server}’.";
 "ULka1b" = "Actions";
 "VP2XpM" = "Event Data";
-"Wk7m4V" = "Server";
+"Wk7m4V" = "Máy chủ";
 "X02YQ2" = "${action}";
 "X4A8Cc" = "Service Domain";
 "Xq7UuD" = "Render the provided template";
@@ -81,7 +81,7 @@
 "glRCfJ" = "Failed: Home Assistant is not currently reachable";
 "gv7Gg6" = "Location";
 "h1xQ53" = "Update Sensors";
-"hKNPaD" = "Server";
+"hKNPaD" = "Máy chủ";
 "hLFNfv" = "Failed: ${error}";
 "hsrlTY" = "Get a single still frame from a camera";
 "iMvUhs" = "Open Page";

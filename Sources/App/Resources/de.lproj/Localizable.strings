@@ -215,7 +215,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.manual_setup.connect" = "Verbinden";
 "onboarding.manual_setup.couldnt_make_url.message" = "Der Wert ' %@ ' war keine gültige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL konnte nicht erstellt werden";
-"onboarding.manual_setup.description" = "Die URL Ihres Home Assistant-Servers. Achten Sie darauf, dass sie das Protokoll und den Port enthält.";
+"onboarding.manual_setup.description" = "Die URL Ihres Home Assistant-Servers. Achte darauf, dass sie das Protokoll und den Port enthält.";
 "onboarding.manual_setup.no_scheme.message" = "Sollen wir versuchen, eine Verbindung über http:// oder https:// herzustellen?";
 "onboarding.manual_setup.no_scheme.title" = "URL ohne Schema eingegeben";
 "onboarding.manual_setup.title" = "URL eingeben";
@@ -247,7 +247,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.notification.title" = "Benachrichtigungen";
 "onboarding.scanning.discovered_announcement" = "Entdeckt: %@";
 "onboarding.scanning.manual" = "Adresse manuell eingeben";
-"onboarding.scanning.manual_hint" = "Wird ihr Server nicht gefunden?";
+"onboarding.scanning.manual_hint" = "Wird dein Server nicht gefunden?";
 "onboarding.scanning.title" = "Sucht nach Servern";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu Ihrem Home Assistant-Server her und ermöglicht die Integration von Daten über Sie und Ihr Telefon.\
 \
@@ -293,7 +293,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "Alle";
 "settings.connection_section.sensor_send_type.setting.none" = "Keine";
-"settings.connection_section.sensor_send_type.title" = "Sensorinformationen senden";
+"settings.connection_section.sensor_send_type.title" = "Sensorinformationen gesendet";
 "settings.connection_section.servers" = "Server";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung \"Immer\" und die Standortgenauigkeit \"Vollständig\" erforderlich. Tippen Sie hier, um Ihre Einstellungen zu ändern.";
 "settings.connection_section.ssid_permission_message" = "Zugriff auf SSIDs im Hintergrund erfordern die Standortberechtigung \"Immer\". Tippe hier um die Einstellung zu ändern.";
@@ -400,7 +400,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in App)";
 "settings_details.general.open_in_browser.title" = "Links öffnen in";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "In privatem Tab öffnen";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
 "settings_details.general.page_zoom.title" = "Seitenzoom";
 "settings_details.general.pinch_to_zoom.title" = "Zum Zoomen mit 2 Fingern auseinander wischen";

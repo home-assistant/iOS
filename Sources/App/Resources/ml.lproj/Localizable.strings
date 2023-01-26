@@ -99,7 +99,7 @@
 "ha_api.api_error.unexpected_type" = "Received response with result of type %1$@ but expected type %2$@.";
 "ha_api.api_error.unknown" = "An unknown error occurred.";
 "ha_api.api_error.update_not_possible" = "Operation could not be performed.";
-"help_label" = "Help";
+"help_label" = "സഹായം";
 "intents.server_required_for_value" = "ഈ മൂല്യം തിരഞ്ഞെടുക്കുന്നതിന് മുമ്പ് ഒരു സെർവർ തിരഞ്ഞെടുക്കുക.";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
@@ -308,7 +308,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
-"settings.debugging.title" = "Debugging";
+"settings.debugging.title" = "ഡീബഗ്ഗിംഗ്";
 "settings.details_section.location_settings_row.title" = "Location";
 "settings.details_section.notification_settings_row.title" = "Notifications";
 "settings.details_section.watch_row.title" = "Apple Watch";
@@ -350,7 +350,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.status_section.location_name_row.title" = "Name";
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
-"settings.template_edit.title" = "Edit Template";
+"settings.template_edit.title" = "ടെംപ്ലേറ്റ് എഡിറ്റ് ചെയ്യുക";
 "settings_details.actions.actions_synced.empty" = "No Synced Actions";
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
@@ -436,7 +436,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.location.notifications.url_scheme.title" = "URL Scheme Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
 "settings_details.location.title" = "Location";
-"settings_details.location.update_location" = "Update Location";
+"settings_details.location.update_location" = "ലൊക്കേഷൻ അപ്ഡേറ്റ് ചെയ്യുക";
 "settings_details.location.updates.background.title" = "Background fetch";
 "settings_details.location.updates.footer" = "Manual location updates can always be triggered";
 "settings_details.location.updates.header" = "Update sources";
