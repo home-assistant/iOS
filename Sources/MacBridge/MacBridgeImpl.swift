@@ -19,6 +19,14 @@ import ServiceManagement
         super.init()
 
         MacBridgeAppDelegateHandler.swizzleAppDelegate()
+
+        for name: Notification.Name in [
+            NSApplication.didFinishLaunchingNotification,
+            NSApplication.didFinishRestoringWindowsNotification,
+            NSWindow.didBecomeKeyNotification,
+        ] {
+            NotificationCenter.default.addObserver(self, selector: #selector(fixWindows), name: name, object: nil)
+        }
     }
 
     var terminationWillBeginNotification: Notification.Name {
@@ -103,6 +111,17 @@ import ServiceManagement
     func isLoginItemEnabled(forBundleIdentifier identifier: String) -> Bool {
         // TODO: SMJobIsEnabled is the Apple-suggested method of getting this info, and it's also private API. lol.
         UserDefaults.standard.bool(forKey: Self.userDefaultsKey(forLoginItemBundleIdentifier: identifier))
+    }
+
+    @objc private func fixWindows() {
+        // macOS 13 when using Xcode 14 breaks our window display, see: https://developer.apple.com/forums/thread/716623
+        guard #available(macOS 13, *) else { return }
+        print(NSApplication.shared.windows.map(\.toolbar))
+        for window in NSApplication.shared.windows {
+            if window.toolbar == nil || window.toolbar?.items.isEmpty == true {
+                window.titlebarAppearsTransparent = true
+            }
+        }
     }
 }
 
