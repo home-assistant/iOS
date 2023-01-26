@@ -67,7 +67,7 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
             }
         }
 
-        let promise: Promise<ConversationResponse> = Current.webhooks.sendEphemeral(
+        Current.webhooks.sendEphemeral(
             server: server,
             request: .init(
                 type: "conversation_process",
@@ -76,11 +76,14 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
                     "language": intent.language?.identifier ?? Locale.current.identifier,
                 ]
             )
-        )
-
-        promise.done { result in
-            Current.Log.info("finishing with \(result)")
-            completion(.success(result: result.speech))
+        ).map { (original: [String: Any]) -> (ConversationResponse, [String: Any]) in
+            let object: ConversationResponse = try Mapper().map(JSONObject: original)
+            return (object, original)
+        }.done { object, original in
+            Current.Log.info("finishing with \(object)")
+            let value = IntentAssistResult(identifier: nil, display: object.speech)
+            value.json = String(decoding: try JSONSerialization.data(withJSONObject: original), as: UTF8.self)
+            completion(.success(result: value))
         }.catch { error in
             Current.Log.error("erroring with \(error)")
             completion(.failure(error: error.localizedDescription))
