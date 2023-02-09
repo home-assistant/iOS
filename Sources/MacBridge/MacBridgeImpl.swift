@@ -1,6 +1,7 @@
 import AppKit
 import Foundation
 import ServiceManagement
+import SystemConfiguration
 
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
     let networkMonitor: MacBridgeNetworkMonitor
@@ -27,6 +28,10 @@ import ServiceManagement
         ] {
             NotificationCenter.default.addObserver(self, selector: #selector(fixWindows), name: name, object: nil)
         }
+    }
+
+    var deviceName: String {
+        SCDynamicStoreCopyComputerName(nil, nil) as? String ?? "Unknown"
     }
 
     var terminationWillBeginNotification: Notification.Name {

@@ -5,6 +5,8 @@ import Foundation
 @objc(MacBridge) public protocol MacBridge: NSObjectProtocol {
     init()
 
+    var deviceName: String { get }
+
     var distributedNotificationCenter: NotificationCenter { get }
     var workspaceNotificationCenter: NotificationCenter { get }
 
