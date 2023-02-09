@@ -80,7 +80,9 @@ public class DeviceWrapper {
     }
 
     public lazy var deviceName: () -> String = {
-        #if os(iOS)
+        #if targetEnvironment(macCatalyst)
+        return Current.macBridge.deviceName
+        #elseif os(iOS)
         return UIDevice.current.name
         #elseif os(watchOS)
         return WKInterfaceDevice.current().name
