@@ -165,7 +165,7 @@ class OnboardingAuthTests: XCTestCase {
         XCTAssertEqual(connectionInfo.address(for: .internal), instance.internalURL)
         XCTAssertEqual(connectionInfo.address(for: .external), instance.externalURL)
         XCTAssertEqual(connectionInfo.internalSSIDs, ["unit_test"])
-        XCTAssertEqual(connectionInfo.internalHardwareAddresses, ["unit_test_addr"])
+        XCTAssertEqual(connectionInfo.internalHardwareAddresses, nil)
 
         XCTAssertEqual(Current.servers.server(for: server.identifier)?.info, server.info)
     }
