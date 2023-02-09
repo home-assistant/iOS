@@ -86,6 +86,10 @@ extension SettingsSceneDelegate: UINavigationControllerDelegate {
         if #available(iOS 14, *), navigationController.traitCollection.userInterfaceIdiom == .mac {
             let shouldBeHidden = navigationController.viewControllers.count <= 1
 
+            if #available(iOS 16, *) {
+                navigationController.navigationBar.preferredBehavioralStyle = .pad
+            }
+
             if navigationController.isNavigationBarHidden != shouldBeHidden {
                 navigationController.setNavigationBarHidden(shouldBeHidden, animated: true)
             }
