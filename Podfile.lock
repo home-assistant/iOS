@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.6.2)
+  - Alamofire (5.6.4)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
@@ -10,18 +10,18 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.4.0)
-  - FirebaseCore (10.0.0):
+  - FirebaseCore (10.5.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreInternal (10.0.0):
+  - FirebaseCoreInternal (10.5.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseInstallations (10.0.0):
+  - FirebaseInstallations (10.5.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.0.0):
+  - FirebaseMessaging (10.5.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.2)
@@ -30,26 +30,26 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleDataTransport (9.2.0):
+  - GoogleDataTransport (9.2.1):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/AppDelegateSwizzler (7.8.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.11.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.8.0):
+  - GoogleUtilities/Environment (7.11.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.8.0):
+  - GoogleUtilities/Logger (7.11.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.8.0):
+  - GoogleUtilities/Network (7.11.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.8.0)"
-  - GoogleUtilities/Reachability (7.8.0):
+  - "GoogleUtilities/NSData+zlib (7.11.0)"
+  - GoogleUtilities/Reachability (7.11.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.8.0):
+  - GoogleUtilities/UserDefaults (7.11.0):
     - GoogleUtilities/Logger
   - HAKit (0.3):
     - HAKit/Core (= 0.3)
@@ -61,7 +61,7 @@ PODS:
     - HAKit/Core
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
-  - lottie-ios (3.5.0)
+  - lottie-ios (4.1.2)
   - MBProgressHUD (1.2.0)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
@@ -96,11 +96,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromisesObjC (2.1.1)
   - ReachabilitySwift (5.0.0)
-  - Realm (10.33.0):
-    - Realm/Headers (= 10.33.0)
-  - Realm/Headers (10.33.0)
-  - RealmSwift (10.33.0):
-    - Realm (= 10.33.0)
+  - Realm (10.35.0):
+    - Realm/Headers (= 10.35.0)
+  - Realm/Headers (10.35.0)
+  - RealmSwift (10.35.0):
+    - Realm (= 10.35.0)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
   - SwiftFormat/CLI (0.50.3)
@@ -117,12 +117,12 @@ PODS:
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
     - ObjcExceptionBridging
-  - ZIPFoundation (0.9.15)
+  - ZIPFoundation (0.9.16)
 
 DEPENDENCIES:
   - Alamofire (~> 5.6)
   - CallbackURLKit
-  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
+  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, commit `fde095843bb8c08e8818097c51ed140373180790`)
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
@@ -183,7 +183,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   ColorPickerRow:
-    :branch: master
+    :commit: fde095843bb8c08e8818097c51ed140373180790
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   Communicator:
     :branch: observation-memory-direct
@@ -215,7 +215,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   ColorPickerRow:
-    :commit: dcf9545cbe75d0f78b1b96e880d6aa85f98b0795
+    :commit: fde095843bb8c08e8818097c51ed140373180790
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   Communicator:
     :commit: f5dd96048cbe1e7ebfee85688c23c17c6f71f9e4
@@ -227,7 +227,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :commit: b6e35acf77a5551070afa6248935ec68e71f22af
+    :commit: ba4ebbcc4e368e901de666870fc2a4524474a4c7
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
     :commit: 1f0202aaaaac56efceaa4df8d3546c9dfecb4c29
@@ -246,22 +246,22 @@ CHECKOUT OPTIONS:
     :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
-  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: 027085fbfac0fbb02c8e045f5f409df0882e1630
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: fadaa9fa3d6e402d3c60f78f24edf3d7bafc9c29
-  FirebaseCore: 97f48a3a567a72b8d4daa0f03c3aadb78df4e995
-  FirebaseCoreInternal: 5eb3960335da5ea30115d57d39db6988c4ad06f3
-  FirebaseInstallations: 7f1c9ae6bd9df6abe9c74124b38fa8740aba5df4
-  FirebaseMessaging: 8916bf5edb1dbfac74665a181e4d1ab3a78a08a2
-  GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
-  GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
+  FirebaseCore: 324b8d182d9ff7e3f6d1fa2f04b082d1c7a3e366
+  FirebaseCoreInternal: e463f41bb935cd049505bf7e9a5bdd7dcea90df6
+  FirebaseInstallations: 935bc4abb6f7a035cab7a0c31cb777b2be3dd254
+  FirebaseMessaging: 35ecbbc68ff547fca80f9326c9622e79288c7149
+  GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
+  GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  lottie-ios: c55158d67d0629a260625cc2ded2052b829e3c3e
+  lottie-ios: b3846a9fa8ca1a1a3bebfa256ebe8b6fd4aaaaad
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -270,8 +270,8 @@ SPEC CHECKSUMS:
   PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: d4f810e161fa2c2c589b9860b6eb09238deacd73
-  RealmSwift: cef9946f09f2333a8f2ac8bac4f8de52fb9f5ac3
+  Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
+  RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   SwiftFormat: 61cda3819dc3a7d69795ce0430e1e1d53c4a4fb2
@@ -282,8 +282,8 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
-  ZIPFoundation: 063163dc828bf699c5be160eb4f58f676322d94f
+  ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: dbabd8a80327f940e581f74d98d0812e6fc9514a
+PODFILE CHECKSUM: 22fc24cfd665bd31532e7b68cf2aee22abb132b2
 
 COCOAPODS: 1.11.3

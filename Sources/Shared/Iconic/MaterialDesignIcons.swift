@@ -8,7 +8,7 @@ import Foundation
 
 public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, CustomStringConvertible, IconDrawable {
     public static let familyName: String = "MaterialDesignIcons"
-    public static let count: Int = 7096
+    public static let count: Int = 7196
     public let name: String
     public let unicode: String
 
@@ -166,6 +166,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let accountSwitchOutlineIcon = MaterialDesignIcons(name: "account_switch_outline", unicode: "\u{F04CB}")
     public static let accountSyncIcon = MaterialDesignIcons(name: "account_sync", unicode: "\u{F191B}")
     public static let accountSyncOutlineIcon = MaterialDesignIcons(name: "account_sync_outline", unicode: "\u{F191C}")
+    public static let accountTagIcon = MaterialDesignIcons(name: "account_tag", unicode: "\u{F1C1B}")
+    public static let accountTagOutlineIcon = MaterialDesignIcons(name: "account_tag_outline", unicode: "\u{F1C1C}")
     public static let accountTieIcon = MaterialDesignIcons(name: "account_tie", unicode: "\u{F0CE3}")
     public static let accountTieHatIcon = MaterialDesignIcons(name: "account_tie_hat", unicode: "\u{F1898}")
     public static let accountTieHatOutlineIcon = MaterialDesignIcons(name: "account_tie_hat_outline", unicode: "\u{F1899}")
@@ -698,6 +700,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let audioVideoIcon = MaterialDesignIcons(name: "audio_video", unicode: "\u{F093D}")
     public static let audioVideoOffIcon = MaterialDesignIcons(name: "audio_video_off", unicode: "\u{F11B6}")
     public static let augmentedRealityIcon = MaterialDesignIcons(name: "augmented_reality", unicode: "\u{F0850}")
+    public static let auroraIcon = MaterialDesignIcons(name: "aurora", unicode: "\u{F1BB9}")
     public static let autoDownloadIcon = MaterialDesignIcons(name: "auto_download", unicode: "\u{F137E}")
     public static let autoFixIcon = MaterialDesignIcons(name: "auto_fix", unicode: "\u{F0068}")
     public static let autoUploadIcon = MaterialDesignIcons(name: "auto_upload", unicode: "\u{F0069}")
@@ -776,6 +779,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let bandageIcon = MaterialDesignIcons(name: "bandage", unicode: "\u{F0DAF}")
     public static let bankIcon = MaterialDesignIcons(name: "bank", unicode: "\u{F0070}")
     public static let bankCheckIcon = MaterialDesignIcons(name: "bank_check", unicode: "\u{F1655}")
+    public static let bankCircleIcon = MaterialDesignIcons(name: "bank_circle", unicode: "\u{F1C03}")
+    public static let bankCircleOutlineIcon = MaterialDesignIcons(name: "bank_circle_outline", unicode: "\u{F1C04}")
     public static let bankMinusIcon = MaterialDesignIcons(name: "bank_minus", unicode: "\u{F0DB0}")
     public static let bankOffIcon = MaterialDesignIcons(name: "bank_off", unicode: "\u{F1656}")
     public static let bankOffOutlineIcon = MaterialDesignIcons(name: "bank_off_outline", unicode: "\u{F1657}")
@@ -1367,6 +1372,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let cameraImageIcon = MaterialDesignIcons(name: "camera_image", unicode: "\u{F08CC}")
     public static let cameraIrisIcon = MaterialDesignIcons(name: "camera_iris", unicode: "\u{F0104}")
     public static let cameraLockIcon = MaterialDesignIcons(name: "camera_lock", unicode: "\u{F1A14}")
+    public static let cameraLockOpenIcon = MaterialDesignIcons(name: "camera_lock_open", unicode: "\u{F1C0D}")
+    public static let cameraLockOpenOutlineIcon = MaterialDesignIcons(name: "camera_lock_open_outline", unicode: "\u{F1C0E}")
     public static let cameraLockOutlineIcon = MaterialDesignIcons(name: "camera_lock_outline", unicode: "\u{F1A15}")
     public static let cameraMarkerIcon = MaterialDesignIcons(name: "camera_marker", unicode: "\u{F19A7}")
     public static let cameraMarkerOutlineIcon = MaterialDesignIcons(name: "camera_marker_outline", unicode: "\u{F19A8}")
@@ -1631,6 +1638,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let chartMultilineIcon = MaterialDesignIcons(name: "chart_multiline", unicode: "\u{F08D4}")
     public static let chartMultipleIcon = MaterialDesignIcons(name: "chart_multiple", unicode: "\u{F1213}")
     public static let chartPieIcon = MaterialDesignIcons(name: "chart_pie", unicode: "\u{F012B}")
+    public static let chartPieOutlineIcon = MaterialDesignIcons(name: "chart_pie_outline", unicode: "\u{F1BDF}")
     public static let chartPpfIcon = MaterialDesignIcons(name: "chart_ppf", unicode: "\u{F1380}")
     public static let chartSankeyIcon = MaterialDesignIcons(name: "chart_sankey", unicode: "\u{F11DF}")
     public static let chartSankeyVariantIcon = MaterialDesignIcons(name: "chart_sankey_variant", unicode: "\u{F11E0}")
@@ -1902,22 +1910,53 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let closedCaptionOutlineIcon = MaterialDesignIcons(name: "closed_caption_outline", unicode: "\u{F0DBD}")
     public static let cloudIcon = MaterialDesignIcons(name: "cloud", unicode: "\u{F015F}")
     public static let cloudAlertIcon = MaterialDesignIcons(name: "cloud_alert", unicode: "\u{F09E0}")
+    public static let cloudAlertOutlineIcon = MaterialDesignIcons(name: "cloud_alert_outline", unicode: "\u{F1BE0}")
+    public static let cloudArrowDownIcon = MaterialDesignIcons(name: "cloud_arrow_down", unicode: "\u{F1BE1}")
+    public static let cloudArrowDownOutlineIcon = MaterialDesignIcons(name: "cloud_arrow_down_outline", unicode: "\u{F1BE2}")
+    public static let cloudArrowLeftIcon = MaterialDesignIcons(name: "cloud_arrow_left", unicode: "\u{F1BE3}")
+    public static let cloudArrowLeftOutlineIcon = MaterialDesignIcons(name: "cloud_arrow_left_outline", unicode: "\u{F1BE4}")
+    public static let cloudArrowRightIcon = MaterialDesignIcons(name: "cloud_arrow_right", unicode: "\u{F1BE5}")
+    public static let cloudArrowRightOutlineIcon = MaterialDesignIcons(name: "cloud_arrow_right_outline", unicode: "\u{F1BE6}")
+    public static let cloudArrowUpIcon = MaterialDesignIcons(name: "cloud_arrow_up", unicode: "\u{F1BE7}")
+    public static let cloudArrowUpOutlineIcon = MaterialDesignIcons(name: "cloud_arrow_up_outline", unicode: "\u{F1BE8}")
     public static let cloudBracesIcon = MaterialDesignIcons(name: "cloud_braces", unicode: "\u{F07B5}")
-    public static let cloudCheckIcon = MaterialDesignIcons(name: "cloud_check", unicode: "\u{F0160}")
-    public static let cloudCheckOutlineIcon = MaterialDesignIcons(name: "cloud_check_outline", unicode: "\u{F12CC}")
+    public static let cloudCancelIcon = MaterialDesignIcons(name: "cloud_cancel", unicode: "\u{F1BE9}")
+    public static let cloudCancelOutlineIcon = MaterialDesignIcons(name: "cloud_cancel_outline", unicode: "\u{F1BEA}")
+    public static let cloudCheckIcon = MaterialDesignIcons(name: "cloud_check", unicode: "\u{F1BEB}")
+    public static let cloudCheckOutlineIcon = MaterialDesignIcons(name: "cloud_check_outline", unicode: "\u{F1BEC}")
+    public static let cloudCheckVariantIcon = MaterialDesignIcons(name: "cloud_check_variant", unicode: "\u{F0160}")
+    public static let cloudCheckVariantOutlineIcon = MaterialDesignIcons(name: "cloud_check_variant_outline", unicode: "\u{F12CC}")
     public static let cloudCircleIcon = MaterialDesignIcons(name: "cloud_circle", unicode: "\u{F0161}")
+    public static let cloudCircleOutlineIcon = MaterialDesignIcons(name: "cloud_circle_outline", unicode: "\u{F1BED}")
+    public static let cloudClockIcon = MaterialDesignIcons(name: "cloud_clock", unicode: "\u{F1BEE}")
+    public static let cloudClockOutlineIcon = MaterialDesignIcons(name: "cloud_clock_outline", unicode: "\u{F1BEF}")
+    public static let cloudCogIcon = MaterialDesignIcons(name: "cloud_cog", unicode: "\u{F1BF0}")
+    public static let cloudCogOutlineIcon = MaterialDesignIcons(name: "cloud_cog_outline", unicode: "\u{F1BF1}")
     public static let cloudDownloadIcon = MaterialDesignIcons(name: "cloud_download", unicode: "\u{F0162}")
     public static let cloudDownloadOutlineIcon = MaterialDesignIcons(name: "cloud_download_outline", unicode: "\u{F0B7D}")
     public static let cloudLockIcon = MaterialDesignIcons(name: "cloud_lock", unicode: "\u{F11F1}")
+    public static let cloudLockOpenIcon = MaterialDesignIcons(name: "cloud_lock_open", unicode: "\u{F1BF2}")
+    public static let cloudLockOpenOutlineIcon = MaterialDesignIcons(name: "cloud_lock_open_outline", unicode: "\u{F1BF3}")
     public static let cloudLockOutlineIcon = MaterialDesignIcons(name: "cloud_lock_outline", unicode: "\u{F11F2}")
+    public static let cloudMinusIcon = MaterialDesignIcons(name: "cloud_minus", unicode: "\u{F1BF4}")
+    public static let cloudMinusOutlineIcon = MaterialDesignIcons(name: "cloud_minus_outline", unicode: "\u{F1BF5}")
+    public static let cloudOffIcon = MaterialDesignIcons(name: "cloud_off", unicode: "\u{F1BF6}")
     public static let cloudOffOutlineIcon = MaterialDesignIcons(name: "cloud_off_outline", unicode: "\u{F0164}")
     public static let cloudOutlineIcon = MaterialDesignIcons(name: "cloud_outline", unicode: "\u{F0163}")
     public static let cloudPercentIcon = MaterialDesignIcons(name: "cloud_percent", unicode: "\u{F1A35}")
     public static let cloudPercentOutlineIcon = MaterialDesignIcons(name: "cloud_percent_outline", unicode: "\u{F1A36}")
+    public static let cloudPlusIcon = MaterialDesignIcons(name: "cloud_plus", unicode: "\u{F1BF7}")
+    public static let cloudPlusOutlineIcon = MaterialDesignIcons(name: "cloud_plus_outline", unicode: "\u{F1BF8}")
     public static let cloudPrintIcon = MaterialDesignIcons(name: "cloud_print", unicode: "\u{F0165}")
     public static let cloudPrintOutlineIcon = MaterialDesignIcons(name: "cloud_print_outline", unicode: "\u{F0166}")
     public static let cloudQuestionIcon = MaterialDesignIcons(name: "cloud_question", unicode: "\u{F0A39}")
-    public static let cloudRefreshIcon = MaterialDesignIcons(name: "cloud_refresh", unicode: "\u{F052A}")
+    public static let cloudQuestionOutlineIcon = MaterialDesignIcons(name: "cloud_question_outline", unicode: "\u{F1BF9}")
+    public static let cloudRefreshIcon = MaterialDesignIcons(name: "cloud_refresh", unicode: "\u{F1BFA}")
+    public static let cloudRefreshOutlineIcon = MaterialDesignIcons(name: "cloud_refresh_outline", unicode: "\u{F1BFB}")
+    public static let cloudRefreshVariantIcon = MaterialDesignIcons(name: "cloud_refresh_variant", unicode: "\u{F052A}")
+    public static let cloudRefreshVariantOutlineIcon = MaterialDesignIcons(name: "cloud_refresh_variant_outline", unicode: "\u{F1BFC}")
+    public static let cloudRemoveIcon = MaterialDesignIcons(name: "cloud_remove", unicode: "\u{F1BFD}")
+    public static let cloudRemoveOutlineIcon = MaterialDesignIcons(name: "cloud_remove_outline", unicode: "\u{F1BFE}")
     public static let cloudSearchIcon = MaterialDesignIcons(name: "cloud_search", unicode: "\u{F0956}")
     public static let cloudSearchOutlineIcon = MaterialDesignIcons(name: "cloud_search_outline", unicode: "\u{F0957}")
     public static let cloudSyncIcon = MaterialDesignIcons(name: "cloud_sync", unicode: "\u{F063F}")
@@ -2235,6 +2274,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let currencyRubIcon = MaterialDesignIcons(name: "currency_rub", unicode: "\u{F01B1}")
     public static let currencyRupeeIcon = MaterialDesignIcons(name: "currency_rupee", unicode: "\u{F1976}")
     public static let currencySignIcon = MaterialDesignIcons(name: "currency_sign", unicode: "\u{F07BE}")
+    public static let currencyThbIcon = MaterialDesignIcons(name: "currency_thb", unicode: "\u{F1C05}")
     public static let currencyTryIcon = MaterialDesignIcons(name: "currency_try", unicode: "\u{F01B2}")
     public static let currencyTwdIcon = MaterialDesignIcons(name: "currency_twd", unicode: "\u{F07BF}")
     public static let currencyUahIcon = MaterialDesignIcons(name: "currency_uah", unicode: "\u{F1B9B}")
@@ -2674,6 +2714,10 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let eyeCheckOutlineIcon = MaterialDesignIcons(name: "eye_check_outline", unicode: "\u{F0D05}")
     public static let eyeCircleIcon = MaterialDesignIcons(name: "eye_circle", unicode: "\u{F0B94}")
     public static let eyeCircleOutlineIcon = MaterialDesignIcons(name: "eye_circle_outline", unicode: "\u{F0B95}")
+    public static let eyeLockIcon = MaterialDesignIcons(name: "eye_lock", unicode: "\u{F1C06}")
+    public static let eyeLockOpenIcon = MaterialDesignIcons(name: "eye_lock_open", unicode: "\u{F1C07}")
+    public static let eyeLockOpenOutlineIcon = MaterialDesignIcons(name: "eye_lock_open_outline", unicode: "\u{F1C08}")
+    public static let eyeLockOutlineIcon = MaterialDesignIcons(name: "eye_lock_outline", unicode: "\u{F1C09}")
     public static let eyeMinusIcon = MaterialDesignIcons(name: "eye_minus", unicode: "\u{F1026}")
     public static let eyeMinusOutlineIcon = MaterialDesignIcons(name: "eye_minus_outline", unicode: "\u{F1027}")
     public static let eyeOffIcon = MaterialDesignIcons(name: "eye_off", unicode: "\u{F0209}")
@@ -2782,6 +2826,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let fileDocumentIcon = MaterialDesignIcons(name: "file_document", unicode: "\u{F0219}")
     public static let fileDocumentAlertIcon = MaterialDesignIcons(name: "file_document_alert", unicode: "\u{F1A97}")
     public static let fileDocumentAlertOutlineIcon = MaterialDesignIcons(name: "file_document_alert_outline", unicode: "\u{F1A98}")
+    public static let fileDocumentArrowRightIcon = MaterialDesignIcons(name: "file_document_arrow_right", unicode: "\u{F1C0F}")
+    public static let fileDocumentArrowRightOutlineIcon = MaterialDesignIcons(name: "file_document_arrow_right_outline", unicode: "\u{F1C10}")
     public static let fileDocumentCheckIcon = MaterialDesignIcons(name: "file_document_check", unicode: "\u{F1A99}")
     public static let fileDocumentCheckOutlineIcon = MaterialDesignIcons(name: "file_document_check_outline", unicode: "\u{F1A9A}")
     public static let fileDocumentEditIcon = MaterialDesignIcons(name: "file_document_edit", unicode: "\u{F0DC8}")
@@ -3655,6 +3701,9 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let helicopterIcon = MaterialDesignIcons(name: "helicopter", unicode: "\u{F0AC2}")
     public static let helpIcon = MaterialDesignIcons(name: "help", unicode: "\u{F02D6}")
     public static let helpBoxIcon = MaterialDesignIcons(name: "help_box", unicode: "\u{F078B}")
+    public static let helpBoxMultipleIcon = MaterialDesignIcons(name: "help_box_multiple", unicode: "\u{F1C0A}")
+    public static let helpBoxMultipleOutlineIcon = MaterialDesignIcons(name: "help_box_multiple_outline", unicode: "\u{F1C0B}")
+    public static let helpBoxOutlineIcon = MaterialDesignIcons(name: "help_box_outline", unicode: "\u{F1C0C}")
     public static let helpCircleIcon = MaterialDesignIcons(name: "help_circle", unicode: "\u{F02D7}")
     public static let helpCircleOutlineIcon = MaterialDesignIcons(name: "help_circle_outline", unicode: "\u{F0625}")
     public static let helpNetworkIcon = MaterialDesignIcons(name: "help_network", unicode: "\u{F06F5}")
@@ -3831,6 +3880,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let imageFilterCenterFocusStrongOutlineIcon = MaterialDesignIcons(name: "image_filter_center_focus_strong_outline", unicode: "\u{F0F00}")
     public static let imageFilterCenterFocusWeakIcon = MaterialDesignIcons(name: "image_filter_center_focus_weak", unicode: "\u{F02F2}")
     public static let imageFilterDramaIcon = MaterialDesignIcons(name: "image_filter_drama", unicode: "\u{F02F3}")
+    public static let imageFilterDramaOutlineIcon = MaterialDesignIcons(name: "image_filter_drama_outline", unicode: "\u{F1BFF}")
     public static let imageFilterFramesIcon = MaterialDesignIcons(name: "image_filter_frames", unicode: "\u{F02F4}")
     public static let imageFilterHdrIcon = MaterialDesignIcons(name: "image_filter_hdr", unicode: "\u{F02F5}")
     public static let imageFilterNoneIcon = MaterialDesignIcons(name: "image_filter_none", unicode: "\u{F02F6}")
@@ -3945,6 +3995,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let keyboardBackspaceIcon = MaterialDesignIcons(name: "keyboard_backspace", unicode: "\u{F030D}")
     public static let keyboardCapsIcon = MaterialDesignIcons(name: "keyboard_caps", unicode: "\u{F030E}")
     public static let keyboardCloseIcon = MaterialDesignIcons(name: "keyboard_close", unicode: "\u{F030F}")
+    public static let keyboardCloseOutlineIcon = MaterialDesignIcons(name: "keyboard_close_outline", unicode: "\u{F1C00}")
     public static let keyboardEscIcon = MaterialDesignIcons(name: "keyboard_esc", unicode: "\u{F12B7}")
     public static let keyboardF1Icon = MaterialDesignIcons(name: "keyboard_f1", unicode: "\u{F12AB}")
     public static let keyboardF10Icon = MaterialDesignIcons(name: "keyboard_f10", unicode: "\u{F12B4}")
@@ -4187,6 +4238,12 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let lockOpenVariantOutlineIcon = MaterialDesignIcons(name: "lock_open_variant_outline", unicode: "\u{F0FC7}")
     public static let lockOutlineIcon = MaterialDesignIcons(name: "lock_outline", unicode: "\u{F0341}")
     public static let lockPatternIcon = MaterialDesignIcons(name: "lock_pattern", unicode: "\u{F06EA}")
+    public static let lockPercentIcon = MaterialDesignIcons(name: "lock_percent", unicode: "\u{F1C12}")
+    public static let lockPercentOpenIcon = MaterialDesignIcons(name: "lock_percent_open", unicode: "\u{F1C13}")
+    public static let lockPercentOpenOutlineIcon = MaterialDesignIcons(name: "lock_percent_open_outline", unicode: "\u{F1C14}")
+    public static let lockPercentOpenVariantIcon = MaterialDesignIcons(name: "lock_percent_open_variant", unicode: "\u{F1C15}")
+    public static let lockPercentOpenVariantOutlineIcon = MaterialDesignIcons(name: "lock_percent_open_variant_outline", unicode: "\u{F1C16}")
+    public static let lockPercentOutlineIcon = MaterialDesignIcons(name: "lock_percent_outline", unicode: "\u{F1C17}")
     public static let lockPlusIcon = MaterialDesignIcons(name: "lock_plus", unicode: "\u{F05FB}")
     public static let lockPlusOutlineIcon = MaterialDesignIcons(name: "lock_plus_outline", unicode: "\u{F16B2}")
     public static let lockQuestionIcon = MaterialDesignIcons(name: "lock_question", unicode: "\u{F08EF}")
@@ -4996,6 +5053,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let pencilRemoveIcon = MaterialDesignIcons(name: "pencil_remove", unicode: "\u{F0DED}")
     public static let pencilRemoveOutlineIcon = MaterialDesignIcons(name: "pencil_remove_outline", unicode: "\u{F0DEE}")
     public static let pencilRulerIcon = MaterialDesignIcons(name: "pencil_ruler", unicode: "\u{F1353}")
+    public static let pencilRulerOutlineIcon = MaterialDesignIcons(name: "pencil_ruler_outline", unicode: "\u{F1C11}")
     public static let penguinIcon = MaterialDesignIcons(name: "penguin", unicode: "\u{F0EC0}")
     public static let pentagonIcon = MaterialDesignIcons(name: "pentagon", unicode: "\u{F0701}")
     public static let pentagonOutlineIcon = MaterialDesignIcons(name: "pentagon_outline", unicode: "\u{F0700}")
@@ -5233,6 +5291,41 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let printerOffOutlineIcon = MaterialDesignIcons(name: "printer_off_outline", unicode: "\u{F1785}")
     public static let printerOutlineIcon = MaterialDesignIcons(name: "printer_outline", unicode: "\u{F1786}")
     public static let printerPosIcon = MaterialDesignIcons(name: "printer_pos", unicode: "\u{F1057}")
+    public static let printerPosAlertIcon = MaterialDesignIcons(name: "printer_pos_alert", unicode: "\u{F1BBC}")
+    public static let printerPosAlertOutlineIcon = MaterialDesignIcons(name: "printer_pos_alert_outline", unicode: "\u{F1BBD}")
+    public static let printerPosCancelIcon = MaterialDesignIcons(name: "printer_pos_cancel", unicode: "\u{F1BBE}")
+    public static let printerPosCancelOutlineIcon = MaterialDesignIcons(name: "printer_pos_cancel_outline", unicode: "\u{F1BBF}")
+    public static let printerPosCheckIcon = MaterialDesignIcons(name: "printer_pos_check", unicode: "\u{F1BC0}")
+    public static let printerPosCheckOutlineIcon = MaterialDesignIcons(name: "printer_pos_check_outline", unicode: "\u{F1BC1}")
+    public static let printerPosCogIcon = MaterialDesignIcons(name: "printer_pos_cog", unicode: "\u{F1BC2}")
+    public static let printerPosCogOutlineIcon = MaterialDesignIcons(name: "printer_pos_cog_outline", unicode: "\u{F1BC3}")
+    public static let printerPosEditIcon = MaterialDesignIcons(name: "printer_pos_edit", unicode: "\u{F1BC4}")
+    public static let printerPosEditOutlineIcon = MaterialDesignIcons(name: "printer_pos_edit_outline", unicode: "\u{F1BC5}")
+    public static let printerPosMinusIcon = MaterialDesignIcons(name: "printer_pos_minus", unicode: "\u{F1BC6}")
+    public static let printerPosMinusOutlineIcon = MaterialDesignIcons(name: "printer_pos_minus_outline", unicode: "\u{F1BC7}")
+    public static let printerPosNetworkIcon = MaterialDesignIcons(name: "printer_pos_network", unicode: "\u{F1BC8}")
+    public static let printerPosNetworkOutlineIcon = MaterialDesignIcons(name: "printer_pos_network_outline", unicode: "\u{F1BC9}")
+    public static let printerPosOffIcon = MaterialDesignIcons(name: "printer_pos_off", unicode: "\u{F1BCA}")
+    public static let printerPosOffOutlineIcon = MaterialDesignIcons(name: "printer_pos_off_outline", unicode: "\u{F1BCB}")
+    public static let printerPosOutlineIcon = MaterialDesignIcons(name: "printer_pos_outline", unicode: "\u{F1BCC}")
+    public static let printerPosPauseIcon = MaterialDesignIcons(name: "printer_pos_pause", unicode: "\u{F1BCD}")
+    public static let printerPosPauseOutlineIcon = MaterialDesignIcons(name: "printer_pos_pause_outline", unicode: "\u{F1BCE}")
+    public static let printerPosPlayIcon = MaterialDesignIcons(name: "printer_pos_play", unicode: "\u{F1BCF}")
+    public static let printerPosPlayOutlineIcon = MaterialDesignIcons(name: "printer_pos_play_outline", unicode: "\u{F1BD0}")
+    public static let printerPosPlusIcon = MaterialDesignIcons(name: "printer_pos_plus", unicode: "\u{F1BD1}")
+    public static let printerPosPlusOutlineIcon = MaterialDesignIcons(name: "printer_pos_plus_outline", unicode: "\u{F1BD2}")
+    public static let printerPosRefreshIcon = MaterialDesignIcons(name: "printer_pos_refresh", unicode: "\u{F1BD3}")
+    public static let printerPosRefreshOutlineIcon = MaterialDesignIcons(name: "printer_pos_refresh_outline", unicode: "\u{F1BD4}")
+    public static let printerPosRemoveIcon = MaterialDesignIcons(name: "printer_pos_remove", unicode: "\u{F1BD5}")
+    public static let printerPosRemoveOutlineIcon = MaterialDesignIcons(name: "printer_pos_remove_outline", unicode: "\u{F1BD6}")
+    public static let printerPosStarIcon = MaterialDesignIcons(name: "printer_pos_star", unicode: "\u{F1BD7}")
+    public static let printerPosStarOutlineIcon = MaterialDesignIcons(name: "printer_pos_star_outline", unicode: "\u{F1BD8}")
+    public static let printerPosStopIcon = MaterialDesignIcons(name: "printer_pos_stop", unicode: "\u{F1BD9}")
+    public static let printerPosStopOutlineIcon = MaterialDesignIcons(name: "printer_pos_stop_outline", unicode: "\u{F1BDA}")
+    public static let printerPosSyncIcon = MaterialDesignIcons(name: "printer_pos_sync", unicode: "\u{F1BDB}")
+    public static let printerPosSyncOutlineIcon = MaterialDesignIcons(name: "printer_pos_sync_outline", unicode: "\u{F1BDC}")
+    public static let printerPosWrenchIcon = MaterialDesignIcons(name: "printer_pos_wrench", unicode: "\u{F1BDD}")
+    public static let printerPosWrenchOutlineIcon = MaterialDesignIcons(name: "printer_pos_wrench_outline", unicode: "\u{F1BDE}")
     public static let printerSearchIcon = MaterialDesignIcons(name: "printer_search", unicode: "\u{F1457}")
     public static let printerSettingsIcon = MaterialDesignIcons(name: "printer_settings", unicode: "\u{F0707}")
     public static let printerWirelessIcon = MaterialDesignIcons(name: "printer_wireless", unicode: "\u{F0A0B}")
@@ -5421,7 +5514,10 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let remoteOffIcon = MaterialDesignIcons(name: "remote_off", unicode: "\u{F0EC4}")
     public static let remoteTvIcon = MaterialDesignIcons(name: "remote_tv", unicode: "\u{F0EC5}")
     public static let remoteTvOffIcon = MaterialDesignIcons(name: "remote_tv_off", unicode: "\u{F0EC6}")
+    public static let renameIcon = MaterialDesignIcons(name: "rename", unicode: "\u{F1C18}")
     public static let renameBoxIcon = MaterialDesignIcons(name: "rename_box", unicode: "\u{F0455}")
+    public static let renameBoxOutlineIcon = MaterialDesignIcons(name: "rename_box_outline", unicode: "\u{F1C19}")
+    public static let renameOutlineIcon = MaterialDesignIcons(name: "rename_outline", unicode: "\u{F1C1A}")
     public static let reorderHorizontalIcon = MaterialDesignIcons(name: "reorder_horizontal", unicode: "\u{F0688}")
     public static let reorderVerticalIcon = MaterialDesignIcons(name: "reorder_vertical", unicode: "\u{F0689}")
     public static let repeatIcon = MaterialDesignIcons(name: "repeat", unicode: "\u{F0456}")
@@ -5490,8 +5586,10 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let robotOutlineIcon = MaterialDesignIcons(name: "robot_outline", unicode: "\u{F167A}")
     public static let robotVacuumIcon = MaterialDesignIcons(name: "robot_vacuum", unicode: "\u{F070D}")
     public static let robotVacuumAlertIcon = MaterialDesignIcons(name: "robot_vacuum_alert", unicode: "\u{F1B5D}")
+    public static let robotVacuumOffIcon = MaterialDesignIcons(name: "robot_vacuum_off", unicode: "\u{F1C01}")
     public static let robotVacuumVariantIcon = MaterialDesignIcons(name: "robot_vacuum_variant", unicode: "\u{F0908}")
     public static let robotVacuumVariantAlertIcon = MaterialDesignIcons(name: "robot_vacuum_variant_alert", unicode: "\u{F1B5E}")
+    public static let robotVacuumVariantOffIcon = MaterialDesignIcons(name: "robot_vacuum_variant_off", unicode: "\u{F1C02}")
     public static let rocketIcon = MaterialDesignIcons(name: "rocket", unicode: "\u{F0463}")
     public static let rocketLaunchIcon = MaterialDesignIcons(name: "rocket_launch", unicode: "\u{F14DE}")
     public static let rocketLaunchOutlineIcon = MaterialDesignIcons(name: "rocket_launch_outline", unicode: "\u{F14DF}")
@@ -6529,6 +6627,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
     public static let tooltipOutlineIcon = MaterialDesignIcons(name: "tooltip_outline", unicode: "\u{F0526}")
     public static let tooltipPlusIcon = MaterialDesignIcons(name: "tooltip_plus", unicode: "\u{F0BD6}")
     public static let tooltipPlusOutlineIcon = MaterialDesignIcons(name: "tooltip_plus_outline", unicode: "\u{F0527}")
+    public static let tooltipQuestionIcon = MaterialDesignIcons(name: "tooltip_question", unicode: "\u{F1BBA}")
+    public static let tooltipQuestionOutlineIcon = MaterialDesignIcons(name: "tooltip_question_outline", unicode: "\u{F1BBB}")
     public static let tooltipRemoveIcon = MaterialDesignIcons(name: "tooltip_remove", unicode: "\u{F1560}")
     public static let tooltipRemoveOutlineIcon = MaterialDesignIcons(name: "tooltip_remove_outline", unicode: "\u{F1561}")
     public static let tooltipTextIcon = MaterialDesignIcons(name: "tooltip_text", unicode: "\u{F0528}")
@@ -7264,6 +7364,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.accountSwitchOutlineIcon,
             MaterialDesignIcons.accountSyncIcon,
             MaterialDesignIcons.accountSyncOutlineIcon,
+            MaterialDesignIcons.accountTagIcon,
+            MaterialDesignIcons.accountTagOutlineIcon,
             MaterialDesignIcons.accountTieIcon,
             MaterialDesignIcons.accountTieHatIcon,
             MaterialDesignIcons.accountTieHatOutlineIcon,
@@ -7796,6 +7898,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.audioVideoIcon,
             MaterialDesignIcons.audioVideoOffIcon,
             MaterialDesignIcons.augmentedRealityIcon,
+            MaterialDesignIcons.auroraIcon,
             MaterialDesignIcons.autoDownloadIcon,
             MaterialDesignIcons.autoFixIcon,
             MaterialDesignIcons.autoUploadIcon,
@@ -7874,6 +7977,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.bandageIcon,
             MaterialDesignIcons.bankIcon,
             MaterialDesignIcons.bankCheckIcon,
+            MaterialDesignIcons.bankCircleIcon,
+            MaterialDesignIcons.bankCircleOutlineIcon,
             MaterialDesignIcons.bankMinusIcon,
             MaterialDesignIcons.bankOffIcon,
             MaterialDesignIcons.bankOffOutlineIcon,
@@ -8465,6 +8570,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.cameraImageIcon,
             MaterialDesignIcons.cameraIrisIcon,
             MaterialDesignIcons.cameraLockIcon,
+            MaterialDesignIcons.cameraLockOpenIcon,
+            MaterialDesignIcons.cameraLockOpenOutlineIcon,
             MaterialDesignIcons.cameraLockOutlineIcon,
             MaterialDesignIcons.cameraMarkerIcon,
             MaterialDesignIcons.cameraMarkerOutlineIcon,
@@ -8729,6 +8836,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.chartMultilineIcon,
             MaterialDesignIcons.chartMultipleIcon,
             MaterialDesignIcons.chartPieIcon,
+            MaterialDesignIcons.chartPieOutlineIcon,
             MaterialDesignIcons.chartPpfIcon,
             MaterialDesignIcons.chartSankeyIcon,
             MaterialDesignIcons.chartSankeyVariantIcon,
@@ -9000,22 +9108,53 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.closedCaptionOutlineIcon,
             MaterialDesignIcons.cloudIcon,
             MaterialDesignIcons.cloudAlertIcon,
+            MaterialDesignIcons.cloudAlertOutlineIcon,
+            MaterialDesignIcons.cloudArrowDownIcon,
+            MaterialDesignIcons.cloudArrowDownOutlineIcon,
+            MaterialDesignIcons.cloudArrowLeftIcon,
+            MaterialDesignIcons.cloudArrowLeftOutlineIcon,
+            MaterialDesignIcons.cloudArrowRightIcon,
+            MaterialDesignIcons.cloudArrowRightOutlineIcon,
+            MaterialDesignIcons.cloudArrowUpIcon,
+            MaterialDesignIcons.cloudArrowUpOutlineIcon,
             MaterialDesignIcons.cloudBracesIcon,
+            MaterialDesignIcons.cloudCancelIcon,
+            MaterialDesignIcons.cloudCancelOutlineIcon,
             MaterialDesignIcons.cloudCheckIcon,
             MaterialDesignIcons.cloudCheckOutlineIcon,
+            MaterialDesignIcons.cloudCheckVariantIcon,
+            MaterialDesignIcons.cloudCheckVariantOutlineIcon,
             MaterialDesignIcons.cloudCircleIcon,
+            MaterialDesignIcons.cloudCircleOutlineIcon,
+            MaterialDesignIcons.cloudClockIcon,
+            MaterialDesignIcons.cloudClockOutlineIcon,
+            MaterialDesignIcons.cloudCogIcon,
+            MaterialDesignIcons.cloudCogOutlineIcon,
             MaterialDesignIcons.cloudDownloadIcon,
             MaterialDesignIcons.cloudDownloadOutlineIcon,
             MaterialDesignIcons.cloudLockIcon,
+            MaterialDesignIcons.cloudLockOpenIcon,
+            MaterialDesignIcons.cloudLockOpenOutlineIcon,
             MaterialDesignIcons.cloudLockOutlineIcon,
+            MaterialDesignIcons.cloudMinusIcon,
+            MaterialDesignIcons.cloudMinusOutlineIcon,
+            MaterialDesignIcons.cloudOffIcon,
             MaterialDesignIcons.cloudOffOutlineIcon,
             MaterialDesignIcons.cloudOutlineIcon,
             MaterialDesignIcons.cloudPercentIcon,
             MaterialDesignIcons.cloudPercentOutlineIcon,
+            MaterialDesignIcons.cloudPlusIcon,
+            MaterialDesignIcons.cloudPlusOutlineIcon,
             MaterialDesignIcons.cloudPrintIcon,
             MaterialDesignIcons.cloudPrintOutlineIcon,
             MaterialDesignIcons.cloudQuestionIcon,
+            MaterialDesignIcons.cloudQuestionOutlineIcon,
             MaterialDesignIcons.cloudRefreshIcon,
+            MaterialDesignIcons.cloudRefreshOutlineIcon,
+            MaterialDesignIcons.cloudRefreshVariantIcon,
+            MaterialDesignIcons.cloudRefreshVariantOutlineIcon,
+            MaterialDesignIcons.cloudRemoveIcon,
+            MaterialDesignIcons.cloudRemoveOutlineIcon,
             MaterialDesignIcons.cloudSearchIcon,
             MaterialDesignIcons.cloudSearchOutlineIcon,
             MaterialDesignIcons.cloudSyncIcon,
@@ -9333,6 +9472,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.currencyRubIcon,
             MaterialDesignIcons.currencyRupeeIcon,
             MaterialDesignIcons.currencySignIcon,
+            MaterialDesignIcons.currencyThbIcon,
             MaterialDesignIcons.currencyTryIcon,
             MaterialDesignIcons.currencyTwdIcon,
             MaterialDesignIcons.currencyUahIcon,
@@ -9772,6 +9912,10 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.eyeCheckOutlineIcon,
             MaterialDesignIcons.eyeCircleIcon,
             MaterialDesignIcons.eyeCircleOutlineIcon,
+            MaterialDesignIcons.eyeLockIcon,
+            MaterialDesignIcons.eyeLockOpenIcon,
+            MaterialDesignIcons.eyeLockOpenOutlineIcon,
+            MaterialDesignIcons.eyeLockOutlineIcon,
             MaterialDesignIcons.eyeMinusIcon,
             MaterialDesignIcons.eyeMinusOutlineIcon,
             MaterialDesignIcons.eyeOffIcon,
@@ -9880,6 +10024,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.fileDocumentIcon,
             MaterialDesignIcons.fileDocumentAlertIcon,
             MaterialDesignIcons.fileDocumentAlertOutlineIcon,
+            MaterialDesignIcons.fileDocumentArrowRightIcon,
+            MaterialDesignIcons.fileDocumentArrowRightOutlineIcon,
             MaterialDesignIcons.fileDocumentCheckIcon,
             MaterialDesignIcons.fileDocumentCheckOutlineIcon,
             MaterialDesignIcons.fileDocumentEditIcon,
@@ -10753,6 +10899,9 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.helicopterIcon,
             MaterialDesignIcons.helpIcon,
             MaterialDesignIcons.helpBoxIcon,
+            MaterialDesignIcons.helpBoxMultipleIcon,
+            MaterialDesignIcons.helpBoxMultipleOutlineIcon,
+            MaterialDesignIcons.helpBoxOutlineIcon,
             MaterialDesignIcons.helpCircleIcon,
             MaterialDesignIcons.helpCircleOutlineIcon,
             MaterialDesignIcons.helpNetworkIcon,
@@ -10929,6 +11078,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.imageFilterCenterFocusStrongOutlineIcon,
             MaterialDesignIcons.imageFilterCenterFocusWeakIcon,
             MaterialDesignIcons.imageFilterDramaIcon,
+            MaterialDesignIcons.imageFilterDramaOutlineIcon,
             MaterialDesignIcons.imageFilterFramesIcon,
             MaterialDesignIcons.imageFilterHdrIcon,
             MaterialDesignIcons.imageFilterNoneIcon,
@@ -11043,6 +11193,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.keyboardBackspaceIcon,
             MaterialDesignIcons.keyboardCapsIcon,
             MaterialDesignIcons.keyboardCloseIcon,
+            MaterialDesignIcons.keyboardCloseOutlineIcon,
             MaterialDesignIcons.keyboardEscIcon,
             MaterialDesignIcons.keyboardF1Icon,
             MaterialDesignIcons.keyboardF10Icon,
@@ -11285,6 +11436,12 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.lockOpenVariantOutlineIcon,
             MaterialDesignIcons.lockOutlineIcon,
             MaterialDesignIcons.lockPatternIcon,
+            MaterialDesignIcons.lockPercentIcon,
+            MaterialDesignIcons.lockPercentOpenIcon,
+            MaterialDesignIcons.lockPercentOpenOutlineIcon,
+            MaterialDesignIcons.lockPercentOpenVariantIcon,
+            MaterialDesignIcons.lockPercentOpenVariantOutlineIcon,
+            MaterialDesignIcons.lockPercentOutlineIcon,
             MaterialDesignIcons.lockPlusIcon,
             MaterialDesignIcons.lockPlusOutlineIcon,
             MaterialDesignIcons.lockQuestionIcon,
@@ -12094,6 +12251,7 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.pencilRemoveIcon,
             MaterialDesignIcons.pencilRemoveOutlineIcon,
             MaterialDesignIcons.pencilRulerIcon,
+            MaterialDesignIcons.pencilRulerOutlineIcon,
             MaterialDesignIcons.penguinIcon,
             MaterialDesignIcons.pentagonIcon,
             MaterialDesignIcons.pentagonOutlineIcon,
@@ -12331,6 +12489,41 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.printerOffOutlineIcon,
             MaterialDesignIcons.printerOutlineIcon,
             MaterialDesignIcons.printerPosIcon,
+            MaterialDesignIcons.printerPosAlertIcon,
+            MaterialDesignIcons.printerPosAlertOutlineIcon,
+            MaterialDesignIcons.printerPosCancelIcon,
+            MaterialDesignIcons.printerPosCancelOutlineIcon,
+            MaterialDesignIcons.printerPosCheckIcon,
+            MaterialDesignIcons.printerPosCheckOutlineIcon,
+            MaterialDesignIcons.printerPosCogIcon,
+            MaterialDesignIcons.printerPosCogOutlineIcon,
+            MaterialDesignIcons.printerPosEditIcon,
+            MaterialDesignIcons.printerPosEditOutlineIcon,
+            MaterialDesignIcons.printerPosMinusIcon,
+            MaterialDesignIcons.printerPosMinusOutlineIcon,
+            MaterialDesignIcons.printerPosNetworkIcon,
+            MaterialDesignIcons.printerPosNetworkOutlineIcon,
+            MaterialDesignIcons.printerPosOffIcon,
+            MaterialDesignIcons.printerPosOffOutlineIcon,
+            MaterialDesignIcons.printerPosOutlineIcon,
+            MaterialDesignIcons.printerPosPauseIcon,
+            MaterialDesignIcons.printerPosPauseOutlineIcon,
+            MaterialDesignIcons.printerPosPlayIcon,
+            MaterialDesignIcons.printerPosPlayOutlineIcon,
+            MaterialDesignIcons.printerPosPlusIcon,
+            MaterialDesignIcons.printerPosPlusOutlineIcon,
+            MaterialDesignIcons.printerPosRefreshIcon,
+            MaterialDesignIcons.printerPosRefreshOutlineIcon,
+            MaterialDesignIcons.printerPosRemoveIcon,
+            MaterialDesignIcons.printerPosRemoveOutlineIcon,
+            MaterialDesignIcons.printerPosStarIcon,
+            MaterialDesignIcons.printerPosStarOutlineIcon,
+            MaterialDesignIcons.printerPosStopIcon,
+            MaterialDesignIcons.printerPosStopOutlineIcon,
+            MaterialDesignIcons.printerPosSyncIcon,
+            MaterialDesignIcons.printerPosSyncOutlineIcon,
+            MaterialDesignIcons.printerPosWrenchIcon,
+            MaterialDesignIcons.printerPosWrenchOutlineIcon,
             MaterialDesignIcons.printerSearchIcon,
             MaterialDesignIcons.printerSettingsIcon,
             MaterialDesignIcons.printerWirelessIcon,
@@ -12519,7 +12712,10 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.remoteOffIcon,
             MaterialDesignIcons.remoteTvIcon,
             MaterialDesignIcons.remoteTvOffIcon,
+            MaterialDesignIcons.renameIcon,
             MaterialDesignIcons.renameBoxIcon,
+            MaterialDesignIcons.renameBoxOutlineIcon,
+            MaterialDesignIcons.renameOutlineIcon,
             MaterialDesignIcons.reorderHorizontalIcon,
             MaterialDesignIcons.reorderVerticalIcon,
             MaterialDesignIcons.repeatIcon,
@@ -12588,8 +12784,10 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.robotOutlineIcon,
             MaterialDesignIcons.robotVacuumIcon,
             MaterialDesignIcons.robotVacuumAlertIcon,
+            MaterialDesignIcons.robotVacuumOffIcon,
             MaterialDesignIcons.robotVacuumVariantIcon,
             MaterialDesignIcons.robotVacuumVariantAlertIcon,
+            MaterialDesignIcons.robotVacuumVariantOffIcon,
             MaterialDesignIcons.rocketIcon,
             MaterialDesignIcons.rocketLaunchIcon,
             MaterialDesignIcons.rocketLaunchOutlineIcon,
@@ -13627,6 +13825,8 @@ public final class MaterialDesignIcons: CaseIterable, Hashable, Equatable, Custo
             MaterialDesignIcons.tooltipOutlineIcon,
             MaterialDesignIcons.tooltipPlusIcon,
             MaterialDesignIcons.tooltipPlusOutlineIcon,
+            MaterialDesignIcons.tooltipQuestionIcon,
+            MaterialDesignIcons.tooltipQuestionOutlineIcon,
             MaterialDesignIcons.tooltipRemoveIcon,
             MaterialDesignIcons.tooltipRemoveOutlineIcon,
             MaterialDesignIcons.tooltipTextIcon,

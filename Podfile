@@ -68,7 +68,8 @@ abstract_target 'iOS' do
 
   target 'App' do
     pod 'CallbackURLKit'
-    pod 'ColorPickerRow', git: 'https://github.com/EurekaCommunity/ColorPickerRow', branch: 'master'
+    pod 'ColorPickerRow', git: 'https://github.com/EurekaCommunity/ColorPickerRow',
+                          commit: 'fde095843bb8c08e8818097c51ed140373180790'
     pod 'CPDAcknowledgements', git: 'https://github.com/CocoaPods/CPDAcknowledgements', branch: 'master'
     pod 'Eureka', git: 'https://github.com/xmartlabs/Eureka', branch: 'master'
 
