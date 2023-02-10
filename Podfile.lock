@@ -122,7 +122,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.6)
   - CallbackURLKit
-  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
+  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, commit `fde095843bb8c08e8818097c51ed140373180790`)
   - Communicator (from `https://github.com/zacwest/Communicator.git`, branch `observation-memory-direct`)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
@@ -183,7 +183,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   ColorPickerRow:
-    :branch: master
+    :commit: fde095843bb8c08e8818097c51ed140373180790
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   Communicator:
     :branch: observation-memory-direct
@@ -215,7 +215,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   ColorPickerRow:
-    :commit: a6a367836a65b88dc407e63a3af51863ad116fee
+    :commit: fde095843bb8c08e8818097c51ed140373180790
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   Communicator:
     :commit: f5dd96048cbe1e7ebfee85688c23c17c6f71f9e4
@@ -284,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: dbabd8a80327f940e581f74d98d0812e6fc9514a
+PODFILE CHECKSUM: f90975c3c797b10743523d5bf700fee2f0f8c6c2
 
 COCOAPODS: 1.11.3
