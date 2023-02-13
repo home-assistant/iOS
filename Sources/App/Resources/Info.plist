@@ -619,6 +619,8 @@
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
 	<key>NFCReaderUsageDescription</key>
 	<string>Reading and writing NFC tags allows you to trigger events.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Used to dictate text to Assist.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos and send them to your Home Assistant server.</string>
 	<key>NSMicrophoneUsageDescription</key>
