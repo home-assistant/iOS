@@ -905,6 +905,11 @@
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
+		FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */; };
+		FD3BC66729BA003B00B19FBE /* HAEntityExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntityExtension.swift */; };
+		FD3BC66929BA008900B19FBE /* ServerManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66829BA008900B19FBE /* ServerManagerExtension.swift */; };
+		FD3BC66C29BA00D600B19FBE /* EntitiesGridTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* EntitiesGridTemplate.swift */; };
+		FD3BC66E29BA010A00B19FBE /* DomainsListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66D29BA010A00B19FBE /* DomainsListTemplate.swift */; };
 		FD5FEB304713F1E6BFE498DC /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE950A9D74B3E7FF5665CB38 /* Pods_iOS_Extensions_NotificationService.framework */; };
 /* End PBXBuildFile section */
 
@@ -2149,6 +2154,11 @@
 		F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
 		F3E55AA06795782F04D0B261 /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
 		F534C18A6FD4884F258341C9 /* Pods-iOS-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
+		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		FD3BC66629BA003B00B19FBE /* HAEntityExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAEntityExtension.swift; sourceTree = "<group>"; };
+		FD3BC66829BA008900B19FBE /* ServerManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManagerExtension.swift; sourceTree = "<group>"; };
+		FD3BC66B29BA00D600B19FBE /* EntitiesGridTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitiesGridTemplate.swift; sourceTree = "<group>"; };
+		FD3BC66D29BA010A00B19FBE /* DomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListTemplate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2347,6 +2357,7 @@
 		1115018C2528411200DCFA94 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				FD3BC66429BA000A00B19FBE /* Vehicle */,
 				B657A8E81CA646EB00121384 /* App */,
 				111501A72528412C00DCFA94 /* Extensions */,
 				11DE9D8425B6103C0081C0ED /* Launcher */,
@@ -2951,6 +2962,7 @@
 				11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */,
 				11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */,
 				118261F424F8C7C1000795C6 /* SceneManager.swift */,
+				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -4014,6 +4026,33 @@
 				1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		FD3BC66429BA000A00B19FBE /* Vehicle */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66A29BA00B100B19FBE /* Templates */,
+				FD3BC66529BA001A00B19FBE /* Extensions */,
+			);
+			path = Vehicle;
+			sourceTree = "<group>";
+		};
+		FD3BC66529BA001A00B19FBE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66629BA003B00B19FBE /* HAEntityExtension.swift */,
+				FD3BC66829BA008900B19FBE /* ServerManagerExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FD3BC66A29BA00B100B19FBE /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66B29BA00D600B19FBE /* EntitiesGridTemplate.swift */,
+				FD3BC66D29BA010A00B19FBE /* DomainsListTemplate.swift */,
+			);
+			path = Templates;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -5653,13 +5692,16 @@
 				1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */,
+				FD3BC66C29BA00D600B19FBE /* EntitiesGridTemplate.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
+				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
+				FD3BC66E29BA010A00B19FBE /* DomainsListTemplate.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
@@ -5686,6 +5728,7 @@
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
+				FD3BC66929BA008900B19FBE /* ServerManagerExtension.swift in Sources */,
 				11E7C4B02702E03000667342 /* WidgetOpenPageIntent+Observation.swift in Sources */,
 				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
 				1185DF96271FBB9800ED7D9A /* OnboardingAuthLogin.swift in Sources */,
@@ -5744,6 +5787,7 @@
 				42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
+				FD3BC66729BA003B00B19FBE /* HAEntityExtension.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
