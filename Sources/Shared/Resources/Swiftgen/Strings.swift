@@ -216,6 +216,37 @@ public enum L10n {
     }
   }
 
+  public enum Carplay {
+    public enum Labels {
+      /// Already added
+      public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carplay.labels.already_added_server") }
+      /// Buttons
+      public static var buttons: String { return L10n.tr("Localizable", "carplay.labels.buttons") }
+      /// Covers
+      public static var covers: String { return L10n.tr("Localizable", "carplay.labels.covers") }
+      /// No domains available
+      public static var emptyDomainList: String { return L10n.tr("Localizable", "carplay.labels.empty_domain_list") }
+      /// Input Booleans
+      public static var inputBooleans: String { return L10n.tr("Localizable", "carplay.labels.input_booleans") }
+      /// Input Buttons
+      public static var inputButtons: String { return L10n.tr("Localizable", "carplay.labels.input_buttons") }
+      /// Lights
+      public static var lights: String { return L10n.tr("Localizable", "carplay.labels.lights") }
+      /// Locks
+      public static var locks: String { return L10n.tr("Localizable", "carplay.labels.locks") }
+      /// No servers available. Add a server at home assistant Companion App.
+      public static var noServersAvailable: String { return L10n.tr("Localizable", "carplay.labels.no_servers_available") }
+      /// Scenes
+      public static var scenes: String { return L10n.tr("Localizable", "carplay.labels.scenes") }
+      /// Scripts
+      public static var scripts: String { return L10n.tr("Localizable", "carplay.labels.scripts") }
+      /// Servers
+      public static var servers: String { return L10n.tr("Localizable", "carplay.labels.servers") }
+      /// Switches
+      public static var switches: String { return L10n.tr("Localizable", "carplay.labels.switches") }
+    }
+  }
+
   public enum ClError {
     public enum Description {
       /// Deferred mode is not supported for the requested accuracy.
@@ -1753,6 +1784,63 @@ public enum L10n {
       /// Couldn't Send
       public static var title: String { return L10n.tr("Localizable", "share_extension.error.title") }
     }
+  }
+
+  public enum State {
+    /// Auto
+    public static var auto: String { return L10n.tr("Localizable", "state.auto") }
+    /// Cleaning
+    public static var cleaning: String { return L10n.tr("Localizable", "state.cleaning") }
+    /// Closed
+    public static var closed: String { return L10n.tr("Localizable", "state.closed") }
+    /// Closing
+    public static var closing: String { return L10n.tr("Localizable", "state.closing") }
+    /// Cool
+    public static var cool: String { return L10n.tr("Localizable", "state.cool") }
+    /// Docked
+    public static var docked: String { return L10n.tr("Localizable", "state.docked") }
+    /// Dry
+    public static var dry: String { return L10n.tr("Localizable", "state.dry") }
+    /// Error
+    public static var error: String { return L10n.tr("Localizable", "state.error") }
+    /// Fan Only
+    public static var fanOnly: String { return L10n.tr("Localizable", "state.fan_only") }
+    /// Heat
+    public static var heat: String { return L10n.tr("Localizable", "state.heat") }
+    /// Heat Cool
+    public static var heatCool: String { return L10n.tr("Localizable", "state.heat_cool") }
+    /// Idle
+    public static var idle: String { return L10n.tr("Localizable", "state.idle") }
+    /// Jammed
+    public static var jammed: String { return L10n.tr("Localizable", "state.jammed") }
+    /// Locked
+    public static var locked: String { return L10n.tr("Localizable", "state.locked") }
+    /// Locking
+    public static var locking: String { return L10n.tr("Localizable", "state.locking") }
+    /// Off
+    public static var off: String { return L10n.tr("Localizable", "state.off") }
+    /// On
+    public static var on: String { return L10n.tr("Localizable", "state.on") }
+    /// Open
+    public static var `open`: String { return L10n.tr("Localizable", "state.open") }
+    /// Opening
+    public static var opening: String { return L10n.tr("Localizable", "state.opening") }
+    /// Paused
+    public static var paused: String { return L10n.tr("Localizable", "state.paused") }
+    /// Recording
+    public static var recording: String { return L10n.tr("Localizable", "state.recording") }
+    /// Returning
+    public static var returning: String { return L10n.tr("Localizable", "state.returning") }
+    /// Streaming
+    public static var streaming: String { return L10n.tr("Localizable", "state.streaming") }
+    /// Unavailable
+    public static var unavailable: String { return L10n.tr("Localizable", "state.unavailable") }
+    /// Unknown
+    public static var unknown: String { return L10n.tr("Localizable", "state.unknown") }
+    /// Unlocked
+    public static var unlocked: String { return L10n.tr("Localizable", "state.unlocked") }
+    /// Unlocking
+    public static var unlocking: String { return L10n.tr("Localizable", "state.unlocking") }
   }
 
   public enum TokenError {

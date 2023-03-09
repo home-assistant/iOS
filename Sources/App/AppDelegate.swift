@@ -201,10 +201,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        let activity = options.userActivities
-            .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
-            .first ?? .webView
-        return activity.configuration
+        if  #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+            let scene =  UISceneConfiguration(name: "CarPlay", sessionRole: connectingSceneSession.role)
+            scene.delegateClass = CarPlayDelegate.self
+            return scene
+        } else {
+            let activity = options.userActivities
+                .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
+                .first ?? .webView
+            return activity.configuration
+        }
     }
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
