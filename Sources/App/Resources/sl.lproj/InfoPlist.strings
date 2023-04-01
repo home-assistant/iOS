@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Dostop do knjižnice fotografij je potreben za shranjevanje fotografij iz spletnega pogleda.";
 "NSPhotoLibraryUsageDescription" = "Dostop do knjižnice fotografij je potreben za shranjevanje fotografij iz spletnega pogleda.";
 "NSSiriUsageDescription" = "Siri uporabljamo za omogočanje ustvarjanja bližnjic za interakcijo z aplikacijo.";
+"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Pošlji lokacijo";
 "TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

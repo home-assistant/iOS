@@ -40,7 +40,7 @@
 "alerts.open_url_from_notification.title" = "Åbn webadresse?";
 "alerts.prompt.cancel" = "Annuller";
 "alerts.prompt.ok" = "OK";
-"always_open_label" = "Altid åben";
+"always_open_label" = "Åbn altid";
 "cancel_label" = "Annuller";
 "cl_error.description.deferred_accuracy_too_low" = "Udskudt tilstand understøttes ikke for den ønskede nøjagtighed.";
 "cl_error.description.deferred_canceled" = "Anmodningen om udskudte opdateringer blev annulleret af din app eller af lokalitetsadministratoren.";
@@ -96,7 +96,7 @@
 "ha_api.api_error.must_upgrade_home_assistant" = "Din Home Assistant-version (%@) er for gammel, du skal opgradere til mindst version %@ for at bruge appen.";
 "ha_api.api_error.not_configured" = "HA API er ikke konfigureret";
 "ha_api.api_error.unacceptable_status_code" = "Uacceptabel statuskode %1$li.";
-"ha_api.api_error.unexpected_type" = "Modtaget svar med resultat af typen %1$@ men forventet type %2$@.";
+"ha_api.api_error.unexpected_type" = "Modtog svar med et resultat af typen %1$@, men forventede typen %2$@.";
 "ha_api.api_error.unknown" = "Der opstod en ukendt fejl.";
 "ha_api.api_error.update_not_possible" = "Handlingen kunne ikke udføres.";
 "help_label" = "Hjælp";
@@ -126,7 +126,7 @@
 "menu.file.update_sensors" = "Opdater sensorer";
 "menu.help.help" = "%@ Hjælp";
 "menu.status_item.quit" = "Afslut";
-"menu.status_item.toggle" = "Slå %1$@ til/fra";
+"menu.status_item.toggle" = "Skift %1$@";
 "menu.view.reload_page" = "Genindlæs side";
 "nfc.detail.copy" = "Kopier til udklipsholder";
 "nfc.detail.duplicate" = "Opret et duplikat";
@@ -161,7 +161,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "nfc.write.success_message" = "Data skrevet til tag!";
 "no_label" = "Nej";
 "notification_service.failed_to_load" = "Vedhæftning kunne ikke indlæses";
-"notification_service.loading_dynamic_actions" = "Indlæser handlinger ...";
+"notification_service.loading_dynamic_actions" = "Indlæser handlinger...";
 "notification_service.parser.camera.invalid_entity" = "Angivet entitets-Id er ugyldig.";
 "notification_service.parser.url.invalid_url" = "Den angivne webadresse var ugyldig.";
 "notification_service.parser.url.no_url" = "Ingen webadresse blev angivet.";
@@ -208,7 +208,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.connection_test_result.certificate_error.title" = "Kunne ikke oprette en sikker forbindelse";
 "onboarding.connection_test_result.client_certificate.description" = "Klientcertifikatgodkendelse understøttes ikke.";
 "onboarding.connection_test_result.error_code" = "Fejlkode:";
-"onboarding.connection_test_result.local_network_permission.description" = "Privatlivstilladelse til \"Local Network\" kan være blevet nægtet. Du kan ændre dette under Systemindstillinger.";
+"onboarding.connection_test_result.local_network_permission.description" = "Privatlivstilladelse til \"Lokalt netværk\" kan være blevet nægtet. Du kan ændre dette i Indstillinger-appen.";
 "onboarding.device_name_check.error.prompt" = "Hvilket enhedsnavn skal bruges i stedet?";
 "onboarding.device_name_check.error.rename_action" = "Omdøb";
 "onboarding.device_name_check.error.title" = "Der findes allerede en enhed med navnet '%1$@'";
@@ -461,13 +461,13 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.notifications.categories_synced.footer" = "Kategorier, der er defineret i .yaml, kan ikke redigeres på enheden.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan også defineres i .yaml-konfigurationen.";
 "settings_details.notifications.categories_synced.header" = "Synkroniserede kategorier";
-"settings_details.notifications.info" = "Brug notify tjenesten til at sende notifikationer til din enhed.";
+"settings_details.notifications.info" = "Brug mobile_app notify-tjenesten til at sende meddelelser til din enhed.";
 "settings_details.notifications.local_push.status.available" = "Tilgængelige (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Deaktiveret";
 "settings_details.notifications.local_push.status.establishing" = "Forbinder";
 "settings_details.notifications.local_push.status.unavailable" = "Utilgængelig";
-"settings_details.notifications.local_push.status.unsupported" = "Ikke supporteret";
-"settings_details.notifications.local_push.title" = "Lokale ush notifikationer";
+"settings_details.notifications.local_push.status.unsupported" = "Ikke understøttet";
+"settings_details.notifications.local_push.title" = "Lokale push-notifikationer";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.notifications.permission.disabled" = "Nægtet";
 "settings_details.notifications.permission.enabled" = "Aktiveret";
@@ -491,10 +491,10 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.notifications.sounds.error.conversion_failed" = "Kunne ikke konvertere lyd til PCM 32 bit 48 kHz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Filen kunne ikke kopieres: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Filen kunne ikke slettes: %@";
-"settings_details.notifications.sounds.footer" = "Indbyggede, system eller tilpassede lyde kan bruges sammen med dine notifikationer.";
+"settings_details.notifications.sounds.footer" = "Indbyggede, system- eller tilpassede lyde kan bruges sammen med dine notifikationer.";
 "settings_details.notifications.sounds.import_custom" = "Importer brugerdefinerede lyde";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer lyde fra iTunes-fildeling";
-"settings_details.notifications.sounds.import_mac_instructions" = "Tilføj brugerdefinerede lyde til Sounds mappen for at bruge dem i notifikationer. Brug lydens filnavn som lydværdi i kald af tjenesten.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Tilføj brugerdefinerede lyde til Sounds-mappen for at bruge dem i notifikationer. Brug lydens filnavn som lydværdi i kald af tjenesten.";
 "settings_details.notifications.sounds.import_mac_open_folder" = "Åbn mappe i Finder";
 "settings_details.notifications.sounds.import_system" = "Importer systemlyde";
 "settings_details.notifications.sounds.imported" = "Importerede";
@@ -506,7 +506,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.privacy.alerts.description" = "Gør det muligt at kontrollere vigtige advarsler såsom sikkerhedssvagheder.";
 "settings_details.privacy.alerts.title" = "Advarsler";
 "settings_details.privacy.analytics.generic_description" = "Giver mulighed for indsamling af grundlæggende oplysninger om din enhed og interaktioner med appen. Der deles ingen brugeridentificerbare data herunder webadresser og tokens til Home Assistant. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
-"settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.analytics.generic_title" = "Brugsdata og diagnostik";
 "settings_details.privacy.crash_reporting.description" = "Giver mulighed for mere tilbundsgående sporing af nedbrud og andre fejl i appen, hvilket betyder at der hurtigere kan laves rettelser. Der sendes ingen brugeridentificerbare oplysninger, bortset fra grundlæggende enhedsoplysninger. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
 "settings_details.privacy.crash_reporting.sentry" = "Denne funktion bruger i øjeblikket Sentry som rapporteringsdestination.";
 "settings_details.privacy.crash_reporting.title" = "Rapportering af nedbrud";
@@ -563,7 +563,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "watch.configurator.delete.message" = "Er du sikker på, at du vil slette denne Komplikation? Dette kan ikke fortrydes.";
 "watch.configurator.delete.title" = "Slet Komplikation?";
 "watch.configurator.list.description" = "Konfigurer en ny Komplikation ved at klikke på Tlføj knappen. Når du har gemt, kan du vælge Komplikationen på dit Apple Watch eller i Watch-appen.";
-"watch.configurator.list.manual_updates.footer" = "Automatiske opdateringer sker 4 gange i timen. Manuelle opdateringer kan startes via en notitikation.";
+"watch.configurator.list.manual_updates.footer" = "Automatiske opdateringer sker 4 gange i timen. Der kan også foretages manuelle opdateringer ved hjælp af notifikationer.";
 "watch.configurator.list.manual_updates.manually_update" = "Opdater Komplikationer";
 "watch.configurator.list.manual_updates.remaining" = "Resterende";
 "watch.configurator.list.manual_updates.state.not_enabled" = "Ikke aktiveret";

@@ -35,7 +35,7 @@
 "HoH8wg" = "Actions";
 "J3qct4" = "സെർവർ";
 "JBMp1T" = "ഉറപ്പാക്കാൻ മാത്രം, നിങ്ങൾക്ക് '${server} ' വേണോ?";
-"K4xrvF" = "Error";
+"K4xrvF" = "പിശക്";
 "KHH48D" = "Failed: Home Assistant is not currently reachable";
 "KJS2jk" = "Failed: ${error}";
 "KM7mXC" = "Action";
@@ -51,7 +51,7 @@
 "NdG9Jz" = "Renders the Home Assistant template";
 "NsbUTz" = "Camera Entity";
 "Q2Qp4a" = "Action";
-"QCGKRz" = "Which language?";
+"QCGKRz" = "ഏത് ഭാഷ?";
 "QVD2lM" = "Service Data";
 "QmGpOH" = "Error";
 "RCQAlr" = "Get image of ${cameraID}";
@@ -85,7 +85,7 @@
 "flUgtx" = "Which action?";
 "fnz838" = "Sensors updated";
 "foI0Fv" = "Failed: Home Assistant is not currently reachable";
-"ftQHJw" = "Which server?";
+"ftQHJw" = "ഏത് സെർവർ?";
 "fuRWMi" = "Send ${location} to Home Assistant";
 "g8g7Af" = "Perform the action";
 "gI3mme" = "What service data do you want to send?";
@@ -130,14 +130,14 @@
 "sNFoWe" = "Which camera?";
 "sQJAJS" = "Error";
 "sfDGvk" = "Rendered Template";
-"txfcnn" = "Text";
+"txfcnn" = "വാചകം";
 "tycImk" = "Performs an action defined in the app";
 "uqeIcc" = "Assist with \"${text}\"";
 "v7TSD5" = "Send Location";
 "vAIAF2" = "Send a sensor update to Home Assistant";
 "vebd70" = "സെർവർ";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
-"xN51te" = "Result";
+"xN51te" = "ഫലം";
 "xfXG6b" = "ഏത് സെർവർ?";
 "xhwpj4" = "Done";
 "ypnPyU" = "Perform ${action}";

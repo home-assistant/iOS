@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Mae angen caniatâd i agor Photo Library i ganiatáu arbed lluniau o'r we.";
 "NSPhotoLibraryUsageDescription" = "Mae angen caniatâd i agor Photo Library i ganiatáu arbed lluniau o'r we.";
 "NSSiriUsageDescription" = "Rydym yn defnyddio Siri i ganiatáu llwybrau byr wedi'u creu i ryngweithio â'r ap.";
+"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Anfon Lleoliad";
 "TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

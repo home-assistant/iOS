@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
 "NSPhotoLibraryUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
 "NSSiriUsageDescription" = "Käytämme Siriä, jotta luodut oikotiet voivat vuorovaikuttaa sovelluksen kanssa.";
+"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Lähetä sijainti";
 "TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

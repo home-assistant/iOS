@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Adgang til fotobibliotek er nødvendig for at give mulighed for at gemme fotos fra webvisningen.";
 "NSPhotoLibraryUsageDescription" = "Adgang til fotobibliotek er nødvendig for at give mulighed for at gemme fotos fra webvisningen.";
 "NSSiriUsageDescription" = "Vi bruger Siri til at muliggøre, at oprettede genveje interagerer med appen.";
+"NSSpeechRecognitionUsageDescription" = "Bruges til at diktere tekst til Assistent";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send lokalitet";
 "TemporaryFullAccuracyReasonManualUpdate" = "Giv tilladelse til, at din sporingsenhed må benytte din aktuelle og præcise lokalitet.";

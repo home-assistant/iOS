@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Åtkomst till bildbiblioteket krävs för att tillåta att foton sparas från webbvyn.";
 "NSPhotoLibraryUsageDescription" = "Åtkomst till bildbiblioteket krävs för att tillåta att foton sparas från webbvyn.";
 "NSSiriUsageDescription" = "Vi använder Siri för att tillåta att skapade genvägar interagerar med appen.";
+"NSSpeechRecognitionUsageDescription" = "Används för att diktera text till Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Skicka plats";
 "TemporaryFullAccuracyReasonManualUpdate" = "Tillåt maximal noggrannhet för att använda din nuvarande plats för din enhetsspårning.";

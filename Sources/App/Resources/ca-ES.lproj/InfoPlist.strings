@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";
 "NSPhotoLibraryUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";
 "NSSiriUsageDescription" = "Utilitzem Siri per permetre que les dreceres creades interactuïn amb l’aplicació.";
+"NSSpeechRecognitionUsageDescription" = "S'utilitza per dictar text a l'Assistent";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Enviar ubicació";
 "TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "O acesso à Biblioteca de fotos é necessário para permitir salvar fotos da visualização da web.";
 "NSPhotoLibraryUsageDescription" = "O acesso à Biblioteca de fotos é necessário para permitir salvar fotos da visualização da web.";
 "NSSiriUsageDescription" = "Usamos a Siri para permitir que atalhos criados interajam com o aplicativo.";
+"NSSpeechRecognitionUsageDescription" = "Usado para ditar texto para Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Enviar localização";
 "TemporaryFullAccuracyReasonManualUpdate" = "Conceda total precisão para usar sua localização atual para o rastreador do seu dispositivo.";

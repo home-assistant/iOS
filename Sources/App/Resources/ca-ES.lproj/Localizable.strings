@@ -400,7 +400,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (a l'aplicació)";
 "settings_details.general.open_in_browser.title" = "Obrir els enllaços a";
-"settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.open_in_private_tab.title" = "Obre en una pestanya privada";
 "settings_details.general.page_zoom.default" = "%@ (Per defecte)";
 "settings_details.general.page_zoom.title" = "Zoom de la pàgina";
 "settings_details.general.pinch_to_zoom.title" = "Pessigueu per fer zoom";
