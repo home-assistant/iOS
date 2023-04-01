@@ -1511,6 +1511,10 @@
 		11EE9B5324C62EB300404AF8 /* RealmScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmScene.swift; sourceTree = "<group>"; };
 		11EE9B5624C68F5700404AF8 /* Action+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Observation.swift"; sourceTree = "<group>"; };
 		11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.test.swift; sourceTree = "<group>"; };
+		11EFB44B29D89FD100CE4B05 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Intents.strings; sourceTree = "<group>"; };
+		11EFB44C29D89FD100CE4B05 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Frontend.strings; sourceTree = "<group>"; };
+		11EFB44D29D89FD100CE4B05 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		11EFB44E29D89FD100CE4B05 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
 		11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWindowController.swift; sourceTree = "<group>"; };
 		11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSceneDelegate.swift; sourceTree = "<group>"; };
@@ -4399,6 +4403,7 @@
 				ja,
 				"pt-BR",
 				ml,
+				hu,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -6146,6 +6151,7 @@
 				1159935D275D37B600D805DF /* ja */,
 				11B154A327ABAADA00462185 /* pt-BR */,
 				1128FF38297E5F7D00BAAFD9 /* ml */,
+				11EFB44C29D89FD100CE4B05 /* hu */,
 			);
 			name = Frontend.strings;
 			sourceTree = "<group>";
@@ -6184,6 +6190,7 @@
 				1159935E275D37B600D805DF /* ja */,
 				11B154A427ABAADA00462185 /* pt-BR */,
 				1128FF39297E5F7D00BAAFD9 /* ml */,
+				11EFB44D29D89FD100CE4B05 /* hu */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -6222,6 +6229,7 @@
 				1159935C275D37B600D805DF /* ja */,
 				11B154A227ABAADA00462185 /* pt-BR */,
 				1128FF37297E5F7D00BAAFD9 /* ml */,
+				11EFB44B29D89FD100CE4B05 /* hu */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -6276,6 +6284,7 @@
 				1159935F275D37B600D805DF /* ja */,
 				11B154A527ABAADA00462185 /* pt-BR */,
 				1128FF3A297E5F7D00BAAFD9 /* ml */,
+				11EFB44E29D89FD100CE4B05 /* hu */,
 			);
 			name = Localizable.strings;
 			path = .;
