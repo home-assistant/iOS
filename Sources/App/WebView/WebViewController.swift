@@ -186,11 +186,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 $0.direction = direction
             })
         }
-        
-        if (server.info.version >= .externalBusCommandSidebar) {
-            webView.addGestureRecognizer(with(UIScreenEdgePanGestureRecognizer(target: self, action: #selector(showSidebar))){
-                $0.edges = .left
-            })
+
+        if server.info.version >= .externalBusCommandSidebar {
+            webView
+                .addGestureRecognizer(with(UIScreenEdgePanGestureRecognizer(
+                    target: self,
+                    action: #selector(showSidebar)
+                )) {
+                    $0.edges = .left
+                })
             webView.allowsBackForwardNavigationGestures = false
         } else {
             webView.allowsBackForwardNavigationGestures = server.info.version >= .noFrontendSidebarGesture
@@ -687,9 +691,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         hud.mode = .customView
         hud.hide(animated: true, afterDelay: 1.0)
     }
-    
+
     @objc private func showSidebar() {
-        self.sendExternalBus(message: .init(command: "sidebar/show"))
+        sendExternalBus(message: .init(command: "sidebar/show"))
     }
 
     @objc private func updateSensors() {
