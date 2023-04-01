@@ -20,6 +20,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     var tokens = [HACancellable]()
 
     let refreshControl = UIRefreshControl()
+    let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
     var keepAliveTimer: Timer?
     private var initialURL: URL?
@@ -187,15 +188,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             })
         }
 
-        if server.info.version >= .externalBusCommandSidebar {
-            webView
-                .addGestureRecognizer(with(UIScreenEdgePanGestureRecognizer(
-                    target: self,
-                    action: #selector(showSidebar)
-                )) {
-                    $0.edges = .left
-                })
-        }
+        webView.addGestureRecognizer(sidebarGestureRecognizer)
 
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self = self else { return }
@@ -253,6 +246,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         updateWebViewSettings(reason: .initial)
 
         styleUI()
+        updateWebViewForServerValues()
     }
 
     public func showSettingsViewController() {
@@ -329,12 +323,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     init(server: Server, shouldLoadImmediately: Bool = false) {
         self.server = server
+        self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
+            $0.edges = .left
+        }
 
         super.init(nibName: nil, bundle: nil)
 
         userActivity = with(NSUserActivity(activityType: "\(Constants.BundleID).frontend")) {
             $0.isEligibleForHandoff = true
         }
+
+        sidebarGestureRecognizer.addTarget(self, action: #selector(showSidebar(_:)))
 
         if shouldLoadImmediately {
             loadViewIfNeeded()
@@ -617,9 +616,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         decisionHandler(.grant)
     }
 
+    private func updateWebViewForServerValues() {
+        sidebarGestureRecognizer.isEnabled = server.info.version >= .externalBusCommandSidebar
+    }
+
     @objc private func connectionInfoDidChange() {
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
+            updateWebViewForServerValues()
         }
     }
 
@@ -689,7 +693,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         hud.hide(animated: true, afterDelay: 1.0)
     }
 
-    @objc private func showSidebar() {
+    @objc private func showSidebar(_ gesture: UIScreenEdgePanGestureRecognizer) {
         sendExternalBus(message: .init(command: "sidebar/show"))
     }
 
