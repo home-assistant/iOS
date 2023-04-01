@@ -86,7 +86,7 @@
 "fnz838" = "Érzékelők frissítve";
 "foI0Fv" = "Sikertelen: A Home Assistant jelenleg nem érhető el";
 "ftQHJw" = "Melyik szerver?";
-"fuRWMi" = "{location} $ küldése Home Assistantba";
+"fuRWMi" = "${location} küldése Home Assistantba";
 "g8g7Af" = "Művelet végrehajtása";
 "gI3mme" = "Milyen szolgáltatási adatokat szeretne küldeni?";
 "gePUyy" = "Helymeghatározás";
