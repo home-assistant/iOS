@@ -186,6 +186,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                 $0.direction = direction
             })
         }
+        
+        webView.allowsBackForwardNavigationGestures = server.info.version >= .noFrontendSidebarGesture
 
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self = self else { return }
