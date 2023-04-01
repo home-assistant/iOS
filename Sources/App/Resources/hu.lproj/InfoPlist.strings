@@ -1,0 +1,17 @@
+"NFCReaderUsageDescription" = "Az NFC-matricák olvasása és írása lehetővé teszi események indítását.";
+"NSCameraUsageDescription" = "Készítsen fényképeket, és küldje el őket a Home Assistant szerverére.";
+"NSCrossWebsiteTrackingUsageDescription" = "Opcionálisan engedélyezze a webhelyek közötti nyomon követést, ha a konfiguráció megköveteli.";
+"NSFocusStatusUsageDescription" = "Jelentse a fókusz állapotát érzékelőként.";
+"NSLocalNetworkUsageDescription" = "Keresse meg Home Assistant példányát, és kommunikáljon vele.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Javasoljuk, hogy válassza a „Mindig engedélyezés” lehetőséget a legjobb helymeghatározási élmény érdekében. A „Csak az alkalmazás használata közben” választása letiltja az iBeaconokat, a geokerítéseket, a háttérben történő helyfrissítéseket és a pontos jelentéseket.";
+"NSLocationAlwaysUsageDescription" = "Az olyan funkciókhoz, mint az iBeacons, a földrajzi kerítések, a háttérben történő helyfrissítések és a pontos jelentéskészítéshez mindig szükségünk van az Ön tartózkodási helyéhez való hozzáférésre.";
+"NSLocationUsageDescription" = "Ha engedélyezve van, az eszköz helyzete elküldésre kerül a Home Assistant szerverére eszközkövetőként.";
+"NSLocationWhenInUseUsageDescription" = "Ha csak az alkalmazás használata közben engedélyezi a helyhozzáférést, az letiltja az iBeaconokat, a geokerítéseket, a háttérben történő helyfrissítéseket és a pontos jelentéseket.";
+"NSMicrophoneUsageDescription" = "Hangfelvételt készíthet a Home Assistant kezelőfelületével.";
+"NSMotionUsageDescription" = "A mozgás a helyfrissítések javítására szolgál az aktuális mozgástípussal, valamint alapvető lépésszámláló adatokat szolgáltat.";
+"NSPhotoLibraryAddUsageDescription" = "A fényképek webes nézetből történő mentéséhez a Fotótár hozzáférése szükséges.";
+"NSPhotoLibraryUsageDescription" = "A fényképek webes nézetből történő mentéséhez a Fotótár hozzáférése szükséges.";
+"NSSiriUsageDescription" = "A Siri segítségével lehetővé tesszük a létrehozott parancsikonok használatát az alkalmazással való interakcióhoz.";
+"NSSpeechRecognitionUsageDescription" = "Szöveg diktálására szolgál az Asszisztens számára.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Tartózkodási hely küldése";
+"TemporaryFullAccuracyReasonManualUpdate" = "Adja meg a teljes pontosságot, hogy az aktuális tartózkodási helyét használhassa a készülék nyomkövetőjéhez.";

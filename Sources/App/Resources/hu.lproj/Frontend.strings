@@ -1,0 +1,12 @@
+"panel::calendar" = "Naptár";
+"panel::config" = "Beállítások";
+"panel::developer_tools" = "Fejlesztői eszközök";
+"panel::energy" = "Energia";
+"panel::history" = "Előzmények";
+"panel::logbook" = "Napló";
+"panel::mailbox" = "Postafiók";
+"panel::map" = "Térkép";
+"panel::media_browser" = "Média";
+"panel::profile" = "Profil";
+"panel::shopping_list" = "Bevásárló lista";
+"panel::states" = "Áttekintés";
