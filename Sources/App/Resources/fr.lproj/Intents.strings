@@ -142,5 +142,5 @@
 "xhwpj4" = "Terminé !";
 "ypnPyU" = "Effectuer ${action}";
 "yyjTxO" = "Erreur";
-"zIiPij" = "$ {result}";
+"zIiPij" = "${result}";
 "zjdBxm" = "Quelle page?";

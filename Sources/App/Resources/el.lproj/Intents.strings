@@ -47,7 +47,7 @@
 "MTPojJ" = "Ποιο είναι το όνομα του συμβάντος;";
 "MwEpGz" = "Εγινε";
 "N9iJpK" = "Λήψη εικόνας κάμερας";
-"NUF0Pa" = "$ {result}";
+"NUF0Pa" = "${result}";
 "NdG9Jz" = "Αποδίδει το πρότυπο Home Assistant";
 "NsbUTz" = "Οντότητα κάμερας";
 "Q2Qp4a" = "Ενέργεια";
@@ -142,5 +142,5 @@
 "xhwpj4" = "Εγινε";
 "ypnPyU" = "Εκτέλεση ${action}";
 "yyjTxO" = "Σφάλμα";
-"zIiPij" = "$ {result}";
+"zIiPij" = "${result}";
 "zjdBxm" = "Ποια σελίδα;";
