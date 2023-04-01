@@ -694,7 +694,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     @objc private func showSidebar(_ gesture: UIScreenEdgePanGestureRecognizer) {
-        sendExternalBus(message: .init(command: "sidebar/show"))
+        switch gesture.state {
+        case .began:
+            sendExternalBus(message: .init(command: "sidebar/show"))
+        default:
+            break
+        }
     }
 
     @objc private func updateSensors() {
