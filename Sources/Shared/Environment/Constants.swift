@@ -149,6 +149,7 @@ public extension Version {
     static var updateLocationGPSOptional: Version = .init(major: 2022, minor: 2, prerelease: "any0")
     static var fullWebhookSecretKey: Version = .init(major: 2022, minor: 3)
     static var conversationWebhook: Version = .init(major: 2023, minor: 2, prerelease: "any0")
+    static var externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))
