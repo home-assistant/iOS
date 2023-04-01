@@ -562,7 +562,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "watch.configurator.delete.button" = "コンプリケーションを削除";
 "watch.configurator.delete.message" = "このコンプリケーションを削除してもよろしいですか？元に戻すことはできません。";
 "watch.configurator.delete.title" = "コプリケーションを削除？";
-"watch.configurator.list.description" = "[追加] ボタンを使用して、新しい合併症を構成します。保存したら、Apple Watch または Watch アプリで選択できます。";
+"watch.configurator.list.description" = "追加ボタンを使って新しいコンプリケーションを設定します。一度保存すると、Apple WatchやWatchアプリで選択することができます。";
 "watch.configurator.list.manual_updates.footer" = "自動更新は、1時間に4回行われます。通知を使用して、手動で更新することもできます。";
 "watch.configurator.list.manual_updates.manually_update" = "コンプリケーションを更新";
 "watch.configurator.list.manual_updates.remaining" = "残り";
@@ -570,7 +570,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "watch.configurator.list.manual_updates.state.not_installed" = "インストールされていない";
 "watch.configurator.list.manual_updates.state.not_paired" = "デバイスなし";
 "watch.configurator.list.manual_updates.title" = "手動更新";
-"watch.configurator.new.multiple_complication_info" = "既存のものと同じタイプの別のコンプリケーションを追加するには、watchOS 7 以降が必要です。";
+"watch.configurator.new.multiple_complication_info" = "既存のものと同じタイプの別のコンプリケーションを追加するには、watchOS 7以降が必要です。";
 "watch.configurator.new.title" = "新しいコンプリケーション";
 "watch.configurator.preview_error.not_number" = "数値のはずですが、%1$@ を取得しました: %2$@";
 "watch.configurator.preview_error.out_of_range" = "0.0から1.0 の間の数値が必要でしたが、 %1$f を取得しました";

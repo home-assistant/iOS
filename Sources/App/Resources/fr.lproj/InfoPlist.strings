@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
 "NSPhotoLibraryUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
 "NSSiriUsageDescription" = "Nous utilisons Siri pour permettre aux raccourcis créés d’interagir avec l’application.";
+"NSSpeechRecognitionUsageDescription" = "Utilisé pour dicter du texte à l'assistant";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Envoyer l'emplacement";
 "TemporaryFullAccuracyReasonManualUpdate" = "Garantissez une précision totale dans l'utilisation de votre position actuelle pour le suivi de votre appareil.";

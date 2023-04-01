@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Akses Perpustakaan Foto diperlukan agar bisa menyimpan foto dari tampilan web.";
 "NSPhotoLibraryUsageDescription" = "Akses Perpustakaan Foto diperlukan agar bisa menyimpan foto dari tampilan web.";
 "NSSiriUsageDescription" = "Kami menggunakan Siri untuk mengizinkan pintasan yang dibuat untuk berinteraksi dengan aplikasi.";
+"NSSpeechRecognitionUsageDescription" = "Digunakan untuk mendikte teks ke Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Kirim Lokasi";
 "TemporaryFullAccuracyReasonManualUpdate" = "Izinkan akurasi lokasi tepat untuk menggunakan data lokasi Anda saat ini dalam pelacak perangkat.";

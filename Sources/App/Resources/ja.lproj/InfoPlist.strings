@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Web ビューから写真を保存できるようにするには、フォト ライブラリへのアクセスが必要です。";
 "NSPhotoLibraryUsageDescription" = "Web ビューから写真を保存できるようにするには、フォト ライブラリへのアクセスが必要です。";
 "NSSiriUsageDescription" = "Siri を使用して、作成したショートカットがアプリと対話できるようにします。";
+"NSSpeechRecognitionUsageDescription" = "アシストにテキストを指示するために使用されます。";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "場所を送信";
 "TemporaryFullAccuracyReasonManualUpdate" = "デバイストラッカーにあなたの現在地を使用するには、完全な精度を付与します。";

@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Der Zugriff auf die Fotobibliothek ist erforderlich, um das Speichern von Fotos aus der Webansicht zu ermöglichen.";
 "NSPhotoLibraryUsageDescription" = "Der Zugriff auf die Fotobibliothek ist erforderlich, um das Speichern von Fotos aus der Webansicht zu ermöglichen.";
 "NSSiriUsageDescription" = "Wir verwenden Siri, um erstellten Verknüpfungen die Interaktion mit der App zu ermöglichen.";
+"NSSpeechRecognitionUsageDescription" = "Wird verwendet, um Assistent Text zu diktieren.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Standort senden";
 "TemporaryFullAccuracyReasonManualUpdate" = "Erlaube genauen Zugriff auf deinen Standort, um Device Tracker zu verwenden.";

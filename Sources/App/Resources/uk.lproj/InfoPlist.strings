@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
 "NSPhotoLibraryUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
 "NSSiriUsageDescription" = "Ми використовуємо Siri, щоб дозволити створеним командам взаємодіяти з застосунком.";
+"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Надіслати розташування";
 "TemporaryFullAccuracyReasonManualUpdate" = "Дозвольте максимальну точність визначення вашого поточного місцезнаходження для відстеження пристрою.";

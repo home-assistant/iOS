@@ -12,5 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
 "NSPhotoLibraryUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
 "NSSiriUsageDescription" = "使用 Siri 以允許建立捷徑與 App 進行互動。";
+"NSSpeechRecognitionUsageDescription" = "用於轉述文字至助理。";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "傳送座標";
 "TemporaryFullAccuracyReasonManualUpdate" = "取得完整精確度以用於裝置位置追蹤。";
