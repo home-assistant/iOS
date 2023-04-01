@@ -162,17 +162,6 @@ public class LocalPushManager {
 
         state.increment()
 
-        if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
-            firstly {
-                Current.api(for: server).connection.send(.localPushConfirm(
-                    webhookID: webhookID,
-                    confirmID: confirmID
-                )).promise
-            }.catch { error in
-                Current.Log.error("failed to confirm local push: \(error)")
-            }
-        }
-
         let baseContent = event.content(server: server)
 
         delegate?.localPushManager(self, didReceiveRemoteNotification: baseContent.userInfo)
@@ -184,6 +173,15 @@ public class LocalPushManager {
             return .value(baseContent)
         }.then { [add] content -> Promise<Void> in
             add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
+        }.then { [subscription, server] () -> Promise<Void> in
+            if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
+                return Current.api(for: server).connection.send(.localPushConfirm(
+                    webhookID: webhookID,
+                    confirmID: confirmID
+                )).promise.map { _ in () }
+            } else {
+                return .value(())
+            }
         }.done {
             Current.Log.info("added local notification")
         }.catch { error in
