@@ -1,26 +1,18 @@
-//
-//  EntityGridTemplate.swift
-//  App
-//
-//  Created by Luis Lopes on 27/02/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import CarPlay
+import Foundation
 import HAKit
-import Shared
 import PromiseKit
+import Shared
 
 @available(iOS 16.0, *)
 class EntitiesGridTemplate {
     
-    private let entityIconSize : CGSize = CGSize(width: 64, height: 64)
-    private var stateSubscriptionToken : HACancellable?
-    private let title : String
-    private let domain : String
-    private var server : Server
-    private var entities : [HAEntity] = []
+    private let entityIconSize: CGSize = CGSize(width: 64, height: 64)
+    private var stateSubscriptionToken: HACancellable?
+    private let title: String
+    private let domain: String
+    private var server: Server
+    private var entities: [HAEntity] = []
     private var gridTemplate: CPGridTemplate?
     private var gridPage: Int = 0
     
@@ -67,7 +59,7 @@ class EntitiesGridTemplate {
     }
     
     func getPageButtons() -> [CPBarButton] {
-        var barButtons : [CPBarButton]  = []
+        var barButtons: [CPBarButton]  = []
         if entities.count > CPGridTemplateMaximumItems {
             let maxPages = entities.count / CPGridTemplateMaximumItems
             if gridPage < maxPages {
@@ -103,7 +95,7 @@ class EntitiesGridTemplate {
 }
 
 @available(iOS 16.0, *)
-extension EntitiesGridTemplate : EntitiesStateSubscription {
+extension EntitiesGridTemplate: EntitiesStateSubscription {
     public func subscribe() {
         stateSubscriptionToken = Current.api(for: server).connection.caches.states.subscribe { [self] cancellable, cachedStates in
             entities.removeAll { entity in

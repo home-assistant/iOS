@@ -1,22 +1,18 @@
-//
-//  HAEntityExtentions.swift
-//  App
-//
-//  Created by Luis Lopes on 27/02/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import HAKit
-import Shared
 import PromiseKit
+import Shared
 import SwiftUI
 
 extension HAEntity {
-    
     public static func getIconForDomain(domain: String, size: CGSize) -> UIImage? {
         do {
-            let tmpEntity = try HAEntity(entityId: "\(domain).ha_ios_placeholder", domain: domain, state: "", lastChanged: Date(), lastUpdated: Date(), attributes: [:], context: HAResponseEvent.Context(id: "", userId: nil, parentId: nil))
+            let tmpEntity = try HAEntity(entityId: "\(domain).ha_ios_placeholder",
+                                         domain: domain, state: "",
+                                         lastChanged: Date(),
+                                         lastUpdated: Date(),
+                                         attributes: [:],
+                                         context: HAResponseEvent.Context(id: "", userId: nil, parentId: nil))
             return tmpEntity.getIcon(size: size)
         }
         catch {
@@ -26,7 +22,7 @@ extension HAEntity {
     
     func onPress(for api: HomeAssistantAPI) -> Promise<Void>{
         let domain = domain
-        var service : String
+        var service: String
         switch (domain) {
             case "lock":
                 service = state == "unlocked" ? "lock" : "unlock"
@@ -39,20 +35,20 @@ extension HAEntity {
             default:
                 service = state == "on" ? "turn_off" : "turn_on";
         }
-        return api.CallService(domain: domain, service: service, serviceData: ["entity_id" : entityId])
+        return api.CallService(domain: domain, service: service, serviceData: ["entity_id": entityId])
     }
     
     func getIcon(size: CGSize = CGSize(width: 64, height: 64), darkColor: UIColor = UIColor.white) -> UIImage?{
-        var icon = attributes.icon ?? ""
+        let icon = attributes.icon ?? ""
         
-        var image : MaterialDesignIcons = MaterialDesignIcons.bookmarkIcon
+        var image: MaterialDesignIcons = MaterialDesignIcons.bookmarkIcon
         
         if icon.starts(with: "mdi:") {
             let mdiIcon = icon.components(separatedBy: ":")[1]
             let iconName = mdiIcon.replacingOccurrences(of: "-", with: "_")
             image = MaterialDesignIcons(named: iconName)
         } else {
-            var compareState = state
+            let compareState = state
             switch (domain) {
                 case "button":
                     guard let deviceClass = attributes.dictionary["device_class"] as? String else { break }
@@ -118,7 +114,7 @@ extension HAEntity {
                 image = MaterialDesignIcons.bookmarkIcon
             }
         }
-        var iconImage = image.image(ofSize: size, color: nil)
+        let iconImage = image.image(ofSize: size, color: nil)
         iconImage.imageAsset?.register(image.image(ofSize: size, color: darkColor), with: .init(userInterfaceStyle: .dark))
         return iconImage
     }
@@ -178,8 +174,8 @@ extension HAEntity {
     }
     
     func getFriendlyState() -> String {
-        var state = state
-        var friendlyState : String = state
+        let state = state
+        var friendlyState: String = state
         switch(state) {
         case "closed":
             friendlyState = L10n.State.closed

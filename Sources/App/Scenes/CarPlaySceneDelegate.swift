@@ -1,16 +1,9 @@
-//
-//  CarPlayDelegate.swift
-//  App
-//
-//  Created by Luis Lopes on 15/02/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import CarPlay
-import Shared
+import Communicator
 import HAKit
 import PromiseKit
-import Communicator
+import Shared
+
 
 public protocol EntitiesStateSubscription {
     func subscribe()
@@ -18,17 +11,17 @@ public protocol EntitiesStateSubscription {
 }
 
 @available(iOS 16.0, *)
-class CarPlayDelegate : UIResponder {
+class CarPlayDelegate: UIResponder {
     public static let SUPPORTED_DOMAINS_WITH_STRING = [
-        "button" : L10n.Carplay.Labels.buttons,
-        "cover" : L10n.Carplay.Labels.covers,
-        "input_boolean" : L10n.Carplay.Labels.inputBooleans,
-        "input_button" : L10n.Carplay.Labels.inputButtons,
-        "light" : L10n.Carplay.Labels.lights,
-        "lock" : L10n.Carplay.Labels.locks,
-        "scene" : L10n.Carplay.Labels.scenes,
-        "script" : L10n.Carplay.Labels.scripts,
-        "switch" : L10n.Carplay.Labels.switches
+        "button": L10n.Carplay.Labels.buttons,
+        "cover": L10n.Carplay.Labels.covers,
+        "input_boolean": L10n.Carplay.Labels.inputBooleans,
+        "input_button": L10n.Carplay.Labels.inputButtons,
+        "light": L10n.Carplay.Labels.lights,
+        "lock": L10n.Carplay.Labels.locks,
+        "scene": L10n.Carplay.Labels.scenes,
+        "script": L10n.Carplay.Labels.scripts,
+        "switch": L10n.Carplay.Labels.switches
     ]
     
     public let SUPPORTED_DOMAINS = SUPPORTED_DOMAINS_WITH_STRING.keys
@@ -42,11 +35,11 @@ class CarPlayDelegate : UIResponder {
     
     private var interfaceController: CPInterfaceController?
     private var filteredEntities: [HAEntity] = []
-    private var entitiesGridTemplate : EntitiesGridTemplate?
-    private var domainsListTemplate : DomainsListTemplate?
-    private var entitiesStateSubscribeCancelable : HACancellable?
-    private var serverObserver : HACancellable?
-    private var serverId : Identifier<Server>? {
+    private var entitiesGridTemplate: EntitiesGridTemplate?
+    private var domainsListTemplate: DomainsListTemplate?
+    private var entitiesStateSubscribeCancelable: HACancellable?
+    private var serverObserver: HACancellable?
+    private var serverId: Identifier<Server>? {
         didSet {
             loadEntities()
         }
@@ -80,7 +73,7 @@ class CarPlayDelegate : UIResponder {
     }
     
     func getFilteredAndSortEntities(entities: [HAEntity]) -> [HAEntity] {
-        var tmpEntities : [HAEntity] = []
+        var tmpEntities: [HAEntity] = []
         
         for entity in entities where SUPPORTED_DOMAINS.contains(entity.domain) {
             tmpEntities.append(entity)
@@ -134,7 +127,7 @@ class CarPlayDelegate : UIResponder {
             return
         }
         
-        let loginAlertAction : CPAlertAction = CPAlertAction(title: L10n.Carplay.Labels.alreadyAddedServer, style: .default) { _ in
+        let loginAlertAction: CPAlertAction = CPAlertAction(title: L10n.Carplay.Labels.alreadyAddedServer, style: .default) { _ in
             if !Current.servers.all.isEmpty {
                 self.interfaceController?.dismissTemplate(animated: true)
             }
@@ -144,7 +137,7 @@ class CarPlayDelegate : UIResponder {
     }
     
     func setDomainListTemplate() {
-        domainsListTemplate = DomainsListTemplate(title: L10n.About.Logo.appTitle, entities: filteredEntities, ic : interfaceController!,
+        domainsListTemplate = DomainsListTemplate(title: L10n.About.Logo.appTitle, entities: filteredEntities, ic: interfaceController!,
                                                 listItemHandler: {[weak self] domain, entities in
             
             guard let self = self, let server = Current.servers.getServer(id: self.serverId) else {
@@ -162,7 +155,7 @@ class CarPlayDelegate : UIResponder {
     }
     
     func setServerListTemplate() {
-        var serverList : [CPListItem] = []
+        var serverList: [CPListItem] = []
         for server in Current.servers.all {
             let serverItem = CPListItem(text: server.info.name, detailText: "\(server.info.connection.activeURLType.description) - \(server.info.connection.activeURL().absoluteString)")
             serverItem.handler = { [weak self] item, completion in
@@ -182,7 +175,7 @@ class CarPlayDelegate : UIResponder {
 }
 
 @available(iOS 16.0, *)
-extension CarPlayDelegate : CPTemplateApplicationSceneDelegate {
+extension CarPlayDelegate: CPTemplateApplicationSceneDelegate {
     func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         self.interfaceController?.delegate = self
@@ -247,7 +240,7 @@ extension CarPlayDelegate: CPInterfaceControllerDelegate {
 }
 
 @available(iOS 16.0, *)
-extension CarPlayDelegate : ServerObserver {
+extension CarPlayDelegate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         self.domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
         

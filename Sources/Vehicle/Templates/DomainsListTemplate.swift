@@ -1,24 +1,16 @@
-//
-//  DomainListTemplate.swift
-//  App
-//
-//  Created by Luis Lopes on 27/02/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import CarPlay
+import Foundation
 import HAKit
 import Shared
 
 @available(iOS 16.0, *)
 class DomainsListTemplate {
-    private var title : String
-    private var listTemplate : CPListTemplate?
-    private var entities : [HAEntity]
-    private let listItemHandler : (String, [HAEntity]) -> Void
+    private var title: String
+    private var listTemplate: CPListTemplate?
+    private var entities: [HAEntity]
+    private let listItemHandler: (String, [HAEntity]) -> Void
     private var serverButtonHandler: CPBarButtonHandler?
-    private var domainList : [String] = []
+    private var domainList: [String] = []
     
     init(title: String, entities: [HAEntity], ic: CPInterfaceController,
         listItemHandler: @escaping (String, [HAEntity]) -> Void,
@@ -39,12 +31,12 @@ class DomainsListTemplate {
         return listTemplate
     }
     
-    public func entitiesUpdate(updateEntities : [HAEntity]) {
+    public func entitiesUpdate(updateEntities: [HAEntity]) {
         entities = updateEntities
         updateSection()
     }
     
-    func setServerListButton(show : Bool) {
+    func setServerListButton(show: Bool) {
         if show {
             listTemplate?.trailingNavigationBarButtons = [CPBarButton(title: L10n.Carplay.Labels.servers, handler: serverButtonHandler)]
         } else {
@@ -61,12 +53,14 @@ class DomainsListTemplate {
             return
         }
     
-        var items : [CPListItem] = []
+        var items: [CPListItem] = []
 
         for domain in domains {
                         
             let itemTitle = CarPlayDelegate.SUPPORTED_DOMAINS_WITH_STRING[domain] ?? domain
-            let listItem = CPListItem(text: itemTitle, detailText: nil, image: HAEntity.getIconForDomain(domain: domain, size: CPListItem.maximumImageSize))
+            let listItem = CPListItem(text: itemTitle,
+                                      detailText: nil,
+                                      image: HAEntity.getIconForDomain(domain: domain, size: CPListItem.maximumImageSize))
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
             listItem.handler = { [weak self] item, completion in
                 if let entitiesForSelectedDomain = self?.getEntitiesForDomain(domain: domain) {
