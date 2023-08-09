@@ -50,6 +50,7 @@ class IncomingURLHandler {
             components.scheme = nil
             components.host = nil
 
+            let queryParameters = components.queryItems
             let isFromWidget = components.popWidgetAuthenticity()
             let server = components.popWidgetServer(isFromWidget: isFromWidget)
 
@@ -61,7 +62,7 @@ class IncomingURLHandler {
                presenting is SFSafariViewController {
                 // Dismiss my.* controller if it's on top - we don't get any other indication
                 presenting.dismiss(animated: true, completion: { [windowController] in
-                    windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: true)
+                    windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: true, queryParameters: queryParameters)
                 })
             } else if let server = server {
                 windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
