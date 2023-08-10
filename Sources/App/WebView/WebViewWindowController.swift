@@ -202,9 +202,15 @@ class WebViewWindowController {
         }
     }
 
-    func openSelectingServer(from: OpenSource, urlString openUrlRaw: String, skipConfirm: Bool = false, queryParameters: [URLQueryItem]? = nil) {
+    func openSelectingServer(
+        from: OpenSource,
+        urlString openUrlRaw: String,
+        skipConfirm: Bool = false,
+        queryParameters: [URLQueryItem]? = nil
+    ) {
         if let first = Current.servers.all.first,
-           (Current.servers.all.count == 1 || queryParameters?.first(where: { $0.name == "server" })?.value == "default") {
+           Current.servers.all.count == 1 || queryParameters?.first(where: { $0.name == "server" })?
+           .value == "default" {
             open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
         } else if Current.servers.all.count > 1 {
             let prompt: String?
