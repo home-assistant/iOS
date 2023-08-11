@@ -208,10 +208,23 @@ class WebViewWindowController {
         skipConfirm: Bool = false,
         queryParameters: [URLQueryItem]? = nil
     ) {
-        if let first = Current.servers.all.first,
-           Current.servers.all.count == 1 || queryParameters?.first(where: { $0.name == "server" })?
-           .value == "default" {
-            open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+        let serverName = queryParameters?.first(where: { $0.name == "server" })?.value
+        let servers = Current.servers.all
+
+        if let first = servers.first, Current.servers.all.count == 1 || serverName != nil {
+            if serverName == "default" || serverName == nil {
+                open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+            } else {
+                if let selectedServer = servers.first(where: { server in
+                    let sanitizedServerName = server.info.name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                    let sanitizedSelectedServerName = serverName?.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                    return sanitizedServerName == sanitizedSelectedServerName
+                }) {
+                    open(from: from, server: selectedServer, urlString: openUrlRaw, skipConfirm: skipConfirm)
+                } else {
+                    open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+                }
+            }
         } else if Current.servers.all.count > 1 {
             let prompt: String?
 
