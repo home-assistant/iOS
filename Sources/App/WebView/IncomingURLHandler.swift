@@ -72,7 +72,12 @@ class IncomingURLHandler {
             } else if let server = server {
                 windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
             } else {
-                windowController.openSelectingServer(from: .deeplink, urlString: rawURL, skipConfirm: isFromWidget, queryParameters: queryParameters)
+                windowController.openSelectingServer(
+                    from: .deeplink,
+                    urlString: rawURL,
+                    skipConfirm: isFromWidget,
+                    queryParameters: queryParameters
+                )
             }
         default:
             Current.Log.warning("Can't route incoming URL: \(url)")
