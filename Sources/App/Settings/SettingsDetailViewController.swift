@@ -443,7 +443,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             )
 
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
-
             form +++ RealmSection<RLMScene>(
                 header: L10n.SettingsDetails.Actions.Scenes.title,
                 footer: L10n.SettingsDetails.Actions.Scenes.footer,
@@ -454,7 +453,29 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                         $0.disabled = true
                     },
                 ], getter: {
-                    Self.getSceneRows($0)
+                    var baseRows: [BaseRow] = []
+                    if $0 == scenes.first {
+                        let toggleAllSwitch = SwitchRow()
+                        toggleAllSwitch.title = "Select all"
+                        toggleAllSwitch.value = scenes.filter({ $0.actionEnabled }).count == scenes.count
+                        toggleAllSwitch.onChange { row in
+                            guard let value = row.value else { return }
+                            scenes.forEach { scene in
+                                do {
+                                    try scene.realm?.write {
+                                        scene.actionEnabled = value
+                                    }
+                                } catch {
+                                    /* no-op */
+                                }
+                            }
+                        }
+                        baseRows = [toggleAllSwitch]
+                    }
+
+                    baseRows += Self.getSceneRows($0)
+
+                    return baseRows
                 }
             )
 
