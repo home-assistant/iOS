@@ -22,6 +22,7 @@ enum SettingsRootDataSource {
         case servers
         case location
         case notifications
+        case security
         case actions
         case sensors
         case complications
@@ -37,6 +38,7 @@ enum SettingsRootDataSource {
                 case .general: return SettingsRootDataSource.general()
                 case .location: return SettingsRootDataSource.location()
                 case .notifications: return SettingsRootDataSource.notifications()
+                case .security: return SettingsRootDataSource.security()
                 case .actions: return SettingsRootDataSource.actions()
                 case .sensors: return SettingsRootDataSource.sensors()
                 case .complications: return SettingsRootDataSource.complications()
@@ -91,6 +93,16 @@ enum SettingsRootDataSource {
             $0.icon = .bellOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 NotificationSettingsViewController()
+            }, onDismiss: nil)
+        }
+    }
+
+    private static func security() -> SettingsButtonRow {
+        SettingsButtonRow {
+            $0.title = "Security"
+            $0.icon = .keyChainIcon
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                SecurityViewController()
             }, onDismiss: nil)
         }
     }

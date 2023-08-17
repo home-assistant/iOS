@@ -45,6 +45,15 @@ public class SettingsStore {
         }
     }
 
+    public var biometricsRequired: Bool {
+        get {
+            Bool(keychain["biometricsRequired"] ?? "false") ?? false
+        }
+        set {
+            keychain["biometricsRequired"] = String(newValue)
+        }
+    }
+
     #if os(iOS)
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
