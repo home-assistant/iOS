@@ -106,6 +106,7 @@ class SettingsViewController: HAFormViewController {
                 <<< SettingsRootDataSource.Row.general.row
                 <<< SettingsRootDataSource.Row.location.row
                 <<< SettingsRootDataSource.Row.notifications.row
+                <<< SettingsRootDataSource.Row.security.row
         }
 
         if contentSections.contains(.integrations) {

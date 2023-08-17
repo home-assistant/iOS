@@ -24,6 +24,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     var keepAliveTimer: Timer?
     private var initialURL: URL?
+    private let authenticationService: AuthenticationServiceProtocol
 
     static func viewController(
         withRestorationIdentifierPath identifierComponents: [String],
@@ -32,7 +33,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         if #available(iOS 13, *) {
             return nil
         } else {
-            return WebViewController(restoring: .coder(coder))
+            return WebViewController(
+                restoring: .coder(coder),
+                authenticationService: AuthenticationService()
+            )
         }
     }
 
@@ -247,6 +251,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         styleUI()
         updateWebViewForServerValues()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(checkForBiometrics),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
 
     public func showSettingsViewController() {
@@ -321,11 +332,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
     }
 
-    init(server: Server, shouldLoadImmediately: Bool = false) {
+    init(
+        server: Server,
+        shouldLoadImmediately: Bool = false,
+        authenticationService: AuthenticationServiceProtocol
+    ) {
         self.server = server
         self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
+        self.authenticationService = authenticationService
 
         super.init(nibName: nil, bundle: nil)
 
@@ -341,9 +357,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
     }
 
-    convenience init?(restoring: RestorationType?, shouldLoadImmediately: Bool = false) {
+    convenience init?(
+        restoring: RestorationType?,
+        shouldLoadImmediately: Bool = false,
+        authenticationService: AuthenticationServiceProtocol
+    ) {
         if let server = restoring?.server ?? Current.servers.all.first {
-            self.init(server: server)
+            self.init(server: server, authenticationService: authenticationService)
         } else {
             return nil
         }
@@ -614,6 +634,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         decisionHandler: @escaping (WKPermissionDecision) -> Void
     ) {
         decisionHandler(.grant)
+    }
+
+    @objc private func checkForBiometrics() {
+        if Current.settingsStore.biometricsRequired {
+            authenticationService.authenticate()
+        }
     }
 
     private func updateWebViewForServerValues() {
