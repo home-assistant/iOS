@@ -547,14 +547,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let responseIdentifier = "AssistAnswer"
                     let intent = AssistIntent()
                     guard let inputText = message.content["Input"] as? String else {
-                        message.reply(.init(identifier: responseIdentifier, content: ["answer": "Couldn't read input text"]))
+                        message
+                            .reply(.init(
+                                identifier: responseIdentifier,
+                                content: ["answer": "Couldn't read input text"]
+                            ))
                         return
                     }
                     intent.text = inputText
                     let intentHandler = AssistIntentHandler()
                     intentHandler.handle(intent: intent, completion: { response in
                         guard let displayString = response.result?.displayString else {
-                            message.reply(.init(identifier: responseIdentifier, content: ["answer": "Couldn't read response from Assist"]))
+                            message
+                                .reply(.init(
+                                    identifier: responseIdentifier,
+                                    content: ["answer": "Couldn't read response from Assist"]
+                                ))
                             return
                         }
                         message.reply(.init(identifier: responseIdentifier, content: ["answer": displayString]))
