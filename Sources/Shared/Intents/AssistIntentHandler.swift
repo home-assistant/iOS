@@ -3,10 +3,10 @@ import ObjectMapper
 import PromiseKit
 
 @available(iOS 13, watchOS 6, *)
-class AssistIntentHandler: NSObject, AssistIntentHandling {
-    typealias Intent = AssistIntent
+public class AssistIntentHandler: NSObject, AssistIntentHandling {
+    public typealias Intent = AssistIntent
 
-    func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
+    public func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
         if let server = Current.servers.server(for: intent) {
             completion(.success(with: .init(server: server)))
         } else {
@@ -14,23 +14,23 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         }
     }
 
-    func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
+    public func provideServerOptions(for intent: Intent, with completion: @escaping ([IntentServer]?, Error?) -> Void) {
         completion(IntentServer.all, nil)
     }
 
     @available(iOS 14, watchOS 7, *)
-    func provideServerOptionsCollection(
+    public func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
     ) {
         completion(.init(items: IntentServer.all), nil)
     }
 
-    func defaultLanguage(for intent: AssistIntent) -> IntentLanguage? {
+    public func defaultLanguage(for intent: AssistIntent) -> IntentLanguage? {
         Locale.current.asIntentLanguage
     }
 
-    func provideLanguageOptions(
+    public func provideLanguageOptions(
         for intent: AssistIntent,
         with completion: @escaping ([IntentLanguage]?, Error?) -> Void
     ) {
@@ -38,14 +38,14 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
     }
 
     @available(iOS 14, watchOS 7, *)
-    func provideLanguageOptionsCollection(
+    public func provideLanguageOptionsCollection(
         for intent: AssistIntent,
         with completion: @escaping (INObjectCollection<IntentLanguage>?, Error?) -> Void
     ) {
         completion(.init(items: Locale.current.intentLanguages), nil)
     }
 
-    func handle(intent: AssistIntent, completion: @escaping (AssistIntentResponse) -> Void) {
+    public func handle(intent: AssistIntent, completion: @escaping (AssistIntentResponse) -> Void) {
         guard let server = Current.servers.server(for: intent) else {
             completion(.failure(error: "no server provided"))
             return
