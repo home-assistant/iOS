@@ -1,11 +1,3 @@
-//
-//  AssistInterfaceController.swift
-//  WatchApp
-//
-//  Created by Bruno Pantaleão on 18/08/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Communicator
 import Foundation
 import PromiseKit
@@ -13,9 +5,8 @@ import Shared
 import WatchKit
 
 class AssistInterfaceController: WKInterfaceController {
-
-    @IBOutlet weak var inputCommand: WKInterfaceLabel!
-    @IBOutlet weak var assistResponse: WKInterfaceLabel!
+    @IBOutlet var inputCommand: WKInterfaceLabel!
+    @IBOutlet var assistResponse: WKInterfaceLabel!
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -37,7 +28,7 @@ class AssistInterfaceController: WKInterfaceController {
     }
 
     private func requestInput() {
-        self.presentTextInputController(withSuggestions: nil, allowedInputMode: .plain) { [weak self] response in
+        presentTextInputController(withSuggestions: nil, allowedInputMode: .plain) { [weak self] response in
             guard let firstResponse = response?.first as? String else { return }
             self?.inputCommand.setText(firstResponse)
             self?.assistResponse.setText("Loading...")
