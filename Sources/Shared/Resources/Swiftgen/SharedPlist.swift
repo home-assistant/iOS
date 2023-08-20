@@ -20,6 +20,7 @@ internal enum SharedPlistFiles {
     internal static let cfBundlePackageType: String = _document["CFBundlePackageType"]
     internal static let cfBundleShortVersionString: String = _document["CFBundleShortVersionString"]
     internal static let cfBundleVersion: String = _document["CFBundleVersion"]
+    internal static let nsMicrophoneUsageDescription: String = _document["NSMicrophoneUsageDescription"]
     internal static let nsPrincipalClass: String = _document["NSPrincipalClass"]
   }
 }

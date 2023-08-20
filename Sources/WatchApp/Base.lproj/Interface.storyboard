@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="17701" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="21701" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="17500"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="21615"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
     </dependencies>
     <scenes>
         <!--Home Assistant-->
@@ -12,6 +12,13 @@
             <objects>
                 <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="WatchApp" customModuleProvider="target">
                     <items>
+                        <button width="50" height="50" alignment="center" title=" " backgroundImage="mic.fill" catalog="system" id="mA7-7N-vlH">
+                            <color key="backgroundColor" name="AccentColor"/>
+                            <connections>
+                                <action selector="didTapAssist" destination="AgC-eL-Hgc" id="8Nf-7R-q1x"/>
+                                <segue destination="nsM-2M-e6X" kind="push" id="5EY-Uk-4H0"/>
+                            </connections>
+                        </button>
                         <table alignment="left" id="wzm-z7-qRv">
                             <items>
                                 <tableRow identifier="actionRowType" id="Kqb-lS-KNT" customClass="ActionRowType" customModule="WatchApp" customModuleProvider="target">
@@ -37,7 +44,45 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="34" y="32"/>
+            <point key="canvasLocation" x="18" y="-160"/>
+        </scene>
+        <!--Assist Interface Controller-->
+        <scene sceneID="r73-j8-jcA">
+            <objects>
+                <controller id="nsM-2M-e6X" customClass="AssistInterfaceController" customModule="WatchExtension_Watch">
+                    <items>
+                        <group alignment="right" id="v3t-TK-Yun">
+                            <items>
+                                <label alignment="right" text="--" textAlignment="right" numberOfLines="0" id="eBY-OY-6kO" userLabel="inputCommand">
+                                    <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                </label>
+                            </items>
+                            <color key="backgroundColor" name="AccentColor"/>
+                            <edgeInsets key="margins" left="8" right="8" top="8" bottom="8"/>
+                        </group>
+                        <group alignment="left" id="Xk9-YM-fpb">
+                            <items>
+                                <label alignment="left" text="--" numberOfLines="0" id="IIn-ot-lnG" userLabel="assistResponse">
+                                    <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                </label>
+                            </items>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <edgeInsets key="margins" left="8" right="8" top="8" bottom="8"/>
+                        </group>
+                        <button width="40" height="40" alignment="center" verticalAlignment="bottom" title=" " backgroundImage="mic.fill" catalog="system" id="S3I-oD-glZ">
+                            <color key="backgroundColor" name="AccentColor"/>
+                            <connections>
+                                <action selector="didTapAssist" destination="nsM-2M-e6X" id="E7s-ns-Loo"/>
+                            </connections>
+                        </button>
+                    </items>
+                    <connections>
+                        <outlet property="assistResponse" destination="IIn-ot-lnG" id="uX3-U2-u8z"/>
+                        <outlet property="inputCommand" destination="eBY-OY-6kO" id="I6B-RA-Qqq"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="358" y="-160"/>
         </scene>
         <!--uppercase MAP-->
         <scene sceneID="68Y-yR-2I3">
@@ -198,7 +243,13 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Kni-jE-Yx9"/>
+        <segue reference="MYU-An-MlA"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>
+    <resources>
+        <image name="mic.fill" catalog="system" width="111" height="128"/>
+        <namedColor name="AccentColor">
+            <color red="0.0099999997764825821" green="0.6589999794960022" blue="0.95999997854232788" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

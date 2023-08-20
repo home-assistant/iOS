@@ -513,6 +513,7 @@
 		3090BEE52ACDA30100030356 /* classic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDD2ACDA30100030356 /* classic@3x.png */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
+		42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -1567,6 +1568,7 @@
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInterfaceController.swift; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -2928,6 +2930,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		42BDF4532A8F9A7800562183 /* Assist */ = {
+			isa = PBXGroup;
+			children = (
+				42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */,
+			);
+			path = Assist;
+			sourceTree = "<group>";
+		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -3470,6 +3480,7 @@
 		B6CC5D922159D10E00833E5D /* Watch */ = {
 			isa = PBXGroup;
 			children = (
+				42BDF4532A8F9A7800562183 /* Assist */,
 				B672AB592216C41000175465 /* Utilities */,
 				B6CC5DAA2159D60900833E5D /* Resources */,
 				B6CC5D932159D10E00833E5D /* InterfaceController.swift */,
@@ -4336,6 +4347,7 @@
 					B6CC5D812159D10D00833E5D = {
 						CreatedOnToolsVersion = 10.0;
 						DevelopmentTeam = QMQYCKL255;
+						LastSwiftMigration = 1430;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -5746,6 +5758,7 @@
 			files = (
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
+				42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,

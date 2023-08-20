@@ -502,7 +502,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             // TODO: move all these to something more strongly typed
 
-            if message.identifier == "ActionRowPressed" {
+            switch message.identifier {
+            case "ActionRowPressed":
                 Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
                 let responseIdentifier = "ActionRowPressedResponse"
 
@@ -522,7 +523,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Current.Log.error("Error during action event fire: \(err)")
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
                 }
-            } else if message.identifier == "PushAction" {
+            case "PushAction":
                 Current.Log.verbose("Received PushAction \(message) \(message.content)")
                 let responseIdentifier = "PushActionResponse"
 
@@ -540,6 +541,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         Current.Log.error("error handling push action: \(error)")
                     }
                 }
+            case "AssistRequest":
+                Current.Log.verbose("Received AssistRequest \(message) \(message.content)")
+                if #available(iOS 13, *) {
+                    let responseIdentifier = "AssistAnswer"
+                    let intent = AssistIntent()
+                    guard let inputText = message.content["Input"] as? String else {
+                        message.reply(.init(identifier: responseIdentifier, content: ["answer": "Couldn't read input text"]))
+                        return
+                    }
+                    intent.text = inputText
+                    let intentHandler = AssistIntentHandler()
+                    intentHandler.handle(intent: intent, completion: { response in
+                        guard let displayString = response.result?.displayString else {
+                            message.reply(.init(identifier: responseIdentifier, content: ["answer": "Couldn't read response from Assist"]))
+                            return
+                        }
+                        message.reply(.init(identifier: responseIdentifier, content: ["answer": displayString]))
+                    })
+                }
+            default:
+                break
             }
         }
 
