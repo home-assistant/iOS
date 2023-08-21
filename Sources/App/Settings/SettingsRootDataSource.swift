@@ -99,7 +99,7 @@ enum SettingsRootDataSource {
 
     private static func security() -> SettingsButtonRow {
         SettingsButtonRow {
-            $0.title = "Security"
+            $0.title = NSLocalizedString("Security", comment: "Settings item related to app biometrics protection")
             $0.icon = .keyChainIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 SecurityViewController()
