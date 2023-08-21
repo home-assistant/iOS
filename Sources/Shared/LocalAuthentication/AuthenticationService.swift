@@ -2,12 +2,19 @@ import Foundation
 import LocalAuthentication
 import UIKit
 
-protocol AuthenticationServiceProtocol {
+public protocol AuthenticationServiceProtocol {
+    var delegate: AuthenticationServiceDelegate? { get set }
     func authenticate()
+}
+
+public protocol AuthenticationServiceDelegate: AnyObject {
+    func didFinishAuthentication(authorized: Bool)
 }
 
 class AuthenticationService: AuthenticationServiceProtocol {
     private let context = LAContext()
+
+    weak var delegate: AuthenticationServiceDelegate?
 
     func authenticate() {
         var error: NSError?
@@ -21,12 +28,8 @@ class AuthenticationService: AuthenticationServiceProtocol {
     }
 
     private func authenticate(policy: LAPolicy) {
-        context.evaluatePolicy(policy, localizedReason: "Authentication required") { approved, error in
-            if approved {
-                print("success")
-            } else {
-                print("failure")
-            }
+        context.evaluatePolicy(policy, localizedReason: "Authentication required") { [weak self] authorized, error in
+            self?.delegate?.didFinishAuthentication(authorized: authorized)
 
             if let error {
                 print(error)

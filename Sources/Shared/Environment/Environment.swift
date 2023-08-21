@@ -251,6 +251,10 @@ public class AppEnvironment {
         }
     }
 
+    #if os(iOS)
+    public var authenticationService: AuthenticationServiceProtocol = AuthenticationService()
+    #endif
+
     public var Log: XCGLogger = {
         if NSClassFromString("XCTest") != nil {
             let logger = XCGLogger()

@@ -24,7 +24,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     var keepAliveTimer: Timer?
     private var initialURL: URL?
-    private let authenticationService: AuthenticationServiceProtocol
+    private let biometricOverlay: UIView = {
+        let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        return visualEffectView
+    }()
 
     static func viewController(
         withRestorationIdentifierPath identifierComponents: [String],
@@ -33,10 +36,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         if #available(iOS 13, *) {
             return nil
         } else {
-            return WebViewController(
-                restoring: .coder(coder),
-                authenticationService: AuthenticationService()
-            )
+            return WebViewController(restoring: .coder(coder))
         }
     }
 
@@ -258,6 +258,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(protectAppIfNeeded),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
     }
 
     public func showSettingsViewController() {
@@ -334,14 +341,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     init(
         server: Server,
-        shouldLoadImmediately: Bool = false,
-        authenticationService: AuthenticationServiceProtocol
+        shouldLoadImmediately: Bool = false
     ) {
         self.server = server
         self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
-        self.authenticationService = authenticationService
 
         super.init(nibName: nil, bundle: nil)
 
@@ -359,11 +364,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     convenience init?(
         restoring: RestorationType?,
-        shouldLoadImmediately: Bool = false,
-        authenticationService: AuthenticationServiceProtocol
+        shouldLoadImmediately: Bool = false
     ) {
         if let server = restoring?.server ?? Current.servers.all.first {
-            self.init(server: server, authenticationService: authenticationService)
+            self.init(server: server)
         } else {
             return nil
         }
@@ -638,7 +642,38 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc private func checkForBiometrics() {
         if Current.settingsStore.biometricsRequired {
-            authenticationService.authenticate()
+            addBiometricOverlayProtection()
+            Current.authenticationService.delegate = self
+            Current.authenticationService.authenticate()
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.biometricOverlay.removeFromSuperview()
+            }
+        }
+    }
+
+    @objc private func protectAppIfNeeded() {
+        if Current.settingsStore.biometricsRequired {
+            addBiometricOverlayProtection()
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.biometricOverlay.removeFromSuperview()
+            }
+        }
+    }
+
+    private func addBiometricOverlayProtection() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.biometricOverlay.removeFromSuperview()
+            self.biometricOverlay.translatesAutoresizingMaskIntoConstraints = false
+            self.view.addSubview(biometricOverlay)
+            NSLayoutConstraint.activate([
+                self.biometricOverlay.topAnchor.constraint(equalTo: self.view.topAnchor),
+                self.biometricOverlay.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+                self.biometricOverlay.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                self.biometricOverlay.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            ])
         }
     }
 
@@ -1176,6 +1211,18 @@ extension ConnectionInfo {
             return url
         } else {
             return nil
+        }
+    }
+}
+
+extension WebViewController: AuthenticationServiceDelegate {
+    func didFinishAuthentication(authorized: Bool) {
+        if authorized {
+            DispatchQueue.main.async { [weak self] in
+                self?.biometricOverlay.removeFromSuperview()
+            }
+        } else {
+            addBiometricOverlayProtection()
         }
     }
 }

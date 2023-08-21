@@ -80,10 +80,7 @@ class WebViewWindowController {
                 // not changing anything, but handle the promises
                 updateRootViewController(to: rootController)
             } else {
-                if let webViewController = WebViewController(
-                    restoring: .init(restorationActivity),
-                    authenticationService: AuthenticationService()
-                ) {
+                if let webViewController = WebViewController(restoring: .init(restorationActivity)) {
                     updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
                 } else {
                     updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
@@ -143,8 +140,7 @@ class WebViewWindowController {
             let (promise, resolver) = Guarantee<WebViewController>.pending()
 
             let perform = { [self] in
-                let newController = cachedWebViewControllers[server.identifier] ??
-                    WebViewController(server: server, authenticationService: AuthenticationService())
+                let newController = cachedWebViewControllers[server.identifier] ?? WebViewController(server: server)
                 updateRootViewController(to: webViewNavigationController(rootViewController: newController))
                 resolver(newController)
             }
@@ -450,8 +446,7 @@ extension WebViewWindowController: OnboardingStateObserver {
         case .didConnect:
             onboardingPreloadWebViewController = WebViewController(
                 restoring: .init(restorationActivity),
-                shouldLoadImmediately: true,
-                authenticationService: AuthenticationService()
+                shouldLoadImmediately: true
             )
         case .complete:
             if window.rootViewController is OnboardingNavigationViewController {
@@ -462,8 +457,7 @@ extension WebViewWindowController: OnboardingStateObserver {
                 } else {
                     controller = WebViewController(
                         restoring: .init(restorationActivity),
-                        shouldLoadImmediately: true,
-                        authenticationService: AuthenticationService()
+                        shouldLoadImmediately: true
                     )
                     restorationActivity = nil
                 }
