@@ -514,7 +514,7 @@
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
 		42BDF44B2A8EA5AB00562183 /* SecurityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF44A2A8EA5AB00562183 /* SecurityViewController.swift */; };
-		42BDF44E2A8EAD2700562183 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF44D2A8EAD2700562183 /* AuthenticationService.swift */; };
+		42BDF4582A93FC2A00562183 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF44D2A8EAD2700562183 /* AuthenticationService.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -2576,7 +2576,6 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
-				42BDF44C2A8EAD1900562183 /* LocalAuthentication */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
@@ -3592,6 +3591,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				42BDF44C2A8EAD1900562183 /* LocalAuthentication */,
 				11B38EE0275C545C00205C7B /* Intents */,
 				D014EEAA212928EC008EA6F5 /* API */,
 				D0FF79C920D7787F0034574D /* ClientEvents */,
@@ -5497,7 +5497,6 @@
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
-				42BDF44E2A8EAD2700562183 /* AuthenticationService.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -5904,6 +5903,7 @@
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				11B38EE8275C54A200205C7B /* WidgetActionsIntentHandler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
+				42BDF4582A93FC2A00562183 /* AuthenticationService.swift in Sources */,
 				11B38EEE275C54A200205C7B /* FocusStatusIntentHandler.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				1121CD4C271295AD0071C2AA /* Style.swift in Sources */,
