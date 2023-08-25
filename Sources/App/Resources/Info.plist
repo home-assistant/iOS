@@ -8,6 +8,8 @@
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundleAlternateIcons</key>
@@ -547,41 +549,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<true/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneClassName</key>
-					<string>UIWindowScene</string>
-					<key>UISceneConfigurationName</key>
-					<string>WebView</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).WebViewSceneDelegate</string>
-				</dict>
-				<dict>
-					<key>UISceneClassName</key>
-					<string>UIWindowScene</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SettingsSceneDelegate</string>
-					<key>UISceneConfigurationName</key>
-					<string>Settings</string>
-				</dict>
-				<dict>
-					<key>UISceneClassName</key>
-					<string>UIWindowScene</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).AboutSceneDelegate</string>
-					<key>UISceneConfigurationName</key>
-					<string>About</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
@@ -623,6 +590,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>Reading and writing NFC tags allows you to trigger events.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -634,6 +603,12 @@
 		<string>_home-assistant._tcp</string>
 		<string>_matter._tcp</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Take photos and send them to your Home Assistant server.</string>
+	<key>NSCrossWebsiteTrackingUsageDescription</key>
+	<string>Optionally enable cross-website tracking if your configuration requires it.</string>
+	<key>NSFocusStatusUsageDescription</key>
+	<string>Report your focus status as a sensor.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -649,6 +624,8 @@
 	<key>NSLocationUsageDescription</key>
 	<string>When enabled, your device location is sent to your Home Assistant server as a device
 			tracker.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record audio using your Home Assistant frontend.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Motion is used to improve location updates with current motion type, as well as
 			provide basic pedometer data.</string>
@@ -658,24 +635,8 @@
 	<string>Photo Library access is needed to allow saving photos from the web view.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
-	<key>NFCReaderUsageDescription</key>
-	<string>Reading and writing NFC tags allows you to trigger events.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Used to dictate text to Assist.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Take photos and send them to your Home Assistant server.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Record audio using your Home Assistant frontend.</string>
-	<key>NSFocusStatusUsageDescription</key>
-	<string>Report your focus status as a sensor.</string>
-	<key>com.apple.developer.nfc.readersession.felica.systemcodes</key>
-	<array>
-		<string>12FC</string>
-	</array>
-	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
-	<array>
-		<string>D2760000850101</string>
-	</array>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>CallServiceIntent</string>
@@ -690,6 +651,41 @@
 		<string>WidgetOpenPageIntent</string>
 		<string>AssistIntent</string>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>WebView</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).WebViewSceneDelegate</string>
+				</dict>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>Settings</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SettingsSceneDelegate</string>
+				</dict>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>About</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).AboutSceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
@@ -731,12 +727,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSCrossWebsiteTrackingUsageDescription</key>
-	<string>Optionally enable cross-website tracking if your configuration requires it.</string>
-	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
-	<dict>
-		<key>TemporaryFullAccuracyReasonManualUpdate</key>
-		<string>[localized in strings file]</string>
-	</dict>
+	<key>com.apple.developer.nfc.readersession.felica.systemcodes</key>
+	<array>
+		<string>12FC</string>
+	</array>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>D2760000850101</string>
+	</array>
 </dict>
 </plist>

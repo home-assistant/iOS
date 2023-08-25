@@ -7,6 +7,7 @@ import KeychainAccess
 import MBProgressHUD
 import PromiseKit
 import Shared
+import Speech
 import SwiftMessages
 import UIKit
 import WebKit
@@ -247,6 +248,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         styleUI()
         updateWebViewForServerValues()
+
+        // TODO: Move this block to a proper place
+        SFSpeechRecognizer.requestAuthorization { status in
+            print(status)
+        }
     }
 
     public func showSettingsViewController() {

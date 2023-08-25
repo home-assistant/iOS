@@ -1,3 +1,4 @@
+import AVFoundation
 import Communicator
 import Foundation
 import PromiseKit
@@ -7,6 +8,8 @@ import WatchKit
 class AssistInterfaceController: WKInterfaceController {
     @IBOutlet var inputCommand: WKInterfaceLabel!
     @IBOutlet var assistResponse: WKInterfaceLabel!
+
+    private var audioRecorder: AVAudioRecorder?
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -27,16 +30,49 @@ class AssistInterfaceController: WKInterfaceController {
         requestInput()
     }
 
-    private func requestInput() {
-        presentTextInputController(withSuggestions: nil, allowedInputMode: .plain) { [weak self] response in
-            guard let firstResponse = response?.first as? String else { return }
-            self?.inputCommand.setText(firstResponse)
-            self?.assistResponse.setText("Loading...")
-            self?.assist(inputText: firstResponse)
+    private func startRecording() {
+        let recordingName = "audio.m4a"
+        guard let dirPath = getAppGroupDirectory() else {
+            print("Failed to get app group directory")
+            return
+        }
+        let pathArray = [dirPath, recordingName]
+        guard let filePath = URL(string: pathArray.joined(separator: "")) else { return }
+
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue,
+        ]
+
+        do {
+            audioRecorder = try AVAudioRecorder(url: filePath, settings: settings)
+            audioRecorder?.delegate = self
+            audioRecorder?.record()
+        } catch {
+            print("Recording Failed")
         }
     }
 
-    private func assist(inputText: String) {
+    private func stopRecording() {
+        audioRecorder?.stop()
+    }
+
+    private func getAppGroupDirectory() -> String? {
+        let dirPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)
+        return dirPath?.absoluteString
+    }
+
+    private func requestInput() {
+        if audioRecorder?.isRecording ?? false {
+            stopRecording()
+        } else {
+            startRecording()
+        }
+    }
+
+    private func assist(audioData: Data) {
         enum SendError: Error {
             case notImmediate
             case phoneFailed
@@ -52,11 +88,13 @@ class AssistInterfaceController: WKInterfaceController {
                 Current.Log.verbose("Signaling assist pressed via phone")
                 let actionMessage = InteractiveImmediateMessage(
                     identifier: "AssistRequest",
-                    content: ["Input": inputText],
+                    content: ["Input": audioData],
                     reply: { [weak self] message in
                         Current.Log.verbose("Received reply dictionary \(message)")
-                        guard let answer = message.content["answer"] as? String else { return }
+                        guard let answer = message.content["answer"] as? String,
+                              let inputText = message.content["inputText"] as? String else { return }
                         self?.assistResponse.setText(answer)
+                        self?.inputCommand.setText(inputText)
                         seal.fulfill(())
                     }
                 )
@@ -74,6 +112,19 @@ class AssistInterfaceController: WKInterfaceController {
             //
         }.catch { err in
             Current.Log.error("Error during action event fire: \(err)")
+        }
+    }
+}
+
+extension AssistInterfaceController: AVAudioRecorderDelegate {
+    func audioRecorderDidFinishRecording(_ audioRecorder: AVAudioRecorder, successfully success: Bool) {
+        if success {
+            print(audioRecorder.url.absoluteString)
+            guard let data = try? Data(contentsOf: audioRecorder.url) else {
+                print("Failed to convert audio to data")
+                return
+            }
+            assist(audioData: data)
         }
     }
 }

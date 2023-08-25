@@ -52,7 +52,7 @@
 		<string>com.apple.watchkit</string>
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Used for interaction with Assist</string>
+	<string>Record audio using your Home Assistant frontend.</string>
 	<key>WKExtensionDelegateClassName</key>
 	<string>$(PRODUCT_MODULE_NAME).ExtensionDelegate</string>
 </dict>
