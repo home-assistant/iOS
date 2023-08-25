@@ -11,6 +11,7 @@ import PromiseKit
 import RealmSwift
 import SafariServices
 import Shared
+import Speech
 import UIKit
 import XCGLogger
 
@@ -50,6 +51,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let sceneManager = SceneManager()
     let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
+
+    // TODO: Improve this strong reference somehow to keep the type 'AssistIntentHandler' even though its iOS13+ only
+    private var assistIntentHandler: Any?
 
     private var zoneManager: ZoneManager?
     private var titleSubscription: MenuManagerTitleSubscription? {
@@ -543,30 +547,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             case "AssistRequest":
                 Current.Log.verbose("Received AssistRequest \(message) \(message.content)")
-                if #available(iOS 13, *) {
-                    let responseIdentifier = "AssistAnswer"
-                    let intent = AssistIntent()
-                    guard let inputText = message.content["Input"] as? String else {
+                let responseIdentifier = "AssistAnswer"
+
+                guard #available(iOS 13, *) else {
+                    message
+                        .reply(.init(
+                            identifier: responseIdentifier,
+                            content: ["answer": NSLocalizedString("iOS13+ is required", comment: "")]
+                        ))
+                    return
+                }
+
+                guard let audioData = message.content["Input"] as? Data else {
+                    message
+                        .reply(.init(
+                            identifier: responseIdentifier,
+                            content: ["answer": NSLocalizedString("Couldn't read input text", comment: "")]
+                        ))
+                    return
+                }
+
+                self.assistIntentHandler = AssistIntentHandler()
+                guard let assistIntentHandler = self.assistIntentHandler as? AssistIntentHandler else {
+                    message
+                        .reply(.init(
+                            identifier: responseIdentifier,
+                            content: ["answer": NSLocalizedString("Couldn't read input text", comment: "")]
+                        ))
+                    return
+                }
+                assistIntentHandler.handle(audioData: audioData) { inputText, response in
+                    guard let displayString = response.result?.displayString else {
                         message
                             .reply(.init(
                                 identifier: responseIdentifier,
-                                content: ["answer": "Couldn't read input text"]
+                                content: ["answer": NSLocalizedString("Couldn't read response from Assist",
+                                                                      comment: "")]
                             ))
                         return
                     }
-                    intent.text = inputText
-                    let intentHandler = AssistIntentHandler()
-                    intentHandler.handle(intent: intent, completion: { response in
-                        guard let displayString = response.result?.displayString else {
-                            message
-                                .reply(.init(
-                                    identifier: responseIdentifier,
-                                    content: ["answer": "Couldn't read response from Assist"]
-                                ))
-                            return
-                        }
-                        message.reply(.init(identifier: responseIdentifier, content: ["answer": displayString]))
-                    })
+                    message.reply(.init(identifier: responseIdentifier, content: [
+                        "answer": displayString,
+                        "inputText": inputText,
+                    ]))
                 }
             default:
                 break
