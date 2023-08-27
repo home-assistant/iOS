@@ -514,6 +514,8 @@
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
 		42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */; };
+		42E355652A9B806000F5EF7F /* AssistRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355622A9B805100F5EF7F /* AssistRowController.swift */; };
+		42E355692A9B93A600F5EF7F /* AssistMicRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -1569,6 +1571,8 @@
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInterfaceController.swift; sourceTree = "<group>"; };
+		42E355622A9B805100F5EF7F /* AssistRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRowController.swift; sourceTree = "<group>"; };
+		42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicRowController.swift; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -2933,9 +2937,19 @@
 		42BDF4532A8F9A7800562183 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				42E355612A9B7FDF00F5EF7F /* Views */,
 				42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */,
 			);
 			path = Assist;
+			sourceTree = "<group>";
+		};
+		42E355612A9B7FDF00F5EF7F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				42E355622A9B805100F5EF7F /* AssistRowController.swift */,
+				42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
@@ -5765,6 +5779,8 @@
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
+				42E355692A9B93A600F5EF7F /* AssistMicRowController.swift in Sources */,
+				42E355652A9B806000F5EF7F /* AssistRowController.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,

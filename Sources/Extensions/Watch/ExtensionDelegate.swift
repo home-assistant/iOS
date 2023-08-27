@@ -127,6 +127,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         if let complication = complication {
             Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
+            handleComplication(complication)
         } else {
             Current.Log.verbose("unknown or no complication launched the app")
         }
@@ -182,6 +183,18 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         _ = Communicator.shared
+    }
+
+    private func handleComplication(_ complication: WatchComplication) {
+        switch complication.name {
+        case "Assist":
+            NotificationCenter.default.post(
+                name: .init(InterfaceController.Constants.watchAssistComplicationNotification.rawValue),
+                object: nil
+            )
+        default:
+            break
+        }
     }
 
     private func enqueueForCompletion(_ task: WKWatchConnectivityRefreshBackgroundTask) {

@@ -7,11 +7,16 @@ import Shared
 import WatchKit
 
 class InterfaceController: WKInterfaceController {
+    enum Constants: String {
+        case watchAssistComplicationNotification = "watch-assist-complication"
+    }
+
     @IBOutlet var tableView: WKInterfaceTable!
     @IBOutlet var noActionsLabel: WKInterfaceLabel!
 
-    var notificationToken: NotificationToken?
+    private var notificationObserver: NSObjectProtocol?
 
+    var notificationToken: NotificationToken?
     var actions: Results<Action>?
 
     override func awake(withContext context: Any?) {
@@ -20,19 +25,33 @@ class InterfaceController: WKInterfaceController {
         MaterialDesignIcons.register()
 
         setupTable()
+        setupAssistObserver()
     }
 
     override func willActivate() {
-        // This method is called when watch view controller is about to be visible to user
         super.willActivate()
+        setupAssistObserver()
     }
 
     override func didDeactivate() {
-        // This method is called when watch view controller is no longer visible
         super.didDeactivate()
+        if let observer = notificationObserver {
+            NotificationCenter.default.removeObserver(observer)
+            notificationObserver = nil
+        }
     }
 
-    func setupTable() {
+    private func setupAssistObserver() {
+        notificationObserver = NotificationCenter.default.addObserver(
+            forName: .init(Constants.watchAssistComplicationNotification.rawValue),
+            object: nil,
+            queue: nil
+        ) { [weak self] _ in
+            self?.pushController(withName: AssistInterfaceController.controllerIdentifier, context: nil)
+        }
+    }
+
+    private func setupTable() {
         let realm = Realm.live()
 
         noActionsLabel.setText(L10n.Watch.Labels.noAction)
