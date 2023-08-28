@@ -391,6 +391,14 @@ public class AppEnvironment {
     public var diskCache: DiskCache = DiskCacheImpl()
 
     #if os(iOS)
+    public var assistIntentHandler: AssistIntentHandling? = {
+        if #available(iOS 13, *) {
+            return AssistIntentHandler()
+        } else {
+            return nil
+        }
+    }()
+    public var watchAssistWrapper: WatchAssistIntentWrapping = WatchAssistIntentWrapper()
     public var watchActionService: WatchCommunicationProtocol = WatchActionService()
     public var watchPushActionService: WatchCommunicationProtocol = WatchPushActionService()
     public var watchAssistService: WatchCommunicationProtocol = WatchAssistService()

@@ -13,7 +13,9 @@ import PromiseKit
 public class WatchAssistService: WatchCommunicationProtocol {
     
     // TODO: Improve this strong reference somehow to keep the type 'AssistIntentHandler' even though its iOS13+ only
-    private var assistIntentHandler: Any?
+    private var assistIntentHandler: WatchAssistIntentWrapping?
+
+    public init() {}
 
     public func handle(message: InteractiveImmediateMessage) {
         #if os(iOS)
@@ -28,12 +30,8 @@ public class WatchAssistService: WatchCommunicationProtocol {
             return
         }
 
-        assistIntentHandler = AssistIntentHandler()
-        guard let assistIntentHandler = assistIntentHandler as? AssistIntentHandler else {
-            reply(message: message, answer: NSLocalizedString("Couldn't read input text", comment: ""))
-            return
-        }
-        assistIntentHandler.handle(audioData: audioData) { [weak self] inputText, response in
+        assistIntentHandler = Current.watchAssistWrapper
+        assistIntentHandler?.handle(audioData: audioData) { [weak self] inputText, response in
             guard let displayString = response.result?.displayString else {
                 self?.reply(message: message, answer: NSLocalizedString("Couldn't read response from Assist", comment: ""))
                 return
