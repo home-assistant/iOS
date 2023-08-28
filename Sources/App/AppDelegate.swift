@@ -52,10 +52,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
 
-    // TODO: Improve this strong reference somehow to keep the type 'AssistIntentHandler' even though its iOS13+ only
-    private var assistIntentHandler: Any?
-
     private var zoneManager: ZoneManager?
+    private var currentWatchMessageHandler: WatchCommunicationProtocol?
     private var titleSubscription: MenuManagerTitleSubscription? {
         didSet {
             if oldValue != titleSubscription {
@@ -501,99 +499,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
-        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
+        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
             Current.Log.verbose("Received message: \(message.identifier)")
-
-            // TODO: move all these to something more strongly typed
-
+            guard let self else { return }
             switch message.identifier {
-            case "ActionRowPressed":
-                Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
-                let responseIdentifier = "ActionRowPressedResponse"
-
-                guard let actionID = message.content["ActionID"] as? String,
-                      let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-                      let server = Current.servers.server(for: action) else {
-                    Current.Log.warning("ActionID either does not exist or is not a string in the payload")
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-                    return
-                }
-
-                firstly {
-                    Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
-                }.done {
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-                }.catch { err in
-                    Current.Log.error("Error during action event fire: \(err)")
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-                }
-            case "PushAction":
-                Current.Log.verbose("Received PushAction \(message) \(message.content)")
-                let responseIdentifier = "PushActionResponse"
-
-                if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
-                   let serverIdentifier = message.content["Server"] as? String,
-                   let server = Current.servers.server(forServerIdentifier: serverIdentifier) {
-                    Current.backgroundTask(withName: "watch-push-action") { _ in
-                        firstly {
-                            Current.api(for: server).handlePushAction(for: info)
-                        }.ensure {
-                            message.reply(.init(identifier: responseIdentifier))
-                        }
-                    }.catch { error in
-                        Current.Log.error("error handling push action: \(error)")
-                    }
-                }
-            case "AssistRequest":
-                Current.Log.verbose("Received AssistRequest \(message) \(message.content)")
-                let responseIdentifier = "AssistAnswer"
-
-                guard #available(iOS 13, *) else {
-                    message
-                        .reply(.init(
-                            identifier: responseIdentifier,
-                            content: ["answer": NSLocalizedString("iOS13+ is required", comment: "")]
-                        ))
-                    return
-                }
-
-                guard let audioData = message.content["Input"] as? Data else {
-                    message
-                        .reply(.init(
-                            identifier: responseIdentifier,
-                            content: ["answer": NSLocalizedString("Couldn't read input text", comment: "")]
-                        ))
-                    return
-                }
-
-                self.assistIntentHandler = AssistIntentHandler()
-                guard let assistIntentHandler = self.assistIntentHandler as? AssistIntentHandler else {
-                    message
-                        .reply(.init(
-                            identifier: responseIdentifier,
-                            content: ["answer": NSLocalizedString("Couldn't read input text", comment: "")]
-                        ))
-                    return
-                }
-                assistIntentHandler.handle(audioData: audioData) { inputText, response in
-                    guard let displayString = response.result?.displayString else {
-                        message
-                            .reply(.init(
-                                identifier: responseIdentifier,
-                                content: ["answer": NSLocalizedString("Couldn't read response from Assist",
-                                                                      comment: "")]
-                            ))
-                        return
-                    }
-                    message.reply(.init(identifier: responseIdentifier, content: [
-                        "answer": displayString,
-                        "inputText": inputText,
-                    ]))
-                }
+            case WatchCommunicationKey.actionRow.rawValue:
+                self.currentWatchMessageHandler = Current.watchActionService
+            case WatchCommunicationKey.pushAction.rawValue:
+                self.currentWatchMessageHandler = Current.watchPushActionService
+            case WatchCommunicationKey.assist.rawValue:
+                self.currentWatchMessageHandler = Current.watchAssistService
             default:
                 break
             }
+
+            self.currentWatchMessageHandler?.handle(message: message)
         }
 
         Blob.observations.store[.init(queue: .main)] = { blob in
