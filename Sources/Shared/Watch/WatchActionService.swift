@@ -1,13 +1,5 @@
-//
-//  WatchActionService.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 28/08/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import Communicator
+import Foundation
 import PromiseKit
 
 public class WatchActionService: WatchCommunicationProtocol {

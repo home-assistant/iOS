@@ -1,13 +1,5 @@
-//
-//  WatchAssistServiceTests.swift
-//  Tests-App
-//
-//  Created by Bruno Pantaleão on 28/08/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import XCTest
 import Shared
+import XCTest
 
 final class WatchAssistServiceTests: XCTestCase {
     private var sut: WatchAssistService!
@@ -43,7 +35,10 @@ final class WatchAssistServiceTests: XCTestCase {
         // Given
         let expectedInputText = "This is an input text"
         let expectedAnswer = "This is a display string"
-        mockAssistWrapper.handleCompletionData = (expectedInputText, .success(result: .init(identifier: "123", display: expectedAnswer, pronunciationHint: nil)))
+        mockAssistWrapper.handleCompletionData = (
+            expectedInputText,
+            .success(result: .init(identifier: "123", display: expectedAnswer, pronunciationHint: nil))
+        )
         let expectation = XCTestExpectation(description: "Message closure")
 
         // When
@@ -73,6 +68,5 @@ final class WatchAssistServiceTests: XCTestCase {
         }))
 
         wait(for: [expectation], timeout: 5)
-
     }
 }

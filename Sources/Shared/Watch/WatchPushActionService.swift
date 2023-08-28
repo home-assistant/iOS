@@ -1,21 +1,13 @@
-//
-//  WatchPushActionService.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 28/08/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import Communicator
-import PromiseKit
+import Foundation
 import ObjectMapper
+import PromiseKit
 
 public class WatchPushActionService: WatchCommunicationProtocol {
     public func handle(message: InteractiveImmediateMessage) {
         Current.Log.verbose("Received PushAction \(message) \(message.content)")
         let responseIdentifier = "PushActionResponse"
-        
+
         if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
            let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
            let serverIdentifier = message.content["Server"] as? String,

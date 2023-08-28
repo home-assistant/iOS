@@ -1,11 +1,3 @@
-//
-//  WatchAssistIntentWrapper.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 28/08/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 #if os(iOS)
 import Speech
@@ -16,17 +8,16 @@ public protocol WatchAssistIntentWrapping {
 }
 
 public class WatchAssistIntentWrapper: WatchAssistIntentWrapping {
-
-#if os(iOS)
+    #if os(iOS)
     // TODO: Make it dynamic to home assistant pipeline
     private let audioRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
-#endif
+    #endif
 
     public func handle(
         audioData: Data,
         completion: @escaping (_ inputText: String, _ response: AssistIntentResponse) -> Void
     ) {
-#if os(iOS)
+        #if os(iOS)
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             completion("", .failure(error: NSLocalizedString("Could not get documents directory", comment: "")))
             return
@@ -57,6 +48,6 @@ public class WatchAssistIntentWrapper: WatchAssistIntentWrapping {
                 })
             }
         })
-#endif
+        #endif
     }
 }

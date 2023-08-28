@@ -1,17 +1,8 @@
-//
-//  WatchAssistService.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 28/08/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import Communicator
+import Foundation
 import PromiseKit
 
 public class WatchAssistService: WatchCommunicationProtocol {
-    
     // TODO: Improve this strong reference somehow to keep the type 'AssistIntentHandler' even though its iOS13+ only
     private var assistIntentHandler: WatchAssistIntentWrapping?
 
@@ -26,14 +17,17 @@ public class WatchAssistService: WatchCommunicationProtocol {
         }
 
         guard let audioData = message.content["Input"] as? Data else {
-           reply(message: message, answer: NSLocalizedString("Couldn't read input text", comment: ""))
+            reply(message: message, answer: NSLocalizedString("Couldn't read input text", comment: ""))
             return
         }
 
         assistIntentHandler = Current.watchAssistWrapper
         assistIntentHandler?.handle(audioData: audioData) { [weak self] inputText, response in
             guard let displayString = response.result?.displayString else {
-                self?.reply(message: message, answer: NSLocalizedString("Couldn't read response from Assist", comment: ""))
+                self?.reply(
+                    message: message,
+                    answer: NSLocalizedString("Couldn't read response from Assist", comment: "")
+                )
                 return
             }
             self?.reply(message: message, answer: displayString, inputText: inputText)
@@ -46,7 +40,7 @@ public class WatchAssistService: WatchCommunicationProtocol {
             identifier: "AssistAnswer",
             content: [
                 "answer": answer,
-                "inputText": inputText
+                "inputText": inputText,
             ]
         ))
     }

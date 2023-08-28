@@ -398,6 +398,7 @@ public class AppEnvironment {
             return nil
         }
     }()
+
     public var watchAssistWrapper: WatchAssistIntentWrapping = WatchAssistIntentWrapper()
     public var watchActionService: WatchCommunicationProtocol = WatchActionService()
     public var watchPushActionService: WatchCommunicationProtocol = WatchPushActionService()
