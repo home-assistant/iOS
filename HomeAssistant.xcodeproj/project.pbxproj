@@ -521,7 +521,10 @@
 		426443462A9C1E9E005FAFFF /* WatchActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443352A9C1AD3005FAFFF /* WatchActionService.swift */; };
 		426443472A9C1E9E005FAFFF /* WatchPushActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */; };
 		426443482A9C1E9E005FAFFF /* WatchCommunicationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */; };
-		4264434B2A9C225E005FAFFF /* WatchAssistServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434A2A9C225E005FAFFF /* WatchAssistServiceTests.swift */; };
+		4264434B2A9C225E005FAFFF /* WatchAssistService.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434A2A9C225E005FAFFF /* WatchAssistService.test.swift */; };
+		4264434E2A9C895D005FAFFF /* WatchAssistIntentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */; };
+		4264434F2A9C895D005FAFFF /* WatchAssistIntentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */; };
+		426443532A9C8C00005FAFFF /* MockWatchAssistIntentWrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443512A9C8BF0005FAFFF /* MockWatchAssistIntentWrapping.swift */; };
 		42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */; };
 		42E355652A9B806000F5EF7F /* AssistRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355622A9B805100F5EF7F /* AssistRowController.swift */; };
 		42E355692A9B93A600F5EF7F /* AssistMicRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */; };
@@ -1583,7 +1586,9 @@
 		426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicationProtocol.swift; sourceTree = "<group>"; };
 		426443392A9C1B97005FAFFF /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPushActionService.swift; sourceTree = "<group>"; };
-		4264434A2A9C225E005FAFFF /* WatchAssistServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistServiceTests.swift; sourceTree = "<group>"; };
+		4264434A2A9C225E005FAFFF /* WatchAssistService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.test.swift; sourceTree = "<group>"; };
+		4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistIntentWrapper.swift; sourceTree = "<group>"; };
+		426443512A9C8BF0005FAFFF /* MockWatchAssistIntentWrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWatchAssistIntentWrapping.swift; sourceTree = "<group>"; };
 		42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInterfaceController.swift; sourceTree = "<group>"; };
 		42E355622A9B805100F5EF7F /* AssistRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRowController.swift; sourceTree = "<group>"; };
 		42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicRowController.swift; sourceTree = "<group>"; };
@@ -2951,11 +2956,13 @@
 		426443342A9C1AB9005FAFFF /* Watch */ = {
 			isa = PBXGroup;
 			children = (
+				426443502A9C8BDF005FAFFF /* Mocks */,
 				426443492A9C2242005FAFFF /* Tests */,
 				426443352A9C1AD3005FAFFF /* WatchActionService.swift */,
 				426443392A9C1B97005FAFFF /* WatchAssistService.swift */,
 				426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */,
 				4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */,
+				4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -2963,9 +2970,17 @@
 		426443492A9C2242005FAFFF /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				4264434A2A9C225E005FAFFF /* WatchAssistServiceTests.swift */,
+				4264434A2A9C225E005FAFFF /* WatchAssistService.test.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		426443502A9C8BDF005FAFFF /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				426443512A9C8BF0005FAFFF /* MockWatchAssistIntentWrapping.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		42BDF4532A8F9A7800562183 /* Assist */ = {
@@ -5573,7 +5588,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4264434B2A9C225E005FAFFF /* WatchAssistServiceTests.swift in Sources */,
+				4264434B2A9C225E005FAFFF /* WatchAssistService.test.swift in Sources */,
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
@@ -5587,6 +5602,7 @@
 				11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
+				426443532A9C8C00005FAFFF /* MockWatchAssistIntentWrapping.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
@@ -5642,6 +5658,7 @@
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				426443472A9C1E9E005FAFFF /* WatchPushActionService.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
+				4264434F2A9C895D005FAFFF /* WatchAssistIntentWrapper.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				1104FCC02532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
@@ -5846,6 +5863,7 @@
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				4264433F2A9C1D82005FAFFF /* WatchPushActionService.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
+				4264434E2A9C895D005FAFFF /* WatchAssistIntentWrapper.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
