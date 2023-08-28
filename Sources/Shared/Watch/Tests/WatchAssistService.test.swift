@@ -26,7 +26,7 @@ final class WatchAssistServiceTests: XCTestCase {
         mockAssistWrapper = nil
     }
 
-    func test_message_receivesReplies() {
+    func test_handle_receivesReplies() {
         // Given
         let expectation = XCTestExpectation(description: "Message closure")
 
@@ -39,7 +39,7 @@ final class WatchAssistServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 5)
     }
 
-    func test_message_receivesRepliesBasedOnAssist() {
+    func test_handle_receivesRepliesBasedOnAssist() {
         // Given
         let expectedInputText = "This is an input text"
         let expectedAnswer = "This is a display string"
@@ -56,5 +56,23 @@ final class WatchAssistServiceTests: XCTestCase {
         }))
 
         wait(for: [expectation], timeout: 5)
+    }
+
+    func test_handle_receivesErrorReply_whenContentIsNil() {
+        // Given
+        let expectedAnswer = NSLocalizedString("Couldn't read input text", comment: "")
+        let expectation = XCTestExpectation(description: "Message closure")
+
+        // When
+        sut.handle(message: .init(identifier: "123", content: ["Input": nil], reply: { message in
+            // swiftlint:disable force_cast
+            XCTAssertEqual(message.content["answer"] as! String, expectedAnswer)
+            XCTAssertNil(message.content["inputText"] as? String)
+            // swiftlint:enable force_cast
+            expectation.fulfill()
+        }))
+
+        wait(for: [expectation], timeout: 5)
+
     }
 }
