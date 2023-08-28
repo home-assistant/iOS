@@ -389,4 +389,10 @@ public class AppEnvironment {
     public var focusStatus = FocusStatusWrapper()
 
     public var diskCache: DiskCache = DiskCacheImpl()
+
+    #if os(iOS)
+    public var watchActionService: WatchCommunicationProtocol = WatchActionService()
+    public var watchPushActionService: WatchCommunicationProtocol = WatchPushActionService()
+    public var watchAssistService: WatchCommunicationProtocol = WatchAssistService()
+    #endif
 }

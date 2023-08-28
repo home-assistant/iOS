@@ -513,6 +513,15 @@
 		3090BEE52ACDA30100030356 /* classic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDD2ACDA30100030356 /* classic@3x.png */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
+		4264433D2A9C1D82005FAFFF /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443392A9C1B97005FAFFF /* WatchAssistService.swift */; };
+		4264433E2A9C1D82005FAFFF /* WatchActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443352A9C1AD3005FAFFF /* WatchActionService.swift */; };
+		4264433F2A9C1D82005FAFFF /* WatchPushActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */; };
+		426443402A9C1D82005FAFFF /* WatchCommunicationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */; };
+		426443452A9C1E9E005FAFFF /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443392A9C1B97005FAFFF /* WatchAssistService.swift */; };
+		426443462A9C1E9E005FAFFF /* WatchActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443352A9C1AD3005FAFFF /* WatchActionService.swift */; };
+		426443472A9C1E9E005FAFFF /* WatchPushActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */; };
+		426443482A9C1E9E005FAFFF /* WatchCommunicationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */; };
+		4264434B2A9C225E005FAFFF /* WatchAssistServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434A2A9C225E005FAFFF /* WatchAssistServiceTests.swift */; };
 		42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */; };
 		42E355652A9B806000F5EF7F /* AssistRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355622A9B805100F5EF7F /* AssistRowController.swift */; };
 		42E355692A9B93A600F5EF7F /* AssistMicRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */; };
@@ -1570,6 +1579,11 @@
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		426443352A9C1AD3005FAFFF /* WatchActionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchActionService.swift; sourceTree = "<group>"; };
+		426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicationProtocol.swift; sourceTree = "<group>"; };
+		426443392A9C1B97005FAFFF /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
+		4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPushActionService.swift; sourceTree = "<group>"; };
+		4264434A2A9C225E005FAFFF /* WatchAssistServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistServiceTests.swift; sourceTree = "<group>"; };
 		42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInterfaceController.swift; sourceTree = "<group>"; };
 		42E355622A9B805100F5EF7F /* AssistRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRowController.swift; sourceTree = "<group>"; };
 		42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicRowController.swift; sourceTree = "<group>"; };
@@ -2934,6 +2948,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		426443342A9C1AB9005FAFFF /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				426443492A9C2242005FAFFF /* Tests */,
+				426443352A9C1AD3005FAFFF /* WatchActionService.swift */,
+				426443392A9C1B97005FAFFF /* WatchAssistService.swift */,
+				426443372A9C1AF8005FAFFF /* WatchCommunicationProtocol.swift */,
+				4264433B2A9C1C09005FAFFF /* WatchPushActionService.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		426443492A9C2242005FAFFF /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4264434A2A9C225E005FAFFF /* WatchAssistServiceTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 		42BDF4532A8F9A7800562183 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
@@ -3601,6 +3635,7 @@
 				D0EEF325214DF30D00D1D360 /* Notifications */,
 				D0EEF31C214DDD3800D1D360 /* Resources */,
 				D0C884782122A64500CCB501 /* Settings */,
+				426443342A9C1AB9005FAFFF /* Watch */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 			);
 			path = Shared;
@@ -5538,6 +5573,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4264434B2A9C225E005FAFFF /* WatchAssistServiceTests.swift in Sources */,
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
@@ -5604,6 +5640,7 @@
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
+				426443472A9C1E9E005FAFFF /* WatchPushActionService.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
@@ -5626,6 +5663,7 @@
 				11F8A53F25A6ADA400BF1D97 /* Reachability+NetworkType.swift in Sources */,
 				110ED59025A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				426443482A9C1E9E005FAFFF /* WatchCommunicationProtocol.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
@@ -5688,6 +5726,7 @@
 				B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */,
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
+				426443462A9C1E9E005FAFFF /* WatchActionService.swift in Sources */,
 				11CFD78227364F450082D557 /* Identifier.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
@@ -5741,6 +5780,7 @@
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
 				1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */,
 				114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
+				426443452A9C1E9E005FAFFF /* WatchAssistService.swift in Sources */,
 				118261FE24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */,
@@ -5804,6 +5844,7 @@
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
+				4264433F2A9C1D82005FAFFF /* WatchPushActionService.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
@@ -5826,6 +5867,7 @@
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
+				426443402A9C1D82005FAFFF /* WatchCommunicationProtocol.swift in Sources */,
 				1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
@@ -5888,6 +5930,7 @@
 				11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				B6A258452232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				1182620424F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
+				4264433E2A9C1D82005FAFFF /* WatchActionService.swift in Sources */,
 				11CFD78127364F450082D557 /* Identifier.swift in Sources */,
 				D0EEF2FF214D8D4C00D1D360 /* CLError+DebugDescription.swift in Sources */,
 				11B38EEB275C54A200205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
@@ -5941,6 +5984,7 @@
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
 				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
+				4264433D2A9C1D82005FAFFF /* WatchAssistService.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,
