@@ -11,8 +11,9 @@ class InterfaceController: WKInterfaceController {
         case watchAssistComplicationNotification = "watch-assist-complication"
     }
 
-    @IBOutlet var tableView: WKInterfaceTable!
-    @IBOutlet var noActionsLabel: WKInterfaceLabel!
+    @IBOutlet private weak var microphoneIconGroup: WKInterfaceGroup!
+    @IBOutlet private weak var tableView: WKInterfaceTable!
+    @IBOutlet private weak var noActionsLabel: WKInterfaceLabel!
 
     private var notificationObserver: NSObjectProtocol?
 
@@ -42,6 +43,10 @@ class InterfaceController: WKInterfaceController {
     }
 
     private func setupAssistObserver() {
+        guard #available(watchOS 6, *) else {
+            microphoneIconGroup.setHidden(true)
+            return
+        }
         notificationObserver = NotificationCenter.default.addObserver(
             forName: .init(Constants.watchAssistComplicationNotification.rawValue),
             object: nil,

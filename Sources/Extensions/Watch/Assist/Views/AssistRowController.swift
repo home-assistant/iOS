@@ -10,6 +10,7 @@ struct AssistRowControllerData {
     }
 }
 
+@available(watchOS 6, *)
 final class AssistRowController: NSObject {
     @IBOutlet private var titleLabel: WKInterfaceLabel!
     @IBOutlet private var rowGroup: WKInterfaceGroup!
