@@ -5,6 +5,7 @@ enum AssistMicRowControllerStates {
     case standard, loading, inProgress
 }
 
+@available(watchOS 6, *)
 final class AssistMicRowController: NSObject {
     @IBOutlet private var button: WKInterfaceButton!
     var action: (() -> Void)?

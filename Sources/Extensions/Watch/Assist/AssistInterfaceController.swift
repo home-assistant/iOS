@@ -5,6 +5,7 @@ import PromiseKit
 import Shared
 import WatchKit
 
+@available(watchOS 6, *)
 class AssistInterfaceController: WKInterfaceController {
     @IBOutlet private var chatTable: WKInterfaceTable!
 

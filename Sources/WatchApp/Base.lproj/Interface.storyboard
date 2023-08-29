@@ -44,6 +44,7 @@
                         <label alignment="center" verticalAlignment="center" text="No actions configured. Configure actions on your phone to dismiss this message." textAlignment="center" numberOfLines="10" id="rFf-ux-R1e"/>
                     </items>
                     <connections>
+                        <outlet property="microphoneIconGroup" destination="sk5-SP-icl" id="f3a-PM-rFP"/>
                         <outlet property="noActionsLabel" destination="rFf-ux-R1e" id="NKi-TH-3oN"/>
                         <outlet property="tableView" destination="wzm-z7-qRv" id="vZo-SJ-Vm2"/>
                     </connections>
