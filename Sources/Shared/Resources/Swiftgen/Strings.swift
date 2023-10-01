@@ -1787,6 +1787,14 @@ public enum L10n {
 
   public enum UrlHandler {
     public enum CallService {
+      public enum Confirm {
+        /// Do you want to call the service %@?
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.call_service.confirm.message", String(describing: p1))
+        }
+        /// Call service?
+        public static var title: String { return L10n.tr("Localizable", "url_handler.call_service.confirm.title") }
+      }
       public enum Error {
         /// An error occurred while attempting to call service %@: %@
         public static func message(_ p1: Any, _ p2: Any) -> String {
@@ -1807,6 +1815,14 @@ public enum L10n {
       public static var actionNotFound: String { return L10n.tr("Localizable", "url_handler.error.action_not_found") }
     }
     public enum FireEvent {
+      public enum Confirm {
+        /// Do you want to fire the event %@?
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.fire_event.confirm.message", String(describing: p1))
+        }
+        /// Fire event?
+        public static var title: String { return L10n.tr("Localizable", "url_handler.fire_event.confirm.title") }
+      }
       public enum Error {
         /// An error occurred while attempting to fire event %@: %@
         public static func message(_ p1: Any, _ p2: Any) -> String {
@@ -1829,6 +1845,12 @@ public enum L10n {
       }
     }
     public enum SendLocation {
+      public enum Confirm {
+        /// Do you want to send your location?
+        public static var message: String { return L10n.tr("Localizable", "url_handler.send_location.confirm.message") }
+        /// Send location?
+        public static var title: String { return L10n.tr("Localizable", "url_handler.send_location.confirm.title") }
+      }
       public enum Error {
         /// An unknown error occurred while attempting to send location: %@
         public static func message(_ p1: Any) -> String {
