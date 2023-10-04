@@ -560,6 +560,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location: %@";
 "url_handler.send_location.success.message" = "Sent a one shot location";
 "url_handler.send_location.success.title" = "Sent location";
+"url_handler.render_template.confirm.title" = "Render template?";
+"url_handler.render_template.confirm.message" = "Do you want to render %@?";
 "url_handler.x_callback_url.error.eventNameMissing" = "eventName must be defined";
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";

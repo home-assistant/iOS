@@ -1844,6 +1844,16 @@ public enum L10n {
         return L10n.tr("Localizable", "url_handler.no_service.message", String(describing: p1))
       }
     }
+    public enum RenderTemplate {
+      public enum Confirm {
+        /// Do you want to render %@?
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.render_template.confirm.message", String(describing: p1))
+        }
+        /// Render template?
+        public static var title: String { return L10n.tr("Localizable", "url_handler.render_template.confirm.title") }
+      }
+    }
     public enum SendLocation {
       public enum Confirm {
         /// Do you want to send your location?

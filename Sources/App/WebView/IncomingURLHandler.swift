@@ -26,7 +26,7 @@ class IncomingURLHandler {
             confirmAction(
                 title: L10n.UrlHandler.CallService.Confirm.title,
                 message: L10n.UrlHandler.CallService.Confirm.message(url.pathComponents[1]),
-                handler: { self.callServiceURLHandler(url, serviceData)}
+                handler: { self.callServiceURLHandler(url, serviceData) }
             )
         case "fire_event":
             confirmAction(
@@ -162,7 +162,12 @@ class IncomingURLHandler {
         }
     }
 
-    private func confirmAction(title: String, message: String, handler: @escaping () -> Void, cancelHandler: (() -> Void)? = nil) {
+    private func confirmAction(
+        title: String,
+        message: String,
+        handler: @escaping () -> Void,
+        cancelHandler: (() -> Void)? = nil
+    ) {
         let alert = UIAlertController(
             title: title,
             message: message,
@@ -170,7 +175,7 @@ class IncomingURLHandler {
         )
 
         alert.addAction(UIAlertAction(
-            title: L10n.noLabel,
+            title: L10n.cancelLabel,
             style: .cancel,
             handler: { _ in
                 cancelHandler?()
@@ -260,7 +265,7 @@ extension IncomingURLHandler {
     private func registerCallbackURLKitHandlers() {
         Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
 
-        Manager.shared["fire_event"] = { parameters, success, failure, _ in
+        Manager.shared["fire_event"] = { parameters, success, failure, cancel in
             guard let eventName = parameters["eventName"] else {
                 failure(XCallbackError.eventNameMissing)
                 return
@@ -269,7 +274,7 @@ extension IncomingURLHandler {
             var cleanParamters = parameters
             cleanParamters.removeValue(forKey: "eventName")
             let eventData = cleanParamters
-            
+
             self.confirmAction(
                 title: L10n.UrlHandler.FireEvent.Confirm.title,
                 message: L10n.UrlHandler.FireEvent.Confirm.message(eventName),
@@ -288,12 +293,12 @@ extension IncomingURLHandler {
                     }
                 },
                 cancelHandler: {
-                    failure(XCallbackError.generalError)
+                    cancel()
                 }
             )
         }
 
-        Manager.shared["call_service"] = { parameters, success, failure, _ in
+        Manager.shared["call_service"] = { parameters, success, failure, cancel in
             guard let service = parameters["service"] else {
                 failure(XCallbackError.serviceMissing)
                 return
@@ -313,7 +318,11 @@ extension IncomingURLHandler {
                 handler: {
                     firstly { () -> Promise<Void> in
                         if let api = Current.apis.first {
-                            return api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
+                            return api.CallService(
+                                domain: serviceDomain,
+                                service: serviceName,
+                                serviceData: serviceData
+                            )
                         } else {
                             throw XCallbackError.generalError
                         }
@@ -325,13 +334,13 @@ extension IncomingURLHandler {
                     }
                 },
                 cancelHandler: {
-                    failure(XCallbackError.generalError)
+                    cancel()
                 }
             )
         }
 
-        Manager.shared["send_location"] = { _, success, failure, _ in
-            
+        Manager.shared["send_location"] = { _, success, failure, cancel in
+
             self.confirmAction(
                 title: L10n.UrlHandler.SendLocation.Confirm.title,
                 message: L10n.UrlHandler.SendLocation.Confirm.message,
@@ -350,12 +359,12 @@ extension IncomingURLHandler {
                     }
                 },
                 cancelHandler: {
-                    failure(XCallbackError.generalError)
+                    cancel()
                 }
             )
         }
 
-        Manager.shared["render_template"] = { parameters, success, failure, _ in
+        Manager.shared["render_template"] = { parameters, success, failure, cancel in
             guard let template = parameters["template"] else {
                 failure(XCallbackError.templateMissing)
                 return
@@ -365,22 +374,34 @@ extension IncomingURLHandler {
             cleanParamters.removeValue(forKey: "template")
             let variablesDict = cleanParamters
 
-            if let api = Current.apis.first {
-                api.connection.subscribe(
-                    to: .renderTemplate(template, variables: variablesDict),
-                    initiated: { result in
-                        if case let .failure(error) = result {
-                            Current.Log.error("Received error from RenderTemplate during X-Callback-URL call: \(error)")
-                            failure(XCallbackError.generalError)
-                        }
-                    }, handler: { token, data in
-                        token.cancel()
-                        success(["rendered": String(describing: data.result)])
+            self.confirmAction(
+                title: L10n.UrlHandler.RenderTemplate.Confirm.title,
+                message: L10n.UrlHandler.RenderTemplate.Confirm.message(template),
+                handler: {
+                    if let api = Current.apis.first {
+                        api.connection.subscribe(
+                            to: .renderTemplate(template, variables: variablesDict),
+                            initiated: { result in
+                                if case let .failure(error) = result {
+                                    Current.Log
+                                        .error(
+                                            "Received error from RenderTemplate during X-Callback-URL call: \(error)"
+                                        )
+                                    failure(XCallbackError.generalError)
+                                }
+                            }, handler: { token, data in
+                                token.cancel()
+                                success(["rendered": String(describing: data.result)])
+                            }
+                        )
+                    } else {
+                        failure(XCallbackError.generalError)
                     }
-                )
-            } else {
-                failure(XCallbackError.generalError)
-            }
+                },
+                cancelHandler: {
+                    cancel()
+                }
+            )
         }
     }
 
