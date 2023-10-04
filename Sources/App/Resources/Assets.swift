@@ -24,8 +24,6 @@ internal enum Asset {
   internal static let launchScreenBackground = ColorAsset(name: "launchScreen-background")
   internal static let launchScreenLogo = ImageAsset(name: "launchScreen-logo")
   internal static let logo = ImageAsset(name: "Logo")
-  internal static let onboardingBackground = ColorAsset(name: "Onboarding-background")
-  internal static let onboardingForeground = ColorAsset(name: "Onboarding-foreground")
   internal static let statusItemIcon = ImageAsset(name: "statusItemIcon")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

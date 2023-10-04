@@ -3,10 +3,10 @@ import UIKit
 
 public struct Style {
     #if os(iOS)
-    public var onboardingBackground: UIColor = .init(named: "onboarding-background") ?? .white
-    public var onboardingTintColor: UIColor = .init(named: "onboarding-foreground") ?? .black
-    public var onboardingLabel: UIColor = .init(named: "onboarding-foreground") ?? .black
-    public var onboardingLabelSecondary: UIColor = Constants.tintColor
+    public var onboardingBackground: UIColor = Constants.darkerTintColor
+    public var onboardingTintColor: UIColor = .white
+    public var onboardingLabel: UIColor = .white
+    public var onboardingLabelSecondary: UIColor = .white.withAlphaComponent(0.85)
     public var onboardingTitle: (_ label: UILabel) -> Void = { label in
         label.font = .preferredFont(forTextStyle: .title1)
         label.textColor = Current.style.onboardingLabel
@@ -50,13 +50,13 @@ public struct Style {
     public var onboardingButtonPrimary: (_ button: UIButton) -> Void = { button in
         Self.onboardingButton(button)
 
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(Constants.darkerTintColor, for: .normal)
         button.setBackgroundImage(
-            UIImage(size: CGSize(width: 1, height: 1), color: Constants.tintColor),
+            UIImage(size: CGSize(width: 1, height: 1), color: .white),
             for: .normal
         )
         button.setBackgroundImage(
-            UIImage(size: CGSize(width: 1, height: 1), color: Constants.tintColor.withAlphaComponent(0.7)),
+            UIImage(size: CGSize(width: 1, height: 1), color: .white.withAlphaComponent(0.7)),
             for: .highlighted
         )
 
