@@ -505,6 +505,14 @@
 		20226C5AB77E1229852ADDC8 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
+		3090BEDE2ACDA30100030356 /* non-binary@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDA2ACDA30100030356 /* non-binary@3x.png */; };
+		3090BEDF2ACDA30100030356 /* non-binary@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDA2ACDA30100030356 /* non-binary@3x.png */; };
+		3090BEE02ACDA30100030356 /* non-binary@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDB2ACDA30100030356 /* non-binary@2x.png */; };
+		3090BEE12ACDA30100030356 /* non-binary@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDB2ACDA30100030356 /* non-binary@2x.png */; };
+		3090BEE22ACDA30100030356 /* classic@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDC2ACDA30100030356 /* classic@2x.png */; };
+		3090BEE32ACDA30100030356 /* classic@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDC2ACDA30100030356 /* classic@2x.png */; };
+		3090BEE42ACDA30100030356 /* classic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDD2ACDA30100030356 /* classic@3x.png */; };
+		3090BEE52ACDA30100030356 /* classic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDD2ACDA30100030356 /* classic@3x.png */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
@@ -1558,6 +1566,10 @@
 		213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		287FA864ED0E47B2BB71E1C8 /* Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3090BEDA2ACDA30100030356 /* non-binary@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "non-binary@3x.png"; sourceTree = "<group>"; };
+		3090BEDB2ACDA30100030356 /* non-binary@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "non-binary@2x.png"; sourceTree = "<group>"; };
+		3090BEDC2ACDA30100030356 /* classic@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "classic@2x.png"; sourceTree = "<group>"; };
+		3090BEDD2ACDA30100030356 /* classic@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "classic@3x.png"; sourceTree = "<group>"; };
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3357,6 +3369,10 @@
 				B64E751A23F3BFE700472C04 /* old-dev@2x.png */,
 				B64E753323F3BFEE00472C04 /* old-dev@3x.png */,
 				B64E751D23F3BFE800472C04 /* old-release@2x.png */,
+				3090BEDC2ACDA30100030356 /* classic@2x.png */,
+				3090BEDD2ACDA30100030356 /* classic@3x.png */,
+				3090BEDB2ACDA30100030356 /* non-binary@2x.png */,
+				3090BEDA2ACDA30100030356 /* non-binary@3x.png */,
 				B64E751E23F3BFE800472C04 /* old-release@3x.png */,
 				B64E752623F3BFEC00472C04 /* orange@2x.png */,
 				B64E752D23F3BFED00472C04 /* orange@3x.png */,
@@ -4478,7 +4494,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3090BEDF2ACDA30100030356 /* non-binary@3x.png in Resources */,
+				3090BEE32ACDA30100030356 /* classic@2x.png in Resources */,
 				11DE9F3A25B614EB0081C0ED /* Application.xib in Resources */,
+				3090BEE12ACDA30100030356 /* non-binary@2x.png in Resources */,
+				3090BEE52ACDA30100030356 /* classic@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4529,6 +4549,7 @@
 				B64E755D23F3BFF200472C04 /* ha-blue@2x.png in Resources */,
 				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
 				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
+				3090BEE42ACDA30100030356 /* classic@3x.png in Resources */,
 				B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
 				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
@@ -4568,6 +4589,7 @@
 				B64E755223F3BFF200472C04 /* blue@3x.png in Resources */,
 				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
 				11810D4E249EAF8D00E741A4 /* bi_pride@2x.png in Resources */,
+				3090BEE22ACDA30100030356 /* classic@2x.png in Resources */,
 				B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */,
 				B60616141D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav in Resources */,
 				B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */,
@@ -4668,6 +4690,7 @@
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,
+				3090BEE02ACDA30100030356 /* non-binary@2x.png in Resources */,
 				B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */,
 				B64E754423F3BFF200472C04 /* dev@2x.png in Resources */,
 				B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */,
@@ -4675,6 +4698,7 @@
 				B64E756523F3BFF200472C04 /* red@2x.png in Resources */,
 				B606168F1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav in Resources */,
 				B60616311D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav in Resources */,
+				3090BEDE2ACDA30100030356 /* non-binary@3x.png in Resources */,
 				D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */,
 				B606162F1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav in Resources */,
 				B64E755823F3BFF200472C04 /* green@3x.png in Resources */,

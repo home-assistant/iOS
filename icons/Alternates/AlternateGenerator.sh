@@ -1,7 +1,7 @@
 #!/bin/bash
 for filename in *.png; do
-  sips -Z 120x120 "$filename" --out "../../Sources/App/Resources/Alternate Icons/${filename%.png}@2x.png"
-  sips -Z 180x180 "$filename" --out "../../Sources/App/Resources/Alternate Icons/${filename%.png}@3x.png"
+  sips -Z 120x120 "$filename" --out "../../Sources/App/Resources/Alternate Icons/${filename%.png}@2x.png" > /dev/null
+  sips -Z 180x180 "$filename" --out "../../Sources/App/Resources/Alternate Icons/${filename%.png}@3x.png" > /dev/null
 
   echo "<key>${filename%.png}</key>
     <dict>
