@@ -379,7 +379,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.orange" = "Orange";
 "settings_details.general.app_icon.enum.pink" = "Pink";
 "settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
-"settings_details.general.app_icon.enum.pride_poc" = "Pride: 8-Color";
+"settings_details.general.app_icon.enum.pride_poc" = "Pride: Progress";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.pride_non_binary" = "Pride: Non Binary";

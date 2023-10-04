@@ -133,7 +133,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>ha-blue</string>
+					<string>release</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -214,7 +214,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>rainbow_invert</string>
+					<string>rainbow</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -391,7 +391,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>ha-blue</string>
+					<string>default</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -472,7 +472,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>rainbow_invert</string>
+					<string>rainbow</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
