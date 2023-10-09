@@ -387,6 +387,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>ha-blue</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>release</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>non-binary</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
