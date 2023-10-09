@@ -391,7 +391,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>default</string>
+					<string>release</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
