@@ -387,15 +387,6 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-			<key>ha-blue</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>default</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
 			<key>non-binary</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
