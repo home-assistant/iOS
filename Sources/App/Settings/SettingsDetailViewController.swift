@@ -835,7 +835,7 @@ enum AppIcon: String, CaseIterable {
     case ElectricViolet = "electric-violet"
     case FireOrange = "fire-orange"
     case Green = "green"
-    case HaBlue = "ha-blue"
+    case Classic = "classic"
     case OldBeta = "old-beta"
     case OldDev = "old-dev"
     case OldRelease = "old-release"
@@ -846,8 +846,8 @@ enum AppIcon: String, CaseIterable {
     case White = "white"
     case BiPride = "bi_pride"
     case POCPride = "POC_pride"
+    case NonBinary = "non-binary"
     case Rainbow = "rainbow"
-    case RainbowInvert = "rainbow_invert"
     case Trans = "trans"
 
     var title: String {
@@ -874,8 +874,8 @@ enum AppIcon: String, CaseIterable {
             return L10n.SettingsDetails.General.AppIcon.Enum.fireOrange
         case .Green:
             return L10n.SettingsDetails.General.AppIcon.Enum.green
-        case .HaBlue:
-            return L10n.SettingsDetails.General.AppIcon.Enum.haBlue
+        case .Classic:
+            return L10n.SettingsDetails.General.AppIcon.Enum.classic
         case .OldBeta:
             return L10n.SettingsDetails.General.AppIcon.Enum.oldBeta
         case .OldDev:
@@ -898,10 +898,10 @@ enum AppIcon: String, CaseIterable {
             return L10n.SettingsDetails.General.AppIcon.Enum.pridePoc
         case .Rainbow:
             return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbow
-        case .RainbowInvert:
-            return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbowInvert
         case .Trans:
             return L10n.SettingsDetails.General.AppIcon.Enum.prideTrans
+        case .NonBinary:
+            return L10n.SettingsDetails.General.AppIcon.Enum.prideNonBinary
         }
     }
 

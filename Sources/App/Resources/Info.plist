@@ -66,6 +66,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>classic</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>classic</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>cornflower-blue</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -124,7 +133,16 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>ha-blue</string>
+					<string>release</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>non-binary</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>non-binary</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -196,7 +214,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>rainbow_invert</string>
+					<string>rainbow</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -306,6 +324,15 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>classic</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>classic</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>cornflower-blue</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -364,7 +391,16 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>ha-blue</string>
+					<string>default</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>non-binary</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>non-binary</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -436,7 +472,7 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>rainbow_invert</string>
+					<string>rainbow</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -602,15 +638,20 @@
 	<string>Locate and communicate with your Home Assistant instance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
-            Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+			Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences,
+			background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We always need access to your location for features like iBeacons, geofences,
+			background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>Only allowing location access while app is in use will disable iBeacons, geofences,
+			background location updates and accurate reporting.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>When enabled, your device location is sent to your Home Assistant server as a device tracker.</string>
+	<string>When enabled, your device location is sent to your Home Assistant server as a device
+			tracker.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.</string>
+	<string>Motion is used to improve location updates with current motion type, as well as
+			provide basic pedometer data.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Photo Library access is needed to allow saving photos from the web view.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
