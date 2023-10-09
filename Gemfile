@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-# cocoapods 1.11.x breaks Clibsodium compilation/linking
 gem 'cocoapods'
 gem 'cocoapods-acknowledgements'
 gem 'fastlane'
