@@ -288,7 +288,7 @@ class MenuManager {
             image: nil,
             identifier: .haActions,
             options: [],
-            children: Array(children)
+            children: children
         )
     }
 

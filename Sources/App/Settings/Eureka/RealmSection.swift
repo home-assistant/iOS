@@ -93,7 +93,7 @@ public final class RealmSection<ObjectType: Object>: Section {
             }.flatMap { $0 }
 
             // note: eureka has a bug if we don't wrap this in Array where it duplicates
-            append(contentsOf: Array(appendingRows))
+            append(contentsOf: appendingRows)
         }
 
         didUpdate(self, collection)

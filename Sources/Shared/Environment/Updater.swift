@@ -18,12 +18,10 @@ public struct AvailableUpdate: Codable, Comparable {
     }
 
     private var versionParts: (version: String, build: String) {
-        let values = Array(
-            tagName
-                .split(separator: "/")
-                .dropFirst()
-                .map { String($0) }
-        )
+        let values = tagName
+            .split(separator: "/")
+            .dropFirst()
+            .map { String($0) }
         if values.count >= 2 {
             return (version: values[0], build: values[1])
         } else {

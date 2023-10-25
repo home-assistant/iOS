@@ -56,7 +56,7 @@ public final class NotificationCategory: Object, UpdatableModel {
         [
             UNNotificationCategory(
                 identifier: Identifier.uppercased(),
-                actions: Array(Actions.map(\.action)),
+                actions: Actions.map(\.action),
                 intentIdentifiers: [],
                 hiddenPreviewsBodyPlaceholder: HiddenPreviewsBodyPlaceholder,
                 categorySummaryFormat: CategorySummaryFormat,

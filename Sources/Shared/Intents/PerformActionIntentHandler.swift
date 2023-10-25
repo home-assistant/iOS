@@ -45,7 +45,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         with completion: @escaping ([IntentAction]?, Error?) -> Void
     ) {
         let actions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
-        let performActions = Array(actions.map { IntentAction(action: $0) })
+        let performActions = actions.map { IntentAction(action: $0) }
         Current.Log.info { () -> String in
             "providing " + performActions.map { action -> String in
                 (action.identifier ?? "?") + " (" + action.displayString + ")"
