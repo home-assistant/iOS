@@ -216,9 +216,7 @@ class WebViewWindowController {
                 open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
             } else {
                 if let selectedServer = servers.first(where: { server in
-                    let sanitizedServerName = server.info.name.lowercased()
-                        .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-                    return sanitizedServerName == serverName?.lowercased()
+                    return server.info.name.lowercased() == serverName?.lowercased()
                 }) {
                     open(from: from, server: selectedServer, urlString: openUrlRaw, skipConfirm: skipConfirm)
                 } else {
