@@ -22,7 +22,10 @@ class SecurityViewController: HAFormViewController {
                 }
             })
             +++ Section(
-                footer: NSLocalizedString("You will be required to authenticate with biometrics everytime you open the app.", comment: "")
+                footer: NSLocalizedString(
+                    "You will be required to authenticate with biometrics everytime you open the app.",
+                    comment: ""
+                )
             )
     }
 }
