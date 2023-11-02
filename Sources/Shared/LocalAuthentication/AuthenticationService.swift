@@ -24,7 +24,12 @@ class AuthenticationService: AuthenticationServiceProtocol {
         } else if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
             authenticate(policy: .deviceOwnerAuthentication)
         } else {
-            Current.Log.error(["Failed to authenticate with biometrics": "User context can't evaluate policy for device ownership"])
+            Current.Log
+                .error(
+                    [
+                        "Failed to authenticate with biometrics": "User context can't evaluate policy for device ownership",
+                    ]
+                )
         }
     }
 
