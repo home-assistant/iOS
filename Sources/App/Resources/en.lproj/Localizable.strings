@@ -411,6 +411,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings_details.general.visibility.options.menu_bar" = "Menu Bar";
 "settings_details.general.visibility.title" = "Show App In…";
+"settings_details.general.security.title" = "Security";
+"settings_details.general.security.action" = "Enable biometric lock";
+"settings_details.general.security.footer" = "You will be required to authenticate with biometrics everytime you open the app.";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.title" = "Background Refresh";

@@ -5,6 +5,7 @@ import UIKit
 public protocol AuthenticationServiceProtocol {
     var delegate: AuthenticationServiceDelegate? { get set }
     func authenticate()
+    func invalidate()
 }
 
 public protocol AuthenticationServiceDelegate: AnyObject {
@@ -23,8 +24,12 @@ class AuthenticationService: AuthenticationServiceProtocol {
         } else if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
             authenticate(policy: .deviceOwnerAuthentication)
         } else {
-            print("Failed to authenticate")
+            Current.Log.error(["Failed to authenticate with biometrics": "User context can't evaluate policy for device ownership"])
         }
+    }
+
+    func invalidate() {
+        context.invalidate()
     }
 
     private func authenticate(policy: LAPolicy) {
@@ -32,7 +37,7 @@ class AuthenticationService: AuthenticationServiceProtocol {
             self?.delegate?.didFinishAuthentication(authorized: authorized)
 
             if let error {
-                print(error)
+                Current.Log.error(["Failed to evaluate policy for authentication": error.localizedDescription])
             }
         }
     }

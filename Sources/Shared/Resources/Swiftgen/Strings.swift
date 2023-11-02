@@ -1346,6 +1346,14 @@ public enum L10n {
         /// Remember Last Page
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.restoration.title") }
       }
+      public enum Security {
+        /// Enable biometric lock
+        public static var action: String { return L10n.tr("Localizable", "settings_details.general.security.action") }
+        /// You will be required to authenticate with biometrics everytime you open the app.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.general.security.footer") }
+        /// Security
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.security.title") }
+      }
       public enum Visibility {
         /// Show App In…
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.visibility.title") }

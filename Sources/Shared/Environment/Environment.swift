@@ -251,7 +251,7 @@ public class AppEnvironment {
         }
     }
 
-    #if os(iOS)
+    #if !os(watchOS)
     public var authenticationService: AuthenticationServiceProtocol = AuthenticationService()
     #endif
 
