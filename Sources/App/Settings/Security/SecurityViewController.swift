@@ -10,22 +10,19 @@ class SecurityViewController: HAFormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Security"
+        title = L10n.SettingsDetails.General.Security.title
 
         form
             +++ Section()
             <<< SwitchRow("switch", {
-                $0.title = NSLocalizedString("Enable biometric lock", comment: "")
+                $0.title = L10n.SettingsDetails.General.Security.action
                 $0.value = Current.settingsStore.biometricsRequired
                 $0.onChange { row in
                     Current.settingsStore.biometricsRequired = row.value ?? false
                 }
             })
             +++ Section(
-                footer: NSLocalizedString(
-                    "You will be required to authenticate with biometrics everytime you open the app.",
-                    comment: ""
-                )
+                footer: L10n.SettingsDetails.General.Security.footer
             )
     }
 }

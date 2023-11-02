@@ -45,12 +45,13 @@ public class SettingsStore {
         }
     }
 
+    private let biometricsRequiredKeychainKey = "biometricsRequired"
     public var biometricsRequired: Bool {
         get {
-            Bool(keychain["biometricsRequired"] ?? "false") ?? false
+            Bool(keychain[biometricsRequiredKeychainKey] ?? "false") ?? false
         }
         set {
-            keychain["biometricsRequired"] = String(newValue)
+            keychain[biometricsRequiredKeychainKey] = String(newValue)
         }
     }
 

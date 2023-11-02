@@ -252,19 +252,33 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         styleUI()
         updateWebViewForServerValues()
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(checkForBiometrics),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(protectAppIfNeeded),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
+        if #available(iOS 13.0, *) {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(checkForBiometrics),
+                name: UIScene.willEnterForegroundNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(protectAppIfNeeded),
+                name: UIScene.didEnterBackgroundNotification,
+                object: nil
+            )
+        } else {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(checkForBiometrics),
+                name: UIApplication.willEnterForegroundNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(protectAppIfNeeded),
+                name: UIApplication.didEnterBackgroundNotification,
+                object: nil
+            )
+        }
     }
 
     public func showSettingsViewController() {
