@@ -456,19 +456,16 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     var baseRows: [BaseRow] = []
                     if $0 == scenes.first {
                         let toggleAllSwitch = SwitchRow()
-                        toggleAllSwitch.title = NSLocalizedString(
-                            "Select All",
-                            comment: "Toggle to select/unselect all actions that are displayed in watchOS app"
-                        )
+                        toggleAllSwitch.title = L10n.SettingsDetails.Actions.Scenes.selectAll
                         toggleAllSwitch.value = scenes.filter(\.actionEnabled).count == scenes.count
                         toggleAllSwitch.onChange { [weak self] row in
                             guard let self = self,
                                   let value = row.value else { return }
-                            self.realm.beginWrite()
-                            scenes.forEach { scene in
-                                scene.actionEnabled = value
+                            self.realm.reentrantWrite {
+                                scenes.forEach { scene in
+                                    scene.actionEnabled = value
+                                }
                             }
-                            try? self.realm.commitWrite()
                         }
                         baseRows = [toggleAllSwitch]
                     }
