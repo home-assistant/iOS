@@ -22,6 +22,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
     private var notificationTokens: [NotificationToken] = []
     private var notificationCenterTokens: [AnyObject] = []
     private var reorderingRows: [String: BaseRow] = [:]
+    private var scenesUpdateObserver: NotificationToken?
 
     deinit {
         notificationCenterTokens.forEach(NotificationCenter.default.removeObserver)
@@ -443,6 +444,29 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             )
 
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
+
+            let toggleAllSwitch = SwitchRow()
+            toggleAllSwitch.title = L10n.SettingsDetails.Actions.Scenes.selectAll
+
+            scenesUpdateObserver = scenes.observe { _ in
+                // Access UISwitch directly to set state to avoid triggering "on value change"
+                toggleAllSwitch.cell.switchControl.setOn(
+                    scenes.filter(\.actionEnabled).count == scenes.count,
+                    animated: true
+                )
+            }
+
+            toggleAllSwitch.onChange { [weak self] row in
+                guard let self = self,
+                      let value = row.value else { return }
+                self.realm.reentrantWrite {
+                    scenes.forEach { scene in
+                        scene.actionEnabled = value
+                    }
+                }
+            }
+            form +++ toggleAllSwitch
+
             form +++ RealmSection<RLMScene>(
                 header: L10n.SettingsDetails.Actions.Scenes.title,
                 footer: L10n.SettingsDetails.Actions.Scenes.footer,
@@ -453,26 +477,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                         $0.disabled = true
                     },
                 ], getter: {
-                    var baseRows: [BaseRow] = []
-                    if $0 == scenes.first {
-                        let toggleAllSwitch = SwitchRow()
-                        toggleAllSwitch.title = L10n.SettingsDetails.Actions.Scenes.selectAll
-                        toggleAllSwitch.value = scenes.filter(\.actionEnabled).count == scenes.count
-                        toggleAllSwitch.onChange { [weak self] row in
-                            guard let self = self,
-                                  let value = row.value else { return }
-                            self.realm.reentrantWrite {
-                                scenes.forEach { scene in
-                                    scene.actionEnabled = value
-                                }
-                            }
-                        }
-                        baseRows = [toggleAllSwitch]
-                    }
-
-                    baseRows += Self.getSceneRows($0)
-
-                    return baseRows
+                    Self.getSceneRows($0)
                 }
             )
 
