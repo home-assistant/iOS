@@ -1,4 +1,6 @@
 name: "Version: Set Version"
+env:
+  GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
 on:
   workflow_dispatch:
     inputs:
