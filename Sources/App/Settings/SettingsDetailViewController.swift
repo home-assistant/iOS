@@ -459,12 +459,12 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
             }
 
-            scenesUpdateObserver = scenes.observe { _ in
-                toggleAllSwitch.cellUpdate { cell, row in
+            toggleAllSwitch.cellUpdate { [weak self] cell, _ in
+                self?.scenesUpdateObserver = scenes.observe { _ in
                     cell.switchControl.setOn(scenes.filter(\.actionEnabled).count == scenes.count, animated: true)
                 }
-                toggleAllSwitch.updateCell()
             }
+            toggleAllSwitch.updateCell()
 
             form +++ Section(L10n.SettingsDetails.Actions.Scenes.title)
             <<< toggleAllSwitch
