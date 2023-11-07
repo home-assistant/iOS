@@ -1,6 +1,4 @@
 name: "Version: Set Version"
-env:
-  GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
 on:
   workflow_dispatch:
     inputs:
@@ -36,3 +34,4 @@ jobs:
           branch: create-pull-request/bump_build
           title: ${{ steps.commit.outputs.pr_title }}
           body: "Automatically created by ${{ github.actor }}."
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
