@@ -34,5 +34,4 @@ jobs:
           branch: create-pull-request/bump_build
           title: ${{ steps.commit.outputs.pr_title }}
           body: "Automatically created by ${{ github.actor }}."
-          GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
-
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
