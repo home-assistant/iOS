@@ -681,7 +681,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             guard let self else { return }
             self.biometricOverlay.removeFromSuperview()
             self.biometricOverlay.translatesAutoresizingMaskIntoConstraints = false
-            self.view.addSubview(biometricOverlay)
+            self.view.addSubview(self.biometricOverlay)
             NSLayoutConstraint.activate([
                 self.biometricOverlay.topAnchor.constraint(equalTo: self.view.topAnchor),
                 self.biometricOverlay.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
