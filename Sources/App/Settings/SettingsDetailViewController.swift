@@ -22,7 +22,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
     private var notificationTokens: [NotificationToken] = []
     private var notificationCenterTokens: [AnyObject] = []
     private var reorderingRows: [String: BaseRow] = [:]
-    private var scenesUpdateObserver: NotificationToken?
 
     deinit {
         notificationCenterTokens.forEach(NotificationCenter.default.removeObserver)
@@ -459,15 +458,16 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
             }
 
-            toggleAllSwitch.cellUpdate { [weak self] cell, _ in
-                self?.scenesUpdateObserver = scenes.observe { _ in
+            var scenesUpdateObserver: NotificationToken?
+            toggleAllSwitch.cellUpdate { cell, _ in
+                scenesUpdateObserver = scenes.observe { _ in
                     cell.switchControl.setOn(scenes.filter(\.actionEnabled).count == scenes.count, animated: true)
                 }
             }
             toggleAllSwitch.updateCell()
 
             form +++ Section(L10n.SettingsDetails.Actions.Scenes.title)
-            <<< toggleAllSwitch
+                <<< toggleAllSwitch
             form +++ RealmSection<RLMScene>(
                 footer: L10n.SettingsDetails.Actions.Scenes.footer,
                 collection: AnyRealmCollection(scenes),
