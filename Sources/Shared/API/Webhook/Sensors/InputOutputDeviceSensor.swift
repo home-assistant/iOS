@@ -1,6 +1,6 @@
 import Foundation
 import PromiseKit
-#if canImport(CoreMediaIO)
+#if targetEnvironment(macCatalyst)
 import AVFoundation
 import CoreMediaIO
 #endif
@@ -18,7 +18,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         #if targetEnvironment(macCatalyst)
         case coreAudio(AudioObjectID)
         #endif
-        #if canImport(CoreMediaIO)
+        #if targetEnvironment(macCatalyst)
         case coreMedia(CMIOObjectID)
         #endif
 
@@ -28,7 +28,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
             #if targetEnvironment(macCatalyst)
             case let .coreAudio(id): return id
             #endif
-            #if canImport(CoreMediaIO)
+            #if targetEnvironment(macCatalyst)
             case let .coreMedia(id): return id
             #endif
             }
@@ -40,7 +40,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     required init(signal: @escaping () -> Void) {
         self.signal = signal
 
-        #if canImport(CoreMediaIO)
+        #if targetEnvironment(macCatalyst)
         addCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject), property: .allDevices)
         #endif
 
@@ -72,7 +72,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     }
     #endif
 
-    #if canImport(CoreMediaIO)
+    #if targetEnvironment(macCatalyst)
     func addCoreMediaObserver<PropertyType>(
         for id: CMIOObjectID,
         property: HACoreMediaProperty<PropertyType>
@@ -89,7 +89,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
     public let request: SensorProviderRequest
 
-    #if canImport(CoreMediaIO)
+    #if targetEnvironment(macCatalyst)
     let cameraSystemObject: HACoreMediaObjectSystem
     #endif
     #if targetEnvironment(macCatalyst)
@@ -98,7 +98,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
     public required init(request: SensorProviderRequest) {
         self.request = request
-        #if canImport(CoreMediaIO)
+        #if targetEnvironment(macCatalyst)
         self.cameraSystemObject = HACoreMediaObjectSystem()
         #endif
         #if targetEnvironment(macCatalyst)
@@ -111,7 +111,7 @@ public class InputOutputDeviceSensor: SensorProvider {
 
         let sensors: Promise<[WebhookSensor]>
 
-        #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst) && targetEnvironment(macCatalyst)
         let queue: DispatchQueue = .global(qos: .userInitiated)
         sensors = firstly {
             Promise<Void>.value(())
@@ -131,7 +131,7 @@ public class InputOutputDeviceSensor: SensorProvider {
         return sensors
     }
 
-    #if canImport(CoreMediaIO) && targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) && targetEnvironment(macCatalyst)
     private static func sensors(
         cameras: [HACoreMediaObjectCamera],
         audioInputs: [HACoreAudioObjectDevice],
