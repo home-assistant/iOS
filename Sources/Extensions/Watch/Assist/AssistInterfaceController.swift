@@ -172,6 +172,7 @@ class AssistInterfaceController: WKInterfaceController {
     }
 }
 
+@available(watchOSApplicationExtension 6, *)
 extension AssistInterfaceController: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ audioRecorder: AVAudioRecorder, successfully success: Bool) {
         if success {

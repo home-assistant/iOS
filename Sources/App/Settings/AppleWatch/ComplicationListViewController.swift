@@ -48,6 +48,8 @@ class ComplicationListViewController: HAFormViewController {
                 $0.value = URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!
             }
 
+        enableAssistComplication()
+
         form +++ Section(
             header: L10n.Watch.Configurator.List.ManualUpdates.title,
             footer: L10n.Watch.Configurator.List.ManualUpdates.footer
@@ -150,5 +152,36 @@ class ComplicationListViewController: HAFormViewController {
                 }
             )
         }
+    }
+
+    private func enableAssistComplication() {
+        let realm = Current.realm()
+
+        // TODO reduce complexity
+        realm.reentrantWrite {
+            ComplicationGroup.allCases.sorted().forEach { group in
+                group.members.forEach { family in
+                    Current.servers.all.forEach { server in
+                        let config = WatchComplication()
+                        config.name = "Assist on \(server.info.name)"
+                        config.identifier = "assist-\(server.identifier.rawValue)-\(family.rawValue)"
+                        config.IsPublic = true
+                        config.Family = family
+                        config.Template = family.templates.first!
+                        config.serverIdentifier = server.identifier.rawValue
+                        config.Data = [
+                            "icon": [
+                                "icon": "microphone_message",
+                                "icon_color": "#17bcf2"
+                            ]
+                        ]
+                        Current.Log.verbose("COMPLICATION \(config)")
+                        realm.add(config, update: .all)
+                    }
+                }
+            }
+        }.done {
+            Current.apis.forEach({ $0.updateComplications(passively: false) })
+        }.cauterize()
     }
 }

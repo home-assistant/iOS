@@ -61,6 +61,7 @@ public extension HomeAssistantAPI {
         return nil
     }
 
+    @discardableResult
     func updateComplications(passively: Bool) -> Promise<Void> {
         #if os(iOS)
         guard case .paired = Communicator.shared.currentWatchState else {
