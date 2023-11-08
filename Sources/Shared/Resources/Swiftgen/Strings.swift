@@ -1227,6 +1227,8 @@ public enum L10n {
         public static var empty: String { return L10n.tr("Localizable", "settings_details.actions.scenes.empty") }
         /// When enabled, Scenes display alongside actions. When performed, they trigger scene changes.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.scenes.footer") }
+        /// Select All
+        public static var selectAll: String { return L10n.tr("Localizable", "settings_details.actions.scenes.select_all") }
         /// Scene Actions
         public static var title: String { return L10n.tr("Localizable", "settings_details.actions.scenes.title") }
       }
