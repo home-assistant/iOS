@@ -78,7 +78,7 @@ class CarPlayDelegate: UIResponder {
         for entity in entities where SUPPORTED_DOMAINS.contains(entity.domain) {
             tmpEntities.append(entity)
         }
-        return tmpEntities.sorted(by: {$0.getFriendlyState() < $1.getFriendlyState()})
+        return tmpEntities.sorted(by: {$0.getLocalizedState() < $1.getLocalizedState()})
     }
     
     func setServer(server: Server) {

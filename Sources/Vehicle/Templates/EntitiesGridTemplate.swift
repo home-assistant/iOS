@@ -44,7 +44,7 @@ class EntitiesGridTemplate {
         let entitiesPage = entitiesSorted[(gridPage * CPGridTemplateMaximumItems) ..< min((gridPage * CPGridTemplateMaximumItems) + CPGridTemplateMaximumItems, entitiesSorted.count)]
         
         for entity in entitiesPage {
-            let item = CPGridButton(titleVariants: ["\(entity.attributes.friendlyName!) - \(entity.getFriendlyState())"], image: entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.image(ofSize: entityIconSize, color: nil), handler: { button in
+            let item = CPGridButton(titleVariants: ["\(entity.attributes.friendlyName!) - \(entity.getLocalizedState())"], image: entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.image(ofSize: entityIconSize, color: nil), handler: { button in
                 firstly { () -> Promise<Void> in
                     let api = Current.api(for: self.server)
                     return entity.onPress(for: api)
