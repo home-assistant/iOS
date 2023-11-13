@@ -361,6 +361,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.scenes.empty" = "No Scenes";
 "settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
 "settings_details.actions.scenes.title" = "Scene Actions";
+"settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.title" = "Actions";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Black";

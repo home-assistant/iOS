@@ -444,8 +444,31 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
 
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
 
+            let toggleAllSwitch = SwitchRow()
+            with(toggleAllSwitch) {
+                $0.title = L10n.SettingsDetails.Actions.Scenes.selectAll
+                $0.onChange { [weak self] row in
+                    guard let self = self,
+                          let value = row.value else { return }
+                    self.realm.reentrantWrite {
+                        scenes.forEach { scene in
+                            scene.actionEnabled = value
+                        }
+                    }
+                }
+            }
+
+            var scenesUpdateObserver: NotificationToken?
+            toggleAllSwitch.cellUpdate { cell, _ in
+                scenesUpdateObserver = scenes.observe { _ in
+                    cell.switchControl.setOn(scenes.filter(\.actionEnabled).count == scenes.count, animated: true)
+                }
+            }
+            toggleAllSwitch.updateCell()
+
+            form +++ Section(L10n.SettingsDetails.Actions.Scenes.title)
+                <<< toggleAllSwitch
             form +++ RealmSection<RLMScene>(
-                header: L10n.SettingsDetails.Actions.Scenes.title,
                 footer: L10n.SettingsDetails.Actions.Scenes.footer,
                 collection: AnyRealmCollection(scenes),
                 emptyRows: [
