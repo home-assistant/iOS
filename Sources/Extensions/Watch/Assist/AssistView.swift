@@ -19,6 +19,7 @@ class AssistHostingController: WKHostingController<AssistView> {
 struct AssistView: View {
 
     @ObservedObject private var viewModel: AssistViewModel
+    @State private var micAnimationRunning = false
 
     init(viewModel: AssistViewModel) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -73,16 +74,32 @@ struct AssistView: View {
 
     private var assistButton: some View {
         VStack {
-            Image(systemName: viewModel.microphoneIcon)
-                .resizable()
+            assistIcon
                 .aspectRatio(contentMode: .fit)
-                .frame(alignment: .center)
                 .foregroundColor(.accentColor)
+                .frame(alignment: .center)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 40)
         .onTapGesture {
             viewModel.requestInput()
+        }
+        .onChange(of: viewModel.microphoneIcon) { newValue in
+            withAnimation {
+                micAnimationRunning = newValue != AssistViewModel.MicrophoneIcons.microphoneIcon
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var assistIcon: some View {
+        if #available(watchOSApplicationExtension 10.0, *) {
+            Image(systemName: viewModel.microphoneIcon)
+                .resizable()
+                .symbolEffect(.variableColor.iterative, options: .repeating, value: micAnimationRunning)
+        } else {
+            Image(systemName: viewModel.microphoneIcon)
+                .resizable()
         }
     }
 }
