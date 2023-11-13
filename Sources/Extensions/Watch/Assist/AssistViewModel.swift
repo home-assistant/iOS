@@ -1,18 +1,10 @@
-//
-//  AssistViewModel.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 13/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import AVFoundation
 import Communicator
 import Foundation
 import PromiseKit
 import Shared
-import WatchKit
 import SwiftUI
+import WatchKit
 
 @available(watchOS 7.0, *)
 class AssistViewModel: NSObject, ObservableObject {
@@ -21,13 +13,13 @@ class AssistViewModel: NSObject, ObservableObject {
             case assist
             case user
         }
-        
+
         let id = UUID().uuidString
         let message: String
         let sender: Sender
     }
 
-    struct MicrophoneIcons {
+    enum MicrophoneIcons {
         static var microphoneIcon = "mic.circle.fill"
         static var microphoneLoadingIcon = "circle.dotted.circle.fill"
         static var microphoneInProgressIcon = "waveform"
@@ -40,7 +32,7 @@ class AssistViewModel: NSObject, ObservableObject {
 
     @Published var chatMessages: [ChatMessage] = []
     @Published var microphoneIcon: String = MicrophoneIcons.microphoneIcon
-   
+
     func requestInput() {
         if audioRecorder?.isRecording ?? false {
             stopRecording()
@@ -48,7 +40,7 @@ class AssistViewModel: NSObject, ObservableObject {
             startRecording()
         }
     }
-    
+
     private func startRecording() {
         let recordingName = "audio.m4a"
         guard let dirPath = getAppGroupDirectory() else {

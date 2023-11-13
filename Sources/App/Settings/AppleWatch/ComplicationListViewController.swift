@@ -157,7 +157,7 @@ class ComplicationListViewController: HAFormViewController {
     private func enableAssistComplication() {
         let realm = Current.realm()
 
-        // TODO reduce complexity
+        // TODO: reduce complexity
         realm.reentrantWrite {
             ComplicationGroup.allCases.sorted().forEach { group in
                 group.members.forEach { family in
@@ -172,8 +172,8 @@ class ComplicationListViewController: HAFormViewController {
                         config.Data = [
                             "icon": [
                                 "icon": "microphone_message",
-                                "icon_color": "#17bcf2"
-                            ]
+                                "icon_color": "#17bcf2",
+                            ],
                         ]
                         Current.Log.verbose("COMPLICATION \(config)")
                         realm.add(config, update: .all)

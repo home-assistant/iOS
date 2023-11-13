@@ -1,11 +1,3 @@
-//
-//  AssistView.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 13/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import SwiftUI
 
 @available(watchOS 7.0, *)
@@ -17,7 +9,6 @@ class AssistHostingController: WKHostingController<AssistView> {
 
 @available(watchOS 7.0, *)
 struct AssistView: View {
-
     @ObservedObject private var viewModel: AssistViewModel
     @State private var micAnimationRunning = false
 

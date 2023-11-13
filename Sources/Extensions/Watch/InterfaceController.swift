@@ -4,17 +4,17 @@ import Foundation
 import PromiseKit
 import RealmSwift
 import Shared
-import WatchKit
 import SwiftUI
+import WatchKit
 
 class InterfaceController: WKInterfaceController {
     enum Constants: String {
         case watchAssistComplicationNotification = "watch-assist-complication"
     }
 
-    @IBOutlet private weak var microphoneIconGroup: WKInterfaceGroup!
-    @IBOutlet private weak var tableView: WKInterfaceTable!
-    @IBOutlet private weak var noActionsLabel: WKInterfaceLabel!
+    @IBOutlet private var microphoneIconGroup: WKInterfaceGroup!
+    @IBOutlet private var tableView: WKInterfaceTable!
+    @IBOutlet private var noActionsLabel: WKInterfaceLabel!
 
     private var notificationObserver: NSObjectProtocol?
 
