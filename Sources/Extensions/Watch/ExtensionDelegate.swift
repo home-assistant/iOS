@@ -186,14 +186,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     private func handleComplication(_ complication: WatchComplication) {
-        switch complication.name {
-        case "Assist":
+        if complication.identifier.starts(with: "assist-") {
             NotificationCenter.default.post(
                 name: .init(InterfaceController.Constants.watchAssistComplicationNotification.rawValue),
                 object: nil
             )
-        default:
-            break
         }
     }
 

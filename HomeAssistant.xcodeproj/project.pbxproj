@@ -525,9 +525,9 @@
 		4264434E2A9C895D005FAFFF /* WatchAssistIntentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */; };
 		4264434F2A9C895D005FAFFF /* WatchAssistIntentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */; };
 		426443532A9C8C00005FAFFF /* MockWatchAssistIntentWrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426443512A9C8BF0005FAFFF /* MockWatchAssistIntentWrapping.swift */; };
-		42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */; };
-		42E355652A9B806000F5EF7F /* AssistRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355622A9B805100F5EF7F /* AssistRowController.swift */; };
-		42E355692A9B93A600F5EF7F /* AssistMicRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */; };
+		42805A162B0232AE0095414C /* AssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42805A152B0232AE0095414C /* AssistView.swift */; };
+		42805A182B0245080095414C /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42805A172B0245080095414C /* AssistViewModel.swift */; };
+		42E355652A9B806000F5EF7F /* AssistConversationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E355622A9B805100F5EF7F /* AssistConversationData.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -1589,9 +1589,9 @@
 		4264434A2A9C225E005FAFFF /* WatchAssistService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.test.swift; sourceTree = "<group>"; };
 		4264434C2A9C88FE005FAFFF /* WatchAssistIntentWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistIntentWrapper.swift; sourceTree = "<group>"; };
 		426443512A9C8BF0005FAFFF /* MockWatchAssistIntentWrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWatchAssistIntentWrapping.swift; sourceTree = "<group>"; };
-		42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInterfaceController.swift; sourceTree = "<group>"; };
-		42E355622A9B805100F5EF7F /* AssistRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRowController.swift; sourceTree = "<group>"; };
-		42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicRowController.swift; sourceTree = "<group>"; };
+		42805A152B0232AE0095414C /* AssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
+		42805A172B0245080095414C /* AssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.swift; sourceTree = "<group>"; };
+		42E355622A9B805100F5EF7F /* AssistConversationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConversationData.swift; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -2987,7 +2987,8 @@
 			isa = PBXGroup;
 			children = (
 				42E355612A9B7FDF00F5EF7F /* Views */,
-				42BDF4562A8F9CA000562183 /* AssistInterfaceController.swift */,
+				42805A152B0232AE0095414C /* AssistView.swift */,
+				42805A172B0245080095414C /* AssistViewModel.swift */,
 			);
 			path = Assist;
 			sourceTree = "<group>";
@@ -2995,8 +2996,7 @@
 		42E355612A9B7FDF00F5EF7F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				42E355622A9B805100F5EF7F /* AssistRowController.swift */,
-				42E355662A9B92CB00F5EF7F /* AssistMicRowController.swift */,
+				42E355622A9B805100F5EF7F /* AssistConversationData.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -5828,16 +5828,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
+				42805A162B0232AE0095414C /* AssistView.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
-				42BDF4572A8F9D9800562183 /* AssistInterfaceController.swift in Sources */,
+				42805A182B0245080095414C /* AssistViewModel.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
-				42E355692A9B93A600F5EF7F /* AssistMicRowController.swift in Sources */,
-				42E355652A9B806000F5EF7F /* AssistRowController.swift in Sources */,
+				42E355652A9B806000F5EF7F /* AssistConversationData.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
