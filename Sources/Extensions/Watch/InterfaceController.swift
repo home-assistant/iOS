@@ -5,6 +5,7 @@ import PromiseKit
 import RealmSwift
 import Shared
 import WatchKit
+import SwiftUI
 
 class InterfaceController: WKInterfaceController {
     enum Constants: String {
@@ -43,7 +44,7 @@ class InterfaceController: WKInterfaceController {
     }
 
     private func setupAssistObserver() {
-        guard #available(watchOS 6, *) else {
+        guard #available(watchOS 7, *) else {
             microphoneIconGroup.setHidden(true)
             return
         }
@@ -52,8 +53,18 @@ class InterfaceController: WKInterfaceController {
             object: nil,
             queue: nil
         ) { [weak self] _ in
-            self?.pushController(withName: AssistInterfaceController.controllerIdentifier, context: nil)
+            self?.pushAssist()
         }
+    }
+
+    @IBAction func didTapAssist() {
+        guard #available(watchOS 6, *) else { return }
+        pushAssist()
+    }
+
+    @available(watchOS 6, *)
+    private func pushAssist() {
+        pushController(withName: "AssistView", context: nil)
     }
 
     private func setupTable() {

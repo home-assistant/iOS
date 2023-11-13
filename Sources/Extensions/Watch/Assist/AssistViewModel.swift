@@ -1,65 +1,59 @@
+//
+//  AssistViewModel.swift
+//  WatchExtension-Watch
+//
+//  Created by Bruno Pantaleão on 13/11/2023.
+//  Copyright © 2023 Home Assistant. All rights reserved.
+//
+
 import AVFoundation
 import Communicator
 import Foundation
 import PromiseKit
 import Shared
 import WatchKit
+import SwiftUI
 
-@available(watchOS 6, *)
-class AssistInterfaceController: WKInterfaceController {
-    @IBOutlet private var chatTable: WKInterfaceTable!
+@available(watchOS 7.0, *)
+class AssistViewModel: NSObject, ObservableObject {
+    struct ChatMessage: Hashable {
+        enum Sender {
+            case assist
+            case user
+        }
+        
+        let id = UUID().uuidString
+        let message: String
+        let sender: Sender
+    }
 
-    static var controllerIdentifier = "Assist"
+    struct MicrophoneIcons {
+        static var microphoneIcon = "mic.circle.fill"
+        static var microphoneLoadingIcon = "circle.dotted.circle.fill"
+        static var microphoneInProgressIcon = "waveform"
+    }
 
     private var audioRecorder: AVAudioRecorder?
-    private var firstLaunch = true
     private var silenceTimer: Timer?
+    private let currentWKInterface = WKInterfaceDevice.current()
+    private var firstLaunch = true
 
-    override func awake(withContext context: Any?) {
-        super.awake(withContext: context)
-        setupMicButton()
-        startRecording()
-    }
-
-    override func willActivate() {
-        super.willActivate()
-    }
-
-    override func didDeactivate() {
-        super.didDeactivate()
-        popToRootController()
-    }
-
-    private func setupMicButton() {
-        chatTable.insertRows(at: IndexSet(integer: chatTable.numberOfRows), withRowType: AssistMicRowController.rowType)
-        let newRowIndex = chatTable.numberOfRows - 1
-        guard let row = chatTable.rowController(at: newRowIndex) as? AssistMicRowController else { return }
-        row.action = { [weak self] in
-            self?.requestInput()
+    @Published var chatMessages: [ChatMessage] = []
+    @Published var microphoneIcon: String = MicrophoneIcons.microphoneIcon
+   
+    func requestInput() {
+        if audioRecorder?.isRecording ?? false {
+            stopRecording()
+        } else {
+            startRecording()
         }
     }
-
-    private func addRowToTable(data: AssistRowControllerData) {
-        let newRowIndex = chatTable.numberOfRows - 1
-        chatTable.insertRows(at: IndexSet(integer: newRowIndex), withRowType: AssistRowController.rowType)
-
-        let justInsertedRowIndex = chatTable.numberOfRows - 2
-        guard let row = chatTable.rowController(at: justInsertedRowIndex) as? AssistRowController else { return }
-
-        row.setContent(data: data)
-        let lastRowIndex = chatTable.numberOfRows - 1
-        chatTable.scrollToRow(at: lastRowIndex)
-    }
-
-    private func updateMicrophoneState(_ state: AssistMicRowControllerStates) {
-        guard let row = chatTable.rowController(at: chatTable.numberOfRows - 1) as? AssistMicRowController else { return }
-        row.updateState(state)
-    }
-
+    
     private func startRecording() {
         let recordingName = "audio.m4a"
         guard let dirPath = getAppGroupDirectory() else {
-            print("Failed to get app group directory")
+            Current.Log.error("Failed to get app group directory")
+            currentWKInterface.play(.failure)
             return
         }
         let pathArray = [dirPath, recordingName]
@@ -86,10 +80,32 @@ class AssistInterfaceController: WKInterfaceController {
                 startRecording()
             } else {
                 startCheckingForSilence()
+                currentWKInterface.play(.success)
             }
         } catch {
             Current.Log.error("Recording Failed")
             updateMicrophoneState(.standard)
+            currentWKInterface.play(.failure)
+        }
+    }
+
+    private func appendChatMessage(data: AssistConversationData) {
+        chatMessages.append(.init(
+            message: data.content,
+            sender: data.type == .input ? .user : .assist
+        ))
+        currentWKInterface.play(.notification)
+    }
+
+    private func updateMicrophoneState(_ state: AssistMicStates) {
+        switch state {
+        case .standard:
+            microphoneIcon = MicrophoneIcons.microphoneIcon
+        case .loading:
+            microphoneIcon = MicrophoneIcons.microphoneLoadingIcon
+            currentWKInterface.play(.click)
+        case .inProgress:
+            microphoneIcon = MicrophoneIcons.microphoneInProgressIcon
         }
     }
 
@@ -119,14 +135,6 @@ class AssistInterfaceController: WKInterfaceController {
         return dirPath?.absoluteString
     }
 
-    private func requestInput() {
-        if audioRecorder?.isRecording ?? false {
-            stopRecording()
-        } else {
-            startRecording()
-        }
-    }
-
     private func assist(audioData: Data) {
         enum SendError: Error {
             case notImmediate
@@ -148,8 +156,8 @@ class AssistInterfaceController: WKInterfaceController {
                         Current.Log.verbose("Received reply dictionary \(message)")
                         guard let answer = message.content["answer"] as? String,
                               let inputText = message.content["inputText"] as? String else { return }
-                        self?.addRowToTable(data: .init(content: inputText, type: .input))
-                        self?.addRowToTable(data: .init(content: answer, type: .output))
+                        self?.appendChatMessage(data: .init(content: inputText, type: .input))
+                        self?.appendChatMessage(data: .init(content: answer, type: .output))
                         seal.fulfill(())
                     }
                 )
@@ -172,8 +180,8 @@ class AssistInterfaceController: WKInterfaceController {
     }
 }
 
-@available(watchOSApplicationExtension 6, *)
-extension AssistInterfaceController: AVAudioRecorderDelegate {
+@available(watchOS 7, *)
+extension AssistViewModel: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ audioRecorder: AVAudioRecorder, successfully success: Bool) {
         if success {
             print(audioRecorder.url.absoluteString)

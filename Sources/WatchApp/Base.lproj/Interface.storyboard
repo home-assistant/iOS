@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="22154" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="22155" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
         <deployment identifier="watchOS"/>
@@ -14,11 +14,10 @@
                     <items>
                         <group width="1" alignment="left" id="sk5-SP-icl">
                             <items>
-                                <button width="50" height="50" alignment="center" title=" " backgroundImage="mic.fill" catalog="system" id="mA7-7N-vlH">
+                                <button width="45" height="50" alignment="center" title=" " backgroundImage="mic.fill" catalog="system" id="mA7-7N-vlH">
                                     <color key="backgroundColor" name="AccentColor"/>
                                     <connections>
-                                        <action selector="didTapAssist" destination="AgC-eL-Hgc" id="8Nf-7R-q1x"/>
-                                        <segue destination="nsM-2M-e6X" kind="push" identifier="" id="5EY-Uk-4H0"/>
+                                        <action selector="didTapAssist" destination="AgC-eL-Hgc" id="Bd4-2m-Zzs"/>
                                     </connections>
                                 </button>
                             </items>
@@ -52,57 +51,12 @@
             </objects>
             <point key="canvasLocation" x="18" y="-160"/>
         </scene>
-        <!--Assist-->
-        <scene sceneID="r73-j8-jcA">
+        <!--AssistView-->
+        <scene sceneID="yCf-OJ-JDE">
             <objects>
-                <controller identifier="Assist" title="Assist" id="nsM-2M-e6X" customClass="AssistInterfaceController" customModule="WatchExtension_Watch">
-                    <items>
-                        <table alignment="center" verticalAlignment="bottom" spacing="8" id="c2x-LB-ORM">
-                            <items>
-                                <tableRow identifier="AssistRowController" id="Kst-0g-9At" customClass="AssistRowController" customModule="WatchApp" customModuleProvider="target">
-                                    <group key="rootItem" width="1" height="0.0" alignment="left" initiallyAnimated="NO" id="iCx-hu-JK8">
-                                        <items>
-                                            <group alignment="right" radius="12" id="aWS-IU-ula">
-                                                <items>
-                                                    <label alignment="right" verticalAlignment="center" text="Label" textAlignment="right" numberOfLines="0" id="kjk-wq-xy0"/>
-                                                </items>
-                                                <color key="backgroundColor" name="AccentColor"/>
-                                                <edgeInsets key="margins" left="8" right="8" top="8" bottom="8"/>
-                                            </group>
-                                        </items>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
-                                    </group>
-                                    <connections>
-                                        <outlet property="rowGroup" destination="aWS-IU-ula" id="Gv7-hi-mWi"/>
-                                        <outlet property="titleLabel" destination="kjk-wq-xy0" id="lqe-Dc-Yoy"/>
-                                    </connections>
-                                </tableRow>
-                                <tableRow identifier="AssistMicRowController" id="Aqz-y2-PMd" customClass="AssistMicRowController" customModule="WatchApp" customModuleProvider="target">
-                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="Rag-bt-WlN">
-                                        <items>
-                                            <button width="52" height="47" alignment="center" backgroundImage="mic.circle.fill" catalog="system" id="cHM-rd-4N4">
-                                                <color key="backgroundColor" name="AccentColor"/>
-                                                <connections>
-                                                    <action selector="didTapMic" destination="Aqz-y2-PMd" id="URy-O4-Gpq"/>
-                                                </connections>
-                                            </button>
-                                        </items>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </group>
-                                    <connections>
-                                        <outlet property="button" destination="cHM-rd-4N4" id="JTR-VS-0op"/>
-                                    </connections>
-                                </tableRow>
-                            </items>
-                        </table>
-                    </items>
-                    <connections>
-                        <outlet property="chatTable" destination="c2x-LB-ORM" id="xBa-kg-PBM"/>
-                    </connections>
-                </controller>
+                <hostingController identifier="AssistView" id="UbF-Jt-FrF" customClass="AssistHostingController" customModule="WatchExtension_Watch"/>
             </objects>
-            <point key="canvasLocation" x="358" y="-160"/>
+            <point key="canvasLocation" x="344" y="-154"/>
         </scene>
         <!--uppercase MAP-->
         <scene sceneID="68Y-yR-2I3">
@@ -267,7 +221,6 @@
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
-        <image name="mic.circle.fill" catalog="system" width="128" height="121"/>
         <image name="mic.fill" catalog="system" width="111" height="128"/>
         <namedColor name="AccentColor">
             <color red="0.0099999997764825821" green="0.6589999794960022" blue="0.95999997854232788" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
