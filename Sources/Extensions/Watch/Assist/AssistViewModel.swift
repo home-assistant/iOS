@@ -1,10 +1,19 @@
 import AVFoundation
 import Communicator
 import Foundation
+import HAKit
 import PromiseKit
 import Shared
+import Starscream
 import SwiftUI
 import WatchKit
+
+@available(watchOS 7.0, *)
+extension AssistViewModel: WebSocketDelegate {
+    func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocket) {
+        print(event)
+    }
+}
 
 @available(watchOS 7.0, *)
 class AssistViewModel: NSObject, ObservableObject {
@@ -33,11 +42,107 @@ class AssistViewModel: NSObject, ObservableObject {
     @Published var chatMessages: [ChatMessage] = []
     @Published var microphoneIcon: String = MicrophoneIcons.microphoneIcon
 
+    private var session: URLSession {
+        let config = URLSessionConfiguration.ephemeral
+        config.waitsForConnectivity = true
+        config.allowsCellularAccess = true
+        return URLSession(configuration: config)
+    }
+
+    private var socket: WebSocket?
+    private var webSocketTask: URLSessionWebSocketTask?
     func requestInput() {
-        if audioRecorder?.isRecording ?? false {
-            stopRecording()
+//        debugAlert(message: "Request input")
+//        // Create a WebSocketTask
+//        session.reset {
+//
+//        }
+
+//        socket?.disconnect()
+//        var request = URLRequest(url: URL(string: "ws://192.168.68.148:8123/api/websocket")!)
+//        request.networkServiceType = .voice
+//        request.timeoutInterval = 5
+//        socket = WebSocket(request: request)
+//        socket?.delegate = self
+//        socket?.connect()
+
+//
+        session.configuration.networkServiceType = .voice
+//        session.
+        webSocketTask = session.webSocketTask(with: URL(string: "ws://192.168.68.148:8123/api/websocket")!)
+        webSocketTask?.resume()
+//        webSocketTask.send(.string("hello")) { [weak self] error in
+//            self?.debugAlert(message: "send error: \(error)")
+//            print(error)
+//        }
+        DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak self] in
+            print("Socket STATE: \(self?.webSocketTask?.state.rawValue)")
+        }
+
+        webSocketTask?.sendPing(pongReceiveHandler: { error in
+            print("PONG error: \(error)")
+        })
+
+        webSocketTask?.receive { [weak self] result in
+            print(result)
+            switch result {
+            case .success(let message):
+                self?.debugAlert(message: "Message: \(message)")
+                print(message)
+
+                // Continue receiving messages
+                //                self.webSocketTask.receive(completionHandler: receiveHandler)
+
+            case .failure(let error):
+                self?.debugAlert(message: "WebSocket error: \(error)")
+                print("WebSocket error: \(error)")
+            }
+        }
+
+        // Send a message to the WebSocket server
+//        let message = URLSessionWebSocketTask.Message.string("Hello, server!")
+//        webSocketTask.send(message) { error in
+//            if let error = error {
+//                print("WebSocket send error: \(error)")
+//            } else {
+//                print("Message sent successfully.")
+//            }
+//        }
+
+//        if let firstServer = Current.servers.all.first {
+//            let connection = Current.api(for: firstServer).connection
+//            connection.connect()
+//            Current.webhooks
+//
+        ////            let request = HARequest(type: HARequestType(stringLiteral: "assist_pipeline/pipeline/list"))
+        ////            let requestConnection = connection.send(request)
+        ////
+        ////            requestConnection.promise.pipe { result in
+        ////                print(result)
+        ////            }
+//        } else {
+//            print(Current.servers.all)
+//        }
+//
+        ////        if audioRecorder?.isRecording ?? false {
+        ////            stopRecording()
+        ////        } else {
+        ////            startRecording()
+        ////        }
+    }
+
+    private func debugAlert(message: String) {
+        // Get the top controller
+        if let topController = WKExtension.shared().visibleInterfaceController {
+            // Show an alert
+            topController.presentAlert(
+                withTitle: "Alert",
+                message: message,
+                preferredStyle: .alert,
+                actions: [WKAlertAction(title: "OK", style: .default) {}]
+            )
         } else {
-            startRecording()
+            print("No visible interface controller found.")
         }
     }
 
@@ -128,47 +233,47 @@ class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func assist(audioData: Data) {
-        enum SendError: Error {
-            case notImmediate
-            case phoneFailed
-        }
-
-        firstly { () -> Promise<Void> in
-            Promise { seal in
-                guard Communicator.shared.currentReachability == .immediatelyReachable else {
-                    seal.reject(SendError.notImmediate)
-                    return
-                }
-
-                Current.Log.verbose("Signaling assist pressed via phone")
-                let actionMessage = InteractiveImmediateMessage(
-                    identifier: "AssistRequest",
-                    content: ["Input": audioData],
-                    reply: { [weak self] message in
-                        Current.Log.verbose("Received reply dictionary \(message)")
-                        guard let answer = message.content["answer"] as? String,
-                              let inputText = message.content["inputText"] as? String else { return }
-                        self?.appendChatMessage(data: .init(content: inputText, type: .input))
-                        self?.appendChatMessage(data: .init(content: answer, type: .output))
-                        seal.fulfill(())
-                    }
-                )
-
-                Current.Log.verbose("Sending AssistRequest message \(actionMessage)")
-                Communicator.shared.send(actionMessage, errorHandler: { error in
-                    Current.Log.error("Received error when sending immediate message \(error)")
-                    seal.reject(error)
-                })
-            }
-        }.recover { error -> Promise<Void> in
-            Current.Log.error("recovering error \(error) by trying locally")
-            return .value(())
-        }.done { [weak self] in
-            self?.updateMicrophoneState(.standard)
-        }.catch { [weak self] err in
-            Current.Log.error("Error during action event fire: \(err)")
-            self?.updateMicrophoneState(.standard)
-        }
+//        enum SendError: Error {
+//            case notImmediate
+//            case phoneFailed
+//        }
+//
+//        firstly { () -> Promise<Void> in
+//            Promise { seal in
+//                guard Communicator.shared.currentReachability == .immediatelyReachable else {
+//                    seal.reject(SendError.notImmediate)
+//                    return
+//                }
+//
+//                Current.Log.verbose("Signaling assist pressed via phone")
+//                let actionMessage = InteractiveImmediateMessage(
+//                    identifier: "AssistRequest",
+//                    content: ["Input": audioData],
+//                    reply: { [weak self] message in
+//                        Current.Log.verbose("Received reply dictionary \(message)")
+//                        guard let answer = message.content["answer"] as? String,
+//                              let inputText = message.content["inputText"] as? String else { return }
+//                        self?.appendChatMessage(data: .init(content: inputText, type: .input))
+//                        self?.appendChatMessage(data: .init(content: answer, type: .output))
+//                        seal.fulfill(())
+//                    }
+//                )
+//
+//                Current.Log.verbose("Sending AssistRequest message \(actionMessage)")
+//                Communicator.shared.send(actionMessage, errorHandler: { error in
+//                    Current.Log.error("Received error when sending immediate message \(error)")
+//                    seal.reject(error)
+//                })
+//            }
+//        }.recover { error -> Promise<Void> in
+//            Current.Log.error("recovering error \(error) by trying locally")
+//            return .value(())
+//        }.done { [weak self] in
+//            self?.updateMicrophoneState(.standard)
+//        }.catch { [weak self] err in
+//            Current.Log.error("Error during action event fire: \(err)")
+//            self?.updateMicrophoneState(.standard)
+//        }
     }
 }
 

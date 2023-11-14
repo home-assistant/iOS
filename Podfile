@@ -34,7 +34,7 @@ pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
 
-pod 'Starscream', git: 'https://github.com/zacwest/starscream', branch: 'ha-swift-api'
+ pod 'Starscream', git: 'https://github.com/zacwest/starscream', branch: 'ha-swift-api'
 pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', branch: 'main'
 pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', branch: 'main'
 pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', branch: 'main'

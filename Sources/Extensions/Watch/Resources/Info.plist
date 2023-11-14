@@ -55,5 +55,15 @@
 	<string>Record audio using your Home Assistant frontend.</string>
 	<key>WKExtensionDelegateClassName</key>
 	<string>$(PRODUCT_MODULE_NAME).ExtensionDelegate</string>
+	<key>com.apple.developer.networking.slicing.appcategory</key>
+	<array>
+		<string>communication-9000</string>
+	</array>
+	<key>com.apple.developer.networking.slicing.trafficcategory</key>
+	<array>
+		<string>voice-4</string>
+		<string>avstreaming-7</string>
+		<string>responsiveav-8</string>
+	</array>
 </dict>
 </plist>
