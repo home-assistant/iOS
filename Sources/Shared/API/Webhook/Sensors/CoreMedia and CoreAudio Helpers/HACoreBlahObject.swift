@@ -55,7 +55,7 @@ class HACoreBlahObject {
         }
     }
 }
-
+#if targetEnvironment(macCatalyst)
 #if canImport(CoreMediaIO)
 import CoreMediaIO
 
@@ -74,7 +74,6 @@ class HACoreMediaObject: HACoreBlahObject {
 }
 #endif
 
-#if targetEnvironment(macCatalyst)
 import CoreAudio
 
 class HACoreAudioObject: HACoreBlahObject {

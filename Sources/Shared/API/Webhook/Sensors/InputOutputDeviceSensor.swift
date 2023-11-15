@@ -17,20 +17,22 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
 
         #if targetEnvironment(macCatalyst)
         case coreAudio(AudioObjectID)
-        #endif
         #if canImport(CoreMediaIO)
         case coreMedia(CMIOObjectID)
         #endif
+        #endif
+
 
         var id: UInt32 {
             switch self {
             case .invalid: return .max
             #if targetEnvironment(macCatalyst)
             case let .coreAudio(id): return id
-            #endif
             #if canImport(CoreMediaIO)
             case let .coreMedia(id): return id
             #endif
+            #endif
+
             }
         }
     }
@@ -40,11 +42,11 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     required init(signal: @escaping () -> Void) {
         self.signal = signal
 
+        #if targetEnvironment(macCatalyst)
         #if canImport(CoreMediaIO)
         addCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject), property: .allDevices)
         #endif
 
-        #if targetEnvironment(macCatalyst)
         addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
         #endif
     }
@@ -70,7 +72,6 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     ) {
         addObserver(object: .coreAudio(id), property: property)
     }
-    #endif
 
     #if canImport(CoreMediaIO)
     func addCoreMediaObserver<PropertyType>(
@@ -80,6 +81,8 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         addObserver(object: .coreMedia(id), property: property)
     }
     #endif
+#endif
+
 }
 
 public class InputOutputDeviceSensor: SensorProvider {
@@ -89,19 +92,19 @@ public class InputOutputDeviceSensor: SensorProvider {
 
     public let request: SensorProviderRequest
 
+    #if targetEnvironment(macCatalyst)
     #if canImport(CoreMediaIO)
     let cameraSystemObject: HACoreMediaObjectSystem
     #endif
-    #if targetEnvironment(macCatalyst)
     let audioSystemObject: HACoreAudioObjectSystem
     #endif
 
     public required init(request: SensorProviderRequest) {
         self.request = request
+        #if targetEnvironment(macCatalyst)
         #if canImport(CoreMediaIO)
         self.cameraSystemObject = HACoreMediaObjectSystem()
         #endif
-        #if targetEnvironment(macCatalyst)
         self.audioSystemObject = HACoreAudioObjectSystem()
         #endif
     }

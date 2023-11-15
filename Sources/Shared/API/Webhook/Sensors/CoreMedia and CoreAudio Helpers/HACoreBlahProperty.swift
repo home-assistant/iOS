@@ -1,9 +1,9 @@
 import Foundation
 
+#if targetEnvironment(macCatalyst)
 #if canImport(CoreMediaIO)
 import CoreMediaIO
 #endif
-#if targetEnvironment(macCatalyst)
 import CoreAudio
 #endif
 
@@ -13,7 +13,7 @@ public protocol HACoreBlahProperty {
     func getPropertyDataSize(objectID: UInt32, dataSize: UnsafeMutablePointer<UInt32>) -> OSStatus
     func getPropertyData(objectID: UInt32, dataSize: UInt32, output: UnsafeMutableRawPointer) -> OSStatus
 }
-
+#if targetEnvironment(macCatalyst)
 #if canImport(CoreMediaIO)
 public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
     public typealias ValueType = Type
@@ -49,7 +49,6 @@ public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
 }
 #endif
 
-#if targetEnvironment(macCatalyst)
 public struct HACoreAudioProperty<Type>: HACoreBlahProperty {
     public typealias ValueType = Type
     public let address: AudioObjectPropertyAddress
@@ -82,7 +81,6 @@ public struct HACoreAudioProperty<Type>: HACoreBlahProperty {
         }
     }
 }
-#endif
 
 #if canImport(CoreMediaIO)
 extension HACoreMediaProperty {
@@ -151,7 +149,7 @@ extension HACoreMediaProperty {
 }
 #endif
 
-#if targetEnvironment(macCatalyst)
+
 extension HACoreAudioProperty {
     static var deviceUID: HACoreAudioProperty<Unmanaged<CFString>> {
         /*
