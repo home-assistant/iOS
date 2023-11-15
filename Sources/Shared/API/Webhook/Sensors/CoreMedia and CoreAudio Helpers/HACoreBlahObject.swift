@@ -55,6 +55,7 @@ class HACoreBlahObject {
         }
     }
 }
+
 #if targetEnvironment(macCatalyst)
 #if canImport(CoreMediaIO)
 import CoreMediaIO

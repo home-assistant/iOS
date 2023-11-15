@@ -13,6 +13,7 @@ public protocol HACoreBlahProperty {
     func getPropertyDataSize(objectID: UInt32, dataSize: UnsafeMutablePointer<UInt32>) -> OSStatus
     func getPropertyData(objectID: UInt32, dataSize: UInt32, output: UnsafeMutableRawPointer) -> OSStatus
 }
+
 #if targetEnvironment(macCatalyst)
 #if canImport(CoreMediaIO)
 public struct HACoreMediaProperty<Type>: HACoreBlahProperty {
@@ -148,7 +149,6 @@ extension HACoreMediaProperty {
     }
 }
 #endif
-
 
 extension HACoreAudioProperty {
     static var deviceUID: HACoreAudioProperty<Unmanaged<CFString>> {

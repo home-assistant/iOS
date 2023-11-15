@@ -22,7 +22,6 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         #endif
         #endif
 
-
         var id: UInt32 {
             switch self {
             case .invalid: return .max
@@ -32,7 +31,6 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
             case let .coreMedia(id): return id
             #endif
             #endif
-
             }
         }
     }
@@ -81,8 +79,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         addObserver(object: .coreMedia(id), property: property)
     }
     #endif
-#endif
-
+    #endif
 }
 
 public class InputOutputDeviceSensor: SensorProvider {
