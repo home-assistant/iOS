@@ -252,7 +252,7 @@ public class AppEnvironment {
     }
 
     #if !os(watchOS)
-    public var authenticationService: AuthenticationServiceProtocol = AuthenticationService()
+    public var authenticationService: BiometricsAuthenticationServiceProtocol = BiometricsAuthenticationService()
     #endif
 
     public var Log: XCGLogger = {

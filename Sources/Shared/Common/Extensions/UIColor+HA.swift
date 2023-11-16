@@ -1,6 +1,7 @@
 import UIKit
 
 public extension UIColor {
+    static let homeAssistant = UIColor(red: 0, green: 0.682, blue: 0.973, alpha: 1)
     static let onColor = UIColor(hue: 0.15, saturation: 0.75, brightness: 0.49, alpha: 1.0)
     static let defaultEntityColor = UIColor(hue: 0.58, saturation: 0.4, brightness: 0.44, alpha: 1.0)
 
