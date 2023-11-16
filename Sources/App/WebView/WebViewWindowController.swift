@@ -20,10 +20,6 @@ class WebViewWindowController {
 
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
-    private let biometricOverlay: UIView = {
-        let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        return visualEffectView
-    }()
 
     init(window: UIWindow, restorationActivity: NSUserActivity?) {
         self.window = window
@@ -413,36 +409,6 @@ class WebViewWindowController {
             hud.hide(animated: true, afterDelay: 1.0)
         }
     }
-
-    private func listenForBiometricsLockRelatedEvents() {
-        if #available(iOS 13.0, *) {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(checkForBiometrics),
-                name: UIScene.willEnterForegroundNotification,
-                object: nil
-            )
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(protectAppIfNeeded),
-                name: UIScene.didEnterBackgroundNotification,
-                object: nil
-            )
-        } else {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(checkForBiometrics),
-                name: UIApplication.willEnterForegroundNotification,
-                object: nil
-            )
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(protectAppIfNeeded),
-                name: UIApplication.didEnterBackgroundNotification,
-                object: nil
-            )
-        }
-    }
 }
 
 extension WebViewWindowController: OnboardingStateObserver {
@@ -507,55 +473,46 @@ extension WebViewWindowController: OnboardingStateObserver {
 }
 
 // MARK: - Biometrics lock
+
 extension WebViewWindowController {
-    @objc private func checkForBiometrics() {
-        if Current.settingsStore.biometricsRequired {
-            addBiometricOverlayProtection()
-            Current.authenticationService.delegate = self
-            Current.authenticationService.authenticate()
+    private func listenForBiometricsLockRelatedEvents() {
+        if #available(iOS 13.0, *) {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(checkForBiometrics),
+                name: UIScene.willEnterForegroundNotification,
+                object: nil
+            )
+
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(protectAppIfNeeded),
+                name: UIScene.didEnterBackgroundNotification,
+                object: nil
+            )
         } else {
-            DispatchQueue.main.async { [weak self] in
-                self?.biometricOverlay.removeFromSuperview()
-            }
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(checkForBiometrics),
+                name: UIApplication.willEnterForegroundNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(protectAppIfNeeded),
+                name: UIApplication.didEnterBackgroundNotification,
+                object: nil
+            )
         }
+    }
+
+    @objc private func checkForBiometrics() {
+        guard let controller = window.rootViewController else { return }
+        Current.authenticationService.checkForBiometrics(controller: controller)
     }
 
     @objc private func protectAppIfNeeded() {
-        if Current.settingsStore.biometricsRequired {
-            addBiometricOverlayProtection()
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                self?.biometricOverlay.removeFromSuperview()
-            }
-        }
-    }
-
-    private func addBiometricOverlayProtection() {
-        guard let view = window.rootViewController?.view else { return }
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.biometricOverlay.removeFromSuperview()
-            self.biometricOverlay.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(self.biometricOverlay)
-            NSLayoutConstraint.activate([
-                self.biometricOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-                self.biometricOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                self.biometricOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                self.biometricOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            ])
-        }
-    }
-}
-
-// MARK: - AuthenticationServiceDelegate
-extension WebViewWindowController: AuthenticationServiceDelegate {
-    func didFinishAuthentication(authorized: Bool) {
-        if authorized {
-            DispatchQueue.main.async { [weak self] in
-                self?.biometricOverlay.removeFromSuperview()
-            }
-        } else {
-            addBiometricOverlayProtection()
-        }
+        guard let controller = window.rootViewController else { return }
+        Current.authenticationService.protectAppIfNeeded(controller: controller, completion: nil)
     }
 }
