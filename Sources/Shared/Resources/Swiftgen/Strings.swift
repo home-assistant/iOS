@@ -1349,7 +1349,7 @@ public enum L10n {
       public enum Security {
         /// Enable biometric lock
         public static var action: String { return L10n.tr("Localizable", "settings_details.general.security.action") }
-        /// You will be required to authenticate with biometrics everytime you open the app.
+        /// You will be required to authenticate with biometrics every time you open the app.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.general.security.footer") }
         /// Security
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.security.title") }
