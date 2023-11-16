@@ -9,7 +9,7 @@
 			<string>INShareFocusStatusIntent</string>
 			<key>IntentExamples</key>
 			<array>
-				<string>Share focus in home assistant</string>
+				<string>Share focus in Home Assistant</string>
 			</array>
 		</dict>
 	</array>
