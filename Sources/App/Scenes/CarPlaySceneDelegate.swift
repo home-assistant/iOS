@@ -4,7 +4,6 @@ import HAKit
 import PromiseKit
 import Shared
 
-
 public protocol EntitiesStateSubscription {
     func subscribe()
     func unsubscribe()
@@ -12,26 +11,6 @@ public protocol EntitiesStateSubscription {
 
 @available(iOS 16.0, *)
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
-    public static let SUPPORTED_DOMAINS_WITH_STRING = [
-        "button": L10n.Carplay.Labels.buttons,
-        "cover": L10n.Carplay.Labels.covers,
-        "input_boolean": L10n.Carplay.Labels.inputBooleans,
-        "input_button": L10n.Carplay.Labels.inputButtons,
-        "light": L10n.Carplay.Labels.lights,
-        "lock": L10n.Carplay.Labels.locks,
-        "scene": L10n.Carplay.Labels.scenes,
-        "script": L10n.Carplay.Labels.scripts,
-        "switch": L10n.Carplay.Labels.switches
-    ]
-    
-    public let SUPPORTED_DOMAINS = SUPPORTED_DOMAINS_WITH_STRING.keys
-    
-    private var MAP_DOMAINS = [
-        "device_tracker",
-        "person",
-        "sensor",
-        "zone"
-    ]
     
     private var interfaceController: CPInterfaceController?
     private var filteredEntities: [HAEntity] = []
@@ -75,10 +54,10 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     func getFilteredAndSortEntities(entities: [HAEntity]) -> [HAEntity] {
         var tmpEntities: [HAEntity] = []
         
-        for entity in entities where SUPPORTED_DOMAINS.contains(entity.domain) {
+        for entity in entities where CarPlayDomain(domain: entity.domain).isSupported {
             tmpEntities.append(entity)
         }
-        return tmpEntities.sorted(by: {$0.getLocalizedState() < $1.getLocalizedState()})
+        return tmpEntities.sorted(by: {$0.localizedState < $1.localizedState})
     }
     
     func setServer(server: Server) {
@@ -144,7 +123,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 return
             }
             
-            let itemTitle = CarPlaySceneDelegate.SUPPORTED_DOMAINS_WITH_STRING[domain] ?? domain
+            let itemTitle = CarPlayDomain(domain: domain).localizedDescription
             self.entitiesGridTemplate = EntitiesGridTemplate(title: itemTitle, domain: domain, server: server, entities: entities)
             self.interfaceController?.pushTemplate(self.entitiesGridTemplate!.getTemplate(), animated: true)
         }, serverButtonHandler: { _ in
@@ -257,5 +236,56 @@ extension CarPlaySceneDelegate: ServerObserver {
         } else if self.interfaceController?.presentedTemplate != nil {
             self.interfaceController?.dismissTemplate(animated: true)
         }
+    }
+}
+
+enum CarPlayDomain: CaseIterable {
+    case button
+    case cover
+    case input_boolean
+    case input_button
+    case light
+    case lock
+    case scene
+    case script
+    case switch_button
+    case unsupported
+
+    var domain: String {
+        switch self {
+        case .button: return "button"
+        case .cover: return "cover"
+        case .input_boolean: return "input_boolean"
+        case .input_button: return "input_button"
+        case .light: return "light"
+        case .lock: return "lock"
+        case .scene: return "scene"
+        case .script: return "script"
+        case .switch_button: return "switch"
+        case .unsupported: return "unsupported"
+        }
+    }
+    
+    var localizedDescription: String {
+        switch self {
+        case .button: return L10n.Carplay.Labels.buttons
+        case .cover: return L10n.Carplay.Labels.covers
+        case .input_boolean: return L10n.Carplay.Labels.inputBooleans
+        case .input_button: return L10n.Carplay.Labels.inputButtons
+        case .light: return L10n.Carplay.Labels.lights
+        case .lock: return L10n.Carplay.Labels.locks
+        case .scene: return L10n.Carplay.Labels.scenes
+        case .script: return L10n.Carplay.Labels.scripts
+        case .switch_button: return L10n.Carplay.Labels.switches
+        case .unsupported: return ""
+        }
+    }
+    
+    var isSupported: Bool {
+        return self != .unsupported
+    }
+    
+    init(domain: String) {
+        self = Self.allCases.first(where: { $0.domain == domain }) ?? .unsupported
     }
 }

@@ -57,7 +57,7 @@ class DomainsListTemplate {
 
         for domain in domains {
                         
-            let itemTitle = CarPlaySceneDelegate.SUPPORTED_DOMAINS_WITH_STRING[domain] ?? domain
+            let itemTitle = CarPlayDomain(domain: domain).localizedDescription
             let listItem = CPListItem(text: itemTitle,
                                       detailText: nil,
                                       image: HAEntity.getIconForDomain(domain: domain, size: CPListItem.maximumImageSize))

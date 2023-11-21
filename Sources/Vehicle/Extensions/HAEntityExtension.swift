@@ -173,43 +173,23 @@ extension HAEntity {
         }
     }
     
-    func getLocalizedState() -> String {
-        let state = state
-        var localizedState: String = state
-        switch(state) {
-        case "closed":
-            localizedState = L10n.State.closed
-        case "closing":
-            localizedState = L10n.State.closing
-        case "jammed":
-            localizedState = L10n.State.jammed
-        case "locked":
-            localizedState = L10n.State.locked
-        case "locking":
-            localizedState = L10n.State.locking
-        case "off":
-            localizedState = L10n.State.off
-        case "on":
-            localizedState = L10n.State.on
-        case "open":
-            localizedState = L10n.State.open
-        case "opening":
-            localizedState = L10n.State.opening
-        case "unavailable":
-            localizedState = L10n.State.unavailable
-        case "unlocked":
-            localizedState = L10n.State.unlocked
-        case "unlocking":
-            localizedState = L10n.State.unlocking
-        case "unknown":
-            localizedState = L10n.State.unknown
+    var localizedState: String {
+        switch state {
+        case "closed": return L10n.State.closed
+        case "closing": return L10n.State.closing
+        case "jammed": return L10n.State.jammed
+        case "locked": return L10n.State.locked
+        case "locking": return L10n.State.locking
+        case "off": return L10n.State.off
+        case "on": return L10n.State.on
+        case "open": return L10n.State.open
+        case "opening": return L10n.State.opening
+        case "unavailable": return L10n.State.unavailable
+        case "unlocked": return L10n.State.unlocked
+        case "unlocking": return L10n.State.unlocking
+        case "unknown": return L10n.State.unknown
         default:
-            break
+            return "\((Date().timeIntervalSinceReferenceDate - lastChanged.timeIntervalSinceReferenceDate).rounded().description) sec"
         }
-        
-        if (localizedState == state) {
-            localizedState = "\((Date().timeIntervalSinceReferenceDate - lastChanged.timeIntervalSinceReferenceDate).rounded().description) sec"
-        }
-        return localizedState
     }
 }
