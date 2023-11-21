@@ -796,7 +796,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "carplay.labels.switches" = "Switches";
 "carplay.labels.servers" = "Servers";
 "carplay.labels.empty_domain_list" = "No domains available";
-"carplay.labels.no_servers_available" = "No servers available. Add a server at home assistant Companion App.";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carplay.labels.already_added_server" = "Already added";
 "state.auto" = "Auto";
 "state.cleaning" = "Cleaning";
