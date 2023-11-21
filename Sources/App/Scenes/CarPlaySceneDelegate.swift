@@ -24,8 +24,6 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         }
     }
     
-    let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
-    
     func loadEntities() {
         self.domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
         
