@@ -185,9 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
         if #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
-            let scene = UISceneConfiguration(name: "CarPlay", sessionRole: connectingSceneSession.role)
-            scene.delegateClass = CarPlayDelegate.self
-            return scene
+            return SceneActivity.carPlay.configuration
         } else {
             let activity = options.userActivities
                 .compactMap { SceneActivity(activityIdentifier: $0.activityType) }

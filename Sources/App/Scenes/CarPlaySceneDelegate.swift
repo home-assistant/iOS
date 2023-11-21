@@ -11,7 +11,7 @@ public protocol EntitiesStateSubscription {
 }
 
 @available(iOS 16.0, *)
-class CarPlayDelegate: UIResponder {
+class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     public static let SUPPORTED_DOMAINS_WITH_STRING = [
         "button": L10n.Carplay.Labels.buttons,
         "cover": L10n.Carplay.Labels.covers,
@@ -144,7 +144,7 @@ class CarPlayDelegate: UIResponder {
                 return
             }
             
-            let itemTitle = CarPlayDelegate.SUPPORTED_DOMAINS_WITH_STRING[domain] ?? domain
+            let itemTitle = CarPlaySceneDelegate.SUPPORTED_DOMAINS_WITH_STRING[domain] ?? domain
             self.entitiesGridTemplate = EntitiesGridTemplate(title: itemTitle, domain: domain, server: server, entities: entities)
             self.interfaceController?.pushTemplate(self.entitiesGridTemplate!.getTemplate(), animated: true)
         }, serverButtonHandler: { _ in
@@ -172,10 +172,10 @@ class CarPlayDelegate: UIResponder {
         let serverListTemplate = CPListTemplate(title: L10n.Carplay.Labels.servers, sections: [section])
         self.interfaceController?.pushTemplate(serverListTemplate, animated: true)
     }
-}
+//}
 
-@available(iOS 16.0, *)
-extension CarPlayDelegate: CPTemplateApplicationSceneDelegate {
+//@available(iOS 16.0, *)
+//extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
         self.interfaceController?.delegate = self
@@ -224,7 +224,7 @@ extension CarPlayDelegate: CPTemplateApplicationSceneDelegate {
 }
 
 @available(iOS 16.0, *)
-extension CarPlayDelegate: CPInterfaceControllerDelegate {
+extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
         if aTemplate == entitiesGridTemplate?.getTemplate() {
@@ -240,7 +240,7 @@ extension CarPlayDelegate: CPInterfaceControllerDelegate {
 }
 
 @available(iOS 16.0, *)
-extension CarPlayDelegate: ServerObserver {
+extension CarPlaySceneDelegate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         self.domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
         

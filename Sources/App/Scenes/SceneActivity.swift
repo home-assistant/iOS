@@ -4,6 +4,7 @@ enum SceneActivity: CaseIterable {
     case webView
     case settings
     case about
+    case carPlay
 
     init(activityIdentifier: String) {
         self = Self.allCases.first(where: { $0.activityIdentifier == activityIdentifier }) ?? .webView
@@ -22,6 +23,7 @@ enum SceneActivity: CaseIterable {
         case .settings: return "ha.settings"
         case .webView: return "ha.webview"
         case .about: return "ha.about"
+        case .carPlay: return "ha.carPlay"
         }
     }
 
@@ -30,10 +32,14 @@ enum SceneActivity: CaseIterable {
         case .webView: return "WebView"
         case .settings: return "Settings"
         case .about: return "About"
+        case .carPlay: return "CarPlay"
         }
     }
 
     var configuration: UISceneConfiguration {
-        .init(name: configurationName, sessionRole: .windowApplication)
+        switch self {
+        case .webView,.settings,.about: return .init(name: configurationName, sessionRole: .windowApplication)
+        case .carPlay: return .init(name: configurationName, sessionRole: .carTemplateApplication)
+        }
     }
 }
