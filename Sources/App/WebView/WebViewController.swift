@@ -25,21 +25,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var keepAliveTimer: Timer?
     private var initialURL: URL?
-    private var webViewPathObservation: NSKeyValueObservation?
-
-    private var actionButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("This is a test", for: .normal)
-        button.backgroundColor = UIColor(named: Asset.Colors.haPrimary.name)
-        button.contentEdgeInsets = .init(top: 10, left: 12, bottom: 10, right: 12)
-        button.isHidden = true
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 2, height: 2)
-        button.layer.shadowRadius = 4
-        button.titleLabel?.font = .roboto(size: 14, weight: .medium)
-        return button
-    }()
 
     static func viewController(
         withRestorationIdentifierPath identifierComponents: [String],
@@ -263,7 +248,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         styleUI()
         updateWebViewForServerValues()
-        setupActionButton()
     }
 
     public func showSettingsViewController() {
@@ -400,33 +384,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         setNeedsStatusBarAppearanceUpdate()
-    }
-
-    private func setupActionButton() {
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(actionButton)
-
-        NSLayoutConstraint.activate([
-            actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            actionButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 48),
-        ])
-
-        view.layoutIfNeeded()
-        actionButton.layer.cornerRadius = min(actionButton.frame.height, actionButton.frame.width) / 2
-
-        webViewPathObservation = webView.observe(\.url, options: [.new]) { [weak self] webView, _ in
-            self?.updateActionButtonIfNeeded(currentUrl: webView.url)
-        }
-    }
-
-    private func updateActionButtonIfNeeded(currentUrl: URL?) {
-        guard let url = currentUrl else {
-            actionButton.isHidden = true
-            return
-        }
-        Current.actionButtonProvider.actionButton(for: url, given: actionButton)
-        Current.actionButtonProvider.delegate = self
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -1050,6 +1007,7 @@ extension WebViewController: WKScriptMessageHandler {
                             "hasSettingsScreen": !Current.isCatalyst,
                             "canWriteTag": Current.tags.isNFCAvailable,
                             "canCommissionMatter": Current.matter.isAvailable,
+                            "canImportThreadCredentials": Current.threadCredentialsSharingEnabled,
                         ]
                     ))
                 }
@@ -1108,6 +1066,8 @@ extension WebViewController: WKScriptMessageHandler {
                 // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
                 Current.Log.error(error)
             }
+        case "thread/import_credentials":
+            threadCredentialsRequested()
         default:
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
             return
@@ -1138,6 +1098,18 @@ extension WebViewController: WKScriptMessageHandler {
                     seal.reject(error)
                 }
             }
+        }
+    }
+
+    private func threadCredentialsRequested() {
+        if #available(iOS 16.4, *) {
+            guard let server = Current.settingsStore.menuItemTemplate?.server else { return }
+            let threadDebugView =
+                UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
+                    server: server,
+                    threadClient: ThreadClientService()
+                )))
+            present(threadDebugView, animated: true)
         }
     }
 }
@@ -1194,22 +1166,6 @@ extension ConnectionInfo {
             return url
         } else {
             return nil
-        }
-    }
-}
-
-// MARK: - ActionButtonProviderDelegate
-
-extension WebViewController: ActionButtonProviderDelegate {
-    func didTapAppleThreadCredentials() {
-        if #available(iOS 16.4, *) {
-            guard let server = Current.settingsStore.menuItemTemplate?.server else { return }
-            let threadDebugView =
-                UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
-                    server: server,
-                    threadClient: ThreadClientService()
-                )))
-            present(threadDebugView, animated: true)
         }
     }
 }
