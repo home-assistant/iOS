@@ -996,81 +996,82 @@ extension WebViewController: WKScriptMessageHandler {
 
         var response: Guarantee<WebSocketMessage>?
 
-        switch incomingMessage.MessageType {
-        case "config/get":
-            response = Guarantee { seal in
-                DispatchQueue.global(qos: .userInitiated).async {
-                    seal(WebSocketMessage(
-                        id: incomingMessage.ID!,
-                        type: "result",
-                        result: [
-                            "hasSettingsScreen": !Current.isCatalyst,
-                            "canWriteTag": Current.tags.isNFCAvailable,
-                            "canCommissionMatter": Current.matter.isAvailable,
-                            "canImportThreadCredentials": Current.threadCredentialsSharingEnabled,
-                        ]
-                    ))
+        if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
+            switch externalBusMessage {
+            case .configGet:
+                response = Guarantee { seal in
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        seal(WebSocketMessage(
+                            id: incomingMessage.ID!,
+                            type: "result",
+                            result: [
+                                "hasSettingsScreen": !Current.isCatalyst,
+                                "canWriteTag": Current.tags.isNFCAvailable,
+                                "canCommissionMatter": Current.matter.isAvailable,
+                                "canImportThreadCredentials": Current.threadCredentialsSharingEnabled,
+                            ]
+                        ))
+                    }
                 }
-            }
-        case "config_screen/show":
-            showSettingsViewController()
-        case "haptic":
-            guard let hapticType = incomingMessage.Payload?["hapticType"] as? String else {
-                Current.Log.error("Received haptic via bus but hapticType was not string! \(incomingMessage)")
-                return
-            }
-            handleHaptic(hapticType)
-        case "connection-status":
-            guard let connEvt = incomingMessage.Payload?["event"] as? String else {
-                Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
-                return
-            }
-            // Possible values: connected, disconnected, auth-invalid
-            UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-                self.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
-            }, completion: nil)
-        case "tag/read":
-            response = Current.tags.readNFC().map { tag in
-                WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
-            }.recover { _ in
-                .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
-            }
-        case "tag/write":
-            let (promise, seal) = Guarantee<Bool>.pending()
-            response = promise.map { success in
-                WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": success])
-            }
+            case .configScreenShow:
+                showSettingsViewController()
+            case .haptic:
+                guard let hapticType = incomingMessage.Payload?["hapticType"] as? String else {
+                    Current.Log.error("Received haptic via bus but hapticType was not string! \(incomingMessage)")
+                    return
+                }
+                handleHaptic(hapticType)
+            case .connectionStatus:
+                guard let connEvt = incomingMessage.Payload?["event"] as? String else {
+                    Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
+                    return
+                }
+                // Possible values: connected, disconnected, auth-invalid
+                UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
+                    self.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
+                }, completion: nil)
+            case .tagRead:
+                response = Current.tags.readNFC().map { tag in
+                    WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
+                }.recover { _ in
+                    .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
+                }
+            case .tagWrite:
+                let (promise, seal) = Guarantee<Bool>.pending()
+                response = promise.map { success in
+                    WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": success])
+                }
 
-            firstly { () throws -> Promise<(tag: String, name: String?)> in
-                if let tag = incomingMessage.Payload?["tag"] as? String, tag.isEmpty == false {
-                    return .value((tag: tag, name: incomingMessage.Payload?["name"] as? String))
-                } else {
-                    throw HomeAssistantAPI.APIError.invalidResponse
+                firstly { () throws -> Promise<(tag: String, name: String?)> in
+                    if let tag = incomingMessage.Payload?["tag"] as? String, tag.isEmpty == false {
+                        return .value((tag: tag, name: incomingMessage.Payload?["name"] as? String))
+                    } else {
+                        throw HomeAssistantAPI.APIError.invalidResponse
+                    }
+                }.then { tagInfo in
+                    Current.tags.writeNFC(value: tagInfo.tag)
+                }.done { _ in
+                    Current.Log.info("wrote tag via external bus")
+                    seal(true)
+                }.catch { error in
+                    Current.Log.error("couldn't write tag via external bus: \(error)")
+                    seal(false)
                 }
-            }.then { tagInfo in
-                Current.tags.writeNFC(value: tagInfo.tag)
-            }.done { _ in
-                Current.Log.info("wrote tag via external bus")
-                seal(true)
-            }.catch { error in
-                Current.Log.error("couldn't write tag via external bus: \(error)")
-                seal(false)
+            case .themeUpdate:
+                webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+            case .matterCommission:
+                Current.matter.commission(server).done {
+                    Current.Log.info("commission call completed")
+                }.catch { error in
+                    // we don't show a user-visible error because even a successful operation will return 'cancelled'
+                    // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
+                    Current.Log.error(error)
+                }
+            case .threadImportCredentials:
+                threadCredentialsRequested()
             }
-        case "theme-update":
-            webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
-        case "matter/commission":
-            Current.matter.commission(server).done {
-                Current.Log.info("commission call completed")
-            }.catch { error in
-                // we don't show a user-visible error because even a successful operation will return 'cancelled'
-                // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
-                Current.Log.error(error)
-            }
-        case "thread/import_credentials":
-            threadCredentialsRequested()
-        default:
+        } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
-            return
         }
 
         response?.then { [self] outgoing in

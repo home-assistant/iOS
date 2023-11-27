@@ -364,7 +364,7 @@ public class AppEnvironment {
     public var device = DeviceWrapper()
 
     public var matter = MatterWrapper()
-    
+
     public var threadCredentialsSharingEnabled: Bool {
         // For now mac is not returning thread credentials for some reason
         #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
