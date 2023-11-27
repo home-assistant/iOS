@@ -19,18 +19,12 @@ final class ThreadCredentialsSharingViewModelTests: XCTestCase {
         mockClient = nil
     }
 
-    func test_retrieveAllCredentials_calls_retrieveAllCredentials() {
-        // Given
-        let expectation = XCTestExpectation(description: "retrieveAllCredentials returned")
-
+    func test_retrieveAllCredentials_calls_retrieveAllCredentials() async {
         // When
-        Task {
-            await sut.retrieveAllCredentials()
+        await sut.retrieveAllCredentials()
 
-            // Then
-            XCTAssertTrue(mockClient.retrieveAllCredentialsCalled)
-            XCTAssertEqual(sut.credentials.count, 2)
-            expectation.fulfill()
-        }
+        // Then
+        XCTAssertTrue(mockClient.retrieveAllCredentialsCalled)
+        XCTAssertEqual(sut.credentials.count, 2)
     }
 }
