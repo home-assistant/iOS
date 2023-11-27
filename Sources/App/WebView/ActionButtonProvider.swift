@@ -1,14 +1,6 @@
-//
-//  ActionButtonProvider.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
-import UIKit
 import SwiftUI
+import UIKit
 
 public protocol ActionButtonProviderProtocol {
     var delegate: ActionButtonProviderDelegate? { get set }
@@ -20,12 +12,11 @@ public protocol ActionButtonProviderDelegate: AnyObject {
 }
 
 public final class ActionButtonProvider: ActionButtonProviderProtocol {
-
     enum KnownPath: String, CaseIterable {
         case thread = "/config/thread"
     }
 
-    weak public var delegate: ActionButtonProviderDelegate?
+    public weak var delegate: ActionButtonProviderDelegate?
 
     public func actionButton(for url: URL, given actionButton: UIButton) {
         actionButton.isHidden = true
@@ -48,6 +39,7 @@ public final class ActionButtonProvider: ActionButtonProviderProtocol {
     }
 
     // MARK: - Tap events
+
     @objc private func didTapAppleThreadCredentials() {
         delegate?.didTapAppleThreadCredentials()
     }
