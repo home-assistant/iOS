@@ -22,7 +22,9 @@ ib:
     - templateName: segues-swift5
       output: Sources/App/Resources/Segues.swift
 xcassets:
-  inputs: Sources/App/Resources/Assets.xcassets
+  inputs:
+    - Sources/App/Resources/Assets.xcassets
+    - Sources/App/Resources/Colors.xcassets
   outputs:
     templateName: swift5
     output: Sources/App/Resources/Assets.swift
