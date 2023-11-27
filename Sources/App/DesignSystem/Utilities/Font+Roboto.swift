@@ -1,11 +1,3 @@
-//
-//  Font+Roboto.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import UIKit
 

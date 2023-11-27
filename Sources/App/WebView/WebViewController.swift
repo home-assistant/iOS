@@ -8,9 +8,9 @@ import MBProgressHUD
 import PromiseKit
 import Shared
 import SwiftMessages
+import SwiftUI
 import UIKit
 import WebKit
-import SwiftUI
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
     var webView: WKWebView!
@@ -409,13 +409,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         NSLayoutConstraint.activate([
             actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            actionButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 48)
+            actionButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 48),
         ])
 
         view.layoutIfNeeded()
         actionButton.layer.cornerRadius = min(actionButton.frame.height, actionButton.frame.width) / 2
 
-        webViewPathObservation = webView.observe(\.url, options: [.new]) { [weak self] webView, change in
+        webViewPathObservation = webView.observe(\.url, options: [.new]) { [weak self] webView, _ in
             self?.updateActionButtonIfNeeded(currentUrl: webView.url)
         }
     }
@@ -924,8 +924,8 @@ extension String {
         return results.map { result in
             (0 ..< result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound
-                ? nsString.substring(with: result.range(at: $0))
-                : ""
+                    ? nsString.substring(with: result.range(at: $0))
+                    : ""
             }
         }
     }
@@ -1075,7 +1075,7 @@ extension WebViewController: WKScriptMessageHandler {
             response = Current.tags.readNFC().map { tag in
                 WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
             }.recover { _ in
-                    .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
+                .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
             }
         case "tag/write":
             let (promise, seal) = Guarantee<Bool>.pending()
@@ -1199,11 +1199,16 @@ extension ConnectionInfo {
 }
 
 // MARK: - ActionButtonProviderDelegate
+
 extension WebViewController: ActionButtonProviderDelegate {
     func didTapAppleThreadCredentials() {
         if #available(iOS 16.4, *) {
             guard let server = Current.settingsStore.menuItemTemplate?.server else { return }
-            let threadDebugView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(server: server, threadClient: ThreadClientService())))
+            let threadDebugView =
+                UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
+                    server: server,
+                    threadClient: ThreadClientService()
+                )))
             present(threadDebugView, animated: true)
         }
     }

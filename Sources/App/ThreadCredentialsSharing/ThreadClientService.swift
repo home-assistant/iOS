@@ -1,11 +1,3 @@
-//
-//  ThreadClientService.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 
 @available(iOS 13, *)
@@ -31,7 +23,6 @@ import ThreadNetwork
 
 @available(iOS 15, *)
 final class ThreadClientService: THClientProtocol {
-
     private let client = THClient()
 
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
@@ -55,16 +46,15 @@ final class ThreadClientService: THClientProtocol {
 
 extension Data {
     var hexadecimal: String {
-        return map { String(format: "%02x", $0) }
+        map { String(format: "%02x", $0) }
             .joined()
     }
 }
 #else
 /// For SwiftUI Preview
 final class ThreadClientService: THClientProtocol {
-
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
-        return []
+        []
     }
 }
 #endif

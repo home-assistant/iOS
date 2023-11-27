@@ -1,11 +1,3 @@
-//
-//  ThreadCredentialsSharingViewModel.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import HAKit
 import Shared
@@ -16,7 +8,7 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
         case success(title: String)
         case error(title: String, message: String)
     }
-    
+
     @Published var credentials: [ThreadCredential] = []
     @Published var showAlert = false
     @Published var showLoader = false
@@ -35,7 +27,7 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
         showLoader = true
         do {
             credentials = try await threadClient.retrieveAllCredentials()
-        } catch let error {
+        } catch {
             showAlert(type: .error(title: L10n.errorLabel, message: "Error message: \(error.localizedDescription)"))
         }
         showLoader = false
@@ -45,15 +37,19 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
     func shareCredentialWithHomeAssistant(credential: ThreadCredential) {
         let request = HARequest(type: .webSocket("thread/add_dataset_tlv"), data: [
             "tlv": credential.activeOperationalDataSet,
-            "source": "iOS-app"
+            "source": "iOS-app",
         ])
         connection.send(request).promise.pipe { [weak self] result in
             guard let self else { return }
             switch result {
-            case .fulfilled(_):
+            case .fulfilled:
                 self.showAlert(type: .success(title: L10n.successLabel))
-            case .rejected(let error):
-                self.showAlert(type: .error(title: L10n.errorLabel, message: "Error message: \(error.localizedDescription)"))
+            case let .rejected(error):
+                self
+                    .showAlert(type: .error(
+                        title: L10n.errorLabel,
+                        message: "Error message: \(error.localizedDescription)"
+                    ))
             }
         }
     }

@@ -1,13 +1,5 @@
-//
-//  ThreadCredentialsSharingView.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 @available(iOS 16.4, *)
 struct ThreadCredentialsSharingView: View {
@@ -22,9 +14,9 @@ struct ThreadCredentialsSharingView: View {
         NavigationView {
             Group {
                 if viewModel.showLoader {
-                   progressView
+                    progressView
                 } else {
-                   credentialsList
+                    credentialsList
                 }
             }
             .navigationTitle(L10n.Thread.Credentials.screenTitle)
@@ -42,7 +34,7 @@ struct ThreadCredentialsSharingView: View {
             .alert(alertTitle, isPresented: $viewModel.showAlert) {
                 errorAlertActions
             } message: {
-                if case .error(_, let message) = viewModel.alertType {
+                if case let .error(_, message) = viewModel.alertType {
                     Text(message)
                 }
             }
@@ -55,9 +47,9 @@ struct ThreadCredentialsSharingView: View {
     }
 
     private var alertTitle: String {
-        if case .error(let title, _) = viewModel.alertType {
+        if case let .error(title, _) = viewModel.alertType {
             return title
-        } else if case .success(let title) = viewModel.alertType {
+        } else if case let .success(title) = viewModel.alertType {
             return title
         } else {
             return ""
@@ -72,7 +64,7 @@ struct ThreadCredentialsSharingView: View {
             Text(L10n.doneLabel)
         }
 
-        if case .error(_, _)  = viewModel.alertType {
+        if case .error = viewModel.alertType {
             Button {
                 Task {
                     await viewModel.retrieveAllCredentials()

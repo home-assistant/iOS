@@ -1,11 +1,3 @@
-//
-//  CardView.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
@@ -31,7 +23,8 @@ public struct CardView<Content: View>: View {
         .overlay(
             RoundedRectangle(cornerRadius: HACornerRadius.standard)
                 .stroke(
-                    Color(Asset.Colors.onSurface.name), lineWidth: 1)
+                    Color(Asset.Colors.onSurface.name), lineWidth: 1
+                )
         )
     }
 }

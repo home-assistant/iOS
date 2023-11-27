@@ -1,17 +1,9 @@
-//
-//  MockThreadClientService.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 
 @available(iOS 13, *)
 final class MockThreadClientService: THClientProtocol {
     var retrieveAllCredentialsCalled = false
-    
+
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
         retrieveAllCredentialsCalled = true
         return [
@@ -38,7 +30,7 @@ final class MockThreadClientService: THClientProtocol {
                 panID: "test",
                 creationDate: nil,
                 lastModificationDate: Date()
-            )
+            ),
         ]
     }
 }

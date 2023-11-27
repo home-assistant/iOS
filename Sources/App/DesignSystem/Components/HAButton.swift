@@ -1,11 +1,3 @@
-//
-//  HAButton.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 24/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
@@ -32,9 +24,7 @@ public extension ButtonStyle where Self == TextButton {
 
 @available(iOS 13, *)
 #Preview {
-    Button(action: {
-
-    }) {
+    Button(action: {}) {
         Text("Hello World")
     }
     .buttonStyle(.textButton)

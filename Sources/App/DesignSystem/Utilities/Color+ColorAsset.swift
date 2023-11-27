@@ -1,11 +1,3 @@
-//
-//  Color+ColorAsset.swift
-//  Shared-iOS
-//
-//  Created by Bruno Pantaleão on 27/11/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import SwiftUI
 
