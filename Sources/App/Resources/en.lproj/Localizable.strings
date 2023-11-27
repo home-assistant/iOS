@@ -769,3 +769,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
+"thread.credentials.network_name_title" = "Network Name";
+"thread.credentials.network_key_title" = "Network Key";
+"thread.credentials.border_agent_id_title" = "Border Agent ID";
+"thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
+"thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.error_title" = "Error";

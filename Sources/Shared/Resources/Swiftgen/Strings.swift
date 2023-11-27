@@ -1757,6 +1757,23 @@ public enum L10n {
     }
   }
 
+  public enum Thread {
+    public enum Credentials {
+      /// Border Agent ID
+      public static var borderAgentIdTitle: String { return L10n.tr("Localizable", "thread.credentials.border_agent_id_title") }
+      /// Error
+      public static var errorTitle: String { return L10n.tr("Localizable", "thread.credentials.error_title") }
+      /// Network Key
+      public static var networkKeyTitle: String { return L10n.tr("Localizable", "thread.credentials.network_key_title") }
+      /// Network Name
+      public static var networkNameTitle: String { return L10n.tr("Localizable", "thread.credentials.network_name_title") }
+      /// Thread Credentials
+      public static var screenTitle: String { return L10n.tr("Localizable", "thread.credentials.screen_title") }
+      /// Share credential with Home Assistant
+      public static var shareCredentialsButtonTitle: String { return L10n.tr("Localizable", "thread.credentials.share_credentials_button_title") }
+    }
+  }
+
   public enum TokenError {
     /// Connection failed.
     public static var connectionFailed: String { return L10n.tr("Localizable", "token_error.connection_failed") }
