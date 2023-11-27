@@ -525,7 +525,6 @@
 		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
 		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
-		42F5CAC12B10B96F00409816 /* ActionButtonProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABD2B10B58300409816 /* ActionButtonProvider.swift */; };
 		42F5CAD02B10BE1E00409816 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC32B10BE1D00409816 /* Roboto-BoldItalic.ttf */; };
 		42F5CAD12B10BE1E00409816 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC42B10BE1D00409816 /* Roboto-LightItalic.ttf */; };
 		42F5CAD22B10BE1E00409816 /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC52B10BE1D00409816 /* Roboto-Light.ttf */; };
@@ -1631,7 +1630,6 @@
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
-		42F5CABD2B10B58300409816 /* ActionButtonProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonProvider.swift; sourceTree = "<group>"; };
 		42F5CAC32B10BE1D00409816 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BoldItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		42F5CAC42B10BE1D00409816 /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-LightItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
 		42F5CAC52B10BE1D00409816 /* Roboto-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Light.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Light.ttf"; sourceTree = "<group>"; };
@@ -6042,7 +6040,6 @@
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				11F20BC7274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
-				42F5CAC12B10B96F00409816 /* ActionButtonProvider.swift in Sources */,
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,

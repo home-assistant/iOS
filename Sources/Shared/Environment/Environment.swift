@@ -364,6 +364,19 @@ public class AppEnvironment {
     public var device = DeviceWrapper()
 
     public var matter = MatterWrapper()
+    
+    public var threadCredentialsSharingEnabled: Bool {
+        // For now mac is not returning thread credentials for some reason
+        #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
+        if #available(iOS 16.4, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
+    }
 
     public var threadCredentialsSharingEnabled: Bool {
         // For now mac is not returning thread credentials for some reason
@@ -402,8 +415,4 @@ public class AppEnvironment {
     public var focusStatus = FocusStatusWrapper()
 
     public var diskCache: DiskCache = DiskCacheImpl()
-
-    #if !os(watchOS)
-    public var actionButtonProvider: ActionButtonProviderProtocol = ActionButtonProvider()
-    #endif
 }
