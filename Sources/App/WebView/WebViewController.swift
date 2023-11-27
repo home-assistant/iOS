@@ -10,20 +10,36 @@ import Shared
 import SwiftMessages
 import UIKit
 import WebKit
+import SwiftUI
 
-class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
+final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
     var webView: WKWebView!
 
     let server: Server
 
-    var urlObserver: NSKeyValueObservation?
-    var tokens = [HACancellable]()
+    private var urlObserver: NSKeyValueObservation?
+    private var tokens = [HACancellable]()
 
-    let refreshControl = UIRefreshControl()
-    let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    private let refreshControl = UIRefreshControl()
+    private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
-    var keepAliveTimer: Timer?
+    private var keepAliveTimer: Timer?
     private var initialURL: URL?
+    private var webViewPathObservation: NSKeyValueObservation?
+
+    private var actionButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("This is a test", for: .normal)
+        button.backgroundColor = UIColor(named: Asset.Colors.haPrimary.name)
+        button.contentEdgeInsets = .init(top: 10, left: 12, bottom: 10, right: 12)
+        button.isHidden = true
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = CGSize(width: 2, height: 2)
+        button.layer.shadowRadius = 4
+        button.titleLabel?.font = .roboto(size: 14, weight: .medium)
+        return button
+    }()
 
     static func viewController(
         withRestorationIdentifierPath identifierComponents: [String],
@@ -36,7 +52,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
     }
 
-    let settingsButton: UIButton! = {
+    private let settingsButton: UIButton! = {
         let button = UIButton()
         button.setImage(
             MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
@@ -247,6 +263,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         styleUI()
         updateWebViewForServerValues()
+        setupActionButton()
     }
 
     public func showSettingsViewController() {
@@ -383,6 +400,33 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
 
         setNeedsStatusBarAppearanceUpdate()
+    }
+
+    private func setupActionButton() {
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(actionButton)
+
+        NSLayoutConstraint.activate([
+            actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            actionButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 48)
+        ])
+
+        view.layoutIfNeeded()
+        actionButton.layer.cornerRadius = min(actionButton.frame.height, actionButton.frame.width) / 2
+
+        webViewPathObservation = webView.observe(\.url, options: [.new]) { [weak self] webView, change in
+            self?.updateActionButtonIfNeeded(currentUrl: webView.url)
+        }
+    }
+
+    private func updateActionButtonIfNeeded(currentUrl: URL?) {
+        guard let url = currentUrl else {
+            actionButton.isHidden = true
+            return
+        }
+        Current.actionButtonProvider.actionButton(for: url, given: actionButton)
+        Current.actionButtonProvider.delegate = self
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -880,8 +924,8 @@ extension String {
         return results.map { result in
             (0 ..< result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound
-                    ? nsString.substring(with: result.range(at: $0))
-                    : ""
+                ? nsString.substring(with: result.range(at: $0))
+                : ""
             }
         }
     }
@@ -1031,7 +1075,7 @@ extension WebViewController: WKScriptMessageHandler {
             response = Current.tags.readNFC().map { tag in
                 WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
             }.recover { _ in
-                .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
+                    .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
             }
         case "tag/write":
             let (promise, seal) = Guarantee<Bool>.pending()
@@ -1150,6 +1194,17 @@ extension ConnectionInfo {
             return url
         } else {
             return nil
+        }
+    }
+}
+
+// MARK: - ActionButtonProviderDelegate
+extension WebViewController: ActionButtonProviderDelegate {
+    func didTapAppleThreadCredentials() {
+        if #available(iOS 16.4, *) {
+            guard let server = Current.settingsStore.menuItemTemplate?.server else { return }
+            let threadDebugView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(server: server, threadClient: ThreadClientService())))
+            present(threadDebugView, animated: true)
         }
     }
 }

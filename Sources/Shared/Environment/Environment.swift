@@ -389,4 +389,8 @@ public class AppEnvironment {
     public var focusStatus = FocusStatusWrapper()
 
     public var diskCache: DiskCache = DiskCacheImpl()
+
+    #if !os(watchOS)
+    public var actionButtonProvider: ActionButtonProviderProtocol = ActionButtonProvider()
+    #endif
 }

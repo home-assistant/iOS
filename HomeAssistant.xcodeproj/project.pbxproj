@@ -515,6 +515,35 @@
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		42CA28A92B101A2A0093B31A /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42CA28A82B101A2A0093B31A /* Colors.xcassets */; };
+		42CA28BB2B1028330093B31A /* MockThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* MockThreadClientService.swift */; };
+		42DD84112B14A6E700936F16 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
+		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
+		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
+		42F5CAC12B10B96F00409816 /* ActionButtonProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABD2B10B58300409816 /* ActionButtonProvider.swift */; };
+		42F5CAD02B10BE1E00409816 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC32B10BE1D00409816 /* Roboto-BoldItalic.ttf */; };
+		42F5CAD12B10BE1E00409816 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC42B10BE1D00409816 /* Roboto-LightItalic.ttf */; };
+		42F5CAD22B10BE1E00409816 /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC52B10BE1D00409816 /* Roboto-Light.ttf */; };
+		42F5CAD32B10BE1E00409816 /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC62B10BE1D00409816 /* Roboto-MediumItalic.ttf */; };
+		42F5CAD42B10BE1E00409816 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC72B10BE1D00409816 /* Roboto-Italic.ttf */; };
+		42F5CAD52B10BE1E00409816 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC82B10BE1D00409816 /* Roboto-Black.ttf */; };
+		42F5CAD62B10BE1E00409816 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CAC92B10BE1D00409816 /* Roboto-ThinItalic.ttf */; };
+		42F5CAD72B10BE1E00409816 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACA2B10BE1D00409816 /* Roboto-Regular.ttf */; };
+		42F5CAD82B10BE1E00409816 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACB2B10BE1D00409816 /* Roboto-Medium.ttf */; };
+		42F5CAD92B10BE1E00409816 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACC2B10BE1D00409816 /* Roboto-Bold.ttf */; };
+		42F5CADA2B10BE1E00409816 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACD2B10BE1D00409816 /* Roboto-Thin.ttf */; };
+		42F5CADB2B10BE1E00409816 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACE2B10BE1D00409816 /* Roboto-BlackItalic.ttf */; };
+		42F5CADC2B10BE1E00409816 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACF2B10BE1E00409816 /* LICENSE.txt */; };
+		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
+		42F5CAE62B10CDC600409816 /* Font+Roboto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CADD2B10C76600409816 /* Font+Roboto.swift */; };
+		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
+		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
+		42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */; };
+		42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B72B10279D0093B31A /* ThreadClientService.swift */; };
+		42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */; };
+		42F5CAEC2B10CED600409816 /* ThreadCredentialsSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */; };
+		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -730,7 +759,6 @@
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
-		B65B15052273188300635D5C /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
@@ -1580,6 +1608,35 @@
 		42DD84372B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
+		422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ThreadNetwork.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/System/Library/Frameworks/ThreadNetwork.framework; sourceTree = DEVELOPER_DIR; };
+		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingView.swift; sourceTree = "<group>"; };
+		42CA28A82B101A2A0093B31A /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
+		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModel.swift; sourceTree = "<group>"; };
+		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
+		42CA28B72B10279D0093B31A /* ThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
+		42CA28BA2B1028330093B31A /* MockThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockThreadClientService.swift; sourceTree = "<group>"; };
+		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
+		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
+		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
+		42F5CABD2B10B58300409816 /* ActionButtonProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonProvider.swift; sourceTree = "<group>"; };
+		42F5CAC32B10BE1D00409816 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BoldItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
+		42F5CAC42B10BE1D00409816 /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-LightItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
+		42F5CAC52B10BE1D00409816 /* Roboto-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Light.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Light.ttf"; sourceTree = "<group>"; };
+		42F5CAC62B10BE1D00409816 /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-MediumItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
+		42F5CAC72B10BE1D00409816 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Italic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
+		42F5CAC82B10BE1D00409816 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Black.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Black.ttf"; sourceTree = "<group>"; };
+		42F5CAC92B10BE1D00409816 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-ThinItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
+		42F5CACA2B10BE1D00409816 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Regular.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		42F5CACB2B10BE1D00409816 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Medium.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		42F5CACC2B10BE1D00409816 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Bold.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		42F5CACD2B10BE1D00409816 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Thin.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
+		42F5CACE2B10BE1D00409816 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BlackItalic.ttf"; path = "../../../../../../Downloads/Roboto/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
+		42F5CACF2B10BE1E00409816 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../../../../../Downloads/Roboto/LICENSE.txt; sourceTree = "<group>"; };
+		42F5CADD2B10C76600409816 /* Font+Roboto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Roboto.swift"; sourceTree = "<group>"; };
+		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -2590,6 +2647,7 @@
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
+				42F5CABD2B10B58300409816 /* ActionButtonProvider.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -2911,6 +2969,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */,
 				11B63B0E297A19DC00D908ED /* MatterSupport.framework */,
 				1112EA92271B78690038BBFC /* UserNotifications.framework */,
 				117318AC25199E220013E010 /* Foundation.framework */,
@@ -2942,6 +3001,91 @@
 				943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CAB72B10AD8C00409816 /* Tests */,
+				42CA28B92B1028250093B31A /* Mocks */,
+				42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */,
+				42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */,
+				42CA28B72B10279D0093B31A /* ThreadClientService.swift */,
+				42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */,
+			);
+			path = ThreadCredentialsSharing;
+			sourceTree = "<group>";
+		};
+		42CA28AC2B101D320093B31A /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28B12B101D9C0093B31A /* Components */,
+				42CA28B22B101DA70093B31A /* Utilities */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		42CA28B12B101D9C0093B31A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28AF2B101D6B0093B31A /* CardView.swift */,
+				42CA28B52B1022680093B31A /* HAButton.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		42CA28B22B101DA70093B31A /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */,
+				42F5CADD2B10C76600409816 /* Font+Roboto.swift */,
+				42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		42CA28B92B1028250093B31A /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28BA2B1028330093B31A /* MockThreadClientService.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		42F5CAB72B10AD8C00409816 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		42F5CABA2B10AE0C00409816 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CABB2B10AE1A00409816 /* ServerFixture.swift */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		42F5CAC22B10BE0800409816 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CACF2B10BE1E00409816 /* LICENSE.txt */,
+				42F5CAC82B10BE1D00409816 /* Roboto-Black.ttf */,
+				42F5CACE2B10BE1D00409816 /* Roboto-BlackItalic.ttf */,
+				42F5CACC2B10BE1D00409816 /* Roboto-Bold.ttf */,
+				42F5CAC32B10BE1D00409816 /* Roboto-BoldItalic.ttf */,
+				42F5CAC72B10BE1D00409816 /* Roboto-Italic.ttf */,
+				42F5CAC52B10BE1D00409816 /* Roboto-Light.ttf */,
+				42F5CAC42B10BE1D00409816 /* Roboto-LightItalic.ttf */,
+				42F5CACB2B10BE1D00409816 /* Roboto-Medium.ttf */,
+				42F5CAC62B10BE1D00409816 /* Roboto-MediumItalic.ttf */,
+				42F5CACA2B10BE1D00409816 /* Roboto-Regular.ttf */,
+				42F5CACD2B10BE1D00409816 /* Roboto-Thin.ttf */,
+				42F5CAC92B10BE1D00409816 /* Roboto-ThinItalic.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
@@ -3243,6 +3387,7 @@
 			children = (
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
+				42CA28AC2B101D320093B31A /* DesignSystem */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
 				11AF1ED82528FBAA00AAE364 /* Onboarding */,
@@ -3250,6 +3395,7 @@
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
+				42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				11AD2E2A2528FDB700FBC437 /* WebView */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
@@ -3444,11 +3590,13 @@
 				B672AB022215057600175465 /* Alternate Icons */,
 				B65B15042273188300635D5C /* Assets.swift */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
+				42CA28A82B101A2A0093B31A /* Colors.xcassets */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
 				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
 				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */,
 				B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
+				42F5CAC22B10BE0800409816 /* Fonts */,
 				116570582702A3B9003906A7 /* Frontend.strings */,
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
 				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
@@ -3559,6 +3707,7 @@
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				D0BE440B2104224A00C74314 /* Authentication */,
+				42F5CABA2B10AE0C00409816 /* Fixtures */,
 				B672333A225DB66A0031D629 /* WebSocket */,
 				B6E91C212232482A0014CB8D /* Webhook */,
 				D0B25BD0213218B000678C2C /* Requests */,
@@ -4556,6 +4705,7 @@
 				B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
 				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
+				42F5CAD82B10BE1E00409816 /* Roboto-Medium.ttf in Resources */,
 				B64E754A23F3BFF200472C04 /* purple@2x.png in Resources */,
 				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
 				11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */,
@@ -4591,6 +4741,7 @@
 				B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 				B64E755223F3BFF200472C04 /* blue@3x.png in Resources */,
 				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
+				42F5CADB2B10BE1E00409816 /* Roboto-BlackItalic.ttf in Resources */,
 				11810D4E249EAF8D00E741A4 /* bi_pride@2x.png in Resources */,
 				3090BEE22ACDA30100030356 /* classic@2x.png in Resources */,
 				B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */,
@@ -4618,8 +4769,11 @@
 				B64E756123F3BFF200472C04 /* dev@3x.png in Resources */,
 				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
 				B64E754F23F3BFF200472C04 /* electric-violet@3x.png in Resources */,
+				42F5CADC2B10BE1E00409816 /* LICENSE.txt in Resources */,
+				42CA28A92B101A2A0093B31A /* Colors.xcassets in Resources */,
 				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
 				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
+				42F5CAD42B10BE1E00409816 /* Roboto-Italic.ttf in Resources */,
 				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
 				11F893B025C5F56700820C61 /* GoogleService-Info-Debug.plist in Resources */,
 				B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */,
@@ -4636,20 +4790,25 @@
 				B64E755923F3BFF200472C04 /* crimson@2x.png in Resources */,
 				B64E755123F3BFF200472C04 /* red@3x.png in Resources */,
 				B606163C1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav in Resources */,
+				42F5CAD32B10BE1E00409816 /* Roboto-MediumItalic.ttf in Resources */,
 				B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */,
 				B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */,
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
+				42F5CAD62B10BE1E00409816 /* Roboto-ThinItalic.ttf in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
 				11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */,
+				42F5CAD12B10BE1E00409816 /* Roboto-LightItalic.ttf in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
 				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
 				1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */,
 				B60616471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav in Resources */,
+				42F5CAD22B10BE1E00409816 /* Roboto-Light.ttf in Resources */,
 				B60616181D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav in Resources */,
 				B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */,
 				B6E2D4D52270706300446DFA /* ha-loading.json in Resources */,
+				42F5CAD02B10BE1E00409816 /* Roboto-BoldItalic.ttf in Resources */,
 				B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */,
 				B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */,
 				B64E754223F3BFF200472C04 /* old-dev@2x.png in Resources */,
@@ -4664,6 +4823,7 @@
 				B60616451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav in Resources */,
 				B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */,
 				11F893B225C5F56700820C61 /* GoogleService-Info-Beta.plist in Resources */,
+				42F5CAD72B10BE1E00409816 /* Roboto-Regular.ttf in Resources */,
 				B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */,
 				B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
 				B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */,
@@ -4682,9 +4842,12 @@
 				B6D8A3282271448E00FA765D /* error.json in Resources */,
 				B64E754623F3BFF200472C04 /* old-release@3x.png in Resources */,
 				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
+				42F5CADA2B10BE1E00409816 /* Roboto-Thin.ttf in Resources */,
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
+				42F5CAD52B10BE1E00409816 /* Roboto-Black.ttf in Resources */,
 				B64E755C23F3BFF200472C04 /* release@3x.png in Resources */,
+				42F5CAD92B10BE1E00409816 /* Roboto-Bold.ttf in Resources */,
 				B64E755523F3BFF200472C04 /* orange@3x.png in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
@@ -5412,16 +5575,19 @@
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
+				42F5CAEC2B10CED600409816 /* ThreadCredentialsSharingView.swift in Sources */,
 				1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
+				42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
+				42CA28BB2B1028330093B31A /* MockThreadClientService.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
@@ -5473,12 +5639,14 @@
 				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
 				1185DF96271FBB9800ED7D9A /* OnboardingAuthLogin.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
+				42DD84112B14A6E700936F16 /* Assets.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
+				42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
@@ -5495,8 +5663,8 @@
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
+				42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
-				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
@@ -5522,6 +5690,7 @@
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
+				42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
@@ -5543,6 +5712,7 @@
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
 				11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */,
+				42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
@@ -5788,6 +5958,8 @@
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
+				42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
 				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
@@ -5848,6 +6020,7 @@
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				11F20BC7274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
+				42F5CAC12B10B96F00409816 /* ActionButtonProvider.swift in Sources */,
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
@@ -5865,6 +6038,7 @@
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				11B38EE5275C54A200205C7B /* SendLocationIntentHandler.swift in Sources */,
 				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
+				42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
@@ -5887,6 +6061,7 @@
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
+				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
@@ -5906,6 +6081,7 @@
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
+				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */,
 				1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
@@ -5920,6 +6096,7 @@
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
+				42F5CAE62B10CDC600409816 /* Font+Roboto.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
@@ -6724,6 +6901,7 @@
 					"-framework",
 					"\"UIKit\"",
 					"$(inherited)",
+					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
@@ -6938,6 +7116,7 @@
 					"-framework",
 					"\"UIKit\"",
 					"$(inherited)",
+					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
@@ -6979,6 +7158,7 @@
 					"-framework",
 					"\"UIKit\"",
 					"$(inherited)",
+					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";
