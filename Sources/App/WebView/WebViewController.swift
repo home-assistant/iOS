@@ -1070,9 +1070,7 @@ extension WebViewController: WKScriptMessageHandler {
             case .threadImportCredentials:
                 threadCredentialsRequested()
             }
-        case "thread/import_credentials":
-            threadCredentialsRequested()
-        default:
+        } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
         }
 
