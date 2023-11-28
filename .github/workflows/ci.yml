@@ -39,7 +39,7 @@ jobs:
             --lint --config .swiftformat .
 
   test:
-    runs-on: macos-12
+    runs-on: macos-13
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v3
