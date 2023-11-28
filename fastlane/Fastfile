@@ -184,8 +184,10 @@ lane :update_strings do
     'es' => 'es-ES',
     'es-419' => 'es',
     # es-MX is missing from the frontend, so we copy es over below
+    'et' => 'et',
     'fi' => 'fi',
     'fr' => 'fr',
+    'he' => 'he',
     'hu' => 'hu',
     'id' => 'id',
     'it' => 'it',
