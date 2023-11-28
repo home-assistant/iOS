@@ -4,7 +4,6 @@ import SwiftUI
 public struct TextButton: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 14).weight(.medium))
             .frame(minHeight: 40)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 22)
