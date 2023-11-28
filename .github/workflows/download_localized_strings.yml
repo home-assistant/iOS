@@ -11,7 +11,7 @@ env:
 
 jobs:
   update_strings:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v3
         with:
