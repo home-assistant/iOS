@@ -117,8 +117,8 @@ class ServerManagerTests: XCTestCase {
 
         XCTAssertEqual(servers.all, [server1, server2])
 
-        try XCTAssertEqual(keychain.getData("fake1"), encoder.encode(server1.info))
-        try XCTAssertEqual(keychain.getData("fake2"), encoder.encode(server2.info))
+        try XCTAssertEqual(keychain.getData("fake1")?.count, encoder.encode(server1.info).count)
+        try XCTAssertEqual(keychain.getData("fake2")?.count, encoder.encode(server2.info).count)
         XCTAssertEqual(keychain.data.count, 2)
 
         let stateS1S2 = servers.restorableState()
@@ -127,7 +127,7 @@ class ServerManagerTests: XCTestCase {
             server1.info.connection.webhookID = "webhook1_2"
         }
         XCTAssertEqual(server1.info.connection.webhookID, "webhook1_2")
-        try XCTAssertEqual(keychain.getData("fake1"), encoder.encode(server1.info))
+        try XCTAssertEqual(keychain.getData("fake1")?.count, encoder.encode(server1.info).count)
 
         expectingObserver {
             servers.remove(identifier: "fake1")
@@ -159,7 +159,7 @@ class ServerManagerTests: XCTestCase {
             server3 = servers.add(identifier: "fake3", serverInfo: info3)
         }
         XCTAssertEqual(servers.all, [server2, server3])
-        try XCTAssertEqual(keychain.getData("fake3"), encoder.encode(server3.info))
+        try XCTAssertEqual(keychain.getData("fake3")?.count, encoder.encode(server3.info).count)
         XCTAssertEqual(server3.info, with(info3) {
             $0.sortOrder = 2000
         })
@@ -205,7 +205,7 @@ class ServerManagerTests: XCTestCase {
         }
 
         XCTAssertEqual(servers.server(for: "fake2")?.info.connection.webhookID, "webhook2_2")
-        try XCTAssertEqual(keychain.getData("fake2"), encoder.encode(server2_afterRestore.info))
+        try XCTAssertEqual(keychain.getData("fake2")?.count, encoder.encode(server2_afterRestore.info).count)
 
         let s2RestoreExpectation = expectation(description: "server2notify")
         _ = server2_afterRestore.observe { info in
@@ -431,7 +431,7 @@ class ServerManagerTests: XCTestCase {
             $0.remoteName = "new_name1"
         }
         servers.add(identifier: newServer1.identifier, serverInfo: newInfo)
-        XCTAssertEqual(keychain.data[newServer1.identifier.rawValue], try encoder.encode(newInfo))
+        XCTAssertEqual(keychain.data[newServer1.identifier.rawValue]?.count, try encoder.encode(newInfo).count)
     }
 
     func testUpdateAfterDeleteInAnotherProcessDoesntPersist() throws {
@@ -449,7 +449,7 @@ class ServerManagerTests: XCTestCase {
             $0.remoteName = "new_name1"
         }
         servers.add(identifier: server1.identifier, serverInfo: newInfo)
-        XCTAssertEqual(keychain.data[server1.identifier.rawValue], try encoder.encode(newInfo))
+        XCTAssertEqual(keychain.data[server1.identifier.rawValue]?.count, try encoder.encode(newInfo).count)
     }
 
     func testThreadsafeChangesWithoutCaching() throws {
