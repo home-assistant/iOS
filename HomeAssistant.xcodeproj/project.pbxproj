@@ -539,7 +539,6 @@
 		42F5CADB2B10BE1E00409816 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACE2B10BE1D00409816 /* Roboto-BlackItalic.ttf */; };
 		42F5CADC2B10BE1E00409816 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CACF2B10BE1E00409816 /* LICENSE.txt */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
-		42F5CAE62B10CDC600409816 /* Font+Roboto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CADD2B10C76600409816 /* Font+Roboto.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */; };
@@ -3048,7 +3047,6 @@
 			isa = PBXGroup;
 			children = (
 				42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */,
-				42F5CADD2B10C76600409816 /* Font+Roboto.swift */,
 				42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */,
 			);
 			path = Utilities;
@@ -3084,26 +3082,6 @@
 				42F5CABB2B10AE1A00409816 /* ServerFixture.swift */,
 			);
 			path = Fixtures;
-			sourceTree = "<group>";
-		};
-		42F5CAC22B10BE0800409816 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				42F5CACF2B10BE1E00409816 /* LICENSE.txt */,
-				42F5CAC82B10BE1D00409816 /* Roboto-Black.ttf */,
-				42F5CACE2B10BE1D00409816 /* Roboto-BlackItalic.ttf */,
-				42F5CACC2B10BE1D00409816 /* Roboto-Bold.ttf */,
-				42F5CAC32B10BE1D00409816 /* Roboto-BoldItalic.ttf */,
-				42F5CAC72B10BE1D00409816 /* Roboto-Italic.ttf */,
-				42F5CAC52B10BE1D00409816 /* Roboto-Light.ttf */,
-				42F5CAC42B10BE1D00409816 /* Roboto-LightItalic.ttf */,
-				42F5CACB2B10BE1D00409816 /* Roboto-Medium.ttf */,
-				42F5CAC62B10BE1D00409816 /* Roboto-MediumItalic.ttf */,
-				42F5CACA2B10BE1D00409816 /* Roboto-Regular.ttf */,
-				42F5CACD2B10BE1D00409816 /* Roboto-Thin.ttf */,
-				42F5CAC92B10BE1D00409816 /* Roboto-ThinItalic.ttf */,
-			);
-			path = Fonts;
 			sourceTree = "<group>";
 		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
@@ -3614,7 +3592,6 @@
 				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */,
 				B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
-				42F5CAC22B10BE0800409816 /* Fonts */,
 				116570582702A3B9003906A7 /* Frontend.strings */,
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
 				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
@@ -4723,7 +4700,6 @@
 				B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
 				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
-				42F5CAD82B10BE1E00409816 /* Roboto-Medium.ttf in Resources */,
 				B64E754A23F3BFF200472C04 /* purple@2x.png in Resources */,
 				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
 				11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */,
@@ -4759,7 +4735,6 @@
 				B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 				B64E755223F3BFF200472C04 /* blue@3x.png in Resources */,
 				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
-				42F5CADB2B10BE1E00409816 /* Roboto-BlackItalic.ttf in Resources */,
 				11810D4E249EAF8D00E741A4 /* bi_pride@2x.png in Resources */,
 				3090BEE22ACDA30100030356 /* classic@2x.png in Resources */,
 				B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */,
@@ -4787,11 +4762,9 @@
 				B64E756123F3BFF200472C04 /* dev@3x.png in Resources */,
 				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
 				B64E754F23F3BFF200472C04 /* electric-violet@3x.png in Resources */,
-				42F5CADC2B10BE1E00409816 /* LICENSE.txt in Resources */,
 				42CA28A92B101A2A0093B31A /* Colors.xcassets in Resources */,
 				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
 				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
-				42F5CAD42B10BE1E00409816 /* Roboto-Italic.ttf in Resources */,
 				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
 				11F893B025C5F56700820C61 /* GoogleService-Info-Debug.plist in Resources */,
 				B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */,
@@ -4808,25 +4781,20 @@
 				B64E755923F3BFF200472C04 /* crimson@2x.png in Resources */,
 				B64E755123F3BFF200472C04 /* red@3x.png in Resources */,
 				B606163C1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav in Resources */,
-				42F5CAD32B10BE1E00409816 /* Roboto-MediumItalic.ttf in Resources */,
 				B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */,
 				B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */,
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
-				42F5CAD62B10BE1E00409816 /* Roboto-ThinItalic.ttf in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
 				11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */,
-				42F5CAD12B10BE1E00409816 /* Roboto-LightItalic.ttf in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
 				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
 				1158D6282511DA68008C0C9F /* ManualPodLicenses.plist in Resources */,
 				B60616471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav in Resources */,
-				42F5CAD22B10BE1E00409816 /* Roboto-Light.ttf in Resources */,
 				B60616181D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav in Resources */,
 				B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */,
 				B6E2D4D52270706300446DFA /* ha-loading.json in Resources */,
-				42F5CAD02B10BE1E00409816 /* Roboto-BoldItalic.ttf in Resources */,
 				B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */,
 				B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */,
 				B64E754223F3BFF200472C04 /* old-dev@2x.png in Resources */,
@@ -4841,7 +4809,6 @@
 				B60616451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav in Resources */,
 				B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */,
 				11F893B225C5F56700820C61 /* GoogleService-Info-Beta.plist in Resources */,
-				42F5CAD72B10BE1E00409816 /* Roboto-Regular.ttf in Resources */,
 				B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */,
 				B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
 				B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */,
@@ -4860,12 +4827,9 @@
 				B6D8A3282271448E00FA765D /* error.json in Resources */,
 				B64E754623F3BFF200472C04 /* old-release@3x.png in Resources */,
 				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
-				42F5CADA2B10BE1E00409816 /* Roboto-Thin.ttf in Resources */,
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
-				42F5CAD52B10BE1E00409816 /* Roboto-Black.ttf in Resources */,
 				B64E755C23F3BFF200472C04 /* release@3x.png in Resources */,
-				42F5CAD92B10BE1E00409816 /* Roboto-Bold.ttf in Resources */,
 				B64E755523F3BFF200472C04 /* orange@3x.png in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
@@ -6115,7 +6079,6 @@
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
-				42F5CAE62B10CDC600409816 /* Font+Roboto.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
