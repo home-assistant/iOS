@@ -1125,6 +1125,10 @@ public enum L10n {
           public static var body: String { return L10n.tr("Localizable", "settings.developer.map_notification.notification.body") }
         }
       }
+      public enum MockThreadCredentialsSharing {
+        /// Mock Thread Credentials Sharing
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.mock_thread_credentials_sharing.title") }
+      }
       public enum ShowLogFiles {
         /// Show log files in Finder
         public static var title: String { return L10n.tr("Localizable", "settings.developer.show_log_files.title") }

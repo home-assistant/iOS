@@ -324,6 +324,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.developer.crashlytics_test.non_fatal.notification.body" = "When you press OK, a non-fatal error will be sent to Crashlytics. It may take up to 5 minutes to appear in the console.";
 "settings.developer.crashlytics_test.non_fatal.notification.title" = "About to submit a non-fatal error";
 "settings.developer.crashlytics_test.non_fatal.title" = "Test Crashlytics Non-Fatal Error";
+"settings.developer.mock_thread_credentials_sharing.title" = "Mock Thread Credentials Sharing";
 "settings.developer.debug_strings.title" = "Debug strings";
 "settings.developer.export_log_files.title" = "Export log files";
 "settings.developer.footer" = "Don't use these if you don't know what you are doing!";
