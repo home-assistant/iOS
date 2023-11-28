@@ -52,6 +52,7 @@ extension Data {
 }
 #else
 /// For SwiftUI Preview
+@available(iOS 15, *)
 final class ThreadClientService: THClientProtocol {
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
         []
