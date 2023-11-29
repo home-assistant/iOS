@@ -365,32 +365,6 @@ public class AppEnvironment {
 
     public var matter = MatterWrapper()
 
-    public var threadCredentialsSharingEnabled: Bool {
-        // For now mac is not returning thread credentials for some reason
-        #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
-        if #available(iOS 16.4, *) {
-            return true
-        } else {
-            return false
-        }
-        #else
-        return false
-        #endif
-    }
-
-    public var threadCredentialsSharingEnabled: Bool {
-        // For now mac is not returning thread credentials for some reason
-        #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
-        if #available(iOS 16.4, *) {
-            return true
-        } else {
-            return false
-        }
-        #else
-        return false
-        #endif
-    }
-
     /// Wrapper around CLGeocoder
     public struct Geocoder {
         public var geocode: (CLLocation) -> Promise<[CLPlacemark]> = CLGeocoder.geocode(location:)

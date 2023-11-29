@@ -1126,7 +1126,7 @@ public enum L10n {
         }
       }
       public enum MockThreadCredentialsSharing {
-        /// Mock Thread Credentials Sharing
+        /// Simulator Thread Credentials Sharing
         public static var title: String { return L10n.tr("Localizable", "settings.developer.mock_thread_credentials_sharing.title") }
       }
       public enum ShowLogFiles {
@@ -1765,8 +1765,6 @@ public enum L10n {
     public enum Credentials {
       /// Border Agent ID
       public static var borderAgentIdTitle: String { return L10n.tr("Localizable", "thread.credentials.border_agent_id_title") }
-      /// Error
-      public static var errorTitle: String { return L10n.tr("Localizable", "thread.credentials.error_title") }
       /// Network Key
       public static var networkKeyTitle: String { return L10n.tr("Localizable", "thread.credentials.network_key_title") }
       /// Network Name

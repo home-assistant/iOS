@@ -1,4 +1,5 @@
 import Foundation
+import Shared
 
 @available(iOS 13, *)
 protocol THClientProtocol {
@@ -41,13 +42,6 @@ final class ThreadClientService: THClientProtocol {
                 lastModificationDate: credential.lastModificationDate
             )
         }
-    }
-}
-
-extension Data {
-    var hexadecimal: String {
-        map { String(format: "%02x", $0) }
-            .joined()
     }
 }
 #else

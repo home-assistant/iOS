@@ -386,10 +386,11 @@ class DebugSettingsViewController: HAFormViewController {
             section <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.MockThreadCredentialsSharing.title
             }.onCellSelection { [weak self] _, _ in
+                guard let server = Current.servers.all.first else { return }
                 let viewController = UIHostingController(
                     rootView: ThreadCredentialsSharingView(
                         viewModel: .init(
-                            server: ServerFixture.standard,
+                            server: server,
                             threadClient: MockThreadClientService()
                         )
                     )

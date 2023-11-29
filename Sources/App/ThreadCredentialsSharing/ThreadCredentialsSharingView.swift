@@ -39,6 +39,7 @@ struct ThreadCredentialsSharingView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
         .onAppear {
             Task {
                 await viewModel.retrieveAllCredentials()

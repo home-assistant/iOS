@@ -881,8 +881,8 @@ extension String {
         return results.map { result in
             (0 ..< result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound
-                    ? nsString.substring(with: result.range(at: $0))
-                    : ""
+                ? nsString.substring(with: result.range(at: $0))
+                : ""
             }
         }
     }
@@ -1008,7 +1008,7 @@ extension WebViewController: WKScriptMessageHandler {
                                 "hasSettingsScreen": !Current.isCatalyst,
                                 "canWriteTag": Current.tags.isNFCAvailable,
                                 "canCommissionMatter": Current.matter.isAvailable,
-                                "canImportThreadCredentials": Current.threadCredentialsSharingEnabled,
+                                "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
                             ]
                         ))
                     }
@@ -1034,7 +1034,7 @@ extension WebViewController: WKScriptMessageHandler {
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
                 }.recover { _ in
-                    .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
+                        .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
                 }
             case .tagWrite:
                 let (promise, seal) = Guarantee<Bool>.pending()
@@ -1104,12 +1104,10 @@ extension WebViewController: WKScriptMessageHandler {
 
     private func threadCredentialsRequested() {
         if #available(iOS 16.4, *) {
-            guard let server = Current.settingsStore.menuItemTemplate?.server else { return }
-            let threadDebugView =
-                UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
-                    server: server,
-                    threadClient: ThreadClientService()
-                )))
+            let threadDebugView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
+                server: server,
+                threadClient: ThreadClientService()
+            )))
             present(threadDebugView, animated: true)
         }
     }
