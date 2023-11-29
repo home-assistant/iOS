@@ -881,8 +881,8 @@ extension String {
         return results.map { result in
             (0 ..< result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound
-                ? nsString.substring(with: result.range(at: $0))
-                : ""
+                    ? nsString.substring(with: result.range(at: $0))
+                    : ""
             }
         }
     }
@@ -1034,7 +1034,7 @@ extension WebViewController: WKScriptMessageHandler {
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
                 }.recover { _ in
-                        .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
+                    .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
                 }
             case .tagWrite:
                 let (promise, seal) = Guarantee<Bool>.pending()

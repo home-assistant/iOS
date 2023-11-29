@@ -1,5 +1,5 @@
 import Foundation
 
-public struct HACornerRadius {
+public enum HACornerRadius {
     public static let standard: CGFloat = 8
 }
