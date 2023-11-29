@@ -518,7 +518,7 @@
 		42CA28A92B101A2A0093B31A /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42CA28A82B101A2A0093B31A /* Colors.xcassets */; };
 		426740A52B17385400C1DD73 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42CA28A82B101A2A0093B31A /* Colors.xcassets */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
-		42CA28BB2B1028330093B31A /* MockThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* MockThreadClientService.swift */; };
+		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
@@ -1623,7 +1623,7 @@
 		42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModel.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
 		42CA28B72B10279D0093B31A /* ThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
-		42CA28BA2B1028330093B31A /* MockThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockThreadClientService.swift; sourceTree = "<group>"; };
+		42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorThreadClientService.swift; sourceTree = "<group>"; };
 		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
 		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
 		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
@@ -3082,7 +3082,7 @@
 		42CA28B92B1028250093B31A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				42CA28BA2B1028330093B31A /* MockThreadClientService.swift */,
+				42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -5598,7 +5598,7 @@
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
-				42CA28BB2B1028330093B31A /* MockThreadClientService.swift in Sources */,
+				42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,

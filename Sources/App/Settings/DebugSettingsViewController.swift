@@ -391,7 +391,7 @@ class DebugSettingsViewController: HAFormViewController {
                     rootView: ThreadCredentialsSharingView(
                         viewModel: .init(
                             server: server,
-                            threadClient: MockThreadClientService()
+                            threadClient: SimulatorThreadClientService()
                         )
                     )
                 )

@@ -4,10 +4,10 @@ import XCTest
 @available(iOS 13, *)
 final class ThreadCredentialsSharingViewModelTests: XCTestCase {
     private var sut: ThreadCredentialsSharingViewModel!
-    private var mockClient: MockThreadClientService!
+    private var mockClient: SimulatorThreadClientService!
 
     override func setUpWithError() throws {
-        mockClient = MockThreadClientService()
+        mockClient = SimulatorThreadClientService()
         sut = .init(
             server: ServerFixture.standard,
             threadClient: mockClient

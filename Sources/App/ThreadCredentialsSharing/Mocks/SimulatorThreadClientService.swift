@@ -1,7 +1,7 @@
 import Foundation
 
 @available(iOS 13, *)
-final class MockThreadClientService: THClientProtocol {
+final class SimulatorThreadClientService: THClientProtocol {
     var retrieveAllCredentialsCalled = false
 
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
