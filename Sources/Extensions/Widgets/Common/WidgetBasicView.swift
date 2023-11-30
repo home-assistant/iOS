@@ -95,8 +95,8 @@ enum WidgetBasicSizeStyle {
 }
 
 struct WidgetBasicView: View {
-    let model: WidgetBasicViewModel
-    let sizeStyle: WidgetBasicSizeStyle
+    private let model: WidgetBasicViewModel
+    private let sizeStyle: WidgetBasicSizeStyle
 
     init(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) {
         self.model = model
@@ -106,8 +106,6 @@ struct WidgetBasicView: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            model.backgroundColor
-
             Rectangle().fill(
                 LinearGradient(
                     gradient: .init(colors: [.white.opacity(0.06), .black.opacity(0.06)]),
@@ -177,7 +175,8 @@ struct WidgetBasicView: View {
                     if let subtext = subtext {
                         subtext
                     }
-                }.padding(
+                }
+                .padding(
                     [.leading, .trailing]
                 ).padding(
                     [.top, .bottom],
@@ -185,5 +184,6 @@ struct WidgetBasicView: View {
                 )
             }
         }
+        .background(model.backgroundColor)
     }
 }

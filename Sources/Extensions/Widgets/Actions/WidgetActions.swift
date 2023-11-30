@@ -29,6 +29,7 @@ struct WidgetActions: Widget {
                 )
             }
         )
+        .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
         .supportedFamilies({

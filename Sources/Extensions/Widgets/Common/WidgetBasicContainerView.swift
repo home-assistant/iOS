@@ -15,11 +15,14 @@ struct WidgetBasicContainerView: View {
     }
 
     var body: some View {
-        switch contents.count {
-        case 0: emptyViewGenerator()
-        case 1: singleView(for: contents.first!)
-        default: multiView(for: contents)
+        Group {
+            switch contents.count {
+            case 0: emptyViewGenerator()
+            case 1: singleView(for: contents.first!)
+            default: multiView(for: contents)
+            }
         }
+        .widgetBackground(Color.clear)
     }
 
     func singleView(for model: WidgetBasicViewModel) -> some View {
