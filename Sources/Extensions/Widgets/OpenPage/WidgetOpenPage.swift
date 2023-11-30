@@ -34,6 +34,7 @@ struct WidgetOpenPage: Widget {
                 )
             }
         )
+        .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.OpenPage.title)
         .description(L10n.Widgets.OpenPage.description)
         .supportedFamilies({
