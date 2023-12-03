@@ -517,6 +517,8 @@
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		42CA28A92B101A2A0093B31A /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42CA28A82B101A2A0093B31A /* Colors.xcassets */; };
 		426740A52B17385400C1DD73 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42CA28A82B101A2A0093B31A /* Colors.xcassets */; };
+		420B10012B1CE96A00D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
+		420B10022B1CE96C00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42CA28A82B101A2A0093B31A /* Colors.xcassets */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
@@ -1617,7 +1619,7 @@
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingView.swift; sourceTree = "<group>"; };
-		42CA28A82B101A2A0093B31A /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		42CA28A82B101A2A0093B31A /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = ../../App/Resources/Colors.xcassets; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModel.swift; sourceTree = "<group>"; };
@@ -1940,7 +1942,7 @@
 		B655E927227FF19E00CFDC94 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Intents.strings; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* Home Assistant Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../App/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3028,6 +3030,8 @@
 			isa = PBXGroup;
 			children = (
 				B65B15042273188300635D5C /* Assets.swift */,
+				B657A8F21CA646EB00121384 /* Assets.xcassets */,
+				42CA28A82B101A2A0093B31A /* Colors.xcassets */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -3611,8 +3615,6 @@
 			isa = PBXGroup;
 			children = (
 				B672AB022215057600175465 /* Alternate Icons */,
-				B657A8F21CA646EB00121384 /* Assets.xcassets */,
-				42CA28A82B101A2A0093B31A /* Colors.xcassets */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
 				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
 				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */,
@@ -4791,7 +4793,6 @@
 				B64E756123F3BFF200472C04 /* dev@3x.png in Resources */,
 				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
 				B64E754F23F3BFF200472C04 /* electric-violet@3x.png in Resources */,
-				426740A52B17385400C1DD73 /* Colors.xcassets in Resources */,
 				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
 				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
 				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
@@ -4970,7 +4971,9 @@
 				1165705A2702A3BA003906A7 /* Frontend.strings in Resources */,
 				B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */,
 				11F855D624DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */,
+				420B10022B1CE96C00D383D8 /* Colors.xcassets in Resources */,
 				12D447D93F82395EF40487B5 /* Pods-iOS-Shared-iOS-metadata.plist in Resources */,
+				420B10012B1CE96A00D383D8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
