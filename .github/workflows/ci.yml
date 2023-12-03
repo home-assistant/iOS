@@ -17,7 +17,7 @@ env:
 jobs:
   lint:
     concurrency:
-      group: ci-${{ github.ref }}
+      group: ci-lint-${{ github.ref }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +43,7 @@ jobs:
 
   test:
     concurrency:
-      group: ci-${{ github.ref }}
+      group: ci-test-${{ github.ref }}
       cancel-in-progress: true
     runs-on: macos-13
     timeout-minutes: 60
@@ -110,7 +110,7 @@ jobs:
 
   size:
     concurrency:
-      group: ci-${{ github.ref }}
+      group: ci-size-${{ github.ref }}
       cancel-in-progress: true
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: macos-13
