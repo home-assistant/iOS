@@ -21,16 +21,16 @@ public typealias AssetImageTypeAlias = ImageAsset.Image
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum Asset {
-    public enum Assets {
+    public enum Colors {
+        public static let haPrimary = ColorAsset(name: "haPrimary")
+        public static let onSurface = ColorAsset(name: "onSurface")
+    }
+
+    public enum SharedAssets {
         public static let launchScreenBackground = ColorAsset(name: "launchScreen-background")
         public static let launchScreenLogo = ImageAsset(name: "launchScreen-logo")
         public static let logo = ImageAsset(name: "Logo")
         public static let statusItemIcon = ImageAsset(name: "statusItemIcon")
-    }
-
-    public enum Colors {
-        public static let haPrimary = ColorAsset(name: "haPrimary")
-        public static let onSurface = ColorAsset(name: "onSurface")
     }
 }
 

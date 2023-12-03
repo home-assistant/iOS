@@ -23,7 +23,7 @@ ib:
       output: Sources/App/Resources/Segues.swift
 xcassets:
   inputs:
-    - Sources/Shared/Assets/Assets.xcassets
+    - Sources/Shared/Assets/SharedAssets.xcassets
     - Sources/Shared/Assets/Colors.xcassets
   outputs:
     templateName: swift5
