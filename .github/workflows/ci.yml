@@ -16,6 +16,9 @@ env:
 
 jobs:
   lint:
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -39,6 +42,9 @@ jobs:
             --lint --config .swiftformat .
 
   test:
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: macos-13
     timeout-minutes: 60
     steps:
@@ -103,6 +109,9 @@ jobs:
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
 
   size:
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: macos-13
     timeout-minutes: 60
