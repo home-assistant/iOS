@@ -513,8 +513,26 @@
 		3090BEE52ACDA30100030356 /* classic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDD2ACDA30100030356 /* classic@3x.png */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
+		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
+		420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
+		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
+		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
+		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
+		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
+		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
+		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
+		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
+		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
+		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
+		42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */; };
+		42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B72B10279D0093B31A /* ThreadClientService.swift */; };
+		42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */; };
+		42F5CAEC2B10CED600409816 /* ThreadCredentialsSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */; };
+		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -725,12 +743,10 @@
 		B64E756823F3BFF200472C04 /* caribbean-green@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64E754023F3BFF200472C04 /* caribbean-green@3x.png */; };
 		B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
-		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
-		B65B15052273188300635D5C /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
@@ -1569,9 +1585,24 @@
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
+		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ThreadNetwork.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/System/Library/Frameworks/ThreadNetwork.framework; sourceTree = DEVELOPER_DIR; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
+		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingView.swift; sourceTree = "<group>"; };
+		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
+		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModel.swift; sourceTree = "<group>"; };
+		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
+		42CA28B72B10279D0093B31A /* ThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
+		42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorThreadClientService.swift; sourceTree = "<group>"; };
+		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
+		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
+		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
 		42DD84322B15DC2F00936F16 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Intents.strings; sourceTree = "<group>"; };
 		42DD84332B15DC2F00936F16 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42DD84342B15DC2F00936F16 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1580,6 +1611,9 @@
 		42DD84372B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
+		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
+		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
+		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -1864,7 +1898,6 @@
 		B655E927227FF19E00CFDC94 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Intents.strings; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* Home Assistant Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HomeAssistant-Tests-App.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2585,11 +2618,13 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				42DD84172B14D83400936F16 /* Tests */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
+				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -2911,6 +2946,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */,
 				11B63B0E297A19DC00D908ED /* MatterSupport.framework */,
 				1112EA92271B78690038BBFC /* UserNotifications.framework */,
 				117318AC25199E220013E010 /* Foundation.framework */,
@@ -2942,6 +2978,95 @@
 				943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		426740A42B17348700C1DD73 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				B65B15042273188300635D5C /* Assets.swift */,
+				420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */,
+				420B10082B1D129B00D383D8 /* Colors.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		426740A62B1738F900C1DD73 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CAB72B10AD8C00409816 /* Tests */,
+				42CA28B92B1028250093B31A /* Mocks */,
+				42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */,
+				42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */,
+				42CA28B72B10279D0093B31A /* ThreadClientService.swift */,
+				42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */,
+			);
+			path = ThreadCredentialsSharing;
+			sourceTree = "<group>";
+		};
+		42CA28AC2B101D320093B31A /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28B12B101D9C0093B31A /* Components */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		42CA28B12B101D9C0093B31A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28AF2B101D6B0093B31A /* CardView.swift */,
+				42CA28B52B1022680093B31A /* HAButton.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		42CA28B22B101DA70093B31A /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */,
+				42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		42CA28B92B1028250093B31A /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		42DD84172B14D83400936F16 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		42F5CAB72B10AD8C00409816 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		42F5CABA2B10AE0C00409816 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				42F5CABB2B10AE1A00409816 /* ServerFixture.swift */,
+			);
+			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
@@ -3243,6 +3368,7 @@
 			children = (
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
+				42CA28AC2B101D320093B31A /* DesignSystem */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
 				11AF1ED82528FBAA00AAE364 /* Onboarding */,
@@ -3250,6 +3376,7 @@
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
+				42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				11AD2E2A2528FDB700FBC437 /* WebView */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
@@ -3441,9 +3568,8 @@
 		B69933961E232AF50054453D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				420B100B2B1D204400D383D8 /* Assets.xcassets */,
 				B672AB022215057600175465 /* Alternate Icons */,
-				B65B15042273188300635D5C /* Assets.swift */,
-				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
 				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
 				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */,
@@ -3559,6 +3685,7 @@
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 				D0BE440B2104224A00C74314 /* Authentication */,
+				42F5CABA2B10AE0C00409816 /* Fixtures */,
 				B672333A225DB66A0031D629 /* WebSocket */,
 				B6E91C212232482A0014CB8D /* Webhook */,
 				D0B25BD0213218B000678C2C /* Requests */,
@@ -3582,16 +3709,19 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				426740A42B17348700C1DD73 /* Assets */,
 				11B38EE0275C545C00205C7B /* Intents */,
 				D014EEAA212928EC008EA6F5 /* API */,
 				D0FF79C920D7787F0034574D /* ClientEvents */,
 				D00302BC20D4BEC0004C2CA9 /* Environment */,
 				D0FF79D020D87CF60034574D /* Common */,
+				426740A62B1738F900C1DD73 /* Extensions */,
 				11F855D124DF6C7A0018013E /* Iconic */,
 				D0B25BC72130C9BB00678C2C /* Location */,
 				D0EEF325214DF30D00D1D360 /* Notifications */,
 				D0EEF31C214DDD3800D1D360 /* Resources */,
 				D0C884782122A64500CCB501 /* Settings */,
+				42CA28B22B101DA70093B31A /* Utilities */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 			);
 			path = Shared;
@@ -4540,6 +4670,7 @@
 				B64E756723F3BFF200472C04 /* black@2x.png in Resources */,
 				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
 				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
+				420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */,
 				B60616941D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav in Resources */,
 				B606163F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav in Resources */,
 				B64E754B23F3BFF200472C04 /* fire-orange@2x.png in Resources */,
@@ -4578,7 +4709,6 @@
 				B60616831D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav in Resources */,
 				B60616401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav in Resources */,
 				B60616981D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav in Resources */,
-				B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */,
 				B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
 				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
 				B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */,
@@ -4796,6 +4926,8 @@
 				1165705A2702A3BA003906A7 /* Frontend.strings in Resources */,
 				B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */,
 				11F855D624DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */,
+				420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */,
+				420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */,
 				12D447D93F82395EF40487B5 /* Pods-iOS-Shared-iOS-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5412,16 +5544,19 @@
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
+				42F5CAEC2B10CED600409816 /* ThreadCredentialsSharingView.swift in Sources */,
 				1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
+				42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
+				42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
@@ -5479,6 +5614,7 @@
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
+				42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
@@ -5495,8 +5631,8 @@
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
+				42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
-				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
@@ -5518,10 +5654,12 @@
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
 				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
+				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
+				42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
@@ -5533,6 +5671,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
+				42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
@@ -5543,6 +5682,7 @@
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
 				11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */,
+				42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
@@ -5788,6 +5928,8 @@
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
+				42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
 				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
@@ -5835,6 +5977,7 @@
 				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
 				11B38EE9275C54A200205C7B /* GetCameraImageIntentHandler.swift in Sources */,
+				426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */,
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
 				113A8D49283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
@@ -5865,6 +6008,7 @@
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				11B38EE5275C54A200205C7B /* SendLocationIntentHandler.swift in Sources */,
 				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
+				42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
@@ -5887,6 +6031,7 @@
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
+				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
@@ -5906,6 +6051,7 @@
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
+				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */,
 				1104FD05253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
@@ -6724,6 +6870,7 @@
 					"-framework",
 					"\"UIKit\"",
 					"$(inherited)",
+					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
@@ -6938,6 +7085,7 @@
 					"-framework",
 					"\"UIKit\"",
 					"$(inherited)",
+					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
@@ -6979,6 +7127,7 @@
 					"-framework",
 					"\"UIKit\"",
 					"$(inherited)",
+					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";

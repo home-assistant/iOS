@@ -3,6 +3,7 @@ import MBProgressHUD
 import PromiseKit
 import RealmSwift
 import Shared
+import SwiftUI
 import WebKit
 import XCGLogger
 
@@ -130,7 +131,7 @@ class DebugSettingsViewController: HAFormViewController {
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 
-    private func logs() -> Section {
+    private func logs() -> Eureka.Section {
         let section = Section()
 
         section <<< SettingsButtonRow {
@@ -156,7 +157,7 @@ class DebugSettingsViewController: HAFormViewController {
         return section
     }
 
-    private func reset() -> Section {
+    private func reset() -> Eureka.Section {
         let section = Section()
 
         section <<< ButtonRow {
@@ -235,7 +236,7 @@ class DebugSettingsViewController: HAFormViewController {
         return section
     }
 
-    private func developerOptions() -> Section {
+    private func developerOptions() -> Eureka.Section {
         let section = Section(header: L10n.Settings.Developer.header, footer: L10n.Settings.Developer.footer) {
             $0.hidden = Condition(booleanLiteral: Current.appConfiguration.rawValue > 1)
             $0.tag = "developerOptions"
@@ -374,11 +375,28 @@ class DebugSettingsViewController: HAFormViewController {
             )
 
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
-//                SentrySDK.crash()
+                //                SentrySDK.crash()
             }))
 
             self?.present(alert, animated: true, completion: nil)
             alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+        }
+
+        if #available(iOS 16.4, *) {
+            section <<< ButtonRow {
+                $0.title = L10n.Settings.Developer.MockThreadCredentialsSharing.title
+            }.onCellSelection { [weak self] _, _ in
+                guard let server = Current.servers.all.first else { return }
+                let viewController = UIHostingController(
+                    rootView: ThreadCredentialsSharingView(
+                        viewModel: .init(
+                            server: server,
+                            threadClient: SimulatorThreadClientService()
+                        )
+                    )
+                )
+                self?.present(viewController, animated: true, completion: nil)
+            }
         }
 
         section <<< SwitchRow {

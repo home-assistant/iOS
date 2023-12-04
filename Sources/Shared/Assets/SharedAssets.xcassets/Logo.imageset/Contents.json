@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "home-assistant-logomark-color-on-light.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -22,10 +22,14 @@ ib:
     - templateName: segues-swift5
       output: Sources/App/Resources/Segues.swift
 xcassets:
-  inputs: Sources/App/Resources/Assets.xcassets
+  inputs:
+    - Sources/Shared/Assets/SharedAssets.xcassets
+    - Sources/Shared/Assets/Colors.xcassets
   outputs:
     templateName: swift5
-    output: Sources/App/Resources/Assets.swift
+    output: Sources/Shared/Assets/Assets.swift
+    params:
+      publicAccess: true
 plist:
   inputs:
     - Sources/Shared/Resources/Info.plist

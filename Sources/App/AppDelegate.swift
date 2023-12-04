@@ -423,7 +423,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func checkForAlerts() {
+    private func checkForAlerts() {
         firstly {
             Current.serverAlerter.check(dueToUserInteraction: false)
         }.done { [sceneManager] alert in
@@ -478,7 +478,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func setupWatchCommunicator() {
+    private func setupWatchCommunicator() {
         Current.servers.add(observer: self)
 
         // This directly mutates the data structure for observations to avoid race conditions.
@@ -558,7 +558,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Communicator.shared
     }
 
-    func setupiOS12Features() {
+    private func setupiOS12Features() {
         // Tell the system we have a app notification settings screen and want critical alerts
         // This is effectively a migration
 
@@ -581,7 +581,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
 
-    func setupFirebase() {
+    private func setupFirebase() {
         let optionsFile: String = {
             switch Current.appConfiguration {
             case .Beta: return "GoogleService-Info-Beta"
@@ -599,7 +599,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notificationManager.setupFirebase()
     }
 
-    func setupModels() {
+    private func setupModels() {
         // Force Realm migration to happen now
         _ = Realm.live()
 
@@ -610,7 +610,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         WidgetOpenPageIntent.setupObserver()
     }
 
-    func setupMenus() {
+    private func setupMenus() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(menuRelatedSettingDidChange(_:)),
