@@ -3368,7 +3368,6 @@
 			children = (
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
-				42CA28AC2B101D320093B31A /* DesignSystem */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
 				11AF1ED82528FBAA00AAE364 /* Onboarding */,
@@ -3710,6 +3709,7 @@
 			isa = PBXGroup;
 			children = (
 				426740A42B17348700C1DD73 /* Assets */,
+				42CA28AC2B101D320093B31A /* DesignSystem */,
 				11B38EE0275C545C00205C7B /* Intents */,
 				D014EEAA212928EC008EA6F5 /* API */,
 				D0FF79C920D7787F0034574D /* ClientEvents */,
