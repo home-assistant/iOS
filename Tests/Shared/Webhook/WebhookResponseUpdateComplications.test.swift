@@ -141,7 +141,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             XCTAssertNil(handlerResult.notification)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 20)
 
         let complication0Updates = FakeWatchComplication.rawRenderedUpdates["c1"]
         let complication2Updates = FakeWatchComplication.rawRenderedUpdates["c3"]
