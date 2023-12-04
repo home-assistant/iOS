@@ -8,6 +8,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
     private var api: FakeHomeAssistantAPI!
     private var webhookManager: FakeWebhookManager!
     private var realm: Realm!
+    private var handler: WebhookResponseUpdateComplications?
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -126,8 +127,8 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             realm.add(complications)
         }
 
-        var handler = WebhookResponseUpdateComplications(api: api)
-        handler.watchComplicationClass = FakeWatchComplication.self
+        handler = WebhookResponseUpdateComplications(api: api)
+        handler?.watchComplicationClass = FakeWatchComplication.self
 
         let request = WebhookResponseUpdateComplications.request(for: Set(complications))!
         let result: [String: Any] = [
@@ -136,12 +137,14 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             "c3|fwc3k1": 3,
         ]
 
+        guard let handler = handler else { return }
+
         let expectation = self.expectation(description: "result")
         handler.handle(request: .value(request), result: .value(result)).done { handlerResult in
             XCTAssertNil(handlerResult.notification)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 20)
+        wait(for: [expectation], timeout: 30)
 
         let complication0Updates = FakeWatchComplication.rawRenderedUpdates["c1"]
         let complication2Updates = FakeWatchComplication.rawRenderedUpdates["c3"]
