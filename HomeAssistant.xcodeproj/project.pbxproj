@@ -531,9 +531,14 @@
 		425F54B62B1EC457004174A9 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54B42B1EC457004174A9 /* HACornerRadius.swift */; };
 		425F54BC2B1EC4BD004174A9 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54B82B1EC4B9004174A9 /* WebViewExternalBusMessageTests.swift */; };
 		425F54BD2B1EC4C3004174A9 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54B92B1EC4B9004174A9 /* WebViewExternalBusMessage.swift */; };
+		425F54C02B1EC766004174A9 /* BiometricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54BF2B1EC766004174A9 /* BiometricsView.swift */; };
+		425F54C22B1EC7B0004174A9 /* Image+Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54C12B1EC7B0004174A9 /* Image+Asset.swift */; };
+		425F54C52B1ECBE1004174A9 /* HASpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54C42B1ECBE1004174A9 /* HASpacing.swift */; };
+		425F54C72B1ECCA9004174A9 /* BiometricsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54C62B1ECCA9004174A9 /* BiometricsViewModel.swift */; };
+		425F54C92B1ECD0C004174A9 /* BiometricsView+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54C82B1ECD0C004174A9 /* BiometricsView+build.swift */; };
+		425F54CB2B1ED079004174A9 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F54CA2B1ED079004174A9 /* Data+Hexadecimal.swift */; };
 		42BDF44B2A8EA5AB00562183 /* SecurityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF44A2A8EA5AB00562183 /* SecurityViewController.swift */; };
 		42BDF4582A93FC2A00562183 /* BiometricsAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BDF44D2A8EAD2700562183 /* BiometricsAuthenticationService.swift */; };
-		42E9ADE42B064AF0003772BC /* BiometricsAuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9ADE32B064AF0003772BC /* BiometricsAuthenticationViewController.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -1606,10 +1611,15 @@
 		425F54B42B1EC457004174A9 /* HACornerRadius.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		425F54B82B1EC4B9004174A9 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
 		425F54B92B1EC4B9004174A9 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
+		425F54BF2B1EC766004174A9 /* BiometricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsView.swift; sourceTree = "<group>"; };
+		425F54C12B1EC7B0004174A9 /* Image+Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Asset.swift"; sourceTree = "<group>"; };
+		425F54C42B1ECBE1004174A9 /* HASpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HASpacing.swift; sourceTree = "<group>"; };
+		425F54C62B1ECCA9004174A9 /* BiometricsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsViewModel.swift; sourceTree = "<group>"; };
+		425F54C82B1ECD0C004174A9 /* BiometricsView+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BiometricsView+build.swift"; sourceTree = "<group>"; };
+		425F54CA2B1ED079004174A9 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Data+Hexadecimal.swift"; path = "Sources/Shared/Utilities/Data+Hexadecimal.swift"; sourceTree = SOURCE_ROOT; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		42BDF44A2A8EA5AB00562183 /* SecurityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityViewController.swift; sourceTree = "<group>"; };
 		42BDF44D2A8EAD2700562183 /* BiometricsAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsAuthenticationService.swift; sourceTree = "<group>"; };
-		42E9ADE32B064AF0003772BC /* BiometricsAuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsAuthenticationViewController.swift; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -3025,6 +3035,7 @@
 		425F54AC2B1EC42F004174A9 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				425F54C32B1ECBD2004174A9 /* Constants */,
 				425F54AD2B1EC42F004174A9 /* Components */,
 			);
 			path = DesignSystem;
@@ -3042,8 +3053,9 @@
 		425F54B22B1EC457004174A9 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				425F54CA2B1ED079004174A9 /* Data+Hexadecimal.swift */,
 				425F54B32B1EC457004174A9 /* Color+ColorAsset.swift */,
-				425F54B42B1EC457004174A9 /* HACornerRadius.swift */,
+				425F54C12B1EC7B0004174A9 /* Image+Asset.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -3054,6 +3066,15 @@
 				425F54B82B1EC4B9004174A9 /* WebViewExternalBusMessageTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		425F54C32B1ECBD2004174A9 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				425F54B42B1EC457004174A9 /* HACornerRadius.swift */,
+				425F54C42B1ECBE1004174A9 /* HASpacing.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		42BDF4492A8EA57A00562183 /* Security */ = {
@@ -3068,7 +3089,9 @@
 			isa = PBXGroup;
 			children = (
 				42BDF44D2A8EAD2700562183 /* BiometricsAuthenticationService.swift */,
-				42E9ADE32B064AF0003772BC /* BiometricsAuthenticationViewController.swift */,
+				425F54BF2B1EC766004174A9 /* BiometricsView.swift */,
+				425F54C82B1ECD0C004174A9 /* BiometricsView+build.swift */,
+				425F54C62B1ECCA9004174A9 /* BiometricsViewModel.swift */,
 			);
 			path = LocalAuthentication;
 			sourceTree = "<group>";
@@ -5938,18 +5961,20 @@
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
-				42E9ADE42B064AF0003772BC /* BiometricsAuthenticationViewController.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
+				425F54C52B1ECBE1004174A9 /* HASpacing.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
+				425F54CB2B1ED079004174A9 /* Data+Hexadecimal.swift in Sources */,
 				11F855DA24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */,
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
 				11B38EED275C54A200205C7B /* RenderTemplateIntentHandler.swift in Sources */,
+				425F54C02B1EC766004174A9 /* BiometricsView.swift in Sources */,
 				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				110ED56325A563D600489AF7 /* DisplaySensor.swift in Sources */,
@@ -5969,6 +5994,7 @@
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
+				425F54C92B1ECD0C004174A9 /* BiometricsView+build.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
@@ -6010,8 +6036,10 @@
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
 				11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */,
+				425F54C22B1EC7B0004174A9 /* Image+Asset.swift in Sources */,
 				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
+				425F54C72B1ECCA9004174A9 /* BiometricsViewModel.swift in Sources */,
 				11B38EE5275C54A200205C7B /* SendLocationIntentHandler.swift in Sources */,
 				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,

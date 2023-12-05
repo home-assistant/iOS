@@ -476,6 +476,7 @@ extension WebViewWindowController: OnboardingStateObserver {
 
 extension WebViewWindowController {
     private func listenForBiometricsLockRelatedEvents() {
+        #if !targetEnvironment(macCatalyst)
         if #available(iOS 13.0, *) {
             NotificationCenter.default.addObserver(
                 self,
@@ -490,20 +491,8 @@ extension WebViewWindowController {
                 name: UIScene.didEnterBackgroundNotification,
                 object: nil
             )
-        } else {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(checkForBiometrics),
-                name: UIApplication.willEnterForegroundNotification,
-                object: nil
-            )
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(protectAppIfNeeded),
-                name: UIApplication.didEnterBackgroundNotification,
-                object: nil
-            )
         }
+        #endif
     }
 
     @objc private func checkForBiometrics() {

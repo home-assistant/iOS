@@ -102,11 +102,20 @@ class SettingsViewController: HAFormViewController {
         }
 
         if contentSections.contains(.general) {
+#if targetEnvironment(macCatalyst)
             form +++ Section()
-                <<< SettingsRootDataSource.Row.general.row
-                <<< SettingsRootDataSource.Row.location.row
-                <<< SettingsRootDataSource.Row.notifications.row
-                <<< SettingsRootDataSource.Row.security.row
+            <<< SettingsRootDataSource.Row.general.row
+            <<< SettingsRootDataSource.Row.location.row
+            <<< SettingsRootDataSource.Row.notifications.row
+#else
+            form +++ Section()
+            <<< SettingsRootDataSource.Row.general.row
+            <<< SettingsRootDataSource.Row.location.row
+            <<< SettingsRootDataSource.Row.notifications.row
+            <<< SettingsRootDataSource.Row.security.row
+
+#endif
+
         }
 
         if contentSections.contains(.integrations) {

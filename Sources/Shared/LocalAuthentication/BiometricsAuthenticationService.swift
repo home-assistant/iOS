@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import LocalAuthentication
 import UIKit
 
@@ -7,48 +8,27 @@ public protocol BiometricsAuthenticationServiceProtocol {
     func protectAppIfNeeded(controller: UIViewController, completion: (() -> Void)?)
 }
 
-class BiometricsAuthenticationService: BiometricsAuthenticationServiceProtocol {
+final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProtocol {
     private var context: LAContext?
-
-    private var overlayViewController: BiometricsAuthenticationViewController?
-
-    private var shouldAllowMacToAuthenticate = true
-
-    init() {
-        #if targetEnvironment(macCatalyst)
-        if #available(iOS 13.0, *) {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(allowReauthenticate),
-                name: UIScene.didEnterBackgroundNotification,
-                object: nil
-            )
-        } else {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(allowReauthenticate),
-                name: UIApplication.didEnterBackgroundNotification,
-                object: nil
-            )
-        }
-        #endif
-    }
+    private var overlayController: UIViewController?
 
     /// Adds the protection overlay and tries to authenticate
     func checkForBiometrics(controller: UIViewController) {
+        if let overlayController {
+            authenticate()
+            return
+        }
+
         guard context == nil else { return }
         protectAppIfNeeded(controller: controller) { [weak self] in
             if Current.settingsStore.biometricsRequired {
-                #if targetEnvironment(macCatalyst)
-                guard self?.shouldAllowMacToAuthenticate ?? false else { return }
-                #endif
                 self?.authenticate()
             }
         }
     }
 
     /// Adds the protection overlay
-    func protectAppIfNeeded(controller: UIViewController, completion: (() -> Void)?) {
+    func protectAppIfNeeded(controller: UIViewController, completion: (() -> Void)?) {        
         if Current.settingsStore.biometricsRequired {
             addBiometricOverlayProtection(controller: controller) {
                 completion?()
@@ -57,13 +37,6 @@ class BiometricsAuthenticationService: BiometricsAuthenticationServiceProtocol {
             removeProtectionOverlay()
         }
     }
-
-    #if targetEnvironment(macCatalyst)
-    /// This avoids macOS going on loop between enter background and enter foreground while trying to authenticate
-    @objc private func allowReauthenticate() {
-        shouldAllowMacToAuthenticate = true
-    }
-    #endif
 
     private func authenticate() {
         var error: NSError?
@@ -83,8 +56,8 @@ class BiometricsAuthenticationService: BiometricsAuthenticationServiceProtocol {
 
     private func removeProtectionOverlay() {
         DispatchQueue.main.async { [weak self] in
-            self?.overlayViewController?.dismiss(animated: true) {
-                self?.overlayViewController = nil
+            self?.overlayController?.dismiss(animated: true) {
+                self?.overlayController = nil
             }
         }
     }
@@ -106,37 +79,29 @@ class BiometricsAuthenticationService: BiometricsAuthenticationServiceProtocol {
 
     private func didFinishAuthentication(authorized: Bool) {
         if authorized {
-            #if targetEnvironment(macCatalyst)
-            shouldAllowMacToAuthenticate = false
-            #endif
             context?.invalidate()
             context = nil
             removeProtectionOverlay()
-        } else {
-            overlayViewController?.updateUnlockButtonVisibility(visible: true)
         }
     }
 
     private func addBiometricOverlayProtection(controller: UIViewController, completion: @escaping () -> Void) {
-        guard overlayViewController == nil else {
-            completion()
-            return
-        }
-        overlayViewController = BiometricsAuthenticationViewController()
-        overlayViewController?.modalPresentationStyle = .overCurrentContext
-        overlayViewController?.delegate = self
-        guard let overlayViewController = overlayViewController else { return }
+        guard #available(iOS 13.0, *) else { return }
 
+        overlayController = UIHostingController(rootView: BiometricsView.build(delegate: self))
+        overlayController?.modalPresentationStyle = .overCurrentContext
+
+        guard let overlayController else { return }
         DispatchQueue.main.async {
-            controller.present(overlayViewController, animated: false) {
+            controller.present(overlayController, animated: false) {
                 completion()
             }
         }
     }
 }
 
-extension BiometricsAuthenticationService: BiometricsAuthenticationViewControllerDelegate {
-    func didTapUnlock() {
+extension BiometricsAuthenticationService: BiometricsViewModelDelegate {
+    func didRequestUnlock() {
         authenticate()
     }
 }
