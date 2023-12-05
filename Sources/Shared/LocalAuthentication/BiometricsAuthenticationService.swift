@@ -91,10 +91,18 @@ final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProt
         overlayController = UIHostingController(rootView: BiometricsView.build(delegate: self))
         overlayController?.modalPresentationStyle = .overCurrentContext
 
-        guard let overlayController else { return }
-        DispatchQueue.main.async {
-            controller.present(overlayController, animated: false) {
-                completion()
+        guard let overlayController,
+        let window = controller.view.window else { return }
+
+        if var topController = window.rootViewController  {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+
+            DispatchQueue.main.async {
+                topController.present(overlayController, animated: false) {
+                    completion()
+                }
             }
         }
     }
