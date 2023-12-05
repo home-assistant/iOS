@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import LocalAuthentication
+import SwiftUI
 import UIKit
 
 public protocol BiometricsAuthenticationServiceProtocol {
@@ -28,7 +28,7 @@ final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProt
     }
 
     /// Adds the protection overlay
-    func protectAppIfNeeded(controller: UIViewController, completion: (() -> Void)?) {        
+    func protectAppIfNeeded(controller: UIViewController, completion: (() -> Void)?) {
         if Current.settingsStore.biometricsRequired {
             addBiometricOverlayProtection(controller: controller) {
                 completion?()
@@ -92,9 +92,9 @@ final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProt
         overlayController?.modalPresentationStyle = .overCurrentContext
 
         guard let overlayController,
-        let window = controller.view.window else { return }
+              let window = controller.view.window else { return }
 
-        if var topController = window.rootViewController  {
+        if var topController = window.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
             }

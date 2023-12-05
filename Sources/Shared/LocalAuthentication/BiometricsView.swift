@@ -1,11 +1,3 @@
-//
-//  BiometricsView.swift
-//  Shared-iOS
-//
-//  Created by Bruno Pantaleão on 04/12/2023.
-//  Copyright © 2023 Home Assistant. All rights reserved.
-//
-
 import SwiftUI
 
 @available(iOS 13.0, *)

@@ -1,6 +1,6 @@
-import XCTest
-@testable import Shared
 @testable import HomeAssistant
+@testable import Shared
+import XCTest
 
 @available(iOS 13, *)
 final class ThreadCredentialsSharingViewModelTests: XCTestCase {
