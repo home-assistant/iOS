@@ -16,7 +16,7 @@ class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageInt
         }
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     private func panelsIntentCollection() -> Promise<INObjectCollection<IntentPanel>> {
         panelsByServer().map { panelsByServer in
             .init(sections: panelsByServer.map { server, panels in
@@ -31,7 +31,7 @@ class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageInt
         }
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func providePagesOptionsCollection(
         for intent: WidgetOpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
@@ -39,7 +39,7 @@ class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageInt
         panelsIntentCollection().done { completion($0, nil) }.catch { completion(nil, $0) }
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func providePageOptionsCollection(
         for intent: OpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void

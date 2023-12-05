@@ -18,7 +18,7 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         completion(IntentServer.all, nil)
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
@@ -37,7 +37,7 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         completion(Locale.current.intentLanguages, nil)
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideLanguageOptionsCollection(
         for intent: AssistIntent,
         with completion: @escaping (INObjectCollection<IntentLanguage>?, Error?) -> Void

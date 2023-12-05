@@ -20,7 +20,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         completion(IntentServer.all, nil)
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
@@ -63,7 +63,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         .catch { completion(nil, $0) }
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideServiceOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
