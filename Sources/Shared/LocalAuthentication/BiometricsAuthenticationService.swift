@@ -10,11 +10,13 @@ public protocol BiometricsAuthenticationServiceProtocol {
 
 final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProtocol {
     private var context: LAContext?
-    private var overlayController: UIViewController?
+    private var window: UIWindow?
+    private var previousRootViewController: UIViewController?
 
     /// Adds the protection overlay and tries to authenticate
     func checkForBiometrics(controller: UIViewController) {
-        if let overlayController {
+        // Means biometrics lock is on top
+        if let previousRootViewController {
             authenticate()
             return
         }
@@ -55,10 +57,10 @@ final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProt
     }
 
     private func removeProtectionOverlay() {
+        guard let window, let previousRootViewController else { return }
         DispatchQueue.main.async { [weak self] in
-            self?.overlayController?.dismiss(animated: true) {
-                self?.overlayController = nil
-            }
+            window.rootViewController = previousRootViewController
+            self?.previousRootViewController = nil
         }
     }
 
@@ -88,23 +90,17 @@ final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProt
     private func addBiometricOverlayProtection(controller: UIViewController, completion: @escaping () -> Void) {
         guard #available(iOS 13.0, *) else { return }
 
-        overlayController = UIHostingController(rootView: BiometricsView.build(delegate: self))
-        overlayController?.modalPresentationStyle = .overCurrentContext
+        let overlayController = UIHostingController(rootView: BiometricsView.build(delegate: self))
+        overlayController.modalPresentationStyle = .overCurrentContext
 
-        guard let overlayController,
-              let window = controller.view.window else { return }
+        guard let window = controller.view.window,
+              previousRootViewController == nil else { return }
 
-        if var topController = window.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
+        self.window = window
 
-            DispatchQueue.main.async {
-                topController.present(overlayController, animated: false) {
-                    completion()
-                }
-            }
-        }
+        previousRootViewController = window.rootViewController
+        window.rootViewController = overlayController
+        window.windowLevel = UIWindow.Level(UIWindow.Level.alert.rawValue + 1)
     }
 }
 
