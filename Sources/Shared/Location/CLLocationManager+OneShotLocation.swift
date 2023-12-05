@@ -211,7 +211,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         if let cachedLocation = locationManager.location {
             let authorization: CLAccuracyAuthorization
 
-            if #available(iOS 14, watchOS 7, *) {
+            if #available(watchOS 7, *) {
                 authorization = locationManager.accuracyAuthorization
             } else {
                 authorization = .fullAccuracy
@@ -258,7 +258,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         let authorization: CLAccuracyAuthorization
 
-        if #available(iOS 14, watchOS 7, *) {
+        if #available(watchOS 7, *) {
             authorization = manager.accuracyAuthorization
         } else {
             authorization = .fullAccuracy

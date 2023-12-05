@@ -73,14 +73,10 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         mapView.mapType = .standard
         mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
 
-        if #available(iOS 13, *) {
-            if haDict["shows_points_of_interest"] != nil {
-                mapView.pointOfInterestFilter = .includingAll
-            } else {
-                mapView.pointOfInterestFilter = .excludingAll
-            }
+        if haDict["shows_points_of_interest"] != nil {
+            mapView.pointOfInterestFilter = .includingAll
         } else {
-            mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
+            mapView.pointOfInterestFilter = .excludingAll
         }
 
         mapView.showsCompass = (haDict["shows_compass"] != nil)

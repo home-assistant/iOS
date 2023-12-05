@@ -35,18 +35,10 @@ final class ServerSelectRow: _PushRow<PushSelectorCell<AccountRowValue>>, RowTyp
             // matching the colors of _FieldCell which this row is often near
             if row.isDisabled {
                 cell.accessoryType = .none
-                if #available(iOS 13, *) {
-                    cell.detailTextLabel?.textColor = .tertiaryLabel
-                } else {
-                    cell.detailTextLabel?.textColor = .gray
-                }
+                cell.detailTextLabel?.textColor = .tertiaryLabel
             } else {
                 cell.accessoryType = .disclosureIndicator
-                if #available(iOS 13, *) {
-                    cell.detailTextLabel?.textColor = .secondaryLabel
-                } else {
-                    cell.detailTextLabel?.textColor = .darkGray
-                }
+                cell.detailTextLabel?.textColor = .secondaryLabel
             }
         }
         initializer(self)

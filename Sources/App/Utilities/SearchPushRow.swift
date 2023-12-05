@@ -42,12 +42,7 @@ open class _SearchSelectorViewController<
 
             let overlap = tableView.convert(screenFrameValue.cgRectValue, from: nil).intersection(tableView.bounds)
             tableView.contentInset.bottom = overlap.height
-
-            if #available(iOS 13, *) {
-                tableView.verticalScrollIndicatorInsets.bottom = overlap.height
-            } else {
-                tableView.scrollIndicatorInsets.bottom = overlap.height
-            }
+            tableView.verticalScrollIndicatorInsets.bottom = overlap.height
         })
     }
 

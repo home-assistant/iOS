@@ -8,12 +8,8 @@ public enum Constants {
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
-        if #available(iOS 13, *) {
-            return UIColor { [lighterTintColor, darkerTintColor] (traitCollection: UITraitCollection) -> UIColor in
-                traitCollection.userInterfaceStyle == .dark ? lighterTintColor : darkerTintColor
-            }
-        } else {
-            return darkerTintColor
+        return UIColor { [lighterTintColor, darkerTintColor] (traitCollection: UITraitCollection) -> UIColor in
+            traitCollection.userInterfaceStyle == .dark ? lighterTintColor : darkerTintColor
         }
         #else
         return lighterTintColor

@@ -26,12 +26,7 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
 
         label.numberOfLines = 0
         label.textAlignment = .center
-
-        if #available(iOS 13, *) {
-            label.textColor = .systemRed
-        } else {
-            label.textColor = .red
-        }
+        label.textColor = .systemRed
 
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false

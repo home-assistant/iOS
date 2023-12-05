@@ -275,11 +275,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                     cell.formViewController()?.present(alert, animated: true, completion: nil)
                 }
                 $0.cellUpdate { cell, _ in
-                    if #available(iOS 13, *) {
-                        cell.textLabel?.textColor = .systemRed
-                    } else {
-                        cell.textLabel?.textColor = .red
-                    }
+                    cell.textLabel?.textColor = .systemRed
                 }
             }
     }

@@ -1,6 +1,6 @@
 import Foundation
 
-@available(iOS 13, *)
+
 final class SimulatorThreadClientService: THClientProtocol {
     var retrieveAllCredentialsCalled = false
 

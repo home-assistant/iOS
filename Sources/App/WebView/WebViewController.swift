@@ -30,11 +30,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         withRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        if #available(iOS 13, *) {
-            return nil
-        } else {
-            return WebViewController(restoring: .coder(coder))
-        }
+        return nil
     }
 
     private let settingsButton: UIButton! = {
@@ -67,23 +63,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         case server
     }
 
-    override func encodeRestorableState(with coder: NSCoder) {
-        if #available(iOS 13, *) {
-        } else {
-            super.encodeRestorableState(with: coder)
-            coder.encode(webView.url as NSURL?, forKey: RestorableStateKey.lastURL.rawValue)
-            coder.encode(server.identifier.rawValue as NSString?, forKey: RestorableStateKey.server.rawValue)
-        }
-    }
-
-    override func decodeRestorableState(with coder: NSCoder) {
-        if #available(iOS 13, *) {
-        } else {
-            // we do this manually so that we can get the values earlier
-            super.decodeRestorableState(with: coder)
-        }
-    }
-
     override var prefersStatusBarHidden: Bool {
         Current.settingsStore.fullScreen
     }
@@ -94,12 +73,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if #available(iOS 13, *) {
-        } else {
-            restorationClass = Self.self
-            restorationIdentifier = String(describing: Self.self)
-        }
 
         becomeFirstResponder()
 
@@ -251,7 +224,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     public func showSettingsViewController() {
-        if #available(iOS 13, *), Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
+        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
             let settingsView = SettingsViewController()
@@ -377,11 +350,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         refreshControl.tintColor = cachedColors[.primaryColor]
 
         let headerBackgroundIsLight = cachedColors[.appHeaderBackgroundColor].isLight
-        if #available(iOS 13, *) {
-            self.underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
-        } else {
-            underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .default : .lightContent
-        }
+        self.underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
 
         setNeedsStatusBarAppearanceUpdate()
     }
@@ -389,7 +358,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
         }
     }

@@ -6,36 +6,24 @@ final class InfoLabelRow: _LabelRow, RowType {
         case primary
         case secondary
         case important
-
+        
         var textColor: UIColor {
             switch self {
             case .important:
-                if #available(iOS 13, *) {
-                    return .systemRed
-                } else {
-                    return .red
-                }
+                return .systemRed
             case .primary:
-                if #available(iOS 13, *) {
-                    return .label
-                } else {
-                    return .black
-                }
+                return .label
             case .secondary:
-                if #available(iOS 13, *) {
-                    return .secondaryLabel
-                } else {
-                    return .gray
-                }
+                return .secondaryLabel
             }
         }
     }
-
+    
     var displayType: DisplayType = .secondary
-
+    
     override func updateCell() {
         super.updateCell()
-
+        
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.textColor = displayType.textColor
     }

@@ -142,11 +142,7 @@ public struct ConnectionInfo: Codable, Equatable {
                 if Current.isCatalyst {
                     return false
                 }
-                if #available(iOS 14, *) {
-                    return true
-                } else {
-                    return false
-                }
+                return true
             default: return false
             }
         }

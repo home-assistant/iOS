@@ -25,22 +25,18 @@ class OnboardingScanningInstanceCell: UITableViewCell {
         backgroundColor = .clear
         accessoryType = .disclosureIndicator
     }
-
+    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     public var isLoading: Bool = false {
         didSet {
             if isLoading {
                 accessoryType = .none
                 let activityIndicator: UIActivityIndicatorView = {
-                    if #available(iOS 13, *) {
-                        return UIActivityIndicatorView(style: .medium)
-                    } else {
-                        return UIActivityIndicatorView(style: .white)
-                    }
+                    UIActivityIndicatorView(style: .medium)
                 }()
                 accessoryView = activityIndicator
                 activityIndicator.startAnimating()
@@ -55,70 +51,66 @@ class OnboardingScanningInstanceCell: UITableViewCell {
 class OnboardingScanningViewController: UIViewController {
     private let discovery = Bonjour()
     private var discoveredInstances: [DiscoveredHomeAssistant] = []
-
+    
     private var tableView: UITableView?
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView?.indexPathsForSelectedRows?.forEach { indexPath in
             tableView?.deselectRow(at: indexPath, animated: animated)
         }
-
+        
         discovery.start()
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         discovery.stop()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         let activityIndicator: UIActivityIndicatorView
-
-        if #available(iOS 13, *) {
-            activityIndicator = UIActivityIndicatorView(style: .medium)
-        } else {
-            activityIndicator = UIActivityIndicatorView(style: .white)
-        }
-
+        
+        activityIndicator = UIActivityIndicatorView(style: .medium)
+        
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(customView: activityIndicator),
         ]
-
+        
         activityIndicator.startAnimating()
-
+        
         let (_, stackView, _) = UIView.contentStackView(in: view, scrolling: false)
-
+        
         view.backgroundColor = Current.style.onboardingBackground
-
+        
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.Scanning.title
             Current.style.onboardingTitle($0)
         })
-
+        
         stackView.addArrangedSubview(with(UITableView(frame: .zero, style: .plain)) {
             tableView = $0
             $0.delegate = self
             $0.dataSource = self
             $0.cellLayoutMarginsFollowReadableWidth = true
-
+            
             $0.backgroundColor = Current.style.onboardingBackground
             $0.backgroundView = with(UIView()) {
                 $0.backgroundColor = Current.style.onboardingBackground
             }
-
+            
             // hides the empty separators
             $0.tableFooterView = UIView()
-
+            
             $0.register(OnboardingScanningInstanceCell.self, forCellReuseIdentifier: "OnboardingScanningInstanceCell")
         })
-
+        
         NSLayoutConstraint.activate([
             tableView!.widthAnchor.constraint(equalTo: stackView.layoutMarginsGuide.widthAnchor),
         ])
-
+        
         let manualHintLabel: UILabel = with(UILabel()) {
             $0.text = L10n.Onboarding.Scanning.manualHint
             $0.textColor = Current.style.onboardingLabelSecondary
@@ -130,15 +122,15 @@ class OnboardingScanningViewController: UIViewController {
         }
         stackView.addArrangedSubview(manualHintLabel)
         stackView.setCustomSpacing(stackView.spacing / 2.0, after: manualHintLabel)
-
+        
         stackView.addArrangedSubview(with(UIButton(type: .custom)) {
             $0.setTitle(L10n.Onboarding.Scanning.manual, for: .normal)
             $0.addTarget(self, action: #selector(didSelectManual(_:)), for: .touchUpInside)
             Current.style.onboardingButtonSecondary($0)
         })
-
+        
         discovery.observer = self
-
+        
         if Current.appConfiguration == .Debug {
             for (idx, instance) in [
                 DiscoveredHomeAssistant(
@@ -172,16 +164,16 @@ class OnboardingScanningViewController: UIViewController {
             }
         }
     }
-
+    
     deinit {
         discovery.stop()
     }
-
+    
     private func add(discoveredInstance: DiscoveredHomeAssistant) {
         tableView?.performBatchUpdates({
             if let existing = discoveredInstances.firstIndex(where: {
                 ($0.uuid != nil && $0.uuid == discoveredInstance.uuid)
-                    || $0.internalOrExternalURL == discoveredInstance.internalOrExternalURL
+                || $0.internalOrExternalURL == discoveredInstance.internalOrExternalURL
             }) {
                 discoveredInstances[existing] = discoveredInstance
                 tableView?.reloadRows(
@@ -201,7 +193,7 @@ class OnboardingScanningViewController: UIViewController {
             }
         }, completion: nil)
     }
-
+    
     private func remove(forName name: String) {
         tableView?.performBatchUpdates({
             if let existing = discoveredInstances.firstIndex(where: {
@@ -215,7 +207,7 @@ class OnboardingScanningViewController: UIViewController {
             }
         }, completion: nil)
     }
-
+    
     @objc private func didSelectManual(_ sender: UIButton) {
         show(OnboardingManualURLViewController(), sender: self)
     }
@@ -225,7 +217,7 @@ extension OnboardingScanningViewController: BonjourObserver {
     func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant) {
         add(discoveredInstance: instance)
     }
-
+    
     func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String) {
         remove(forName: name)
     }
@@ -235,14 +227,14 @@ extension OnboardingScanningViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let instance = discoveredInstances[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath) as? OnboardingScanningInstanceCell
-
+        
         Current.Log.verbose("Selected row at \(indexPath.row) \(instance)")
-
+        
         cell?.isLoading = true
         tableView.isUserInteractionEnabled = false
-
+        
         let authentication = OnboardingAuth()
-
+        
         firstly {
             authentication.authenticate(to: instance, sender: self)
         }.ensure {
@@ -261,12 +253,12 @@ extension OnboardingScanningViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         discoveredInstances.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "OnboardingScanningInstanceCell", for: indexPath)
-
+        
         let instance = discoveredInstances[indexPath.row]
-
+        
         cell.textLabel?.text = instance.locationName
         cell.detailTextLabel?.text = instance.internalOrExternalURL.absoluteString
         cell.accessibilityLabel = instance.locationName
@@ -283,7 +275,7 @@ extension OnboardingScanningViewController: UITableViewDataSource {
                 overall.append(NSAttributedString(string: ", "))
             }
         }
-
+        
         return cell
     }
 }

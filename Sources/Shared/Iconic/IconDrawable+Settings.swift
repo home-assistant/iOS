@@ -5,7 +5,7 @@ public extension IconDrawable {
     func settingsIcon(for traitCollection: UITraitCollection) -> UIImage {
         let edgeInsets: UIEdgeInsets
 
-        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
+        if traitCollection.userInterfaceIdiom == .mac {
             edgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         } else {
             edgeInsets = .zero

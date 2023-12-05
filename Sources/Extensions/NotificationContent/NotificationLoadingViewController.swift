@@ -23,11 +23,7 @@ class NotificationLoadingViewController: UIViewController, NotificationCategory 
 
         let activityIndicator: UIActivityIndicatorView
 
-        if #available(iOS 13, *) {
-            activityIndicator = UIActivityIndicatorView(style: .medium)
-        } else {
-            activityIndicator = UIActivityIndicatorView(style: .gray)
-        }
+        activityIndicator = UIActivityIndicatorView(style: .medium)
 
         view.addSubview(activityIndicator)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false

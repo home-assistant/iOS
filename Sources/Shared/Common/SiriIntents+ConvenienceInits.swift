@@ -62,7 +62,7 @@ public extension PerformActionIntent {
         self.init()
         self.action = .init(action: action)
 
-        #if os(iOS)
+#if os(iOS)
         let image = INImage(
             icon: MaterialDesignIcons(named: action.IconName),
             foreground: UIColor(hex: action.IconColor),
@@ -73,31 +73,27 @@ public extension PerformActionIntent {
         //   setImage(image, forParameterNamed: \Self.action)
         // but this crashes at runtime, iOS 13 and iOS 14 at least
         __setImage(image, forParameterNamed: "action")
-        #endif
+#endif
     }
 }
 
 @available(iOS 12, *)
 public extension IntentAction {
     convenience init(action: Action) {
-        #if os(iOS)
-        if #available(iOS 14, *) {
-            self.init(
-                identifier: action.ID,
-                display: action.Name,
-                subtitle: nil,
-                image: INImage(
-                    icon: MaterialDesignIcons(named: action.IconName),
-                    foreground: UIColor(hex: action.IconColor),
-                    background: UIColor(hex: action.BackgroundColor)
-                )
+#if os(iOS)
+        self.init(
+            identifier: action.ID,
+            display: action.Name,
+            subtitle: nil,
+            image: INImage(
+                icon: MaterialDesignIcons(named: action.IconName),
+                foreground: UIColor(hex: action.IconColor),
+                background: UIColor(hex: action.BackgroundColor)
             )
-        } else {
-            self.init(identifier: action.ID, display: action.Name)
-        }
-        #else
+        )
+#else
         self.init(identifier: action.ID, display: action.Name)
-        #endif
+#endif
     }
 
     func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
@@ -133,7 +129,7 @@ public extension IntentPanel {
 
         let icon = panel.icon?.normalizingIconString
 
-        #if os(iOS)
+#if os(iOS)
         image = icon.flatMap { icon in
             INImage(
                 icon: Self.materialDesignIcon(for: icon),
@@ -141,11 +137,11 @@ public extension IntentPanel {
                 background: .white
             )
         }
-        #else
+#else
         image = nil
-        #endif
+#endif
 
-        if #available(iOS 14, watchOS 7, *) {
+        if #available(watchOS 7, *) {
             self.init(
                 identifier: panel.path,
                 display: panel.title,
@@ -189,7 +185,7 @@ public extension WidgetOpenPageIntent {
     static let widgetKind = "WidgetOpenPage"
 }
 
-@available(iOS 13, *)
+
 public extension IntentServer {
     convenience init(server: Server) {
         self.init(identifier: server.identifier.rawValue, display: server.info.name)

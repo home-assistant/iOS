@@ -24,20 +24,18 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
         title = authDetails.url.host
 
-        if #available(iOS 13, *) {
-            isModalInPresentation = true
+        isModalInPresentation = true
 
-            let appearance = with(UINavigationBarAppearance()) {
-                $0.configureWithOpaqueBackground()
-            }
+        let appearance = with(UINavigationBarAppearance()) {
+            $0.configureWithOpaqueBackground()
+        }
 
-            navigationItem.standardAppearance = appearance
-            navigationItem.scrollEdgeAppearance = appearance
-            navigationItem.compactAppearance = appearance
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationItem.compactAppearance = appearance
 
-            if #available(iOS 15, *) {
-                navigationItem.compactScrollEdgeAppearance = appearance
-            }
+        if #available(iOS 15, *) {
+            navigationItem.compactScrollEdgeAppearance = appearance
         }
 
         navigationItem.leftBarButtonItems = [
@@ -69,12 +67,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
             setContentScrollView(webView.scrollView)
         }
 
-        if #available(iOS 13, *) {
-            view.backgroundColor = .systemBackground
-        } else {
-            view.backgroundColor = .white
-        }
-
+        view.backgroundColor = .systemBackground
         edgesForExtendedLayout = []
 
         view.addSubview(webView)
