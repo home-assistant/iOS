@@ -3,7 +3,6 @@ import Foundation
 import Shared
 import UIKit
 
-
 @objc class SettingsSceneDelegate: BasicSceneDelegate {
     private var navigationController: UINavigationController? {
         didSet {
@@ -79,7 +78,6 @@ import UIKit
         }
     }
 }
-
 
 extension SettingsSceneDelegate: UINavigationControllerDelegate {
     private func update(navigationController: UINavigationController) {

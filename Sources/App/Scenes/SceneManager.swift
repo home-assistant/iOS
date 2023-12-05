@@ -10,7 +10,6 @@ struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
     let activity: SceneActivity
 }
 
-
 extension UIWindowSceneDelegate {
     func informManager(from connectionOptions: UIScene.ConnectionOptions) {
         let pendingResolver: (Self) -> Void = Current.sceneManager
@@ -69,7 +68,7 @@ class SceneManager {
     var compatibility = SceneManagerPreSceneCompatibility()
 
     var webViewWindowControllerPromise: Guarantee<WebViewWindowController> {
-        return firstly { () -> Guarantee<WebViewSceneDelegate> in
+        firstly { () -> Guarantee<WebViewSceneDelegate> in
             scene(for: .init(activity: .webView))
         }.map { delegate in
             delegate.windowController!
@@ -112,7 +111,6 @@ class SceneManager {
         return outerResolver
     }
 
-    
     private func existingScenes(for activity: SceneActivity) -> [UIScene] {
         UIApplication.shared.connectedScenes.filter { scene in
             scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
@@ -134,7 +132,6 @@ class SceneManager {
         UIApplication.shared.supportsMultipleScenes
     }
 
-    
     public func activateAnyScene(for activity: SceneActivity) {
         UIApplication.shared.requestSceneSessionActivation(
             existingScenes(for: activity).first?.session,
@@ -145,7 +142,6 @@ class SceneManager {
         }
     }
 
-    
     public func scene<DelegateType: UIWindowSceneDelegate>(
         for query: SceneQuery<DelegateType>
     ) -> Guarantee<DelegateType> {

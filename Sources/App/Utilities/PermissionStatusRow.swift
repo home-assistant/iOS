@@ -28,7 +28,6 @@ public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>
     }
 }
 
-
 public final class LocationAccuracyRow: Row<LabelCellOf<CLAccuracyAuthorization>>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)

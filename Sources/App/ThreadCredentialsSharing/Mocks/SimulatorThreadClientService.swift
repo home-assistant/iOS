@@ -1,6 +1,5 @@
 import Foundation
 
-
 final class SimulatorThreadClientService: THClientProtocol {
     var retrieveAllCredentialsCalled = false
 

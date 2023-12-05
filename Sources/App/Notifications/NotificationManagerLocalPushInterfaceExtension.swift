@@ -4,7 +4,6 @@ import NetworkExtension
 import PromiseKit
 import Shared
 
-
 final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface {
     private var observers = [Observer]()
     private var syncStates: PerServerContainer<LocalPushStateSync>!
@@ -211,13 +210,11 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     }
 }
 
-
 extension NotificationManagerLocalPushInterfaceExtension: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         updateManagers()
     }
 }
-
 
 extension NotificationManagerLocalPushInterfaceExtension: NEAppPushDelegate {
     func appPushManager(

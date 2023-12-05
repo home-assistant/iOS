@@ -191,11 +191,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        return false
+        false
     }
 
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-            return false
+        false
     }
 
     func application(
@@ -203,7 +203,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewControllerWithRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-            return nil
+        nil
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

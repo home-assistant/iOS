@@ -1,7 +1,6 @@
 import Foundation
 import Shared
 
-
 protocol THClientProtocol {
     func retrieveAllCredentials() async throws -> [ThreadCredential]
 }

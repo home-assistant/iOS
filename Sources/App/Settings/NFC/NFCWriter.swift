@@ -3,7 +3,6 @@ import Foundation
 import PromiseKit
 import Shared
 
-
 class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
     private var readerSession: NFCNDEFReaderSession!
     public let promise: Promise<NFCNDEFMessage>

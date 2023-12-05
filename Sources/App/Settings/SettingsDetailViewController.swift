@@ -728,7 +728,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 self.row = row
             }
 
-            
             func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
                 row.value = manager.authorizationStatus
                 row.updateCell()
@@ -765,7 +764,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
     }
 
-    
     private func locationAccuracyRow() -> BaseRow {
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
             let row: LocationAccuracyRow

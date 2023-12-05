@@ -5,9 +5,7 @@ public final class ButtonRowWithLoading: _ButtonRowOf<Bool>, RowType {
         super.init(tag: tag)
     }
 
-    let activityIndicator: UIActivityIndicatorView = {
-        UIActivityIndicatorView(style: .medium)
-    }()
+    let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
 
     override public func updateCell() {
         super.updateCell()

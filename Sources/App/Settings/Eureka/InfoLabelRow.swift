@@ -6,7 +6,7 @@ final class InfoLabelRow: _LabelRow, RowType {
         case primary
         case secondary
         case important
-        
+
         var textColor: UIColor {
             switch self {
             case .important:
@@ -18,12 +18,12 @@ final class InfoLabelRow: _LabelRow, RowType {
             }
         }
     }
-    
+
     var displayType: DisplayType = .secondary
-    
+
     override func updateCell() {
         super.updateCell()
-        
+
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.textColor = displayType.textColor
     }

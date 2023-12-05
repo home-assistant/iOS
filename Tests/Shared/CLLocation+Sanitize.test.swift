@@ -33,7 +33,7 @@ class CLLocationSanitizeTests: XCTestCase {
     }
 
     private func make() -> CLLocation {
-        return .init(
+        .init(
             coordinate: coordinate,
             altitude: altitude,
             horizontalAccuracy: horizontalAccuracy,

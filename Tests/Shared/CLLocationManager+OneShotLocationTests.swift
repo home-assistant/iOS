@@ -386,7 +386,6 @@ class OneShotLocationTests: XCTestCase {
         }
     }
 
-    
     func testInvalidAccuracyOnlyUntilTimeoutWhenReducedAccuracy() {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let location1 = CLLocation(

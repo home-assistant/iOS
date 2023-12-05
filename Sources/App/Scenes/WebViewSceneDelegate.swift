@@ -3,7 +3,6 @@ import PromiseKit
 import Shared
 import UIKit
 
-
 final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
     var windowController: WebViewWindowController?

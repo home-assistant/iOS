@@ -14,7 +14,7 @@ class ZoneManagerEventTests: XCTestCase {
             uuid: UUID(),
             identifier: "identifier"
         )
-        
+
         circularRegion = .init(
             center: .init(latitude: 37.123, longitude: -122.456),
             radius: 25,

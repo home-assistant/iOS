@@ -2,7 +2,6 @@ import Eureka
 import Foundation
 import Shared
 
-
 class NFCTagViewController: HAFormViewController {
     let identifier: String
 

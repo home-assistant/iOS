@@ -10,13 +10,13 @@ extension CLLocation {
         // FB9030164 iOS 14.5 (at least betas) started reporting vertical accuracy as non-finite
         var doubleKeyPaths: [KeyPath<CLLocation, Double>: Result<Double, SanitizeFailure>] = [
             \.horizontalAccuracy: .failure(.invalid("horizontalAccuracy")),
-             \.verticalAccuracy: .success(-1),
-             \.altitude: .success(0),
-             \.coordinate.latitude: .failure(.invalid("latitude")),
-             \.coordinate.longitude: .failure(.invalid("longitude")),
-             \.course: .success(-1),
-             \.speed: .success(-1),
-             \.speedAccuracy: .success(-1),
+            \.verticalAccuracy: .success(-1),
+            \.altitude: .success(0),
+            \.coordinate.latitude: .failure(.invalid("latitude")),
+            \.coordinate.longitude: .failure(.invalid("longitude")),
+            \.course: .success(-1),
+            \.speed: .success(-1),
+            \.speedAccuracy: .success(-1),
         ]
 
         if #available(watchOS 6.2, *) {

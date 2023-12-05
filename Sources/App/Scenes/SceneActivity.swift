@@ -1,6 +1,5 @@
 import UIKit
 
-
 enum SceneActivity: CaseIterable {
     case webView
     case settings

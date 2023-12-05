@@ -313,7 +313,6 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
         super.init()
     }
 
-    
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .notDetermined {
             return

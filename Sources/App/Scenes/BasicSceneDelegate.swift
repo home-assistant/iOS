@@ -2,7 +2,6 @@ import Foundation
 import Shared
 import UIKit
 
-
 class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
     var scene: UIWindowScene?

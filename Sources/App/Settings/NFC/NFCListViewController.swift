@@ -4,7 +4,6 @@ import Foundation
 import PromiseKit
 import Shared
 
-
 class NFCListViewController: HAFormViewController {
     override init() {
         super.init()

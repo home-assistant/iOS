@@ -1,7 +1,6 @@
 @testable import HomeAssistant
 import XCTest
 
-
 final class ThreadCredentialsSharingViewModelTests: XCTestCase {
     private var sut: ThreadCredentialsSharingViewModel!
     private var mockClient: SimulatorThreadClientService!

@@ -30,7 +30,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         withRestorationIdentifierPath identifierComponents: [String],
         coder: NSCoder
     ) -> UIViewController? {
-        return nil
+        nil
     }
 
     private let settingsButton: UIButton! = {
@@ -350,7 +350,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         refreshControl.tintColor = cachedColors[.primaryColor]
 
         let headerBackgroundIsLight = cachedColors[.appHeaderBackgroundColor].isLight
-        self.underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
+        underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
 
         setNeedsStatusBarAppearanceUpdate()
     }

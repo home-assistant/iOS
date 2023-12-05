@@ -28,7 +28,6 @@ public struct CardView<Content: View>: View {
     }
 }
 
-
 #Preview {
     VStack {
         CardView {

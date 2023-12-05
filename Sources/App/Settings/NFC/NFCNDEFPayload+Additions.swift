@@ -1,7 +1,6 @@
 import CoreNFC
 
 extension NFCNDEFPayload {
-    
     class func androidPackage(payload: String) -> Self? {
         // NFC Record Type Definition (RTD) of 'external' states type must be ascii
         // android-specific payload looks to be utf8 from the android spec

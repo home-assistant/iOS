@@ -21,7 +21,6 @@ extension WidgetOpenPageIntent {
             case unchanged
         }
 
-        
         private static func handle(panels: HAPanels, server: Server) {
             let key = "last-invalidated-widget-panels-\(server.identifier)"
 

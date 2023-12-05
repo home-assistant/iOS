@@ -34,10 +34,10 @@ class iOSTagManager: TagManager {
               let aarPayload = NFCNDEFPayload.androidPackage(payload: "io.homeassistant.companion.android") else {
             return .init(error: TagManagerError.notHomeAssistantTag)
         }
-        
+
         let writer = NFCWriter(requiredPayload: [uriPayload], optionalPayload: [aarPayload])
         var writerRetain: NFCWriter? = writer
-        
+
         return firstly {
             writer.promise
         }.ensure {
@@ -101,7 +101,6 @@ class iOSTagManager: TagManager {
         }
     }
 
-    
     private static func identifier(from message: NFCNDEFMessage) -> Promise<String> {
         firstly {
             .value(message.records)
