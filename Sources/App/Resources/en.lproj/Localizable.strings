@@ -775,3 +775,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "thread.credentials.screen_title" = "Thread Credentials";
+"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates. This decision is driven by the need to leverage the latest advancements in iOS development, ensuring a more robust and secure experience for all our users. This will also increase the speed to bring new features to life and stability of the app.";
+"announcement.drop_support.button" = "Continue";
