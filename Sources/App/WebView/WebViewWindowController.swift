@@ -476,8 +476,7 @@ extension WebViewWindowController: OnboardingStateObserver {
 
 extension WebViewWindowController {
     private func listenForBiometricsLockRelatedEvents() {
-        #if !targetEnvironment(macCatalyst)
-        if #available(iOS 13.0, *) {
+        if !Current.isCatalyst, #available(iOS 13.0, *) {
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(checkForBiometrics),
@@ -492,16 +491,19 @@ extension WebViewWindowController {
                 object: nil
             )
         }
-        #endif
+
+        if Current.servers.all.isEmpty {
+            Current.settingsStore.biometricsRequired = false
+        }
     }
 
     @objc private func checkForBiometrics() {
-        guard let controller = window.rootViewController else { return }
+        guard let controller = window.rootViewController, !Current.servers.all.isEmpty else { return }
         Current.authenticationService.checkForBiometrics(controller: controller)
     }
 
     @objc private func protectAppIfNeeded() {
-        guard let controller = window.rootViewController else { return }
+        guard let controller = window.rootViewController, !Current.servers.all.isEmpty else { return }
         Current.authenticationService.protectAppIfNeeded(controller: controller, completion: nil)
     }
 }
