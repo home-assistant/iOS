@@ -44,9 +44,7 @@ final class BiometricsAuthenticationService: BiometricsAuthenticationServiceProt
         var error: NSError?
         context?.invalidate()
         context = LAContext()
-        if context?.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) ?? false {
-            authenticate(policy: .deviceOwnerAuthenticationWithBiometrics)
-        } else if context?.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) ?? false {
+        if context?.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) ?? false {
             authenticate(policy: .deviceOwnerAuthentication)
         } else {
             Current.Log
