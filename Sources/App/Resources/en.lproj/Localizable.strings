@@ -181,11 +181,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notifications_configurator.category.preview_notification.title" = "Test notification";
 "notifications_configurator.category.rows.actions.footer" = "Categories can have a maximum of 10 actions.";
 "notifications_configurator.category.rows.actions.header" = "Actions";
-"notifications_configurator.category.rows.category_summary.default" = "%%u notifications in %%@";
-"notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally use '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
+"notifications_configurator.category.rows.category_summary.default" = "%u notifications in %@";
+"notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally use '%u' to show the number of notifications in the group and '%@' to show the summary argument provided in the push payload.";
 "notifications_configurator.category.rows.category_summary.header" = "Category Summary";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u notifications";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "This text is only displayed if you have notification previews hidden. Use '%%u' for the number of messages with the same thread identifier.";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u notifications";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "This text is only displayed if you have notification previews hidden. Use '%u' for the number of messages with the same thread identifier.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Hidden Preview Placeholder";
 "notifications_configurator.category.rows.name.title" = "Name";
 "notifications_configurator.identifier" = "Identifier";
