@@ -12,7 +12,7 @@ import SwiftUI
 import UIKit
 import WebKit
 
-final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
+final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
 
     let server: Server
@@ -25,13 +25,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var keepAliveTimer: Timer?
     private var initialURL: URL?
-
-    static func viewController(
-        withRestorationIdentifierPath identifierComponents: [String],
-        coder: NSCoder
-    ) -> UIViewController? {
-        nil
-    }
 
     private let settingsButton: UIButton! = {
         let button = UIButton()

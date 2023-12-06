@@ -190,22 +190,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return activity.configuration
     }
 
-    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        false
-    }
-
-    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        false
-    }
-
-    func application(
-        _ application: UIApplication,
-        viewControllerWithRestorationIdentifierPath identifierComponents: [String],
-        coder: NSCoder
-    ) -> UIViewController? {
-        nil
-    }
-
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         notificationManager.didFailToRegisterForRemoteNotifications(error: error)
     }

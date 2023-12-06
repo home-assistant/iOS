@@ -113,6 +113,7 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
+        // After text if uneditable
         firstSection <<< VoiceShortcutRow {
             $0.buttonStyle = .automaticOutline
             $0.value = .intent(PerformActionIntent(action: action))
