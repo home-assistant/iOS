@@ -1620,6 +1620,14 @@
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		42BDF44A2A8EA5AB00562183 /* SecurityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityViewController.swift; sourceTree = "<group>"; };
 		42BDF44D2A8EAD2700562183 /* BiometricsAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsAuthenticationService.swift; sourceTree = "<group>"; };
+		42CFCD6F2B20B1CB00CCEF4A /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Intents.strings; sourceTree = "<group>"; };
+		42CFCD702B20B1CB00CCEF4A /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Frontend.strings; sourceTree = "<group>"; };
+		42CFCD712B20B1CB00CCEF4A /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		42CFCD722B20B1CB00CCEF4A /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
+		42CFCD732B20B1D500CCEF4A /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Intents.strings; sourceTree = "<group>"; };
+		42CFCD742B20B1D500CCEF4A /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Frontend.strings; sourceTree = "<group>"; };
+		42CFCD752B20B1D500CCEF4A /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		42CFCD762B20B1D500CCEF4A /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -4583,6 +4591,8 @@
 				"pt-BR",
 				ml,
 				hu,
+				he,
+				et,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -6360,6 +6370,8 @@
 				11B154A327ABAADA00462185 /* pt-BR */,
 				1128FF38297E5F7D00BAAFD9 /* ml */,
 				11EFB44C29D89FD100CE4B05 /* hu */,
+				42CFCD702B20B1CB00CCEF4A /* he */,
+				42CFCD742B20B1D500CCEF4A /* et */,
 			);
 			name = Frontend.strings;
 			sourceTree = "<group>";
@@ -6407,6 +6419,8 @@
 				11B154A427ABAADA00462185 /* pt-BR */,
 				1128FF39297E5F7D00BAAFD9 /* ml */,
 				11EFB44D29D89FD100CE4B05 /* hu */,
+				42CFCD712B20B1CB00CCEF4A /* he */,
+				42CFCD752B20B1D500CCEF4A /* et */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -6446,6 +6460,8 @@
 				11B154A227ABAADA00462185 /* pt-BR */,
 				1128FF37297E5F7D00BAAFD9 /* ml */,
 				11EFB44B29D89FD100CE4B05 /* hu */,
+				42CFCD6F2B20B1CB00CCEF4A /* he */,
+				42CFCD732B20B1D500CCEF4A /* et */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -6501,6 +6517,8 @@
 				11B154A527ABAADA00462185 /* pt-BR */,
 				1128FF3A297E5F7D00BAAFD9 /* ml */,
 				11EFB44E29D89FD100CE4B05 /* hu */,
+				42CFCD722B20B1CB00CCEF4A /* he */,
+				42CFCD762B20B1D500CCEF4A /* et */,
 			);
 			name = Localizable.strings;
 			path = .;
