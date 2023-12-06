@@ -14,6 +14,7 @@ class DropSupportMessageViewController: UIViewController {
         label.textAlignment = .center
         label.text = L10n.Announcement.DropSupport.title
         label.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 
@@ -22,8 +23,27 @@ class DropSupportMessageViewController: UIViewController {
         label.textAlignment = .center
         label.text = L10n.Announcement.DropSupport.subtitle
         label.font = .preferredFont(forTextStyle: .body)
+        label.adjustsFontForContentSizeCategory = true
         label.numberOfLines = 0
         return label
+    }()
+
+    private let linkButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(L10n.Announcement.DropSupport.buttonReadMore, for: .normal)
+        button.addTarget(self, action: #selector(linkButtonTapped), for: .touchUpInside)
+        button.layer.cornerRadius = HACornerRadius.standard
+        button.layer.borderColor = UIColor(asset: Asset.Colors.haPrimary)?.cgColor
+        button.layer.borderWidth = 1
+        button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+        button.tintColor =  UIColor(asset: Asset.Colors.haPrimary)
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        if #available(iOS 13.0, *) {
+            let icon = UIImage(systemName: "arrow.up.right.square")
+            button.setImage(icon, for: .normal)
+        }
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return button
     }()
 
     private let button: UIButton = {
@@ -33,6 +53,7 @@ class DropSupportMessageViewController: UIViewController {
         button.backgroundColor = UIColor(asset: Asset.Colors.haPrimary)
         button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         button.layer.cornerRadius = HACornerRadius.standard
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize)
         if #available(iOS 13.0, *) {
             button.tintColor = .systemBackground
         } else {
@@ -48,6 +69,10 @@ class DropSupportMessageViewController: UIViewController {
         } else {
             view.backgroundColor = .white
         }
+
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
 
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -67,30 +92,43 @@ class DropSupportMessageViewController: UIViewController {
         let spacer = UIView()
         spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
         stackView.addArrangedSubview(spacer)
+        stackView.addArrangedSubview(linkButton)
 
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
-        view.addSubview(stackView)
+        scrollView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            stackView.topAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: 64),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: button.bottomAnchor),
+
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 64),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -32),
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
 
             imageView.heightAnchor.constraint(equalToConstant: 100),
             imageView.widthAnchor.constraint(equalToConstant: 100),
 
-            button.topAnchor.constraint(greaterThanOrEqualTo: stackView.bottomAnchor, constant: 16),
+            button.topAnchor.constraint(greaterThanOrEqualTo: scrollView.bottomAnchor, constant: 16),
             button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             button.heightAnchor.constraint(equalToConstant: 50),
+            linkButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-
         view.layoutIfNeeded()
     }
 
     @objc private func buttonTapped() {
         dismiss(animated: true)
+    }
+
+    @objc private func linkButtonTapped() {
+        guard let url = URL(string: "https://www.home-assistant.io/blog/") else { return }
+        UIApplication.shared.open(url)
     }
 }
