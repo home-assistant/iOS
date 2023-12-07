@@ -36,7 +36,7 @@ class DropSupportMessageViewController: UIViewController {
         button.layer.borderColor = UIColor(asset: Asset.Colors.haPrimary)?.cgColor
         button.layer.borderWidth = 1
         button.titleLabel?.font = .preferredFont(forTextStyle: .body)
-        button.tintColor =  UIColor(asset: Asset.Colors.haPrimary)
+        button.tintColor = UIColor(asset: Asset.Colors.haPrimary)
         button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         if #available(iOS 13.0, *) {
             let icon = UIImage(systemName: "arrow.up.right.square")
@@ -118,7 +118,7 @@ class DropSupportMessageViewController: UIViewController {
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             button.heightAnchor.constraint(equalToConstant: 50),
-            linkButton.heightAnchor.constraint(equalToConstant: 50)
+            linkButton.heightAnchor.constraint(equalToConstant: 50),
         ])
         view.layoutIfNeeded()
     }
