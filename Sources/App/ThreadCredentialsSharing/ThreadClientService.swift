@@ -32,7 +32,7 @@ final class ThreadClientService: THClientProtocol {
         var allCredentials = try await client.allCredentials()
         allCredentials = allCredentials.filter { $0.borderAgentID != preferredCredential.borderAgentID }
         allCredentials.insert(preferredCredential)
-        
+
         return allCredentials.map { credential in
             ThreadCredential(
                 networkName: credential.networkName ?? placeholder,
