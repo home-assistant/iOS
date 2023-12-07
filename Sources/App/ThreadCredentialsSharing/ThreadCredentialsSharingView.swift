@@ -21,7 +21,6 @@ struct ThreadCredentialsSharingView: View {
             }
             .navigationTitle(L10n.Thread.Credentials.screenTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .background(Color(uiColor: .secondarySystemBackground))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -85,7 +84,7 @@ struct ThreadCredentialsSharingView: View {
     @ViewBuilder
     private var credentialsList: some View {
         if viewModel.credentials.isEmpty {
-            Text("You don't have credentials available on your iCloud Keychain.")
+            Text(L10n.Thread.Credentials.noCredentialAvailable)
                 .multilineTextAlignment(.center)
         } else {
             List(viewModel.credentials, id: \.borderAgentID) { credential in
@@ -94,6 +93,7 @@ struct ThreadCredentialsSharingView: View {
                     .listRowBackground(Color.clear)
             }
             .listStyle(.plain)
+            .background(Color(uiColor: .secondarySystemBackground))
         }
     }
 
