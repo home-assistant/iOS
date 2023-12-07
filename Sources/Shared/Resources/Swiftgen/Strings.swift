@@ -216,6 +216,19 @@ public enum L10n {
     }
   }
 
+  public enum Announcement {
+    public enum DropSupport {
+      /// Continue
+      public static var button: String { return L10n.tr("Localizable", "announcement.drop_support.button") }
+      /// Read more
+      public static var buttonReadMore: String { return L10n.tr("Localizable", "announcement.drop_support.button_read_more") }
+      /// After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.
+      public static var subtitle: String { return L10n.tr("Localizable", "announcement.drop_support.subtitle") }
+      /// Important update
+      public static var title: String { return L10n.tr("Localizable", "announcement.drop_support.title") }
+    }
+  }
+
   public enum ClError {
     public enum Description {
       /// Deferred mode is not supported for the requested accuracy.
