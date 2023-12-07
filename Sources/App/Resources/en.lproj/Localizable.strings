@@ -775,3 +775,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";

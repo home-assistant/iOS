@@ -28,7 +28,12 @@ final class ThreadClientService: THClientProtocol {
 
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
         let placeholder = "Unknown"
-        return try await client.allCredentials().map { credential in
+        let preferredCredential = try await client.preferredCredentials()
+        var allCredentials = try await client.allCredentials()
+        allCredentials = allCredentials.filter { $0.borderAgentID != preferredCredential.borderAgentID }
+        allCredentials.insert(preferredCredential)
+        
+        return allCredentials.map { credential in
             ThreadCredential(
                 networkName: credential.networkName ?? placeholder,
                 networkKey: credential.networkKey?.hexadecimal ?? placeholder,
