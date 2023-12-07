@@ -1769,6 +1769,8 @@ public enum L10n {
       public static var networkKeyTitle: String { return L10n.tr("Localizable", "thread.credentials.network_key_title") }
       /// Network Name
       public static var networkNameTitle: String { return L10n.tr("Localizable", "thread.credentials.network_name_title") }
+      /// You don't have credentials available on your iCloud Keychain.
+      public static var noCredentialAvailable: String { return L10n.tr("Localizable", "thread.credentials.no_credential_available") }
       /// Thread Credentials
       public static var screenTitle: String { return L10n.tr("Localizable", "thread.credentials.screen_title") }
       /// Share credential with Home Assistant
