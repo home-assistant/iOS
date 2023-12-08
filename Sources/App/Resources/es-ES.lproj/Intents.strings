@@ -16,7 +16,7 @@
 "A1pokw" = "Ask for Assistance";
 "B28HAk" = "Assist";
 "B4bXyc" = "Done";
-"BafuI1" = "Language";
+"BafuI1" = "Idioma";
 "BwZv3u" = "Which server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Open ${page}";
@@ -79,7 +79,7 @@
 "cuflz3" = "Failed: Home Assistant is not currently reachable";
 "d65H6l" = "Assist with \"${text}\"";
 "dFHPYK" = "Performed ${action}";
-"eObn2i" = "Page";
+"eObn2i" = "Página";
 "f1KX0Q" = "View and run actions";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Which action?";
@@ -114,7 +114,7 @@
 "ni0OSe" = "Just to confirm, you wanted ‘${server}’?";
 "ns9RRU" = "Open Page";
 "nzqmFA" = "Done";
-"oHn0vD" = "Pages";
+"oHn0vD" = "Páginas";
 "oIWFyR" = "Failed: ${error}";
 "onq5yE" = "Failed to call service with error: ${error}";
 "pQhTjo" = "Failed: Home Assistant is not currently reachable";

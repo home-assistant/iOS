@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";
 "NSPhotoLibraryUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";
 "NSSiriUsageDescription" = "We gebruiken Siri om gemaakte snelkoppelingen toe te staan om te communiceren met de app.";
-"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
+"NSSpeechRecognitionUsageDescription" = "Gebruikt om tekst naar Assistent te dicteren.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Stuur locatie";
 "TemporaryFullAccuracyReasonManualUpdate" = "Zet exacte locatie aan om uw huidige locatie te gebruiken voor uw apparaattracker";

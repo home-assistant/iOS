@@ -16,7 +16,7 @@
 "A1pokw" = "Ask for Assistance";
 "B28HAk" = "Assist";
 "B4bXyc" = "¡Hecho!";
-"BafuI1" = "Language";
+"BafuI1" = "Idioma";
 "BwZv3u" = "¿Qué servidor?";
 "CmlkE4" = "evento_atajo";
 "DFWJB8" = "Abre ${page}";
@@ -95,7 +95,7 @@
 "h1xQ53" = "Actualizar sensores";
 "hKNPaD" = "Servidor";
 "hLFNfv" = "Falló: ${error}";
-"hXWHln" = "Server";
+"hXWHln" = "Servidor";
 "hfoDeC" = "Intent Language";
 "hhPmPc" = "JSON";
 "hsrlTY" = "Get a single still frame from a camera";

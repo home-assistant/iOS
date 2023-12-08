@@ -1,8 +1,8 @@
-"NFCReaderUsageDescription" = "Az NFC-matricák olvasása és írása lehetővé teszi események indítását.";
-"NSCameraUsageDescription" = "Készítsen fényképeket, és küldje el őket a Home Assistant szerverére.";
+"NFCReaderUsageDescription" = "Az NFC-címkék olvasása és írása lehetővé teszi események indítását.";
+"NSCameraUsageDescription" = "Készítsen fényképeket és küldje el őket a Home Assistant szerverére.";
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionálisan engedélyezze a webhelyek közötti nyomon követést, ha a konfiguráció megköveteli.";
 "NSFocusStatusUsageDescription" = "Jelentse a fókusz állapotát érzékelőként.";
-"NSLocalNetworkUsageDescription" = "Keresse meg Home Assistant példányát, és kommunikáljon vele.";
+"NSLocalNetworkUsageDescription" = "Keresse meg és kommunikáljon az Home Asisstant példányával.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Javasoljuk, hogy válassza a „Mindig engedélyezés” lehetőséget a legjobb helymeghatározási élmény érdekében. A „Csak az alkalmazás használata közben” választása letiltja az iBeaconokat, a geokerítéseket, a háttérben történő helyfrissítéseket és a pontos jelentéseket.";
 "NSLocationAlwaysUsageDescription" = "Az olyan funkciókhoz, mint az iBeacons, a földrajzi kerítések, a háttérben történő helyfrissítések és a pontos jelentéskészítéshez mindig szükségünk van az Ön tartózkodási helyéhez való hozzáférésre.";
 "NSLocationUsageDescription" = "Ha engedélyezve van, az eszköz helyzete elküldésre kerül a Home Assistant szerverére eszközkövetőként.";

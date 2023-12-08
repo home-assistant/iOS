@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Web görünümünden fotoğraf kaydetmeye izin vermek için Fotoğraf Kitaplığı erişimi gereklidir.";
 "NSPhotoLibraryUsageDescription" = "Web görünümünden fotoğraf kaydetmeye izin vermek için Fotoğraf Kitaplığı erişimi gereklidir.";
 "NSSiriUsageDescription" = "Oluşturulan kısayolların uygulama ile etkileşime girmesine izin vermek için Siri kullanıyoruz.";
-"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
+"NSSpeechRecognitionUsageDescription" = "Assist'e metin dikte etmek için kullanılır.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Konumu Gönder";
 "TemporaryFullAccuracyReasonManualUpdate" = "Cihaz izleyiciniz için mevcut konumunuzu kullanmak için tam doğruluk sağlayın.";
