@@ -7,7 +7,7 @@
 "NSLocationAlwaysUsageDescription" = "Sempre necessitem accés a la vostra ubicació per a funcions com ara iBeacons, geofences, actualitzacions de la ubicació en segon pla i informes precisos.";
 "NSLocationUsageDescription" = "Quan està activat, la ubicació del teu dispositiu s'envia al teu Home Assistant i apareixerà com un dispositiu rastrejat.";
 "NSLocationWhenInUseUsageDescription" = "Només permetent l'accés a la ubicació mentre l'aplicació està en ús deshabilitarà iBeacons, geocercas, actualitzacions d'ubicació en segon pla i informes precisos.";
-"NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
+"NSMicrophoneUsageDescription" = "Enregistra àudio amb la interfície del Home Assistant.";
 "NSMotionUsageDescription" = "El moviment s’utilitza per millorar les actualitzacions d’ubicació amb el tipus de moviment actual, així com per proporcionar dades bàsiques del podòmetre.";
 "NSPhotoLibraryAddUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";
 "NSPhotoLibraryUsageDescription" = "L’accés a la llibraria de fotos és necessari per permetre desar fotografies des de la vista web.";

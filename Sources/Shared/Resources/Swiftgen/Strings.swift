@@ -1279,6 +1279,8 @@ public enum L10n {
           public static var fireOrange: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.fire_orange") }
           /// Green
           public static var green: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.green") }
+          /// Home Assistant Blue
+          public static var haBlue: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.ha_blue") }
           /// Old Beta
           public static var oldBeta: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_beta") }
           /// Old Dev
@@ -1293,10 +1295,12 @@ public enum L10n {
           public static var prideBi: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_bi") }
           /// Pride: Non Binary
           public static var prideNonBinary: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_non_binary") }
-          /// Pride: Progress
+          /// Pride: 8-Color
           public static var pridePoc: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_poc") }
           /// Pride: Rainbow
           public static var prideRainbow: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow") }
+          /// Pride: Rainbow (Inverted)
+          public static var prideRainbowInvert: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow_invert") }
           /// Pride: Trans
           public static var prideTrans: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_trans") }
           /// Purple

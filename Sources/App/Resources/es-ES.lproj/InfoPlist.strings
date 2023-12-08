@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
 "NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
 "NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
+"NSSpeechRecognitionUsageDescription" = "Se utiliza para dictar texto a Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
 "TemporaryFullAccuracyReasonManualUpdate" = "Permite una precisión completa para usar tu ubicación actual en el rastreador de dispositivos.";

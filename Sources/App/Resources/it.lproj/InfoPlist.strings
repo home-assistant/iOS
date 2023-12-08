@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "E' necessario l'accesso al Rullino foto per consentire il salvataggio delle foto.";
 "NSPhotoLibraryUsageDescription" = "L'accesso al Rullino foto è necessario per consentire il salvataggio delle foto dalla visualizzazione Web.";
 "NSSiriUsageDescription" = "Usiamo Siri per consentire ai comandi di interagire con l'app.";
-"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
+"NSSpeechRecognitionUsageDescription" = "Usato per dettare il testo ad Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Invia posizione";
 "TemporaryFullAccuracyReasonManualUpdate" = "Concedi la massima precisione per utilizzare la tua posizione corrente per il localizzatore del tuo dispositivo.";
