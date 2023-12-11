@@ -41,10 +41,10 @@
 "alerts.prompt.cancel" = "Loobu";
 "alerts.prompt.ok" = "Sobib";
 "always_open_label" = "Alati avatud";
-"announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
-"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
-"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.button" = "Jätka";
+"announcement.drop_support.button_read_more" = "Lisateave";
+"announcement.drop_support.subtitle" = "Pärast hoolikat kaalumist lõpetame oma tulevastes värskendustes iOS 12, 13 ja 14 toe.";
+"announcement.drop_support.title" = "Oluline uuendus";
 "cancel_label" = "Loobu";
 "cl_error.description.deferred_accuracy_too_low" = "Soovitud täpsuse jaoks edasilükatud režiimi ei toetata.";
 "cl_error.description.deferred_canceled" = "Rakendus või asukohahaldur tühistas edasilükatud värskenduste taotluse.";
@@ -546,7 +546,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "thread.credentials.border_agent_id_title" = "Ääreseadme agendi ID";
 "thread.credentials.network_key_title" = "Võrgu võti";
 "thread.credentials.network_name_title" = "Võrgu nimi";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
+"thread.credentials.no_credential_available" = "Sinu iCloudi Keychainis ei ole volitused saadaval.";
 "thread.credentials.screen_title" = "Threadi sidumse volitused";
 "thread.credentials.share_credentials_button_title" = "Volituste jagamine Home Assistantiga";
 "token_error.connection_failed" = "Ühendus nurjus.";
