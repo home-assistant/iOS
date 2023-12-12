@@ -122,6 +122,9 @@ class SettingsViewController: HAFormViewController {
                 <<< SettingsRootDataSource.Row.privacy.row
                 <<< SettingsRootDataSource.Row.debugging.row
         }
+
+        form +++ Section()
+            <<< SettingsRootDataSource.Row.whatsNew.row
     }
 
     @objc func openAbout(_ sender: UIButton) {

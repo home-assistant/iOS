@@ -128,7 +128,7 @@ class DropSupportMessageViewController: UIViewController {
     }
 
     @objc private func linkButtonTapped() {
-        guard let url = URL(string: "https://www.home-assistant.io/blog/") else { return }
+        guard let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") else { return }
         UIApplication.shared.open(url)
     }
 }

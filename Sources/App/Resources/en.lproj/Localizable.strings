@@ -313,6 +313,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.title" = "Debugging";
+"settings.whats_new.title" = "What's new?";
 "settings.details_section.location_settings_row.title" = "Location";
 "settings.details_section.notification_settings_row.title" = "Notifications";
 "settings.details_section.watch_row.title" = "Apple Watch";

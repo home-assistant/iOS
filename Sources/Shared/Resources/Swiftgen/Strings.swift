@@ -1217,6 +1217,10 @@ public enum L10n {
       /// Edit Template
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
     }
+    public enum WhatsNew {
+      /// What's new?
+      public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
+    }
   }
 
   public enum SettingsDetails {
