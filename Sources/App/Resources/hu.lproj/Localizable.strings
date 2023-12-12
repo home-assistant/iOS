@@ -41,10 +41,10 @@
 "alerts.prompt.cancel" = "Mégse";
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Megnyitás mindig";
-"announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
-"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
-"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.button" = "Tovább";
+"announcement.drop_support.button_read_more" = "Bővebben";
+"announcement.drop_support.subtitle" = "Alapos mérlegelés után a következő frissítéseinkben megszüntetjük az iOS 12, 13 és 14 támogatását.";
+"announcement.drop_support.title" = "Fontos frissítés";
 "cancel_label" = "Mégse";
 "cl_error.description.deferred_accuracy_too_low" = "A késleltetett mód nem támogatott a kért pontossághoz.";
 "cl_error.description.deferred_canceled" = "A halasztott frissítésekre vonatkozó kérést az Ön alkalmazása vagy a helykezelő törölte.";
@@ -546,7 +546,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "thread.credentials.border_agent_id_title" = "Border Agent azonosító";
 "thread.credentials.network_key_title" = "Hálózati kulcs";
 "thread.credentials.network_name_title" = "Hálózat neve";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
+"thread.credentials.no_credential_available" = "Nem állnak rendelkezésre hitelesítő adatok az iCloud-kulcskarikán.";
 "thread.credentials.screen_title" = "Thread hitelesítő adatai";
 "thread.credentials.share_credentials_button_title" = "Hitelesítő adatok megosztása a Home Assistanttal";
 "token_error.connection_failed" = "A kapcsolat sikertelen.";

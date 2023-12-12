@@ -41,10 +41,10 @@
 "alerts.prompt.cancel" = "Abbrechen";
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Immer geöffnet";
-"announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
-"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
-"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.button" = "Weiter";
+"announcement.drop_support.button_read_more" = "Mehr lesen";
+"announcement.drop_support.subtitle" = "Nach sorgfältiger Überlegung werden wir in unseren kommenden Updates den Support für iOS 12, 13 und 14 einstellen.";
+"announcement.drop_support.title" = "Wichtiges Update";
 "cancel_label" = "Abbrechen";
 "cl_error.description.deferred_accuracy_too_low" = "Der verzögerte Modus wird für die angeforderte Genauigkeit nicht unterstützt.";
 "cl_error.description.deferred_canceled" = "Die Anforderung für verzögerte Aktualisierungen wurde von deiner App oder vom Standortmanager abgebrochen.";
@@ -200,8 +200,8 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "off_label" = "Aus";
 "ok_label" = "OK";
 "on_label" = "An";
-"onboarding.connect.mac_safari_warning.message" = "Versuche, Safari neu zu starten, wenn sich das Anmeldeformular nicht öffnet.";
-"onboarding.connect.mac_safari_warning.title" = "Safari starten";
+"onboarding.connect.mac_safari_warning.message" = "Versuche Safari neu zu starten, wenn sich das Anmeldeformular nicht öffnet.";
+"onboarding.connect.mac_safari_warning.title" = "Safari wird geöffnet";
 "onboarding.connect.title" = "Verbinde zu %@";
 "onboarding.connection_error.more_info_button" = "Mehr Informationen";
 "onboarding.connection_error.title" = "Verbindung fehlgeschlagen";
@@ -212,10 +212,10 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.connection_test_result.certificate_error.title" = "Sichere Verbindung fehlgeschlagen";
 "onboarding.connection_test_result.client_certificate.description" = "Die Client-Zertifikatauthentifizierung wird nicht unterstützt.";
 "onboarding.connection_test_result.error_code" = "Fehlercode:";
-"onboarding.connection_test_result.local_network_permission.description" = "Die Datenschutzgenehmigung \"Lokales Netzwerk\" wurde möglicherweise verweigert. Du kannst dies in der App \"Systemeinstellungen\" ändern.";
+"onboarding.connection_test_result.local_network_permission.description" = "Die Datenschutzgenehmigung \"Lokales Netzwerk\" wurde möglicherweise verweigert. Du kannst dies in der App \"Einstellungen\" ändern.";
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.rename_action" = "Umbenennen";
-"onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen %1$@ existiert bereits";
+"onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen '%1$@' existiert bereits";
 "onboarding.manual_setup.connect" = "Verbinden";
 "onboarding.manual_setup.couldnt_make_url.message" = "Der Wert ' %@ ' war keine gültige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL konnte nicht erstellt werden";
@@ -244,7 +244,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.motion.grant_description" = "Erlauben Sie die Bewegungsberechtigung, um Sensoren für Bewegungs- und Schrittzählerdaten zu erstellen.";
 "onboarding.permissions.motion.title" = "Bewegung & Schrittzähler";
 "onboarding.permissions.notification.bullet.alert" = "Erhalte Benachrichtigungen";
-"onboarding.permissions.notification.bullet.badge" = "App-Symbol aktualisieren";
+"onboarding.permissions.notification.bullet.badge" = "App-Icon aktualisieren";
 "onboarding.permissions.notification.bullet.commands" = "Sende Befehle an dein Gerät";
 "onboarding.permissions.notification.description" = "Zulassen, dass Push-Benachrichtigungen von Home Assistant gesendet werden";
 "onboarding.permissions.notification.grant_description" = "Erlaube die Benachrichtigungsberechtigung, um Benachrichtigungen an dein Gerät zu senden.";
@@ -270,7 +270,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine einrichten, außer du möchtest die Cloud deaktivieren.";
 "settings.connection_section.connecting_via" = "Verbinde über";
 "settings.connection_section.delete_server.message" = "Möchtest du diesen Server wirklich löschen?";
-"settings.connection_section.delete_server.progress" = "Server löschen...";
+"settings.connection_section.delete_server.progress" = "Server wird gelöscht...";
 "settings.connection_section.delete_server.title" = "Server löschen";
 "settings.connection_section.details" = "Details";
 "settings.connection_section.errors.cannot_remove_last_url" = "Du kannst die einzige verfügbare URL nicht entfernen.";
@@ -546,7 +546,7 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "thread.credentials.border_agent_id_title" = "Border-Agent-ID";
 "thread.credentials.network_key_title" = "Netzwerkschlüssel";
 "thread.credentials.network_name_title" = "Netzwerkname";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
+"thread.credentials.no_credential_available" = "In deinem iCloud-Schlüsselbund sind keine Zugangsdaten verfügbar.";
 "thread.credentials.screen_title" = "Thread-Zugangsdaten";
 "thread.credentials.share_credentials_button_title" = "Zugangsdaten mit Home Assistant teilen";
 "token_error.connection_failed" = "Verbindung fehlgeschlagen.";
