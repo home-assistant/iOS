@@ -1111,11 +1111,14 @@ extension WebViewController: WKScriptMessageHandler {
 
     private func threadCredentialsRequested() {
         if #available(iOS 16.4, *) {
-            let threadDebugView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
+            let threadManagementView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
                 server: server,
                 threadClient: ThreadClientService()
             )))
-            present(threadDebugView, animated: true)
+            threadManagementView.view.backgroundColor = .clear
+            threadManagementView.modalPresentationStyle = .overFullScreen
+            threadManagementView.modalTransitionStyle = .crossDissolve
+            present(threadManagementView, animated: true)
         }
     }
 }

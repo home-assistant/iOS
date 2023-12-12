@@ -334,7 +334,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.developer.header" = "Developer";
 "settings.developer.map_notification.notification.body" = "Expand this to show the map content extension";
 "settings.developer.map_notification.title" = "Show map notification content extension";
-"settings.developer.mock_thread_credentials_sharing.title" = "Simulator Thread Credentials Sharing";
 "settings.developer.show_log_files.title" = "Show log files in Finder";
 "settings.developer.sync_watch_context.title" = "Sync Watch Context";
 "settings.event_log.title" = "Event Log";
@@ -543,12 +542,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
 "success_label" = "Success";
-"thread.credentials.border_agent_id_title" = "Border Agent ID";
-"thread.credentials.network_key_title" = "Network Key";
-"thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
-"thread.credentials.screen_title" = "Thread Credentials";
-"thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
 "token_error.connection_failed" = "Connection failed.";
 "token_error.expired" = "Token is expired.";
 "token_error.token_unavailable" = "Token is unavailable.";

@@ -382,23 +382,6 @@ class DebugSettingsViewController: HAFormViewController {
             alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
         }
 
-        if #available(iOS 16.4, *) {
-            section <<< ButtonRow {
-                $0.title = L10n.Settings.Developer.MockThreadCredentialsSharing.title
-            }.onCellSelection { [weak self] _, _ in
-                guard let server = Current.servers.all.first else { return }
-                let viewController = UIHostingController(
-                    rootView: ThreadCredentialsSharingView(
-                        viewModel: .init(
-                            server: server,
-                            threadClient: SimulatorThreadClientService()
-                        )
-                    )
-                )
-                self?.present(viewController, animated: true, completion: nil)
-            }
-        }
-
         section <<< SwitchRow {
             $0.title = L10n.Settings.Developer.AnnoyingBackgroundNotifications.title
             $0.value = prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
