@@ -356,6 +356,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Redigera mall";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "Inga synkade åtgärder";
 "settings_details.actions.actions_synced.footer" = "Åtgärder definierade i .yaml kan inte redigeras på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Åtgärder kan också definieras i .yaml-konfigurationen.";
@@ -549,6 +550,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "thread.credentials.network_name_title" = "Nätverksnamn";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread autentiseringsuppgifter";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Dela autentiseringsuppgifter med Home Assistant";
 "token_error.connection_failed" = "Anslutningen misslyckades.";
 "token_error.expired" = "Token har upphört att gälla.";

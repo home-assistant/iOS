@@ -356,6 +356,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Modifier le modèle";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "Aucune action synchronisée";
 "settings_details.actions.actions_synced.footer" = "Les actions définies dans .yaml ne sont pas modifiables sur l'appareil.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Les actions peuvent également être définies dans la configuration .yaml.";
@@ -548,6 +549,8 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "La connexion a échoué.";
 "token_error.expired" = "Le jeton a expiré.";

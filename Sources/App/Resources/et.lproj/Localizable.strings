@@ -356,6 +356,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versioon";
 "settings.template_edit.title" = "Muuda malli";
+"settings.whats_new.title" = "Mis on uut?";
 "settings_details.actions.actions_synced.empty" = "Sünkroonitud toiminguid pole";
 "settings_details.actions.actions_synced.footer" = "Failis .yaml määratletud toimingud ei ole seadmes muudetavad.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Toiminguid saab määratleda ka .yamli konfiguratsioonis.";
@@ -548,6 +549,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "thread.credentials.network_name_title" = "Võrgu nimi";
 "thread.credentials.no_credential_available" = "Sinu iCloudi Keychainis ei ole volitused saadaval.";
 "thread.credentials.screen_title" = "Threadi sidumse volitused";
+"thread.credentials.share_credentials.no_credentials_message" = "Veendu, et oled sisse logitud oma iCloudi kontoga, mis on Apple Home'i Home omanik.";
+"thread.credentials.share_credentials.no_credentials_title" = "Pole identimisteavet mida jagada";
 "thread.credentials.share_credentials_button_title" = "Volituste jagamine Home Assistantiga";
 "token_error.connection_failed" = "Ühendus nurjus.";
 "token_error.expired" = "Token on aegunud.";

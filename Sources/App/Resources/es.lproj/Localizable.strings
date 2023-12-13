@@ -356,6 +356,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versión";
 "settings.template_edit.title" = "Editar plantilla";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "No hay acciones sincronizadas";
 "settings_details.actions.actions_synced.footer" = "Las acciones definidas en .yaml no se pueden editar en el dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Las acciones también se pueden definir en la configuración .yaml.";
@@ -548,6 +549,8 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "Error en la conexión.";
 "token_error.expired" = "El token ha caducado.";
