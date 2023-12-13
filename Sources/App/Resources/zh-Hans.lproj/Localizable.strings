@@ -353,6 +353,7 @@
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "版本";
 "settings.template_edit.title" = "编辑模板";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "没有已同步的动作";
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在.yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
@@ -545,6 +546,8 @@
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "连接失败。";
 "token_error.expired" = "令牌已过期。";

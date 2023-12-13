@@ -356,6 +356,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "バージョン";
 "settings.template_edit.title" = "テンプレートの編集";
+"settings.whats_new.title" = "新着情報？";
 "settings_details.actions.actions_synced.empty" = "同期されたアクションはありません";
 "settings_details.actions.actions_synced.footer" = ".yamlで定義されたアクションは、デバイス上での編集はできません。";
 "settings_details.actions.actions_synced.footer_no_actions" = "アクションは、.yaml 構成で定義することもできます。";
@@ -548,6 +549,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "thread.credentials.network_name_title" = "ネットワーク名";
 "thread.credentials.no_credential_available" = "iCloud キーチェーンで使用できる認証情報がありません。";
 "thread.credentials.screen_title" = "スレッド認証情報";
+"thread.credentials.share_credentials.no_credentials_message" = "Apple Home のホーム所有者である iCloud アカウントでログインしていることを確認してください。";
+"thread.credentials.share_credentials.no_credentials_title" = "共有する資格情報がありません";
 "thread.credentials.share_credentials_button_title" = "Home Assistantと認証情報を共有する";
 "token_error.connection_failed" = "接続に失敗しました。";
 "token_error.expired" = "トークンの有効期限が切れています。";

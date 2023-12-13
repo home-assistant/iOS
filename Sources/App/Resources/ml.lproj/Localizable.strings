@@ -356,6 +356,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "ടെംപ്ലേറ്റ് എഡിറ്റ് ചെയ്യുക";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "No Synced Actions";
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
@@ -548,6 +549,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "Connection failed.";
 "token_error.expired" = "Token is expired.";

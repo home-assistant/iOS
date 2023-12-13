@@ -1138,6 +1138,10 @@ public enum L10n {
           public static var body: String { return L10n.tr("Localizable", "settings.developer.map_notification.notification.body") }
         }
       }
+      public enum MockThreadCredentialsSharing {
+        /// Simulator Thread Credentials Sharing
+        public static var title: String { return L10n.tr("Localizable", "settings.developer.mock_thread_credentials_sharing.title") }
+      }
       public enum ShowLogFiles {
         /// Show log files in Finder
         public static var title: String { return L10n.tr("Localizable", "settings.developer.show_log_files.title") }
@@ -1780,8 +1784,18 @@ public enum L10n {
 
   public enum Thread {
     public enum Credentials {
+      /// Border Agent ID
+      public static var borderAgentIdTitle: String { return L10n.tr("Localizable", "thread.credentials.border_agent_id_title") }
+      /// Network Key
+      public static var networkKeyTitle: String { return L10n.tr("Localizable", "thread.credentials.network_key_title") }
+      /// Network Name
+      public static var networkNameTitle: String { return L10n.tr("Localizable", "thread.credentials.network_name_title") }
       /// You don't have credentials available on your iCloud Keychain.
       public static var noCredentialAvailable: String { return L10n.tr("Localizable", "thread.credentials.no_credential_available") }
+      /// Thread Credentials
+      public static var screenTitle: String { return L10n.tr("Localizable", "thread.credentials.screen_title") }
+      /// Share credential with Home Assistant
+      public static var shareCredentialsButtonTitle: String { return L10n.tr("Localizable", "thread.credentials.share_credentials_button_title") }
       public enum ShareCredentials {
         /// Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.
         public static var noCredentialsMessage: String { return L10n.tr("Localizable", "thread.credentials.share_credentials.no_credentials_message") }

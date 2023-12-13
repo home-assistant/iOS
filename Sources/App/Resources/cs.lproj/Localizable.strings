@@ -356,6 +356,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Verze";
 "settings.template_edit.title" = "Upravit šablonu";
+"settings.whats_new.title" = "Co je nového?";
 "settings_details.actions.actions_synced.empty" = "Žádné synchronizované akce";
 "settings_details.actions.actions_synced.footer" = "Akce definované v .yaml nelze upravit v zařízení";
 "settings_details.actions.actions_synced.footer_no_actions" = "Akce mohou být také definovány v konfiguraci .yaml.";
@@ -548,6 +549,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "thread.credentials.network_name_title" = "Název sítě";
 "thread.credentials.no_credential_available" = "Nejsou dostupné přihlašovací údaje ke Klíčence na iCloudu.";
 "thread.credentials.screen_title" = "Přihlašovací údaje vlákna";
+"thread.credentials.share_credentials.no_credentials_message" = "Ujistěte se, že jste přihlášeni pomocí svého účtu iCloud, který je vlastníkem domácnosti v Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "Nemáte přihlašovací údaje, které byste mohli sdílet";
 "thread.credentials.share_credentials_button_title" = "Sdílet přihlašovací údaje s Home Assistantem";
 "token_error.connection_failed" = "Připojení se nezdařilo.";
 "token_error.expired" = "Platnost tokenu vypršela.";

@@ -356,6 +356,7 @@
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Έκδοση";
 "settings.template_edit.title" = "Επεξεργασία Προτύπου";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "Καμία συγχρονισμένη ενέργεια";
 "settings_details.actions.actions_synced.footer" = "Οι ενέργειες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Οι ενέργειες μπορούν επίσης να οριστούν στη ρύθμιση παραμέτρων .yaml.";
@@ -548,6 +549,8 @@
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "Η σύνδεση απέτυχε.";
 "token_error.expired" = "Το διακριτικό έχει λήξει.";

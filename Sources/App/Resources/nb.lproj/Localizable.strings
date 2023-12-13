@@ -356,6 +356,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versjon";
 "settings.template_edit.title" = "Rediger mal";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "Ingen synkroniserte handlinger";
 "settings_details.actions.actions_synced.footer" = "Handlinger definert i .yaml kan ikke redigeres på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurasjonen.";
@@ -548,6 +549,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "Tilkoblingen mislyktes.";
 "token_error.expired" = "Token er utløpt.";

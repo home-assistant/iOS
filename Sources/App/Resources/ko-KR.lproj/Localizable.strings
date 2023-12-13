@@ -356,6 +356,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "버전";
 "settings.template_edit.title" = "템플릿 편집";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "동기화된 동작 없음";
 "settings_details.actions.actions_synced.footer" = ".yaml에 정의된 동작은 기기에서 편집할 수 없습니다.";
 "settings_details.actions.actions_synced.footer_no_actions" = "동작은 .yaml 구성에서도 정의할 수 있습니다.";
@@ -548,6 +549,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "thread.credentials.network_name_title" = "네트워크 이름";
 "thread.credentials.no_credential_available" = "iCloud 키체인에서 사용할 수 있는 자격 증명이 없습니다.";
 "thread.credentials.screen_title" = "스레드 자격 증명";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Home Assistant와 자격 증명 공유";
 "token_error.connection_failed" = "연결에 실패했습니다.";
 "token_error.expired" = "토큰이 만료되었습니다.";

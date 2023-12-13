@@ -356,6 +356,7 @@
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versione";
 "settings.template_edit.title" = "Modifica il template";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "Nessuna azione sincronizzata";
 "settings_details.actions.actions_synced.footer" = "Le azioni definite in .yaml non sono editabili sul dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Le azioni possono essere anche definite nella configurazione .yaml.";
@@ -548,6 +549,8 @@
 "thread.credentials.network_name_title" = "Network Name";
 "thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
 "thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
 "thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "Connessione fallita.";
 "token_error.expired" = "Il token è scaduto.";
