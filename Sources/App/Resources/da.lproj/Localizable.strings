@@ -41,10 +41,10 @@
 "alerts.prompt.cancel" = "Annullér";
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Åbn altid";
-"announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
-"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
-"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.button" = "Fortsæt";
+"announcement.drop_support.button_read_more" = "Læs mere";
+"announcement.drop_support.subtitle" = "Efter nøje overvejelse vil vi ophøre med at understøtte iOS 12, 13 og 14 i vores kommende opdateringer.";
+"announcement.drop_support.title" = "Vigtig opdatering";
 "cancel_label" = "Annullér";
 "cl_error.description.deferred_accuracy_too_low" = "Udskudt tilstand understøttes ikke for den ønskede nøjagtighed.";
 "cl_error.description.deferred_canceled" = "Anmodningen om udskudte opdateringer blev annulleret af din app eller af lokalitetsadministratoren.";
@@ -356,7 +356,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Redigér skabelon";
-"settings.whats_new.title" = "What's new?";
+"settings.whats_new.title" = "Hvad er nyt?";
 "settings_details.actions.actions_synced.empty" = "Ingen synkroniserede handlinger";
 "settings_details.actions.actions_synced.footer" = "Handlinger, der er defineret i .yaml, kan ikke redigeres på enheden.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurationen.";
@@ -547,10 +547,10 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "thread.credentials.border_agent_id_title" = "Grænseagent-id";
 "thread.credentials.network_key_title" = "Netværksnøgle";
 "thread.credentials.network_name_title" = "Netværksnavn";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
+"thread.credentials.no_credential_available" = "Du har ikke tilgængelige legitimationsoplysninger i din iCloud-nøglering.";
 "thread.credentials.screen_title" = "Thread-legitimationsoplysninger";
-"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
-"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
+"thread.credentials.share_credentials.no_credentials_message" = "Sørg for, at du er logget ind med din iCloud-konto, som er ejer af et hjem i Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "Du har ikke legitimationsoplysninger at dele";
 "thread.credentials.share_credentials_button_title" = "Del legitimationsoplysninger med Home Assistant";
 "token_error.connection_failed" = "Forbindelsen mislykkedes.";
 "token_error.expired" = "Token er udløbet.";

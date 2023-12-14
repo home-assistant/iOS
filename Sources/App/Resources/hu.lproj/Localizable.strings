@@ -356,7 +356,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Verzió";
 "settings.template_edit.title" = "Sablon szerkesztése";
-"settings.whats_new.title" = "What's new?";
+"settings.whats_new.title" = "Újdonságok";
 "settings_details.actions.actions_synced.empty" = "Nincsenek szinkronizált műveletek";
 "settings_details.actions.actions_synced.footer" = "A .yaml-ben definiált műveletek nem szerkeszthetők az eszközön.";
 "settings_details.actions.actions_synced.footer_no_actions" = "A műveleteket a .yaml konfigurációban is meg lehet adni.";
@@ -549,8 +549,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "thread.credentials.network_name_title" = "Hálózat neve";
 "thread.credentials.no_credential_available" = "Nem állnak rendelkezésre hitelesítő adatok az iCloud-kulcskarikán.";
 "thread.credentials.screen_title" = "Thread hitelesítő adatai";
-"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
-"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
+"thread.credentials.share_credentials.no_credentials_message" = "Győződjön meg róla, hogy bejelentkezett az iCloud fiókjával, amely egy Otthon tulajdonosa az Apple Home-ban.";
+"thread.credentials.share_credentials.no_credentials_title" = "Nincsenek megosztandó hitelesítő adatai";
 "thread.credentials.share_credentials_button_title" = "Hitelesítő adatok megosztása a Home Assistanttal";
 "token_error.connection_failed" = "A kapcsolat sikertelen.";
 "token_error.expired" = "A token lejárt.";
