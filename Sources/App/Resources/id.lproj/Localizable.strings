@@ -356,7 +356,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versi";
 "settings.template_edit.title" = "Edit Templat";
-"settings.whats_new.title" = "What's new?";
+"settings.whats_new.title" = "Yang baru";
 "settings_details.actions.actions_synced.empty" = "Tidak Ada Aksi yang Disinkronkan";
 "settings_details.actions.actions_synced.footer" = "Aksi yang didefinisikan di .yaml tidak dapat diedit di perangkat.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Aksi juga dapat didefinisikan di konfigurasi .yaml.";
@@ -549,8 +549,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "thread.credentials.network_name_title" = "Nama Jaringan";
 "thread.credentials.no_credential_available" = "Anda tidak memiliki kredensial yang tersedia di Rantai Kunci iCloud.";
 "thread.credentials.screen_title" = "Kredensial Thread";
-"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
-"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
+"thread.credentials.share_credentials.no_credentials_message" = "Pastikan Anda masuk dengan akun iCloud Anda yang unakan sebagai pemilik Rumah di Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "Anda tidak memiliki kredensial untuk dibagikan";
 "thread.credentials.share_credentials_button_title" = "Bagikan kredensial dengan Home Assistant";
 "token_error.connection_failed" = "Koneksi gagal.";
 "token_error.expired" = "Token kedaluwarsa.";
