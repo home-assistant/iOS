@@ -738,5 +738,9 @@
 		<key>TemporaryFullAccuracyReasonManualUpdate</key>
 		<string>[localized in strings file]</string>
 	</dict>
+    <key>NSUserActivityTypes</key>
+    <array>
+        <string>INSendMessageIntent</string>
+    </array>
 </dict>
 </plist>
