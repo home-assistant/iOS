@@ -513,6 +513,8 @@
 		3090BEE52ACDA30100030356 /* classic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3090BEDD2ACDA30100030356 /* classic@3x.png */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
+		42412A4B2B18BE86001E2213 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42412A4A2B18BE86001E2213 /* CarPlaySceneDelegate.swift */; };
+		42412A522B18CC0D001E2213 /* CPFavoriteActionsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42412A512B18CC0D001E2213 /* CPFavoriteActionsSection.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -1567,6 +1569,8 @@
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		42412A4A2B18BE86001E2213 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		42412A512B18CC0D001E2213 /* CPFavoriteActionsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPFavoriteActionsSection.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		42DD84322B15DC2F00936F16 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Intents.strings; sourceTree = "<group>"; };
 		42DD84332B15DC2F00936F16 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Frontend.strings; sourceTree = "<group>"; };
@@ -2828,6 +2832,7 @@
 		11EFCDD424F5FA7E00314D85 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				42412A4A2B18BE86001E2213 /* CarPlaySceneDelegate.swift */,
 				11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */,
 				11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */,
 				11EFCDD924F5FE0600314D85 /* SceneActivity.swift */,
@@ -2936,6 +2941,14 @@
 				943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		42412A502B18CBF2001E2213 /* CarPlay */ = {
+			isa = PBXGroup;
+			children = (
+				42412A512B18CC0D001E2213 /* CPFavoriteActionsSection.swift */,
+			);
+			path = CarPlay;
 			sourceTree = "<group>";
 		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
@@ -3236,6 +3249,7 @@
 			isa = PBXGroup;
 			children = (
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
+				42412A502B18CBF2001E2213 /* CarPlay */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
@@ -5432,6 +5446,7 @@
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
+				42412A4B2B18BE86001E2213 /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
@@ -5480,6 +5495,7 @@
 				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
+				42412A522B18CC0D001E2213 /* CPFavoriteActionsSection.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,

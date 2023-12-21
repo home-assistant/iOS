@@ -109,6 +109,8 @@ public enum L10n {
       public static var appTitle: String { return L10n.tr("Localizable", "about.logo.app_title") }
       /// Awaken Your Home
       public static var tagline: String { return L10n.tr("Localizable", "about.logo.tagline") }
+      /// Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "about.logo.title") }
     }
     public enum Review {
       /// Leave a review
@@ -213,6 +215,13 @@ public enum L10n {
       public static var cancel: String { return L10n.tr("Localizable", "alerts.prompt.cancel") }
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.prompt.ok") }
+    }
+  }
+
+  public enum CarPlay {
+    public enum NoActions {
+      /// Open iOS Companion App to create actions for CarPlay.
+      public static var title: String { return L10n.tr("Localizable", "carPlay.no_actions.title") }
     }
   }
 

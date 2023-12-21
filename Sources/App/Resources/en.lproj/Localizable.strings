@@ -11,6 +11,7 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant on Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
+"about.logo.title" = "Home Assistant";
 "about.logo.tagline" = "Awaken Your Home";
 "about.review.title" = "Leave a review";
 "about.title" = "About";
@@ -769,3 +770,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
+"carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
