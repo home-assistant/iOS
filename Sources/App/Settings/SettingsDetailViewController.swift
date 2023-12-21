@@ -79,14 +79,13 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                         $0.value = icon
                     }
                     $0.displayValueFor = { $0?.title }
-                }.onPresent { _, to in
+                }.onPresent { [weak self] _, to in
                     to.selectableRowCellUpdate = { cell, row in
                         cell.height = { 72 }
                         cell.imageView?.layer.masksToBounds = true
                         cell.imageView?.layer.cornerRadius = 12.63
                         guard let newIcon = row.selectableValue else { return }
-                        cell.imageView?.image = UIImage(named: newIcon.rawValue)
-
+                        cell.imageView?.image = self?.resizeImage(image: UIImage(named: newIcon.rawValue), newSize: .init(width: 64, height: 64))
                         cell.textLabel?.text = newIcon.title
                     }
                 }.onChange { row in
@@ -605,6 +604,15 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         dismiss(animated: true, completion: nil)
     }
 
+    private func resizeImage(image: UIImage?, newSize: CGSize) -> UIImage? {
+        guard let image else { return nil }
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        let resizedImage = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+        return resizedImage
+    }
+
     static func getSceneRows(_ rlmScene: RLMScene) -> [BaseRow] {
         let switchRow = SwitchRow()
         let configure = ButtonRowWithPresent<ActionConfigurator> {
@@ -853,8 +861,8 @@ enum AppIcon: String, CaseIterable {
     case Purple = "purple"
     case Red = "red"
     case White = "white"
-    case BiPride = "bi_pride"
-    case POCPride = "POC_pride"
+    case BiPride = "bi-pride"
+    case POCPride = "POC-pride"
     case NonBinary = "non-binary"
     case Rainbow = "rainbow"
     case Trans = "trans"
