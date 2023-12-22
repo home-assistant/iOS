@@ -518,6 +518,8 @@
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		424DD0572B3508F40057E456 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0562B3508F40057E456 /* CarPlaySceneDelegate.swift */; };
+		424DD05A2B3509170057E456 /* CPFavoriteActionsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CPFavoriteActionsSection.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
@@ -1626,6 +1628,8 @@
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
+		424DD0562B3508F40057E456 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		424DD0592B3509170057E456 /* CPFavoriteActionsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPFavoriteActionsSection.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
@@ -2906,6 +2910,7 @@
 		11EFCDD424F5FA7E00314D85 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				424DD0562B3508F40057E456 /* CarPlaySceneDelegate.swift */,
 				11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */,
 				11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */,
 				11EFCDD924F5FE0600314D85 /* SceneActivity.swift */,
@@ -3015,6 +3020,14 @@
 				943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		424DD0582B3509170057E456 /* CarPlay */ = {
+			isa = PBXGroup;
+			children = (
+				424DD0592B3509170057E456 /* CPFavoriteActionsSection.swift */,
+			);
+			path = CarPlay;
 			sourceTree = "<group>";
 		};
 		426740A42B17348700C1DD73 /* Assets */ = {
@@ -3414,6 +3427,7 @@
 			children = (
 				42CFCD682B1F956D00CCEF4A /* DropSupport */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
+				424DD0582B3509170057E456 /* CarPlay */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
@@ -5611,6 +5625,7 @@
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
+				424DD0572B3508F40057E456 /* CarPlaySceneDelegate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
@@ -5658,6 +5673,7 @@
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
+				424DD05A2B3509170057E456 /* CPFavoriteActionsSection.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
