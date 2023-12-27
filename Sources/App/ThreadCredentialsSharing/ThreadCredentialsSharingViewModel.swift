@@ -2,7 +2,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 13, *)
 final class ThreadCredentialsSharingViewModel: ObservableObject {
     enum AlertType {
         case empty(title: String, message: String)

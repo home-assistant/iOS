@@ -103,7 +103,7 @@ public extension CLCircularRegion {
 
 public extension CLLocation {
     func fuzzingAccuracy(by amount: CLLocationDistance) -> CLLocation {
-        if #available(iOS 13.4, watchOS 6.2, *) {
+        if #available(watchOS 6.2, *) {
             return CLLocation(
                 coordinate: coordinate,
                 altitude: altitude,
@@ -129,7 +129,7 @@ public extension CLLocation {
     }
 
     func changingCoordinate(to fuzzedCoordinate: CLLocationCoordinate2D) -> CLLocation {
-        if #available(iOS 13.4, watchOS 6.2, *) {
+        if #available(watchOS 6.2, *) {
             return CLLocation(
                 coordinate: fuzzedCoordinate,
                 altitude: altitude,

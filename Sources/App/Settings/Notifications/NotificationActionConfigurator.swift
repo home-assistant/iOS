@@ -19,9 +19,7 @@ class NotificationActionConfigurator: HAFormViewController, TypedRowControllerTy
         self.category = category
         super.init()
 
-        if #available(iOS 13, *) {
-            self.isModalInPresentation = true
-        }
+        self.isModalInPresentation = true
 
         if let action = action {
             self.action = action

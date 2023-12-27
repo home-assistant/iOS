@@ -19,10 +19,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         super.init()
 
         self.title = urlType.description
-
-        if #available(iOS 13, *) {
-            self.isModalInPresentation = true
-        }
+        self.isModalInPresentation = true
     }
 
     enum SaveError: LocalizedError {
@@ -165,11 +162,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         if isChecking {
             let activityIndicator: UIActivityIndicatorView
 
-            if #available(iOS 13, *) {
-                activityIndicator = .init(style: .medium)
-            } else {
-                activityIndicator = .init(style: .gray)
-            }
+            activityIndicator = .init(style: .medium)
 
             activityIndicator.startAnimating()
 
@@ -306,7 +299,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         locationManager?.delegate = permissionDelegate
 
         section.hidden = .function([], { _ in
-            if #available(iOS 14, *), let locationManager = locationManager {
+            if let locationManager = locationManager {
                 return locationManager.authorizationStatus == .authorizedAlways &&
                     locationManager.accuracyAuthorization == .fullAccuracy
             } else {
@@ -322,11 +315,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         }
 
         section <<< InfoLabelRow {
-            if #available(iOS 14, *) {
-                $0.title = L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage
-            } else {
-                $0.title = L10n.Settings.ConnectionSection.ssidPermissionMessage
-            }
+            $0.title = L10n.Settings.ConnectionSection.ssidPermissionAndAccuracyMessage
 
             $0.displayType = .important
 

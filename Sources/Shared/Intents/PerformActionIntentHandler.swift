@@ -54,7 +54,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         completion(Array(performActions), nil)
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideActionOptionsCollection(
         for intent: PerformActionIntent,
         with completion: @escaping (INObjectCollection<IntentAction>?, Error?) -> Void

@@ -257,12 +257,7 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             ),
         ], animated: false)
 
-        if #available(iOS 13, *) {
-            map.pointOfInterestFilter = .excludingAll
-        } else {
-            map.showsPointsOfInterest = false
-        }
-
+        map.pointOfInterestFilter = .excludingAll
         map.showsBuildings = true
         map.showsCompass = false
         map.showsTraffic = false

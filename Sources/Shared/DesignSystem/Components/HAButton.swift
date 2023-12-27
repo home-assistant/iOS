@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 13, *)
 public struct TextButton: ButtonStyle {
     private let backgroundColor = Color.asset(Asset.Colors.haPrimary)
 
@@ -16,14 +15,12 @@ public struct TextButton: ButtonStyle {
     }
 }
 
-@available(iOS 13, *)
 public extension ButtonStyle where Self == TextButton {
     static var textButton: some ButtonStyle {
         TextButton()
     }
 }
 
-@available(iOS 13, *)
 #Preview {
     Button(action: {}) {
         Text("Hello World")

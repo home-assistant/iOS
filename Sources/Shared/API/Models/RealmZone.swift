@@ -151,41 +151,20 @@ public final class RLMZone: Object, UpdatableModel {
         let beaconRegion: CLBeaconRegion
 
         if let major = BeaconMajor.value, let minor = BeaconMinor.value {
-            if #available(iOS 13, *) {
-                beaconRegion = CLBeaconRegion(
-                    uuid: uuid,
-                    major: CLBeaconMajorValue(major),
-                    minor: CLBeaconMinorValue(minor),
-                    identifier: identifier
-                )
-            } else {
-                beaconRegion = CLBeaconRegion(
-                    proximityUUID: uuid,
-                    major: CLBeaconMajorValue(major),
-                    minor: CLBeaconMinorValue(minor),
-                    identifier: identifier
-                )
-            }
+            beaconRegion = CLBeaconRegion(
+                uuid: uuid,
+                major: CLBeaconMajorValue(major),
+                minor: CLBeaconMinorValue(minor),
+                identifier: identifier
+            )
         } else if let major = BeaconMajor.value {
-            if #available(iOS 13, *) {
-                beaconRegion = CLBeaconRegion(
-                    uuid: uuid,
-                    major: CLBeaconMajorValue(major),
-                    identifier: identifier
-                )
-            } else {
-                beaconRegion = CLBeaconRegion(
-                    proximityUUID: uuid,
-                    major: CLBeaconMajorValue(major),
-                    identifier: identifier
-                )
-            }
+            beaconRegion = CLBeaconRegion(
+                uuid: uuid,
+                major: CLBeaconMajorValue(major),
+                identifier: identifier
+            )
         } else {
-            if #available(iOS 13, *) {
-                beaconRegion = CLBeaconRegion(uuid: uuid, identifier: identifier)
-            } else {
-                beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: identifier)
-            }
+            beaconRegion = CLBeaconRegion(uuid: uuid, identifier: identifier)
         }
 
         beaconRegion.notifyEntryStateOnDisplay = true

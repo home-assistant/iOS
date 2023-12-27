@@ -5,13 +5,7 @@ public final class ButtonRowWithLoading: _ButtonRowOf<Bool>, RowType {
         super.init(tag: tag)
     }
 
-    let activityIndicator: UIActivityIndicatorView = {
-        if #available(iOS 13, *) {
-            return UIActivityIndicatorView(style: .medium)
-        } else {
-            return UIActivityIndicatorView(style: .gray)
-        }
-    }()
+    let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
 
     override public func updateCell() {
         super.updateCell()

@@ -4,7 +4,6 @@ import Foundation
 import PromiseKit
 import Shared
 
-@available(iOS 13, *)
 class NFCListViewController: HAFormViewController {
     override init() {
         super.init()

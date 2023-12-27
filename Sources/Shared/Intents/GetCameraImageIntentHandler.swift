@@ -20,7 +20,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         completion(IntentServer.all, nil)
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
@@ -58,7 +58,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             .catch { completion(nil, $0) }
     }
 
-    @available(iOS 14, watchOS 7, *)
+    @available(watchOS 7, *)
     func provideCameraIDOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void

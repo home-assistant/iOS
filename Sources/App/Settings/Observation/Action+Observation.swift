@@ -16,9 +16,7 @@ extension Action {
 
         Current.modelManager.observe(for: AnyRealmCollection(actions)) { collection in
             let invalidateMenu = Promise<Void> { seal in
-                if #available(iOS 13, *) {
-                    UIMenuSystem.main.setNeedsRebuild()
-                }
+                UIMenuSystem.main.setNeedsRebuild()
                 seal.fulfill(())
             }
 
@@ -38,9 +36,7 @@ extension Action {
             }
 
             let updateWidgetKitWidgets = Promise<Void> { seal in
-                if #available(iOS 14, *) {
-                    WidgetCenter.shared.reloadTimelines(ofKind: WidgetActionsIntent.widgetKind)
-                }
+                WidgetCenter.shared.reloadTimelines(ofKind: WidgetActionsIntent.widgetKind)
 
                 seal.fulfill(())
             }

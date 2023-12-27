@@ -35,17 +35,10 @@ class ZoneManagerProcessorTests: XCTestCase {
             identifier: "circular_region"
         )
 
-        if #available(iOS 13, *) {
-            beaconRegion = CLBeaconRegion(
-                uuid: UUID(),
-                identifier: "beacon_region"
-            )
-        } else {
-            beaconRegion = CLBeaconRegion(
-                proximityUUID: UUID(),
-                identifier: "beacon_region"
-            )
-        }
+        beaconRegion = CLBeaconRegion(
+            uuid: UUID(),
+            identifier: "beacon_region"
+        )
 
         let servers = FakeServerManager(initial: 2)
         let server1 = servers.all[0]

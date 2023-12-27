@@ -11,10 +11,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
         if Current.isCatalyst {
             return NotificationManagerLocalPushInterfaceDirect(delegate: self)
-        } else if #available(iOS 14, *) {
-            return NotificationManagerLocalPushInterfaceExtension()
         } else {
-            return NotificationManagerLocalPushInterfaceDisallowed()
+            return NotificationManagerLocalPushInterfaceExtension()
         }
     }()
 

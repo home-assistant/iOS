@@ -24,16 +24,7 @@ public extension UIColor {
             .map { (string as NSString).substring(with: $0) }
             .compactMap { (numberString: String) -> Float? in
                 let scanner = Scanner(string: numberString)
-                if #available(iOS 13, *) {
-                    return scanner.scanFloat()
-                } else {
-                    var result: Float = 0
-                    if scanner.scanFloat(&result) {
-                        return result
-                    } else {
-                        return nil
-                    }
-                }
+                return scanner.scanFloat()
             }.map { CGFloat($0) }
 
         guard values.count >= 3 else {

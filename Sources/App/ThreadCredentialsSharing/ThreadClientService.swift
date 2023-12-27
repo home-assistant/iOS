@@ -1,7 +1,6 @@
 import Foundation
 import Shared
 
-@available(iOS 13, *)
 protocol THClientProtocol {
     func retrieveAllCredentials() async throws -> [ThreadCredential]
 }

@@ -52,11 +52,6 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
             $0.enablesReturnKeyAutomatically = true
             $0.clearButtonMode = .whileEditing
 
-            if #available(iOS 13, *) {
-            } else {
-                $0.textColor = .white
-            }
-
             let font = UIFont.preferredFont(forTextStyle: .body)
             $0.font = font
             $0.heightAnchor.constraint(greaterThanOrEqualToConstant: font.lineHeight * 2.5)
@@ -89,11 +84,7 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
         }
         let loading: UIActivityIndicatorView = {
             let indicator: UIActivityIndicatorView
-            if #available(iOS 13, *) {
-                indicator = UIActivityIndicatorView(style: .medium)
-            } else {
-                indicator = UIActivityIndicatorView(style: .white)
-            }
+            indicator = UIActivityIndicatorView(style: .medium)
 
             indicator.hidesWhenStopped = true
             indicator.color = button.titleColor(for: .normal)
@@ -288,11 +279,6 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
         let insetHeight = max(0, intersectHeight - (bottomSpacer?.bounds.height ?? 0))
 
         scrollView.contentInset.bottom = insetHeight
-
-        if #available(iOS 13, *) {
-            scrollView.verticalScrollIndicatorInsets.bottom = insetHeight
-        } else {
-            scrollView.scrollIndicatorInsets.bottom = insetHeight
-        }
+        scrollView.verticalScrollIndicatorInsets.bottom = insetHeight
     }
 }

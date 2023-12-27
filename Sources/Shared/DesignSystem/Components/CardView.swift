@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 13, *)
 public struct CardView<Content: View>: View {
     public let content: () -> Content
     public let backgroundColor: Color?
@@ -29,7 +28,6 @@ public struct CardView<Content: View>: View {
     }
 }
 
-@available(iOS 13, *)
 #Preview {
     VStack {
         CardView {

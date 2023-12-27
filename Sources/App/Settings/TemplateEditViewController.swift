@@ -26,9 +26,7 @@ class TemplateEditViewController: HAFormViewController, RowControllerType {
         self.initialValue = initial
         super.init()
 
-        if #available(iOS 13, *) {
-            isModalInPresentation = true
-        }
+        isModalInPresentation = true
 
         self.title = L10n.Settings.TemplateEdit.title
     }

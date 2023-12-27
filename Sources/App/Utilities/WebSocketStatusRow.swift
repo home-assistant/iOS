@@ -4,11 +4,7 @@ import Shared
 
 public final class WebSocketStatusCell: Cell<HAConnectionState>, CellType {
     public let activityIndicator = with(UIActivityIndicatorView()) {
-        if #available(iOS 13, *) {
-            $0.style = .medium
-        } else {
-            $0.style = .gray
-        }
+        $0.style = .medium
     }
 
     override public func update() {

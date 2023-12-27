@@ -95,26 +95,14 @@ class LifecycleManager {
     private var hasTriggeredWarm = false
 
     @objc private func warmConnect() {
-        if #available(iOS 13, *) {
-            if hasTriggeredWarm {
-                // iOS 13+ scene API triggers foreground on initial launch, too, so we ignore it
-                periodicUpdateManager.connectAPI(reason: .warm)
-            }
-        } else {
+        if hasTriggeredWarm {
+            // iOS 13+ scene API triggers foreground on initial launch, too, so we ignore it
             periodicUpdateManager.connectAPI(reason: .warm)
         }
-
         hasTriggeredWarm = true
     }
 
     @objc private func didBecomeActive() {
-        if #available(iOS 13, *) {
-            // not necessary as foreground/background always occur
-        } else {
-            // done for iOS 12's initial startup, which does not foreground
-            isActive = true
-        }
-
         Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(

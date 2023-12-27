@@ -27,9 +27,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
         super.init()
 
-        if #available(iOS 13, *) {
-            self.isModalInPresentation = true
-        }
+        self.isModalInPresentation = true
     }
 
     @objc private func cancel() {
@@ -164,11 +162,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     cell.detailTextLabel?.text = row.selectableValue?.description
                     cell.detailTextLabel?.numberOfLines = 0
                     cell.detailTextLabel?.lineBreakMode = .byWordWrapping
-                    if #available(iOS 13, *) {
-                        cell.detailTextLabel?.textColor = .secondaryLabel
-                    } else {
-                        cell.detailTextLabel?.textColor = .darkGray
-                    }
+                    cell.detailTextLabel?.textColor = .secondaryLabel
                 }
                 to.selectableRowCellUpdate = { cell, row in
                     cell.textLabel?.text = row.selectableValue?.style
@@ -440,11 +434,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     self?.deleteComplication(cell)
                 }
                 $0.cellUpdate { cell, _ in
-                    if #available(iOS 13, *) {
-                        cell.textLabel?.textColor = .systemRed
-                    } else {
-                        cell.textLabel?.textColor = .red
-                    }
+                    cell.textLabel?.textColor = .systemRed
                 }
             }
 

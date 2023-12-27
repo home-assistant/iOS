@@ -71,12 +71,7 @@ public final class TemplateSection: Section {
     let resultRow = LabelRow {
         $0.cellUpdate { cell, _ in
             cell.textLabel?.numberOfLines = 0
-
-            if #available(iOS 13, *) {
-                cell.textLabel?.textColor = .secondaryLabel
-            } else {
-                cell.textLabel?.textColor = .gray
-            }
+            cell.textLabel?.textColor = .secondaryLabel
         }
     }
 
@@ -87,12 +82,7 @@ public final class TemplateSection: Section {
     let errorRow = LabelRow {
         $0.cellUpdate { cell, _ in
             cell.textLabel?.numberOfLines = 0
-
-            if #available(iOS 13, *) {
-                cell.textLabel?.textColor = .systemRed
-            } else {
-                cell.textLabel?.textColor = .red
-            }
+            cell.textLabel?.textColor = .systemRed
         }
     }
 

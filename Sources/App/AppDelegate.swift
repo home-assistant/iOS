@@ -112,12 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWatchCommunicator()
         setupiOS12Features()
 
-        if #available(iOS 13, *) {
-        } else {
-            // window must be created before willFinishLaunching completes, or state restoration will not occur
-            sceneManager.compatibility.willFinishLaunching()
-        }
-
         return true
     }
 
@@ -129,11 +123,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        if #available(iOS 13, *) {
-        } else {
-            sceneManager.compatibility.didFinishLaunching()
-        }
-
         lifecycleManager.didFinishLaunching()
 
         checkForUpdate()
@@ -142,7 +131,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    @available(iOS 13, *)
     override func buildMenu(with builder: UIMenuBuilder) {
         if builder.system == .main {
             let manager = MenuManager(builder: builder)
@@ -157,13 +145,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 13, *)
     @objc internal func openAbout() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .about)
     }
 
-    @available(iOS 13, *)
     @objc internal func openMenuUrl(_ command: AnyObject) {
         guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
@@ -175,13 +161,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 13, *)
     @objc internal func openPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .settings)
     }
 
-    @available(iOS 13, *)
     @objc internal func openActionsPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
@@ -195,7 +179,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
 
-    @available(iOS 13, *)
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
@@ -208,58 +191,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
                 .first ?? .webView
             return activity.configuration
-        }
-    }
-
-    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        if #available(iOS 13, *) {
-            return false
-        } else {
-            if OnboardingNavigationViewController.requiredOnboardingStyle != nil {
-                Current.Log.info("disallowing state to be restored due to onboarding")
-                return false
-            }
-
-            if Current.appConfiguration == .FastlaneSnapshot {
-                Current.Log.info("disallowing state to be restored due to fastlane snapshot")
-                return false
-            }
-
-            if NSClassFromString("XCTest") != nil {
-                return false
-            }
-
-            Current.Log.info("allowing state to be restored")
-            return true
-        }
-    }
-
-    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        if #available(iOS 13, *) {
-            return false
-        } else {
-            if Current.settingsStore.restoreLastURL == false {
-                // if we let it capture state -- even if we don't use the url -- it will take a screenshot
-                Current.Log.info("disallowing state to be saved due to setting")
-                return false
-            }
-
-            Current.Log.info("allowing state to be saved")
-            return true
-        }
-    }
-
-    func application(
-        _ application: UIApplication,
-        viewControllerWithRestorationIdentifierPath identifierComponents: [String],
-        coder: NSCoder
-    ) -> UIViewController? {
-        if #available(iOS 13, *) {
-            return nil
-        } else {
-            return sceneManager.compatibility.windowController?.viewController(
-                withRestorationIdentifierPath: identifierComponents
-            )
         }
     }
 
@@ -313,56 +244,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(
-        _ app: UIApplication,
-        open url: URL,
-        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
-    ) -> Bool {
-        if #available(iOS 13, *) {
-            fatalError("scene delegate should be invoked on iOS 13")
-        } else {
-            return sceneManager.compatibility.urlHandler?.handle(url: url) ?? false
-        }
-    }
-
-    func application(
-        _ application: UIApplication,
-        performActionFor shortcutItem: UIApplicationShortcutItem,
-        completionHandler: @escaping (Bool) -> Void
-    ) {
-        if #available(iOS 13, *) {
-            fatalError("scene delegate should be invoked on iOS 13")
-        } else {
-            enum NoHandler: Error {
-                case noHandler
-            }
-
-            firstly { () -> Promise<Void> in
-                if let handler = sceneManager.compatibility.urlHandler {
-                    return handler.handle(shortcutItem: shortcutItem)
-                } else {
-                    throw NoHandler.noHandler
-                }
-            }.done {
-                completionHandler(true)
-            }.catch { _ in
-                completionHandler(false)
-            }
-        }
-    }
-
-    func application(
-        _ application: UIApplication,
-        continue userActivity: NSUserActivity,
-        restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
-    ) -> Bool {
-        if #available(iOS 13, *) {
-            fatalError("scene delegate should be invoked on iOS 13")
-        } else {
-            return sceneManager.compatibility.urlHandler?.handle(userActivity: userActivity) ?? false
-        }
-    }
-
-    func application(
         _ application: UIApplication,
         handleEventsForBackgroundURLSession identifier: String,
         completionHandler: @escaping () -> Void
@@ -377,11 +258,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        if #available(iOS 13, *) {
-            return IntentHandlerFactory.handler(for: intent)
-        } else {
-            return nil
-        }
+        IntentHandlerFactory.handler(for: intent)
     }
 
     // MARK: - Private helpers
@@ -624,9 +501,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
-        if #available(iOS 13, *) {
-            UIMenuSystem.main.setNeedsRebuild()
-        }
+        UIMenuSystem.main.setNeedsRebuild()
     }
 
     // swiftlint:disable:next file_length

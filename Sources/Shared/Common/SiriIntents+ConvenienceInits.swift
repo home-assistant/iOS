@@ -81,20 +81,16 @@ public extension PerformActionIntent {
 public extension IntentAction {
     convenience init(action: Action) {
         #if os(iOS)
-        if #available(iOS 14, *) {
-            self.init(
-                identifier: action.ID,
-                display: action.Name,
-                subtitle: nil,
-                image: INImage(
-                    icon: MaterialDesignIcons(named: action.IconName),
-                    foreground: UIColor(hex: action.IconColor),
-                    background: UIColor(hex: action.BackgroundColor)
-                )
+        self.init(
+            identifier: action.ID,
+            display: action.Name,
+            subtitle: nil,
+            image: INImage(
+                icon: MaterialDesignIcons(named: action.IconName),
+                foreground: UIColor(hex: action.IconColor),
+                background: UIColor(hex: action.BackgroundColor)
             )
-        } else {
-            self.init(identifier: action.ID, display: action.Name)
-        }
+        )
         #else
         self.init(identifier: action.ID, display: action.Name)
         #endif
@@ -145,7 +141,7 @@ public extension IntentPanel {
         image = nil
         #endif
 
-        if #available(iOS 14, watchOS 7, *) {
+        if #available(watchOS 7, *) {
             self.init(
                 identifier: panel.path,
                 display: panel.title,
@@ -189,7 +185,6 @@ public extension WidgetOpenPageIntent {
     static let widgetKind = "WidgetOpenPage"
 }
 
-@available(iOS 13, *)
 public extension IntentServer {
     convenience init(server: Server) {
         self.init(identifier: server.identifier.rawValue, display: server.info.name)

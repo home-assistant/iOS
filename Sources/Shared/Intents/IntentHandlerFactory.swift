@@ -36,7 +36,7 @@ public enum IntentHandlerFactory {
             if #available(iOS 15, watchOS 8, *), intent is INShareFocusStatusIntent {
                 return FocusStatusIntentHandler()
             }
-            if #available(iOS 14, watchOS 7, *), intent is WidgetActionsIntent {
+            if #available(watchOS 7, *), intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
             }
             return self

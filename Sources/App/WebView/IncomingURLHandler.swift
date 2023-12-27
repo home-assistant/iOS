@@ -115,28 +115,26 @@ class IncomingURLHandler {
             if let url = userActivity.webpageURL, url.host?.lowercased() == "my.home-assistant.io" {
                 return showMy(for: url)
             } else if let interaction = userActivity.interaction {
-                if #available(iOS 13, *) {
-                    if let intent = interaction.intent as? OpenPageIntent,
-                       let panel = intent.page, let path = panel.identifier {
-                        Current.Log.info("launching from shortcuts with panel \(panel)")
+                if let intent = interaction.intent as? OpenPageIntent,
+                   let panel = intent.page, let path = panel.identifier {
+                    Current.Log.info("launching from shortcuts with panel \(panel)")
 
-                        let urlString = "/" + path
-                        if let server = Current.servers.server(for: panel) {
-                            windowController.open(
-                                from: .deeplink,
-                                server: server,
-                                urlString: urlString,
-                                skipConfirm: true
-                            )
-                        } else {
-                            windowController.openSelectingServer(
-                                from: .deeplink,
-                                urlString: urlString,
-                                skipConfirm: true
-                            )
-                        }
-                        return true
+                    let urlString = "/" + path
+                    if let server = Current.servers.server(for: panel) {
+                        windowController.open(
+                            from: .deeplink,
+                            server: server,
+                            urlString: urlString,
+                            skipConfirm: true
+                        )
+                    } else {
+                        windowController.openSelectingServer(
+                            from: .deeplink,
+                            urlString: urlString,
+                            skipConfirm: true
+                        )
                     }
+                    return true
                 }
 
                 return false

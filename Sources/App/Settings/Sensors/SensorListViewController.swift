@@ -226,20 +226,10 @@ class SensorListViewController: HAFormViewController, SensorObserver {
 
                     if isEnabled {
                         cell.tintColor = nil
-
-                        if #available(iOS 13, *) {
-                            cell.textLabel?.textColor = .label
-                        } else {
-                            cell.textLabel?.textColor = .black
-                        }
+                        cell.textLabel?.textColor = .label
                     } else {
-                        if #available(iOS 13, *) {
-                            cell.textLabel?.textColor = .secondaryLabel
-                            cell.tintColor = .systemFill
-                        } else {
-                            cell.textLabel?.textColor = .darkGray
-                            cell.tintColor = .lightGray
-                        }
+                        cell.textLabel?.textColor = .secondaryLabel
+                        cell.tintColor = .systemFill
                     }
 
                     cell.imageView?.image =
