@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Dostęp do Biblioteki Zdjęć jest wymagany, aby umożliwić zapisywanie zdjęć ze strony.";
 "NSPhotoLibraryUsageDescription" = "Dostęp do Biblioteki Zdjęć jest wymagany, aby umożliwić zapisywanie zdjęć ze strony.";
 "NSSiriUsageDescription" = "Używamy Siri, aby umożliwić stworzonym skrótom interakcję z aplikacją.";
-"NSSpeechRecognitionUsageDescription" = "Used to dictate text to Assist.";
+"NSSpeechRecognitionUsageDescription" = "Służy do dyktowania tekstu asystentowi.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Wyślij lokalizację";
 "TemporaryFullAccuracyReasonManualUpdate" = "Grant full accuracy to use your current location for your device tracker.";

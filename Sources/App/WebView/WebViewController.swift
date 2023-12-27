@@ -214,6 +214,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         styleUI()
         updateWebViewForServerValues()
+
+        let dropSupportMessageKey = "drop-support-ios-12-13-14"
+        let dropSupportViewDisplayedPreviously = UserDefaults.standard.bool(forKey: dropSupportMessageKey)
+        if #unavailable(iOS 14.0), !dropSupportViewDisplayedPreviously {
+            UserDefaults.standard.set(true, forKey: dropSupportMessageKey)
+            present(DropSupportMessageViewController(), animated: true)
+        }
     }
 
     public func showSettingsViewController() {
@@ -1066,11 +1073,14 @@ extension WebViewController: WKScriptMessageHandler {
 
     private func threadCredentialsRequested() {
         if #available(iOS 16.4, *) {
-            let threadDebugView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
+            let threadManagementView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
                 server: server,
                 threadClient: ThreadClientService()
             )))
-            present(threadDebugView, animated: true)
+            threadManagementView.view.backgroundColor = .clear
+            threadManagementView.modalPresentationStyle = .overFullScreen
+            threadManagementView.modalTransitionStyle = .crossDissolve
+            present(threadManagementView, animated: true)
         }
     }
 }

@@ -11,35 +11,26 @@ struct ThreadCredentialsSharingView: View {
     }
 
     var body: some View {
-        NavigationView {
-            Group {
-                if viewModel.showLoader {
-                    progressView
-                } else {
-                    credentialsList
-                }
-            }
-            .navigationTitle(L10n.Thread.Credentials.screenTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .background(Color(uiColor: .secondarySystemBackground))
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text(L10n.doneLabel)
+        VStack {
+            if viewModel.showImportSuccess {
+                successView
+                    .onAppear {
+                        Haptics.shared.play(.medium)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            dismiss()
+                        }
                     }
-                }
-            })
-            .alert(alertTitle, isPresented: $viewModel.showAlert) {
-                errorAlertActions
-            } message: {
-                if case let .error(_, message) = viewModel.alertType {
-                    Text(message)
-                }
+            } else {
+                progressView
             }
         }
-        .navigationViewStyle(.stack)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black.opacity(0.5))
+        .alert(alertTitle, isPresented: $viewModel.showAlert) {
+            alertActions
+        } message: {
+            Text(alertMessage)
+        }
         .onAppear {
             Task {
                 await viewModel.retrieveAllCredentials()
@@ -47,32 +38,62 @@ struct ThreadCredentialsSharingView: View {
         }
     }
 
+    private var successView: some View {
+        Image(systemName: "checkmark.circle.fill")
+            .resizable()
+            .frame(width: 65, height: 65)
+            .aspectRatio(contentMode: .fit)
+            .foregroundColor(.white)
+    }
+
     private var alertTitle: String {
-        if case let .error(title, _) = viewModel.alertType {
+        switch viewModel.alertType {
+        case let .empty(title, _):
             return title
-        } else if case let .success(title) = viewModel.alertType {
+        case let .error(title, _):
             return title
-        } else {
+        case .none:
             return ""
         }
     }
 
-    @ViewBuilder
-    private var errorAlertActions: some View {
+    private var alertMessage: String {
+        switch viewModel.alertType {
+        case let .empty(_, message):
+            return message
+        case let .error(_, message):
+            return message
+        default:
+            return ""
+        }
+    }
+
+    private var doneButton: some View {
         Button {
-            /* no-op */
+            dismiss()
         } label: {
             Text(L10n.doneLabel)
         }
+    }
 
-        if case .error = viewModel.alertType {
-            Button {
-                Task {
-                    await viewModel.retrieveAllCredentials()
-                }
-            } label: {
-                Text(L10n.retryLabel)
+    private var retryButton: some View {
+        Button {
+            Task {
+                await viewModel.retrieveAllCredentials()
             }
+        } label: {
+            Text(L10n.retryLabel)
+        }
+    }
+
+    @ViewBuilder
+    private var alertActions: some View {
+        switch viewModel.alertType {
+        case .error, .empty:
+            doneButton
+            retryButton
+        default:
+            EmptyView()
         }
     }
 
@@ -80,56 +101,6 @@ struct ThreadCredentialsSharingView: View {
         ProgressView()
             .progressViewStyle(.circular)
             .scaleEffect(CGSize(width: 2, height: 2))
-    }
-
-    @ViewBuilder
-    private var credentialsList: some View {
-        if viewModel.credentials.isEmpty {
-            Text("You don't have credentials available on your iCloud Keychain.")
-                .multilineTextAlignment(.center)
-        } else {
-            List(viewModel.credentials, id: \.borderAgentID) { credential in
-                makeCredentialCard(credential: credential)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-            }
-            .listStyle(.plain)
-        }
-    }
-
-    private func makeCredentialCard(credential: ThreadCredential) -> some View {
-        CardView(backgroundColor: Color(uiColor: .systemBackground)) {
-            makeCardPropertyView(
-                title: L10n.Thread.Credentials.networkNameTitle,
-                value: credential.networkName
-            )
-            makeCardPropertyView(
-                title: L10n.Thread.Credentials.borderAgentIdTitle,
-                value: credential.borderAgentID
-            )
-            makeCardPropertyView(
-                title: L10n.Thread.Credentials.networkKeyTitle,
-                value: credential.networkKey
-            )
-            Button {
-                viewModel.shareCredentialWithHomeAssistant(credential: credential)
-            } label: {
-                Text(L10n.Thread.Credentials.shareCredentialsButtonTitle)
-            }
-            .buttonStyle(.textButton)
-        }
-    }
-
-    private func makeCardPropertyView(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            Group {
-                Text(title)
-                    .font(.footnote)
-                Text(value)
-                    .textSelection(.enabled)
-                    .font(.body.bold())
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
+            .tint(.white)
     }
 }

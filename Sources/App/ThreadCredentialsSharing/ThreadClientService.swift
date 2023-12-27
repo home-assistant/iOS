@@ -27,7 +27,17 @@ final class ThreadClientService: THClientProtocol {
 
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
         let placeholder = "Unknown"
-        return try await client.allCredentials().map { credential in
+
+        // Thre preferred credential call is necessary as it triggers a permission dialog
+        let preferredCredential = try await client.preferredCredentials()
+
+        // All credentials retrieve the rest of the credentials after user acceps permission dialog
+        // This call may fail, but we don't want to throw error since preferredCredential succeeded
+        var allCredentials: Set<THCredentials> = (try? await client.allCredentials()) ?? []
+        allCredentials = allCredentials.filter { $0.borderAgentID != preferredCredential.borderAgentID }
+        allCredentials.insert(preferredCredential)
+
+        return allCredentials.map { credential in
             ThreadCredential(
                 networkName: credential.networkName ?? placeholder,
                 networkKey: credential.networkKey?.hexadecimal ?? placeholder,

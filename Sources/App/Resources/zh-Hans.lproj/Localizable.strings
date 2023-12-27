@@ -41,6 +41,10 @@
 "alerts.prompt.cancel" = "取消";
 "alerts.prompt.ok" = "确定";
 "always_open_label" = "始终打开";
+"announcement.drop_support.button" = "Continue";
+"announcement.drop_support.button_read_more" = "Read more";
+"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
+"announcement.drop_support.title" = "Important update";
 "cancel_label" = "取消";
 "cl_error.description.deferred_accuracy_too_low" = "要求的准确性不支持延迟模式。";
 "cl_error.description.deferred_canceled" = "延迟更新的请求已被应用程序或位置管理器取消。";
@@ -144,7 +148,7 @@
 "nfc.list.write_tag" = "写入标签";
 "nfc.not_available" = "NFC 在此设备上不可用";
 "nfc.read.error.generic_failure" = "无法读取标签";
-"nfc.read.error.not_home_assistant" = "NFC 标签不是家庭助理标签";
+"nfc.read.error.not_home_assistant" = "NFC 标签不是 Home Assistant 标签";
 "nfc.read.error.tag_invalid" = "NFC 标签无效";
 "nfc.read.start_message" = "将 %@ 靠近 NFC 标签";
 "nfc.tag_read" = "NFC 标签读取";
@@ -214,7 +218,7 @@
 "onboarding.manual_setup.connect" = "连接";
 "onboarding.manual_setup.couldnt_make_url.message" = "“ %@ ”不是有效的 URL。";
 "onboarding.manual_setup.couldnt_make_url.title" = "无法创建网址";
-"onboarding.manual_setup.description" = "您的家庭助理服务器的 URL，包含协议和端口号。";
+"onboarding.manual_setup.description" = "您的 Home Assistant 服务器的 URL，包含协议和端口号。";
 "onboarding.manual_setup.no_scheme.message" = "使用 http:// 还是 https:// 进行连接？";
 "onboarding.manual_setup.no_scheme.title" = "输入的 URL 没有方案";
 "onboarding.manual_setup.title" = "输入链接地址";
@@ -223,7 +227,7 @@
 "onboarding.permissions.change_later_note" = "您稍后可以在\"设置\"中更改此权限";
 "onboarding.permissions.focus.bullet.automations" = "基于专注模式的自动化";
 "onboarding.permissions.focus.bullet.instant" = "状态变化时即时更新";
-"onboarding.permissions.focus.description" = "允许将专注模式状态发送到\"家庭助理\"";
+"onboarding.permissions.focus.description" = "允许将专注模式状态发送到 Home Assistant";
 "onboarding.permissions.focus.grant_description" = "允许专注模式权限为您的专注模式状态创建传感器，也称为\"请勿打扰\"。";
 "onboarding.permissions.focus.title" = "专注模式";
 "onboarding.permissions.location.bullet.automations" = "基于状态的自动化";
@@ -249,7 +253,7 @@
 "onboarding.scanning.manual_hint" = "没有找到您的服务器？";
 "onboarding.scanning.title" = "正在扫描服务器";
 "onboarding.welcome.description" = "此应用程序将连接到您的 Home Assistant 服务器，并将集成有关您和您的移动设备的数据。Home Assistant 是免费的开源家庭自动化软件，专注于本地控制和隐私保护。";
-"onboarding.welcome.title" = "欢迎使用家庭助理%@ ！";
+"onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "open_label" = "打开";
 "preview_output" = "预览输出";
 "requires_version" = "需要%@或更高版本。";
@@ -281,7 +285,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "连接到列出的无线网络时将使用内部URL";
 "settings.connection_section.internal_url_ssids.header" = "无线网络";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
-"settings.connection_section.local_push_description" = "使用内网 SSID 时，直接连接到\"家庭助理\"服务器以获取推送通知。";
+"settings.connection_section.local_push_description" = "使用内网 SSID 时，直接连接到 Home Assistant 服务器以获取推送通知。";
 "settings.connection_section.location_send_type.setting.exact" = "高精度";
 "settings.connection_section.location_send_type.setting.never" = "从不";
 "settings.connection_section.location_send_type.setting.zone_only" = "仅区域名称";
@@ -327,6 +331,7 @@
 "settings.developer.header" = "开发者";
 "settings.developer.map_notification.notification.body" = "展开以显示地图内容扩展";
 "settings.developer.map_notification.title" = "展示地图通知内容扩展";
+"settings.developer.mock_thread_credentials_sharing.title" = "Simulator Thread Credentials Sharing";
 "settings.developer.show_log_files.title" = "在 Finder 中显示日志文件";
 "settings.developer.sync_watch_context.title" = "同步";
 "settings.event_log.title" = "事件日志";
@@ -348,6 +353,7 @@
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "版本";
 "settings.template_edit.title" = "编辑模板";
+"settings.whats_new.title" = "What's new?";
 "settings_details.actions.actions_synced.empty" = "没有已同步的动作";
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在.yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
@@ -357,12 +363,14 @@
 "settings_details.actions.scenes.customize_action" = "自定义";
 "settings_details.actions.scenes.empty" = "没有场景";
 "settings_details.actions.scenes.footer" = "启用后，场景将与操作一起显示。执行时，它们会触发场景更改。";
+"settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "场景动作";
 "settings_details.actions.title" = "动作";
 "settings_details.general.app_icon.enum.beta" = "Beta版";
 "settings_details.general.app_icon.enum.black" = "黑色";
 "settings_details.general.app_icon.enum.blue" = "蓝色";
 "settings_details.general.app_icon.enum.caribbean_green" = "加勒比绿";
+"settings_details.general.app_icon.enum.classic" = "Classic";
 "settings_details.general.app_icon.enum.cornflower_blue" = "矢车菊蓝";
 "settings_details.general.app_icon.enum.crimson" = "深红";
 "settings_details.general.app_icon.enum.dev" = "开发版";
@@ -376,6 +384,7 @@
 "settings_details.general.app_icon.enum.orange" = "橙色";
 "settings_details.general.app_icon.enum.pink" = "粉色";
 "settings_details.general.app_icon.enum.pride_bi" = "骄傲：毕";
+"settings_details.general.app_icon.enum.pride_non_binary" = "Pride: Non Binary";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride: 八彩";
 "settings_details.general.app_icon.enum.pride_rainbow" = "骄傲：彩虹";
 "settings_details.general.app_icon.enum.pride_rainbow_invert" = "骄傲：彩虹（倒置）";
@@ -502,7 +511,7 @@
 "settings_details.notifications.title" = "通知设置";
 "settings_details.privacy.alerts.description" = "允许检查重要警报，如安全漏洞。";
 "settings_details.privacy.alerts.title" = "警报";
-"settings_details.privacy.analytics.generic_description" = "允许收集有关您的设备以及与应用程序交互的基本信息。不会共享任何用户身份数据，包括您的家庭助理网址和登录秘钥。您必须重新启动应用程序，才能使对此设置的更改生效。";
+"settings_details.privacy.analytics.generic_description" = "允许收集有关您的设备以及与应用程序交互的基本信息。不会共享任何用户身份数据，包括您的 Home Assistant 网址和登录秘钥。您必须重新启动应用程序，才能使对此设置的更改生效。";
 "settings_details.privacy.analytics.generic_title" = "分析和改进";
 "settings_details.privacy.crash_reporting.description" = "允许更深入地跟踪应用程序中的崩溃和其他错误，从而更快地发布修复程序。除基本设备信息外，不会发送任何用户身份信息。您必须重新启动应用程序，才能使对此设置的更改生效。";
 "settings_details.privacy.crash_reporting.sentry" = "此功能当前使用 Sentry 作为报告目标。";
@@ -532,6 +541,14 @@
 "share_extension.entered_placeholder" = "“进入”事件";
 "share_extension.error.title" = "无法发送";
 "success_label" = "成功";
+"thread.credentials.border_agent_id_title" = "Border Agent ID";
+"thread.credentials.network_key_title" = "Network Key";
+"thread.credentials.network_name_title" = "Network Name";
+"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
+"thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
+"thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "token_error.connection_failed" = "连接失败。";
 "token_error.expired" = "令牌已过期。";
 "token_error.token_unavailable" = "令牌不可用。";
@@ -540,16 +557,24 @@
 "updater.no_updates_available.title" = "检查更新";
 "updater.update_available.open" = "查看“ %@ ”";
 "updater.update_available.title" = "有可用更新";
+"url_handler.call_service.confirm.message" = "Do you want to call the service %@?";
+"url_handler.call_service.confirm.title" = "Call service?";
 "url_handler.call_service.error.message" = "尝试调用服务时发生错误 %@ \
  %@";
 "url_handler.call_service.success.message" = "调用成功%@";
 "url_handler.call_service.success.title" = "服务已调用";
 "url_handler.error.action_not_found" = "找不到动作";
+"url_handler.fire_event.confirm.message" = "Do you want to fire the event %@?";
+"url_handler.fire_event.confirm.title" = "Fire event?";
 "url_handler.fire_event.error.message" = "尝试触发事件时发生错误 %@ \
  %@";
 "url_handler.fire_event.success.message" = "已成功触发事件 %@";
 "url_handler.fire_event.success.title" = "事件已触发";
 "url_handler.no_service.message" = "%@ 无效";
+"url_handler.render_template.confirm.message" = "Do you want to render %@?";
+"url_handler.render_template.confirm.title" = "Render template?";
+"url_handler.send_location.confirm.message" = "Do you want to send your location?";
+"url_handler.send_location.confirm.title" = "Send location?";
 "url_handler.send_location.error.message" = "尝试发送位置时发生了一个未知错误： %@";
 "url_handler.send_location.success.message" = "已发送一个位置";
 "url_handler.send_location.success.title" = "位置已发送";
@@ -755,7 +780,7 @@
 "widgets.actions.description" = "执行Home Assistant动作。";
 "widgets.actions.not_configured" = "未配置任何动作";
 "widgets.actions.title" = "动作";
-"widgets.open_page.description" = "在\"家庭助理\"中打开前端页面。";
+"widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";
 "yes_label" = "是";

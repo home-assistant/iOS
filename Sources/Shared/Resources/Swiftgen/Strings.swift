@@ -216,6 +216,19 @@ public enum L10n {
     }
   }
 
+  public enum Announcement {
+    public enum DropSupport {
+      /// Continue
+      public static var button: String { return L10n.tr("Localizable", "announcement.drop_support.button") }
+      /// Read more
+      public static var buttonReadMore: String { return L10n.tr("Localizable", "announcement.drop_support.button_read_more") }
+      /// After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.
+      public static var subtitle: String { return L10n.tr("Localizable", "announcement.drop_support.subtitle") }
+      /// Important update
+      public static var title: String { return L10n.tr("Localizable", "announcement.drop_support.title") }
+    }
+  }
+
   public enum ClError {
     public enum Description {
       /// Deferred mode is not supported for the requested accuracy.
@@ -1204,6 +1217,10 @@ public enum L10n {
       /// Edit Template
       public static var title: String { return L10n.tr("Localizable", "settings.template_edit.title") }
     }
+    public enum WhatsNew {
+      /// What's new?
+      public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
+    }
   }
 
   public enum SettingsDetails {
@@ -1266,6 +1283,8 @@ public enum L10n {
           public static var fireOrange: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.fire_orange") }
           /// Green
           public static var green: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.green") }
+          /// Home Assistant Blue
+          public static var haBlue: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.ha_blue") }
           /// Old Beta
           public static var oldBeta: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_beta") }
           /// Old Dev
@@ -1280,10 +1299,12 @@ public enum L10n {
           public static var prideBi: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_bi") }
           /// Pride: Non Binary
           public static var prideNonBinary: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_non_binary") }
-          /// Pride: Progress
+          /// Pride: 8-Color
           public static var pridePoc: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_poc") }
           /// Pride: Rainbow
           public static var prideRainbow: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow") }
+          /// Pride: Rainbow (Inverted)
+          public static var prideRainbowInvert: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow_invert") }
           /// Pride: Trans
           public static var prideTrans: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_trans") }
           /// Purple
@@ -1769,10 +1790,18 @@ public enum L10n {
       public static var networkKeyTitle: String { return L10n.tr("Localizable", "thread.credentials.network_key_title") }
       /// Network Name
       public static var networkNameTitle: String { return L10n.tr("Localizable", "thread.credentials.network_name_title") }
+      /// You don't have credentials available on your iCloud Keychain.
+      public static var noCredentialAvailable: String { return L10n.tr("Localizable", "thread.credentials.no_credential_available") }
       /// Thread Credentials
       public static var screenTitle: String { return L10n.tr("Localizable", "thread.credentials.screen_title") }
       /// Share credential with Home Assistant
       public static var shareCredentialsButtonTitle: String { return L10n.tr("Localizable", "thread.credentials.share_credentials_button_title") }
+      public enum ShareCredentials {
+        /// Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.
+        public static var noCredentialsMessage: String { return L10n.tr("Localizable", "thread.credentials.share_credentials.no_credentials_message") }
+        /// You don't have credentials to share
+        public static var noCredentialsTitle: String { return L10n.tr("Localizable", "thread.credentials.share_credentials.no_credentials_title") }
+      }
     }
   }
 
