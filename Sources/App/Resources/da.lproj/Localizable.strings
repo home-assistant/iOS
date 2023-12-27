@@ -334,9 +334,9 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.developer.header" = "Udvikler";
 "settings.developer.map_notification.notification.body" = "Udvid dette for at vise kortindholdsudvidelsen";
 "settings.developer.map_notification.title" = "Vis indholdsudvidelse til kortnotifikationer";
-"settings.developer.mock_thread_credentials_sharing.title" = "Deling af legitimationsoplysninger for simuleret Thread";
+"settings.developer.mock_thread_credentials_sharing.title" = "Deling af legitimationsoplysninger for simulator tråd";
 "settings.developer.show_log_files.title" = "Vis logfiler i Finder";
-"settings.developer.sync_watch_context.title" = "Synkronisér urkontekst";
+"settings.developer.sync_watch_context.title" = "Synkroniser ur kontekst";
 "settings.event_log.title" = "Hændelseslog";
 "settings.location_history.detail.explanation" = "Den lilla cirkel er din lokalitet og dens nøjagtighed. Blå cirkler er dine zoner. Du er inde i en zone, hvis den lilla cirkel overlapper en blå cirkel. Orange cirkler er yderligere områder, der bruges til zoner under 100 m.";
 "settings.location_history.empty" = "Ingen lokalitetshistorik";

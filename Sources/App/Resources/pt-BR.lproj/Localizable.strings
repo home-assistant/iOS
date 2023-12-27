@@ -41,10 +41,10 @@
 "alerts.prompt.cancel" = "Cancelar";
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Sempre aberto";
-"announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
-"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
-"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.button" = "Continuar";
+"announcement.drop_support.button_read_more" = "Leia mais";
+"announcement.drop_support.subtitle" = "Após consideração cuidadosa, descontinuaremos o suporte para iOS 12, 13 e 14 em nossas próximas atualizações.";
+"announcement.drop_support.title" = "Atualização Importante";
 "cancel_label" = "Cancelar";
 "cl_error.description.deferred_accuracy_too_low" = "O modo adiado não é compatível com a precisão solicitada.";
 "cl_error.description.deferred_canceled" = "A solicitação de atualizações adiadas foi cancelada pelo seu aplicativo ou pelo gerenciador de local.";
@@ -356,7 +356,7 @@
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Versão";
 "settings.template_edit.title" = "Editar modelo";
-"settings.whats_new.title" = "What's new?";
+"settings.whats_new.title" = "O que há de novo?";
 "settings_details.actions.actions_synced.empty" = "Nenhuma ação sincronizada";
 "settings_details.actions.actions_synced.footer" = "As ações definidas em .yaml não são editáveis no dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "As ações também podem ser definidas na configuração .yaml.";
@@ -547,10 +547,10 @@
 "thread.credentials.border_agent_id_title" = "ID do agente de borda";
 "thread.credentials.network_key_title" = "Chave de rede";
 "thread.credentials.network_name_title" = "Nome da rede";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
+"thread.credentials.no_credential_available" = "Você não tem credenciais disponíveis nas suas Chaves do iCloud.";
 "thread.credentials.screen_title" = "Credenciais do Thread";
-"thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
-"thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
+"thread.credentials.share_credentials.no_credentials_message" = "Certifique-se de estar conectado com sua conta iCloud que é proprietária de uma casa no Apple Home.";
+"thread.credentials.share_credentials.no_credentials_title" = "Você não tem credenciais para compartilhar";
 "thread.credentials.share_credentials_button_title" = "Compartilhe credencial com o Home Assistant";
 "token_error.connection_failed" = "Falha na conexão.";
 "token_error.expired" = "O token expirou.";
