@@ -5,12 +5,11 @@ import Shared
 import UIKit
 
 // TODO: can i combine this with the enum?
-@available(iOS 13, *)
+
 struct SceneQuery<DelegateType: UIWindowSceneDelegate> {
     let activity: SceneActivity
 }
 
-@available(iOS 13, *)
 extension UIWindowSceneDelegate {
     func informManager(from connectionOptions: UIScene.ConnectionOptions) {
         let pendingResolver: (Self) -> Void = Current.sceneManager
@@ -69,14 +68,10 @@ class SceneManager {
     var compatibility = SceneManagerPreSceneCompatibility()
 
     var webViewWindowControllerPromise: Guarantee<WebViewWindowController> {
-        if #available(iOS 13, *) {
-            return firstly { () -> Guarantee<WebViewSceneDelegate> in
-                scene(for: .init(activity: .webView))
-            }.map { delegate in
-                delegate.windowController!
-            }
-        } else {
-            return compatibility.windowControllerPromise
+        firstly { () -> Guarantee<WebViewSceneDelegate> in
+            scene(for: .init(activity: .webView))
+        }.map { delegate in
+            delegate.windowController!
         }
     }
 
@@ -116,7 +111,6 @@ class SceneManager {
         return outerResolver
     }
 
-    @available(iOS 13, *)
     private func existingScenes(for activity: SceneActivity) -> [UIScene] {
         UIApplication.shared.connectedScenes.filter { scene in
             scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
@@ -135,14 +129,9 @@ class SceneManager {
     }
 
     public var supportsMultipleScenes: Bool {
-        if #available(iOS 13, *) {
-            return UIApplication.shared.supportsMultipleScenes
-        } else {
-            return false
-        }
+        UIApplication.shared.supportsMultipleScenes
     }
 
-    @available(iOS 13, *)
     public func activateAnyScene(for activity: SceneActivity) {
         UIApplication.shared.requestSceneSessionActivation(
             existingScenes(for: activity).first?.session,
@@ -153,7 +142,6 @@ class SceneManager {
         }
     }
 
-    @available(iOS 13, *)
     public func scene<DelegateType: UIWindowSceneDelegate>(
         for query: SceneQuery<DelegateType>
     ) -> Guarantee<DelegateType> {

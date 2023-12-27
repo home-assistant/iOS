@@ -49,13 +49,8 @@ class ComplicationFamilySelectViewController: HAFormViewController, RowControlle
                     }
 
                     $0.cellUpdate { cell, row in
-                        if #available(iOS 13, *) {
-                            cell.detailTextLabel?.textColor = row.isDisabled ? .tertiaryLabel : .secondaryLabel
-                            cell.textLabel?.textColor = row.isDisabled ? .secondaryLabel : .label
-                        } else {
-                            cell.detailTextLabel?.textColor = row.isDisabled ? .lightGray : .darkGray
-                            cell.textLabel?.textColor = row.isDisabled ? .darkGray : .black
-                        }
+                        cell.detailTextLabel?.textColor = row.isDisabled ? .tertiaryLabel : .secondaryLabel
+                        cell.textLabel?.textColor = row.isDisabled ? .secondaryLabel : .label
                         cell.detailTextLabel?.numberOfLines = 0
                         cell.detailTextLabel?.lineBreakMode = .byWordWrapping
                         cell.detailTextLabel?.text = family.description

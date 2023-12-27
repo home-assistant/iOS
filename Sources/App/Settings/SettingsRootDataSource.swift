@@ -136,15 +136,10 @@ enum SettingsRootDataSource {
         SettingsButtonRow {
             $0.title = L10n.Nfc.List.title
             $0.icon = .nfcVariantIcon
-
-            if #available(iOS 13, *) {
-                $0.hidden = .isCatalyst
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    NFCListViewController()
-                }, onDismiss: nil)
-            } else {
-                $0.hidden = true
-            }
+            $0.hidden = .isCatalyst
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                NFCListViewController()
+            }, onDismiss: nil)
         }
     }
 

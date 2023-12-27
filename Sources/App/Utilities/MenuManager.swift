@@ -5,7 +5,6 @@ import RealmSwift
 import Shared
 import UIKit
 
-@available(iOS 13, *)
 private extension UIMenu.Identifier {
     static var haActions: Self { .init(rawValue: "ha.actions") }
     static var haActionsConfigure: Self { .init(rawValue: "ha.actions.configure") }
@@ -35,13 +34,12 @@ public struct MenuManagerTitleSubscription: Equatable {
     }
 }
 
-@available(iOS 13, *)
 class MenuManager {
     let builder: UIMenuBuilder
     let actionsWithImages: [(Action, UIImage)]
 
     // remember: this class is short-lived. it only exists for the duration of creating the menu.
-    @available(iOS 13, *)
+
     init(builder: UIMenuBuilder) {
         self.builder = builder
         self.actionsWithImages = Self.actionsWithImages()

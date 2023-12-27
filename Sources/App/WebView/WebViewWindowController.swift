@@ -59,11 +59,6 @@ class WebViewWindowController {
         let navigationController = UINavigationController()
         navigationController.setNavigationBarHidden(true, animated: false)
 
-        if #available(iOS 13, *) {
-        } else {
-            navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
-        }
-
         if let rootViewController = rootViewController {
             navigationController.viewControllers = [rootViewController]
         }

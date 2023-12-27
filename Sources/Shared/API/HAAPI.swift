@@ -515,7 +515,7 @@ public class HomeAssistantAPI {
             return when(resolved: realm.reentrantWrite {
                 let accuracyAuthorization: CLAccuracyAuthorization
 
-                if #available(iOS 14, watchOS 7, *) {
+                if #available(watchOS 7, *) {
                     accuracyAuthorization = CLLocationManager().accuracyAuthorization
                 } else {
                     accuracyAuthorization = .fullAccuracy
@@ -832,10 +832,6 @@ public class HomeAssistantAPI {
         Current.backgroundTask(withName: "manual-location-update") { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
-                    guard #available(iOS 14, *) else {
-                        return seal(())
-                    }
-
                     let locationManager = CLLocationManager()
 
                     guard locationManager.accuracyAuthorization != .fullAccuracy else {

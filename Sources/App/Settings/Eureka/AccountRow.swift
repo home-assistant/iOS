@@ -94,11 +94,7 @@ class AccountCell: Cell<AccountRowValue>, CellType {
             imageView?.image = accountRow?.value?.placeholderImage(traitCollection: traitCollection)
         }
 
-        if #available(iOS 13, *) {
-            detailTextLabel?.textColor = .secondaryLabel
-        } else {
-            detailTextLabel?.textColor = .darkGray
-        }
+        detailTextLabel?.textColor = .secondaryLabel
     }
 }
 

@@ -290,9 +290,7 @@ public extension UNAuthorizationOptions {
             opts.insert(.criticalAlert)
         }
 
-        if #available(iOS 13.0, *) {
-            opts.insert(.announcement)
-        }
+        opts.insert(.announcement)
 
         if #available(iOS 15, *) {
             // this is also deprecated in iOS 15 in favor of the entitlement, but it does seem to be required in b1
@@ -315,7 +313,6 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
         super.init()
     }
 
-    @available(iOS 14, *)
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .notDetermined {
             return

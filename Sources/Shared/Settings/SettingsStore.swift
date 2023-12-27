@@ -49,12 +49,8 @@ public class SettingsStore {
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
 
-        if #available(iOS 14, *) {
-            let locationManager = CLLocationManager()
-            authorizationStatus = locationManager.authorizationStatus
-        } else {
-            authorizationStatus = CLLocationManager.authorizationStatus()
-        }
+        let locationManager = CLLocationManager()
+        authorizationStatus = locationManager.authorizationStatus
 
         switch authorizationStatus {
         case .authorizedAlways:

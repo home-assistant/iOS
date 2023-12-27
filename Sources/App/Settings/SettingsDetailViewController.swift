@@ -614,11 +614,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 cell.separatorInset = .zero
                 cell.textLabel?.textAlignment = .natural
                 cell.imageView?.image = UIImage(size: MaterialDesignIcons.settingsIconSize, color: .clear)
-                if #available(iOS 13, *) {
-                    cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
-                } else {
-                    cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .gray
-                }
+                cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
             }
 
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
@@ -678,11 +674,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 return action?.Text ?? L10n.ActionsConfigurator.Rows.Text.title
             }
             $0.cellSetup { cell, _ in
-                if #available(iOS 13, *) {
-                    cell.detailTextLabel?.textColor = .secondaryLabel
-                } else {
-                    cell.detailTextLabel?.textColor = .darkGray
-                }
+                cell.detailTextLabel?.textColor = .secondaryLabel
             }
             $0.cellUpdate { cell, _ in
                 guard action == nil || action?.isInvalidated == false else { return }
@@ -722,11 +714,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         let section = Section()
 
         section <<< locationPermissionRow()
-
-        if #available(iOS 14, *) {
-            section <<< locationAccuracyRow()
-        }
-
+        section <<< locationAccuracyRow()
         section <<< backgroundRefreshRow()
 
         return section
@@ -740,7 +728,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 self.row = row
             }
 
-            @available(iOS 14, *)
             func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
                 row.value = manager.authorizationStatus
                 row.updateCell()
@@ -777,7 +764,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
     }
 
-    @available(iOS 14, *)
     private func locationAccuracyRow() -> BaseRow {
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
             let row: LocationAccuracyRow
@@ -965,11 +951,7 @@ enum OpenInBrowser: String, CaseIterable {
         case .FirefoxKlar:
             return L10n.SettingsDetails.General.OpenInBrowser.firefoxKlar
         case .Safari:
-            if #available(iOS 14, *) {
-                return L10n.SettingsDetails.General.OpenInBrowser.default
-            } else {
-                return L10n.SettingsDetails.General.OpenInBrowser.safari
-            }
+            return L10n.SettingsDetails.General.OpenInBrowser.default
         case .SafariInApp:
             return L10n.SettingsDetails.General.OpenInBrowser.safariInApp
         }

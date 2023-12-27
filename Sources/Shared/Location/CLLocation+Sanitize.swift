@@ -19,7 +19,7 @@ extension CLLocation {
             \.speedAccuracy: .success(-1),
         ]
 
-        if #available(iOS 13.4, watchOS 6.2, *) {
+        if #available(watchOS 6.2, *) {
             doubleKeyPaths[\.courseAccuracy] = .success(-1)
         }
 
@@ -49,7 +49,7 @@ extension CLLocation {
             longitude: sanitize(\.coordinate.longitude)
         )
 
-        if #available(iOS 13.4, watchOS 6.2, *) {
+        if #available(watchOS 6.2, *) {
             return try CLLocation(
                 coordinate: sanitizedCoordinate,
                 altitude: sanitize(\.altitude),

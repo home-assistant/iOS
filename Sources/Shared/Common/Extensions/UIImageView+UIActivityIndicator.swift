@@ -16,11 +16,7 @@ public extension UIImageView {
 
     func showActivityIndicator() {
         if activityIndicator == nil {
-            if #available(iOS 13, *) {
-                self.activityIndicator = UIActivityIndicatorView(style: .large)
-            } else {
-                activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
-            }
+            activityIndicator = UIActivityIndicatorView(style: .large)
 
             activityIndicator.hidesWhenStopped = true
             activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)

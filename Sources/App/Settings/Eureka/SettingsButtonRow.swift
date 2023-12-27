@@ -15,22 +15,12 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
 
         cell.textLabel?.textAlignment = .natural
 
-        if #available(iOS 13, *) {
-            if isDestructive {
-                cell.tintColor = .systemRed
-                cell.textLabel?.textColor = .systemRed
-            } else {
-                cell.tintColor = nil
-                cell.textLabel?.textColor = .label
-            }
+        if isDestructive {
+            cell.tintColor = .systemRed
+            cell.textLabel?.textColor = .systemRed
         } else {
-            if isDestructive {
-                cell.tintColor = .red
-                cell.textLabel?.textColor = .red
-            } else {
-                cell.tintColor = nil
-                cell.textLabel?.textColor = .black
-            }
+            cell.tintColor = nil
+            cell.textLabel?.textColor = .label
         }
 
         if let icon = icon, !isDestructive {
@@ -43,11 +33,7 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
             let imageView = cell.accessoryView as? UIImageView ?? UIImageView()
             let color: UIColor
 
-            if #available(iOS 13, *) {
-                color = .systemGray2
-            } else {
-                color = .lightGray
-            }
+            color = .systemGray2
 
             let iconSize = MaterialDesignIcons.settingsIconSize
 

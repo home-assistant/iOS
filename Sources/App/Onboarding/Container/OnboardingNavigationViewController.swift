@@ -33,11 +33,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
             switch self {
             case .initial, .required: return .fullScreen
             case .secondary:
-                if #available(iOS 13, *) {
-                    return .automatic
-                } else {
-                    return .fullScreen
-                }
+                return .automatic
             }
         }
     }
@@ -72,14 +68,7 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
             }
         }
 
-        if #available(iOS 13, *) {
-            super.init(rootViewController: rootViewController)
-        } else {
-            // iOS 12 won't create this initializer even though init(rootViewController:) calls it
-            super.init(nibName: nil, bundle: nil)
-            viewControllers = [rootViewController]
-        }
-
+        super.init(rootViewController: rootViewController)
         modalPresentationStyle = onboardingStyle.modalPresentationStyle
 
         if onboardingStyle.insertsCancelButton {
@@ -114,27 +103,17 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         delegate = self
         view.tintColor = Current.style.onboardingTintColor
 
-        if #available(iOS 13, *) {
-            overrideUserInterfaceStyle = .dark
-        }
+        overrideUserInterfaceStyle = .dark
 
-        if #available(iOS 13, *) {
-            let appearance = with(UINavigationBarAppearance()) {
-                $0.configureWithOpaqueBackground()
-                $0.backgroundColor = Current.style.onboardingBackground
-                $0.shadowColor = .clear
-                $0.titleTextAttributes = [.foregroundColor: UIColor.white]
-            }
-            navigationBar.standardAppearance = appearance
-            navigationBar.scrollEdgeAppearance = appearance
-            navigationBar.tintColor = .white
-        } else {
-            navigationBar.setBackgroundImage(
-                UIImage(size: CGSize(width: 1, height: 1), color: Current.style.onboardingBackground),
-                for: .default
-            )
-            navigationBar.shadowImage = UIImage(size: CGSize(width: 1, height: 1), color: .clear)
+        let appearance = with(UINavigationBarAppearance()) {
+            $0.configureWithOpaqueBackground()
+            $0.backgroundColor = Current.style.onboardingBackground
+            $0.shadowColor = .clear
+            $0.titleTextAttributes = [.foregroundColor: UIColor.white]
         }
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.tintColor = .white
     }
 
     @objc private func cancelTapped(_ sender: UIBarButtonItem) {

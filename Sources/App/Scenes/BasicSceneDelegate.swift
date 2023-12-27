@@ -2,7 +2,6 @@ import Foundation
 import Shared
 import UIKit
 
-@available(iOS 13, *)
 class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
     var scene: UIWindowScene?
@@ -30,7 +29,7 @@ class BasicSceneDelegate: NSObject, UIWindowSceneDelegate {
         scene.title = config.title
 
         with(scene.sizeRestrictions) {
-            if #available(iOS 14, *), scene.traitCollection.userInterfaceIdiom == .mac {
+            if scene.traitCollection.userInterfaceIdiom == .mac {
                 $0?.maximumSize = CGSize(width: 600.0, height: 600.0)
                 $0?.minimumSize = CGSize(width: 600.0, height: 200.0)
             } else {

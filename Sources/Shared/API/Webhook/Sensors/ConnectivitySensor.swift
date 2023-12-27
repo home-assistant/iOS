@@ -193,17 +193,13 @@ public class ConnectivitySensor: SensorProvider {
         case CTRadioAccessTechnologyLTE:
             return "Long-Term Evolution (LTE)"
         default:
-            if #available(iOS 14.1, *) {
-                // although these are declared available in 14.0, they will crash on use before 14.1
-                switch radioTech {
-                case CTRadioAccessTechnologyNR:
-                    return "5G"
-                case CTRadioAccessTechnologyNRNSA:
-                    return "5G Non-Standalone"
-                default: break
-                }
+            switch radioTech {
+            case CTRadioAccessTechnologyNR:
+                return "5G"
+            case CTRadioAccessTechnologyNRNSA:
+                return "5G Non-Standalone"
+            default: return nil
             }
-            return nil
         }
     }
     #endif

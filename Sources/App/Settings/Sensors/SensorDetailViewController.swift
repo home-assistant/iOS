@@ -112,7 +112,7 @@ class SensorDetailViewController: HAFormViewController, SensorObserver {
                     }
                 }
             case let .stepper(getter, setter, minimum, maximum, step, displayValueFor):
-                if #available(iOS 14, *), UIDevice.current.userInterfaceIdiom == .mac {
+                if UIDevice.current.userInterfaceIdiom == .mac {
                     return DecimalRow {
                         $0.title = setting.title
                         $0.value = getter()

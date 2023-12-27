@@ -25,9 +25,7 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
     convenience init(action: Action?) {
         self.init()
 
-        if #available(iOS 13, *) {
-            self.isModalInPresentation = true
-        }
+        self.isModalInPresentation = true
 
         if let action = action {
             self.action = Action(value: action)
@@ -115,12 +113,10 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
-        if #available(iOS 13.0, *) {
-            // after text if uneditable
-            firstSection <<< VoiceShortcutRow {
-                $0.buttonStyle = .automaticOutline
-                $0.value = .intent(PerformActionIntent(action: action))
-            }
+        // After text if uneditable
+        firstSection <<< VoiceShortcutRow {
+            $0.buttonStyle = .automaticOutline
+            $0.value = .intent(PerformActionIntent(action: action))
         }
 
         if action.canConfigure(\Action.TextColor) {
@@ -233,11 +229,7 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                 let keys = ["text_color", "background_color", "icon_color"]
                 let list: String
 
-                if #available(iOS 13, *) {
-                    list = ListFormatter.localizedString(byJoining: keys)
-                } else {
-                    list = keys.joined(separator: ", ")
-                }
+                list = ListFormatter.localizedString(byJoining: keys)
 
                 visuals.footer = HeaderFooterView(
                     stringLiteral: L10n.ActionsConfigurator.VisualSection.sceneHintFooter(list)

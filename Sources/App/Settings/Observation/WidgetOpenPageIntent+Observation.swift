@@ -8,7 +8,6 @@ extension WidgetOpenPageIntent {
         var container: PerServerContainer<HACancellable>?
 
         func start() {
-            guard #available(iOS 14, *) else { return }
             container = .init { server in
                 let token = Current.api(for: server).connection.caches.panels.subscribe { _, panels in
                     Self.handle(panels: panels, server: server)
@@ -22,7 +21,6 @@ extension WidgetOpenPageIntent {
             case unchanged
         }
 
-        @available(iOS 14, *)
         private static func handle(panels: HAPanels, server: Server) {
             let key = "last-invalidated-widget-panels-\(server.identifier)"
 

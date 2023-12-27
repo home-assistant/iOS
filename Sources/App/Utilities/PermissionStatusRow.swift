@@ -28,7 +28,6 @@ public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>
     }
 }
 
-@available(iOS 14, *)
 public final class LocationAccuracyRow: Row<LabelCellOf<CLAccuracyAuthorization>>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
@@ -120,7 +119,7 @@ extension Condition {
     }
 
     private static func locationAccuracyFull(from form: Form) -> Bool? {
-        guard #available(iOS 14, *), let row = form.rowBy(tag: "locationAccuracy") as? LocationAccuracyRow else {
+        guard let row = form.rowBy(tag: "locationAccuracy") as? LocationAccuracyRow else {
             return nil
         }
 

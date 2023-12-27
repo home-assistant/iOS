@@ -31,11 +31,7 @@ class RealmZoneTests: XCTestCase {
             if let lhsZone = lhsZone as? CLBeaconRegion {
                 if let rhsZone = rhsZone as? CLBeaconRegion {
                     XCTAssertEqual(lhsZone.identifier, rhsZone.identifier, file: file, line: line)
-                    if #available(iOS 13, *) {
-                        XCTAssertEqual(lhsZone.uuid, rhsZone.uuid, file: file, line: line)
-                    } else {
-                        XCTAssertEqual(lhsZone.proximityUUID, rhsZone.proximityUUID, file: file, line: line)
-                    }
+                    XCTAssertEqual(lhsZone.uuid, rhsZone.uuid, file: file, line: line)
                     XCTAssertEqual(lhsZone.major, rhsZone.major, file: file, line: line)
                     XCTAssertEqual(lhsZone.minor, rhsZone.minor, file: file, line: line)
                 } else {

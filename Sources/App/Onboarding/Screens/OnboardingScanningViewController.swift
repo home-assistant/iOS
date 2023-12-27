@@ -35,13 +35,7 @@ class OnboardingScanningInstanceCell: UITableViewCell {
         didSet {
             if isLoading {
                 accessoryType = .none
-                let activityIndicator: UIActivityIndicatorView = {
-                    if #available(iOS 13, *) {
-                        return UIActivityIndicatorView(style: .medium)
-                    } else {
-                        return UIActivityIndicatorView(style: .white)
-                    }
-                }()
+                let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
                 accessoryView = activityIndicator
                 activityIndicator.startAnimating()
             } else {
@@ -77,11 +71,7 @@ class OnboardingScanningViewController: UIViewController {
 
         let activityIndicator: UIActivityIndicatorView
 
-        if #available(iOS 13, *) {
-            activityIndicator = UIActivityIndicatorView(style: .medium)
-        } else {
-            activityIndicator = UIActivityIndicatorView(style: .white)
-        }
+        activityIndicator = UIActivityIndicatorView(style: .medium)
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(customView: activityIndicator),

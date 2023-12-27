@@ -10,23 +10,11 @@ final class InfoLabelRow: _LabelRow, RowType {
         var textColor: UIColor {
             switch self {
             case .important:
-                if #available(iOS 13, *) {
-                    return .systemRed
-                } else {
-                    return .red
-                }
+                return .systemRed
             case .primary:
-                if #available(iOS 13, *) {
-                    return .label
-                } else {
-                    return .black
-                }
+                return .label
             case .secondary:
-                if #available(iOS 13, *) {
-                    return .secondaryLabel
-                } else {
-                    return .gray
-                }
+                return .secondaryLabel
             }
         }
     }

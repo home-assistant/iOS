@@ -3,7 +3,6 @@ import Foundation
 import PromiseKit
 import Shared
 
-@available(iOS 13, *)
 class NFCReader: NSObject, NFCTagReaderSessionDelegate {
     private var readerSession: NFCTagReaderSession!
     public let promise: Promise<NFCNDEFMessage>

@@ -53,11 +53,7 @@ class OnboardingErrorViewController: UIViewController {
                 if let source = error.responseString {
                     let font: UIFont
 
-                    if #available(iOS 13, *) {
-                        font = .monospacedSystemFont(ofSize: 14.0, weight: .regular)
-                    } else {
-                        font = UIFont(name: "Menlo", size: 14.0) ?? UIFont.systemFont(ofSize: 14.0)
-                    }
+                    font = .monospacedSystemFont(ofSize: 14.0, weight: .regular)
 
                     errorComponents.append(NSAttributedString(
                         string: source,

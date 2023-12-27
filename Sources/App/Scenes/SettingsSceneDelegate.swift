@@ -3,7 +3,6 @@ import Foundation
 import Shared
 import UIKit
 
-@available(iOS 13, *)
 @objc class SettingsSceneDelegate: BasicSceneDelegate {
     private var navigationController: UINavigationController? {
         didSet {
@@ -18,7 +17,7 @@ import UIKit
         .init(
             title: L10n.Settings.NavigationBar.title,
             rootViewController: {
-                if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
+                if traitCollection.userInterfaceIdiom == .mac {
                     // root will be set when connecting scene
                     return UINavigationController()
                 } else {
@@ -43,7 +42,7 @@ import UIKit
 
         #if targetEnvironment(macCatalyst)
         if let titlebar = scene.titlebar {
-            if #available(iOS 14, *), scene.traitCollection.userInterfaceIdiom == .mac {
+            if scene.traitCollection.userInterfaceIdiom == .mac {
                 titlebar.titleVisibility = .visible
                 titlebar.toolbarStyle = .preference
 
@@ -63,7 +62,7 @@ import UIKit
     }
 
     func pushActions(animated: Bool) {
-        if #available(iOS 14, *), window?.traitCollection.userInterfaceIdiom == .mac {
+        if window?.traitCollection.userInterfaceIdiom == .mac {
             #if targetEnvironment(macCatalyst)
             let identifier = SettingsRootDataSource.Row.actions.row.toolbarItemIdentifier
             scene?.titlebar?.toolbar?.selectedItemIdentifier = identifier
@@ -80,10 +79,9 @@ import UIKit
     }
 }
 
-@available(iOS 13, *)
 extension SettingsSceneDelegate: UINavigationControllerDelegate {
     private func update(navigationController: UINavigationController) {
-        if #available(iOS 14, *), navigationController.traitCollection.userInterfaceIdiom == .mac {
+        if navigationController.traitCollection.userInterfaceIdiom == .mac {
             let shouldBeHidden = navigationController.viewControllers.count <= 1
 
             if #available(iOS 16, *) {

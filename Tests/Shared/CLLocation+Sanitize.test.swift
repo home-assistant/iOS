@@ -33,29 +33,17 @@ class CLLocationSanitizeTests: XCTestCase {
     }
 
     private func make() -> CLLocation {
-        if #available(iOS 13.4, *) {
-            return .init(
-                coordinate: coordinate,
-                altitude: altitude,
-                horizontalAccuracy: horizontalAccuracy,
-                verticalAccuracy: verticalAccuracy,
-                course: course,
-                courseAccuracy: courseAccuracy,
-                speed: speed,
-                speedAccuracy: speedAccuracy,
-                timestamp: timestamp
-            )
-        } else {
-            return .init(
-                coordinate: coordinate,
-                altitude: altitude,
-                horizontalAccuracy: horizontalAccuracy,
-                verticalAccuracy: verticalAccuracy,
-                course: course,
-                speed: speed,
-                timestamp: timestamp
-            )
-        }
+        .init(
+            coordinate: coordinate,
+            altitude: altitude,
+            horizontalAccuracy: horizontalAccuracy,
+            verticalAccuracy: verticalAccuracy,
+            course: course,
+            courseAccuracy: courseAccuracy,
+            speed: speed,
+            speedAccuracy: speedAccuracy,
+            timestamp: timestamp
+        )
     }
 
     func testUnmodified() throws {
@@ -156,9 +144,7 @@ class CLLocationSanitizeTests: XCTestCase {
             (\.speedAccuracy, speedAccuracy),
         ]
 
-        if #available(iOS 13.4, *) {
-            values.append((\.courseAccuracy, courseAccuracy))
-        }
+        values.append((\.courseAccuracy, courseAccuracy))
 
         return values
     }

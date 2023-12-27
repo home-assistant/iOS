@@ -61,9 +61,7 @@ public struct Style {
         )
 
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14, *) {
-            button.role = .primary
-        }
+        button.role = .primary
         #endif
     }
 
