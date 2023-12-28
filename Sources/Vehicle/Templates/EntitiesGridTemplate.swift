@@ -39,7 +39,7 @@ class EntitiesGridTemplate {
     func getGridButtons() -> [CPGridButton] {
         var items: [CPGridButton] = []
 
-        let entitiesSorted = entities.sorted(by: { $0.attributes.friendlyName ?? "" < $1.attributes.friendlyName ?? "" })
+        let entitiesSorted = entities.sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
         
         let entitiesPage = entitiesSorted[(gridPage * CPGridTemplateMaximumItems) ..< min((gridPage * CPGridTemplateMaximumItems) + CPGridTemplateMaximumItems, entitiesSorted.count)]
         

@@ -55,7 +55,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         for entity in entities where CarPlayDomain(domain: entity.domain).isSupported {
             tmpEntities.append(entity)
         }
-        return tmpEntities.sorted(by: {$0.localizedState < $1.localizedState})
+        return tmpEntities
     }
     
     func setServer(server: Server) {
