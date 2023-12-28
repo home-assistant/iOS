@@ -41,10 +41,10 @@
 "alerts.prompt.cancel" = "Отмена";
 "alerts.prompt.ok" = "ОК";
 "always_open_label" = "Всегда открыто";
-"announcement.drop_support.button" = "Continue";
+"announcement.drop_support.button" = "Продолжить";
 "announcement.drop_support.button_read_more" = "Read more";
-"announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
-"announcement.drop_support.title" = "Important update";
+"announcement.drop_support.subtitle" = "После тщательного рассмотрения мы прекратим поддержку iOS 12, 13 и 14 в наших предстоящих обновлениях.";
+"announcement.drop_support.title" = "Важное обновление";
 "cancel_label" = "Отмена";
 "cl_error.description.deferred_accuracy_too_low" = "Отложенный режим не подходит для выбранной точности.";
 "cl_error.description.deferred_canceled" = "Запрос отложенного обновления был отменён вашим приложением или службой геолокации.";
@@ -356,7 +356,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "Версия";
 "settings.template_edit.title" = "Редактировать шаблон";
-"settings.whats_new.title" = "What's new?";
+"settings.whats_new.title" = "Что нового?";
 "settings_details.actions.actions_synced.empty" = "Нет синхронизированных действий";
 "settings_details.actions.actions_synced.footer" = "Действия, определенные в файле .yaml, нельзя редактировать на устройстве.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Действия также могут быть определены в конфигурации файла configuration.yaml.";
