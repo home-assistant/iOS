@@ -41,14 +41,14 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             return
         }
 
-        filteredEntities = getFilteredAndSortEntities(entities: Array(allServerEntities))
+        filteredEntities = getCarPlaySupportedEntities(entities: Array(allServerEntities))
         domainsListTemplate?.entitiesUpdate(updateEntities: filteredEntities)
         if let template = domainsListTemplate?.getTemplate() {
             interfaceController?.setRootTemplate(template, animated: false, completion: nil)
         }
     }
 
-    func getFilteredAndSortEntities(entities: [HAEntity]) -> [HAEntity] {
+    func getCarPlaySupportedEntities(entities: [HAEntity]) -> [HAEntity] {
         var tmpEntities: [HAEntity] = []
 
         for entity in entities where CarPlayDomain(domain: entity.domain).isSupported {
