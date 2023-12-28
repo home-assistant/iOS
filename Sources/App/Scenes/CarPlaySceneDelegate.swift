@@ -38,14 +38,14 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             Current.Log.info("No entities available from server \(server.info.name)")
             filteredEntities.removeAll()
             self.domainsListTemplate?.entitiesUpdate(updateEntities: filteredEntities)
-            interfaceController?.setRootTemplate(self.domainsListTemplate!.getTemplate(), animated: false)
+            interfaceController?.setRootTemplate(self.domainsListTemplate!.getTemplate(), animated: false, completion: nil)
             return
         }
         
         filteredEntities = getFilteredAndSortEntities(entities: Array(allServerEntities))
         self.domainsListTemplate?.entitiesUpdate(updateEntities: filteredEntities)
         if let template = self.domainsListTemplate?.getTemplate() {
-            interfaceController?.setRootTemplate(template, animated: false)
+            interfaceController?.setRootTemplate(template, animated: false, completion: nil)
         }
     }
     
@@ -106,11 +106,11 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         let loginAlertAction: CPAlertAction = CPAlertAction(title: L10n.Carplay.Labels.alreadyAddedServer, style: .default) { _ in
             if !Current.servers.all.isEmpty {
-                self.interfaceController?.dismissTemplate(animated: true)
+                self.interfaceController?.dismissTemplate(animated: true, completion: nil)
             }
         }
         let alertTemplate = CPAlertTemplate(titleVariants: [L10n.Carplay.Labels.noServersAvailable], actions: [loginAlertAction])
-        self.interfaceController?.presentTemplate(alertTemplate, animated: true)
+        self.interfaceController?.presentTemplate(alertTemplate, animated: true, completion: nil)
     }
     
     func setDomainListTemplate() {
@@ -123,12 +123,12 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             
             let itemTitle = CarPlayDomain(domain: domain).localizedDescription
             self.entitiesGridTemplate = EntitiesGridTemplate(title: itemTitle, domain: domain, server: server, entities: entities)
-            self.interfaceController?.pushTemplate(self.entitiesGridTemplate!.getTemplate(), animated: true)
+            self.interfaceController?.pushTemplate(self.entitiesGridTemplate!.getTemplate(), animated: true, completion: nil)
         }, serverButtonHandler: { _ in
             self.setServerListTemplate()
         })
         
-        interfaceController?.setRootTemplate(domainsListTemplate!.getTemplate(), animated: true)
+        interfaceController?.setRootTemplate(domainsListTemplate!.getTemplate(), animated: true, completion: nil)
     }
     
     func setServerListTemplate() {
@@ -138,7 +138,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             serverItem.handler = { [weak self] item, completion in
                 self?.setServer(server: server)
                 if let templates = self?.interfaceController?.templates, templates.count > 1 {
-                    self?.interfaceController?.popTemplate(animated: true)
+                    self?.interfaceController?.popTemplate(animated: true, completion: nil)
                 }
                 completion()
             }
@@ -147,7 +147,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         }
         let section = CPListSection(items: serverList)
         let serverListTemplate = CPListTemplate(title: L10n.Carplay.Labels.servers, sections: [section])
-        self.interfaceController?.pushTemplate(serverListTemplate, animated: true)
+        self.interfaceController?.pushTemplate(serverListTemplate, animated: true, completion: nil)
     }
 //}
 
@@ -232,7 +232,7 @@ extension CarPlaySceneDelegate: ServerObserver {
             entitiesStateSubscribeCancelable = nil
             showNoServerAlert()
         } else if self.interfaceController?.presentedTemplate != nil {
-            self.interfaceController?.dismissTemplate(animated: true)
+            self.interfaceController?.dismissTemplate(animated: true, completion: nil)
         }
     }
 }

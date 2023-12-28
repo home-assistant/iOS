@@ -189,7 +189,10 @@ extension HAEntity {
         case "unlocking": return L10n.State.unlocking
         case "unknown": return L10n.State.unknown
         default:
-            return "\((Date().timeIntervalSinceReferenceDate - lastChanged.timeIntervalSinceReferenceDate).rounded().description) sec"
+            let formatter = DateComponentsFormatter()
+            formatter.zeroFormattingBehavior = .pad
+            formatter.allowedUnits = [.hour, .minute, .second]
+            return formatter.string(from: lastChanged, to: Date()) ?? state
         }
     }
 }
