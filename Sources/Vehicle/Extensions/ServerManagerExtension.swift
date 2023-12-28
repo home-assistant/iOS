@@ -17,7 +17,7 @@ public extension ServerManager {
     
     func getServer(id: Identifier<Server>? = nil) -> Server? {
         guard let id = id else {
-            return all.first(where: {isConnected(server: $0)} )
+            return all.first
         }
         return server(for: id)
     }
