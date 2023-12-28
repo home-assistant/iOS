@@ -65,8 +65,8 @@ class DomainsListTemplate {
             let listItem = CPListItem(
                 text: itemTitle,
                 detailText: nil,
-                image: HAEntity.getIconForDomain(
-                    domain: domain,
+                image: HAEntity.icon(
+                    forDomain: domain,
                     size: CPListItem.maximumImageSize
                 )
             )

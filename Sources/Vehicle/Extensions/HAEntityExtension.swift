@@ -5,11 +5,11 @@ import Shared
 import SwiftUI
 
 extension HAEntity {
-    public static func getIconForDomain(domain: String, size: CGSize) -> UIImage? {
+    public static func icon(forDomain: String, size: CGSize) -> UIImage? {
         do {
             let tmpEntity = try HAEntity(
-                entityId: "\(domain).ha_ios_placeholder",
-                domain: domain,
+                entityId: "\(forDomain).ha_ios_placeholder",
+                domain: forDomain,
                 state: "",
                 lastChanged: Date(),
                 lastUpdated: Date(),
