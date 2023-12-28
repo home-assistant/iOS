@@ -38,7 +38,7 @@ enum SceneActivity: CaseIterable {
 
     var configuration: UISceneConfiguration {
         switch self {
-        case .webView,.settings,.about: return .init(name: configurationName, sessionRole: .windowApplication)
+        case .webView, .settings, .about: return .init(name: configurationName, sessionRole: .windowApplication)
         case .carPlay: return .init(name: configurationName, sessionRole: .carTemplateApplication)
         }
     }

@@ -11,17 +11,20 @@ class DomainsListTemplate {
     private let listItemHandler: (String, [HAEntity]) -> Void
     private var serverButtonHandler: CPBarButtonHandler?
     private var domainList: [String] = []
-    
-    init(title: String, entities: [HAEntity], ic: CPInterfaceController,
+
+    init(
+        title: String,
+        entities: [HAEntity],
+        ic: CPInterfaceController,
         listItemHandler: @escaping (String, [HAEntity]) -> Void,
-        serverButtonHandler: CPBarButtonHandler? = nil)
-    {
+        serverButtonHandler: CPBarButtonHandler? = nil
+    ) {
         self.title = title
         self.entities = entities
         self.listItemHandler = listItemHandler
         self.serverButtonHandler = serverButtonHandler
     }
-    
+
     public func getTemplate() -> CPListTemplate {
         guard let listTemplate = listTemplate else {
             listTemplate = CPListTemplate(title: title, sections: [])
@@ -30,59 +33,65 @@ class DomainsListTemplate {
         }
         return listTemplate
     }
-    
+
     public func entitiesUpdate(updateEntities: [HAEntity]) {
         entities = updateEntities
         updateSection()
     }
-    
+
     func setServerListButton(show: Bool) {
         if show {
-            listTemplate?.trailingNavigationBarButtons = [CPBarButton(title: L10n.Carplay.Labels.servers, handler: serverButtonHandler)]
+            listTemplate?
+                .trailingNavigationBarButtons =
+                [CPBarButton(title: L10n.Carplay.Labels.servers, handler: serverButtonHandler)]
         } else {
             listTemplate?.trailingNavigationBarButtons.removeAll()
         }
     }
-    
+
     func updateSection() {
-        let allUniqueDomains = entities.unique(by: {$0.domain})
+        let allUniqueDomains = entities.unique(by: { $0.domain })
         let domainsSorted = allUniqueDomains.sorted { $0.domain < $1.domain }
-        let domains = domainsSorted.map { $0.domain }
-        
+        let domains = domainsSorted.map(\.domain)
+
         guard domainList != domains else {
             return
         }
-    
+
         var items: [CPListItem] = []
 
         for domain in domains {
-                        
             let itemTitle = CarPlayDomain(domain: domain).localizedDescription
-            let listItem = CPListItem(text: itemTitle,
-                                      detailText: nil,
-                                      image: HAEntity.getIconForDomain(domain: domain, size: CPListItem.maximumImageSize))
+            let listItem = CPListItem(
+                text: itemTitle,
+                detailText: nil,
+                image: HAEntity.getIconForDomain(
+                    domain: domain,
+                    size: CPListItem.maximumImageSize
+                )
+            )
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
-            listItem.handler = { [weak self] item, completion in
+            listItem.handler = { [weak self] _, completion in
                 if let entitiesForSelectedDomain = self?.getEntitiesForDomain(domain: domain) {
                     self?.listItemHandler(domain, entitiesForSelectedDomain)
                 }
                 completion()
             }
-            
+
             items.append(listItem)
         }
-        
+
         domainList = domains
         listTemplate?.updateSections([CPListSection(items: items)])
     }
-    
+
     func getEntitiesForDomain(domain: String) -> [HAEntity] {
-        return entities.filter {$0.domain == domain}
+        entities.filter { $0.domain == domain }
     }
 }
 
 extension Array {
-    func unique<T:Hashable>(by: ((Element) -> (T)))  -> [Element] {
+    func unique<T: Hashable>(by: (Element) -> (T)) -> [Element] {
         var set = Set<T>()
         var arrayOrdered = [Element]()
         for value in self {
