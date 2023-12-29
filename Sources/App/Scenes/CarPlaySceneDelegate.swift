@@ -190,13 +190,11 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             showNoServerAlert()
         }
 
-        if Current.servers.isConnected() {
-            if let serverIdentifier = prefs.string(forKey: "carPlay-server"),
-               let selectedServer = Current.servers.server(forServerIdentifier: serverIdentifier) {
-                setServer(server: selectedServer)
-            } else if let server = Current.servers.getServer() {
-                setServer(server: server)
-            }
+        if let serverIdentifier = prefs.string(forKey: "carPlay-server"),
+           let selectedServer = Current.servers.server(forServerIdentifier: serverIdentifier) {
+            setServer(server: selectedServer)
+        } else if let server = Current.servers.getServer() {
+            setServer(server: server)
         }
 
         NotificationCenter.default.addObserver(
