@@ -6953,6 +6953,8 @@
 					"\"UIKit\"",
 					"$(inherited)",
 					"-fprofile-instr-generate",
+					"-ld_classic",
+					"-Wl",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
@@ -7168,6 +7170,8 @@
 					"\"UIKit\"",
 					"$(inherited)",
 					"-fprofile-instr-generate",
+					"-ld_classic",
+					"-Wl",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
@@ -7210,6 +7214,8 @@
 					"\"UIKit\"",
 					"$(inherited)",
 					"-fprofile-instr-generate",
+					"-ld_classic",
+					"-Wl",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";

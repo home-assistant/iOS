@@ -111,7 +111,14 @@ end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
+
+
     target.build_configurations.each do |config|
+      # Workaround to prevent crash on iOS 12 in Xcode 15
+      config.build_settings['OTHER_LDFLAGS'] ||= ['$(inherited)']
+      config.build_settings['OTHER_LDFLAGS'] << '-Wl'
+      config.build_settings['OTHER_LDFLAGS'] << '-ld_classic'
+      
       config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
 
