@@ -10,3 +10,12 @@
 "panel::profile" = "Profiel";
 "panel::shopping_list" = "Boodschappenlijst";
 "panel::states" = "Overzicht";
+"ui::panel::config::helpers::types::counter" = "Teller";
+"ui::panel::config::helpers::types::input_boolean" = "Schakelaar";
+"ui::panel::config::helpers::types::input_button" = "Knop";
+"ui::panel::config::helpers::types::input_datetime" = "Datum en/of tijd";
+"ui::panel::config::helpers::types::input_number" = "Numeriek";
+"ui::panel::config::helpers::types::input_select" = "Keuzelijst";
+"ui::panel::config::helpers::types::input_text" = "Tekst";
+"ui::panel::config::helpers::types::schedule" = "Schema";
+"ui::panel::config::helpers::types::timer" = "Timer";

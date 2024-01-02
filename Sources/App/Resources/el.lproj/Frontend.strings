@@ -10,3 +10,12 @@
 "panel::profile" = "Προφίλ";
 "panel::shopping_list" = "Λίστα αγορών";
 "panel::states" = "Επισκόπηση";
+"ui::panel::config::helpers::types::counter" = "Μετρητής";
+"ui::panel::config::helpers::types::input_boolean" = "Εναλλαγή";
+"ui::panel::config::helpers::types::input_button" = "Κουμπί";
+"ui::panel::config::helpers::types::input_datetime" = "Ημερομηνία και/ή ώρα";
+"ui::panel::config::helpers::types::input_number" = "Αριθμός";
+"ui::panel::config::helpers::types::input_select" = "Αναπτυσσόμενο μενού";
+"ui::panel::config::helpers::types::input_text" = "Κείμενο";
+"ui::panel::config::helpers::types::schedule" = "Πρόγραμμα";
+"ui::panel::config::helpers::types::timer" = "Χρονόμετρο";

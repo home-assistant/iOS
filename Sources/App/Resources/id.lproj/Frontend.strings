@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Daftar belanja";
 "panel::states" = "Ikhtisar";
+"ui::panel::config::helpers::types::counter" = "Pencacah";
+"ui::panel::config::helpers::types::input_boolean" = "Pengalihan";
+"ui::panel::config::helpers::types::input_button" = "Tombol";
+"ui::panel::config::helpers::types::input_datetime" = "Tanggal dan/atau waktu";
+"ui::panel::config::helpers::types::input_number" = "Bilangan";
+"ui::panel::config::helpers::types::input_select" = "Tarik-turun";
+"ui::panel::config::helpers::types::input_text" = "Teks";
+"ui::panel::config::helpers::types::schedule" = "Jadwal";
+"ui::panel::config::helpers::types::timer" = "Timer";

@@ -10,3 +10,12 @@
 "panel::profile" = "Perfil";
 "panel::shopping_list" = "Llista de compres";
 "panel::states" = "Visualització principal";
+"ui::panel::config::helpers::types::counter" = "Comptador";
+"ui::panel::config::helpers::types::input_boolean" = "Interruptor";
+"ui::panel::config::helpers::types::input_button" = "Botó";
+"ui::panel::config::helpers::types::input_datetime" = "Data i/o hora";
+"ui::panel::config::helpers::types::input_number" = "Número";
+"ui::panel::config::helpers::types::input_select" = "Selector";
+"ui::panel::config::helpers::types::input_text" = "Text";
+"ui::panel::config::helpers::types::schedule" = "Horari";
+"ui::panel::config::helpers::types::timer" = "Temporitzador";

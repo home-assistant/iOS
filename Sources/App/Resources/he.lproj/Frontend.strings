@@ -10,3 +10,12 @@
 "panel::profile" = "פרופיל";
 "panel::shopping_list" = "רשימת קניות";
 "panel::states" = "ראשי";
+"ui::panel::config::helpers::types::counter" = "מונה";
+"ui::panel::config::helpers::types::input_boolean" = "בורר דו-מצבי";
+"ui::panel::config::helpers::types::input_button" = "לחצן";
+"ui::panel::config::helpers::types::input_datetime" = "תאריך ו/או שעה";
+"ui::panel::config::helpers::types::input_number" = "מספר";
+"ui::panel::config::helpers::types::input_select" = "תיבת בחירה";
+"ui::panel::config::helpers::types::input_text" = "טקסט";
+"ui::panel::config::helpers::types::schedule" = "לוח זמנים";
+"ui::panel::config::helpers::types::timer" = "טיימר";

@@ -10,3 +10,12 @@
 "panel::profile" = "Profiili";
 "panel::shopping_list" = "Ostoslista";
 "panel::states" = "Yleisnäkymä";
+"ui::panel::config::helpers::types::counter" = "Laskuri";
+"ui::panel::config::helpers::types::input_boolean" = "Kytkin";
+"ui::panel::config::helpers::types::input_button" = "Painike";
+"ui::panel::config::helpers::types::input_datetime" = "Päivämäärä ja/tai kellonaika";
+"ui::panel::config::helpers::types::input_number" = "Numero";
+"ui::panel::config::helpers::types::input_select" = "Alasvetovalikko";
+"ui::panel::config::helpers::types::input_text" = "Teksti";
+"ui::panel::config::helpers::types::schedule" = "Aikataulu";
+"ui::panel::config::helpers::types::timer" = "Ajastin";

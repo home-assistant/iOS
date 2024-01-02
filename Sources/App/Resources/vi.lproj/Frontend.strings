@@ -10,3 +10,12 @@
 "panel::profile" = "Hồ sơ";
 "panel::shopping_list" = "Danh sách mua sắm";
 "panel::states" = "Tổng quan";
+"ui::panel::config::helpers::types::counter" = "Bộ đếm";
+"ui::panel::config::helpers::types::input_boolean" = "Công tắc";
+"ui::panel::config::helpers::types::input_button" = "Nút";
+"ui::panel::config::helpers::types::input_datetime" = "Ngày và/hoặc giờ";
+"ui::panel::config::helpers::types::input_number" = "Số";
+"ui::panel::config::helpers::types::input_select" = "Thả xuống";
+"ui::panel::config::helpers::types::input_text" = "Văn bản";
+"ui::panel::config::helpers::types::schedule" = "Đặt lịch";
+"ui::panel::config::helpers::types::timer" = "Hẹn giờ";

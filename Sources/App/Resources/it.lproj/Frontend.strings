@@ -10,3 +10,12 @@
 "panel::profile" = "Profilo";
 "panel::shopping_list" = "Lista della Spesa";
 "panel::states" = "Panoramica";
+"ui::panel::config::helpers::types::counter" = "Contatore";
+"ui::panel::config::helpers::types::input_boolean" = "Commutatore";
+"ui::panel::config::helpers::types::input_button" = "Pulsante";
+"ui::panel::config::helpers::types::input_datetime" = "Data e/o ora";
+"ui::panel::config::helpers::types::input_number" = "Numero";
+"ui::panel::config::helpers::types::input_select" = "Menu a discesa";
+"ui::panel::config::helpers::types::input_text" = "Testo";
+"ui::panel::config::helpers::types::schedule" = "Calendarizzazione";
+"ui::panel::config::helpers::types::timer" = "Timer";

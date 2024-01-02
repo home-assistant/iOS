@@ -10,3 +10,12 @@
 "panel::profile" = "Profile";
 "panel::shopping_list" = "Rhestr siopa";
 "panel::states" = "Trosolwg";
+"ui::panel::config::helpers::types::counter" = "Cownter";
+"ui::panel::config::helpers::types::input_boolean" = "Toggle";
+"ui::panel::config::helpers::types::input_button" = "Button";
+"ui::panel::config::helpers::types::input_datetime" = "Date and/or time";
+"ui::panel::config::helpers::types::input_number" = "Number";
+"ui::panel::config::helpers::types::input_select" = "Dropdown";
+"ui::panel::config::helpers::types::input_text" = "Text";
+"ui::panel::config::helpers::types::schedule" = "Schedule";
+"ui::panel::config::helpers::types::timer" = "Amserydd";

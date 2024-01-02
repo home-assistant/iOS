@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Nakupovalni seznam";
 "panel::states" = "Pregled";
+"ui::panel::config::helpers::types::counter" = "Števec";
+"ui::panel::config::helpers::types::input_boolean" = "Preklopite";
+"ui::panel::config::helpers::types::input_button" = "Gumb";
+"ui::panel::config::helpers::types::input_datetime" = "Datum in/ali čas";
+"ui::panel::config::helpers::types::input_number" = "Številka";
+"ui::panel::config::helpers::types::input_select" = "Spustni";
+"ui::panel::config::helpers::types::input_text" = "Besedilo";
+"ui::panel::config::helpers::types::schedule" = "Urnik";
+"ui::panel::config::helpers::types::timer" = "Časovnik";

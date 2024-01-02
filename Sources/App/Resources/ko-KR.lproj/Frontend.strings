@@ -10,3 +10,12 @@
 "panel::profile" = "프로필";
 "panel::shopping_list" = "쇼핑 리스트";
 "panel::states" = "둘러보기";
+"ui::panel::config::helpers::types::counter" = "계수기";
+"ui::panel::config::helpers::types::input_boolean" = "토글";
+"ui::panel::config::helpers::types::input_button" = "버튼";
+"ui::panel::config::helpers::types::input_datetime" = "날짜 또는 시간";
+"ui::panel::config::helpers::types::input_number" = "숫자";
+"ui::panel::config::helpers::types::input_select" = "드롭다운";
+"ui::panel::config::helpers::types::input_text" = "텍스트";
+"ui::panel::config::helpers::types::schedule" = "일정";
+"ui::panel::config::helpers::types::timer" = "타이머";

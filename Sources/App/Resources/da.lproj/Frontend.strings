@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Indkøbsliste";
 "panel::states" = "Oversigt";
+"ui::panel::config::helpers::types::counter" = "Tæller";
+"ui::panel::config::helpers::types::input_boolean" = "Skift";
+"ui::panel::config::helpers::types::input_button" = "Knap";
+"ui::panel::config::helpers::types::input_datetime" = "Dato og/eller klokkeslæt";
+"ui::panel::config::helpers::types::input_number" = "Tal";
+"ui::panel::config::helpers::types::input_select" = "Dropdown";
+"ui::panel::config::helpers::types::input_text" = "Tekst";
+"ui::panel::config::helpers::types::schedule" = "Tidsplan";
+"ui::panel::config::helpers::types::timer" = "Timer";

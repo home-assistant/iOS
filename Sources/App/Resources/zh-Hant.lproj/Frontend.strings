@@ -10,3 +10,12 @@
 "panel::profile" = "個人設定";
 "panel::shopping_list" = "購物清單";
 "panel::states" = "總覽";
+"ui::panel::config::helpers::types::counter" = "計數器";
+"ui::panel::config::helpers::types::input_boolean" = "開關";
+"ui::panel::config::helpers::types::input_button" = "按鈕";
+"ui::panel::config::helpers::types::input_datetime" = "日期及/或時間";
+"ui::panel::config::helpers::types::input_number" = "數字";
+"ui::panel::config::helpers::types::input_select" = "下拉選單";
+"ui::panel::config::helpers::types::input_text" = "文字";
+"ui::panel::config::helpers::types::schedule" = "排程";
+"ui::panel::config::helpers::types::timer" = "計時器";

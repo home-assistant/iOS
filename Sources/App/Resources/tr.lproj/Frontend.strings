@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Alışveriş listesi";
 "panel::states" = "Durumlar";
+"ui::panel::config::helpers::types::counter" = "Sayaç";
+"ui::panel::config::helpers::types::input_boolean" = "Geçiş";
+"ui::panel::config::helpers::types::input_button" = "Düğme";
+"ui::panel::config::helpers::types::input_datetime" = "Tarih ve/veya saat";
+"ui::panel::config::helpers::types::input_number" = "Numara";
+"ui::panel::config::helpers::types::input_select" = "Açılır";
+"ui::panel::config::helpers::types::input_text" = "Metin";
+"ui::panel::config::helpers::types::schedule" = "Zamanlama";
+"ui::panel::config::helpers::types::timer" = "Zamanlayıcı";

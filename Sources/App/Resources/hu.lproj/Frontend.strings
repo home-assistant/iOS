@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Bevásárlólista";
 "panel::states" = "Áttekintés";
+"ui::panel::config::helpers::types::counter" = "Számláló";
+"ui::panel::config::helpers::types::input_boolean" = "Logikai kapcsoló";
+"ui::panel::config::helpers::types::input_button" = "Nyomógomb";
+"ui::panel::config::helpers::types::input_datetime" = "Dátum és/vagy időpont";
+"ui::panel::config::helpers::types::input_number" = "Szám";
+"ui::panel::config::helpers::types::input_select" = "Legördülő";
+"ui::panel::config::helpers::types::input_text" = "Szöveg";
+"ui::panel::config::helpers::types::schedule" = "Ütemezések";
+"ui::panel::config::helpers::types::timer" = "Időtartam";

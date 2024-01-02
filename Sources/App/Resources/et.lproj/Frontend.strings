@@ -10,3 +10,12 @@
 "panel::profile" = "Profiil";
 "panel::shopping_list" = "Ostunimekiri";
 "panel::states" = "Ülevaade";
+"ui::panel::config::helpers::types::counter" = "Loendur";
+"ui::panel::config::helpers::types::input_boolean" = "Lülita";
+"ui::panel::config::helpers::types::input_button" = "Nupp";
+"ui::panel::config::helpers::types::input_datetime" = "Kuupäev ja / või kellaaeg";
+"ui::panel::config::helpers::types::input_number" = "Arvväärtus";
+"ui::panel::config::helpers::types::input_select" = "Rippmenüü";
+"ui::panel::config::helpers::types::input_text" = "Tekst";
+"ui::panel::config::helpers::types::schedule" = "Ajakava";
+"ui::panel::config::helpers::types::timer" = "Taimer";

@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Inköpslista";
 "panel::states" = "Översikt";
+"ui::panel::config::helpers::types::counter" = "Räknare";
+"ui::panel::config::helpers::types::input_boolean" = "Växel";
+"ui::panel::config::helpers::types::input_button" = "Knapp";
+"ui::panel::config::helpers::types::input_datetime" = "Datum och/eller tid";
+"ui::panel::config::helpers::types::input_number" = "Nummer";
+"ui::panel::config::helpers::types::input_select" = "Rullgardinsmeny";
+"ui::panel::config::helpers::types::input_text" = "Text";
+"ui::panel::config::helpers::types::schedule" = "Schema";
+"ui::panel::config::helpers::types::timer" = "Timer";

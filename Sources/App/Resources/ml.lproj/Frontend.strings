@@ -10,3 +10,12 @@
 "panel::profile" = "പ്രൊഫൈൽ";
 "panel::shopping_list" = "ഷോപ്പിംഗ് ലിസ്റ്റ്";
 "panel::states" = "മേൽക്കാഴ്ച്ച";
+"ui::panel::config::helpers::types::counter" = "കൗണ്ടർ";
+"ui::panel::config::helpers::types::input_boolean" = "ടോഗിൾ ചെയ്യുക";
+"ui::panel::config::helpers::types::input_button" = "ബട്ടൺ";
+"ui::panel::config::helpers::types::input_datetime" = "തീയതി കൂടാതെ/അല്ലെങ്കിൽ സമയം";
+"ui::panel::config::helpers::types::input_number" = "സംഖ്യ";
+"ui::panel::config::helpers::types::input_select" = "ഡ്രോപ്പ് ഡൗൺ";
+"ui::panel::config::helpers::types::input_text" = "വാചകം";
+"ui::panel::config::helpers::types::schedule" = "ഷെഡ്യൂൾ";
+"ui::panel::config::helpers::types::timer" = "ടൈമർ";

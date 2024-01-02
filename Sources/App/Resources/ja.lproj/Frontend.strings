@@ -10,3 +10,12 @@
 "panel::profile" = "プロファイル";
 "panel::shopping_list" = "ショッピングリスト";
 "panel::states" = "オーバービュー";
+"ui::panel::config::helpers::types::counter" = "カウンター";
+"ui::panel::config::helpers::types::input_boolean" = "切り替え";
+"ui::panel::config::helpers::types::input_button" = "ボタン";
+"ui::panel::config::helpers::types::input_datetime" = "日付・時刻";
+"ui::panel::config::helpers::types::input_number" = "数";
+"ui::panel::config::helpers::types::input_select" = "ドロップダウン";
+"ui::panel::config::helpers::types::input_text" = "テキスト";
+"ui::panel::config::helpers::types::schedule" = "スケジュール";
+"ui::panel::config::helpers::types::timer" = "タイマー";

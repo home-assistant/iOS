@@ -10,3 +10,12 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Nákupní seznam";
 "panel::states" = "Přehled";
+"ui::panel::config::helpers::types::counter" = "Počítadlo";
+"ui::panel::config::helpers::types::input_boolean" = "Přepínač";
+"ui::panel::config::helpers::types::input_button" = "Tlačítko";
+"ui::panel::config::helpers::types::input_datetime" = "Datum a/nebo čas";
+"ui::panel::config::helpers::types::input_number" = "Číslo";
+"ui::panel::config::helpers::types::input_select" = "Výběr";
+"ui::panel::config::helpers::types::input_text" = "Text";
+"ui::panel::config::helpers::types::schedule" = "Rozvrh";
+"ui::panel::config::helpers::types::timer" = "Časovač";

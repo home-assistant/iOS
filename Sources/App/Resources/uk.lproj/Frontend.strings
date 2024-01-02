@@ -10,3 +10,12 @@
 "panel::profile" = "Профіль";
 "panel::shopping_list" = "Список покупок";
 "panel::states" = "Огляд";
+"ui::panel::config::helpers::types::counter" = "Лічильник";
+"ui::panel::config::helpers::types::input_boolean" = "Input Boolean";
+"ui::panel::config::helpers::types::input_button" = "Кнопка";
+"ui::panel::config::helpers::types::input_datetime" = "Input Datetime";
+"ui::panel::config::helpers::types::input_number" = "Input Number";
+"ui::panel::config::helpers::types::input_select" = "Input Select";
+"ui::panel::config::helpers::types::input_text" = "Input Text";
+"ui::panel::config::helpers::types::schedule" = "Розклад";
+"ui::panel::config::helpers::types::timer" = "Таймер";
