@@ -5,27 +5,29 @@ import Shared
 
 @available(iOS 16.0, *)
 class DomainsListTemplate {
-    private var title: String
+    private let title: String
+    private let entitiesCachedStates: HACache<HACachedStates>
+    private let serverButtonHandler: CPBarButtonHandler?
+    private let server: Server
+
+    private var domainList: Set<String> = []
     private var listTemplate: CPListTemplate?
-    private var entities: [HAEntity]
-    private let listItemHandler: (String, [HAEntity]) -> Void
-    private var serverButtonHandler: CPBarButtonHandler?
-    private var domainList: [String] = []
 
-    init(
-        title: String,
-        entities: [HAEntity],
-        ic: CPInterfaceController,
-        listItemHandler: @escaping (String, [HAEntity]) -> Void,
-        serverButtonHandler: CPBarButtonHandler? = nil
-    ) {
-        self.title = title
-        self.entities = entities
-        self.listItemHandler = listItemHandler
-        self.serverButtonHandler = serverButtonHandler
-    }
+    private let allowedDomains: [String] = [
+        "light",
+        "switch",
+        "button",
+        "cover",
+        "input_boolean",
+        "input_button",
+        "lock",
+        "scene",
+        "script"
+    ]
 
-    public func getTemplate() -> CPListTemplate {
+    weak var interfaceController: CPInterfaceController?
+
+    var template: CPListTemplate {
         guard let listTemplate = listTemplate else {
             listTemplate = CPListTemplate(title: title, sections: [])
             listTemplate?.emptyViewSubtitleVariants = [L10n.Carplay.Labels.emptyDomainList]
@@ -34,9 +36,16 @@ class DomainsListTemplate {
         return listTemplate
     }
 
-    public func entitiesUpdate(updateEntities: [HAEntity]) {
-        entities = updateEntities
-        updateSection()
+    init(
+        title: String,
+        entities: HACache<HACachedStates>,
+        serverButtonHandler: CPBarButtonHandler? = nil,
+        server: Server
+    ) {
+        self.title = title
+        self.entitiesCachedStates = entities
+        self.serverButtonHandler = serverButtonHandler
+        self.server = server
     }
 
     func setServerListButton(show: Bool) {
@@ -49,19 +58,17 @@ class DomainsListTemplate {
         }
     }
 
-    func updateSection() {
-        let allUniqueDomains = entities.unique(by: { $0.domain })
-        let domainsSorted = allUniqueDomains.sorted { $0.domain < $1.domain }
-        let domains = domainsSorted.map(\.domain)
-
-        guard domainList != domains else {
-            return
-        }
+    func updateSections() {
 
         var items: [CPListItem] = []
+        var domains = Set(entitiesCachedStates.value?.all.map { $0.domain } ?? [])
+        domains = domains.filter { allowedDomains.contains($0) }
+        domains = Set(domains.sorted(by: { d1, d2 in
+            d1 < d2
+        }))
 
-        for domain in domains {
-            let itemTitle = CarPlayDomain(domain: domain).localizedDescription
+        domains.forEach { domain in
+            let itemTitle = domain
             let listItem = CPListItem(
                 text: itemTitle,
                 detailText: nil,
@@ -72,9 +79,7 @@ class DomainsListTemplate {
             )
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
             listItem.handler = { [weak self] _, completion in
-                if let entitiesForSelectedDomain = self?.getEntitiesForDomain(domain: domain) {
-                    self?.listItemHandler(domain, entitiesForSelectedDomain)
-                }
+                self?.listItemHandler(domain: domain)
                 completion()
             }
 
@@ -85,22 +90,19 @@ class DomainsListTemplate {
         listTemplate?.updateSections([CPListSection(items: items)])
     }
 
-    func getEntitiesForDomain(domain: String) -> [HAEntity] {
-        entities.filter { $0.domain == domain }
-    }
-}
+    private func listItemHandler(domain: String) {
+        let itemTitle = domain
+        let entitiesGridTemplate = EntitiesListTemplate(
+            title: itemTitle,
+            domain: domain,
+            server: server,
+            entitiesCachedStates: entitiesCachedStates
+        )
 
-extension Array {
-    func unique<T: Hashable>(by: (Element) -> (T)) -> [Element] {
-        var set = Set<T>()
-        var arrayOrdered = [Element]()
-        for value in self {
-            let v = by(value)
-            if !set.contains(v) {
-                set.insert(v)
-                arrayOrdered.append(value)
-            }
-        }
-        return arrayOrdered
+        interfaceController?.pushTemplate(
+            entitiesGridTemplate.getTemplate(),
+            animated: true,
+            completion: nil
+        )
     }
 }

@@ -10,70 +10,34 @@ public protocol EntitiesStateSubscription {
 }
 
 @available(iOS 16.0, *)
-class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
-    private var filteredEntities: [HAEntity] = []
-    private var entitiesGridTemplate: EntitiesGridTemplate?
+    private var entities: HACache<Set<HAEntity>>?
+    private var entitiesGridTemplate: EntitiesListTemplate?
     private var domainsListTemplate: DomainsListTemplate?
-    private var entitiesStateSubscribeCancelable: HACancellable?
-    private var serverObserver: HACancellable?
-    private var serverId: Identifier<Server>? {
-        didSet {
-            loadEntities()
-        }
-    }
 
-    func loadEntities() {
-        domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
+    private let carPlayPreferredServerKey = "carPlay-server"
 
-        guard let serverId = serverId, let server = Current.servers.server(for: serverId) else {
-            Current.Log.info("No server available to get entities")
-            filteredEntities.removeAll()
-            domainsListTemplate?.entitiesUpdate(updateEntities: filteredEntities)
-            return
-        }
+    private var serverId: Identifier<Server>?
 
-        guard let allServerEntities = Current.api(for: server).connection.caches.states.value?.all else {
-            Current.Log.info("No entities available from server \(server.info.name)")
-            filteredEntities.removeAll()
-            domainsListTemplate?.entitiesUpdate(updateEntities: filteredEntities)
-            interfaceController?.setRootTemplate(domainsListTemplate!.getTemplate(), animated: false, completion: nil)
-            return
-        }
-
-        filteredEntities = getCarPlaySupportedEntities(entities: Array(allServerEntities))
-        domainsListTemplate?.entitiesUpdate(updateEntities: filteredEntities)
-        if let template = domainsListTemplate?.getTemplate() {
-            interfaceController?.setRootTemplate(template, animated: false, completion: nil)
-        }
-    }
-
-    func getCarPlaySupportedEntities(entities: [HAEntity]) -> [HAEntity] {
-        var tmpEntities: [HAEntity] = []
-
-        for entity in entities where CarPlayDomain(domain: entity.domain).isSupported {
-            tmpEntities.append(entity)
-        }
-        return tmpEntities
-    }
-
-    func setServer(server: Server) {
+    private func setServer(server: Server) {
         serverId = server.identifier
-        serverObserver = server.observe { [weak self] _ in
-            self?.connectionInfoDidChange()
-        }
-
-        entitiesStateSubscribeCancelable?.cancel()
-        prefs.set(server.identifier.rawValue, forKey: "carPlay-server")
-        subscribeEntitiesUpdates(for: server)
+        prefs.set(server.identifier.rawValue, forKey: carPlayPreferredServerKey)
+        setDomainListTemplate(for: server)
+        updateServerListButton()
     }
 
-    @objc private func connectionInfoDidChange() {
-        DispatchQueue.main.async {
-            self.domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
+    private func updateServerListButton() {
+        domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
+    }
+
+    @objc private func updateServerList() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.updateServerListButton()
             if self.serverId == nil {
                 /// No server is selected
-                guard let server = Current.servers.getServer() else {
+                guard let server = self.getServer() else {
                     Current.Log.info("No server connected")
                     return
                 }
@@ -82,24 +46,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         }
     }
 
-    func subscribeEntitiesUpdates(for server: Server) {
-        Current.Log.info("Subscribe for entities update at server \(server.info.name)")
-        entitiesStateSubscribeCancelable?.cancel()
-        entitiesStateSubscribeCancelable = Current.api(for: server).connection.caches.states
-            .subscribe { [weak self] cancellable, _ in
-                Current.Log.info("Received entities update of server \(server.info.name)")
-                guard let self = self else {
-                    cancellable.cancel()
-                    return
-                }
-
-                self.loadEntities()
-            }
-    }
-
-    // Templates
-
-    func showNoServerAlert() {
+    private func showNoServerAlert() {
         guard interfaceController?.presentedTemplate == nil else {
             return
         }
@@ -116,39 +63,29 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         interfaceController?.presentTemplate(alertTemplate, animated: true, completion: nil)
     }
 
-    func setDomainListTemplate() {
+    private func setDomainListTemplate(for server: Server) {
+        guard let interfaceController else { return }
+
+        let entities = Current.api(for: server).connection.caches.states
+
         domainsListTemplate = DomainsListTemplate(
-            title: L10n.About.Logo.appTitle,
-            entities: filteredEntities,
-            ic: interfaceController!,
-            listItemHandler: { [weak self] domain, entities in
-
-                guard let self = self, let server = Current.servers.getServer(id: self.serverId) else {
-                    return
-                }
-
-                let itemTitle = CarPlayDomain(domain: domain).localizedDescription
-                self.entitiesGridTemplate = EntitiesGridTemplate(
-                    title: itemTitle,
-                    domain: domain,
-                    server: server,
-                    entities: entities
-                )
-                self.interfaceController?.pushTemplate(
-                    self.entitiesGridTemplate!.getTemplate(),
-                    animated: true,
-                    completion: nil
-                )
+            title: server.info.name,
+            entities: entities,
+            serverButtonHandler: { [weak self] _ in
+                self?.setServerListTemplate()
             },
-            serverButtonHandler: { _ in
-                self.setServerListTemplate()
-            }
+            server: server
         )
 
-        interfaceController?.setRootTemplate(domainsListTemplate!.getTemplate(), animated: true, completion: nil)
+        guard let domainsListTemplate else { return }
+
+        domainsListTemplate.interfaceController = interfaceController
+
+        interfaceController.setRootTemplate(domainsListTemplate.template, animated: true, completion: nil)
+        domainsListTemplate.updateSections()
     }
 
-    func setServerListTemplate() {
+    private func setServerListTemplate() {
         var serverList: [CPListItem] = []
         for server in Current.servers.all {
             let serverItem = CPListItem(
@@ -170,46 +107,64 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         interfaceController?.pushTemplate(serverListTemplate, animated: true, completion: nil)
     }
 
-    // }
+    private func setEmptyTemplate(interfaceController: CPInterfaceController) {
+        interfaceController.setRootTemplate(CPInformationTemplate(
+            title: L10n.About.Logo.title,
+            layout: .leading,
+            items: [],
+            actions: []
+        ), animated: true, completion: nil)
+    }
 
-    // @available(iOS 16.0, *)
-    // extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
+    /// Get server for ID or first server available
+    private func getServer(id: Identifier<Server>? = nil) -> Server? {
+        guard let id = id else {
+            return Current.servers.all.first
+        }
+        return  Current.servers.server(for: id)
+    }
+}
+
+// MARK: - CPTemplateApplicationSceneDelegate
+@available(iOS 16.0, *)
+extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController
     ) {
         self.interfaceController = interfaceController
-        self.interfaceController?.delegate = self
 
-        /// Observer for servers list changes
-        Current.servers.add(observer: self)
-
-        setDomainListTemplate()
-
-        if Current.servers.all.isEmpty {
-            showNoServerAlert()
-        }
-
-        if let serverIdentifier = prefs.string(forKey: "carPlay-server"),
+        if let serverIdentifier = prefs.string(forKey: carPlayPreferredServerKey),
            let selectedServer = Current.servers.server(forServerIdentifier: serverIdentifier) {
             setServer(server: selectedServer)
-        } else if let server = Current.servers.getServer() {
+        } else if let server = getServer() {
             setServer(server: server)
+        } else {
+           setEmptyTemplate(interfaceController: interfaceController)
         }
+
+        updateServerList()
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(connectionInfoDidChange),
+            selector: #selector(updateServerList),
             name: HAConnectionState.didTransitionToStateNotification,
             object: nil
         )
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(connectionInfoDidChange),
+            selector: #selector(updateServerList),
             name: HomeAssistantAPI.didConnectNotification,
             object: nil
         )
+
+        /// Observer for servers list changes
+        Current.servers.add(observer: self)
+
+        if Current.servers.all.isEmpty {
+            showNoServerAlert()
+        }
     }
 
     func templateApplicationScene(
@@ -217,98 +172,33 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
-        entitiesStateSubscribeCancelable?.cancel()
-        entitiesStateSubscribeCancelable = nil
         NotificationCenter.default.removeObserver(self)
         Current.servers.remove(observer: self)
-        serverObserver?.cancel()
-        serverObserver = nil
     }
 }
 
-@available(iOS 16.0, *)
-extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
-    func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
-        if aTemplate == entitiesGridTemplate?.getTemplate() {
-            entitiesGridTemplate?.subscribe()
-        }
-    }
-
-    func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
-        if aTemplate == entitiesGridTemplate?.getTemplate() {
-            entitiesGridTemplate?.unsubscribe()
-        }
-    }
-}
-
+// MARK: - ServerObserver
 @available(iOS 16.0, *)
 extension CarPlaySceneDelegate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        domainsListTemplate?.setServerListButton(show: Current.servers.all.count > 1)
 
-        if Current.servers.getServer(id: serverId) == nil {
+        defer {
+            updateServerListButton()
+        }
+
+        guard let server = getServer(id: serverId) else {
             serverId = nil
-        }
-        if serverId == nil, let server = Current.servers.getServer() {
-            setServer(server: server)
-        }
-        if serverManager.all.isEmpty {
-            entitiesStateSubscribeCancelable?.cancel()
-            entitiesStateSubscribeCancelable = nil
-            showNoServerAlert()
-        } else if interfaceController?.presentedTemplate != nil {
-            interfaceController?.dismissTemplate(animated: true, completion: nil)
-        }
-    }
-}
 
-enum CarPlayDomain: CaseIterable {
-    case button
-    case cover
-    case input_boolean
-    case input_button
-    case light
-    case lock
-    case scene
-    case script
-    case switch_button
-    case unsupported
+            if let server = getServer() {
+                setServer(server: server)
+            } else if interfaceController?.presentedTemplate != nil {
+                interfaceController?.dismissTemplate(animated: true, completion: nil)
+            } else {
+                showNoServerAlert()
+            }
 
-    var domain: String {
-        switch self {
-        case .button: return "button"
-        case .cover: return "cover"
-        case .input_boolean: return "input_boolean"
-        case .input_button: return "input_button"
-        case .light: return "light"
-        case .lock: return "lock"
-        case .scene: return "scene"
-        case .script: return "script"
-        case .switch_button: return "switch"
-        case .unsupported: return "unsupported"
+            return
         }
-    }
-
-    var localizedDescription: String {
-        switch self {
-        case .button: return L10n.Carplay.Labels.buttons
-        case .cover: return L10n.Carplay.Labels.covers
-        case .input_boolean: return L10n.Carplay.Labels.inputBooleans
-        case .input_button: return L10n.Carplay.Labels.inputButtons
-        case .light: return L10n.Carplay.Labels.lights
-        case .lock: return L10n.Carplay.Labels.locks
-        case .scene: return L10n.Carplay.Labels.scenes
-        case .script: return L10n.Carplay.Labels.scripts
-        case .switch_button: return L10n.Carplay.Labels.switches
-        case .unsupported: return ""
-        }
-    }
-
-    var isSupported: Bool {
-        self != .unsupported
-    }
-
-    init(domain: String) {
-        self = Self.allCases.first(where: { $0.domain == domain }) ?? .unsupported
+        setServer(server: server)
     }
 }
