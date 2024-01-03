@@ -214,13 +214,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         styleUI()
         updateWebViewForServerValues()
-
-        let dropSupportMessageKey = "drop-support-ios-12-13-14"
-        let dropSupportViewDisplayedPreviously = UserDefaults.standard.bool(forKey: dropSupportMessageKey)
-        if #unavailable(iOS 14.0), !dropSupportViewDisplayedPreviously {
-            UserDefaults.standard.set(true, forKey: dropSupportMessageKey)
-            present(DropSupportMessageViewController(), animated: true)
-        }
     }
 
     public func showSettingsViewController() {
