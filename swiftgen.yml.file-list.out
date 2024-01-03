@@ -9,7 +9,9 @@ $(SRCROOT)/Sources/Shared/Iconic/MaterialDesignIcons.swift
 $(SRCROOT)/Sources/Shared/Resources/SwiftGen/SharedPlist.swift
 
 # strings
+$(SRCROOT)/Sources/Shared/Resources/SwiftGen/CoreStrings.swift
+$(SRCROOT)/Sources/Shared/Resources/SwiftGen/FrontendStrings.swift
 $(SRCROOT)/Sources/Shared/Resources/SwiftGen/Strings.swift
 
 # xcassets
-$(SRCROOT)/Sources/App/Resources/Assets.swift
+$(SRCROOT)/Sources/Shared/Assets/Assets.swift
