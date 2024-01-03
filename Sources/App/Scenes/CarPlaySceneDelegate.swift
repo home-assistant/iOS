@@ -121,11 +121,12 @@ class CarPlaySceneDelegate: UIResponder {
         guard let id = id else {
             return Current.servers.all.first
         }
-        return  Current.servers.server(for: id)
+        return Current.servers.server(for: id)
     }
 }
 
 // MARK: - CPTemplateApplicationSceneDelegate
+
 @available(iOS 16.0, *)
 extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     func templateApplicationScene(
@@ -140,7 +141,7 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
         } else if let server = getServer() {
             setServer(server: server)
         } else {
-           setEmptyTemplate(interfaceController: interfaceController)
+            setEmptyTemplate(interfaceController: interfaceController)
         }
 
         updateServerList()
@@ -178,10 +179,10 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
 }
 
 // MARK: - ServerObserver
+
 @available(iOS 16.0, *)
 extension CarPlaySceneDelegate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-
         defer {
             updateServerListButton()
         }

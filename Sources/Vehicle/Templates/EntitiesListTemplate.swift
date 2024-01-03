@@ -45,13 +45,14 @@ class EntitiesListTemplate {
 
     private func updateListItems() {
         let entities = entitiesCachedStates.value?.all.filter { $0.domain == domain }
-        let entitiesSorted = entities?.sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
+        let entitiesSorted = entities?
+            .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
         guard let entitiesSorted else { return }
 
         let startIndex = currentPage * itemsPerPage
         let endIndex = min(startIndex + itemsPerPage, entitiesSorted.count)
-        let entitiesToShow = Array(entitiesSorted[startIndex..<endIndex])
+        let entitiesToShow = Array(entitiesSorted[startIndex ..< endIndex])
 
         var items: [CPListItem] = []
 
@@ -100,7 +101,6 @@ class EntitiesListTemplate {
         }
 
         listTemplate?.updateSections([CPListSection(items: items)])
-
     }
 }
 
