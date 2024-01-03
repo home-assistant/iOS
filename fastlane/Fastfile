@@ -29,6 +29,7 @@ private_lane :setup do
   ENV['LOKALISE_API_TOKEN'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_TOKEN', nil)
   ENV['LOKALISE_PROJECT_ID'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_ID', nil)
   ENV['LOKALISE_PROJECT_ID_FRONTEND'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND', nil)
+  ENV['LOKALISE_PROJECT_ID_CORE'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_CORE', nil)
   ENV['PILOT_ITC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
   ENV['FASTLANE_ITC_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
   ENV['SIGH_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
@@ -151,6 +152,13 @@ lane :update_strings do
   frontend_project_id = ENV.fetch('LOKALISE_PROJECT_ID_FRONTEND') do
     prompt(
       text: 'Frontend Project ID',
+      secure_text: true
+    )
+  end
+  
+  core_project_id = ENV.fetch('LOKALISE_PROJECT_ID_CORE') do
+    prompt(
+      text: 'Core Project ID',
       secure_text: true
     )
   end
