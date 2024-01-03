@@ -1,0 +1,9 @@
+"component::button::title" = "Button";
+"component::cover::title" = "Kaihtimet";
+"component::input_boolean::title" = "Syöttöboolean";
+"component::input_button::title" = "Input button";
+"component::light::title" = "Valo";
+"component::lock::title" = "Lukko";
+"component::scene::title" = "Tilanne";
+"component::script::title" = "Skripti";
+"component::switch::title" = "Kytkin";

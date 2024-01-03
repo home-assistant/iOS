@@ -1,0 +1,9 @@
+"component::button::title" = "Button";
+"component::cover::title" = "Cover";
+"component::input_boolean::title" = "Input boolean";
+"component::input_button::title" = "Input button";
+"component::light::title" = "Light";
+"component::lock::title" = "Lock";
+"component::scene::title" = "Scene";
+"component::script::title" = "Script";
+"component::switch::title" = "Switch";

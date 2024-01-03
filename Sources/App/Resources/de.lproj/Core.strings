@@ -1,0 +1,9 @@
+"component::button::title" = "Taste";
+"component::cover::title" = "Abdeckung";
+"component::input_boolean::title" = "Eingabe boolescher Wert";
+"component::input_button::title" = "Eingabetaste";
+"component::light::title" = "Licht";
+"component::lock::title" = "Schloss";
+"component::scene::title" = "Szene";
+"component::script::title" = "Skript";
+"component::switch::title" = "Schalter";

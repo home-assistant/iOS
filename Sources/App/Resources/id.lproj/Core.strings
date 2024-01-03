@@ -1,0 +1,9 @@
+"component::button::title" = "Tombol";
+"component::cover::title" = "Penutup";
+"component::input_boolean::title" = "Input boolean";
+"component::input_button::title" = "Tombol input";
+"component::light::title" = "Lampu";
+"component::lock::title" = "Kunci";
+"component::scene::title" = "Skenario";
+"component::script::title" = "Skrip";
+"component::switch::title" = "Sakelar";

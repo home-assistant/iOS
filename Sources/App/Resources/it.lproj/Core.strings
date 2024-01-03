@@ -1,0 +1,9 @@
+"component::button::title" = "Pulsante";
+"component::cover::title" = "Copertura";
+"component::input_boolean::title" = "Input booleano";
+"component::input_button::title" = "Pulsante di input";
+"component::light::title" = "Luce";
+"component::lock::title" = "Serratura";
+"component::scene::title" = "Scena";
+"component::script::title" = "Script";
+"component::switch::title" = "Interruttore";

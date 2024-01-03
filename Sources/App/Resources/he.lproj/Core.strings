@@ -1,0 +1,9 @@
+"component::button::title" = "לחצן";
+"component::cover::title" = "וילון";
+"component::input_boolean::title" = "קלט בוליאני";
+"component::input_button::title" = "קלט לחצן";
+"component::light::title" = "תאורה";
+"component::lock::title" = "מנעול";
+"component::scene::title" = "סצנה";
+"component::script::title" = "סקריפט";
+"component::switch::title" = "מתג";

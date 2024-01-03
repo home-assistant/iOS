@@ -1,0 +1,9 @@
+"component::button::title" = "Knop";
+"component::cover::title" = "Raambekleding";
+"component::input_boolean::title" = "Boolean invoer";
+"component::input_button::title" = "Input button";
+"component::light::title" = "Licht";
+"component::lock::title" = "Slot";
+"component::scene::title" = "Scène";
+"component::script::title" = "Script";
+"component::switch::title" = "Schakelaar";

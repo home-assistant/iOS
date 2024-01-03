@@ -1,0 +1,9 @@
+"component::button::title" = "Gomb";
+"component::cover::title" = "Árnyékoló";
+"component::input_boolean::title" = "Logikai váltó";
+"component::input_button::title" = "Nyomógomb";
+"component::light::title" = "Világítás";
+"component::lock::title" = "Zár";
+"component::scene::title" = "Jelenet";
+"component::script::title" = "Szkript";
+"component::switch::title" = "Kapcsoló";

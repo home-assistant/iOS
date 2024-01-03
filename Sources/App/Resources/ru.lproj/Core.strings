@@ -1,0 +1,9 @@
+"component::button::title" = "Кнопка";
+"component::cover::title" = "Шторы";
+"component::input_boolean::title" = "Вспомогательный переключатель";
+"component::input_button::title" = "Вспомогательная кнопка";
+"component::light::title" = "Освещение";
+"component::lock::title" = "Замок";
+"component::scene::title" = "Сцена";
+"component::script::title" = "Скрипт";
+"component::switch::title" = "Выключатель";

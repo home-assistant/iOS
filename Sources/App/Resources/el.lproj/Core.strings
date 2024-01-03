@@ -1,0 +1,9 @@
+"component::button::title" = "Κουμπί";
+"component::cover::title" = "Κάλυμμα";
+"component::input_boolean::title" = "Εισαγωγή λογικής πράξης";
+"component::input_button::title" = "Κουμπί εισαγωγής";
+"component::light::title" = "Φως";
+"component::lock::title" = "Κλειδαριά";
+"component::scene::title" = "Σκηνή";
+"component::script::title" = "Σενάριο";
+"component::switch::title" = "Διακόπτης";

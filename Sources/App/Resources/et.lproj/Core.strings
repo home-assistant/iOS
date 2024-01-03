@@ -1,0 +1,9 @@
+"component::button::title" = "Nupp";
+"component::cover::title" = "Kardin";
+"component::input_boolean::title" = "Tõeväärtuse abiline";
+"component::input_button::title" = "Sisestusnupp";
+"component::light::title" = "Tuled";
+"component::lock::title" = "Lukk";
+"component::scene::title" = "Stseen";
+"component::script::title" = "Skript";
+"component::switch::title" = "Lüliti";
