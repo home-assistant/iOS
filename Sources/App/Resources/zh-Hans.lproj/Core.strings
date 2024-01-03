@@ -1,0 +1,9 @@
+"component::button::title" = "按钮";
+"component::cover::title" = "窗帘";
+"component::input_boolean::title" = "二元选择器";
+"component::input_button::title" = "输入按钮";
+"component::light::title" = "灯光";
+"component::lock::title" = "锁";
+"component::scene::title" = "场景";
+"component::script::title" = "脚本";
+"component::switch::title" = "开关";

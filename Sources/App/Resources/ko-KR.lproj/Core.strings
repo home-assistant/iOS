@@ -1,0 +1,9 @@
+"component::button::title" = "버튼";
+"component::cover::title" = "여닫이";
+"component::input_boolean::title" = "참/거짓 입력";
+"component::input_button::title" = "버튼";
+"component::light::title" = "조명";
+"component::lock::title" = "잠금장치";
+"component::scene::title" = "장면";
+"component::script::title" = "스크립트";
+"component::switch::title" = "스위치";

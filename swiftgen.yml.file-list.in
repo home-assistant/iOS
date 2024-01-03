@@ -9,8 +9,10 @@ Tools/icons.stencil
 $(SRCROOT)/Sources/Shared/Resources/Info.plist
 
 # strings
+$(SRCROOT)/Sources/App/Resources/en.lproj/Core.strings
+$(SRCROOT)/Sources/App/Resources/en.lproj/Frontend.strings
 $(SRCROOT)/Sources/App/Resources/en.lproj/Localizable.strings
 
 # xcassets
-$(SRCROOT)/Sources/App/Resources/Assets.xcassets
-$(SRCROOT)/Sources/App/Resources/Colors.xcassets
+$(SRCROOT)/Sources/Shared/Assets/Colors.xcassets
+$(SRCROOT)/Sources/Shared/Assets/SharedAssets.xcassets

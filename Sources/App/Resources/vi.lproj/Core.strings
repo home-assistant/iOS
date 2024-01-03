@@ -1,0 +1,9 @@
+"component::button::title" = "Button";
+"component::cover::title" = "Rèm, cửa cuốn";
+"component::input_boolean::title" = "Đầu vào luận lý";
+"component::input_button::title" = "Input button";
+"component::light::title" = "Đèn";
+"component::lock::title" = "Khóa";
+"component::scene::title" = "Cảnh";
+"component::script::title" = "Tập lệnh";
+"component::switch::title" = "Công tắc";

@@ -1,0 +1,9 @@
+"component::button::title" = "Tlačítko";
+"component::cover::title" = "Roleta";
+"component::input_boolean::title" = "Pomocníci - přepínače";
+"component::input_button::title" = "Pomocníci - tlačítko";
+"component::light::title" = "Světlo";
+"component::lock::title" = "Zamknout";
+"component::scene::title" = "Scéna";
+"component::script::title" = "Skript";
+"component::switch::title" = "Vypínač";

@@ -1,0 +1,9 @@
+"component::button::title" = "ボタン";
+"component::cover::title" = "カバー";
+"component::input_boolean::title" = "真偽値入力(Booleans)";
+"component::input_button::title" = "ボタン入力";
+"component::light::title" = "照明";
+"component::lock::title" = "ロック";
+"component::scene::title" = "シーン";
+"component::script::title" = "スクリプト";
+"component::switch::title" = "スイッチ";

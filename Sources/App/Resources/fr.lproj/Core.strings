@@ -1,0 +1,9 @@
+"component::button::title" = "Bouton";
+"component::cover::title" = "Volets";
+"component::input_boolean::title" = "Entrée logique";
+"component::input_button::title" = "Bouton d'entrée";
+"component::light::title" = "Lumière";
+"component::lock::title" = "Verrou";
+"component::scene::title" = "Scène";
+"component::script::title" = "Script";
+"component::switch::title" = "Commutateur";

@@ -1,0 +1,9 @@
+"component::button::title" = "Button";
+"component::cover::title" = "Clawr";
+"component::input_boolean::title" = "Mewnbynnu boolean";
+"component::input_button::title" = "Input button";
+"component::light::title" = "Golau";
+"component::lock::title" = "Clo";
+"component::scene::title" = "Golygfa";
+"component::script::title" = "Sgript";
+"component::switch::title" = "Newid";

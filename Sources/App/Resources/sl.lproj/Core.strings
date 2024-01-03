@@ -1,0 +1,9 @@
+"component::button::title" = "Gumb";
+"component::cover::title" = "Cover";
+"component::input_boolean::title" = "vnesite logično vrednost";
+"component::input_button::title" = "Input button";
+"component::light::title" = "Luči";
+"component::lock::title" = "Ključavnice";
+"component::scene::title" = "Scena";
+"component::script::title" = "Skripta";
+"component::switch::title" = "Stikalo";

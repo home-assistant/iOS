@@ -1,0 +1,9 @@
+"component::button::title" = "Knapp";
+"component::cover::title" = "Skydd";
+"component::input_boolean::title" = "Välj av eller på";
+"component::input_button::title" = "Inmatningsknapp";
+"component::light::title" = "Lampa";
+"component::lock::title" = "Lås";
+"component::scene::title" = "Scen";
+"component::script::title" = "Skript";
+"component::switch::title" = "Brytare";

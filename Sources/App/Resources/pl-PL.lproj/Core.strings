@@ -1,0 +1,9 @@
+"component::button::title" = "Przycisk";
+"component::cover::title" = "Roleta";
+"component::input_boolean::title" = "Pole wartości logicznej";
+"component::input_button::title" = "Przycisk";
+"component::light::title" = "Światło";
+"component::lock::title" = "Zamek";
+"component::scene::title" = "Scena";
+"component::script::title" = "Skrypt";
+"component::switch::title" = "Przełącznik";

@@ -1,0 +1,9 @@
+"component::button::title" = "Düğme";
+"component::cover::title" = "Panjur";
+"component::input_boolean::title" = "Doğru/Yanlış giriniz";
+"component::input_button::title" = "Giriş düğmesi";
+"component::light::title" = "Işık";
+"component::lock::title" = "Kilit";
+"component::scene::title" = "Senaryo";
+"component::script::title" = "Senaryo";
+"component::switch::title" = "Anahtar";

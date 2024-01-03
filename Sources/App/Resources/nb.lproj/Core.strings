@@ -1,0 +1,9 @@
+"component::button::title" = "Knapp";
+"component::cover::title" = "Gardin/port";
+"component::input_boolean::title" = "Boolsk inndata";
+"component::input_button::title" = "Inndataknapp";
+"component::light::title" = "Lys";
+"component::lock::title" = "Lås";
+"component::scene::title" = "";
+"component::script::title" = "";
+"component::switch::title" = "Bryter";
