@@ -29,6 +29,7 @@ private_lane :setup do
   ENV['LOKALISE_API_TOKEN'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_TOKEN', nil)
   ENV['LOKALISE_PROJECT_ID'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_ID', nil)
   ENV['LOKALISE_PROJECT_ID_FRONTEND'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_FRONTEND', nil)
+  ENV['LOKALISE_PROJECT_ID_CORE'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_CORE', nil)
   ENV['PILOT_ITC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
   ENV['FASTLANE_ITC_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
   ENV['SIGH_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
@@ -155,6 +156,13 @@ lane :update_strings do
     )
   end
 
+  core_project_id = ENV.fetch('LOKALISE_PROJECT_ID_CORE') do
+    prompt(
+      text: 'Core Project ID',
+      secure_text: true
+    )
+  end
+
   resources_dir_full = File.expand_path('../Sources/App/Resources')
 
   sh(
@@ -254,6 +262,32 @@ lane :update_strings do
     FileUtils.cp(
       "#{resources_dir_full}/#{from}.lproj/Frontend.strings",
       "#{resources_dir_full}/#{to}.lproj/Frontend.strings"
+    )
+  end
+
+  sh(
+    'lokalise2',
+    '--token', token,
+    '--project-id', core_project_id,
+    'file', 'download',
+    '--format', 'strings',
+    '--filter-langs', lang_frontend_to_ios.keys.join(','),
+    '--language-mapping', language_mapping.to_json.to_s,
+    '--original-filenames=false',
+    '--bundle-structure', '%LANG_ISO%.lproj/Core.%FORMAT%',
+    '--export-empty-as', 'base',
+    '--export-sort', 'a_z',
+    '--replace-breaks=false',
+    '--include-comments=false',
+    '--include-description=false',
+    '--unzip-to', resources_dir_full,
+    log: false
+  )
+
+  manually_copied_languages.each do |to, from|
+    FileUtils.cp(
+      "#{resources_dir_full}/#{from}.lproj/Core.strings",
+      "#{resources_dir_full}/#{to}.lproj/Core.strings"
     )
   end
 
