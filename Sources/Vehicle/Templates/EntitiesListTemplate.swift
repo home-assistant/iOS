@@ -16,7 +16,7 @@ class EntitiesListTemplate {
     private var currentPage: Int = 0
 
     /// Maximum number of items per page minus pagination buttons
-    private var itemsPerPage: Int = CPListTemplate.maximumItemCount - 2
+    private var itemsPerPage: Int = CPListTemplate.maximumItemCount
 
     private var entitiesSubscriptionToken: HACancellable?
 
@@ -45,6 +45,7 @@ class EntitiesListTemplate {
 
     private func updateListItems() {
         let entities = entitiesCachedStates.value?.all.filter { $0.domain == domain }
+
         let entitiesSorted = entities?
             .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
@@ -79,29 +80,68 @@ class EntitiesListTemplate {
 
         // Add pagination buttons if needed
         if entitiesSorted.count > itemsPerPage {
-            if currentPage > 0 {
-                let previousButton = CPListItem(text: L10n.Carplay.Navigation.Button.previous, detailText: nil)
-                previousButton.handler = { [weak self] _, completion in
-                    self?.currentPage -= 1
-                    self?.updateListItems()
-                    completion()
-                }
-                items.insert(previousButton, at: 0)
-            }
-
-            if endIndex < entitiesSorted.count {
-                let nextButton = CPListItem(text: L10n.Carplay.Navigation.Button.next, detailText: nil)
-                nextButton.handler = { [weak self] _, completion in
-                    self?.currentPage += 1
-                    self?.updateListItems()
-                    completion()
-                }
-                items.append(nextButton)
-            }
+            listTemplate?.trailingNavigationBarButtons = getPageButtons(
+                endIndex: endIndex,
+                currentPage: currentPage,
+                totalCount: entitiesSorted.count
+            )
         }
 
         listTemplate?.updateSections([CPListSection(items: items)])
     }
+
+    func getPageButtons(endIndex: Int, currentPage: Int, totalCount: Int) -> [CPBarButton] {
+        var barButtons: [CPBarButton] = []
+
+        let forwardImage = UIImage(systemName: "arrow.forward")!
+        if endIndex < totalCount {
+            barButtons.append(CPBarButton(
+                image: forwardImage,
+                handler: { _ in
+                    self.changePage(to: .Next)
+                }
+            ))
+        } else {
+            barButtons
+                .append(CPBarButton(
+                    image: UIImage(size: forwardImage.size, color: UIColor.clear),
+                    handler: nil
+                ))
+        }
+
+        let backwardImage = UIImage(systemName: "arrow.backward")!
+        if currentPage > 0 {
+            barButtons.append(CPBarButton(
+                image: backwardImage,
+                handler: { _ in
+                    self.changePage(to: .Previous)
+                }
+            ))
+        } else {
+            barButtons
+                .append(CPBarButton(
+                    image: UIImage(size: backwardImage.size, color: UIColor.clear),
+                    handler: nil
+                ))
+        }
+
+        return barButtons
+    }
+
+    func changePage(to: GridPage) {
+        switch to {
+        case .Next:
+            currentPage += 1
+        case .Previous:
+            currentPage -= 1
+        }
+        updateListItems()
+    }
+}
+
+enum GridPage {
+    case Next
+    case Previous
 }
 
 enum CPEntityError: Error {
