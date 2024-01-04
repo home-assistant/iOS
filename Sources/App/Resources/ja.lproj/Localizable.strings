@@ -165,7 +165,7 @@
 "nfc.write.success_message" = "タグに書きこみ！";
 "no_label" = "いいえ";
 "notification_service.failed_to_load" = "添付品の読み込みに失敗しました";
-"notification_service.loading_dynamic_actions" = "アクションの読み込み…";
+"notification_service.loading_dynamic_actions" = "アクションの読み込み中…";
 "notification_service.parser.camera.invalid_entity" = "指定されたentity_idは無効でした。";
 "notification_service.parser.url.invalid_url" = "指定されたURLが無効でした。";
 "notification_service.parser.url.no_url" = "URLが提供されていません。";
@@ -189,7 +189,7 @@
 "notifications_configurator.category.rows.category_summary.footer" = "システムがカテゴリの通知をグループ化するときに使用される概要説明の書式文字列。オプションで、'%%u ' を使用してグループ内の通知の数を表示し、'%%@ ' を使用してプッシュ ペイロードで提供される概要引数を表示できます。";
 "notifications_configurator.category.rows.category_summary.header" = "カテゴリーの概要";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u 通知";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "このテキストは、通知プレビューが非表示になっている場合にのみ表示されます。同じスレッド識別子を持つメッセージの数には、'%%u' を使用します。";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "このテキストは、通知プレビューが非表示になっている場合にのみ表示されます。同じThread 識別子を持つメッセージの数には、'%%u' を使用します。";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "非表示のプレビュープレースホルダー";
 "notifications_configurator.category.rows.name.title" = "名前";
 "notifications_configurator.identifier" = "識別子";
@@ -334,7 +334,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.developer.header" = "デベロッパー";
 "settings.developer.map_notification.notification.body" = "これを展開すると、地図内容の拡張機能が表示されます";
 "settings.developer.map_notification.title" = "地図通知内容を表示するエクステンション";
-"settings.developer.mock_thread_credentials_sharing.title" = "シミュレータのスレッド認証情報の共有";
+"settings.developer.mock_thread_credentials_sharing.title" = "シミュレータのThread 認証情報の共有";
 "settings.developer.show_log_files.title" = "ファインダーでログファイルを表示する";
 "settings.developer.sync_watch_context.title" = "ウォッチコンテキストの同期";
 "settings.event_log.title" = "イベントログ";
@@ -344,7 +344,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.navigation_bar.about_button.title" = "～について";
 "settings.navigation_bar.title" = "設定";
 "settings.reset_section.reset_alert.message" = "設定がリセットされ、このデバイスはプッシュ通知から登録解除されるだけでなく、Home Assistantの設定からも削除されます。";
-"settings.reset_section.reset_alert.progress_message" = "リセット...";
+"settings.reset_section.reset_alert.progress_message" = "リセット中…...";
 "settings.reset_section.reset_alert.title" = "リセット";
 "settings.reset_section.reset_row.title" = "リセット";
 "settings.reset_section.reset_web_cache.title" = "フロントエンドキャッシュのリセット";
@@ -356,7 +356,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.status_section.version_row.placeholder" = "0.92.0";
 "settings.status_section.version_row.title" = "バージョン";
 "settings.template_edit.title" = "テンプレートの編集";
-"settings.whats_new.title" = "新着情報？";
+"settings.whats_new.title" = "新着情報";
 "settings_details.actions.actions_synced.empty" = "同期されたアクションはありません";
 "settings_details.actions.actions_synced.footer" = ".yamlで定義されたアクションは、デバイス上での編集はできません。";
 "settings_details.actions.actions_synced.footer_no_actions" = "アクションは、.yaml 構成で定義することもできます。";
@@ -548,7 +548,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "thread.credentials.network_key_title" = "ネットワークキー";
 "thread.credentials.network_name_title" = "ネットワーク名";
 "thread.credentials.no_credential_available" = "iCloud キーチェーンで使用できる認証情報がありません。";
-"thread.credentials.screen_title" = "スレッド認証情報";
+"thread.credentials.screen_title" = "Thread 認証情報";
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home のホーム所有者である iCloud アカウントでログインしていることを確認してください。";
 "thread.credentials.share_credentials.no_credentials_title" = "共有する資格情報がありません";
 "thread.credentials.share_credentials_button_title" = "Home Assistantと認証情報を共有する";
@@ -577,7 +577,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "url_handler.send_location.confirm.message" = "あなたの位置情報を送信しますか?";
 "url_handler.send_location.confirm.title" = "位置情報を送信しますか?";
 "url_handler.send_location.error.message" = "場所の送信中に不明なエラーが発生しました: %@";
-"url_handler.send_location.success.message" = "ワンショットの場所を送信";
+"url_handler.send_location.success.message" = "場所を1回送信";
 "url_handler.send_location.success.title" = "場所を送信";
 "url_handler.x_callback_url.error.eventNameMissing" = "イベント名を定義する必要があります";
 "url_handler.x_callback_url.error.general" = "一般的なエラーが発生しました";
