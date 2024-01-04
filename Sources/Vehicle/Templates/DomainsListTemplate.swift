@@ -75,16 +75,18 @@ class DomainsListTemplate {
     }
 
     private func listItemHandler(domain: String) {
-        let entitiesGridTemplate = EntitiesListTemplate(
+        let entitiesListTemplate = EntitiesListTemplate(
+            title: Domain(rawValue: domain)?.localizedDescription ?? domain,
             domain: domain,
             server: server,
             entitiesCachedStates: entitiesCachedStates
         )
 
         interfaceController?.pushTemplate(
-            entitiesGridTemplate.getTemplate(),
+            entitiesListTemplate.getTemplate(),
             animated: true,
             completion: nil
         )
+        entitiesListTemplate.interfaceController = interfaceController
     }
 }

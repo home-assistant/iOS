@@ -113,9 +113,12 @@ public extension HAEntity {
             }
         }
 
-        // TODO: Improve logic and create enum for states
-        if state == "on" {
-            tint = .yellow
+        if let state = Domain.State(rawValue: state) {
+            if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {
+                tint = Constants.tintColor
+            } else if [.unavailable, .unknown].contains(state) {
+                tint = .gray
+            }
         }
 
         return image.image(ofSize: size, color: tint)
