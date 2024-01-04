@@ -11,9 +11,9 @@ extension HATypedRequest {
             data: [
                 "domain": domain.rawValue,
                 "service": "toggle",
-                "service_data": [
-                    "entity_id": entityId,
-                ],
+                "target": [
+                    "entity_id": entityId
+                ]
             ]
         ))
     }
@@ -25,7 +25,7 @@ extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": "script",
-                "service": entityId.replacingOccurrences(of: "script.", with: ""),
+                "service": entityId.replacingOccurrences(of: "script.", with: "")
             ]
         ))
     }
@@ -37,12 +37,10 @@ extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": "scene",
-                "service": "scene.apply",
-                "service_data": [
-                    "entities": [
-                        entityId,
-                    ],
-                ],
+                "service": "turn_on",
+                "target": [
+                    "entity_id": entityId
+                ]
             ]
         ))
     }
@@ -54,10 +52,10 @@ extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": "button",
-                "service": "button.press",
-                "service_data": [
-                    "entityId": entityId,
-                ],
+                "service": "press",
+                "target": [
+                    "entity_id": entityId
+                ]
             ]
         ))
     }
@@ -69,10 +67,10 @@ extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": "lock",
-                "service": "lock.lock",
-                "service_data": [
-                    "entityId": entityId,
-                ],
+                "service": "lock",
+                "target": [
+                    "entity_id": entityId
+                ]
             ]
         ))
     }
@@ -84,10 +82,10 @@ extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": "lock",
-                "service": "lock.unlock",
-                "service_data": [
-                    "entityId": entityId,
-                ],
+                "service": "unlock",
+                "target": [
+                    "entity_id": entityId
+                ]
             ]
         ))
     }
