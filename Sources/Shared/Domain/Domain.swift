@@ -4,7 +4,7 @@ import UIKit
 public enum Domain: String, CaseIterable {
     case button
     case cover
-    case inputBoolean = "input_bollean"
+    case inputBoolean = "input_boolean"
     case inputButton = "input_button"
     case light
     case lock
