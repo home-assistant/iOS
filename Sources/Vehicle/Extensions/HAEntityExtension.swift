@@ -181,25 +181,6 @@ extension HAEntity {
     }
 
     var localizedState: String {
-        switch state {
-        case "closed": return L10n.State.closed
-        case "closing": return L10n.State.closing
-        case "jammed": return L10n.State.jammed
-        case "locked": return L10n.State.locked
-        case "locking": return L10n.State.locking
-        case "off": return L10n.State.off
-        case "on": return L10n.State.on
-        case "open": return L10n.State.open
-        case "opening": return L10n.State.opening
-        case "unavailable": return L10n.State.unavailable
-        case "unlocked": return L10n.State.unlocked
-        case "unlocking": return L10n.State.unlocking
-        case "unknown": return L10n.State.unknown
-        default:
-            let formatter = DateComponentsFormatter()
-            formatter.zeroFormattingBehavior = .pad
-            formatter.allowedUnits = [.hour, .minute, .second]
-            return formatter.string(from: lastChanged, to: Date()) ?? state
-        }
+        CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings.getDefaultStateLocalizedTitle(state: state) ?? state
     }
 }

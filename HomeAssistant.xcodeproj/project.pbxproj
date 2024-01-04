@@ -527,10 +527,12 @@
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
 		42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
-		42CE8FB02B46C3D900C707F9 /* CoreStrings+DomainTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+DomainTitle.swift */; };
-		42CE8FB12B46C3DA00C707F9 /* CoreStrings+DomainTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+DomainTitle.swift */; };
+		42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */; };
+		42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */; };
 		42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
 		42CE8FB32B46C46F00C707F9 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
+		42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
+		42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
@@ -1685,7 +1687,8 @@
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
-		42CE8FAE2B46C3D600C707F9 /* CoreStrings+DomainTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+DomainTitle.swift"; sourceTree = "<group>"; };
+		42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+Values.swift"; sourceTree = "<group>"; };
+		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
 		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
 		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
 		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
@@ -3990,7 +3993,8 @@
 				42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */,
 				11EE9B4524C4E01500404AF8 /* SharedPlist.swift */,
 				D0EEF31F214DE3B300D1D360 /* Strings.swift */,
-				42CE8FAE2B46C3D600C707F9 /* CoreStrings+DomainTitle.swift */,
+				42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */,
+				42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */,
 			);
 			path = Swiftgen;
 			sourceTree = "<group>";
@@ -5918,6 +5922,7 @@
 				11169BC6262BE45F005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
+				42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -6005,7 +6010,7 @@
 				B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */,
 				491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11B38EF2275C54A300205C7B /* CallServiceIntentHandler.swift in Sources */,
-				42CE8FB12B46C3DA00C707F9 /* CoreStrings+DomainTitle.swift in Sources */,
+				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
@@ -6108,6 +6113,7 @@
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
+				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
@@ -6208,7 +6214,7 @@
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
-				42CE8FB02B46C3D900C707F9 /* CoreStrings+DomainTitle.swift in Sources */,
+				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
