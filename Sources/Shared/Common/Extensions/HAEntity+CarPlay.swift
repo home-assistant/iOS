@@ -6,46 +6,40 @@ import UIKit
 
 public extension HAEntity {
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {
+        var request: HATypedRequest<HAResponseVoid>?
         switch Domain(rawValue: domain) {
         case .button:
-            return api.connection.send(HATypedRequest<HAResponseVoid>.pressButton(entityId: entityId)).promise
-                .map { _ in () }
+            request = .pressButton(entityId: entityId)
         case .cover:
-            return api.connection.send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .cover, entityId: entityId))
-                .promise.map { _ in () }
+            request = .toggleDomain(domain: .cover, entityId: entityId)
         case .inputBoolean:
-            return api.connection
-                .send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .inputBoolean, entityId: entityId)).promise
-                .map { _ in () }
+            request = .toggleDomain(domain: .inputBoolean, entityId: entityId)
         case .inputButton:
-            return api.connection
-                .send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .inputButton, entityId: entityId)).promise
-                .map { _ in () }
+            request = .toggleDomain(domain: .inputButton, entityId: entityId)
         case .light:
-            return api.connection.send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .light, entityId: entityId))
-                .promise.map { _ in () }
+            request = .toggleDomain(domain: .light, entityId: entityId)
         case .scene:
-            return api.connection.send(HATypedRequest<HAResponseVoid>.applyScene(entityId: entityId)).promise
-                .map { _ in () }
+            request = .applyScene(entityId: entityId)
         case .script:
-            return api.connection.send(HATypedRequest<HAResponseVoid>.runScript(entityId: entityId)).promise
-                .map { _ in () }
+            request = .runScript(entityId: entityId)
         case .switch:
-            return api.connection.send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .switch, entityId: entityId))
-                .promise.map { _ in () }
+            request = .toggleDomain(domain: .switch, entityId: entityId)
         case .lock:
             guard let state = Domain.State(rawValue: state) else { return .value }
             switch state {
             case .unlocking, .unlocked, .opening:
-                return api.connection.send(HATypedRequest<HAResponseVoid>.lockLock(entityId: entityId)).promise
-                    .map { _ in () }
+                request = .lockLock(entityId: entityId)
             case .locked, .locking:
-                return api.connection.send(HATypedRequest<HAResponseVoid>.unlockLock(entityId: entityId)).promise
-                    .map { _ in () }
+                request = .unlockLock(entityId: entityId)
             default:
-                return .value
+                break
             }
         case .none:
+           break
+        }
+        if let request {
+            return api.connection.send(request).promise.map { _ in () }
+        } else {
             return .value
         }
     }

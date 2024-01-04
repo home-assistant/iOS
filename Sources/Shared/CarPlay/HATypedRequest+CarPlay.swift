@@ -24,7 +24,8 @@ extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "service": "script.\(entityId)",
+                "domain": "script",
+                "service": entityId.replacingOccurrences(of: "script.", with: ""),
             ]
         ))
     }
@@ -35,6 +36,7 @@ extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
+                "domain": "scene",
                 "service": "scene.apply",
                 "service_data": [
                     "entities": [
@@ -51,6 +53,7 @@ extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
+                "domain": "button",
                 "service": "button.press",
                 "service_data": [
                     "entityId": entityId,
@@ -65,6 +68,7 @@ extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
+                "domain": "lock",
                 "service": "lock.lock",
                 "service_data": [
                     "entityId": entityId,
@@ -79,6 +83,7 @@ extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
+                "domain": "lock",
                 "service": "lock.unlock",
                 "service_data": [
                     "entityId": entityId,
