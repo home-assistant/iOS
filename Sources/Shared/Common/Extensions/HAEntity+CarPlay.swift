@@ -1,11 +1,11 @@
 import Foundation
 import HAKit
 import PromiseKit
-import Shared
 import SwiftUI
+import UIKit
 
-extension HAEntity {
-    public static func icon(forDomain: String, size: CGSize) -> UIImage? {
+public extension HAEntity {
+    static func icon(forDomain: String, size: CGSize) -> UIImage? {
         do {
             let tmpEntity = try HAEntity(
                 entityId: "\(forDomain).ha_ios_placeholder",
@@ -40,15 +40,11 @@ extension HAEntity {
         return api.CallService(domain: domain, service: service, serviceData: ["entity_id": entityId])
     }
 
-    func getIcon(size: CGSize = CGSize(width: 64, height: 64), darkColor: UIColor = UIColor.white) -> UIImage? {
-        let icon = attributes.icon ?? ""
-
+    func getIcon(size: CGSize = CGSize(width: 64, height: 64)) -> UIImage? {
         var image = MaterialDesignIcons.bookmarkIcon
 
-        if icon.starts(with: "mdi:") {
-            let mdiIcon = icon.components(separatedBy: ":")[1]
-            let iconName = mdiIcon.replacingOccurrences(of: "-", with: "_")
-            image = MaterialDesignIcons(named: iconName)
+        if let icon = attributes.icon?.normalizingIconString {
+            image = MaterialDesignIcons(named: icon)
         } else {
             let compareState = state
             switch domain {
@@ -118,12 +114,7 @@ extension HAEntity {
                 image = MaterialDesignIcons.bookmarkIcon
             }
         }
-        let iconImage = image.image(ofSize: size, color: nil)
-        iconImage.imageAsset?.register(
-            image.image(ofSize: size, color: darkColor),
-            with: .init(userInterfaceStyle: .dark)
-        )
-        return iconImage
+        return image.image(ofSize: size, color: .white)
     }
 
     private func getCoverIcon() -> MaterialDesignIcons {
