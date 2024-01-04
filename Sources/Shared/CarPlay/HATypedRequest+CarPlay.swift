@@ -46,12 +46,13 @@ extension HATypedRequest {
     }
 
     static func pressButton(
+        domain: Domain,
         entityId: String
     ) -> HATypedRequest<HAResponseVoid> {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": "button",
+                "domain": domain.rawValue,
                 "service": "press",
                 "target": [
                     "entity_id": entityId

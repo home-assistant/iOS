@@ -9,13 +9,13 @@ public extension HAEntity {
         var request: HATypedRequest<HAResponseVoid>?
         switch Domain(rawValue: domain) {
         case .button:
-            request = .pressButton(entityId: entityId)
+            request = .pressButton(domain: .button, entityId: entityId)
         case .cover:
             request = .toggleDomain(domain: .cover, entityId: entityId)
         case .inputBoolean:
             request = .toggleDomain(domain: .inputBoolean, entityId: entityId)
         case .inputButton:
-            request = .toggleDomain(domain: .inputButton, entityId: entityId)
+            request = .pressButton(domain: .inputButton, entityId: entityId)
         case .light:
             request = .toggleDomain(domain: .light, entityId: entityId)
         case .scene:
