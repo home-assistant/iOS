@@ -10,3 +10,5 @@
 "panel::profile" = "個人設定";
 "panel::shopping_list" = "購物清單";
 "panel::states" = "總覽";
+"state::default::unavailable" = "不可用";
+"state::default::unknown" = "未知";

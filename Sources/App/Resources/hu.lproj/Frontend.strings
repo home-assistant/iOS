@@ -10,3 +10,5 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Bevásárlólista";
 "panel::states" = "Áttekintés";
+"state::default::unavailable" = "Nem elérhető";
+"state::default::unknown" = "Ismeretlen";

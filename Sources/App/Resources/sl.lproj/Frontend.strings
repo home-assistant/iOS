@@ -10,3 +10,5 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Nakupovalni seznam";
 "panel::states" = "Pregled";
+"state::default::unavailable" = "Ni na voljo";
+"state::default::unknown" = "Neznano";

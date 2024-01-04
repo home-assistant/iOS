@@ -10,3 +10,5 @@
 "panel::profile" = "Profiili";
 "panel::shopping_list" = "Ostoslista";
 "panel::states" = "Yleisnäkymä";
+"state::default::unavailable" = "Ei saatavissa";
+"state::default::unknown" = "Tuntematon";

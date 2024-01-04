@@ -10,3 +10,5 @@
 "panel::profile" = "Perfil";
 "panel::shopping_list" = "Llista de compres";
 "panel::states" = "Visualització principal";
+"state::default::unavailable" = "No disponible";
+"state::default::unknown" = "Desconegut";

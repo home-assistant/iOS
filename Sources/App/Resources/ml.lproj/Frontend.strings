@@ -10,3 +10,5 @@
 "panel::profile" = "പ്രൊഫൈൽ";
 "panel::shopping_list" = "ഷോപ്പിംഗ് ലിസ്റ്റ്";
 "panel::states" = "മേൽക്കാഴ്ച്ച";
+"state::default::unavailable" = "ലഭ്യമല്ല";
+"state::default::unknown" = "അറിയില്ല";

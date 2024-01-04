@@ -10,3 +10,5 @@
 "panel::profile" = "Hồ sơ";
 "panel::shopping_list" = "Danh sách mua sắm";
 "panel::states" = "Tổng quan";
+"state::default::unavailable" = "Không có sẵn";
+"state::default::unknown" = "Không rõ";
