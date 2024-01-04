@@ -76,12 +76,12 @@ class DomainsListTemplate {
     }
 
     private func listItemHandler(domain: String) {
-        let itemTitle = domain
         let entitiesGridTemplate = EntitiesListTemplate(
-            title: itemTitle,
             domain: domain,
             server: server,
-            entitiesCachedStates: entitiesCachedStates
+            entitiesCachedStates: entitiesCachedStates.map({ cachedStates in
+                cachedStates.all.filter({ $0.domain == domain })
+            })
         )
 
         interfaceController?.pushTemplate(

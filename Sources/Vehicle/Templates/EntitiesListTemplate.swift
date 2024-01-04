@@ -8,10 +8,9 @@ import Shared
 class EntitiesListTemplate {
     private let entityIconSize: CGSize = .init(width: 64, height: 64)
     private var stateSubscriptionToken: HACancellable?
-    private let title: String
     private let domain: String
     private var server: Server
-    private let entitiesCachedStates: HACache<HACachedStates>
+    private let entitiesCachedStates: HACache<Set<HAEntity>>
     private var listTemplate: CPListTemplate?
     private var currentPage: Int = 0
 
@@ -20,8 +19,7 @@ class EntitiesListTemplate {
 
     private var entitiesSubscriptionToken: HACancellable?
 
-    init(title: String, domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
-        self.title = title
+    init(domain: String, server: Server, entitiesCachedStates: HACache<Set<HAEntity>>) {
         self.domain = domain
         self.server = server
         self.entitiesCachedStates = entitiesCachedStates
@@ -38,18 +36,14 @@ class EntitiesListTemplate {
         if let listTemplate = listTemplate {
             return listTemplate
         } else {
-            listTemplate = CPListTemplate(title: title, sections: [])
+            listTemplate = CPListTemplate(title: "", sections: [])
             return listTemplate!
         }
     }
 
     private func updateListItems() {
-        let entities = entitiesCachedStates.value?.all.filter { $0.domain == domain }
-
-        let entitiesSorted = entities?
-            .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
-
-        guard let entitiesSorted else { return }
+        guard let entities = entitiesCachedStates.value else { return }
+        let entitiesSorted = entities.sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
         let startIndex = currentPage * itemsPerPage
         let endIndex = min(startIndex + itemsPerPage, entitiesSorted.count)
