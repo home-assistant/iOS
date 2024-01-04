@@ -12,8 +12,8 @@ extension HATypedRequest {
                 "domain": domain.rawValue,
                 "service": "toggle",
                 "target": [
-                    "entity_id": entityId
-                ]
+                    "entity_id": entityId,
+                ],
             ]
         ))
     }
@@ -25,7 +25,7 @@ extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": "script",
-                "service": entityId.replacingOccurrences(of: "script.", with: "")
+                "service": entityId.replacingOccurrences(of: "script.", with: ""),
             ]
         ))
     }
@@ -39,8 +39,8 @@ extension HATypedRequest {
                 "domain": "scene",
                 "service": "turn_on",
                 "target": [
-                    "entity_id": entityId
-                ]
+                    "entity_id": entityId,
+                ],
             ]
         ))
     }
@@ -55,8 +55,8 @@ extension HATypedRequest {
                 "domain": domain.rawValue,
                 "service": "press",
                 "target": [
-                    "entity_id": entityId
-                ]
+                    "entity_id": entityId,
+                ],
             ]
         ))
     }
@@ -70,8 +70,8 @@ extension HATypedRequest {
                 "domain": "lock",
                 "service": "lock",
                 "target": [
-                    "entity_id": entityId
-                ]
+                    "entity_id": entityId,
+                ],
             ]
         ))
     }
@@ -85,8 +85,8 @@ extension HATypedRequest {
                 "domain": "lock",
                 "service": "unlock",
                 "target": [
-                    "entity_id": entityId
-                ]
+                    "entity_id": entityId,
+                ],
             ]
         ))
     }

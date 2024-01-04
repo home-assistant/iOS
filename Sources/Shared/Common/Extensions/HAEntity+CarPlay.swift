@@ -35,7 +35,7 @@ public extension HAEntity {
                 break
             }
         case .none:
-           break
+            break
         }
         if let request {
             return api.connection.send(request).promise.map { _ in () }

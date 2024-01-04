@@ -6,7 +6,6 @@ import Shared
 
 @available(iOS 16.0, *)
 final class EntitiesListTemplate {
-
     enum GridPage {
         case Next
         case Previous
@@ -57,7 +56,8 @@ final class EntitiesListTemplate {
         guard let entities = entitiesCachedStates.value else { return }
 
         let entitiesFiltered = entities.all.filter { $0.domain == domain }
-        let entitiesSorted = entitiesFiltered.sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
+        let entitiesSorted = entitiesFiltered
+            .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
         let startIndex = currentPage * itemsPerPage
         let endIndex = min(startIndex + itemsPerPage, entitiesSorted.count)
@@ -127,7 +127,7 @@ final class EntitiesListTemplate {
             .init(title: L10n.Alerts.Confirm.confirm, style: .destructive, handler: { [weak self] _ in
                 completion()
                 self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
-            })
+            }),
         ])
 
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
