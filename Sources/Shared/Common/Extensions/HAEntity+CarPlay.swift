@@ -32,8 +32,9 @@ public extension HAEntity {
             image = MaterialDesignIcons(named: icon)
         } else {
             let compareState = state
+            guard let domain = Domain(rawValue: domain) else { return nil }
             switch domain {
-            case "button":
+            case .button:
                 guard let deviceClass = attributes.dictionary["device_class"] as? String else { break }
                 if deviceClass == "restart" {
                     image = MaterialDesignIcons.restartIcon
@@ -42,9 +43,9 @@ public extension HAEntity {
                 } else {
                     image = MaterialDesignIcons.gestureTapButtonIcon
                 }
-            case "cover":
+            case .cover:
                 image = getCoverIcon()
-            case "input_boolean":
+            case .input_boolean:
                 if !entityId.hasSuffix(".ha_ios_placeholder") {
                     if compareState == "on" {
                         image = MaterialDesignIcons.checkCircleOutlineIcon
@@ -54,11 +55,11 @@ public extension HAEntity {
                 } else {
                     image = MaterialDesignIcons.toggleSwitchOutlineIcon
                 }
-            case "input_button":
+            case .input_button:
                 image = MaterialDesignIcons.gestureTapButtonIcon
-            case "light":
+            case .light:
                 image = MaterialDesignIcons.lightbulbIcon
-            case "lock":
+            case .lock:
                 switch compareState {
                 case "unlocked":
                     image = MaterialDesignIcons.lockOpenIcon
@@ -69,15 +70,11 @@ public extension HAEntity {
                 default:
                     image = MaterialDesignIcons.lockIcon
                 }
-            case "person":
-                image = MaterialDesignIcons.accountIcon
-            case "scene":
+            case .scene:
                 image = MaterialDesignIcons.paletteOutlineIcon
-            case "script":
+            case .script:
                 image = MaterialDesignIcons.scriptTextOutlineIcon
-            case "sensor":
-                image = MaterialDesignIcons.eyeIcon
-            case "switch":
+            case .switch:
                 if !entityId.hasSuffix(".ha_ios_placeholder") {
                     let deviceClass = attributes.dictionary["device_class"] as? String
                     switch deviceClass {
@@ -93,10 +90,6 @@ public extension HAEntity {
                 } else {
                     image = MaterialDesignIcons.lightSwitchIcon
                 }
-            case "zone":
-                image = MaterialDesignIcons.mapMarkerRadiusIcon
-            default:
-                image = MaterialDesignIcons.bookmarkIcon
             }
         }
 
@@ -113,6 +106,7 @@ public extension HAEntity {
         let state = state
         let open = state != "closed"
 
+        // TODO: Make enum for entity types
         switch device_class {
         case "garage":
             switch state {
