@@ -6,21 +6,48 @@ import UIKit
 
 public extension HAEntity {
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {
-        let domain = domain
-        var service: String
-        switch domain {
-        case "lock":
-            service = state == "unlocked" ? "lock" : "unlock"
-        case "cover":
-            service = state == "open" ? "close_cover" : "open_cover"
-        case "button", "input_button":
-            service = "press"
-        case "scene":
-            service = "turn_on"
-        default:
-            service = state == "on" ? "turn_off" : "turn_on"
+        switch Domain(rawValue: domain) {
+        case .button:
+            return api.connection.send(HATypedRequest<HAResponseVoid>.pressButton(entityId: entityId)).promise
+                .map { _ in () }
+        case .cover:
+            return api.connection.send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .cover, entityId: entityId))
+                .promise.map { _ in () }
+        case .inputBoolean:
+            return api.connection
+                .send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .inputBoolean, entityId: entityId)).promise
+                .map { _ in () }
+        case .inputButton:
+            return api.connection
+                .send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .inputButton, entityId: entityId)).promise
+                .map { _ in () }
+        case .light:
+            return api.connection.send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .light, entityId: entityId))
+                .promise.map { _ in () }
+        case .scene:
+            return api.connection.send(HATypedRequest<HAResponseVoid>.applyScene(entityId: entityId)).promise
+                .map { _ in () }
+        case .script:
+            return api.connection.send(HATypedRequest<HAResponseVoid>.runScript(entityId: entityId)).promise
+                .map { _ in () }
+        case .switch:
+            return api.connection.send(HATypedRequest<HAResponseVoid>.toggleDomain(domain: .switch, entityId: entityId))
+                .promise.map { _ in () }
+        case .lock:
+            guard let state = Domain.State(rawValue: state) else { return .value }
+            switch state {
+            case .unlocking, .unlocked, .opening:
+                return api.connection.send(HATypedRequest<HAResponseVoid>.lockLock(entityId: entityId)).promise
+                    .map { _ in () }
+            case .locked, .locking:
+                return api.connection.send(HATypedRequest<HAResponseVoid>.unlockLock(entityId: entityId)).promise
+                    .map { _ in () }
+            default:
+                return .value
+            }
+        case .none:
+            return .value
         }
-        return api.CallService(domain: domain, service: service, serviceData: ["entity_id": entityId])
     }
 
     func getIcon(size: CGSize = CGSize(width: 64, height: 64)) -> UIImage? {
