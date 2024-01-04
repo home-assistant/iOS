@@ -1,11 +1,3 @@
-//
-//  Domains.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 04/01/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import UIKit
 
@@ -102,8 +94,9 @@ public enum Domain: String, CaseIterable {
 }
 
 // MARK: - CarPlay
-extension Domain {
-    public var carPlaySupportedDomains: [Domain] {
+
+public extension Domain {
+    var carPlaySupportedDomains: [Domain] {
         [
             .button,
             .cover,
@@ -113,7 +106,7 @@ extension Domain {
             .lock,
             .scene,
             .script,
-            .switch
+            .switch,
         ]
     }
 }

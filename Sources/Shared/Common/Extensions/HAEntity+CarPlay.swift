@@ -5,7 +5,6 @@ import SwiftUI
 import UIKit
 
 public extension HAEntity {
-
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {
         let domain = domain
         var service: String
@@ -157,6 +156,7 @@ public extension HAEntity {
     }
 
     var localizedState: String {
-        CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings.getDefaultStateLocalizedTitle(state: state) ?? state
+        CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
+            .getDefaultStateLocalizedTitle(state: state) ?? state
     }
 }

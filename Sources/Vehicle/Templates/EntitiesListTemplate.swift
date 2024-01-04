@@ -43,7 +43,8 @@ class EntitiesListTemplate {
 
     private func updateListItems() {
         guard let entities = entitiesCachedStates.value else { return }
-        let entitiesSorted = entities.sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
+        let entitiesSorted = entities
+            .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
         let startIndex = currentPage * itemsPerPage
         let endIndex = min(startIndex + itemsPerPage, entitiesSorted.count)
