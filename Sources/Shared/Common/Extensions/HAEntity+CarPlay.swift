@@ -26,6 +26,7 @@ public extension HAEntity {
 
     func getIcon(size: CGSize = CGSize(width: 64, height: 64)) -> UIImage? {
         var image = MaterialDesignIcons.bookmarkIcon
+        var tint: UIColor = .white
 
         if let icon = attributes.icon?.normalizingIconString {
             image = MaterialDesignIcons(named: icon)
@@ -98,7 +99,13 @@ public extension HAEntity {
                 image = MaterialDesignIcons.bookmarkIcon
             }
         }
-        return image.image(ofSize: size, color: .white)
+
+        // TODO: Improve logic and create enum for states
+        if state == "on" {
+            tint = .yellow
+        }
+
+        return image.image(ofSize: size, color: tint)
     }
 
     private func getCoverIcon() -> MaterialDesignIcons {
