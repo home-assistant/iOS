@@ -31,7 +31,7 @@ public extension HAEntity {
         if let icon = attributes.icon?.normalizingIconString {
             image = MaterialDesignIcons(named: icon)
         } else {
-            let compareState = state
+            guard let compareState = Domain.State(rawValue: state) else { return nil }
             guard let domain = Domain(rawValue: domain) else { return nil }
             switch domain {
             case .button:
@@ -45,9 +45,9 @@ public extension HAEntity {
                 }
             case .cover:
                 image = getCoverIcon()
-            case .input_boolean:
+            case .inputBoolean:
                 if !entityId.hasSuffix(".ha_ios_placeholder") {
-                    if compareState == "on" {
+                    if compareState == .on {
                         image = MaterialDesignIcons.checkCircleOutlineIcon
                     } else {
                         image = MaterialDesignIcons.closeCircleOutlineIcon
@@ -55,17 +55,17 @@ public extension HAEntity {
                 } else {
                     image = MaterialDesignIcons.toggleSwitchOutlineIcon
                 }
-            case .input_button:
+            case .inputButton:
                 image = MaterialDesignIcons.gestureTapButtonIcon
             case .light:
                 image = MaterialDesignIcons.lightbulbIcon
             case .lock:
                 switch compareState {
-                case "unlocked":
+                case .unlocked:
                     image = MaterialDesignIcons.lockOpenIcon
-                case "jammed":
+                case .jammed:
                     image = MaterialDesignIcons.lockAlertIcon
-                case "locking", "unlocking":
+                case .locking, .unlocking:
                     image = MaterialDesignIcons.lockClockIcon
                 default:
                     image = MaterialDesignIcons.lockIcon
@@ -79,10 +79,10 @@ public extension HAEntity {
                     let deviceClass = attributes.dictionary["device_class"] as? String
                     switch deviceClass {
                     case "outlet":
-                        image = compareState == "on" ? MaterialDesignIcons.powerPlugIcon : MaterialDesignIcons
+                        image = compareState == .on ? MaterialDesignIcons.powerPlugIcon : MaterialDesignIcons
                             .powerPlugOffIcon
                     case "switch":
-                        image = compareState == "on" ? MaterialDesignIcons.toggleSwitchIcon : MaterialDesignIcons
+                        image = compareState == .on ? MaterialDesignIcons.toggleSwitchIcon : MaterialDesignIcons
                             .toggleSwitchOffIcon
                     default:
                         image = MaterialDesignIcons.flashIcon
@@ -104,53 +104,53 @@ public extension HAEntity {
     private func getCoverIcon() -> MaterialDesignIcons {
         let device_class = attributes.dictionary["device_class"] as? String
         let state = state
-        let open = state != "closed"
 
-        // TODO: Make enum for entity types
+        guard let state = Domain.State(rawValue: state) else { return MaterialDesignIcons.bookmarkIcon }
+
         switch device_class {
         case "garage":
             switch state {
-            case "opening": return MaterialDesignIcons.arrowUpBoxIcon
-            case "closing": return MaterialDesignIcons.arrowDownBoxIcon
-            case "closed": return MaterialDesignIcons.garageIcon
+            case .opening: return MaterialDesignIcons.arrowUpBoxIcon
+            case .closing: return MaterialDesignIcons.arrowDownBoxIcon
+            case .closed: return MaterialDesignIcons.garageIcon
             default: return MaterialDesignIcons.garageOpenIcon
             }
         case "gate":
             switch state {
-            case "opening", "closing": return MaterialDesignIcons.gateArrowRightIcon
-            case "closed": return MaterialDesignIcons.gateIcon
+            case .opening: return MaterialDesignIcons.gateArrowRightIcon
+            case .closed: return MaterialDesignIcons.gateIcon
             default: return MaterialDesignIcons.gateOpenIcon
             }
         case "door":
-            return open ? MaterialDesignIcons.doorOpenIcon : MaterialDesignIcons.doorClosedIcon
+            return state == .open ? MaterialDesignIcons.doorOpenIcon : MaterialDesignIcons.doorClosedIcon
         case "damper":
-            return open ? MaterialDesignIcons.circleIcon : MaterialDesignIcons.circleSlice8Icon
+            return state == .open ? MaterialDesignIcons.circleIcon : MaterialDesignIcons.circleSlice8Icon
         case "shutter":
             switch state {
-            case "opening": return MaterialDesignIcons.arrowUpBoxIcon
-            case "closing": return MaterialDesignIcons.arrowDownBoxIcon
-            case "closed": return MaterialDesignIcons.windowShutterIcon
+            case .opening: return MaterialDesignIcons.arrowUpBoxIcon
+            case .closing: return MaterialDesignIcons.arrowDownBoxIcon
+            case .closed: return MaterialDesignIcons.windowShutterIcon
             default: return MaterialDesignIcons.windowShutterOpenIcon
             }
         case "curtain":
             switch state {
-            case "opening": return MaterialDesignIcons.arrowSplitVerticalIcon
-            case "closing": return MaterialDesignIcons.arrowCollapseHorizontalIcon
-            case "closed": return MaterialDesignIcons.curtainsClosedIcon
+            case .opening: return MaterialDesignIcons.arrowSplitVerticalIcon
+            case .closing: return MaterialDesignIcons.arrowCollapseHorizontalIcon
+            case .closed: return MaterialDesignIcons.curtainsClosedIcon
             default: return MaterialDesignIcons.curtainsIcon
             }
         case "blind", "shade":
             switch state {
-            case "opening": return MaterialDesignIcons.arrowUpBoxIcon
-            case "closing": return MaterialDesignIcons.arrowDownBoxIcon
-            case "closed": return MaterialDesignIcons.blindsIcon
+            case .opening: return MaterialDesignIcons.arrowUpBoxIcon
+            case .closing: return MaterialDesignIcons.arrowDownBoxIcon
+            case .closed: return MaterialDesignIcons.blindsIcon
             default: return MaterialDesignIcons.blindsOpenIcon
             }
         default:
             switch state {
-            case "opening": return MaterialDesignIcons.arrowUpBoxIcon
-            case "closing": return MaterialDesignIcons.arrowDownBoxIcon
-            case "closed": return MaterialDesignIcons.windowClosedIcon
+            case .open: return MaterialDesignIcons.arrowUpBoxIcon
+            case .closing: return MaterialDesignIcons.arrowDownBoxIcon
+            case .closed: return MaterialDesignIcons.windowClosedIcon
             default: return MaterialDesignIcons.windowOpenIcon
             }
         }
