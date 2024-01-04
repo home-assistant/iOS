@@ -5,22 +5,6 @@ import SwiftUI
 import UIKit
 
 public extension HAEntity {
-    static func icon(forDomain: String, size: CGSize) -> UIImage? {
-        do {
-            let tmpEntity = try HAEntity(
-                entityId: "\(forDomain).ha_ios_placeholder",
-                domain: forDomain,
-                state: "",
-                lastChanged: Date(),
-                lastUpdated: Date(),
-                attributes: [:],
-                context: HAResponseEvent.Context(id: "", userId: nil, parentId: nil)
-            )
-            return tmpEntity.getIcon(size: size)
-        } catch {
-            return nil
-        }
-    }
 
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {
         let domain = domain

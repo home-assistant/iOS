@@ -55,18 +55,16 @@ class DomainsListTemplate {
         }))
 
         domains.forEach { domain in
-            let itemTitle = Domain(rawValue: domain)?.localizedDescription ?? domain
+            guard let domain = Domain(rawValue: domain) else { return }
+            let itemTitle = domain.localizedDescription
             let listItem = CPListItem(
                 text: itemTitle,
                 detailText: nil,
-                image: HAEntity.icon(
-                    forDomain: domain,
-                    size: CPListItem.maximumImageSize
-                )
+                image: domain.icon
             )
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
             listItem.handler = { [weak self] _, completion in
-                self?.listItemHandler(domain: domain)
+                self?.listItemHandler(domain: domain.rawValue)
                 completion()
             }
 

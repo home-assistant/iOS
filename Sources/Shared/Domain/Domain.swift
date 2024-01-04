@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public enum Domain: String, CaseIterable {
     case button
@@ -31,6 +32,31 @@ public enum Domain: String, CaseIterable {
             .script,
             .switch
         ]
+    }
+
+    public var icon: UIImage {
+        var image = MaterialDesignIcons.bookmarkIcon
+        switch self {
+        case .button:
+            image = MaterialDesignIcons.gestureTapButtonIcon
+        case .cover:
+            image = MaterialDesignIcons.curtainsIcon
+        case .input_boolean:
+            image = MaterialDesignIcons.toggleSwitchOutlineIcon
+        case .input_button:
+            image = MaterialDesignIcons.gestureTapButtonIcon
+        case .light:
+            image = MaterialDesignIcons.lightbulbIcon
+        case .lock:
+            image = MaterialDesignIcons.lockIcon
+        case .scene:
+            image = MaterialDesignIcons.paletteOutlineIcon
+        case .script:
+            image = MaterialDesignIcons.scriptTextOutlineIcon
+        case .switch:
+            image = MaterialDesignIcons.lightSwitchIcon
+        }
+        return image.image(ofSize: .init(width: 64, height: 64), color: .white)
     }
 
     public var localizedDescription: String {
