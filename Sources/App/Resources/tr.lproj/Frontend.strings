@@ -10,3 +10,5 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Alışveriş listesi";
 "panel::states" = "Durumlar";
+"state::default::unavailable" = "Kullanım dışı";
+"state::default::unknown" = "Bilinmeyen";

@@ -10,3 +10,5 @@
 "panel::profile" = "Profiil";
 "panel::shopping_list" = "Ostunimekiri";
 "panel::states" = "Ülevaade";
+"state::default::unavailable" = "Kadunud";
+"state::default::unknown" = "Teadmata";

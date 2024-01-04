@@ -10,3 +10,5 @@
 "panel::profile" = "プロファイル";
 "panel::shopping_list" = "ショッピングリスト";
 "panel::states" = "オーバービュー";
+"state::default::unavailable" = "利用不可";
+"state::default::unknown" = "不明";

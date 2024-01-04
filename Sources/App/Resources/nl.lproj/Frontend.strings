@@ -10,3 +10,5 @@
 "panel::profile" = "Profiel";
 "panel::shopping_list" = "Boodschappenlijst";
 "panel::states" = "Overzicht";
+"state::default::unavailable" = "Niet beschikbaar";
+"state::default::unknown" = "Onbekend";

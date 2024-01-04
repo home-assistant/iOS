@@ -10,3 +10,5 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Einkaufsliste";
 "panel::states" = "Übersicht";
+"state::default::unavailable" = "Nicht verfügbar";
+"state::default::unknown" = "Unbekannt";

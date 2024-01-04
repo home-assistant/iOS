@@ -10,3 +10,5 @@
 "panel::profile" = "Profile";
 "panel::shopping_list" = "Rhestr siopa";
 "panel::states" = "Trosolwg";
+"state::default::unavailable" = "Ddim ar gael";
+"state::default::unknown" = "Anhysbys";

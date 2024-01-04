@@ -34,6 +34,10 @@ public enum FrontendStrings {
   public static var panelShoppingList: String { return FrontendStrings.tr("Frontend", "panel::shopping_list") }
   /// Overview
   public static var panelStates: String { return FrontendStrings.tr("Frontend", "panel::states") }
+  /// Unavailable
+  public static var stateDefaultUnavailable: String { return FrontendStrings.tr("Frontend", "state::default::unavailable") }
+  /// Unknown
+  public static var stateDefaultUnknown: String { return FrontendStrings.tr("Frontend", "state::default::unknown") }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

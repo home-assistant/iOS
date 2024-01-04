@@ -10,3 +10,5 @@
 "panel::profile" = "פרופיל";
 "panel::shopping_list" = "רשימת קניות";
 "panel::states" = "ראשי";
+"state::default::unavailable" = "לא זמין";
+"state::default::unknown" = "לא ידוע";

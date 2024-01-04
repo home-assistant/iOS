@@ -10,3 +10,5 @@
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Daftar belanja";
 "panel::states" = "Ikhtisar";
+"state::default::unavailable" = "Tidak tersedia";
+"state::default::unknown" = "Tidak diketahui";
