@@ -10,7 +10,7 @@ class DomainsListTemplate {
     private let serverButtonHandler: CPBarButtonHandler?
     private let server: Server
 
-    private var domainList: Set<String> = []
+    private var domainList: [String] = []
     private var listTemplate: CPListTemplate?
 
     weak var interfaceController: CPInterfaceController?
@@ -48,11 +48,10 @@ class DomainsListTemplate {
 
     func updateSections() {
         var items: [CPListItem] = []
-        var domains = Set(entitiesCachedStates.value?.all.map(\.domain) ?? [])
-        domains = domains.filter { Domain(rawValue: $0)?.isCarPlaySupported ?? false }
-        domains = Set(domains.sorted(by: { d1, d2 in
+        let entityDomains = Set(entitiesCachedStates.value?.all.map(\.domain) ?? [])
+        let domains = entityDomains.filter { Domain(rawValue: $0)?.isCarPlaySupported ?? false }.sorted(by: { d1, d2 in
             d1 < d2
-        }))
+        })
 
         domains.forEach { domain in
             guard let domain = Domain(rawValue: domain) else { return }
