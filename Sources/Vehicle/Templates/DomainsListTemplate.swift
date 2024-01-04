@@ -78,9 +78,7 @@ class DomainsListTemplate {
         let entitiesGridTemplate = EntitiesListTemplate(
             domain: domain,
             server: server,
-            entitiesCachedStates: entitiesCachedStates.map({ cachedStates in
-                cachedStates.all.filter({ $0.domain == domain })
-            })
+            entitiesCachedStates: entitiesCachedStates
         )
 
         interfaceController?.pushTemplate(

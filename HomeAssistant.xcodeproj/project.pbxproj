@@ -4065,16 +4065,8 @@
 			isa = PBXGroup;
 			children = (
 				FD3BC66A29BA00B100B19FBE /* Templates */,
-				FD3BC66529BA001A00B19FBE /* Extensions */,
 			);
 			path = Vehicle;
-			sourceTree = "<group>";
-		};
-		FD3BC66529BA001A00B19FBE /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		FD3BC66A29BA00B100B19FBE /* Templates */ = {
