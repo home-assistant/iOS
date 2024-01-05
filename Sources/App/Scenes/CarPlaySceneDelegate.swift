@@ -83,6 +83,8 @@ class CarPlaySceneDelegate: UIResponder {
 
         interfaceController.setRootTemplate(domainsListTemplate.template, animated: true, completion: nil)
         domainsListTemplate.updateSections()
+
+        interfaceController.delegate = self
     }
 
     private func setServerListTemplate() {
@@ -201,5 +203,14 @@ extension CarPlaySceneDelegate: ServerObserver {
             return
         }
         setServer(server: server)
+    }
+}
+
+// MARK: - CPInterfaceControllerDelegate
+
+@available(iOS 16.0, *)
+extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
+    func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
+        domainsListTemplate?.templateWillDisappear(template: aTemplate)
     }
 }

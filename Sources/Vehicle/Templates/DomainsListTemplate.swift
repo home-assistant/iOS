@@ -3,26 +3,24 @@ import Foundation
 import HAKit
 import Shared
 
+protocol CarPlayTemplateProvider {
+    var template: CPTemplate { get set }
+    func templateWillDisappear(template: CPTemplate)
+}
+
 @available(iOS 16.0, *)
-class DomainsListTemplate {
+class DomainsListTemplate: CarPlayTemplateProvider {
     private let title: String
     private let entitiesCachedStates: HACache<HACachedStates>
     private let serverButtonHandler: CPBarButtonHandler?
     private let server: Server
 
     private var domainList: [String] = []
-    private var listTemplate: CPListTemplate?
+    private var childTemplateProvider: CarPlayTemplateProvider?
 
     weak var interfaceController: CPInterfaceController?
 
-    var template: CPListTemplate {
-        guard let listTemplate = listTemplate else {
-            listTemplate = CPListTemplate(title: title, sections: [])
-            listTemplate?.emptyViewSubtitleVariants = [L10n.Carplay.Labels.emptyDomainList]
-            return listTemplate!
-        }
-        return listTemplate
-    }
+    var template: CPTemplate
 
     init(
         title: String,
@@ -34,16 +32,24 @@ class DomainsListTemplate {
         self.entitiesCachedStates = entities
         self.serverButtonHandler = serverButtonHandler
         self.server = server
+
+        let listTemplate = CPListTemplate(title: title, sections: [])
+        listTemplate.emptyViewSubtitleVariants = [L10n.Carplay.Labels.emptyDomainList]
+        self.template = listTemplate
     }
 
     func setServerListButton(show: Bool) {
         if show {
-            listTemplate?
+            (template as? CPListTemplate)?
                 .trailingNavigationBarButtons =
                 [CPBarButton(title: L10n.Carplay.Labels.servers, handler: serverButtonHandler)]
         } else {
-            listTemplate?.trailingNavigationBarButtons.removeAll()
+            (template as? CPListTemplate)?.trailingNavigationBarButtons.removeAll()
         }
+    }
+
+    func templateWillDisappear(template: CPTemplate) {
+        childTemplateProvider?.templateWillDisappear(template: template)
     }
 
     func updateSections() {
@@ -71,7 +77,7 @@ class DomainsListTemplate {
         }
 
         domainList = domains
-        listTemplate?.updateSections([CPListSection(items: items)])
+        (template as? CPListTemplate)?.updateSections([CPListSection(items: items)])
     }
 
     private func listItemHandler(domain: String) {
@@ -82,11 +88,11 @@ class DomainsListTemplate {
             entitiesCachedStates: entitiesCachedStates
         )
 
+        childTemplateProvider = entitiesListTemplate
         interfaceController?.pushTemplate(
             entitiesListTemplate.getTemplate(),
             animated: true,
             completion: nil
         )
-        entitiesListTemplate.interfaceController = interfaceController
     }
 }
