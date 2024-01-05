@@ -76,8 +76,22 @@ class DomainsListTemplate: CarPlayTemplateProvider {
     }
 
     func templateWillDisappear(template: CPTemplate) {
-        childTemplateProvider?.templateWillDisappear(template: template)
+        if self.template == template {
+            entitiesSubscriptionToken?.cancel()
+        } else {
+            childTemplateProvider?.templateWillDisappear(template: template)
+        }
     }
+
+    func templateWillAppear(template: CPTemplate) {
+        if self.template == template {
+            entitiesSubscriptionToken = entitiesCachedStates.subscribe { [weak self] _, _ in
+                self?.updateSections()
+            }
+        }
+    }
+
+    var entitiesSubscriptionToken: HACancellable?
 
     private func listItemHandler(domain: String) {
         let entitiesListTemplate = EntitiesListTemplate(

@@ -208,9 +208,14 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
         domainsListTemplate?.templateWillDisappear(template: aTemplate)
     }
+
+    func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
+        domainsListTemplate?.templateWillAppear(template: aTemplate)
+    }
 }
 
 protocol CarPlayTemplateProvider {
     var template: CPTemplate { get set }
     func templateWillDisappear(template: CPTemplate)
+    func templateWillAppear(template: CPTemplate)
 }

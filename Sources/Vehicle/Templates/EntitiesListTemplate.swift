@@ -180,4 +180,6 @@ final class EntitiesListTemplate: CarPlayTemplateProvider {
             entitiesSubscriptionToken?.cancel()
         }
     }
+
+    func templateWillAppear(template: CPTemplate) {}
 }
