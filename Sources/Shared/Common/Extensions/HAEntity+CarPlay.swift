@@ -51,65 +51,26 @@ public extension HAEntity {
         if let icon = attributes.icon?.normalizingIconString {
             image = MaterialDesignIcons(named: icon)
         } else {
-            guard let compareState = Domain.State(rawValue: state) else { return nil }
             guard let domain = Domain(rawValue: domain) else { return nil }
             switch domain {
             case .button:
-                guard let deviceClass = attributes.dictionary["device_class"] as? String else { break }
-                if deviceClass == "restart" {
-                    image = MaterialDesignIcons.restartIcon
-                } else if deviceClass == "update" {
-                    image = MaterialDesignIcons.packageUpIcon
-                } else {
-                    image = MaterialDesignIcons.gestureTapButtonIcon
-                }
+                image = getButtonIcon()
             case .cover:
                 image = getCoverIcon()
             case .inputBoolean:
-                if !entityId.hasSuffix(".ha_ios_placeholder") {
-                    if compareState == .on {
-                        image = MaterialDesignIcons.checkCircleOutlineIcon
-                    } else {
-                        image = MaterialDesignIcons.closeCircleOutlineIcon
-                    }
-                } else {
-                    image = MaterialDesignIcons.toggleSwitchOutlineIcon
-                }
+                image = getInputBooleanIcon()
             case .inputButton:
                 image = MaterialDesignIcons.gestureTapButtonIcon
             case .light:
                 image = MaterialDesignIcons.lightbulbIcon
             case .lock:
-                switch compareState {
-                case .unlocked:
-                    image = MaterialDesignIcons.lockOpenIcon
-                case .jammed:
-                    image = MaterialDesignIcons.lockAlertIcon
-                case .locking, .unlocking:
-                    image = MaterialDesignIcons.lockClockIcon
-                default:
-                    image = MaterialDesignIcons.lockIcon
-                }
+                image = getLockIcon()
             case .scene:
                 image = MaterialDesignIcons.paletteOutlineIcon
             case .script:
                 image = MaterialDesignIcons.scriptTextOutlineIcon
             case .switch:
-                if !entityId.hasSuffix(".ha_ios_placeholder") {
-                    let deviceClass = attributes.dictionary["device_class"] as? String
-                    switch deviceClass {
-                    case "outlet":
-                        image = compareState == .on ? MaterialDesignIcons.powerPlugIcon : MaterialDesignIcons
-                            .powerPlugOffIcon
-                    case "switch":
-                        image = compareState == .on ? MaterialDesignIcons.toggleSwitchIcon : MaterialDesignIcons
-                            .toggleSwitchOffIcon
-                    default:
-                        image = MaterialDesignIcons.flashIcon
-                    }
-                } else {
-                    image = MaterialDesignIcons.lightSwitchIcon
-                }
+                image = getSwitchIcon()
             }
         }
 
@@ -122,6 +83,62 @@ public extension HAEntity {
         }
 
         return image.image(ofSize: size, color: tint)
+    }
+
+    private func getInputBooleanIcon() -> MaterialDesignIcons {
+        if !entityId.hasSuffix(".ha_ios_placeholder"), let compareState = Domain.State(rawValue: state) {
+            if compareState == .on {
+                return MaterialDesignIcons.checkCircleOutlineIcon
+            } else {
+                return MaterialDesignIcons.closeCircleOutlineIcon
+            }
+        } else {
+            return MaterialDesignIcons.toggleSwitchOutlineIcon
+        }
+    }
+
+    private func getButtonIcon() -> MaterialDesignIcons {
+        guard let deviceClass = attributes.dictionary["device_class"] as? String else { return MaterialDesignIcons.gestureTapButtonIcon }
+        if deviceClass == "restart" {
+            return MaterialDesignIcons.restartIcon
+        } else if deviceClass == "update" {
+            return MaterialDesignIcons.packageUpIcon
+        } else {
+            return MaterialDesignIcons.gestureTapButtonIcon
+        }
+    }
+
+    private func getLockIcon() -> MaterialDesignIcons {
+        guard let compareState = Domain.State(rawValue: state) else { return MaterialDesignIcons.lockIcon }
+        switch compareState {
+        case .unlocked:
+            return MaterialDesignIcons.lockOpenIcon
+        case .jammed:
+            return MaterialDesignIcons.lockAlertIcon
+        case .locking, .unlocking:
+            return MaterialDesignIcons.lockClockIcon
+        default:
+            return MaterialDesignIcons.lockIcon
+        }
+    }
+
+    private func getSwitchIcon() -> MaterialDesignIcons {
+        guard let compareState = Domain.State(rawValue: state) else { return MaterialDesignIcons.lightSwitchIcon }
+        if !entityId.hasSuffix(".ha_ios_placeholder") {
+            let deviceClass = attributes.dictionary["device_class"] as? String
+            switch deviceClass {
+            case "outlet":
+                return compareState == .on ? MaterialDesignIcons.powerPlugIcon : MaterialDesignIcons
+                    .powerPlugOffIcon
+            case "switch":
+                return compareState == .on ? MaterialDesignIcons.toggleSwitchIcon : MaterialDesignIcons
+                    .toggleSwitchOffIcon
+            default:
+                return MaterialDesignIcons.flashIcon
+            }
+        } else {
+            return MaterialDesignIcons.lightSwitchIcon
+        }
     }
 
     private func getCoverIcon() -> MaterialDesignIcons {
