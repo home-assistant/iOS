@@ -5,7 +5,7 @@ import PromiseKit
 import Shared
 
 @available(iOS 16.0, *)
-final class EntitiesListTemplate {
+final class EntitiesListTemplate: CarPlayTemplateProvider {
     enum GridPage {
         case Next
         case Previous
@@ -15,28 +15,26 @@ final class EntitiesListTemplate {
         case unknown
     }
 
-    private let title: String
     private let entityIconSize: CGSize = .init(width: 64, height: 64)
-    private var stateSubscriptionToken: HACancellable?
     private let domain: String
     private var server: Server
     private let entitiesCachedStates: HACache<HACachedStates>
-    private var listTemplate: CPListTemplate?
     private var currentPage: Int = 0
 
     private var itemsPerPage: Int = CPListTemplate.maximumItemCount
     private var entitiesSubscriptionToken: HACancellable?
 
+    var template: CPTemplate
     weak var interfaceController: CPInterfaceController?
 
     init(title: String, domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
         self.domain = domain
         self.server = server
         self.entitiesCachedStates = entitiesCachedStates
-        self.title = title
+        self.template = CPListTemplate(title: title, sections: [])
     }
 
-    public func getTemplate() -> CPListTemplate {
+    public func getTemplate() -> CPTemplate {
         defer {
             updateListItems()
             entitiesSubscriptionToken = entitiesCachedStates.subscribe { [weak self] _, _ in
@@ -44,16 +42,11 @@ final class EntitiesListTemplate {
             }
         }
 
-        if let listTemplate = listTemplate {
-            return listTemplate
-        } else {
-            listTemplate = CPListTemplate(title: title, sections: [])
-            return listTemplate!
-        }
+        return template
     }
 
     private func updateListItems() {
-        guard let entities = entitiesCachedStates.value else { return }
+        guard let entities = entitiesCachedStates.value, let listTemplate = template as? CPListTemplate else { return }
 
         let entitiesFiltered = entities.all.filter { $0.domain == domain }
         let entitiesSorted = entitiesFiltered
@@ -100,14 +93,14 @@ final class EntitiesListTemplate {
 
         // Add pagination buttons if needed
         if entitiesSorted.count > itemsPerPage {
-            listTemplate?.trailingNavigationBarButtons = getPageButtons(
+            listTemplate.trailingNavigationBarButtons = getPageButtons(
                 endIndex: endIndex,
                 currentPage: currentPage,
                 totalCount: entitiesSorted.count
             )
         }
 
-        listTemplate?.updateSections([CPListSection(items: items)])
+        listTemplate.updateSections([CPListSection(items: items)])
     }
 
     private func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {
@@ -180,5 +173,11 @@ final class EntitiesListTemplate {
             currentPage -= 1
         }
         updateListItems()
+    }
+
+    func templateWillDisappear(template: CPTemplate) {
+        if self.template == template {
+            entitiesSubscriptionToken?.cancel()
+        }
     }
 }

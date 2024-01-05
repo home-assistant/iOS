@@ -13,12 +13,10 @@ public protocol EntitiesStateSubscription {
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entities: HACache<Set<HAEntity>>?
-    private var entitiesGridTemplate: EntitiesListTemplate?
     private var domainsListTemplate: DomainsListTemplate?
+    private var serverId: Identifier<Server>?
 
     private let carPlayPreferredServerKey = "carPlay-server"
-
-    private var serverId: Identifier<Server>?
 
     private func setServer(server: Server) {
         serverId = server.identifier
@@ -134,6 +132,7 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
         didConnect interfaceController: CPInterfaceController
     ) {
         self.interfaceController = interfaceController
+        self.interfaceController?.delegate = self
 
         if let serverIdentifier = prefs.string(forKey: carPlayPreferredServerKey),
            let selectedServer = Current.servers.server(forServerIdentifier: serverIdentifier) {
@@ -202,4 +201,16 @@ extension CarPlaySceneDelegate: ServerObserver {
         }
         setServer(server: server)
     }
+}
+
+@available(iOS 16.0, *)
+extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
+    func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
+        domainsListTemplate?.templateWillDisappear(template: aTemplate)
+    }
+}
+
+protocol CarPlayTemplateProvider {
+    var template: CPTemplate { get set }
+    func templateWillDisappear(template: CPTemplate)
 }
