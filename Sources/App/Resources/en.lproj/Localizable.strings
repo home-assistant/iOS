@@ -11,6 +11,7 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant on Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
+"about.logo.title" = "Home Assistant";
 "about.logo.tagline" = "Awaken Your Home";
 "about.review.title" = "Leave a review";
 "about.title" = "About";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "The server has rejected your credentials, and you must sign in again to continue.";
 "alerts.auth_required.title" = "You must sign in to continue";
 "alerts.confirm.cancel" = "Cancel";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "OK";
 "alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
 "alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
@@ -785,3 +787,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "yes_label" = "Yes";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.labels.servers" = "Servers";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";

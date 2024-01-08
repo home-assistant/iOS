@@ -511,9 +511,20 @@
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
 		42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
+		42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */; };
+		42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */; };
+		42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
+		42CE8FB32B46C46F00C707F9 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
+		42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
+		42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
+		42CE8FB92B46D67A00C707F9 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
+		42CE8FBA2B46D67A00C707F9 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
+		42CE8FBB2B46DB6200C707F9 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
+		42F1DA582B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
+		42F1DA592B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
 		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
 		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
@@ -851,6 +862,9 @@
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
+		FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */; };
+		FD3BC66C29BA00D600B19FBE /* EntitiesListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* EntitiesListTemplate.swift */; };
+		FD3BC66E29BA010A00B19FBE /* DomainsListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66D29BA010A00B19FBE /* DomainsListTemplate.swift */; };
 		FD5FEB304713F1E6BFE498DC /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE950A9D74B3E7FF5665CB38 /* Pods_iOS_Extensions_NotificationService.framework */; };
 /* End PBXBuildFile section */
 
@@ -1610,6 +1624,9 @@
 		42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorThreadClientService.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
+		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
+		42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+Values.swift"; sourceTree = "<group>"; };
+		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
 		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
 		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
 		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
@@ -1621,6 +1638,7 @@
 		42DD84372B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
+		42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
 		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
@@ -2045,6 +2063,10 @@
 		F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
 		F3E55AA06795782F04D0B261 /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
 		F534C18A6FD4884F258341C9 /* Pods-iOS-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
+		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
+		FD3BC66B29BA00D600B19FBE /* EntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitiesListTemplate.swift; sourceTree = "<group>"; };
+		FD3BC66D29BA010A00B19FBE /* DomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListTemplate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2243,6 +2265,7 @@
 		1115018C2528411200DCFA94 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				FD3BC66429BA000A00B19FBE /* Vehicle */,
 				B657A8E81CA646EB00121384 /* App */,
 				111501A72528412C00DCFA94 /* Extensions */,
 				11DE9D8425B6103C0081C0ED /* Launcher */,
@@ -2847,6 +2870,7 @@
 				11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */,
 				11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */,
 				118261F424F8C7C1000795C6 /* SceneManager.swift */,
+				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -3018,12 +3042,28 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		42CE8FAB2B46C11E00C707F9 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				42CE8FAC2B46C12C00C707F9 /* Domain.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
 		42DD84172B14D83400936F16 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		42F1DA562B46FDC5002729BC /* CarPlay */ = {
+			isa = PBXGroup;
+			children = (
+				42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */,
+			);
+			path = CarPlay;
 			sourceTree = "<group>";
 		};
 		42F5CAB72B10AD8C00409816 /* Tests */ = {
@@ -3625,6 +3665,8 @@
 			isa = PBXGroup;
 			children = (
 				426740A42B17348700C1DD73 /* Assets */,
+				42F1DA562B46FDC5002729BC /* CarPlay */,
+				42CE8FAB2B46C11E00C707F9 /* Domain */,
 				42CA28AC2B101D320093B31A /* DesignSystem */,
 				11B38EE0275C545C00205C7B /* Intents */,
 				D014EEAA212928EC008EA6F5 /* API */,
@@ -3694,6 +3736,7 @@
 		D0A6367320DBE91300E5C49B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */,
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
 				114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */,
@@ -3803,6 +3846,8 @@
 				42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */,
 				11EE9B4524C4E01500404AF8 /* SharedPlist.swift */,
 				D0EEF31F214DE3B300D1D360 /* Strings.swift */,
+				42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */,
+				42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */,
 			);
 			path = Swiftgen;
 			sourceTree = "<group>";
@@ -3852,6 +3897,23 @@
 				1128FF3B297F49D900BAAFD9 /* Locale+IntentLanguage.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		FD3BC66429BA000A00B19FBE /* Vehicle */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66A29BA00B100B19FBE /* Templates */,
+			);
+			path = Vehicle;
+			sourceTree = "<group>";
+		};
+		FD3BC66A29BA00B100B19FBE /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66B29BA00D600B19FBE /* EntitiesListTemplate.swift */,
+				FD3BC66D29BA010A00B19FBE /* DomainsListTemplate.swift */,
+			);
+			path = Templates;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -5437,13 +5499,16 @@
 				1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */,
+				FD3BC66C29BA00D600B19FBE /* EntitiesListTemplate.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
+				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
+				FD3BC66E29BA010A00B19FBE /* DomainsListTemplate.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
@@ -5629,11 +5694,13 @@
 				110ED59025A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
+				42F1DA592B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
 				11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				11AF4D1D249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
+				42CE8FBA2B46D67A00C707F9 /* HAEntity+CarPlay.swift in Sources */,
 				B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */,
 				11AF4D26249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
 				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
@@ -5646,6 +5713,7 @@
 				11169BC6262BE45F005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
+				42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -5705,6 +5773,7 @@
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
+				42CE8FBB2B46DB6200C707F9 /* Assets.swift in Sources */,
 				11B38EF4275C54A300205C7B /* WidgetActionsIntentHandler.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */,
@@ -5733,6 +5802,7 @@
 				B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */,
 				491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11B38EF2275C54A300205C7B /* CallServiceIntentHandler.swift in Sources */,
+				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
@@ -5757,6 +5827,7 @@
 				1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
 				118261F824F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */,
 				11C8E8AD24F36535003E7F89 /* DeviceWrapper.swift in Sources */,
+				42CE8FB32B46C46F00C707F9 /* Domain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5796,6 +5867,7 @@
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */,
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
@@ -5814,6 +5886,7 @@
 				42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */,
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
+				42CE8FB92B46D67A00C707F9 /* HAEntity+CarPlay.swift in Sources */,
 				11B38EED275C54A200205C7B /* RenderTemplateIntentHandler.swift in Sources */,
 				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
@@ -5833,6 +5906,7 @@
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
+				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
@@ -5915,6 +5989,7 @@
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				1121CD4C271295AD0071C2AA /* Style.swift in Sources */,
 				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
+				42F1DA582B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */,
 				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
@@ -5933,6 +6008,7 @@
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
+				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,

@@ -38,6 +38,14 @@ public class LocalizedManager {
         return result
     }
 
+    public func core(_ key: String) -> String? {
+        let result = string(key, "Core")
+        guard result != key else {
+            return nil
+        }
+        return result
+    }
+
     public func string(_ key: String, _ table: String) -> String {
         let defaultValue = bundle.localizedString(forKey: key, value: nil, table: table)
         let request = StringProviderRequest(key: key, table: table, defaultValue: defaultValue)
