@@ -525,6 +525,8 @@
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
 		42F1DA582B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
 		42F1DA592B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
+		42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */; };
+		42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */; };
 		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
 		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
@@ -1644,6 +1646,8 @@
 		42F1DA662B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42F1DA672B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Localizable.strings; sourceTree = "<group>"; };
 		42F1DA692B4DA9F9002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Intents.strings; sourceTree = "<group>"; };
+		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
+		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
 		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
@@ -2876,6 +2880,8 @@
 				11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */,
 				118261F424F8C7C1000795C6 /* SceneManager.swift */,
 				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
+				42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */,
+				42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -5545,6 +5551,7 @@
 				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
 				1185DF96271FBB9800ED7D9A /* OnboardingAuthLogin.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
+				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
@@ -5583,6 +5590,7 @@
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
+				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
