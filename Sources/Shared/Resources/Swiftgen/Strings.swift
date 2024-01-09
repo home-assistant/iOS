@@ -233,6 +233,13 @@ public enum L10n {
     }
   }
 
+  public enum CarPlay {
+    public enum NoActions {
+      /// Open iOS Companion App to create actions for CarPlay.
+      public static var title: String { return L10n.tr("Localizable", "carPlay.no_actions.title") }
+    }
+  }
+
   public enum Carplay {
     public enum Labels {
       /// Already added
@@ -241,6 +248,8 @@ public enum L10n {
       public static var emptyDomainList: String { return L10n.tr("Localizable", "carplay.labels.empty_domain_list") }
       /// No servers available. Add a server in the app.
       public static var noServersAvailable: String { return L10n.tr("Localizable", "carplay.labels.no_servers_available") }
+      /// Select server
+      public static var selectServer: String { return L10n.tr("Localizable", "carplay.labels.select_server") }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "carplay.labels.servers") }
     }
@@ -258,6 +267,12 @@ public enum L10n {
         public static var next: String { return L10n.tr("Localizable", "carplay.navigation.button.next") }
         /// Previous
         public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
+      }
+      public enum Tab {
+        /// Actions
+        public static var actions: String { return L10n.tr("Localizable", "carplay.navigation.tab.actions") }
+        /// View all
+        public static var domains: String { return L10n.tr("Localizable", "carplay.navigation.tab.domains") }
       }
     }
     public enum Unlock {

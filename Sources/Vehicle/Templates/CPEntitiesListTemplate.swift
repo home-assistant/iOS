@@ -5,7 +5,7 @@ import PromiseKit
 import Shared
 
 @available(iOS 16.0, *)
-final class EntitiesListTemplate: CarPlayTemplateProvider {
+final class CPEntitiesListTemplate: CarPlayTemplateProvider {
     enum GridPage {
         case Next
         case Previous
@@ -36,16 +36,16 @@ final class EntitiesListTemplate: CarPlayTemplateProvider {
 
     public func getTemplate() -> CPTemplate {
         defer {
-            updateListItems()
+            update()
             entitiesSubscriptionToken = entitiesCachedStates.subscribe { [weak self] _, _ in
-                self?.updateListItems()
+                self?.update()
             }
         }
 
         return template
     }
 
-    private func updateListItems() {
+    func update() {
         guard let entities = entitiesCachedStates.value, let listTemplate = template as? CPListTemplate else { return }
 
         let entitiesFiltered = entities.all.filter { $0.domain == domain }
@@ -172,7 +172,7 @@ final class EntitiesListTemplate: CarPlayTemplateProvider {
         case .Previous:
             currentPage -= 1
         }
-        updateListItems()
+        update()
     }
 
     func templateWillDisappear(template: CPTemplate) {

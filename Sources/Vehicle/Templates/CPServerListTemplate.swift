@@ -1,0 +1,99 @@
+import CarPlay
+import Foundation
+import HAKit
+import Shared
+
+@available(iOS 16.0, *)
+final class CPServersListTemplate: CarPlayTemplateProvider {
+    private var serverId: Identifier<Server>?
+    private(set) static var carPlayPreferredServerKey = "carPlay-server"
+
+    var template: CPTemplate
+    weak var interfaceController: CPInterfaceController?
+
+    init() {
+        self.template = CPTemplate()
+    }
+
+    func templateWillDisappear(template: CPTemplate) {
+        Current.servers.remove(observer: self)
+    }
+
+    func templateWillAppear(template: CPTemplate) {
+        /// Observer for servers list changes
+        Current.servers.add(observer: self)
+        if template == self.template {
+            update()
+        }
+    }
+
+    @objc func update() {
+        template = serverListTemplate()
+        template.tabTitle = L10n.Carplay.Labels.servers
+        template.tabImage = MaterialDesignIcons.cogIcon.image(ofSize: .init(width: 64, height: 64), color: nil)
+    }
+
+    private func serverListTemplate() -> CPTemplate {
+        var serverList: [CPListItem] = []
+        for server in Current.servers.all {
+            let serverItem = CPListItem(
+                text: server.info.name,
+                detailText: "\(server.info.connection.activeURLType.description) - \(server.info.connection.activeURL().absoluteString)"
+            )
+            serverItem.handler = { [weak self] _, completion in
+                self?.setServer(server: server)
+                if let templates = self?.interfaceController?.templates, templates.count > 1 {
+                    self?.interfaceController?.popTemplate(animated: true, completion: nil)
+                }
+                completion()
+            }
+            serverItem.accessoryType = serverId == server.identifier ? .cloud : .none
+            serverList.append(serverItem)
+        }
+        let section = CPListSection(items: serverList, header: L10n.Carplay.Labels.selectServer, sectionIndexTitle: nil)
+        return CPListTemplate(title: L10n.Carplay.Labels.servers, sections: [section])
+    }
+
+    private func setServer(server: Server) {
+        serverId = server.identifier
+        prefs.set(server.identifier.rawValue, forKey: CPServersListTemplate.carPlayPreferredServerKey)
+    }
+
+    /// Get server for ID or first server available
+    private func getServer(id: Identifier<Server>? = nil) -> Server? {
+        guard let id = id else {
+            return Current.servers.all.first
+        }
+        return Current.servers.server(for: id)
+    }
+
+    private func showNoServerAlert() {
+        guard interfaceController?.presentedTemplate == nil else {
+            return
+        }
+
+        let alertTemplate = CPNoServerAlert()
+        alertTemplate.interfaceController = interfaceController
+        alertTemplate.present()
+    }
+}
+
+@available(iOS 16.0, *)
+extension CPServersListTemplate: ServerObserver {
+    func serversDidChange(_ serverManager: ServerManager) {
+        guard let server = getServer(id: serverId) else {
+            serverId = nil
+
+            if let server = getServer() {
+                setServer(server: server)
+            } else if interfaceController?.presentedTemplate != nil {
+                interfaceController?.dismissTemplate(animated: true, completion: nil)
+            } else {
+                showNoServerAlert()
+            }
+
+            return
+        }
+        setServer(server: server)
+    }
+}
