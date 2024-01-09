@@ -181,6 +181,7 @@ lane :update_strings do
   )
 
   lang_frontend_to_ios = {
+    'bg' => 'bg',
     'ca' => 'ca-ES',
     'cs' => 'cs',
     'cy' => 'cy-GB',
