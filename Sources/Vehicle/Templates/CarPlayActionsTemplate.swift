@@ -5,7 +5,6 @@ import Shared
 
 @available(iOS 15.0, *)
 final class CarPlayActionsTemplate: CarPlayTemplateProvider {
-    private var listTemplate: CPListTemplate?
     private var actionsToken: NotificationToken?
     private let actions: Results<Action>
 
@@ -42,7 +41,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     }
 
     func update() {
-        template = list(for: actions)
+        updateList(for: actions)
         template.tabTitle = L10n.Carplay.Navigation.Tab.actions
         template.tabImage = MaterialDesignIcons.lightningBoltIcon.image(
             ofSize: .init(width: 64, height: 64),
@@ -51,27 +50,27 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
         template.tabSystemItem = .more
     }
 
-    func list(for actions: Results<Action>) -> CPTemplate {
+    func updateList(for actions: Results<Action>) {
+        actionsToken?.invalidate()
         actionsToken = actions.observe { [weak self] _ in
             self?.updateActions(actions: actions)
         }
 
-        if actions.isEmpty {
-            return noActionsView
+        if let listTemplate = template as? CPListTemplate {
+            listTemplate.updateSections([section(actions: actions)])
         } else {
-            listTemplate = CPListTemplate(
+            template = CPListTemplate(
                 title: L10n.SettingsDetails.Actions.title, sections: [
                     section(actions: actions),
                 ]
             )
-
-            guard let listTemplate else { return noActionsView }
-            return listTemplate
         }
+
+        (template as? CPListTemplate)?.emptyViewTitleVariants = [L10n.SettingsDetails.Actions.title]
     }
 
     private func updateActions(actions: Results<Action>) {
-        listTemplate?.updateSections([
+        (template as? CPListTemplate)?.updateSections([
             section(actions: actions),
         ])
     }
