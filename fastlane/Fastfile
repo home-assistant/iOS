@@ -318,7 +318,7 @@ lane :push_strings do
   source_directories.each do |directory|
     puts "Enumerating #{directory}..."
     Dir.each_child(directory) do |file|
-      next if file == 'Frontend.strings'
+      next if ['Frontend.strings', 'Core.strings'].include?(file)
 
       puts "Uploading file #{file}"
       sh(
