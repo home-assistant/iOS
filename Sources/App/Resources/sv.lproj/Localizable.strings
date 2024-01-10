@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant på Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Väck ditt hem";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Skriv en recension";
 "about.title" = "Om";
 "about.website.title" = "Webbplats";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "Servern har avvisat dina autentiseringsuppgifter och du måste logga in igen för att fortsätta.";
 "alerts.auth_required.title" = "Du måste logga in för att fortsätta";
 "alerts.confirm.cancel" = "Avbryt";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "OK";
 "alerts.deprecations.notification_category.message" = "Du måste byta till åtgärder som definierats i själva notisen före %1$@.";
 "alerts.deprecations.notification_category.title" = "Notiskategorier är utfasade";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "Efter noggrant övervägande kommer vi att avbryta supporten för iOS 12, 13 och 14 i våra kommande uppdateringar.";
 "announcement.drop_support.title" = "Viktig uppdatering";
 "cancel_label" = "Avbryt";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Fördröjningsläge stöds inte för begärd noggrannhet.";
 "cl_error.description.deferred_canceled" = "Begäran om uppskjutna uppdateringar avbröts av din app eller av platshanteraren.";
 "cl_error.description.deferred_distance_filtered" = "Uppskjutet läge stöder inte distansfilter.";

@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant a Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Desperta la teva llar";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Deixa una ressenya";
 "about.title" = "Quant a";
 "about.website.title" = "Lloc web";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "El servidor ha rebutjat les vostres credencials i heu de tornar a iniciar la sessió per continuar.";
 "alerts.auth_required.title" = "Heu d'iniciar la sessió per continuar";
 "alerts.confirm.cancel" = "Cancel·lar";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "D'acord";
 "alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
 "alerts.deprecations.notification_category.title" = "Les categories de notificació estan obsoletes";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "Cancel·lar";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "El mode ajornat no es compatible amb l'exactitud sol·licitada.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
 "cl_error.description.deferred_distance_filtered" = "El mode ajornat no és compatible amb els filtres de distància.";
