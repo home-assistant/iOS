@@ -1,0 +1,12 @@
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
+"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
+"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
+"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSCameraUsageDescription" = "Take photos and send them to your Home Assistant server.";
+"NSCrossWebsiteTrackingUsageDescription" = "Optionally enable cross-website tracking if your configuration requires it.";
