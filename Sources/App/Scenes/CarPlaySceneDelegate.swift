@@ -13,7 +13,6 @@ public protocol EntitiesStateSubscription {
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entities: HACache<Set<HAEntity>>?
-    private let realm = Current.realm()
 
     private var domainsListTemplate: CarPlayTemplateProvider?
     private var serversListTemplate: CarPlayTemplateProvider?
@@ -39,7 +38,7 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func setupActionsTemplate() {
-        let actions = realm.objects(Action.self)
+        let actions = Current.realm().objects(Action.self)
             .sorted(byKeyPath: "Position")
             .filter("Scene == nil")
 

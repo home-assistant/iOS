@@ -526,7 +526,7 @@
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
 		42F1DA582B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
 		42F1DA592B46FDD8002729BC /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
-		42F1DA5F2B4D4B32002729BC /* CPServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CPServerListTemplate.swift */; };
+		42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */; };
 		42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */; };
 		42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */; };
 		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
@@ -1644,7 +1644,7 @@
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
 		42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
-		42F1DA5E2B4D4B32002729BC /* CPServerListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPServerListTemplate.swift; sourceTree = "<group>"; };
+		42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListTemplate.swift; sourceTree = "<group>"; };
 		42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayNoServerAlert.swift; sourceTree = "<group>"; };
 		42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTemplateProvider.swift; sourceTree = "<group>"; };
 		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
@@ -3921,7 +3921,7 @@
 				FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */,
 				FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */,
 				424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */,
-				42F1DA5E2B4D4B32002729BC /* CPServerListTemplate.swift */,
+				42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */,
 				42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */,
 				42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */,
 			);
@@ -5558,7 +5558,7 @@
 				424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
-				42F1DA5F2B4D4B32002729BC /* CPServerListTemplate.swift in Sources */,
+				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
 				42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,

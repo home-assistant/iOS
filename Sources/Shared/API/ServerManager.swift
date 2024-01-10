@@ -11,6 +11,7 @@ public protocol ServerObserver: AnyObject {
 public protocol ServerManager {
     var all: [Server] { get }
     func server(for identifier: Identifier<Server>) -> Server?
+    func server(for identifier: Identifier<Server>, fallback: Bool) -> Server?
 
     @discardableResult
     func add(identifier: Identifier<Server>, serverInfo: ServerInfo) -> Server
@@ -35,6 +36,10 @@ public extension ServerManager {
         } else {
             return nil
         }
+    }
+
+    func server(for identifier: Identifier<Server>, fallback: Bool) -> Server? {
+        server(forServerIdentifier: identifier.rawValue) ?? (fallback ? all.first : nil)
     }
 
     private var fallbackServer: Server? {

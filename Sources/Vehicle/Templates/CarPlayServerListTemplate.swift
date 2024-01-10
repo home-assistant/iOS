@@ -38,7 +38,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         for server in Current.servers.all {
             let serverItem = CPListItem(
                 text: server.info.name,
-                detailText: "\(server.info.connection.activeURLType.description) - \(server.info.connection.activeURL().absoluteString)"
+                detailText: nil
             )
             serverItem.handler = { [weak self] _, completion in
                 self?.setServer(server: server)
@@ -57,14 +57,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private func setServer(server: Server) {
         serverId = server.identifier
         prefs.set(server.identifier.rawValue, forKey: CarPlayServersListTemplate.carPlayPreferredServerKey)
-    }
-
-    /// Get server for ID or first server available
-    private func getServer(id: Identifier<Server>? = nil) -> Server? {
-        guard let id = id else {
-            return Current.servers.all.first
-        }
-        return Current.servers.server(for: id)
+        update()
     }
 
     private func showNoServerAlert() {
@@ -81,17 +74,12 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 @available(iOS 16.0, *)
 extension CarPlayServersListTemplate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        guard let server = getServer(id: serverId) else {
-            serverId = nil
-
-            if let server = getServer() {
-                setServer(server: server)
-            } else if interfaceController?.presentedTemplate != nil {
+        guard let serverId, let server = serverManager.server(for: serverId, fallback: true) else {
+            if interfaceController?.presentedTemplate != nil {
                 interfaceController?.dismissTemplate(animated: true, completion: nil)
             } else {
                 showNoServerAlert()
             }
-
             return
         }
         setServer(server: server)
