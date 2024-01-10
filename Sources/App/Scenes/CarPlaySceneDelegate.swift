@@ -17,6 +17,7 @@ class CarPlaySceneDelegate: UIResponder {
     private var domainsListTemplate: CarPlayTemplateProvider?
     private var serversListTemplate: CarPlayTemplateProvider?
     private var actionsListTemplate: CarPlayTemplateProvider?
+    private var areasZonesListTemplate: CarPlayTemplateProvider?
 
     @objc private func updateTemplates() {
         setupDomainListTemplate()
@@ -24,6 +25,7 @@ class CarPlaySceneDelegate: UIResponder {
         setupServerListTemplate()
         let templates: [CPTemplate] = [
             actionsListTemplate?.template,
+            areasZonesListTemplate?.template,
             domainsListTemplate?.template,
             serversListTemplate?.template,
         ].compactMap({ $0 })
@@ -35,6 +37,12 @@ class CarPlaySceneDelegate: UIResponder {
         domainsListTemplate = CarPlayDomainsListTemplate()
         domainsListTemplate?.interfaceController = interfaceController
         domainsListTemplate?.update()
+    }
+
+    private func setupAreasZonesListTemplate() {
+        areasZonesListTemplate = CarPlayAreasZonesTemplate()
+        areasZonesListTemplate?.interfaceController = interfaceController
+        areasZonesListTemplate?.update()
     }
 
     private func setupActionsTemplate() {

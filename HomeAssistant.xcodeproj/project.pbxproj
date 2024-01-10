@@ -529,6 +529,7 @@
 		42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */; };
 		42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */; };
 		42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */; };
+		42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */; };
 		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
 		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
@@ -1643,16 +1644,17 @@
 		42DD84372B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
+		42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
+		42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListTemplate.swift; sourceTree = "<group>"; };
+		42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayNoServerAlert.swift; sourceTree = "<group>"; };
+		42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTemplateProvider.swift; sourceTree = "<group>"; };
 		42F1DA642B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Core.strings; sourceTree = "<group>"; };
 		42F1DA652B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42F1DA662B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42F1DA672B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Localizable.strings; sourceTree = "<group>"; };
 		42F1DA692B4DA9F9002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Intents.strings; sourceTree = "<group>"; };
-    42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
-		42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListTemplate.swift; sourceTree = "<group>"; };
-		42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayNoServerAlert.swift; sourceTree = "<group>"; };
-		42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTemplateProvider.swift; sourceTree = "<group>"; };
-    42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
+		42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPaginatedListTemplate.swift; sourceTree = "<group>"; };
+		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -3929,6 +3931,7 @@
 				42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */,
 				42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */,
 				42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */,
+				42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -5510,6 +5513,7 @@
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
+				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,

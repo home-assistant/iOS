@@ -6,11 +6,6 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
-    enum GridPage {
-        case Next
-        case Previous
-    }
-
     enum CPEntityError: Error {
         case unknown
     }
@@ -27,11 +22,16 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     var template: CPTemplate
     weak var interfaceController: CPInterfaceController?
 
+    private let paginatedListTemplate: CarPlayPaginatedListTemplate
+
     init(title: String, domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
         self.domain = domain
         self.server = server
         self.entitiesCachedStates = entitiesCachedStates
-        self.template = CPListTemplate(title: title, sections: [])
+        self.template = CPTemplate()
+        self.paginatedListTemplate = CarPlayPaginatedListTemplate(title: title, items: [])
+
+        self.template = paginatedListTemplate.template
     }
 
     public func getTemplate() -> CPTemplate {
@@ -46,19 +46,15 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     }
 
     func update() {
-        guard let entities = entitiesCachedStates.value, let listTemplate = template as? CPListTemplate else { return }
+        guard let entities = entitiesCachedStates.value else { return }
 
         let entitiesFiltered = entities.all.filter { $0.domain == domain }
         let entitiesSorted = entitiesFiltered
             .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
-        let startIndex = currentPage * itemsPerPage
-        let endIndex = min(startIndex + itemsPerPage, entitiesSorted.count)
-        let entitiesToShow = Array(entitiesSorted[startIndex ..< endIndex])
-
         var items: [CPListItem] = []
 
-        entitiesToShow.forEach { entity in
+        entitiesSorted.forEach { entity in
             let item = CPListItem(
                 text: entity.attributes.friendlyName ?? entity.entityId,
                 detailText: entity.localizedState,
@@ -91,16 +87,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
             items.append(item)
         }
 
-        // Add pagination buttons if needed
-        if entitiesSorted.count > itemsPerPage {
-            listTemplate.trailingNavigationBarButtons = getPageButtons(
-                endIndex: endIndex,
-                currentPage: currentPage,
-                totalCount: entitiesSorted.count
-            )
-        }
-
-        listTemplate.updateSections([CPListSection(items: items)])
+        paginatedListTemplate.updateItems(items: items)
     }
 
     private func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {
@@ -124,55 +111,6 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         ])
 
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
-    }
-
-    private func getPageButtons(endIndex: Int, currentPage: Int, totalCount: Int) -> [CPBarButton] {
-        var barButtons: [CPBarButton] = []
-
-        guard let forwardImage = UIImage(systemName: "arrow.forward"),
-              let backwardImage = UIImage(systemName: "arrow.backward") else { return [] }
-
-        if endIndex < totalCount {
-            barButtons.append(CPBarButton(
-                image: forwardImage,
-                handler: { _ in
-                    self.changePage(to: .Next)
-                }
-            ))
-        } else {
-            barButtons
-                .append(CPBarButton(
-                    image: UIImage(size: forwardImage.size, color: UIColor.clear),
-                    handler: nil
-                ))
-        }
-
-        if currentPage > 0 {
-            barButtons.append(CPBarButton(
-                image: backwardImage,
-                handler: { _ in
-                    self.changePage(to: .Previous)
-                }
-            ))
-        } else {
-            barButtons
-                .append(CPBarButton(
-                    image: UIImage(size: backwardImage.size, color: UIColor.clear),
-                    handler: nil
-                ))
-        }
-
-        return barButtons
-    }
-
-    private func changePage(to: GridPage) {
-        switch to {
-        case .Next:
-            currentPage += 1
-        case .Previous:
-            currentPage -= 1
-        }
-        update()
     }
 
     func templateWillDisappear(template: CPTemplate) {
