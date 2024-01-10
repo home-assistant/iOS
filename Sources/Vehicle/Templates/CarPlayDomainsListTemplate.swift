@@ -4,7 +4,7 @@ import HAKit
 import Shared
 
 @available(iOS 16.0, *)
-class CPDomainsListTemplate: CarPlayTemplateProvider {
+class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     private var domainList: [String] = []
     private var childTemplateProvider: CarPlayTemplateProvider?
     private var entities: HACache<HACachedStates>?
@@ -27,7 +27,7 @@ class CPDomainsListTemplate: CarPlayTemplateProvider {
         }
 
         var server = Current.servers.all.first
-        if let serverIdentifier = prefs.string(forKey: CPServersListTemplate.carPlayPreferredServerKey),
+        if let serverIdentifier = prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey),
            let selectedServer = Current.servers.server(forServerIdentifier: serverIdentifier) {
             server = selectedServer
         }
@@ -83,7 +83,7 @@ class CPDomainsListTemplate: CarPlayTemplateProvider {
 
     private func listItemHandler(domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>?) {
         guard let entitiesCachedStates else { return }
-        let entitiesListTemplate = CPEntitiesListTemplate(
+        let entitiesListTemplate = CarPlayEntitiesListTemplate(
             title: Domain(rawValue: domain)?.localizedDescription ?? domain,
             domain: domain,
             server: server,

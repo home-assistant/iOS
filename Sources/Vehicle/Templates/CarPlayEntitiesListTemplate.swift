@@ -5,7 +5,7 @@ import PromiseKit
 import Shared
 
 @available(iOS 16.0, *)
-final class CPEntitiesListTemplate: CarPlayTemplateProvider {
+final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     enum GridPage {
         case Next
         case Previous

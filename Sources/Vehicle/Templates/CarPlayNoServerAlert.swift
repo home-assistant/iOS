@@ -2,7 +2,7 @@ import CarPlay
 import Foundation
 import Shared
 
-final class CPNoServerAlert {
+final class CarPlayNoServerAlert {
     weak var interfaceController: CPInterfaceController?
 
     func present() {

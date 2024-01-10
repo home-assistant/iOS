@@ -4,7 +4,7 @@ import RealmSwift
 import Shared
 
 @available(iOS 15.0, *)
-final class CPActionsTemplate: CarPlayTemplateProvider {
+final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private var listTemplate: CPListTemplate?
     private var actionsToken: NotificationToken?
     private let actions: Results<Action>

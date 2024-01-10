@@ -33,7 +33,7 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func setupDomainListTemplate() {
-        domainsListTemplate = CPDomainsListTemplate()
+        domainsListTemplate = CarPlayDomainsListTemplate()
         domainsListTemplate?.interfaceController = interfaceController
         domainsListTemplate?.update()
     }
@@ -43,13 +43,13 @@ class CarPlaySceneDelegate: UIResponder {
             .sorted(byKeyPath: "Position")
             .filter("Scene == nil")
 
-        let actionsListTemplate = CPActionsTemplate(actions: actions)
+        let actionsListTemplate = CarPlayActionsTemplate(actions: actions)
         self.actionsListTemplate = actionsListTemplate
         actionsListTemplate.update()
     }
 
     private func setupServerListTemplate() {
-        let serversListTemplate = CPServersListTemplate()
+        let serversListTemplate = CarPlayServersListTemplate()
         serversListTemplate.interfaceController = interfaceController
         serversListTemplate.update()
         self.serversListTemplate = serversListTemplate

@@ -4,7 +4,7 @@ import HAKit
 import Shared
 
 @available(iOS 16.0, *)
-final class CPServersListTemplate: CarPlayTemplateProvider {
+final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private var serverId: Identifier<Server>?
     private(set) static var carPlayPreferredServerKey = "carPlay-server"
 
@@ -56,7 +56,7 @@ final class CPServersListTemplate: CarPlayTemplateProvider {
 
     private func setServer(server: Server) {
         serverId = server.identifier
-        prefs.set(server.identifier.rawValue, forKey: CPServersListTemplate.carPlayPreferredServerKey)
+        prefs.set(server.identifier.rawValue, forKey: CarPlayServersListTemplate.carPlayPreferredServerKey)
     }
 
     /// Get server for ID or first server available
@@ -72,14 +72,14 @@ final class CPServersListTemplate: CarPlayTemplateProvider {
             return
         }
 
-        let alertTemplate = CPNoServerAlert()
+        let alertTemplate = CarPlayNoServerAlert()
         alertTemplate.interfaceController = interfaceController
         alertTemplate.present()
     }
 }
 
 @available(iOS 16.0, *)
-extension CPServersListTemplate: ServerObserver {
+extension CarPlayServersListTemplate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         guard let server = getServer(id: serverId) else {
             serverId = nil

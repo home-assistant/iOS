@@ -271,7 +271,7 @@ public enum L10n {
       public enum Tab {
         /// Actions
         public static var actions: String { return L10n.tr("Localizable", "carplay.navigation.tab.actions") }
-        /// View all
+        /// Control
         public static var domains: String { return L10n.tr("Localizable", "carplay.navigation.tab.domains") }
       }
     }
