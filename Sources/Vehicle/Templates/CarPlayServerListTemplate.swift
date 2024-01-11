@@ -12,7 +12,9 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     weak var interfaceController: CPInterfaceController?
 
     init() {
-        self.template = CPTemplate()
+        self.template = CPListTemplate(title: "", sections: [])
+        self.template.tabTitle = L10n.Carplay.Labels.servers
+        self.template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon(color: nil)
     }
 
     func templateWillDisappear(template: CPTemplate) {
@@ -28,12 +30,6 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     @objc func update() {
-        template = serverListTemplate()
-        template.tabTitle = L10n.Carplay.Labels.servers
-        template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon(color: nil)
-    }
-
-    private func serverListTemplate() -> CPTemplate {
         var serverList: [CPListItem] = []
         for server in Current.servers.all {
             let serverItem = CPListItem(
@@ -42,16 +38,13 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             )
             serverItem.handler = { [weak self] _, completion in
                 self?.setServer(server: server)
-                if let templates = self?.interfaceController?.templates, templates.count > 1 {
-                    self?.interfaceController?.popTemplate(animated: true, completion: nil)
-                }
                 completion()
             }
             serverItem.accessoryType = serverId == server.identifier ? .cloud : .none
             serverList.append(serverItem)
         }
         let section = CPListSection(items: serverList, header: L10n.Carplay.Labels.selectServer, sectionIndexTitle: nil)
-        return CPListTemplate(title: L10n.Carplay.Labels.servers, sections: [section])
+        (template as? CPListTemplate)?.updateSections([section]) 
     }
 
     private func setServer(server: Server) {

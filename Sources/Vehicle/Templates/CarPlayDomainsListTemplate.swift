@@ -19,6 +19,8 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         let listTemplate = CPListTemplate(title: L10n.About.Logo.title, sections: [])
         listTemplate.emptyViewSubtitleVariants = [L10n.Carplay.Labels.emptyDomainList]
         self.template = listTemplate
+        self.template.tabTitle = L10n.Carplay.Navigation.Tab.domains
+        self.template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon(color: nil)
     }
 
     func update() {
@@ -71,8 +73,6 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         }
 
         (template as? CPListTemplate)?.updateSections([CPListSection(items: items)])
-        template.tabTitle = L10n.Carplay.Navigation.Tab.domains
-        template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon(color: nil)
 
         guard entitiesSubscriptionToken == nil else { return }
         entitiesSubscriptionToken = entities?.subscribe { [weak self] _, _ in
@@ -105,7 +105,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
 
         childTemplateProvider = entitiesListTemplate
         interfaceController?.pushTemplate(
-            entitiesListTemplate.getTemplate(),
+            entitiesListTemplate.template,
             animated: true,
             completion: nil
         )

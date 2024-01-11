@@ -6,26 +6,17 @@ import Shared
 @available(iOS 15.0, *)
 final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private var actionsToken: NotificationToken?
-    private let actions: Results<Action>
-
-    private var noActionsView: CPInformationTemplate = {
-        CPInformationTemplate(
-            title: L10n.About.Logo.title,
-            layout: .leading,
-            items: [
-                .init(title: L10n.CarPlay.NoActions.title, detail: nil),
-            ],
-            actions: []
-        )
-    }()
+    private var actions: Results<Action>?
 
     var template: CPTemplate
 
     weak var interfaceController: CPInterfaceController?
 
-    init(actions: Results<Action>) {
-        self.actions = actions
-        self.template = CPTemplate()
+    init() {
+        self.template = CPListTemplate(title: L10n.Carplay.Navigation.Tab.actions, sections: [])
+        self.template.tabTitle = L10n.Carplay.Navigation.Tab.actions
+        self.template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon(color: nil)
+        self.template.tabSystemItem = .more
     }
 
     func templateWillDisappear(template: CPTemplate) {
@@ -41,13 +32,10 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     }
 
     func update() {
+        let actions = Current.realm().objects(Action.self)
+            .sorted(byKeyPath: "Position")
+            .filter("Scene == nil")
         updateList(for: actions)
-        template.tabTitle = L10n.Carplay.Navigation.Tab.actions
-        template.tabImage = MaterialDesignIcons.lightningBoltIcon.image(
-            ofSize: .init(width: 64, height: 64),
-            color: nil
-        )
-        template.tabSystemItem = .more
     }
 
     func updateList(for actions: Results<Action>) {
@@ -56,16 +44,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
             self?.updateActions(actions: actions)
         }
 
-        if let listTemplate = template as? CPListTemplate {
-            listTemplate.updateSections([section(actions: actions)])
-        } else {
-            template = CPListTemplate(
-                title: L10n.SettingsDetails.Actions.title, sections: [
-                    section(actions: actions),
-                ]
-            )
-        }
-
+        (template as? CPListTemplate)?.updateSections([section(actions: actions)])
         (template as? CPListTemplate)?.emptyViewTitleVariants = [L10n.SettingsDetails.Actions.title]
     }
 

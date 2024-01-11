@@ -14,53 +14,31 @@ class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entities: HACache<Set<HAEntity>>?
 
-    private var domainsListTemplate: CarPlayTemplateProvider?
-    private var serversListTemplate: CarPlayTemplateProvider?
-    private var actionsListTemplate: CarPlayTemplateProvider?
-    private var areasZonesListTemplate: CarPlayTemplateProvider?
+    private let domainsListTemplate: CarPlayTemplateProvider
+    private let serversListTemplate: CarPlayTemplateProvider
+    private let actionsListTemplate: CarPlayTemplateProvider
+    private let areasZonesListTemplate: CarPlayTemplateProvider
+
+    private var allTemplates: [CarPlayTemplateProvider] {
+        [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
+    }
+
+    override init() {
+        self.domainsListTemplate = CarPlayDomainsListTemplate()
+        self.serversListTemplate = CarPlayServersListTemplate()
+        self.actionsListTemplate = CarPlayActionsTemplate()
+        self.areasZonesListTemplate = CarPlayAreasZonesTemplate()
+        super.init()
+    }
+
+    private func setTemplates() {
+        let tabBar = CPTabBarTemplate(templates: allTemplates.map { $0.template })
+        interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
+        updateTemplates()
+    }
 
     @objc private func updateTemplates() {
-        setupDomainListTemplate()
-        setupAreasZonesListTemplate()
-        setupActionsTemplate()
-        setupServerListTemplate()
-        let templates: [CPTemplate] = [
-            actionsListTemplate?.template,
-            areasZonesListTemplate?.template,
-            domainsListTemplate?.template,
-            serversListTemplate?.template,
-        ].compactMap({ $0 })
-        let tabBar = CPTabBarTemplate(templates: templates)
-        interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
-    }
-
-    private func setupDomainListTemplate() {
-        domainsListTemplate = CarPlayDomainsListTemplate()
-        domainsListTemplate?.interfaceController = interfaceController
-        domainsListTemplate?.update()
-    }
-
-    private func setupAreasZonesListTemplate() {
-        areasZonesListTemplate = CarPlayAreasZonesTemplate()
-        areasZonesListTemplate?.interfaceController = interfaceController
-        areasZonesListTemplate?.update()
-    }
-
-    private func setupActionsTemplate() {
-        let actions = Current.realm().objects(Action.self)
-            .sorted(byKeyPath: "Position")
-            .filter("Scene == nil")
-
-        let actionsListTemplate = CarPlayActionsTemplate(actions: actions)
-        self.actionsListTemplate = actionsListTemplate
-        actionsListTemplate.update()
-    }
-
-    private func setupServerListTemplate() {
-        let serversListTemplate = CarPlayServersListTemplate()
-        serversListTemplate.interfaceController = interfaceController
-        serversListTemplate.update()
-        self.serversListTemplate = serversListTemplate
+        allTemplates.forEach { $0.update() }
     }
 
     private func setEmptyTemplate(interfaceController: CPInterfaceController?) {
@@ -98,7 +76,7 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
             object: nil
         )
 
-        updateTemplates()
+        setTemplates()
     }
 
     func templateApplicationScene(
@@ -113,14 +91,10 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
 @available(iOS 16.0, *)
 extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
-        domainsListTemplate?.templateWillDisappear(template: aTemplate)
-        actionsListTemplate?.templateWillDisappear(template: aTemplate)
-        serversListTemplate?.templateWillDisappear(template: aTemplate)
+        allTemplates.forEach {$0.templateWillDisappear(template: aTemplate)}
     }
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
-        domainsListTemplate?.templateWillAppear(template: aTemplate)
-        actionsListTemplate?.templateWillAppear(template: aTemplate)
-        serversListTemplate?.templateWillAppear(template: aTemplate)
+        allTemplates.forEach {$0.templateWillDisappear(template: aTemplate)}
     }
 }

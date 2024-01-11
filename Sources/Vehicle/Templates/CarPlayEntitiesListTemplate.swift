@@ -31,22 +31,25 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         self.domain = domain
         self.server = server
         self.entitiesCachedStates = entitiesCachedStates
-        self.template = CPTemplate()
         self.paginatedListTemplate = CarPlayPaginatedListTemplate(title: title, items: [])
-
         self.template = paginatedListTemplate.template
     }
 
-    public func getTemplate() -> CPTemplate {
-        defer {
+    func templateWillDisappear(template: CPTemplate) {
+        if self.template == template {
+            entitiesSubscriptionToken?.cancel()
+        }
+    }
+
+    func templateWillAppear(template: CPTemplate) {
+        if self.template == template {
             update()
             entitiesSubscriptionToken = entitiesCachedStates.subscribe { [weak self] _, _ in
                 self?.update()
             }
         }
-
-        return template
     }
+
 
     func update() {
         guard let entities = entitiesCachedStates.value else { return }
@@ -140,11 +143,4 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
     }
 
-    func templateWillDisappear(template: CPTemplate) {
-        if self.template == template {
-            entitiesSubscriptionToken?.cancel()
-        }
-    }
-
-    func templateWillAppear(template: CPTemplate) {}
 }
