@@ -50,7 +50,6 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         }
     }
 
-
     func update() {
         guard let entities = entitiesCachedStates.value else { return }
 
@@ -59,12 +58,12 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
             .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
         // Prevent unecessary update and UI glitch for non-touch screen CarPlay
-        let entitiesIds = entitiesSorted.map { $0.entityId }.sorted()
-        guard self.entitiesIdsCurrentlyInList != entitiesIds else {
+        let entitiesIds = entitiesSorted.map(\.entityId).sorted()
+        guard entitiesIdsCurrentlyInList != entitiesIds else {
             updateItemsState(entities: entitiesSorted)
             return
         }
-        self.entitiesIdsCurrentlyInList = entitiesIds
+        entitiesIdsCurrentlyInList = entitiesIds
 
         var items: [CPListItem] = []
 
@@ -142,5 +141,4 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
 
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
     }
-
 }

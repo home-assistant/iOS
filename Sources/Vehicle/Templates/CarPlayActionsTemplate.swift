@@ -14,9 +14,9 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
 
     init() {
         self.template = CPListTemplate(title: L10n.Carplay.Navigation.Tab.actions, sections: [])
-        self.template.tabTitle = L10n.Carplay.Navigation.Tab.actions
-        self.template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon(color: nil)
-        self.template.tabSystemItem = .more
+        template.tabTitle = L10n.Carplay.Navigation.Tab.actions
+        template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon(color: nil)
+        template.tabSystemItem = .more
     }
 
     func templateWillDisappear(template: CPTemplate) {

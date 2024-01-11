@@ -14,14 +14,14 @@ class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entities: HACache<Set<HAEntity>>?
 
-    private let domainsListTemplate: any CarPlayTemplateProvider
-    private let serversListTemplate: any CarPlayTemplateProvider
-    private let actionsListTemplate: any CarPlayTemplateProvider
-    private let areasZonesListTemplate: any CarPlayTemplateProvider
+    private var domainsListTemplate: any CarPlayTemplateProvider
+    private var serversListTemplate: any CarPlayTemplateProvider
+    private var actionsListTemplate: any CarPlayTemplateProvider
+    private var areasZonesListTemplate: any CarPlayTemplateProvider
 
-    private var allTemplates: [any CarPlayTemplateProvider] {
+    private lazy var allTemplates: [any CarPlayTemplateProvider] = {
         [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
-    }
+    }()
 
     override init() {
         self.domainsListTemplate = CarPlayDomainsListTemplate()
@@ -32,9 +32,17 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func setTemplates() {
-        let tabBar = CPTabBarTemplate(templates: allTemplates.map { $0.template })
+        let tabBar = CPTabBarTemplate(templates: allTemplates.map(\.template))
+        setInterfaceControllerForChildren()
         interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
         updateTemplates()
+    }
+
+    private func setInterfaceControllerForChildren() {
+        domainsListTemplate.interfaceController = interfaceController
+        serversListTemplate.interfaceController = interfaceController
+        actionsListTemplate.interfaceController = interfaceController
+        areasZonesListTemplate.interfaceController = interfaceController
     }
 
     @objc private func updateTemplates() {
@@ -91,10 +99,10 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
 @available(iOS 16.0, *)
 extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     func templateWillDisappear(_ aTemplate: CPTemplate, animated: Bool) {
-        allTemplates.forEach {$0.templateWillDisappear(template: aTemplate)}
+        allTemplates.forEach { $0.templateWillDisappear(template: aTemplate) }
     }
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
-        allTemplates.forEach {$0.templateWillAppear(template: aTemplate)}
+        allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
     }
 }
