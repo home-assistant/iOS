@@ -18,7 +18,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private var itemsPerPage: Int = CPListTemplate.maximumItemCount
     private var entitiesSubscriptionToken: HACancellable?
 
-    var template: CPTemplate
+    var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
 
     private let entityIconSize: CGSize = .init(width: 64, height: 64)

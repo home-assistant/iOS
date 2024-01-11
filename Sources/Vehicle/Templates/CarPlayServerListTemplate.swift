@@ -8,7 +8,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private var serverId: Identifier<Server>?
     private(set) static var carPlayPreferredServerKey = "carPlay-server"
 
-    var template: CPTemplate
+    var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
 
     init() {
@@ -44,7 +44,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             serverList.append(serverItem)
         }
         let section = CPListSection(items: serverList, header: L10n.Carplay.Labels.selectServer, sectionIndexTitle: nil)
-        (template as? CPListTemplate)?.updateSections([section]) 
+        template.updateSections([section]) 
     }
 
     private func setServer(server: Server) {

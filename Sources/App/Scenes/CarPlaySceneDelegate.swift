@@ -14,12 +14,12 @@ class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entities: HACache<Set<HAEntity>>?
 
-    private let domainsListTemplate: CarPlayTemplateProvider
-    private let serversListTemplate: CarPlayTemplateProvider
-    private let actionsListTemplate: CarPlayTemplateProvider
-    private let areasZonesListTemplate: CarPlayTemplateProvider
+    private let domainsListTemplate: any CarPlayTemplateProvider
+    private let serversListTemplate: any CarPlayTemplateProvider
+    private let actionsListTemplate: any CarPlayTemplateProvider
+    private let areasZonesListTemplate: any CarPlayTemplateProvider
 
-    private var allTemplates: [CarPlayTemplateProvider] {
+    private var allTemplates: [any CarPlayTemplateProvider] {
         [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
     }
 

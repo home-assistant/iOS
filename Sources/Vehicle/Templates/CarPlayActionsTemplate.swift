@@ -8,7 +8,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private var actionsToken: NotificationToken?
     private var actions: Results<Action>?
 
-    var template: CPTemplate
+    var template: CPListTemplate
 
     weak var interfaceController: CPInterfaceController?
 
@@ -44,12 +44,12 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
             self?.updateActions(actions: actions)
         }
 
-        (template as? CPListTemplate)?.updateSections([section(actions: actions)])
-        (template as? CPListTemplate)?.emptyViewTitleVariants = [L10n.SettingsDetails.Actions.title]
+        template.updateSections([section(actions: actions)])
+        template.emptyViewTitleVariants = [L10n.SettingsDetails.Actions.title]
     }
 
     private func updateActions(actions: Results<Action>) {
-        (template as? CPListTemplate)?.updateSections([
+        template.updateSections([
             section(actions: actions),
         ])
     }

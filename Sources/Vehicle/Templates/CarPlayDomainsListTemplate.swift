@@ -5,7 +5,7 @@ import Shared
 
 @available(iOS 16.0, *)
 class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
-    private var childTemplateProvider: CarPlayTemplateProvider?
+    private var childTemplateProvider: (any CarPlayTemplateProvider)?
     private var entities: HACache<HACachedStates>?
     private var entitiesSubscriptionToken: HACancellable?
 
@@ -13,7 +13,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     private var domainsCurrentlyInList: [Domain] = []
 
     weak var interfaceController: CPInterfaceController?
-    var template: CPTemplate
+    var template: CPListTemplate
 
     init() {
         let listTemplate = CPListTemplate(title: L10n.About.Logo.title, sections: [])
@@ -25,7 +25,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
 
     func update() {
         guard !Current.servers.all.isEmpty else {
-            (template as? CPListTemplate)?.updateSections([])
+            template.updateSections([])
             return
         }
 
@@ -72,7 +72,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
             items.append(listItem)
         }
 
-        (template as? CPListTemplate)?.updateSections([CPListSection(items: items)])
+        template.updateSections([CPListSection(items: items)])
 
         guard entitiesSubscriptionToken == nil else { return }
         entitiesSubscriptionToken = entities?.subscribe { [weak self] _, _ in
@@ -84,12 +84,14 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         if self.template == template {
             entitiesSubscriptionToken?.cancel()
         }
+        childTemplateProvider?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
         if template == self.template {
             update()
         }
+        childTemplateProvider?.templateWillAppear(template: template)
     }
 
     private func listItemHandler(domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>?) {
