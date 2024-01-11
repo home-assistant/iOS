@@ -3,11 +3,15 @@ import Foundation
 import HAKit
 import Shared
 
+@available(iOS 16.0, *)
 final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
-    var template: CPTemplate
+    var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
 
     private var request: HACancellable?
+    private var preferredServerId: String {
+        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    }
 
     init() {
         self.template = CPListTemplate(title: "", sections: [])
@@ -28,7 +32,11 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     }
 
     func update() {
-        let server = Current.servers.all.first!
+        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else {
+            template.updateSections([])
+            return
+        }
+
         let api = Current.api(for: server)
 
         request?.cancel()
@@ -37,6 +45,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
             case let .success(data):
                 self?.updateAreas(data)
             case let .failure(error):
+                self?.template.updateSections([])
                 Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
             }
         })
@@ -51,6 +60,6 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
             return item
         }
 
-        (template as? CPListTemplate)?.updateSections([.init(items: items)])
+        template.updateSections([.init(items: items)])
     }
 }
