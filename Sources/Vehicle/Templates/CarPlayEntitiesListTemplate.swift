@@ -25,7 +25,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let entityIdKey = "entityId"
 
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
-    private var entities: [HAEntity] = []
+    private var entitiesIdsCurrentlyInList: [String] = []
 
     init(title: String, domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
         self.domain = domain
@@ -55,12 +55,13 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         let entitiesSorted = entitiesFiltered
             .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
-        guard self.entities.count != entitiesSorted.count else {
+        // Prevent unecessary update and UI glitch for non-touch screen CarPlay
+        let entitiesIds = entitiesSorted.map { $0.entityId }.sorted()
+        guard self.entitiesIdsCurrentlyInList != entitiesIds else {
             updateItemsState(entities: entitiesSorted)
             return
         }
-
-        self.entities = entitiesSorted
+        self.entitiesIdsCurrentlyInList = entitiesIds
 
         var items: [CPListItem] = []
 
