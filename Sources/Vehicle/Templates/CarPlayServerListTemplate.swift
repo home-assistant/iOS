@@ -5,11 +5,14 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
-    private var serverId: Identifier<Server>?
     private(set) static var carPlayPreferredServerKey = "carPlay-server"
 
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
+
+    private var preferredServerId: String {
+        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    }
 
     init() {
         self.template = CPListTemplate(title: "", sections: [])
@@ -31,16 +34,16 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 
     @objc func update() {
         var serverList: [CPListItem] = []
-        for server in Current.servers.all {
+        for serverOption in Current.servers.all {
             let serverItem = CPListItem(
-                text: server.info.name,
+                text: serverOption.info.name,
                 detailText: nil
             )
             serverItem.handler = { [weak self] _, completion in
-                self?.setServer(server: server)
+                self?.setServer(server: serverOption)
                 completion()
             }
-            serverItem.accessoryType = serverId == server.identifier ? .cloud : .none
+            serverItem.accessoryType = preferredServerId == serverOption.identifier.rawValue ? .cloud : .none
             serverList.append(serverItem)
         }
         let section = CPListSection(items: serverList, header: L10n.Carplay.Labels.selectServer, sectionIndexTitle: nil)
@@ -48,7 +51,6 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func setServer(server: Server) {
-        serverId = server.identifier
         prefs.set(server.identifier.rawValue, forKey: CarPlayServersListTemplate.carPlayPreferredServerKey)
         update()
     }
@@ -67,7 +69,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 @available(iOS 16.0, *)
 extension CarPlayServersListTemplate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        guard let serverId, let server = serverManager.serverOrFirstIfAvailable(for: serverId) else {
+        guard let server = serverManager.serverOrFirstIfAvailable(for: Identifier<Server>(rawValue: preferredServerId)) else {
             if interfaceController?.presentedTemplate != nil {
                 interfaceController?.dismissTemplate(animated: true, completion: nil)
             } else {

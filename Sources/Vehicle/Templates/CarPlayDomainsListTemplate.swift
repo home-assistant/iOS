@@ -12,6 +12,10 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon.carPlayIcon()
     private var domainsCurrentlyInList: [Domain] = []
 
+    private var preferredServerId: String {
+        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    }
+
     weak var interfaceController: CPInterfaceController?
     var template: CPListTemplate
 
@@ -29,11 +33,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
             return
         }
 
-        var server = Current.servers.all.first
-        if let serverIdentifier = prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey),
-           let selectedServer = Current.servers.server(forServerIdentifier: serverIdentifier) {
-            server = selectedServer
-        }
+        var server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
 
         guard let server else { return }
         entities = Current.api(for: server).connection.caches.states

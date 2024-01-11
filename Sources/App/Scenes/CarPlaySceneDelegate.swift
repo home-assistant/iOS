@@ -95,6 +95,6 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     }
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
-        allTemplates.forEach {$0.templateWillDisappear(template: aTemplate)}
+        allTemplates.forEach {$0.templateWillAppear(template: aTemplate)}
     }
 }
