@@ -71,8 +71,27 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
             }
         }
 
-        let entitiesSorted = entitiesFiltered
-            .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
+        let entitiesSorted = entitiesFiltered.sorted(by: { e1, e2 in
+            let lowPriorityStates: Set<String> = [Domain.State.unknown.rawValue, Domain.State.unavailable.rawValue]
+            let state1 = e1.state
+            let state2 = e2.state
+
+            let deviceClassOrder: [HAEntity.DeviceClass] = [.garage, .gate]
+
+            if lowPriorityStates.contains(state1), !lowPriorityStates.contains(state2) {
+                return false
+            } else if lowPriorityStates.contains(state2), !lowPriorityStates.contains(state1) {
+                return true
+            } else {
+                if deviceClassOrder.contains(e1.deviceClass), !deviceClassOrder.contains(e2.deviceClass) {
+                    return true
+                } else if deviceClassOrder.contains(e2.deviceClass), !deviceClassOrder.contains(e1.deviceClass) {
+                    return false
+                }
+            }
+
+            return (e1.attributes.friendlyName ?? e1.entityId) < (e2.attributes.friendlyName ?? e2.entityId)
+        })
 
         // Prevent unecessary update and UI glitch for non-touch screen CarPlay
         let entitiesIds = entitiesSorted.map(\.entityId).sorted()
