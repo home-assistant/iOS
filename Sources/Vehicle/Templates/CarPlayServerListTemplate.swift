@@ -67,7 +67,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 @available(iOS 16.0, *)
 extension CarPlayServersListTemplate: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        guard let serverId, let server = serverManager.server(for: serverId, fallback: true) else {
+        guard let serverId, let server = serverManager.serverOrFirstIfAvailable(for: serverId) else {
             if interfaceController?.presentedTemplate != nil {
                 interfaceController?.dismissTemplate(animated: true, completion: nil)
             } else {
