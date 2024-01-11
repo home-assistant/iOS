@@ -57,24 +57,27 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
 
     private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) {
         let api = Current.api(for: server)
-        
+
         request?.cancel()
-        request = api.connection.send(HATypedRequest<[HAEntityAreaResponse]>.fetchEntitiesWithAreas(), completion: { [weak self] result in
-            switch result {
-            case let .success(data):
-                self?.updateAreas(areas, areasAndEntities: data, server: server)
-            case let .failure(error):
-                self?.template.updateSections([])
-                Current.Log.error(userInfo: ["Failed to retrieve areas and entities": error.localizedDescription])
+        request = api.connection.send(
+            HATypedRequest<[HAEntityAreaResponse]>.fetchEntitiesWithAreas(),
+            completion: { [weak self] result in
+                switch result {
+                case let .success(data):
+                    self?.updateAreas(areas, areasAndEntities: data, server: server)
+                case let .failure(error):
+                    self?.template.updateSections([])
+                    Current.Log.error(userInfo: ["Failed to retrieve areas and entities": error.localizedDescription])
+                }
             }
-        })
+        )
     }
 
     private func updateAreas(_ areas: [HAAreaResponse], areasAndEntities: [HAEntityAreaResponse], server: Server) {
         let items = areas.sorted(by: { a1, a2 in
             a1.name < a2.name
         }).map { area in
-            let entityIdsForAreaId = areasAndEntities.filter({ $0.areaId == area.areaId }).compactMap({ $0.entityId })
+            let entityIdsForAreaId = areasAndEntities.filter({ $0.areaId == area.areaId }).compactMap(\.entityId)
             let item = CPListItem(text: area.name, detailText: nil)
             item.accessoryType = .disclosureIndicator
             item.handler = { [weak self] _, completion in

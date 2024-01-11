@@ -10,6 +10,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         case domain(String)
         case areaId(entityIds: [String])
     }
+
     enum CPEntityError: Error {
         case unknown
     }
@@ -59,9 +60,9 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
 
         let entitiesFiltered = entities.all.filter { entity in
             switch filterType {
-            case .domain(let domain):
+            case let .domain(domain):
                 return entity.domain == domain
-            case .areaId(let entityIdsAllowed):
+            case let .areaId(entityIdsAllowed):
                 if let domain = Domain(rawValue: entity.domain) {
                     return entityIdsAllowed.contains(entity.entityId) && domain.isCarPlaySupported
                 } else {
