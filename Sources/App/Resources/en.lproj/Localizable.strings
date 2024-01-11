@@ -791,6 +791,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "carplay.navigation.button.previous" = "Previous";
 "carplay.navigation.tab.actions" = "Actions";
 "carplay.navigation.tab.domains" = "Control";
+"carplay.navigation.tab.areas" = "Areas";
 "carplay.labels.servers" = "Servers";
 "carplay.labels.select_server" = "Select server";
 "carplay.labels.empty_domain_list" = "No domains available";

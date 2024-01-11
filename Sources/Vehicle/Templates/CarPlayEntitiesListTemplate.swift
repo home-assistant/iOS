@@ -10,7 +10,6 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         case unknown
     }
 
-    private let entityIconSize: CGSize = .init(width: 64, height: 64)
     private let domain: String
     private var server: Server
     private let entitiesCachedStates: HACache<HACachedStates>
@@ -22,7 +21,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     var template: CPTemplate
     weak var interfaceController: CPInterfaceController?
 
+    private let entityIconSize: CGSize = .init(width: 64, height: 64)
+    private let entityIdKey = "entityId"
+
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
+    private var entities: [HAEntity] = []
 
     init(title: String, domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
         self.domain = domain
@@ -52,6 +55,13 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         let entitiesSorted = entitiesFiltered
             .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 
+        guard self.entities.count != entitiesSorted.count else {
+            updateItemsState(entities: entitiesSorted)
+            return
+        }
+
+        self.entities = entitiesSorted
+
         var items: [CPListItem] = []
 
         entitiesSorted.forEach { entity in
@@ -60,6 +70,8 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
                 detailText: entity.localizedState,
                 image: entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.image(ofSize: entityIconSize, color: nil)
             )
+
+            item.userInfo = [entityIdKey: entity.entityId]
             item.handler = { _, completion in
                 firstly { [weak self] () -> Promise<Void> in
                     guard let self = self else { return .init(error: CPEntityError.unknown) }
@@ -87,7 +99,21 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
             items.append(item)
         }
 
-        paginatedListTemplate.updateItems(items: items)
+        paginatedListTemplate.updateItems(items: items, refreshUI: true)
+    }
+
+    private func updateItemsState(entities: [HAEntity]) {
+        guard let visibleItems = paginatedListTemplate.template.sections.first?.items as? [CPListItem] else { return }
+        visibleItems.forEach { listItem in
+            guard let userInfo = listItem.userInfo as? [String: String],
+                  let entity = entities.first(where: { $0.entityId == userInfo[entityIdKey] }) else { return }
+            listItem.setDetailText(entity.localizedState)
+            listItem
+                .setImage(
+                    entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon
+                        .image(ofSize: entityIconSize, color: nil)
+                )
+        }
     }
 
     private func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {

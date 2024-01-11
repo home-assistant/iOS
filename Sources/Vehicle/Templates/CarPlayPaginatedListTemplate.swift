@@ -8,12 +8,7 @@ final class CarPlayPaginatedListTemplate {
         case previous
     }
 
-    private var items: [CPListItem] {
-        didSet {
-            updateTemplate()
-        }
-    }
-
+    private var items: [CPListItem]
     private var currentPage: Int
     private let title: String
 
@@ -27,8 +22,11 @@ final class CarPlayPaginatedListTemplate {
         self.template = CPListTemplate(title: title, sections: [])
     }
 
-    func updateItems(items: [CPListItem]) {
+    func updateItems(items: [CPListItem], refreshUI: Bool = false) {
         self.items = items
+        if refreshUI {
+            updateTemplate()
+        }
     }
 
     func updateTemplate() {

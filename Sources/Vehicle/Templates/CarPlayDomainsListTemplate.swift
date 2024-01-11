@@ -5,13 +5,14 @@ import Shared
 
 @available(iOS 16.0, *)
 class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
-    private var domainList: [String] = []
     private var childTemplateProvider: CarPlayTemplateProvider?
     private var entities: HACache<HACachedStates>?
     private var entitiesSubscriptionToken: HACancellable?
 
-    weak var interfaceController: CPInterfaceController?
+    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon.carPlayIcon()
+    private var domainsCurrentlyInList: [Domain] = []
 
+    weak var interfaceController: CPInterfaceController?
     var template: CPTemplate
 
     init() {
@@ -37,17 +38,28 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
 
         var items: [CPListItem] = []
         let entityDomains = Set(entities?.value?.all.map(\.domain) ?? [])
-        let domains = entityDomains.filter { Domain(rawValue: $0)?.isCarPlaySupported ?? false }.sorted(by: { d1, d2 in
-            d1 < d2
-        })
+        let domains = entityDomains.compactMap({ Domain(rawValue: $0) }).filter(\.isCarPlaySupported)
+            .sorted(by: { d1, d2 in
+                // Fix covers at the top for quick garage door access
+                if d1 == .cover {
+                    return true
+                } else if d2 == .cover {
+                    return false
+                } else {
+                    return d1.localizedDescription < d2.localizedDescription
+                }
+            })
+
+        // Prevent unecessary update and UI glitch for non-touch screen CarPlay
+        guard domainsCurrentlyInList != domains else { return }
+        domainsCurrentlyInList = domains
 
         domains.forEach { domain in
-            guard let domain = Domain(rawValue: domain) else { return }
             let itemTitle = domain.localizedDescription
             let listItem = CPListItem(
                 text: itemTitle,
                 detailText: nil,
-                image: domain.icon
+                image: domain == .cover ? overrideCoverIcon : domain.icon
             )
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
             listItem.handler = { [weak self] _, completion in
@@ -58,10 +70,9 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
             items.append(listItem)
         }
 
-        domainList = domains
         (template as? CPListTemplate)?.updateSections([CPListSection(items: items)])
         template.tabTitle = L10n.Carplay.Navigation.Tab.domains
-        template.tabImage = MaterialDesignIcons.devicesIcon.image(ofSize: .init(width: 64, height: 64), color: nil)
+        template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon(color: nil)
 
         guard entitiesSubscriptionToken == nil else { return }
         entitiesSubscriptionToken = entities?.subscribe { [weak self] _, _ in

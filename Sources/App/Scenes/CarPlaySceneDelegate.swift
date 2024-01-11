@@ -21,6 +21,7 @@ class CarPlaySceneDelegate: UIResponder {
 
     @objc private func updateTemplates() {
         setupDomainListTemplate()
+        setupAreasZonesListTemplate()
         setupActionsTemplate()
         setupServerListTemplate()
         let templates: [CPTemplate] = [

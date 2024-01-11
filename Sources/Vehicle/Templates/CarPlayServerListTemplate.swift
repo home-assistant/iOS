@@ -30,7 +30,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     @objc func update() {
         template = serverListTemplate()
         template.tabTitle = L10n.Carplay.Labels.servers
-        template.tabImage = MaterialDesignIcons.cogIcon.image(ofSize: .init(width: 64, height: 64), color: nil)
+        template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon(color: nil)
     }
 
     private func serverListTemplate() -> CPTemplate {
