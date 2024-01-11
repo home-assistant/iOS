@@ -32,7 +32,9 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func setTemplates() {
-        let tabBar = CPTabBarTemplate(templates: allTemplates.map(\.template))
+        let tabBar = CPTabBarTemplate(templates: allTemplates.map { templateProvider in
+            templateProvider.template
+        })
         setInterfaceControllerForChildren()
         interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
         updateTemplates()
@@ -47,15 +49,6 @@ class CarPlaySceneDelegate: UIResponder {
 
     @objc private func updateTemplates() {
         allTemplates.forEach { $0.update() }
-    }
-
-    private func setEmptyTemplate(interfaceController: CPInterfaceController?) {
-        interfaceController?.setRootTemplate(CPInformationTemplate(
-            title: L10n.About.Logo.title,
-            layout: .leading,
-            items: [],
-            actions: []
-        ), animated: true, completion: nil)
     }
 }
 
