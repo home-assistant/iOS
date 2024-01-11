@@ -33,7 +33,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
             return
         }
 
-        var server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
+        let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
 
         guard let server else { return }
         entities = Current.api(for: server).connection.caches.states
@@ -98,7 +98,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         guard let entitiesCachedStates else { return }
         let entitiesListTemplate = CarPlayEntitiesListTemplate(
             title: Domain(rawValue: domain)?.localizedDescription ?? domain,
-            domain: domain,
+            filterType: .domain(domain),
             server: server,
             entitiesCachedStates: entitiesCachedStates
         )

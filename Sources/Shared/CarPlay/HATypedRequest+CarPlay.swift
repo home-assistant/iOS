@@ -96,4 +96,10 @@ public extension HATypedRequest {
             type: "config/area_registry/list"
         ))
     }
+
+    static func fetchEntitiesWithAreas() -> HATypedRequest<[HAEntityAreaResponse]> {
+        HATypedRequest<[HAEntityAreaResponse]>(request: .init(
+            type: "config/entity_registry/list"
+        ))
+    }
 }

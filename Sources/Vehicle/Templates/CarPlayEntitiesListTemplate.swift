@@ -6,11 +6,15 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
+    enum FilterType {
+        case domain(String)
+        case areaId(entityIds: [String])
+    }
     enum CPEntityError: Error {
         case unknown
     }
 
-    private let domain: String
+    private let filterType: FilterType
     private var server: Server
     private let entitiesCachedStates: HACache<HACachedStates>
     private var currentPage: Int = 0
@@ -27,8 +31,8 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
     private var entitiesIdsCurrentlyInList: [String] = []
 
-    init(title: String, domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
-        self.domain = domain
+    init(title: String, filterType: FilterType, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
+        self.filterType = filterType
         self.server = server
         self.entitiesCachedStates = entitiesCachedStates
         self.paginatedListTemplate = CarPlayPaginatedListTemplate(title: title, items: [])
@@ -53,7 +57,19 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     func update() {
         guard let entities = entitiesCachedStates.value else { return }
 
-        let entitiesFiltered = entities.all.filter { $0.domain == domain }
+        let entitiesFiltered = entities.all.filter { entity in
+            switch filterType {
+            case .domain(let domain):
+                return entity.domain == domain
+            case .areaId(let entityIdsAllowed):
+                if let domain = Domain(rawValue: entity.domain) {
+                    return entityIdsAllowed.contains(entity.entityId) && domain.isCarPlaySupported
+                } else {
+                    return false
+                }
+            }
+        }
+
         let entitiesSorted = entitiesFiltered
             .sorted(by: { $0.attributes.friendlyName ?? $0.entityId < $1.attributes.friendlyName ?? $1.entityId })
 

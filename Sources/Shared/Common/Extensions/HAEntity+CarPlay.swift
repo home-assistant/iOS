@@ -197,7 +197,33 @@ public extension HAEntity {
     }
 
     var localizedState: String {
-        CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
+        if let domain = Domain(rawValue: domain) {
+            switch domain {
+            case .button, .inputButton, .scene:
+                if let relativeDate = isoDateToRelativeTimeString(state) {
+                    return relativeDate
+                }
+            default:
+                break
+            }
+        }
+
+        return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
             .getDefaultStateLocalizedTitle(state: state) ?? state
+    }
+
+    private func isoDateToRelativeTimeString(_ isoDateString: String) -> String? {
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        guard let date = dateFormatter.date(from: isoDateString) else {
+            return nil
+        }
+
+        if #available(watchOS 6.0, *) {
+            let relativeFormatter = RelativeDateTimeFormatter()
+            return relativeFormatter.localizedString(for: date, relativeTo: Date())
+        } else {
+            return nil
+        }
     }
 }

@@ -23,3 +23,20 @@ public struct HAAreaResponse: HADataDecodable {
         self.picture = picture
     }
 }
+
+public struct HAEntityAreaResponse: HADataDecodable {
+    public let areaId: String?
+    public let entityId: String?
+
+    public init(data: HAData) throws {
+        self.init(
+            areaId: try? data.decode("area_id"),
+            entityId: try? data.decode("entity_id")
+        )
+    }
+
+    internal init(areaId: String?, entityId: String?) {
+        self.areaId = areaId
+        self.entityId = entityId
+    }
+}
