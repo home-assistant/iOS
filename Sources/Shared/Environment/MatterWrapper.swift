@@ -47,10 +47,10 @@ public class MatterWrapper {
                 do {
                     try await MatterAddDeviceRequest(topology: .init(ecosystemName: "Home Assistant", homes: []))
                         .perform()
-                    Current.Log.info("matter pairing successful")
+                    Current.Log.info("Matter pairing finished (native flow manually closed or pairing succeeded)")
                     seal.fulfill(())
                 } catch {
-                    Current.Log.error("matter pairing failed: \(error)")
+                    Current.Log.error("Matter pairing failed: \(error)")
                     seal.reject(error)
                 }
             }
