@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "당신의 집을 깨워라";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "리뷰를 남겨주세요";
 "about.title" = "정보";
 "about.website.title" = "웹사이트";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "서버에서 자격 증명을 거부했으며 계속하려면 다시 로그인해야 합니다.";
 "alerts.auth_required.title" = "계속하려면 로그인해야 합니다.";
 "alerts.confirm.cancel" = "취소";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "OK";
 "alerts.deprecations.notification_category.message" = "%1$@ 이전에 알림 자체에 정의된 작업으로 마이그레이션해야 합니다.";
 "alerts.deprecations.notification_category.title" = "알림 카테고리는 더 이상 사용되지 않습니다.";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "신중한 검토 끝에 향후 업데이트에서 iOS 12, 13, 14에 대한 지원을 중단할 예정입니다.";
 "announcement.drop_support.title" = "중요 업데이트";
 "cancel_label" = "취소";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "요청된 정확도에는 지연 모드가 지원되지 않습니다.";
 "cl_error.description.deferred_canceled" = "연기된 업데이트 요청이 앱 또는 위치 관리자에 의해 취소되었습니다.";
 "cl_error.description.deferred_distance_filtered" = "지연 모드는 거리 필터를 지원하지 않습니다.";

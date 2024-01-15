@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant no Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Desperte sua casa";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Deixe um comentário";
 "about.title" = "Sobre";
 "about.website.title" = "Site";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "O servidor rejeitou suas credenciais e você deve entrar novamente para continuar.";
 "alerts.auth_required.title" = "Você deve fazer login para continuar";
 "alerts.confirm.cancel" = "Cancelar";
+"alerts.confirm.confirm" = "Confirmar";
 "alerts.confirm.ok" = "OK";
 "alerts.deprecations.notification_category.message" = "Você deve migrar para as ações definidas na própria notificação antes de %1$@ .";
 "alerts.deprecations.notification_category.title" = "As categorias de notificação estão obsoletas";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "Após consideração cuidadosa, descontinuaremos o suporte para iOS 12, 13 e 14 em nossas próximas atualizações.";
 "announcement.drop_support.title" = "Atualização Importante";
 "cancel_label" = "Cancelar";
+"carplay.labels.already_added_server" = "Adicionado";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "Nenhum servidor disponível. Adicione um servidor no app.";
+"carplay.labels.servers" = "Servidores";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Próximo";
+"carplay.navigation.button.previous" = "Anterior";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "O modo adiado não é compatível com a precisão solicitada.";
 "cl_error.description.deferred_canceled" = "A solicitação de atualizações adiadas foi cancelada pelo seu aplicativo ou pelo gerenciador de local.";
 "cl_error.description.deferred_distance_filtered" = "O modo diferido não suporta filtros de distância.";

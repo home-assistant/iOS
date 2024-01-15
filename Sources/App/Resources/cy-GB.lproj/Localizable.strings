@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant ar Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Deffro'ch Cartref";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Ysgrifennu adolygiad";
 "about.title" = "Amdanom Ni";
 "about.website.title" = "Gwefan";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "Mae'r gweinydd wedi gwrthod eich tystlythyrau, a rhaid i chi fewngofnodi eto i barhau.";
 "alerts.auth_required.title" = "Rhaid i chi fewngofnodi i barhau";
 "alerts.confirm.cancel" = "Canslo";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "Iawn";
 "alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
 "alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "Canslo";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Nid yw'r modd gohiriedig yn cael ei gefnogi ar gyfer y cywirdeb gofynnol.";
 "cl_error.description.deferred_canceled" = "Cafodd y cais am ddiweddariadau gohiriedig ei ganslo gan eich ap neu gan y rheolwr lleoliad.";
 "cl_error.description.deferred_distance_filtered" = "Nid yw'r modd gohiriedig yn cefnogi hidlwyr pellter.";

@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Twitter'da Home Assistant";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Evinizi Uyandırın";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Yorum bırakın";
 "about.title" = "Hakkında";
 "about.website.title" = "Web sitesi";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "Sunucu kimlik bilgilerinizi reddetti ve devam etmek için tekrar oturum açmanız gerekiyor.";
 "alerts.auth_required.title" = "Devam etmek için giriş yapınız";
 "alerts.confirm.cancel" = "İptal";
+"alerts.confirm.confirm" = "Onayla";
 "alerts.confirm.ok" = "Tamam";
 "alerts.deprecations.notification_category.message" = "%1$@ önce bildirimin kendisinde tanımlanan eylemlere geçmeniz gerekir.";
 "alerts.deprecations.notification_category.title" = "Bildirim Kategorileri kullanımdan kaldırıldı";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "Dikkatli bir değerlendirmenin ardından gelecek güncellemelerimizde iOS 12, 13 ve 14 desteğine son vereceğiz.";
 "announcement.drop_support.title" = "Önemli güncelleme";
 "cancel_label" = "İptal";
+"carplay.labels.already_added_server" = "Zaten eklendi";
+"carplay.labels.empty_domain_list" = "Mevcut alan adı yok";
+"carplay.labels.no_servers_available" = "Sunucu yok. Uygulamaya bir sunucu ekleyin.";
+"carplay.labels.servers" = "Sunucular";
+"carplay.lock.confirmation.title" = "%@ üzerinde kilitleme eylemi gerçekleştirmek istediğinizden emin misiniz?";
+"carplay.navigation.button.next" = "Sonraki";
+"carplay.navigation.button.previous" = "Önceki";
+"carplay.unlock.confirmation.title" = "%@ üzerinde kilit açma eylemi gerçekleştirmek istediğinizden emin misiniz?";
 "cl_error.description.deferred_accuracy_too_low" = "İstenen doğruluk için ertelenmiş mod desteklenmiyor.";
 "cl_error.description.deferred_canceled" = "Ertelenmiş güncelleme talebi, uygulamanız veya konum yöneticisi tarafından iptal edildi.";
 "cl_error.description.deferred_distance_filtered" = "Ertelenmiş mod, mesafe filtrelerini desteklemez.";
