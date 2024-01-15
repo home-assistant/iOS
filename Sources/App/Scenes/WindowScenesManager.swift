@@ -53,7 +53,9 @@ final class WindowScenesManager {
 
     @available(macCatalyst 16.0, *)
     private func configureSceneSize(_ scene: UIWindowScene) {
-        guard let preferredSystemFrame = ScenesWindowSizeConfig.defaultSceneLatestSystemFrame,
+        // Check is scene has a restoring state before proceeding
+        guard scene.userActivity == nil,
+              let preferredSystemFrame = ScenesWindowSizeConfig.defaultSceneLatestSystemFrame,
               preferredSystemFrame != .zero else { return }
 
         let screenSize = scene.screen.bounds.size
