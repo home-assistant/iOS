@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant 官方 Twitter 帳號";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "喚醒你的智能家居";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "留個評論吧";
 "about.title" = "關於";
 "about.website.title" = "網站";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "伺服器拒絕您的憑證，必須再次登入以繼續。";
 "alerts.auth_required.title" = "必須登入以繼續";
 "alerts.confirm.cancel" = "取消";
+"alerts.confirm.confirm" = "確認";
 "alerts.confirm.ok" = "好";
 "alerts.deprecations.notification_category.message" = "必須於遷移至觸發動作中的通知定義、再進行 %1$@。";
 "alerts.deprecations.notification_category.title" = "通知類別已停用";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "經過仔細考慮後、我們將在即將推出的更新中停止對 iOS 12、13 和 14 的支援。";
 "announcement.drop_support.title" = "重要更新";
 "cancel_label" = "取消";
+"carplay.labels.already_added_server" = "已新增";
+"carplay.labels.empty_domain_list" = "沒有可用網域";
+"carplay.labels.no_servers_available" = "無可用伺服器、請於 App 中新增。";
+"carplay.labels.servers" = "伺服器";
+"carplay.lock.confirmation.title" = "確定要對 %@ 進行鎖定操作嗎？";
+"carplay.navigation.button.next" = "下一頁";
+"carplay.navigation.button.previous" = "上一頁";
+"carplay.unlock.confirmation.title" = "確定要對 %@ 進行解鎖操作嗎？";
 "cl_error.description.deferred_accuracy_too_low" = "所請求的準確度不支援推遲（Deferred）模式。";
 "cl_error.description.deferred_canceled" = "推遲（Deferred）更新請求已被 App 或 Location Manager 所取消。";
 "cl_error.description.deferred_distance_filtered" = "推遲（Deferred）模式不支援距離篩選。";

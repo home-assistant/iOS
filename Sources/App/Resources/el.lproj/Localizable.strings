@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Το Home Assistant στο Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Ζωντανέψτε το σπίτι σας";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Αφήστε μια κριτική";
 "about.title" = "Σχετικά";
 "about.website.title" = "Ιστοσελίδα";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "Ο διακομιστής απέρριψε τα διαπιστευτήριά σας και πρέπει να συνδεθείτε ξανά για να συνεχίσετε.";
 "alerts.auth_required.title" = "Πρέπει να συνδεθείτε για να συνεχίσετε";
 "alerts.confirm.cancel" = "Ακύρωση";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "Εντάξει";
 "alerts.deprecations.notification_category.message" = "Πρέπει να κάνετε μετεγκατάσταση σε ενέργειες που ορίζονται στην ίδια την ειδοποίηση πριν από το %1$@.";
 "alerts.deprecations.notification_category.title" = "Οι κατηγορίες ειδοποιήσεων έχουν καταργηθεί";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "Μετά από προσεκτική εξέταση, θα διακόψουμε την υποστήριξη για τα iOS 12, 13 και 14 στις επερχόμενες ενημερώσεις μας.";
 "announcement.drop_support.title" = "Σημαντική ενημέρωση";
 "cancel_label" = "Ακύρωση";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Η λειτουργία αναβολής δεν υποστηρίζεται για την ακρίβεια που ζητήθηκε.";
 "cl_error.description.deferred_canceled" = "Το αίτημα για αναβαλλόμενες ενημερώσεις ακυρώθηκε από την εφαρμογή σας ή από το διαχειριστή τοποθεσίας.";
 "cl_error.description.deferred_distance_filtered" = "Η λειτουργία αναβολής δεν υποστηρίζει φίλτρα απόστασης.";

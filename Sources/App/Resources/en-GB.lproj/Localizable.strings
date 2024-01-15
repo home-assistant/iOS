@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant on Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Awaken Your Home";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Leave a review";
 "about.title" = "About";
 "about.website.title" = "Website";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "The server has rejected your credentials, and you must sign in again to continue.";
 "alerts.auth_required.title" = "You must sign in to continue";
 "alerts.confirm.cancel" = "Cancel";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "OK";
 "alerts.deprecations.notification_category.message" = "You must migrate to actions defined in the notification itself before %1$@.";
 "alerts.deprecations.notification_category.title" = "Notification Categories are deprecated";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "Cancel";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Deferred mode is not supported for the requested accuracy.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
 "cl_error.description.deferred_distance_filtered" = "Deferred mode does not support distance filters.";

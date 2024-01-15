@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant på Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Væk dit hjem til live";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Skriv en anmeldelse";
 "about.title" = "Om";
 "about.website.title" = "Hjemmeside";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "Serveren har afvist dine legitimationsoplysninger, og du skal logge ind igen for at fortsætte.";
 "alerts.auth_required.title" = "Du skal logge ind for at fortsætte";
 "alerts.confirm.cancel" = "Annullér";
+"alerts.confirm.confirm" = "Bekræft";
 "alerts.confirm.ok" = "OK";
 "alerts.deprecations.notification_category.message" = "Du skal migrere til handlinger, der er defineret i selve notifikationen før %1$@.";
 "alerts.deprecations.notification_category.title" = "Notifikationskategorier udfases";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "Efter nøje overvejelse vil vi ophøre med at understøtte iOS 12, 13 og 14 i vores kommende opdateringer.";
 "announcement.drop_support.title" = "Vigtig opdatering";
 "cancel_label" = "Annullér";
+"carplay.labels.already_added_server" = "Allerede tilføjet";
+"carplay.labels.empty_domain_list" = "Ingen domæner tilgængelige";
+"carplay.labels.no_servers_available" = "Ingen servere tilgængelige. Tilføj en server i appen.";
+"carplay.labels.servers" = "Servere";
+"carplay.lock.confirmation.title" = "Er du sikker på, at du vil udføre låsehandling på %@?";
+"carplay.navigation.button.next" = "Næste";
+"carplay.navigation.button.previous" = "Forrige";
+"carplay.unlock.confirmation.title" = "Er du sikker på, at du vil udføre oplåsningshandling på %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Udskudt tilstand understøttes ikke for den ønskede nøjagtighed.";
 "cl_error.description.deferred_canceled" = "Anmodningen om udskudte opdateringer blev annulleret af din app eller af lokalitetsadministratoren.";
 "cl_error.description.deferred_distance_filtered" = "Udskudt tilstand understøtter ikke afstandsfiltre.";
@@ -76,7 +86,7 @@
 "client_events.view.clear_confirm.title" = "Er du sikker på, at du vil rydde alle hændelser?";
 "continue_label" = "Fortsæt";
 "copy_label" = "Kopiér";
-"database.problem.delete" = "Slet database & afslut app";
+"database.problem.delete" = "Slet database og afslut app";
 "database.problem.quit" = "Afslut app";
 "database.problem.title" = "Fejl i database";
 "debug_section_label" = "Fejlsøg";
