@@ -12,6 +12,7 @@
 "about.home_assistant_on_twitter.title" = "Home Assistant в Твиттере";
 "about.logo.app_title" = "Компаньон Home Assistant";
 "about.logo.tagline" = "Пробудите ваш дом";
+"about.logo.title" = "Home Assistant";
 "about.review.title" = "Оставить отзыв";
 "about.title" = "О программе";
 "about.website.title" = "Наш сайт";
@@ -32,6 +33,7 @@
 "alerts.auth_required.message" = "Сервер отклонил ваши и учётные данные. Необходима повторная авторизация.";
 "alerts.auth_required.title" = "Для продолжения нужно авторизоваться";
 "alerts.confirm.cancel" = "Отмена";
+"alerts.confirm.confirm" = "Confirm";
 "alerts.confirm.ok" = "ОК";
 "alerts.deprecations.notification_category.message" = "Вам необходимо перейти к действиям, определенным в уведомлении до %1$@ .";
 "alerts.deprecations.notification_category.title" = "Категории уведомлений устарели";
@@ -46,6 +48,14 @@
 "announcement.drop_support.subtitle" = "После тщательного рассмотрения мы прекратим поддержку iOS 12, 13 и 14 в наших предстоящих обновлениях.";
 "announcement.drop_support.title" = "Важное обновление";
 "cancel_label" = "Отмена";
+"carplay.labels.already_added_server" = "Already added";
+"carplay.labels.empty_domain_list" = "No domains available";
+"carplay.labels.no_servers_available" = "No servers available. Add a server in the app.";
+"carplay.labels.servers" = "Servers";
+"carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carplay.navigation.button.next" = "Next";
+"carplay.navigation.button.previous" = "Previous";
+"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Отложенный режим не подходит для выбранной точности.";
 "cl_error.description.deferred_canceled" = "Запрос отложенного обновления был отменён вашим приложением или службой геолокации.";
 "cl_error.description.deferred_distance_filtered" = "Отложенный режим не поддерживает фильтр по расстоянию.";
