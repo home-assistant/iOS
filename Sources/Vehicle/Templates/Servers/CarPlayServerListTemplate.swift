@@ -7,29 +7,33 @@ import Shared
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private(set) static var carPlayPreferredServerKey = "carPlay-server"
 
-    var template: CPListTemplate
-    weak var interfaceController: CPInterfaceController?
+    private let viewModel: CarPlayServerListViewModel
 
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    var template: CPListTemplate
+    weak var interfaceController: CPInterfaceController? {
+        didSet {
+            viewModel.interfaceController = interfaceController
+        }
     }
 
-    init() {
+    init(viewModel: CarPlayServerListViewModel) {
+        self.viewModel = viewModel
         self.template = CPListTemplate(title: "", sections: [])
         template.tabTitle = L10n.CarPlay.Labels.servers
         template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon(color: nil)
+
+        viewModel.templateProvider = self
     }
 
     func templateWillDisappear(template: CPTemplate) {
         if template == self.template {
-            Current.servers.remove(observer: self)
+            viewModel.removeServerObserver()
         }
     }
 
     func templateWillAppear(template: CPTemplate) {
-        /// Observer for servers list changes
-        Current.servers.add(observer: self)
         if template == self.template {
+            viewModel.addServerObserver()
             update()
         }
     }
@@ -42,22 +46,17 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                 detailText: nil
             )
             serverItem.handler = { [weak self] _, completion in
-                self?.setServer(server: serverOption)
+                self?.viewModel.setServer(server: serverOption)
                 completion()
             }
-            serverItem.accessoryType = preferredServerId == serverOption.identifier.rawValue ? .cloud : .none
+            serverItem.accessoryType = viewModel.preferredServerId == serverOption.identifier.rawValue ? .cloud : .none
             serverList.append(serverItem)
         }
         let section = CPListSection(items: serverList, header: L10n.CarPlay.Labels.selectServer, sectionIndexTitle: nil)
         template.updateSections([section])
     }
 
-    private func setServer(server: Server) {
-        prefs.set(server.identifier.rawValue, forKey: CarPlayServersListTemplate.carPlayPreferredServerKey)
-        update()
-    }
-
-    private func showNoServerAlert() {
+    func showNoServerAlert() {
         guard interfaceController?.presentedTemplate == nil else {
             return
         }
@@ -65,20 +64,5 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         let alertTemplate = CarPlayNoServerAlert()
         alertTemplate.interfaceController = interfaceController
         alertTemplate.present()
-    }
-}
-
-@available(iOS 16.0, *)
-extension CarPlayServersListTemplate: ServerObserver {
-    func serversDidChange(_ serverManager: ServerManager) {
-        guard let server = serverManager.serverOrFirstIfAvailable(for: Identifier<Server>(rawValue: preferredServerId)) else {
-            if interfaceController?.presentedTemplate != nil {
-                interfaceController?.dismissTemplate(animated: true, completion: nil)
-            } else {
-                showNoServerAlert()
-            }
-            return
-        }
-        setServer(server: server)
     }
 }

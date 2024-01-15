@@ -4,40 +4,21 @@ import HAKit
 import Shared
 
 @available(iOS 16.0, *)
-final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
-    private var childTemplateProvider: (any CarPlayTemplateProvider)?
-
-    var template: CPListTemplate
-    weak var interfaceController: CPInterfaceController?
-
+final class CarPlayAreasViewModel {
     private var request: HACancellable?
+    weak var templateProvider: CarPlayAreasZonesTemplate?
+
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
 
-    init() {
-        self.template = CPListTemplate(title: "", sections: [])
-        template.tabImage = MaterialDesignIcons.sofaIcon.carPlayIcon(color: Constants.tintColor)
-        template.tabTitle = L10n.CarPlay.Navigation.Tab.areas
-    }
-
-    func templateWillDisappear(template: CPTemplate) {
-        if template == self.template {
-            request?.cancel()
-        }
-        childTemplateProvider?.templateWillDisappear(template: template)
-    }
-
-    func templateWillAppear(template: CPTemplate) {
-        if template == self.template {
-            update()
-        }
-        childTemplateProvider?.templateWillAppear(template: template)
+    func cancelRequest() {
+        request?.cancel()
     }
 
     func update() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else {
-            template.updateSections([])
+            templateProvider?.template.updateSections([])
             return
         }
 
@@ -49,7 +30,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
             case let .success(data):
                 self?.fetchEntitiesForAreas(data, server: server)
             case let .failure(error):
-                self?.template.updateSections([])
+                self?.templateProvider?.template.updateSections([])
                 Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
             }
         })
@@ -66,7 +47,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
                 case let .success(data):
                     self?.fetchDeviceForAreas(areas, entitiesWithAreas: data, server: server)
                 case let .failure(error):
-                    self?.template.updateSections([])
+                    self?.templateProvider?.template.updateSections([])
                     Current.Log.error(userInfo: ["Failed to retrieve areas and entities": error.localizedDescription])
                 }
             }
@@ -88,7 +69,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
                 case let .success(data):
                     self?.updateAreas(areas, areasAndEntities: entitiesWithAreas, devicesAndAreas: data, server: server)
                 case let .failure(error):
-                    self?.template.updateSections([])
+                    self?.templateProvider?.template.updateSections([])
                     Current.Log.error(userInfo: ["Failed to retrieve areas and devices": error.localizedDescription])
                 }
             }
@@ -169,25 +150,18 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
             return item
         }
 
-        template.updateSections([.init(items: items)])
+        templateProvider?.template.updateSections([.init(items: items)])
     }
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
         let entitiesCachedStates = Current.api(for: server).connection.caches.states
-        let entitiesListTemplate = CarPlayEntitiesListTemplate(
+        let entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: area.name,
             filterType: .areaId(entityIds: entityIdsForAreaId),
             server: server,
             entitiesCachedStates: entitiesCachedStates
         )
 
-        entitiesListTemplate.interfaceController = interfaceController
-
-        childTemplateProvider = entitiesListTemplate
-        interfaceController?.pushTemplate(
-            entitiesListTemplate.template,
-            animated: true,
-            completion: nil
-        )
+        templateProvider?.presentEntitiesList(template: entitiesListTemplate)
     }
 }

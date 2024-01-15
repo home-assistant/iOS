@@ -24,10 +24,10 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     override init() {
-        self.domainsListTemplate = CarPlayDomainsListTemplate()
-        self.serversListTemplate = CarPlayServersListTemplate()
-        self.actionsListTemplate = CarPlayActionsTemplate()
-        self.areasZonesListTemplate = CarPlayAreasZonesTemplate()
+        self.domainsListTemplate = CarPlayDomainsListTemplate.build()
+        self.serversListTemplate = CarPlayServersListTemplate.build()
+        self.actionsListTemplate = CarPlayActionsTemplate.build()
+        self.areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
         super.init()
     }
 

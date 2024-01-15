@@ -500,9 +500,19 @@
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
+		420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */; };
+		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
+		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
+		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
+		425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573C62B5572AD00145217 /* CarPlayServerListTemplate+Build.swift */; };
+		425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573C82B5572DB00145217 /* CarPlayServerListViewModel.swift */; };
+		425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573CB2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift */; };
+		425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573CD2B5574F100145217 /* CarPlayAreasViewModel.swift */; };
+		425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */; };
+		425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
@@ -1553,6 +1563,10 @@
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayActionsViewModel.swift; sourceTree = "<group>"; };
+		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
+		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
+		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
 		422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ThreadNetwork.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/System/Library/Frameworks/ThreadNetwork.framework; sourceTree = DEVELOPER_DIR; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -1590,6 +1604,12 @@
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayActionsTemplate.swift; sourceTree = "<group>"; };
+		425573C62B5572AD00145217 /* CarPlayServerListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayServerListTemplate+Build.swift"; sourceTree = "<group>"; };
+		425573C82B5572DB00145217 /* CarPlayServerListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListViewModel.swift; sourceTree = "<group>"; };
+		425573CB2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayAreasZonesTemplate+Build.swift"; sourceTree = "<group>"; };
+		425573CD2B5574F100145217 /* CarPlayAreasViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAreasViewModel.swift; sourceTree = "<group>"; };
+		425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayDomainsListTemplate+Build.swift"; sourceTree = "<group>"; };
+		425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListViewModel.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFB12B45C6680087C9D7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Core.strings"; sourceTree = "<group>"; };
@@ -2999,6 +3019,56 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		420FE8472B5569ED00878E06 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */,
+				420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */,
+				420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */,
+			);
+			path = Actions;
+			sourceTree = "<group>";
+		};
+		420FE84C2B556CD800878E06 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */,
+				420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */,
+				420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		425573C52B55729E00145217 /* Servers */ = {
+			isa = PBXGroup;
+			children = (
+				42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */,
+				425573C82B5572DB00145217 /* CarPlayServerListViewModel.swift */,
+				425573C62B5572AD00145217 /* CarPlayServerListTemplate+Build.swift */,
+			);
+			path = Servers;
+			sourceTree = "<group>";
+		};
+		425573CA2B55748C00145217 /* Areas */ = {
+			isa = PBXGroup;
+			children = (
+				42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */,
+				425573CD2B5574F100145217 /* CarPlayAreasViewModel.swift */,
+				425573CB2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift */,
+			);
+			path = Areas;
+			sourceTree = "<group>";
+		};
+		425573CF2B5576DB00145217 /* Domains */ = {
+			isa = PBXGroup;
+			children = (
+				FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */,
+				425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */,
+				425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */,
+			);
+			path = Domains;
+			sourceTree = "<group>";
+		};
 		426740A42B17348700C1DD73 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -3943,11 +4013,11 @@
 		FD3BC66A29BA00B100B19FBE /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */,
-				42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */,
-				FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */,
-				424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */,
-				42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */,
+				425573CF2B5576DB00145217 /* Domains */,
+				425573CA2B55748C00145217 /* Areas */,
+				425573C52B55729E00145217 /* Servers */,
+				420FE84C2B556CD800878E06 /* Entities */,
+				420FE8472B5569ED00878E06 /* Actions */,
 				42F1DA602B4D4F31002729BC /* CarPlayNoServerAlert.swift */,
 				42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */,
 				42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */,
@@ -5502,6 +5572,7 @@
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
+				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				1185DFB4271FF53800ED7D9A /* OnboardingAuthStepModels.swift in Sources */,
@@ -5520,12 +5591,14 @@
 				42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
+				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
+				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
@@ -5583,11 +5656,14 @@
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
+				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
+				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
+				420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
 				42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
@@ -5605,6 +5681,7 @@
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
+				425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */,
@@ -5612,6 +5689,7 @@
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
+				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
@@ -5628,11 +5706,13 @@
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
+				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
+				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */,

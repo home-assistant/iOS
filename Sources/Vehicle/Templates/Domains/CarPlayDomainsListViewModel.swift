@@ -4,32 +4,25 @@ import HAKit
 import Shared
 
 @available(iOS 16.0, *)
-class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
-    private var childTemplateProvider: (any CarPlayTemplateProvider)?
+final class CarPlayDomainsListViewModel {
     private var entities: HACache<HACachedStates>?
     private var entitiesSubscriptionToken: HACancellable?
-
-    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon.carPlayIcon()
     private var domainsCurrentlyInList: [Domain] = []
+    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon.carPlayIcon()
+
+    weak var templateProvider: CarPlayDomainsListTemplate?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
 
-    weak var interfaceController: CPInterfaceController?
-    var template: CPListTemplate
-
-    init() {
-        let listTemplate = CPListTemplate(title: L10n.About.Logo.title, sections: [])
-        listTemplate.emptyViewSubtitleVariants = [L10n.CarPlay.Labels.emptyDomainList]
-        self.template = listTemplate
-        template.tabTitle = L10n.CarPlay.Navigation.Tab.domains
-        template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon(color: nil)
+    func cancelSubscriptionToken() {
+        entitiesSubscriptionToken?.cancel()
     }
 
     func update() {
         guard !Current.servers.all.isEmpty else {
-            template.updateSections([])
+            templateProvider?.template.updateSections([])
             return
         }
 
@@ -72,7 +65,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
             items.append(listItem)
         }
 
-        template.updateSections([CPListSection(items: items)])
+        templateProvider?.template.updateSections([CPListSection(items: items)])
 
         guard entitiesSubscriptionToken == nil else { return }
         entitiesSubscriptionToken = entities?.subscribe { [weak self] _, _ in
@@ -80,36 +73,15 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func templateWillDisappear(template: CPTemplate) {
-        if self.template == template {
-            entitiesSubscriptionToken?.cancel()
-        }
-        childTemplateProvider?.templateWillDisappear(template: template)
-    }
-
-    func templateWillAppear(template: CPTemplate) {
-        if template == self.template {
-            update()
-        }
-        childTemplateProvider?.templateWillAppear(template: template)
-    }
-
     private func listItemHandler(domain: String, server: Server, entitiesCachedStates: HACache<HACachedStates>?) {
         guard let entitiesCachedStates else { return }
-        let entitiesListTemplate = CarPlayEntitiesListTemplate(
+        let entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: Domain(rawValue: domain)?.localizedDescription ?? domain,
             filterType: .domain(domain),
             server: server,
             entitiesCachedStates: entitiesCachedStates
         )
 
-        entitiesListTemplate.interfaceController = interfaceController
-
-        childTemplateProvider = entitiesListTemplate
-        interfaceController?.pushTemplate(
-            entitiesListTemplate.template,
-            animated: true,
-            completion: nil
-        )
+        templateProvider?.presentEntitiesList(template: entitiesListTemplate)
     }
 }
