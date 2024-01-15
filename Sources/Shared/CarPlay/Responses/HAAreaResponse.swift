@@ -27,16 +27,36 @@ public struct HAAreaResponse: HADataDecodable {
 public struct HAEntityAreaResponse: HADataDecodable {
     public let areaId: String?
     public let entityId: String?
+    public let deviceId: String?
 
     public init(data: HAData) throws {
         self.init(
             areaId: try? data.decode("area_id"),
-            entityId: try? data.decode("entity_id")
+            entityId: try? data.decode("entity_id"),
+            deviceId: try? data.decode("device_id")
         )
     }
 
-    internal init(areaId: String?, entityId: String?) {
+    internal init(areaId: String?, entityId: String?, deviceId: String?) {
         self.areaId = areaId
         self.entityId = entityId
+        self.deviceId = deviceId
+    }
+}
+
+public struct HADeviceAreaResponse: HADataDecodable {
+    public let areaId: String?
+    public let deviceId: String?
+
+    public init(data: HAData) throws {
+        self.init(
+            areaId: try? data.decode("area_id"),
+            deviceId: try? data.decode("id")
+        )
+    }
+
+    internal init(areaId: String?, deviceId: String?) {
+        self.areaId = areaId
+        self.deviceId = deviceId
     }
 }

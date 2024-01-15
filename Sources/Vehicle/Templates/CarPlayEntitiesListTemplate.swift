@@ -38,6 +38,8 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         self.entitiesCachedStates = entitiesCachedStates
         self.paginatedListTemplate = CarPlayPaginatedListTemplate(title: title, items: [])
         self.template = paginatedListTemplate.template
+
+        paginatedListTemplate.template.emptyViewSubtitleVariants = [L10n.CarPlay.NoEntities.title]
     }
 
     func templateWillDisappear(template: CPTemplate) {
@@ -160,9 +162,9 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         var title = ""
         switch state {
         case .locked, .locking:
-            title = L10n.Carplay.Unlock.Confirmation.title(entity.attributes.friendlyName ?? entity.entityId)
+            title = L10n.CarPlay.Unlock.Confirmation.title(entity.attributes.friendlyName ?? entity.entityId)
         default:
-            title = L10n.Carplay.Lock.Confirmation.title(entity.attributes.friendlyName ?? entity.entityId)
+            title = L10n.CarPlay.Lock.Confirmation.title(entity.attributes.friendlyName ?? entity.entityId)
         }
 
         let alert = CPAlertTemplate(titleVariants: [title], actions: [

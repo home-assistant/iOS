@@ -102,4 +102,10 @@ public extension HATypedRequest {
             type: "config/entity_registry/list"
         ))
     }
+
+    static func fetchDevicesWithAreas() -> HATypedRequest<[HADeviceAreaResponse]> {
+        HATypedRequest<[HADeviceAreaResponse]>(request: .init(
+            type: "config/device_registry/list"
+        ))
+    }
 }

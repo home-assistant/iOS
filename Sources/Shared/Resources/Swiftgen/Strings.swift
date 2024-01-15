@@ -234,54 +234,55 @@ public enum L10n {
   }
 
   public enum CarPlay {
-    public enum NoActions {
-      /// Open iOS Companion App to create actions for CarPlay.
-      public static var title: String { return L10n.tr("Localizable", "carPlay.no_actions.title") }
-    }
-  }
-
-  public enum Carplay {
     public enum Labels {
       /// Already added
-      public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carplay.labels.already_added_server") }
+      public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }
       /// No domains available
-      public static var emptyDomainList: String { return L10n.tr("Localizable", "carplay.labels.empty_domain_list") }
+      public static var emptyDomainList: String { return L10n.tr("Localizable", "carPlay.labels.empty_domain_list") }
       /// No servers available. Add a server in the app.
-      public static var noServersAvailable: String { return L10n.tr("Localizable", "carplay.labels.no_servers_available") }
+      public static var noServersAvailable: String { return L10n.tr("Localizable", "carPlay.labels.no_servers_available") }
       /// Select server
-      public static var selectServer: String { return L10n.tr("Localizable", "carplay.labels.select_server") }
+      public static var selectServer: String { return L10n.tr("Localizable", "carPlay.labels.select_server") }
       /// Servers
-      public static var servers: String { return L10n.tr("Localizable", "carplay.labels.servers") }
+      public static var servers: String { return L10n.tr("Localizable", "carPlay.labels.servers") }
     }
     public enum Lock {
       public enum Confirmation {
         /// Are you sure you want to perform lock action on %@?
         public static func title(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "carplay.lock.confirmation.title", String(describing: p1))
+          return L10n.tr("Localizable", "carPlay.lock.confirmation.title", String(describing: p1))
         }
       }
     }
     public enum Navigation {
       public enum Button {
         /// Next
-        public static var next: String { return L10n.tr("Localizable", "carplay.navigation.button.next") }
+        public static var next: String { return L10n.tr("Localizable", "carPlay.navigation.button.next") }
         /// Previous
-        public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
+        public static var previous: String { return L10n.tr("Localizable", "carPlay.navigation.button.previous") }
       }
       public enum Tab {
         /// Actions
-        public static var actions: String { return L10n.tr("Localizable", "carplay.navigation.tab.actions") }
+        public static var actions: String { return L10n.tr("Localizable", "carPlay.navigation.tab.actions") }
         /// Areas
-        public static var areas: String { return L10n.tr("Localizable", "carplay.navigation.tab.areas") }
+        public static var areas: String { return L10n.tr("Localizable", "carPlay.navigation.tab.areas") }
         /// Control
-        public static var domains: String { return L10n.tr("Localizable", "carplay.navigation.tab.domains") }
+        public static var domains: String { return L10n.tr("Localizable", "carPlay.navigation.tab.domains") }
       }
+    }
+    public enum NoActions {
+      /// Open iOS Companion App to create actions for CarPlay.
+      public static var title: String { return L10n.tr("Localizable", "carPlay.no_actions.title") }
+    }
+    public enum NoEntities {
+      /// No CarPlay compatible entities available.
+      public static var title: String { return L10n.tr("Localizable", "carPlay.no_entities.title") }
     }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
         public static func title(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "carplay.unlock.confirmation.title", String(describing: p1))
+          return L10n.tr("Localizable", "carPlay.unlock.confirmation.title", String(describing: p1))
         }
       }
     }

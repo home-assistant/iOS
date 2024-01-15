@@ -16,7 +16,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 
     init() {
         self.template = CPListTemplate(title: "", sections: [])
-        template.tabTitle = L10n.Carplay.Labels.servers
+        template.tabTitle = L10n.CarPlay.Labels.servers
         template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon(color: nil)
     }
 
@@ -48,7 +48,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             serverItem.accessoryType = preferredServerId == serverOption.identifier.rawValue ? .cloud : .none
             serverList.append(serverItem)
         }
-        let section = CPListSection(items: serverList, header: L10n.Carplay.Labels.selectServer, sectionIndexTitle: nil)
+        let section = CPListSection(items: serverList, header: L10n.CarPlay.Labels.selectServer, sectionIndexTitle: nil)
         template.updateSections([section])
     }
 

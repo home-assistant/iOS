@@ -13,8 +13,8 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     weak var interfaceController: CPInterfaceController?
 
     init() {
-        self.template = CPListTemplate(title: L10n.Carplay.Navigation.Tab.actions, sections: [])
-        template.tabTitle = L10n.Carplay.Navigation.Tab.actions
+        self.template = CPListTemplate(title: L10n.CarPlay.Navigation.Tab.actions, sections: [])
+        template.tabTitle = L10n.CarPlay.Navigation.Tab.actions
         template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon(color: nil)
         template.tabSystemItem = .more
     }
@@ -45,7 +45,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
         }
 
         template.updateSections([section(actions: actions)])
-        template.emptyViewTitleVariants = [L10n.SettingsDetails.Actions.title]
+        template.emptyViewSubtitleVariants = [L10n.SettingsDetails.Actions.title]
     }
 
     private func updateActions(actions: Results<Action>) {

@@ -21,9 +21,9 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
 
     init() {
         let listTemplate = CPListTemplate(title: L10n.About.Logo.title, sections: [])
-        listTemplate.emptyViewSubtitleVariants = [L10n.Carplay.Labels.emptyDomainList]
+        listTemplate.emptyViewSubtitleVariants = [L10n.CarPlay.Labels.emptyDomainList]
         self.template = listTemplate
-        template.tabTitle = L10n.Carplay.Navigation.Tab.domains
+        template.tabTitle = L10n.CarPlay.Navigation.Tab.domains
         template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon(color: nil)
     }
 
