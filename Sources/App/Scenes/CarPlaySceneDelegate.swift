@@ -19,9 +19,9 @@ class CarPlaySceneDelegate: UIResponder {
     private var actionsListTemplate: any CarPlayTemplateProvider
     private var areasZonesListTemplate: any CarPlayTemplateProvider
 
-    private lazy var allTemplates: [any CarPlayTemplateProvider] = {
+    private var allTemplates: [any CarPlayTemplateProvider] {
         [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
-    }()
+    }
 
     override init() {
         self.domainsListTemplate = CarPlayDomainsListTemplate()

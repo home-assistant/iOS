@@ -22,6 +22,12 @@ final class CarPlayPaginatedListTemplate {
         self.template = CPListTemplate(title: title, sections: [])
     }
 
+    /**
+     Call update items to update the list of items that will be paginated, not just the current page in display.
+
+     @param items The full list of items to be paginated
+     @param refreshUI When true it will update the CPListTemplate sections, which causes some glitches such as scroll to the top and moving cursor
+     */
     func updateItems(items: [CPListItem], refreshUI: Bool = false) {
         self.items = items
         if refreshUI {
@@ -53,8 +59,8 @@ final class CarPlayPaginatedListTemplate {
         if endIndex < totalCount {
             barButtons.append(CPBarButton(
                 image: forwardImage,
-                handler: { _ in
-                    self.changePage(to: .next)
+                handler: { [weak self] _ in
+                    self?.changePage(to: .next)
                 }
             ))
         } else {
@@ -68,8 +74,8 @@ final class CarPlayPaginatedListTemplate {
         if currentPage > 0 {
             barButtons.append(CPBarButton(
                 image: backwardImage,
-                handler: { _ in
-                    self.changePage(to: .previous)
+                handler: { [weak self] _ in
+                    self?.changePage(to: .previous)
                 }
             ))
         } else {

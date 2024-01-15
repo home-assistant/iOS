@@ -56,22 +56,22 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     }
 
     func update() {
-        guard let entities = entitiesCachedStates.value else { return }
-
-        let entitiesFiltered = entities.all.filter { entity in
-            switch filterType {
-            case let .domain(domain):
-                return entity.domain == domain
-            case let .areaId(entityIdsAllowed):
-                if let domain = Domain(rawValue: entity.domain) {
-                    return entityIdsAllowed.contains(entity.entityId) && domain.isCarPlaySupported
-                } else {
-                    return false
+        guard let entities = entitiesCachedStates.map({ cachedState in
+            cachedState.all.filter { [self] entity in
+                switch self.filterType {
+                case let .domain(domain):
+                    return entity.domain == domain
+                case let .areaId(entityIdsAllowed):
+                    if let domain = Domain(rawValue: entity.domain) {
+                        return entityIdsAllowed.contains(entity.entityId) && domain.isCarPlaySupported
+                    } else {
+                        return false
+                    }
                 }
             }
-        }
+        }).value else { return }
 
-        let entitiesSorted = entitiesFiltered.sorted(by: { e1, e2 in
+        let entitiesSorted = entities.sorted(by: { e1, e2 in
             let lowPriorityStates: Set<String> = [Domain.State.unknown.rawValue, Domain.State.unavailable.rawValue]
             let state1 = e1.state
             let state2 = e2.state

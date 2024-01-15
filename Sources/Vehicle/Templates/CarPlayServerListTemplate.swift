@@ -21,7 +21,9 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     func templateWillDisappear(template: CPTemplate) {
-        Current.servers.remove(observer: self)
+        if template == self.template {
+            Current.servers.remove(observer: self)
+        }
     }
 
     func templateWillAppear(template: CPTemplate) {
