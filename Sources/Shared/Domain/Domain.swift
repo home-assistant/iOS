@@ -81,7 +81,7 @@ public enum Domain: String, CaseIterable {
         case .switch:
             image = MaterialDesignIcons.lightSwitchIcon
         }
-        return image.image(ofSize: .init(width: 64, height: 64), color: .white)
+        return image.carPlayIcon()
     }
 
     public var localizedDescription: String {
