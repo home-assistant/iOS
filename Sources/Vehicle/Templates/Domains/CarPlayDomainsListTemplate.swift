@@ -18,7 +18,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         listTemplate.emptyViewSubtitleVariants = [L10n.CarPlay.Labels.emptyDomainList]
         self.template = listTemplate
         template.tabTitle = L10n.CarPlay.Navigation.Tab.domains
-        template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon()
+        template.tabImage = MaterialDesignIcons.devicesIcon.carPlayIcon(color: nil)
 
         viewModel.templateProvider = self
     }

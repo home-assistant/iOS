@@ -20,7 +20,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         self.viewModel = viewModel
         self.template = CPListTemplate(title: "", sections: [])
         template.tabTitle = L10n.CarPlay.Labels.servers
-        template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon()
+        template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon(color: nil)
 
         viewModel.templateProvider = self
     }

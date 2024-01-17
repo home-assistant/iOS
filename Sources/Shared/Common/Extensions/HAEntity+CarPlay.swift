@@ -1,11 +1,10 @@
 import Foundation
 import HAKit
 import PromiseKit
-import Shared
 import SwiftUI
 import UIKit
 
-extension HAEntity {
+public extension HAEntity {
     enum DeviceClass: String {
         case garage
         case gate

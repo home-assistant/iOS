@@ -24,19 +24,19 @@ final class CarPlayActionsViewModel {
         actionsToken?.invalidate()
     }
 
-    func handleAction(action: Action, completion: @escaping (Bool) -> Void) {
+    func handleAction(action: Action, completion: @escaping () -> Void) {
         guard let server = Current.servers.server(for: action) else {
-            completion(false)
+            completion()
             return
         }
         Current.api(for: server).HandleAction(actionID: action.ID, source: .CarPlay).pipe { result in
             switch result {
             case .fulfilled:
-                completion(true)
+                break
             case let .rejected(error):
                 Current.Log.info(error)
-                completion(false)
             }
+            completion()
         }
     }
 }

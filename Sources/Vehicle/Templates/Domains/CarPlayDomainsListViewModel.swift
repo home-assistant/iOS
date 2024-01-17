@@ -8,7 +8,7 @@ final class CarPlayDomainsListViewModel {
     private var entities: HACache<HACachedStates>?
     private var entitiesSubscriptionToken: HACancellable?
     private var domainsCurrentlyInList: [Domain] = []
-    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
+    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon.carPlayIcon()
 
     weak var templateProvider: CarPlayDomainsListTemplate?
 
@@ -48,15 +48,13 @@ final class CarPlayDomainsListViewModel {
         // Prevent unecessary update and UI glitch for non-touch screen CarPlay
         guard domainsCurrentlyInList != domains else { return }
         domainsCurrentlyInList = domains
-        let userInterfaceStyle = templateProvider?.interfaceController?.carTraitCollection.userInterfaceStyle
+
         domains.forEach { domain in
             let itemTitle = domain.localizedDescription
             let listItem = CPListItem(
                 text: itemTitle,
                 detailText: nil,
-                image: domain == .cover ? overrideCoverIcon
-                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle) : domain.icon
-                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle)
+                image: domain == .cover ? overrideCoverIcon : domain.icon
             )
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
             listItem.handler = { [weak self] _, completion in
