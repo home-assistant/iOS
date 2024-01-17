@@ -37,7 +37,7 @@
 "component::binary_sensor::entity_component::presence::state::on" = "Kotona";
 "component::binary_sensor::entity_component::window::state::off" = "Suljettu";
 "component::binary_sensor::entity_component::window::state::on" = "Auki";
-"component::button::title" = "Button";
+"component::button::title" = "Painike";
 "component::calendar::entity_component::_::state::off" = "Pois";
 "component::calendar::entity_component::_::state::on" = "Päällä";
 "component::calendar::entity_component::_::state_attributes::all_day::state::false" = "Ei";

@@ -563,6 +563,7 @@ public class HomeAssistantAPI {
         case Preview = "preview"
         case SiriShortcut = "siriShortcut"
         case URLHandler = "urlHandler"
+        case CarPlay = "carPlay"
 
         public var description: String {
             rawValue
