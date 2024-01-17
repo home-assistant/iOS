@@ -288,6 +288,43 @@ public enum L10n {
     }
   }
 
+  public enum Carplay {
+    public enum Labels {
+      /// Already added
+      public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carplay.labels.already_added_server") }
+      /// No domains available
+      public static var emptyDomainList: String { return L10n.tr("Localizable", "carplay.labels.empty_domain_list") }
+      /// No servers available. Add a server in the app.
+      public static var noServersAvailable: String { return L10n.tr("Localizable", "carplay.labels.no_servers_available") }
+      /// Servers
+      public static var servers: String { return L10n.tr("Localizable", "carplay.labels.servers") }
+    }
+    public enum Lock {
+      public enum Confirmation {
+        /// Are you sure you want to perform lock action on %@?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "carplay.lock.confirmation.title", String(describing: p1))
+        }
+      }
+    }
+    public enum Navigation {
+      public enum Button {
+        /// Next
+        public static var next: String { return L10n.tr("Localizable", "carplay.navigation.button.next") }
+        /// Previous
+        public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
+      }
+    }
+    public enum Unlock {
+      public enum Confirmation {
+        /// Are you sure you want to perform unlock action on %@?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "carplay.unlock.confirmation.title", String(describing: p1))
+        }
+      }
+    }
+  }
+
   public enum ClError {
     public enum Description {
       /// Deferred mode is not supported for the requested accuracy.
