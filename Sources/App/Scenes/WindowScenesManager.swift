@@ -4,13 +4,12 @@ import UIKit
 
 final class WindowScenesManager {
     static var shared = WindowScenesManager()
-    private var windowSizeObservers: [WindowSizeObserver] = []
+    private(set) var windowSizeObservers: [WindowSizeObserver] = []
 
     func sceneDidBecomeActive(_ scene: UIWindowScene) {
-        if #available(macCatalyst 16.0, *) {
-            configureSceneSize(scene)
-            startObservingScene(scene)
-        }
+        guard scene.userActivity == nil else { return }
+        configureSceneSize(scene)
+        startObservingScene(scene)
     }
 
     private func startObservingScene(_ scene: UIWindowScene) {
@@ -26,7 +25,8 @@ final class WindowScenesManager {
         sceneFrame.height <= screenSize.height && sceneFrame.width <= screenSize.width
     }
 
-    private func adjustedSystemFrame(
+    // Create cascade effect so windows don't overlap
+    internal func adjustedSystemFrame(
         _ systemFrame: CGRect,
         for screenSize: CGSize,
         numberOfConnectedScenes: Int
@@ -51,10 +51,9 @@ final class WindowScenesManager {
         return adjustedFrame
     }
 
-    @available(macCatalyst 16.0, *)
     private func configureSceneSize(_ scene: UIWindowScene) {
         // Check is scene has a restoring state before proceeding
-        guard scene.userActivity == nil,
+        guard #available(macCatalyst 16.0, *),
               let preferredSystemFrame = ScenesWindowSizeConfig.defaultSceneLatestSystemFrame,
               preferredSystemFrame != .zero else { return }
 

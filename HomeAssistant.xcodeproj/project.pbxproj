@@ -502,6 +502,7 @@
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		425573DA2B57DDE000145217 /* WindowScenesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
@@ -1581,6 +1582,7 @@
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
+		425573D92B57DDE000145217 /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFB12B45C6680087C9D7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Core.strings"; sourceTree = "<group>"; };
@@ -1641,13 +1643,13 @@
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
 		42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
+		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
+		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
 		42F1DA642B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Core.strings; sourceTree = "<group>"; };
 		42F1DA652B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42F1DA662B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42F1DA672B4D993B002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Localizable.strings; sourceTree = "<group>"; };
 		42F1DA692B4DA9F9002729BC /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/Intents.strings; sourceTree = "<group>"; };
-		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
-		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
 		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
@@ -2882,6 +2884,7 @@
 				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 				42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */,
 				42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */,
+				425573D82B57DDC700145217 /* Tests */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -2985,6 +2988,14 @@
 				943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		425573D82B57DDC700145217 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				425573D92B57DDE000145217 /* WindowScenesManager.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		426740A42B17348700C1DD73 /* Assets */ = {
@@ -5620,6 +5631,7 @@
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
+				425573DA2B57DDE000145217 /* WindowScenesManager.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
