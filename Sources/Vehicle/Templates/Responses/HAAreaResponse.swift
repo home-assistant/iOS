@@ -1,13 +1,13 @@
 import Foundation
 import HAKit
 
-public struct HAAreaResponse: HADataDecodable {
-    public let aliases: [String]
-    public let areaId: String
-    public let name: String
-    public let picture: String?
+struct HAAreaResponse: HADataDecodable {
+    let aliases: [String]
+    let areaId: String
+    let name: String
+    let picture: String?
 
-    public init(data: HAData) throws {
+    init(data: HAData) throws {
         self.init(
             aliases: try data.decode("aliases"),
             areaId: try data.decode("area_id"),
@@ -24,12 +24,12 @@ public struct HAAreaResponse: HADataDecodable {
     }
 }
 
-public struct HAEntityAreaResponse: HADataDecodable {
-    public let areaId: String?
-    public let entityId: String?
-    public let deviceId: String?
+struct HAEntityAreaResponse: HADataDecodable {
+    let areaId: String?
+    let entityId: String?
+    let deviceId: String?
 
-    public init(data: HAData) throws {
+    init(data: HAData) throws {
         self.init(
             areaId: try? data.decode("area_id"),
             entityId: try? data.decode("entity_id"),
@@ -44,11 +44,11 @@ public struct HAEntityAreaResponse: HADataDecodable {
     }
 }
 
-public struct HADeviceAreaResponse: HADataDecodable {
-    public let areaId: String?
-    public let deviceId: String?
+struct HADeviceAreaResponse: HADataDecodable {
+    let areaId: String?
+    let deviceId: String?
 
-    public init(data: HAData) throws {
+    init(data: HAData) throws {
         self.init(
             areaId: try? data.decode("area_id"),
             deviceId: try? data.decode("id")
