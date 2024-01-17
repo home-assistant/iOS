@@ -517,6 +517,8 @@
 		425573E72B5838BB00145217 /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
 		425573E82B5838E300145217 /* HAAreaResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */; };
 		425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
+		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
+		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
@@ -1607,6 +1609,8 @@
 		425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayDomainsListTemplate+Build.swift"; sourceTree = "<group>"; };
 		425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListViewModel.swift; sourceTree = "<group>"; };
 		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
+		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
+		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFB12B45C6680087C9D7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Core.strings"; sourceTree = "<group>"; };
@@ -3033,6 +3037,7 @@
 				FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */,
 				420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */,
 				420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */,
+				425573EC2B58904000145217 /* CarPlayEntityListItem.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -4011,6 +4016,7 @@
 				42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */,
 				FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */,
 				42F1DA6E2B4EE2CE002729BC /* Responses */,
+				425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -5677,6 +5683,8 @@
 				425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				425573E82B5838E300145217 /* HAAreaResponse.swift in Sources */,
+				425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */,
+				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,

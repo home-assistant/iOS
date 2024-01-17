@@ -70,9 +70,9 @@ extension HAEntity {
         }
     }
 
-    func getIcon(size: CGSize = CGSize(width: 64, height: 64)) -> UIImage? {
+    func getIcon(carUserInterfaceStyle: UIUserInterfaceStyle?) -> UIImage? {
         var image = MaterialDesignIcons.bookmarkIcon
-        var tint: UIColor = .white
+        var tint: UIColor?
 
         if let icon = attributes.icon?.normalizingIconString {
             image = MaterialDesignIcons(named: icon)
@@ -108,7 +108,7 @@ extension HAEntity {
             }
         }
 
-        return image.image(ofSize: size, color: tint)
+        return image.carPlayIcon(color: tint, carUserInterfaceStyle: carUserInterfaceStyle)
     }
 
     private func getInputBooleanIcon() -> MaterialDesignIcons {

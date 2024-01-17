@@ -9,10 +9,13 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
 
-    private let entityIconSize: CGSize = .init(width: 64, height: 64)
     private let entityIdKey = "entityId"
 
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
+
+    private var userInterfaceStyle: UIUserInterfaceStyle? {
+        interfaceController?.carTraitCollection.userInterfaceStyle
+    }
 
     init(
         viewModel: CarPlayEntitiesListViewModel,
@@ -43,39 +46,14 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         viewModel.update()
     }
 
-    func updateItems(entitiesSorted: [HAEntity]) {
-        var items: [CPListItem] = []
-
-        entitiesSorted.forEach { entity in
-            let item = CPListItem(
-                text: entity.attributes.friendlyName ?? entity.entityId,
-                detailText: entity.localizedState,
-                image: entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon.image(ofSize: entityIconSize, color: nil)
-            )
-
-            item.userInfo = [entityIdKey: entity.entityId]
-            item.handler = { [weak self] _, completion in
-                self?.viewModel.handleEntityTap(entity: entity, completion: completion)
+    func updateItems(entityProviders: [CarPlayEntityListItem]) {
+        entityProviders.forEach { entityProvider in
+            entityProvider.template.handler = { [weak self] _, completion in
+                self?.viewModel.handleEntityTap(entity: entityProvider.entity, completion: completion)
             }
-
-            items.append(item)
         }
 
-        paginatedListTemplate.updateItems(items: items, refreshUI: true)
-    }
-
-    func updateItemsState(entities: [HAEntity]) {
-        guard let visibleItems = paginatedListTemplate.template.sections.first?.items as? [CPListItem] else { return }
-        visibleItems.forEach { listItem in
-            guard let userInfo = listItem.userInfo as? [String: String],
-                  let entity = entities.first(where: { $0.entityId == userInfo[entityIdKey] }) else { return }
-            listItem.setDetailText(entity.localizedState)
-            listItem
-                .setImage(
-                    entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon
-                        .image(ofSize: entityIconSize, color: nil)
-                )
-        }
+        paginatedListTemplate.updateItems(items: entityProviders.map(\.template))
     }
 
     func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {
