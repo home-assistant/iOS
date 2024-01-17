@@ -27,7 +27,7 @@ public extension MaterialDesignIcons {
     }
 }
 
-internal extension String {
+public extension String {
     var normalizingIconString: String {
         let base = replacingOccurrences(of: "mdi:|hass:", with: "", options: .regularExpression)
             .replacingOccurrences(of: ":", with: "_")
