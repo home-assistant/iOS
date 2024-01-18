@@ -9,12 +9,20 @@ import Shared
 import UIKit
 import Version
 
+enum SettingsDetailsGroup: String {
+    case display
+    case actions
+    case general
+    case location
+    case privacy
+}
+
 class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    var detailGroup: String = "display"
+    var detailGroup: SettingsDetailsGroup = .display
 
     var doneButton: Bool = false
 
@@ -52,7 +60,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
 
         switch detailGroup {
-        case "general":
+        case .general:
             title = L10n.SettingsDetails.General.title
 
             form
@@ -264,7 +272,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     }
                 }
 
-        case "location":
+        case .location:
             title = L10n.SettingsDetails.Location.title
             form
                 +++ locationPermissionsSection()
@@ -388,7 +396,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
             }
 
-        case "actions":
+        case .actions:
             title = L10n.SettingsDetails.Actions.title
             let actions = realm.objects(Action.self)
                 .sorted(byKeyPath: "Position")
@@ -397,6 +405,19 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             let actionsFooter = Current.isCatalyst ?
                 L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
 
+            let learnAboutActionsButton = ButtonRow {
+                $0.title = L10n.SettingsDetails.Actions.Learn.Button.title
+                $0.tag = "actions_learn_more"
+                $0.cellStyle = .value1
+                $0.cellUpdate { cell, _ in
+                    cell.accessoryType = .detailButton
+                }
+                $0.onCellSelection { _, _ in
+                    guard let url = URL(string: "https://companion.home-assistant.io/docs/core/actions/") else { return }
+                    UIApplication.shared.open(url)
+                }
+            }
+            form +++ learnAboutActionsButton
             form +++ MultivaluedSection(
                 multivaluedOptions: [.Insert, .Delete, .Reorder],
                 header: "",
@@ -483,7 +504,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
             )
 
-        case "privacy":
+        case .privacy:
             title = L10n.SettingsDetails.Privacy.title
 
             form

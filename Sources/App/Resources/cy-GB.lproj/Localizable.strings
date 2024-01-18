@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "Canslo";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Quit";
 "menu.status_item.toggle" = "Toggle %1$@";
 "menu.view.reload_page" = "Reload Page";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Copy to Pasteboard";
 "nfc.detail.duplicate" = "Create a Duplicate";
 "nfc.detail.example_trigger" = "Example Trigger";
@@ -385,8 +390,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
 "settings_details.actions.actions_synced.header" = "Synced Actions";
-"settings_details.actions.footer" = "Defnyddir gweithredoedd yn ap Apple Watch, Ap Icon Actions a'r widget Today";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Addasu";
 "settings_details.actions.scenes.empty" = "Dim Golygfeydd";
 "settings_details.actions.scenes.footer" = "Pan fydd wedi'i alluogi, mae Golygfeydd yn arddangos ochr yn ochr â gweithredoedd. Pan fyddant yn cael eu perfformio, maent yn sbarduno newidiadau golygfa.";

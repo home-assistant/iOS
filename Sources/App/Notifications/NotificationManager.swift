@@ -262,6 +262,22 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         } else {
             completionHandler()
         }
+
+        if response.notification.request.identifier == NotificationIdentifier.carPlayActionIntro.rawValue {
+            Current.Log.info("launching iOS Actions configuration screen")
+            Current.sceneManager.webViewWindowControllerPromise.done {
+                let settingsView = SettingsDetailViewController()
+                settingsView.detailGroup = .actions
+                let navController = UINavigationController(rootViewController: settingsView)
+                settingsView.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                    systemItem: .close,
+                    primaryAction: .init(handler: { _ in
+                        navController.dismiss(animated: true)
+                    })
+                )
+                $0.present(navController)
+            }
+        }
     }
 
     public func userNotificationCenter(

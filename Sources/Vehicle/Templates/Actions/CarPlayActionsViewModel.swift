@@ -39,4 +39,22 @@ final class CarPlayActionsViewModel {
             }
         }
     }
+
+    func sendIntroNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = L10n.CarPlay.Notification.Action.Intro.title
+        content.body = L10n.CarPlay.Notification.Action.Intro.body
+        content.sound = UNNotificationSound.default
+        let request = UNNotificationRequest(
+            identifier: NotificationIdentifier.carPlayActionIntro.rawValue,
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                Current.Log
+                    .info("Error scheduling CarPlay Introduction action notification: \(error.localizedDescription)")
+            }
+        }
+    }
 }

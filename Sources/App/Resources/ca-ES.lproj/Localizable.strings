@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "Cancel·lar";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Sortir";
 "menu.status_item.toggle" = "Commuta %1$@";
 "menu.view.reload_page" = "Recarregar la pàgina";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Copiar al porta-retalls";
 "nfc.detail.duplicate" = "Crear un duplicat";
 "nfc.detail.example_trigger" = "Disparador d'exemple";
@@ -385,8 +390,9 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.actions.actions_synced.footer" = "Les accions definides a .yaml no es poden editar al dispositiu.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Les accions també es poden definir a la configuració .yaml.";
 "settings_details.actions.actions_synced.header" = "Accions sincronitzades";
-"settings_details.actions.footer" = "Les accions s'utilitzen a l'aplicació Apple Watch, en les accions de les icones de l'aplicació i al Today Widget";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Les accions s'utilitzen al menú de l'aplicació i als ginys.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Personalitzar";
 "settings_details.actions.scenes.empty" = "Sense escenes";
 "settings_details.actions.scenes.footer" = "Quan està habilitat, les escenes es mostren al costat de les accions. Quan es realitzen, activen canvis d'escena.";

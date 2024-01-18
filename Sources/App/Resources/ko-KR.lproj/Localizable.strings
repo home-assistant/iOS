@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "신중한 검토 끝에 향후 업데이트에서 iOS 12, 13, 14에 대한 지원을 중단할 예정입니다.";
 "announcement.drop_support.title" = "중요 업데이트";
 "cancel_label" = "취소";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "종료";
 "menu.status_item.toggle" = "%1$@ 토글";
 "menu.view.reload_page" = "페이지 새로고침";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "붙여넣기 보드로 복사";
 "nfc.detail.duplicate" = "복제본 만들기";
 "nfc.detail.example_trigger" = "트리거 예시";
@@ -385,8 +390,9 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.actions.actions_synced.footer" = ".yaml에 정의된 동작은 기기에서 편집할 수 없습니다.";
 "settings_details.actions.actions_synced.footer_no_actions" = "동작은 .yaml 구성에서도 정의할 수 있습니다.";
 "settings_details.actions.actions_synced.header" = "동기화된 동작";
-"settings_details.actions.footer" = "동작은 Apple Watch 앱, 앱 아이콘 동작 및 Today 위젯에서 사용됩니다.";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "동작은 애플리케이션 메뉴와 위젯에서 사용됩니다.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "사용자 지정";
 "settings_details.actions.scenes.empty" = "장면 없음";
 "settings_details.actions.scenes.footer" = "활성화하면 장면이 동작과 함께 표시됩니다. 동작이 수행되면 장면 변경이 트리거됩니다.";

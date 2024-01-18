@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "Avbryt";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Avslutte";
 "menu.status_item.toggle" = "Veksle %1$@";
 "menu.view.reload_page" = "Last siden på nytt";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Kopier til Pasteboard";
 "nfc.detail.duplicate" = "Opprette et duplikat";
 "nfc.detail.example_trigger" = "Eksempel utløser";
@@ -385,8 +390,9 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.actions.actions_synced.footer" = "Handlinger definert i .yaml kan ikke redigeres på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurasjonen.";
 "settings_details.actions.actions_synced.header" = "Synkroniserte handlinger";
-"settings_details.actions.footer" = "Handlinger brukes i Apple Watch-appen, App-ikonhandlinger og widget";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Handlinger brukes i applikasjonsmenyen og widgetene.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Tilpasse";
 "settings_details.actions.scenes.empty" = "Ingen scener";
 "settings_details.actions.scenes.footer" = "Når dette er aktivert, vises scener ved siden av handlinger. Når de blir utført, utløser de sceneendringer.";
