@@ -69,7 +69,7 @@ enum SettingsRootDataSource {
             $0.icon = .paletteOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "general"
+                view.detailGroup = .general
                 return view
             }, onDismiss: nil)
         }
@@ -81,7 +81,7 @@ enum SettingsRootDataSource {
             $0.icon = .crosshairsGpsIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "location"
+                view.detailGroup = .location
                 return view
             }, onDismiss: nil)
         }
@@ -103,7 +103,7 @@ enum SettingsRootDataSource {
             $0.icon = .gamepadVariantOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "actions"
+                view.detailGroup = .actions
                 return view
             }, onDismiss: nil)
         }
@@ -162,7 +162,7 @@ enum SettingsRootDataSource {
             $0.icon = .lockOutlineIcon
             $0.presentationMode = .show(controllerProvider: .callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "privacy"
+                view.detailGroup = .privacy
                 return view
             }, onDismiss: nil)
         }

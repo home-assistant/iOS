@@ -12,6 +12,21 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
 
     weak var interfaceController: CPInterfaceController?
 
+    private lazy var introduceActionsListItem: CPListItem = {
+        let item = CPListItem(
+            text: L10n.CarPlay.Action.Intro.Item.title,
+            detailText: L10n.CarPlay.Action.Intro.Item.body,
+            image: MaterialDesignIcons.homeLightningBoltIcon
+                .carPlayIcon(carUserInterfaceStyle: interfaceController?.carTraitCollection.userInterfaceStyle)
+        )
+        item.handler = { [weak self] _, completion in
+            self?.viewModel.sendIntroNotification()
+            self?.displayActionResultIcon(on: item, success: true)
+            completion()
+        }
+        return item
+    }()
+
     init(viewModel: CarPlayActionsViewModel) {
         self.viewModel = viewModel
         self.template = CPListTemplate(title: L10n.CarPlay.Navigation.Tab.actions, sections: [])
@@ -21,6 +36,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
 
         self.viewModel.templateProvider = self
         template.emptyViewSubtitleVariants = [L10n.SettingsDetails.Actions.title]
+        presentIntroductionItem()
     }
 
     func templateWillDisappear(template: CPTemplate) {
@@ -40,7 +56,15 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     }
 
     func updateList(for actions: Results<Action>) {
+        guard !actions.isEmpty else {
+            presentIntroductionItem()
+            return
+        }
         template.updateSections([section(actions: actions)])
+    }
+
+    private func presentIntroductionItem() {
+        template.updateSections([.init(items: [introduceActionsListItem])])
     }
 
     private func section(actions: Results<Action>) -> CPListSection {
@@ -54,19 +78,26 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
             )
             item.handler = { [weak self] _, _ in
                 self?.viewModel.handleAction(action: action) { success in
-                    if success {
-                        item.setImage(MaterialDesignIcons.checkIcon.carPlayIcon(color: Constants.tintColor))
-                    } else {
-                        item.setImage(MaterialDesignIcons.closeIcon.carPlayIcon(color: .red))
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        item.setImage(materialDesignIcon)
-                    }
+                    self?.displayActionResultIcon(on: item, success: success)
                 }
             }
             return item
         }
 
         return CPListSection(items: items)
+    }
+
+    // Present a checkmark or cross depending on success or failure
+    // After 2 seconds the original icon is restored
+    private func displayActionResultIcon(on item: CPListItem, success: Bool) {
+        let itemOriginalIcon = item.image
+        if success {
+            item.setImage(MaterialDesignIcons.checkIcon.carPlayIcon(color: Constants.tintColor))
+        } else {
+            item.setImage(MaterialDesignIcons.closeIcon.carPlayIcon(color: .red))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            item.setImage(itemOriginalIcon)
+        }
     }
 }

@@ -234,6 +234,16 @@ public enum L10n {
   }
 
   public enum CarPlay {
+    public enum Action {
+      public enum Intro {
+        public enum Item {
+          /// Continue on your iPhone
+          public static var body: String { return L10n.tr("Localizable", "carPlay.action.intro.item.body") }
+          /// Create your first action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.action.intro.item.title") }
+        }
+      }
+    }
     public enum Labels {
       /// Already added
       public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }
@@ -278,48 +288,21 @@ public enum L10n {
       /// No CarPlay compatible entities available.
       public static var title: String { return L10n.tr("Localizable", "carPlay.no_entities.title") }
     }
-    public enum Unlock {
-      public enum Confirmation {
-        /// Are you sure you want to perform unlock action on %@?
-        public static func title(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "carPlay.unlock.confirmation.title", String(describing: p1))
+    public enum Notification {
+      public enum Action {
+        public enum Intro {
+          /// Tap to create your first iOS Action
+          public static var body: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.body") }
+          /// Create iOS Action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.title") }
         }
-      }
-    }
-  }
-
-  public enum Carplay {
-    public enum Labels {
-      /// Already added
-      public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carplay.labels.already_added_server") }
-      /// No domains available
-      public static var emptyDomainList: String { return L10n.tr("Localizable", "carplay.labels.empty_domain_list") }
-      /// No servers available. Add a server in the app.
-      public static var noServersAvailable: String { return L10n.tr("Localizable", "carplay.labels.no_servers_available") }
-      /// Servers
-      public static var servers: String { return L10n.tr("Localizable", "carplay.labels.servers") }
-    }
-    public enum Lock {
-      public enum Confirmation {
-        /// Are you sure you want to perform lock action on %@?
-        public static func title(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "carplay.lock.confirmation.title", String(describing: p1))
-        }
-      }
-    }
-    public enum Navigation {
-      public enum Button {
-        /// Next
-        public static var next: String { return L10n.tr("Localizable", "carplay.navigation.button.next") }
-        /// Previous
-        public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
       }
     }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
         public static func title(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "carplay.unlock.confirmation.title", String(describing: p1))
+          return L10n.tr("Localizable", "carPlay.unlock.confirmation.title", String(describing: p1))
         }
       }
     }
@@ -609,6 +592,11 @@ public enum L10n {
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }
     }
+  }
+
+  public enum NavBar {
+    /// Close
+    public static var close: String { return L10n.tr("Localizable", "navBar.close") }
   }
 
   public enum Nfc {
@@ -1321,7 +1309,7 @@ public enum L10n {
 
   public enum SettingsDetails {
     public enum Actions {
-      /// Actions are used in the Apple Watch app, App Icon Actions and the Today widget
+      /// Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.
       public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.footer") }
       /// Actions are used in the application menu and widgets.
       public static var footerMac: String { return L10n.tr("Localizable", "settings_details.actions.footer_mac") }
@@ -1336,6 +1324,12 @@ public enum L10n {
         public static var footerNoActions: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.footer_no_actions") }
         /// Synced Actions
         public static var header: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.header") }
+      }
+      public enum Learn {
+        public enum Button {
+          /// Introduction to iOS Actions
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.learn.button.title") }
+        }
       }
       public enum Scenes {
         /// Customize
