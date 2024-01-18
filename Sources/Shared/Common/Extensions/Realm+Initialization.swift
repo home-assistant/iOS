@@ -186,7 +186,8 @@ public extension Realm {
 
                 if oldVersion < 27 {
                     migration.enumerateObjects(ofType: Action.className()) { _, newObject in
-                        newObject?["CarPlayAvailable"] = true
+                        newObject?["showInCarPlay"] = true
+                        newObject?["showInWatch"] = true
                     }
                 }
 

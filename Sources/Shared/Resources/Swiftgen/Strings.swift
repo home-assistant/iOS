@@ -1339,7 +1339,7 @@ public enum L10n {
       }
       public enum CarPlay {
         public enum Available {
-          /// CarPlay
+          /// Show in CarPlay
           public static var title: String { return L10n.tr("Localizable", "settings_details.actions.carPlay.available.title") }
         }
       }
@@ -1354,6 +1354,12 @@ public enum L10n {
         public static var selectAll: String { return L10n.tr("Localizable", "settings_details.actions.scenes.select_all") }
         /// Scene Actions
         public static var title: String { return L10n.tr("Localizable", "settings_details.actions.scenes.title") }
+      }
+      public enum Watch {
+        public enum Available {
+          /// Show in Watch
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.watch.available.title") }
+        }
       }
     }
     public enum General {

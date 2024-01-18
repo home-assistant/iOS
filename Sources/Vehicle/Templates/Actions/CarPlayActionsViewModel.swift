@@ -10,7 +10,7 @@ final class CarPlayActionsViewModel {
     func update() {
         let actions = Current.realm().objects(Action.self)
             .sorted(byKeyPath: "Position")
-            .filter("Scene == nil AND CarPlayAvailable == true")
+            .filter("Scene == nil AND showInCarPlay == true")
 
         actionsToken?.invalidate()
         actionsToken = actions.observe { [weak self] _ in
