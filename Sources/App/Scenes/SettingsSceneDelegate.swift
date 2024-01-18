@@ -71,7 +71,7 @@ import UIKit
         } else {
             navigationController?.pushViewController(
                 with(SettingsDetailViewController()) {
-                    $0.detailGroup = "actions"
+                    $0.detailGroup = .actions
                 },
                 animated: animated
             )
