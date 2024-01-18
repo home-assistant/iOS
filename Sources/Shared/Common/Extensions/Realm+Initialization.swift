@@ -80,7 +80,8 @@ public extension Realm {
         // 19 - 2021-11-27 v2021.12 (zone property renames)
         // 20…25 - 2022-08-13 v2022.x undoing realm automatic migration
         // 26 - 2022-08-13 v2022.x bumping mdi version
-        let schemaVersion: UInt64 = 26
+        // 27 - 2024-01-18 v2024.x adding CarPlay toggle to Actions
+        let schemaVersion: UInt64 = 27
 
         let config = Realm.Configuration(
             fileURL: storeURL,
@@ -180,6 +181,13 @@ public extension Realm {
                             Current.Log.info("change \(oldId) + \(serverId) to \(newId)")
                             newObject?["identifier"] = newId
                         }
+                    }
+                }
+
+                if oldVersion < 27 {
+                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
+                        newObject?["showInCarPlay"] = true
+                        newObject?["showInWatch"] = true
                     }
                 }
 

@@ -22,6 +22,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var Scene: RLMScene?
     @objc public dynamic var isServerControlled: Bool = false
     @objc public dynamic var serverIdentifier: String = ""
+    @objc public dynamic var showInCarPlay: Bool = true
+    @objc public dynamic var showInWatch: Bool = true
 
     static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
         #warning("multiserver - primary key duplication")
@@ -68,6 +70,10 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
             return Scene == nil
         case \Action.serverIdentifier:
             return Scene == nil
+        case \Action.showInCarPlay:
+            return Scene == nil
+        case \Action.showInWatch:
+            return Scene == nil
         default:
             return true
         }
@@ -86,6 +92,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         self.isServerControlled = try map.value("isServerControlled")
         self.serverIdentifier = try map.value("serverIdentifier")
+        self.showInCarPlay = try map.value("showInCarPlay")
+        self.showInWatch = try map.value("showInWatch")
         super.init()
     }
 
@@ -101,6 +109,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         CreatedAt >>> (map["CreatedAt"], DateTransform())
         isServerControlled >>> map["isServerControlled"]
         serverIdentifier >>> map["serverIdentifier"]
+        showInCarPlay >>> map["showInCarPlay"]
+        showInWatch >>> map["showInWatch"]
     }
 
     static func didUpdate(objects: [Action], server: Server, realm: Realm) {
@@ -151,6 +161,14 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 
         if let textColor = object.labelColor {
             TextColor = textColor
+        }
+
+        if let showInCarPlay = object.showInCarPlay {
+            self.showInCarPlay = showInCarPlay
+        }
+
+        if let showInWatch = object.showInWatch {
+            self.showInWatch = showInWatch
         }
 
         return true

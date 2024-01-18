@@ -1362,6 +1362,12 @@ public enum L10n {
         /// Synced Actions
         public static var header: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.header") }
       }
+      public enum CarPlay {
+        public enum Available {
+          /// Show in CarPlay
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.carPlay.available.title") }
+        }
+      }
       public enum Learn {
         public enum Button {
           /// Introduction to iOS Actions
@@ -1379,6 +1385,12 @@ public enum L10n {
         public static var selectAll: String { return L10n.tr("Localizable", "settings_details.actions.scenes.select_all") }
         /// Scene Actions
         public static var title: String { return L10n.tr("Localizable", "settings_details.actions.scenes.title") }
+      }
+      public enum Watch {
+        public enum Available {
+          /// Show in Watch
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.watch.available.title") }
+        }
       }
     }
     public enum General {

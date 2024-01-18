@@ -113,6 +113,28 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
+        if !Current.isCatalyst {
+            firstSection <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Actions.CarPlay.Available.title
+                $0.value = action.showInCarPlay
+                $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.showInCarPlay))
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.showInCarPlay = value
+                }
+            }
+
+            firstSection <<< SwitchRow("showInWatch") {
+                $0.title = L10n.SettingsDetails.Actions.Watch.Available.title
+                $0.value = action.showInWatch
+                $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.showInWatch))
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.showInWatch = value
+                }
+            }
+        }
+
         // After text if uneditable
         firstSection <<< VoiceShortcutRow {
             $0.buttonStyle = .automaticOutline
@@ -239,11 +261,15 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             form.append(visuals)
         }
 
-        form +++ ViewRow<ActionPreview>("preview").cellSetup { cell, _ in
+        form +++ ViewRow<ActionPreview>("preview") { [weak self] row in
+            row.hidden = Condition.function(["showInWatch"], { _ in
+                !(self?.action.showInWatch ?? true)
+            })
+        }.cellSetup { [weak self] cell, _ in
             cell.backgroundColor = UIColor.clear
             cell.preservesSuperviewLayoutMargins = false
-            self.updatePreviews()
-            cell.view = self.preview
+            self?.updatePreviews()
+            cell.view = self?.preview
         }
 
         form +++ YamlSection(
