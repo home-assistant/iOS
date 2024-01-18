@@ -29,9 +29,8 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     }
 
     func updateList(domains: [Domain]) {
-        var items: [CPListItem] = []
         let userInterfaceStyle = interfaceController?.carTraitCollection.userInterfaceStyle
-        domains.forEach { domain in
+        let items: [CPListItem] = domains.map { domain in
             let itemTitle = domain.localizedDescription
             let listItem = CPListItem(
                 text: itemTitle,
@@ -46,7 +45,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
                 completion()
             }
 
-            items.append(listItem)
+            return listItem
         }
 
         template.updateSections([CPListSection(items: items)])
