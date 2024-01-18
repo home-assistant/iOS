@@ -13,7 +13,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     init(viewModel: CarPlayAreasViewModel) {
         self.viewModel = viewModel
         self.template = CPListTemplate(title: "", sections: [])
-        template.tabImage = MaterialDesignIcons.sofaIcon.carPlayIcon(color: Constants.tintColor)
+        template.tabImage = MaterialDesignIcons.sofaIcon.carPlayIcon()
         template.tabTitle = L10n.CarPlay.Navigation.Tab.areas
 
         viewModel.templateProvider = self

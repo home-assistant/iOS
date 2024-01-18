@@ -59,7 +59,7 @@ public enum Domain: String, CaseIterable {
         return states
     }
 
-    public var icon: UIImage {
+    public var icon: MaterialDesignIcons {
         var image = MaterialDesignIcons.bookmarkIcon
         switch self {
         case .button:
@@ -81,7 +81,7 @@ public enum Domain: String, CaseIterable {
         case .switch:
             image = MaterialDesignIcons.lightSwitchIcon
         }
-        return image.carPlayIcon()
+        return image
     }
 
     public var localizedDescription: String {

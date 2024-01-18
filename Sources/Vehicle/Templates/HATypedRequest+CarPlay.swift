@@ -1,7 +1,8 @@
 import Foundation
 import HAKit
+import Shared
 
-public extension HATypedRequest {
+extension HATypedRequest {
     static func toggleDomain(
         domain: Domain,
         entityId: String

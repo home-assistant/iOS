@@ -16,7 +16,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
         self.viewModel = viewModel
         self.template = CPListTemplate(title: L10n.CarPlay.Navigation.Tab.actions, sections: [])
         template.tabTitle = L10n.CarPlay.Navigation.Tab.actions
-        template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon(color: nil)
+        template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
         template.tabSystemItem = .more
 
         self.viewModel.templateProvider = self
@@ -46,14 +46,23 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private func section(actions: Results<Action>) -> CPListSection {
         let items: [CPListItem] = actions.map { action in
             let materialDesignIcon = MaterialDesignIcons(named: action.IconName)
-                .image(ofSize: CPListItem.maximumImageSize, color: UIColor(hex: action.IconColor))
+                .carPlayIcon(carUserInterfaceStyle: interfaceController?.carTraitCollection.userInterfaceStyle)
             let item = CPListItem(
                 text: action.Name,
                 detailText: action.Text,
                 image: materialDesignIcon
             )
-            item.handler = { [weak self] _, completion in
-                self?.viewModel.handleAction(action: action, completion: completion)
+            item.handler = { [weak self] _, _ in
+                self?.viewModel.handleAction(action: action) { success in
+                    if success {
+                        item.setImage(MaterialDesignIcons.checkIcon.carPlayIcon(color: Constants.tintColor))
+                    } else {
+                        item.setImage(MaterialDesignIcons.closeIcon.carPlayIcon(color: .red))
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        item.setImage(materialDesignIcon)
+                    }
+                }
             }
             return item
         }
