@@ -29,6 +29,15 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         step = OnboardingAuthStepDuplicate(api: api, sender: sender)
     }
 
+    override func tearDown() {
+        super.tearDown()
+        step = nil
+        api = nil
+        connection = nil
+        sender = nil
+        deviceName = nil
+    }
+
     func testSupportedPoints() {
         XCTAssertTrue(OnboardingAuthStepDuplicate.supportedPoints.contains(.beforeRegister))
     }

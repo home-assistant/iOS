@@ -48,9 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     let sceneManager = SceneManager()
-    let lifecycleManager = LifecycleManager()
+    private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
-
     private var zoneManager: ZoneManager?
     private var titleSubscription: MenuManagerTitleSubscription? {
         didSet {

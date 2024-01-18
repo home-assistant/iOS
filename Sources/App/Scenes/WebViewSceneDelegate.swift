@@ -65,12 +65,20 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         }
 
         informManager(from: connectionOptions)
+
+        #if targetEnvironment(macCatalyst)
+        WindowScenesManager.shared.sceneDidBecomeActive(scene)
+        #endif
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         windowController = nil
         window = nil
         urlHandler = nil
+
+        #if targetEnvironment(macCatalyst)
+        WindowScenesManager.shared.didDiscardScene(scene)
+        #endif
     }
 
     func windowScene(
