@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "cancel_label" = "取消";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "退出";
 "menu.status_item.toggle" = "切换到%1$@";
 "menu.view.reload_page" = "重新加载页面";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "复制到粘贴板";
 "nfc.detail.duplicate" = "制作副本";
 "nfc.detail.example_trigger" = "示例触发器";
@@ -382,8 +387,9 @@
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在.yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
 "settings_details.actions.actions_synced.header" = "同步的动作";
-"settings_details.actions.footer" = "动作可用于Apple Watch应用程序，App图标操作和Today小部件。";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "操作用于应用程序菜单和小部件。";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "自定义";
 "settings_details.actions.scenes.empty" = "没有场景";
 "settings_details.actions.scenes.footer" = "启用后，场景将与操作一起显示。执行时，它们会触发场景更改。";

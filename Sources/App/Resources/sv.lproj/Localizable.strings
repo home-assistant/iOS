@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "Efter noggrant övervägande kommer vi att avbryta supporten för iOS 12, 13 och 14 i våra kommande uppdateringar.";
 "announcement.drop_support.title" = "Viktig uppdatering";
 "cancel_label" = "Avbryt";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Avsluta";
 "menu.status_item.toggle" = "Växla %1$@";
 "menu.view.reload_page" = "Ladda om sida";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Kopiera till klippbord";
 "nfc.detail.duplicate" = "Skapa kopia";
 "nfc.detail.example_trigger" = "Exempel-utlösare";
@@ -385,8 +390,9 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.actions.actions_synced.footer" = "Åtgärder definierade i .yaml kan inte redigeras på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Åtgärder kan också definieras i .yaml-konfigurationen.";
 "settings_details.actions.actions_synced.header" = "Synkade åtgärder";
-"settings_details.actions.footer" = "Åtgärder används i Apple Watch, appikonåtgärder och idag-widgeten";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Åtgärder används i program-menyn och widgetar.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Skräddarsy";
 "settings_details.actions.scenes.empty" = "Inga scener";
 "settings_details.actions.scenes.footer" = "Scener visas bredvid åtgärder när de är aktiverade. När de utförs utlöser de scen-förändringar.";

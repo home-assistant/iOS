@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "После тщательного рассмотрения мы прекратим поддержку iOS 12, 13 и 14 в наших предстоящих обновлениях.";
 "announcement.drop_support.title" = "Важное обновление";
 "cancel_label" = "Отмена";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Выйти";
 "menu.status_item.toggle" = "Переключить %1$@";
 "menu.view.reload_page" = "Reload Page";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Копировать на бумагу или в память";
 "nfc.detail.duplicate" = "Создать дубликат";
 "nfc.detail.example_trigger" = "Пример триггера";
@@ -385,8 +390,9 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.actions.actions_synced.footer" = "Действия, определенные в файле .yaml, нельзя редактировать на устройстве.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Действия также могут быть определены в конфигурации файла configuration.yaml.";
 "settings_details.actions.actions_synced.header" = "Синхронизированные действия";
-"settings_details.actions.footer" = "Действия используются в приложении Apple Watch, действиях у значка приложения и в виджете на экране «Сегодня»";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Действия используются в меню приложения и виджетах.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Настроить";
 "settings_details.actions.scenes.empty" = "Нет сцен";
 "settings_details.actions.scenes.footer" = "Если включено, сцены отображаются рядом с действиями. При выполнении они вызывают изменение сцены.";

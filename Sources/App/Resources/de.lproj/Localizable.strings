@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "Nach sorgfältiger Überlegung werden wir in unseren kommenden Updates den Support für iOS 12, 13 und 14 einstellen.";
 "announcement.drop_support.title" = "Wichtiges Update";
 "cancel_label" = "Abbrechen";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Bereits hinzugefügt";
 "carplay.labels.empty_domain_list" = "Keine Domänen verfügbar";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Beenden";
 "menu.status_item.toggle" = "Schalte %1$@ um";
 "menu.view.reload_page" = "Seite neuladen";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "In die Zwischenablage kopieren";
 "nfc.detail.duplicate" = "Duplikat erstellen";
 "nfc.detail.example_trigger" = "Beispiel Auslöser";
@@ -385,8 +390,9 @@ Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware 
 "settings_details.actions.actions_synced.footer" = "In .yaml definierte Aktionen können auf dem Gerät nicht bearbeitet werden.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Aktionen können auch in der .yaml-Konfiguration definiert werden.";
 "settings_details.actions.actions_synced.header" = "Synchronisierte Aktionen";
-"settings_details.actions.footer" = "Aktionen werden in der Apple Watch App, App-Symbol-Aktionen und dem Heute-Widget verwendet.";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Aktionen werden im App Menü und in Widgets verwendet.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Anpassen";
 "settings_details.actions.scenes.empty" = "Keine Szenen";
 "settings_details.actions.scenes.footer" = "Wenn diese Option aktiviert ist, werden Szenen neben Aktionen angezeigt. Wenn sie ausgeführt werden, lösen sie Szenenwechsel aus.";

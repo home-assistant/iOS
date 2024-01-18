@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "Alapos mérlegelés után a következő frissítéseinkben megszüntetjük az iOS 12, 13 és 14 támogatását.";
 "announcement.drop_support.title" = "Fontos frissítés";
 "cancel_label" = "Mégse";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Már hozzáadva";
 "carplay.labels.empty_domain_list" = "Nincsenek elérhető domainek";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Kilépés";
 "menu.status_item.toggle" = "%1$@ kapcsolása";
 "menu.view.reload_page" = "Oldal újratöltése";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Másolás a beillesztőtáblára";
 "nfc.detail.duplicate" = "Hozzon létre egy másolatot";
 "nfc.detail.example_trigger" = "Példa eseményindító";
@@ -385,8 +390,9 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.actions.actions_synced.footer" = "A .yaml-ben definiált műveletek nem szerkeszthetők az eszközön.";
 "settings_details.actions.actions_synced.footer_no_actions" = "A műveleteket a .yaml konfigurációban is meg lehet adni.";
 "settings_details.actions.actions_synced.header" = "Szinkronizált műveletek";
-"settings_details.actions.footer" = "A műveleteket az Apple Watch alkalmazás, az App Icon Actions és a Today widget használja";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "A műveletek az alkalmazás menüjében és a widgetekben használatosak.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Testreszabás";
 "settings_details.actions.scenes.empty" = "Nincsenek jelenetek";
 "settings_details.actions.scenes.footer" = "Ha engedélyezve van, a jelenetek a műveletek mellett jelennek meg. Végrehajtásukkor a jelenetváltozásokat indítják el.";

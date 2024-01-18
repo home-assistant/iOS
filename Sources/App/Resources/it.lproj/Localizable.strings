@@ -48,6 +48,8 @@
 "announcement.drop_support.subtitle" = "Dopo un'attenta valutazione, nei nostri prossimi aggiornamenti interromperemo il supporto per iOS 12, 13 e 14.";
 "announcement.drop_support.title" = "Aggiornamento importante";
 "cancel_label" = "Annulla";
+"carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
+"carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -61,6 +63,8 @@
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Già aggiunto";
 "carplay.labels.empty_domain_list" = "Nessun dominio disponibile";
@@ -156,6 +160,7 @@
 "menu.status_item.quit" = "Esci dall'app";
 "menu.status_item.toggle" = "Attiva/disattiva %1$@";
 "menu.view.reload_page" = "Ricarica la pagina";
+"navBar.close" = "Close";
 "nfc.detail.copy" = "Copia negli appunti";
 "nfc.detail.duplicate" = "Crea duplicato";
 "nfc.detail.example_trigger" = "Trigger di esempio";
@@ -385,8 +390,9 @@
 "settings_details.actions.actions_synced.footer" = "Le azioni definite in .yaml non sono editabili sul dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Le azioni possono essere anche definite nella configurazione .yaml.";
 "settings_details.actions.actions_synced.header" = "Azioni sincronizzate";
-"settings_details.actions.footer" = "Le azioni vengono utilizzate nel widget, nell'app per Apple Watch e nelle azioni Icon App.";
+"settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Le azioni vengono utilizzate nel menu dell'applicazione e nei widget.";
+"settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
 "settings_details.actions.scenes.customize_action" = "Personalizza";
 "settings_details.actions.scenes.empty" = "Nessuna scena";
 "settings_details.actions.scenes.footer" = "Quando questa opzione è abilitata, le scene vengono visualizzate accanto alle azioni. Quando vengono eseguite, attivano le modifiche alla scena.";
