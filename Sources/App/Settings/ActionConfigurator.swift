@@ -113,6 +113,18 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
+        if !Current.isCatalyst {
+            firstSection <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Actions.CarPlay.Available.title
+                $0.value = action.CarPlayAvailable
+                $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.CarPlayAvailable))
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.CarPlayAvailable = value
+                }
+            }
+        }
+
         // After text if uneditable
         firstSection <<< VoiceShortcutRow {
             $0.buttonStyle = .automaticOutline

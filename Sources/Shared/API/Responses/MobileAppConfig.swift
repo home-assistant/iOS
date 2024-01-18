@@ -8,6 +8,7 @@ public struct MobileAppConfigAction: ImmutableMappable, UpdatableModelSource {
     var labelColor: String?
     var iconIcon: String?
     var iconColor: String?
+    var carPlayAvailable: Bool?
 
     public init(map: Map) throws {
         self.name = try map.value("name")
@@ -16,6 +17,7 @@ public struct MobileAppConfigAction: ImmutableMappable, UpdatableModelSource {
         self.labelColor = try? map.value("label.color")
         self.iconIcon = try? map.value("icon.icon")
         self.iconColor = try? map.value("icon.color")
+        self.carPlayAvailable = try? map.value("carplay_available")
     }
 
     public var primaryKey: String { name }

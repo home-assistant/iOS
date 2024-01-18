@@ -1337,6 +1337,12 @@ public enum L10n {
         /// Synced Actions
         public static var header: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.header") }
       }
+      public enum CarPlay {
+        public enum Available {
+          /// CarPlay
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.carPlay.available.title") }
+        }
+      }
       public enum Scenes {
         /// Customize
         public static var customizeAction: String { return L10n.tr("Localizable", "settings_details.actions.scenes.customize_action") }

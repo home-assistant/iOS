@@ -22,6 +22,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     @objc public dynamic var Scene: RLMScene?
     @objc public dynamic var isServerControlled: Bool = false
     @objc public dynamic var serverIdentifier: String = ""
+    @objc public dynamic var CarPlayAvailable: Bool = true
 
     static func primaryKey(sourceIdentifier: String, serverIdentifier: String) -> String {
         #warning("multiserver - primary key duplication")
@@ -68,6 +69,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
             return Scene == nil
         case \Action.serverIdentifier:
             return Scene == nil
+        case \Action.CarPlayAvailable:
+            return Scene == nil
         default:
             return true
         }
@@ -86,6 +89,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
         self.isServerControlled = try map.value("isServerControlled")
         self.serverIdentifier = try map.value("serverIdentifier")
+        self.CarPlayAvailable = try map.value("CarPlayAvailable")
         super.init()
     }
 
@@ -101,6 +105,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         CreatedAt >>> (map["CreatedAt"], DateTransform())
         isServerControlled >>> map["isServerControlled"]
         serverIdentifier >>> map["serverIdentifier"]
+        CarPlayAvailable >>> map["CarPlayAvailable"]
     }
 
     static func didUpdate(objects: [Action], server: Server, realm: Realm) {
