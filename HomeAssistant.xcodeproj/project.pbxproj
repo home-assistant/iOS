@@ -517,8 +517,11 @@
 		425573E72B5838BB00145217 /* HATypedRequest+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */; };
 		425573E82B5838E300145217 /* HAAreaResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */; };
 		425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
+		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
+		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		425573EF2B589B0F00145217 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
-		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+    426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
@@ -1609,6 +1612,10 @@
 		425573CD2B5574F100145217 /* CarPlayAreasViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayAreasViewModel.swift; sourceTree = "<group>"; };
 		425573D02B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayDomainsListTemplate+Build.swift"; sourceTree = "<group>"; };
 		425573D22B55770D00145217 /* CarPlayDomainsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListViewModel.swift; sourceTree = "<group>"; };
+		425573E42B58380D00145217 /* CarPlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CarPlay.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework; sourceTree = DEVELOPER_DIR; };
+		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
+		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
+		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
 		425573D92B57DDE000145217 /* WindowScenesManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.test.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
@@ -2537,6 +2544,7 @@
 				11195F6E267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift */,
 				11B92A7F266F23CD00786588 /* NotificationManagerLocalPushInterfaceExtension.swift */,
 				11195F70267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift */,
+				425573EE2B589B0F00145217 /* NotificationIdentifier.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -5691,6 +5699,7 @@
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
+				425573EF2B589B0F00145217 /* NotificationIdentifier.swift in Sources */,
 				425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				425573E82B5838E300145217 /* HAAreaResponse.swift in Sources */,
