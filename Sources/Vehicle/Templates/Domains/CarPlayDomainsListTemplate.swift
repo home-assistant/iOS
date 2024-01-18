@@ -8,6 +8,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
 
     private let viewModel: CarPlayDomainsListViewModel
+    private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
 
     weak var interfaceController: CPInterfaceController?
     var template: CPListTemplate
@@ -25,6 +26,29 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
 
     func update() {
         viewModel.update()
+    }
+
+    func updateList(domains: [Domain]) {
+        let userInterfaceStyle = interfaceController?.carTraitCollection.userInterfaceStyle
+        let items: [CPListItem] = domains.map { domain in
+            let itemTitle = domain.localizedDescription
+            let listItem = CPListItem(
+                text: itemTitle,
+                detailText: nil,
+                image: domain == .cover ? overrideCoverIcon
+                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle) : domain.icon
+                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle)
+            )
+            listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
+            listItem.handler = { [weak self] _, completion in
+                self?.viewModel.listItemHandler(domain: domain.rawValue)
+                completion()
+            }
+
+            return listItem
+        }
+
+        template.updateSections([CPListSection(items: items)])
     }
 
     func templateWillDisappear(template: CPTemplate) {

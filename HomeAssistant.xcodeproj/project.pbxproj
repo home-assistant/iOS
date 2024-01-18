@@ -3040,6 +3040,7 @@
 				FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */,
 				420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */,
 				420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */,
+				425573EC2B58904000145217 /* CarPlayEntityListItem.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -4018,6 +4019,7 @@
 				42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */,
 				FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */,
 				42F1DA6E2B4EE2CE002729BC /* Responses */,
+				425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -5685,6 +5687,8 @@
 				425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				425573E82B5838E300145217 /* HAAreaResponse.swift in Sources */,
+				425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */,
+				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,

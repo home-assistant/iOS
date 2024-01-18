@@ -19,26 +19,10 @@ final class CarPlayEntitiesListViewModel {
     private let entitiesCachedStates: HACache<HACachedStates>
 
     private var entitiesSubscriptionToken: HACancellable?
-    private var entitiesIdsCurrentlyInList: [String] = []
+    private var entityProviders: [CarPlayEntityListItem] = []
     weak var templateProvider: CarPlayEntitiesListTemplate?
 
-    init(filterType: FilterType, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
-        self.filterType = filterType
-        self.server = server
-        self.entitiesCachedStates = entitiesCachedStates
-    }
-
-    func cancelSubscriptionToken() {
-        entitiesSubscriptionToken?.cancel()
-    }
-
-    func subscribe() {
-        entitiesSubscriptionToken = entitiesCachedStates.subscribe { [weak self] _, _ in
-            self?.update()
-        }
-    }
-
-    func update() {
+    private var sortedEntities: [HAEntity] {
         guard let entities = entitiesCachedStates.map({ cachedState in
             cachedState.all.filter { [self] entity in
                 switch self.filterType {
@@ -52,7 +36,7 @@ final class CarPlayEntitiesListViewModel {
                     }
                 }
             }
-        }).value else { return }
+        }).value else { return [] }
 
         let entitiesSorted = entities.sorted(by: { e1, e2 in
             let lowPriorityStates: Set<String> = [Domain.State.unknown.rawValue, Domain.State.unavailable.rawValue]
@@ -76,15 +60,41 @@ final class CarPlayEntitiesListViewModel {
             return (e1.attributes.friendlyName ?? e1.entityId) < (e2.attributes.friendlyName ?? e2.entityId)
         })
 
-        // Prevent unecessary update and UI glitch for non-touch screen CarPlay
-        let entitiesIds = entitiesSorted.map(\.entityId).sorted()
-        guard entitiesIdsCurrentlyInList != entitiesIds else {
-            templateProvider?.updateItemsState(entities: entitiesSorted)
-            return
-        }
-        entitiesIdsCurrentlyInList = entitiesIds
+        return entitiesSorted
+    }
 
-        templateProvider?.updateItems(entitiesSorted: entitiesSorted)
+    init(filterType: FilterType, server: Server, entitiesCachedStates: HACache<HACachedStates>) {
+        self.filterType = filterType
+        self.server = server
+        self.entitiesCachedStates = entitiesCachedStates
+    }
+
+    func cancelSubscriptionToken() {
+        entitiesSubscriptionToken?.cancel()
+    }
+
+    func subscribe() {
+        entitiesSubscriptionToken = entitiesCachedStates.subscribe { [weak self] _, _ in
+            self?.updateStates()
+        }
+    }
+
+    func update() {
+        entityProviders = sortedEntities.map { entity in
+            CarPlayEntityListItem(entity: entity)
+        }
+
+        templateProvider?.updateItems(entityProviders: entityProviders)
+    }
+
+    private func updateStates() {
+        // Avoid computing property several times
+        let sortedEntities = sortedEntities
+        entityProviders.forEach { item in
+            guard let updatedEntity = sortedEntities.first(where: { $0.entityId == item.entity.entityId }),
+                  item.entity.state != updatedEntity.state else { return }
+            item.update(entity: updatedEntity)
+        }
     }
 
     func handleEntityTap(entity: HAEntity, completion: @escaping () -> Void) {
