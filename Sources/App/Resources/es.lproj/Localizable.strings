@@ -390,6 +390,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.actions.actions_synced.footer" = "Las acciones definidas en .yaml no se pueden editar en el dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Las acciones también se pueden definir en la configuración .yaml.";
 "settings_details.actions.actions_synced.header" = "Acciones sincronizadas";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Acciones de escena";
 "settings_details.actions.title" = "Acciones";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Negro";
 "settings_details.general.app_icon.enum.blue" = "Azul";

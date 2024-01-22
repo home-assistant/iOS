@@ -390,6 +390,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.actions.actions_synced.footer" = "Acties die zijn gedefinieerd in .yaml, kunnen niet op het apparaat worden bewerkt.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Acties kunnen ook worden gedefinieerd in de .yaml-configuratie.";
 "settings_details.actions.actions_synced.header" = "Gesynchroniseerde acties";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Acties worden gebruikt in het toepassingsmenu en widgets.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Scene Acties";
 "settings_details.actions.title" = "Acties";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Bèta";
 "settings_details.general.app_icon.enum.black" = "Zwart";
 "settings_details.general.app_icon.enum.blue" = "Blauw";

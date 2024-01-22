@@ -390,6 +390,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.actions.actions_synced.footer" = "Handlinger definert i .yaml kan ikke redigeres på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurasjonen.";
 "settings_details.actions.actions_synced.header" = "Synkroniserte handlinger";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Handlinger brukes i applikasjonsmenyen og widgetene.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Scene handlinger";
 "settings_details.actions.title" = "Handlinger";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Svart";
 "settings_details.general.app_icon.enum.blue" = "Blå";

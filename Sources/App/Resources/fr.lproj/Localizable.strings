@@ -390,6 +390,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.actions.actions_synced.footer" = "Les actions définies dans .yaml ne sont pas modifiables sur l'appareil.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Les actions peuvent également être définies dans la configuration .yaml.";
 "settings_details.actions.actions_synced.header" = "Actions synchronisées";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Les actions sont utilisées dans le menu de l'application et des widgets.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "settings_details.actions.scenes.select_all" = "Sélectionner tout";
 "settings_details.actions.scenes.title" = "Éditeur de scène";
 "settings_details.actions.title" = "Actions";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Bêta";
 "settings_details.general.app_icon.enum.black" = "Noir";
 "settings_details.general.app_icon.enum.blue" = "Bleu";

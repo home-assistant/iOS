@@ -390,6 +390,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Las acciones también se pueden definir en la configuración .yaml.";
 "settings_details.actions.actions_synced.header" = "Synced Actions";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Las acciones se utilizan en el menú de la aplicación y en los widgets.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Scene Actions";
 "settings_details.actions.title" = "Actions";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Black";
 "settings_details.general.app_icon.enum.blue" = "Blue";

@@ -390,6 +390,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.actions.actions_synced.footer" = "Действия, определенные в файле .yaml, нельзя редактировать на устройстве.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Действия также могут быть определены в конфигурации файла configuration.yaml.";
 "settings_details.actions.actions_synced.header" = "Синхронизированные действия";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Действия используются в меню приложения и виджетах.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.actions.scenes.select_all" = "Выбрать все";
 "settings_details.actions.scenes.title" = "Действия в сцене";
 "settings_details.actions.title" = "Действия";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Бета";
 "settings_details.general.app_icon.enum.black" = "Чёрный";
 "settings_details.general.app_icon.enum.blue" = "Синий";
