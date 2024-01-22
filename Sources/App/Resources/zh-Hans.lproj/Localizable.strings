@@ -387,6 +387,7 @@
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在.yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
 "settings_details.actions.actions_synced.header" = "同步的动作";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "操作用于应用程序菜单和小部件。";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -396,6 +397,7 @@
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "场景动作";
 "settings_details.actions.title" = "动作";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta版";
 "settings_details.general.app_icon.enum.black" = "黑色";
 "settings_details.general.app_icon.enum.blue" = "蓝色";

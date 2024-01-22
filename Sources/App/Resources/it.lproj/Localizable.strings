@@ -390,6 +390,7 @@
 "settings_details.actions.actions_synced.footer" = "Le azioni definite in .yaml non sono editabili sul dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Le azioni possono essere anche definite nella configurazione .yaml.";
 "settings_details.actions.actions_synced.header" = "Azioni sincronizzate";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Le azioni vengono utilizzate nel menu dell'applicazione e nei widget.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@
 "settings_details.actions.scenes.select_all" = "Seleziona tutto";
 "settings_details.actions.scenes.title" = "Azioni scena";
 "settings_details.actions.title" = "Azioni";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Nero";
 "settings_details.general.app_icon.enum.blue" = "Blu";

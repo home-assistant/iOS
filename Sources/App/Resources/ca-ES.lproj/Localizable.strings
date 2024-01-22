@@ -390,6 +390,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.actions.actions_synced.footer" = "Les accions definides a .yaml no es poden editar al dispositiu.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Les accions també es poden definir a la configuració .yaml.";
 "settings_details.actions.actions_synced.header" = "Accions sincronitzades";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Les accions s'utilitzen al menú de l'aplicació i als ginys.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Accions d’escena";
 "settings_details.actions.title" = "Accions";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Negre";
 "settings_details.general.app_icon.enum.blue" = "Blau";

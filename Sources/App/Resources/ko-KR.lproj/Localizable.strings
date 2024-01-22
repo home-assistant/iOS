@@ -390,6 +390,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.actions.actions_synced.footer" = ".yaml에 정의된 동작은 기기에서 편집할 수 없습니다.";
 "settings_details.actions.actions_synced.footer_no_actions" = "동작은 .yaml 구성에서도 정의할 수 있습니다.";
 "settings_details.actions.actions_synced.header" = "동기화된 동작";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "동작은 애플리케이션 메뉴와 위젯에서 사용됩니다.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.actions.scenes.select_all" = "모두 선택";
 "settings_details.actions.scenes.title" = "장면 동작";
 "settings_details.actions.title" = "동작";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "베타";
 "settings_details.general.app_icon.enum.black" = "검정색";
 "settings_details.general.app_icon.enum.blue" = "파란색";

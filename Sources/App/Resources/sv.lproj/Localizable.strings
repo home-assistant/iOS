@@ -390,6 +390,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.actions.actions_synced.footer" = "Åtgärder definierade i .yaml kan inte redigeras på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Åtgärder kan också definieras i .yaml-konfigurationen.";
 "settings_details.actions.actions_synced.header" = "Synkade åtgärder";
+"settings_details.actions.carPlay.available.title" = "Show in CarPlay";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.";
 "settings_details.actions.footer_mac" = "Åtgärder används i program-menyn och widgetar.";
 "settings_details.actions.learn.button.title" = "Introduction to iOS Actions";
@@ -399,6 +400,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.actions.scenes.select_all" = "Välj alla";
 "settings_details.actions.scenes.title" = "Scen-åtgärder";
 "settings_details.actions.title" = "Åtgärder";
+"settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Svart";
 "settings_details.general.app_icon.enum.blue" = "Blå";
