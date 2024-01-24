@@ -737,6 +737,16 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     }.done {
                         self?.updatePositions()
                     }.cauterize()
+
+                    if vc.shouldOpenAutomationEditor {
+                        vc.navigationController?.dismiss(animated: true, completion: {
+                            Current.sceneManager.webViewWindowControllerPromise.done { controller in
+                                controller.webViewControllerPromise.done { webViewController in
+                                    webViewController.openActionAutomationEditor(actionId: vc.action.ID)
+                                }
+                            }
+                        })
+                    }
                 }
             })
         }

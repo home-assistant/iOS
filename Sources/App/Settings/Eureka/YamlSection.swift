@@ -10,6 +10,10 @@ public final class YamlSection: Section {
 
         row.cellSetup { cell, _ in
             cell.textView.configureCodeFont()
+            cell.textView.isEditable = false
+        }
+        row.cellUpdate { cell, _ in
+            cell.textView.isEditable = false
         }
     }
 

@@ -18,9 +18,10 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
         }
     }
 
-    var newAction: Bool = true
-    var shouldSave: Bool = false
-    var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 44))
+    private var newAction: Bool = true
+    private(set) var shouldSave: Bool = false
+    private(set) var shouldOpenAutomationEditor: Bool = false
+    private var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 55))
 
     convenience init(action: Action?) {
         self.init()
@@ -52,6 +53,18 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
+        form +++ ViewRow<ActionPreview>("preview") { [weak self] row in
+            row.hidden = Condition.function(["showInWatch"], { _ in
+                !(self?.action.showInWatch ?? true)
+            })
+        }.cellSetup { [weak self] cell, _ in
+            guard let self else { return }
+            cell.backgroundColor = UIColor.clear
+            cell.preservesSuperviewLayoutMargins = false
+            self.updatePreviews()
+            cell.view = self.preview
+        }
+
         let firstSection = Section()
         form +++ firstSection
 
@@ -71,8 +84,7 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
-        let visuals = Section(
-        )
+        let visuals = Section()
 
         if action.canConfigure(\Action.Text) || action.isServerControlled {
             let section: Section
@@ -133,12 +145,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                     self.action.showInWatch = value
                 }
             }
-        }
-
-        // After text if uneditable
-        firstSection <<< VoiceShortcutRow {
-            $0.buttonStyle = .automaticOutline
-            $0.value = .intent(PerformActionIntent(action: action))
         }
 
         if action.canConfigure(\Action.TextColor) {
@@ -230,15 +236,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                 }
             }
         } else {
-            // only show cancel/save flow for editable actions
-            navigationItem.leftBarButtonItems = [
-                UIBarButtonItem(
-                    barButtonSystemItem: .cancel,
-                    target: self,
-                    action: #selector(cancel)
-                ),
-            ]
-
             navigationItem.rightBarButtonItems = [
                 UIBarButtonItem(
                     barButtonSystemItem: .save,
@@ -261,15 +258,16 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             form.append(visuals)
         }
 
-        form +++ ViewRow<ActionPreview>("preview") { [weak self] row in
-            row.hidden = Condition.function(["showInWatch"], { _ in
-                !(self?.action.showInWatch ?? true)
+        form +++ Section(header: L10n.ActionsConfigurator.Action.title, footer: L10n.ActionsConfigurator.Action.footer)
+            <<< ButtonRow {
+                $0.title = L10n.ActionsConfigurator.Action.createAutomation
+            }.onCellSelection({ [weak self] _, _ in
+                self?.saveAndAutomate()
             })
-        }.cellSetup { [weak self] cell, _ in
-            cell.backgroundColor = UIColor.clear
-            cell.preservesSuperviewLayoutMargins = false
-            self?.updatePreviews()
-            cell.view = self?.preview
+
+        form +++ VoiceShortcutRow {
+            $0.buttonStyle = .automaticOutline
+            $0.value = .intent(PerformActionIntent(action: action))
         }
 
         form +++ YamlSection(
@@ -288,11 +286,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
         )
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     @objc
     func getInfoAction(_ sender: Any) {
         Current.Log.verbose("getInfoAction hit, open docs page!")
@@ -304,20 +297,18 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
 
         if form.validate().count == 0 {
             Current.Log.verbose("Category form is valid, calling dismiss callback!")
-
             shouldSave = true
-
             onDismissCallback?(self)
         }
     }
 
-    @objc
-    func cancel(_ sender: Any) {
-        Current.Log.verbose("Cancel hit, calling dismiss")
-
-        shouldSave = false
-
-        onDismissCallback?(self)
+    private func saveAndAutomate() {
+        if form.validate().count == 0 {
+            Current.Log.verbose("Category form is valid, calling dismiss callback!")
+            shouldSave = true
+            shouldOpenAutomationEditor = true
+            onDismissCallback?(self)
+        }
     }
 
     private func updatePreviews() {
@@ -343,20 +334,7 @@ class ActionPreview: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        layer.cornerRadius = 5.0
-
-        layer.cornerRadius = 2.0
-        layer.borderWidth = 1.0
-        layer.borderColor = UIColor.clear.cgColor
-        layer.masksToBounds = true
-
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        layer.shadowRadius = 2.0
-        layer.shadowOpacity = 0.5
-        layer.masksToBounds = false
-        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
-
+        layer.cornerRadius = 8
         let centerY = (frame.size.height / 2) - 50
 
         title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))

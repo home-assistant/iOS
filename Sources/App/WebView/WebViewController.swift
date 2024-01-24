@@ -833,6 +833,18 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             }
         )
     }
+
+    public func openActionAutomationEditor(actionId: String) {
+        sendExternalBus(message: .init(command: "automation/editor/show", payload: [
+            "trigger": [
+                "platform": "event",
+                "event_type": "ios.action_fired",
+                "event_data": [
+                    "actionID": actionId,
+                ],
+            ],
+        ]))
+    }
 }
 
 extension String {

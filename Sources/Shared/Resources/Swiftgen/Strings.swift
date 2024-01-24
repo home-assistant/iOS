@@ -125,6 +125,14 @@ public enum L10n {
   public enum ActionsConfigurator {
     /// New Action
     public static var title: String { return L10n.tr("Localizable", "actions_configurator.title") }
+    public enum Action {
+      /// Create automation
+      public static var createAutomation: String { return L10n.tr("Localizable", "actions_configurator.action.create_automation") }
+      /// Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.
+      public static var footer: String { return L10n.tr("Localizable", "actions_configurator.action.footer") }
+      /// Execute
+      public static var title: String { return L10n.tr("Localizable", "actions_configurator.action.title") }
+    }
     public enum Rows {
       public enum BackgroundColor {
         /// Background Color

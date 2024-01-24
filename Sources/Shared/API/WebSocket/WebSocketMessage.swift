@@ -61,10 +61,11 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
-    public init(command: String) {
+    public init(command: String, payload: [String: Any]? = nil) {
         self.ID = -1
         self.MessageType = "command"
         self.command = command
+        self.Payload = payload
     }
 
     public func encode(to encoder: Encoder) throws {
