@@ -842,10 +842,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         sendExternalBus(message: .init(command: "automation/editor/show", payload: [
             "config": [
                 "trigger": [
-                    "platform": "event",
-                    "event_type": "ios.action_fired",
-                    "event_data": [
-                        "actionID": actionId,
+                    [
+                        "platform": "event",
+                        "event_type": "ios.action_fired",
+                        "event_data": [
+                            "actionID": actionId,
+                        ],
                     ],
                 ],
             ],

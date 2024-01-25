@@ -83,6 +83,9 @@ public class WebSocketMessage: Codable {
         if let Result = Result {
             try container.encode(Result, forKey: .Result)
         }
+        if let Payload {
+            try container.encode(Payload, forKey: .Payload)
+        }
         try container.encodeIfPresent(command, forKey: .command)
     }
 
