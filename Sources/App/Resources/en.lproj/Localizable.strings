@@ -61,7 +61,7 @@
 "carPlay.navigation.tab.actions" = "Actions";
 "carPlay.navigation.tab.areas" = "Areas";
 "carPlay.navigation.tab.domains" = "Control";
-"carPlay.state.loading.title" = "Loading...";
+"carPlay.state.loading.title" = "Loading…";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
 "carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
