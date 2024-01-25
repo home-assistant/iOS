@@ -8,6 +8,11 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private var actions: Results<Action>?
     private let viewModel: CarPlayActionsViewModel
 
+    private let paginatedList = CarPlayPaginatedListTemplate(
+        title: L10n.CarPlay.Navigation.Tab.actions,
+        items: [],
+        isInsideTabBar: true
+    )
     var template: CPListTemplate
 
     weak var interfaceController: CPInterfaceController?
@@ -29,7 +34,8 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
 
     init(viewModel: CarPlayActionsViewModel) {
         self.viewModel = viewModel
-        self.template = CPListTemplate(title: L10n.CarPlay.Navigation.Tab.actions, sections: [])
+
+        self.template = paginatedList.template
         template.tabTitle = L10n.CarPlay.Navigation.Tab.actions
         template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
         template.tabSystemItem = .more
@@ -60,14 +66,14 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
             presentIntroductionItem()
             return
         }
-        template.updateSections([section(actions: actions)])
+        paginatedList.updateItems(items: listItems(actions: actions))
     }
 
     private func presentIntroductionItem() {
         template.updateSections([.init(items: [introduceActionsListItem])])
     }
 
-    private func section(actions: Results<Action>) -> CPListSection {
+    private func listItems(actions: Results<Action>) -> [CPListItem] {
         let items: [CPListItem] = actions.map { action in
             let materialDesignIcon = MaterialDesignIcons(named: action.IconName)
                 .carPlayIcon()
@@ -84,7 +90,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
             return item
         }
 
-        return CPListSection(items: items)
+        return items
     }
 
     // Present a checkmark or cross depending on success or failure
