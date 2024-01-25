@@ -298,6 +298,12 @@ public enum L10n {
         }
       }
     }
+    public enum State {
+      public enum Loading {
+        /// Loading...
+        public static var title: String { return L10n.tr("Localizable", "carPlay.state.loading.title") }
+      }
+    }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
