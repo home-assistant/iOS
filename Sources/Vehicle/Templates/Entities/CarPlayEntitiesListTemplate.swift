@@ -26,7 +26,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         self.viewModel = viewModel
 
         viewModel.templateProvider = self
-        paginatedListTemplate.template.emptyViewSubtitleVariants = [L10n.CarPlay.NoEntities.title]
+        paginatedListTemplate.template.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
     }
 
     func templateWillDisappear(template: CPTemplate) {
