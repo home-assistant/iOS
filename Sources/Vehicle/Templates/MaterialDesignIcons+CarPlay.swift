@@ -4,14 +4,8 @@ import Shared
 import UIKit
 
 extension MaterialDesignIcons {
-    func carPlayIcon(color: UIColor? = nil, carUserInterfaceStyle: UIUserInterfaceStyle? = nil) -> UIImage {
-        let color: UIColor = color ?? {
-            if let carUserInterfaceStyle, carUserInterfaceStyle == .light {
-                .black
-            } else {
-                .white
-            }
-        }()
+    func carPlayIcon(color: UIColor? = nil) -> UIImage {
+        let color = color ?? Constants.lighterTintColor
         return image(ofSize: CPListItem.maximumImageSize, color: color)
     }
 }

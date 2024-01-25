@@ -44,18 +44,20 @@ final class CarPlayPaginatedListTemplate {
             if currentPage > 0 {
                 let previousItem = CPListItem(text: nil, detailText: nil)
                 previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
-                previousItem.handler = { [weak self] _, _ in
+                previousItem.handler = { [weak self] _, completion in
                     self?.changePage(to: .previous)
+                    completion()
                 }
                 pageItems.insert(previousItem, at: 0)
             }
             if endIndex < totalItems {
-                let previousItem = CPListItem(text: nil, detailText: nil)
-                previousItem.setImage(MaterialDesignIcons.arrowRightIcon.carPlayIcon())
-                previousItem.handler = { [weak self] _, _ in
+                let nextItem = CPListItem(text: nil, detailText: nil)
+                nextItem.setImage(MaterialDesignIcons.arrowRightIcon.carPlayIcon())
+                nextItem.handler = { [weak self] _, completion in
                     self?.changePage(to: .next)
+                    completion()
                 }
-                pageItems.insert(previousItem, at: pageItems.endIndex)
+                pageItems.insert(nextItem, at: pageItems.endIndex)
             }
         } else {
             template.trailingNavigationBarButtons = getPageButtons(

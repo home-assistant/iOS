@@ -17,7 +17,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
             text: L10n.CarPlay.Action.Intro.Item.title,
             detailText: L10n.CarPlay.Action.Intro.Item.body,
             image: MaterialDesignIcons.homeLightningBoltIcon
-                .carPlayIcon(carUserInterfaceStyle: interfaceController?.carTraitCollection.userInterfaceStyle)
+                .carPlayIcon()
         )
         item.handler = { [weak self] _, completion in
             self?.viewModel.sendIntroNotification()
@@ -70,7 +70,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private func section(actions: Results<Action>) -> CPListSection {
         let items: [CPListItem] = actions.map { action in
             let materialDesignIcon = MaterialDesignIcons(named: action.IconName)
-                .carPlayIcon(carUserInterfaceStyle: interfaceController?.carTraitCollection.userInterfaceStyle)
+                .carPlayIcon()
             let item = CPListItem(
                 text: action.Name,
                 detailText: action.Text,

@@ -70,7 +70,7 @@ extension HAEntity {
         }
     }
 
-    func getIcon(carUserInterfaceStyle: UIUserInterfaceStyle?) -> UIImage? {
+    func getIcon() -> UIImage? {
         var image = MaterialDesignIcons.bookmarkIcon
         var tint: UIColor?
 
@@ -102,13 +102,15 @@ extension HAEntity {
 
         if let state = Domain.State(rawValue: state) {
             if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {
-                tint = Constants.tintColor
+                tint = Constants.lighterTintColor
             } else if [.unavailable, .unknown].contains(state) {
                 tint = .gray
+            } else {
+                tint = .lightGray
             }
         }
 
-        return image.carPlayIcon(color: tint, carUserInterfaceStyle: carUserInterfaceStyle)
+        return image.carPlayIcon(color: tint)
     }
 
     private func getInputBooleanIcon() -> MaterialDesignIcons {
