@@ -11,13 +11,14 @@ final class CarPlayPaginatedListTemplate {
     private var items: [CPListItem]
     private var currentPage: Int
     private let title: String
+    private let isInsideTabBar: Bool
 
-    private let itemsPerPage: Int = CPListTemplate.maximumItemCount
     private(set) var template: CPListTemplate
 
-    init(title: String, items: [CPListItem]) {
+    init(title: String, items: [CPListItem], isInsideTabBar: Bool = false) {
         self.title = title
         self.items = items
+        self.isInsideTabBar = isInsideTabBar
         self.currentPage = 0
         self.template = CPListTemplate(title: title, sections: [])
     }
@@ -29,17 +30,42 @@ final class CarPlayPaginatedListTemplate {
 
     func updateTemplate() {
         let totalItems = items.count
+        var itemsPerPage = CPListTemplate.maximumItemCount
+
+        if isInsideTabBar, items.count > itemsPerPage {
+            itemsPerPage = CPListTemplate.maximumItemCount - 2
+        }
+
         let startIndex = currentPage * itemsPerPage
         let endIndex = min(startIndex + itemsPerPage, totalItems)
-        let pageItems = Array(items[startIndex ..< endIndex])
+        var pageItems = Array(items[startIndex ..< endIndex])
 
+        if isInsideTabBar {
+            if currentPage > 0 {
+                let previousItem = CPListItem(text: nil, detailText: nil)
+                previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
+                previousItem.handler = { [weak self] _, _ in
+                    self?.changePage(to: .previous)
+                }
+                pageItems.insert(previousItem, at: 0)
+            }
+            if endIndex < totalItems {
+                let previousItem = CPListItem(text: nil, detailText: nil)
+                previousItem.setImage(MaterialDesignIcons.arrowRightIcon.carPlayIcon())
+                previousItem.handler = { [weak self] _, _ in
+                    self?.changePage(to: .next)
+                }
+                pageItems.insert(previousItem, at: pageItems.endIndex)
+            }
+        } else {
+            template.trailingNavigationBarButtons = getPageButtons(
+                endIndex: endIndex,
+                currentPage: currentPage,
+                totalCount: totalItems
+            )
+        }
         let section = CPListSection(items: pageItems)
         template.updateSections([section])
-        template.trailingNavigationBarButtons = getPageButtons(
-            endIndex: endIndex,
-            currentPage: currentPage,
-            totalCount: totalItems
-        )
     }
 
     private func getPageButtons(endIndex: Int, currentPage: Int, totalCount: Int) -> [CPBarButton] {

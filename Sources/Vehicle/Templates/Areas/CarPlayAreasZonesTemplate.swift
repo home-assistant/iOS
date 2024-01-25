@@ -7,12 +7,18 @@ import Shared
 final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
     private let viewModel: CarPlayAreasViewModel
+
+    let paginatedList = CarPlayPaginatedListTemplate(
+        title: L10n.CarPlay.Navigation.Tab.areas,
+        items: [],
+        isInsideTabBar: true
+    )
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
 
     init(viewModel: CarPlayAreasViewModel) {
         self.viewModel = viewModel
-        self.template = CPListTemplate(title: "", sections: [])
+        self.template = paginatedList.template
         template.tabImage = MaterialDesignIcons.sofaIcon.carPlayIcon()
         template.tabTitle = L10n.CarPlay.Navigation.Tab.areas
 
