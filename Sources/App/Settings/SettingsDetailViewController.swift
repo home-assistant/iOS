@@ -740,11 +740,10 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
 
                     if vc.shouldOpenAutomationEditor {
                         vc.navigationController?.dismiss(animated: true, completion: {
-                            Current.sceneManager.webViewWindowControllerPromise.done { controller in
-                                controller.webViewControllerPromise.done { webViewController in
-                                    webViewController.openActionAutomationEditor(actionId: vc.action.ID)
+                            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                                .done { controller in
+                                    controller.openActionAutomationEditor(actionId: vc.action.ID)
                                 }
-                            }
                         })
                     }
                 }

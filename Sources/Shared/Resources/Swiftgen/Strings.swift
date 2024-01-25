@@ -178,6 +178,14 @@ public enum L10n {
   }
 
   public enum Alerts {
+    public enum ActionAutomationEditor {
+      public enum Unavailable {
+        /// To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2
+        public static var body: String { return L10n.tr("Localizable", "alerts.action_automation_editor.unavailable.body") }
+        /// Please update Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "alerts.action_automation_editor.unavailable.title") }
+      }
+    }
     public enum Alert {
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.alert.ok") }

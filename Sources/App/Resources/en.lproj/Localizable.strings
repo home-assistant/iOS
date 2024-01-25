@@ -45,6 +45,8 @@
 "alerts.open_url_from_notification.title" = "Open URL?";
 "alerts.prompt.cancel" = "Cancel";
 "alerts.prompt.ok" = "OK";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
 "always_open_label" = "Always Open";
 "announcement.drop_support.button" = "Continue";
 "announcement.drop_support.button_read_more" = "Read more";
