@@ -300,7 +300,7 @@ public enum L10n {
     }
     public enum State {
       public enum Loading {
-        /// Loading...
+        /// Loading…
         public static var title: String { return L10n.tr("Localizable", "carPlay.state.loading.title") }
       }
     }
