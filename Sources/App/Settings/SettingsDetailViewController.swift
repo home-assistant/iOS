@@ -405,16 +405,13 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             let actionsFooter = Current.isCatalyst ?
                 L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
 
-            let learnAboutActionsButton = ButtonRow {
+            let learnAboutActionsButton = SettingsButtonRow {
                 $0.title = L10n.SettingsDetails.Actions.Learn.Button.title
-                $0.tag = "actions_learn_more"
-                $0.cellStyle = .value1
-                $0.cellUpdate { cell, _ in
-                    cell.accessoryType = .detailButton
-                }
-                $0.onCellSelection { _, _ in
+                $0.accessoryIcon = .openInNewIcon
+                $0.onCellSelection { _, row in
                     guard let url = URL(string: "https://companion.home-assistant.io/docs/core/actions/") else { return }
                     UIApplication.shared.open(url)
+                    row.deselect(animated: true)
                 }
             }
             form +++ learnAboutActionsButton
