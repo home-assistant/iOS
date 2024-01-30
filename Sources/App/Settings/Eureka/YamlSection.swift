@@ -19,6 +19,7 @@ public final class YamlSection: Section {
         tag: String,
         header: String,
         yamlGetter: @escaping () -> String,
+        isEditable: Bool = false,
         present: @escaping (UIViewController) -> Void
     ) {
         self.yamlGetter = yamlGetter
@@ -31,7 +32,11 @@ public final class YamlSection: Section {
         self.tag = tag
 
         self
-            <<< yamlRow
+            <<< yamlRow.cellSetup({ cell, _ in
+                cell.textView.isEditable = false
+            }).cellUpdate({ cell, _ in
+                cell.textView.isEditable = false
+            })
             <<< ButtonRow { row in
                 row.title = L10n.ActionsConfigurator.TriggerExample.share
 

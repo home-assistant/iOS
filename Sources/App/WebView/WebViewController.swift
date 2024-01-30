@@ -833,6 +833,36 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             }
         )
     }
+
+    public func openActionAutomationEditor(actionId: String) {
+        guard server.info.version >= .externalBusCommandAutomationEditor else {
+            showActionAutomationEditorNotAvailable()
+            return
+        }
+        sendExternalBus(message: .init(command: "automation/editor/show", payload: [
+            "config": [
+                "trigger": [
+                    [
+                        "platform": "event",
+                        "event_type": "ios.action_fired",
+                        "event_data": [
+                            "actionID": actionId,
+                        ],
+                    ],
+                ],
+            ],
+        ]))
+    }
+
+    private func showActionAutomationEditorNotAvailable() {
+        let alert = UIAlertController(
+            title: L10n.Alerts.ActionAutomationEditor.Unavailable.title,
+            message: L10n.Alerts.ActionAutomationEditor.Unavailable.body,
+            preferredStyle: .alert
+        )
+        alert.addAction(.init(title: L10n.okLabel, style: .default))
+        present(alert, animated: true)
+    }
 }
 
 extension String {

@@ -125,6 +125,14 @@ public enum L10n {
   public enum ActionsConfigurator {
     /// New Action
     public static var title: String { return L10n.tr("Localizable", "actions_configurator.title") }
+    public enum Action {
+      /// Create automation
+      public static var createAutomation: String { return L10n.tr("Localizable", "actions_configurator.action.create_automation") }
+      /// Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.
+      public static var footer: String { return L10n.tr("Localizable", "actions_configurator.action.footer") }
+      /// Execute
+      public static var title: String { return L10n.tr("Localizable", "actions_configurator.action.title") }
+    }
     public enum Rows {
       public enum BackgroundColor {
         /// Background Color
@@ -170,6 +178,14 @@ public enum L10n {
   }
 
   public enum Alerts {
+    public enum ActionAutomationEditor {
+      public enum Unavailable {
+        /// To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2
+        public static var body: String { return L10n.tr("Localizable", "alerts.action_automation_editor.unavailable.body") }
+        /// Please update Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "alerts.action_automation_editor.unavailable.title") }
+      }
+    }
     public enum Alert {
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.alert.ok") }

@@ -61,10 +61,11 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
-    public init(command: String) {
+    public init(command: String, payload: [String: Any]? = nil) {
         self.ID = -1
         self.MessageType = "command"
         self.command = command
+        self.Payload = payload
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -81,6 +82,9 @@ public class WebSocketMessage: Codable {
         }
         if let Result = Result {
             try container.encode(Result, forKey: .Result)
+        }
+        if let Payload {
+            try container.encode(Payload, forKey: .Payload)
         }
         try container.encodeIfPresent(command, forKey: .command)
     }
