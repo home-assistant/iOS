@@ -11,7 +11,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private let paginatedList = CarPlayPaginatedListTemplate(
         title: L10n.CarPlay.Navigation.Tab.actions,
         items: [],
-        isInsideTabBar: true
+        paginationStyle: .inline
     )
     var template: CPListTemplate
 

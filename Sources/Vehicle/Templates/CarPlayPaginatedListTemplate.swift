@@ -3,6 +3,11 @@ import Foundation
 import Shared
 
 final class CarPlayPaginatedListTemplate {
+    enum PaginationStyle {
+        case inline
+        case navigation
+    }
+
     enum GridPage {
         case next
         case previous
@@ -11,14 +16,14 @@ final class CarPlayPaginatedListTemplate {
     private var items: [CPListItem]
     private var currentPage: Int
     private let title: String
-    private let isInsideTabBar: Bool
+    private let paginationStyle: PaginationStyle
 
     private(set) var template: CPListTemplate
 
-    init(title: String, items: [CPListItem], isInsideTabBar: Bool = false) {
+    init(title: String, items: [CPListItem], paginationStyle: PaginationStyle = .navigation) {
         self.title = title
         self.items = items
-        self.isInsideTabBar = isInsideTabBar
+        self.paginationStyle = paginationStyle
         self.currentPage = 0
         self.template = CPListTemplate(title: title, sections: [])
     }
@@ -32,7 +37,7 @@ final class CarPlayPaginatedListTemplate {
         let totalItems = items.count
         var itemsPerPage = CPListTemplate.maximumItemCount
 
-        if isInsideTabBar, items.count > itemsPerPage {
+        if paginationStyle == .inline, items.count > itemsPerPage {
             itemsPerPage = CPListTemplate.maximumItemCount - 2
         }
 
@@ -40,7 +45,7 @@ final class CarPlayPaginatedListTemplate {
         let endIndex = min(startIndex + itemsPerPage, totalItems)
         var pageItems = Array(items[startIndex ..< endIndex])
 
-        if isInsideTabBar {
+        if paginationStyle == .inline {
             if currentPage > 0 {
                 let previousItem = CPListItem(text: nil, detailText: nil)
                 previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())

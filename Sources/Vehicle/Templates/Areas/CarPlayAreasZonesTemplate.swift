@@ -11,7 +11,7 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     let paginatedList = CarPlayPaginatedListTemplate(
         title: L10n.CarPlay.Navigation.Tab.areas,
         items: [],
-        isInsideTabBar: true
+        paginationStyle: .inline
     )
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
