@@ -36,8 +36,8 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
                 text: itemTitle,
                 detailText: nil,
                 image: domain == .cover ? overrideCoverIcon
-                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle) : domain.icon
-                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle)
+                    .carPlayIcon() : domain.icon
+                    .carPlayIcon()
             )
             listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
             listItem.handler = { [weak self] _, completion in

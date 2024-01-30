@@ -8,10 +8,6 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     var template: CPListItem
     weak var interfaceController: CPInterfaceController?
 
-    private var userInterfaceStyle: UIUserInterfaceStyle? {
-        interfaceController?.carTraitCollection.userInterfaceStyle
-    }
-
     init(entity: HAEntity) {
         self.template = CPListItem(text: nil, detailText: nil)
         self.entity = entity
@@ -24,8 +20,8 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         template.setDetailText(entity.localizedState)
         template
             .setImage(
-                entity.getIcon(carUserInterfaceStyle: userInterfaceStyle) ?? MaterialDesignIcons.bookmarkIcon
-                    .carPlayIcon(carUserInterfaceStyle: userInterfaceStyle)
+                entity.getIcon() ?? MaterialDesignIcons.bookmarkIcon
+                    .carPlayIcon()
             )
     }
 }

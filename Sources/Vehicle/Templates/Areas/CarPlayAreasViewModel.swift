@@ -150,7 +150,7 @@ final class CarPlayAreasViewModel {
             return item
         }
 
-        templateProvider?.template.updateSections([.init(items: items)])
+        templateProvider?.paginatedList.updateItems(items: items)
     }
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {

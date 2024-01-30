@@ -3,6 +3,11 @@ import Foundation
 import Shared
 
 final class CarPlayPaginatedListTemplate {
+    enum PaginationStyle {
+        case inline
+        case navigation
+    }
+
     enum GridPage {
         case next
         case previous
@@ -11,13 +16,14 @@ final class CarPlayPaginatedListTemplate {
     private var items: [CPListItem]
     private var currentPage: Int
     private let title: String
+    private let paginationStyle: PaginationStyle
 
-    private let itemsPerPage: Int = CPListTemplate.maximumItemCount
     private(set) var template: CPListTemplate
 
-    init(title: String, items: [CPListItem]) {
+    init(title: String, items: [CPListItem], paginationStyle: PaginationStyle = .navigation) {
         self.title = title
         self.items = items
+        self.paginationStyle = paginationStyle
         self.currentPage = 0
         self.template = CPListTemplate(title: title, sections: [])
     }
@@ -29,17 +35,44 @@ final class CarPlayPaginatedListTemplate {
 
     func updateTemplate() {
         let totalItems = items.count
+        var itemsPerPage = CPListTemplate.maximumItemCount
+
+        if paginationStyle == .inline, items.count > itemsPerPage {
+            itemsPerPage = CPListTemplate.maximumItemCount - 2
+        }
+
         let startIndex = currentPage * itemsPerPage
         let endIndex = min(startIndex + itemsPerPage, totalItems)
-        let pageItems = Array(items[startIndex ..< endIndex])
+        var pageItems = Array(items[startIndex ..< endIndex])
 
+        if paginationStyle == .inline {
+            if currentPage > 0 {
+                let previousItem = CPListItem(text: nil, detailText: nil)
+                previousItem.setImage(MaterialDesignIcons.arrowLeftIcon.carPlayIcon())
+                previousItem.handler = { [weak self] _, completion in
+                    self?.changePage(to: .previous)
+                    completion()
+                }
+                pageItems.insert(previousItem, at: 0)
+            }
+            if endIndex < totalItems {
+                let nextItem = CPListItem(text: nil, detailText: nil)
+                nextItem.setImage(MaterialDesignIcons.arrowRightIcon.carPlayIcon())
+                nextItem.handler = { [weak self] _, completion in
+                    self?.changePage(to: .next)
+                    completion()
+                }
+                pageItems.insert(nextItem, at: pageItems.endIndex)
+            }
+        } else {
+            template.trailingNavigationBarButtons = getPageButtons(
+                endIndex: endIndex,
+                currentPage: currentPage,
+                totalCount: totalItems
+            )
+        }
         let section = CPListSection(items: pageItems)
         template.updateSections([section])
-        template.trailingNavigationBarButtons = getPageButtons(
-            endIndex: endIndex,
-            currentPage: currentPage,
-            totalCount: totalItems
-        )
     }
 
     private func getPageButtons(endIndex: Int, currentPage: Int, totalCount: Int) -> [CPBarButton] {
