@@ -26,8 +26,6 @@ public enum Asset {
     public static let onSurface = ColorAsset(name: "onSurface")
   }
   public enum SharedAssets {
-    public static let launchScreenBackground = ColorAsset(name: "launchScreen-background")
-    public static let launchScreenLogo = ImageAsset(name: "launchScreen-logo")
     public static let logo = ImageAsset(name: "Logo")
     public static let statusItemIcon = ImageAsset(name: "statusItemIcon")
   }
