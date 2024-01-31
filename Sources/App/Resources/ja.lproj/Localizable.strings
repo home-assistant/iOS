@@ -16,6 +16,9 @@
 "about.review.title" = "レビューを残す";
 "about.title" = "～について";
 "about.website.title" = "Webサイト";
+"actions_configurator.action.create_automation" = "Create automation";
+"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
+"actions_configurator.action.title" = "Execute";
 "actions_configurator.rows.background_color.title" = "背景色";
 "actions_configurator.rows.icon.title" = "アイコン";
 "actions_configurator.rows.icon_color.title" = "アイコンの色";
@@ -29,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "シーン属性をカスタマイズしてこれらを変更することもできます: %@";
 "actions_configurator.visual_section.server_defined" = "このアクションの外観は、サーバーの設定によって制御されます。";
 "addButtonLabel" = "追加";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "サーバーがあなたの認証情報を拒否したため、続行するには再度サインインする必要があります。";
 "alerts.auth_required.title" = "続けるにはサインインする必要があります";
@@ -65,6 +70,7 @@
 "carPlay.no_entities.title" = "利用可能な CarPlay 互換エンティティがありません。";
 "carPlay.notification.action.intro.body" = "タップして最初の iOS アクションを作成します";
 "carPlay.notification.action.intro.title" = "iOS アクションの作成";
+"carPlay.state.loading.title" = "読み込み中…";
 "carPlay.unlock.confirmation.title" = "%@にロック解除アクションを実行しますか?";
 "carplay.labels.already_added_server" = "すでに追加されています";
 "carplay.labels.empty_domain_list" = "利用可能なドメインがありません";

@@ -16,6 +16,9 @@
 "about.review.title" = "Skriv en anmeldelse";
 "about.title" = "Om";
 "about.website.title" = "Hjemmeside";
+"actions_configurator.action.create_automation" = "Create automation";
+"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
+"actions_configurator.action.title" = "Execute";
 "actions_configurator.rows.background_color.title" = "Baggrundsfarve";
 "actions_configurator.rows.icon.title" = "Ikon";
 "actions_configurator.rows.icon_color.title" = "Ikonfarve";
@@ -29,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Du kan også ændre disse ved at tilpasse Scene-egenskaberne: %@";
 "actions_configurator.visual_section.server_defined" = "Udseendet af denne handling styres af serverkonfigurationen.";
 "addButtonLabel" = "Tilføj";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Serveren har afvist dine legitimationsoplysninger, og du skal logge ind igen for at fortsætte.";
 "alerts.auth_required.title" = "Du skal logge ind for at fortsætte";
@@ -65,6 +70,7 @@
 "carPlay.no_entities.title" = "Ingen tilgængelige CarPlay-kompatible entiteter.";
 "carPlay.notification.action.intro.body" = "Tryk for at oprette din første iOS-handling";
 "carPlay.notification.action.intro.title" = "Opret iOS-handling";
+"carPlay.state.loading.title" = "Indlæser…";
 "carPlay.unlock.confirmation.title" = "Er du sikker på, at du vil udføre oplåsningshandling på %@?";
 "carplay.labels.already_added_server" = "Allerede tilføjet";
 "carplay.labels.empty_domain_list" = "Ingen domæner tilgængelige";
