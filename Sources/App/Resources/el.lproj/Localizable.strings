@@ -16,6 +16,9 @@
 "about.review.title" = "Αφήστε μια κριτική";
 "about.title" = "Σχετικά";
 "about.website.title" = "Ιστοσελίδα";
+"actions_configurator.action.create_automation" = "Create automation";
+"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
+"actions_configurator.action.title" = "Execute";
 "actions_configurator.rows.background_color.title" = "Χρώμα φόντου";
 "actions_configurator.rows.icon.title" = "Εικονίδιο";
 "actions_configurator.rows.icon_color.title" = "Χρώμα εικονιδίου";
@@ -29,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Μπορείτε επίσης να τις αλλάξετε προσαρμόζοντας τα χαρακτηριστικά σκηνής: %@";
 "actions_configurator.visual_section.server_defined" = "Η εμφάνιση αυτής της ενέργειας ελέγχεται από τη ρύθμιση παραμέτρων του διακομιστή.";
 "addButtonLabel" = "Προσθήκη";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "Εντάξει";
 "alerts.auth_required.message" = "Ο διακομιστής απέρριψε τα διαπιστευτήριά σας και πρέπει να συνδεθείτε ξανά για να συνεχίσετε.";
 "alerts.auth_required.title" = "Πρέπει να συνδεθείτε για να συνεχίσετε";
@@ -65,6 +70,7 @@
 "carPlay.no_entities.title" = "Δεν υπάρχουν διαθέσιμες οντότητες συμβατές με CarPlay.";
 "carPlay.notification.action.intro.body" = "Πατήστε για να δημιουργήσετε την πρώτη σας ενέργεια iOS";
 "carPlay.notification.action.intro.title" = "Δημιουργία ενέργειας iOS";
+"carPlay.state.loading.title" = "Loading…";
 "carPlay.unlock.confirmation.title" = "Είστε σίγουροι ότι θέλετε να εκτελέσετε ενέργεια ξεκλειδώματος στο %@;";
 "carplay.labels.already_added_server" = "Εχει ήδη προστεθεί";
 "carplay.labels.empty_domain_list" = "Δεν υπάρχουν διαθέσιμα domains";

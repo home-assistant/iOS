@@ -16,6 +16,9 @@
 "about.review.title" = "리뷰를 남겨주세요";
 "about.title" = "정보";
 "about.website.title" = "웹사이트";
+"actions_configurator.action.create_automation" = "Create automation";
+"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
+"actions_configurator.action.title" = "Execute";
 "actions_configurator.rows.background_color.title" = "배경색";
 "actions_configurator.rows.icon.title" = "아이콘";
 "actions_configurator.rows.icon_color.title" = "아이콘 색상";
@@ -29,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "장면 속성을 사용자 지정하여 변경할 수도 있습니다: %@";
 "actions_configurator.visual_section.server_defined" = "이 동작의 모습은 서버 구성에 의해 제어됩니다.";
 "addButtonLabel" = "추가하기";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "서버에서 자격 증명을 거부했으며 계속하려면 다시 로그인해야 합니다.";
 "alerts.auth_required.title" = "계속하려면 로그인해야 합니다.";
@@ -65,6 +70,7 @@
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
 "carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
 "carPlay.notification.action.intro.title" = "Create iOS Action";
+"carPlay.state.loading.title" = "Loading…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";

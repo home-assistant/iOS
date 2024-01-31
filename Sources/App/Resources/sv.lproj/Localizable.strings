@@ -16,6 +16,9 @@
 "about.review.title" = "Skriv en recension";
 "about.title" = "Om";
 "about.website.title" = "Webbplats";
+"actions_configurator.action.create_automation" = "Create automation";
+"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
+"actions_configurator.action.title" = "Execute";
 "actions_configurator.rows.background_color.title" = "Bakgrundsfärg";
 "actions_configurator.rows.icon.title" = "Ikon";
 "actions_configurator.rows.icon_color.title" = "Ikon-färg";
@@ -29,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Du kan också ändra dessa genom att skräddarsy scen-egenskaperna: %@";
 "actions_configurator.visual_section.server_defined" = "Utseendet på den här åtgärden styrs av serverkonfigurationen.";
 "addButtonLabel" = "Lägg till";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Servern har avvisat dina autentiseringsuppgifter och du måste logga in igen för att fortsätta.";
 "alerts.auth_required.title" = "Du måste logga in för att fortsätta";
@@ -65,6 +70,7 @@
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
 "carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
 "carPlay.notification.action.intro.title" = "Create iOS Action";
+"carPlay.state.loading.title" = "Loading…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";

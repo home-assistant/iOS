@@ -16,6 +16,9 @@
 "about.review.title" = "Bewerte diese App";
 "about.title" = "Über";
 "about.website.title" = "Webseite";
+"actions_configurator.action.create_automation" = "Create automation";
+"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
+"actions_configurator.action.title" = "Execute";
 "actions_configurator.rows.background_color.title" = "Hintergrundfarbe";
 "actions_configurator.rows.icon.title" = "Symbol";
 "actions_configurator.rows.icon_color.title" = "Symbolfarbe";
@@ -29,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Du kannst diese auch ändern, indem du die Szenenattribute anpasst: %@";
 "actions_configurator.visual_section.server_defined" = "Das Aussehen dieser Aktion wird durch die Server Konfiguration gesteuert.";
 "addButtonLabel" = "Hinzufügen";
+"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Der Server hat deine Anmeldeinformationen abgelehnt und du musst dich erneut anmelden, um fortzufahren.";
 "alerts.auth_required.title" = "Du musst dich anmelden, um fortzufahren";
@@ -65,6 +70,7 @@
 "carPlay.no_entities.title" = "Keine CarPlay-kompatiblen Entitäten verfügbar.";
 "carPlay.notification.action.intro.body" = "Tippe, um deine erste iOS-Aktion zu erstellen";
 "carPlay.notification.action.intro.title" = "iOS-Aktion erstellen";
+"carPlay.state.loading.title" = "Laden...";
 "carPlay.unlock.confirmation.title" = "Bist du sicher, dass du die Entsperraktion für %@ ausführen möchtest?";
 "carplay.labels.already_added_server" = "Bereits hinzugefügt";
 "carplay.labels.empty_domain_list" = "Keine Domänen verfügbar";
