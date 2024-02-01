@@ -1,16 +1,17 @@
 import Foundation
+import Shared
 import UIKit
 
 final class WindowSizeObserver: NSObject {
     @objc private(set) var observedScene: UIWindowScene?
-    private var observation: NSKeyValueObservation?
+    private weak var observation: NSKeyValueObservation?
 
     init(windowScene: UIWindowScene) {
         self.observedScene = windowScene
         super.init()
-        #if targetEnvironment(macCatalyst)
+
+        guard Current.isCatalyst else { return }
         startObserving()
-        #endif
     }
 
     private func startObserving() {
