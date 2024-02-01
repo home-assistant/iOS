@@ -22,13 +22,11 @@ struct WidgetBasicContainerView: View {
             default: multiView(for: contents)
             }
         }
-        .widgetBackground(Color.clear)
+        .widgetBackground(nil)
     }
 
     func singleView(for model: WidgetBasicViewModel) -> some View {
         ZStack {
-            model.backgroundColor
-                .opacity(0.8)
             WidgetBasicView(model: model, sizeStyle: .single)
                 .widgetURL(model.widgetURL.withWidgetAuthenticity())
         }
@@ -135,5 +133,64 @@ struct WidgetBasicContainerView: View {
         case .systemExtraLarge: return 32
         @unknown default: return 8
         }
+    }
+}
+
+@available(iOS 17.0, *)
+#Preview(as: .accessoryRectangular, widget: {
+    WidgetOpenPage()
+}, timeline: {
+    WidgetOpenPageEntry(
+        date: Date(), pages: [
+            .init(
+                panel: DummyContent.panel,
+                server: DummyContent.server
+            ),
+        ]
+    )
+})
+
+@available(iOS 17.0, *)
+#Preview(as: .accessoryRectangular, widget: {
+    WidgetActions()
+}, timeline: {
+    WidgetActionsEntry(actions: [
+        .init(),
+    ])
+})
+
+fileprivate enum DummyContent {
+    static var panel: HAPanel {
+        .init(
+            icon: nil, title: "This is a title", path: "lovelace", component: "", showInSidebar: true
+        )
+    }
+
+    static var server: Server {
+        Server(identifier: "123", getter: {
+            .init(
+                name: "A Name",
+                connection: .init(
+                    externalURL: nil,
+                    internalURL: nil,
+                    cloudhookURL: nil,
+                    remoteUIURL: nil,
+                    webhookID: "",
+                    webhookSecret: nil,
+                    internalSSIDs: nil,
+                    internalHardwareAddresses: nil,
+                    isLocalPushEnabled: false,
+                    securityExceptions: .init(exceptions: [])
+                ),
+                token: .init(
+                    accessToken: "",
+                    refreshToken: "",
+                    expiration: Date()
+                ),
+                version: "123"
+            )
+        }, setter: { _ in
+            true
+        })
     }
 }

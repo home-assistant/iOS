@@ -38,10 +38,10 @@ struct WidgetOpenPage: Widget {
         .configurationDisplayName(L10n.Widgets.OpenPage.title)
         .description(L10n.Widgets.OpenPage.description)
         .supportedFamilies({
-            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
+            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
 
-            if #available(iOS 15, *) {
-                supportedFamilies.append(.systemExtraLarge)
+            if #available(iOS 16.0, *) {
+                supportedFamilies.append(contentsOf: [.accessoryCircular, .accessoryRectangular])
             }
 
             return supportedFamilies

@@ -33,10 +33,10 @@ struct WidgetActions: Widget {
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
         .supportedFamilies({
-            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
+            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
 
-            if #available(iOS 15, *) {
-                supportedFamilies.append(.systemExtraLarge)
+            if #available(iOS 16.0, *) {
+                supportedFamilies.append(contentsOf: [.accessoryCircular, .accessoryRectangular])
             }
 
             return supportedFamilies
