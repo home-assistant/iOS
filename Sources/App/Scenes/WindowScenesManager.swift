@@ -12,13 +12,24 @@ final class WindowScenesManager {
         startObservingScene(scene)
     }
 
+    func sceneWillResignActive(_ scene: UIScene) {
+        stopObservingScene(scene)
+    }
+
+    func didDiscardScene(_ scene: UIScene) {
+        stopObservingScene(scene)
+    }
+
     private func startObservingScene(_ scene: UIWindowScene) {
         let observer = WindowSizeObserver(windowScene: scene)
         windowSizeObservers.append(observer)
     }
 
-    func didDiscardScene(_ scene: UIScene) {
-        windowSizeObservers.removeAll(where: { $0.observedScene == scene })
+    private func stopObservingScene(_ scene: UIScene) {
+        windowSizeObservers.first { observer in
+            observer.observedScene == scene
+        }?.stopObserving()
+        windowSizeObservers.removeAll { $0.observedScene == scene }
     }
 
     private func sceneFrameIsValid(_ sceneFrame: CGRect, screenSize: CGSize) -> Bool {

@@ -4,7 +4,7 @@ import UIKit
 
 final class WindowSizeObserver: NSObject {
     @objc private(set) var observedScene: UIWindowScene?
-    private weak var observation: NSKeyValueObservation?
+    private var observation: NSKeyValueObservation?
 
     init(windowScene: UIWindowScene) {
         self.observedScene = windowScene
@@ -23,6 +23,11 @@ final class WindowSizeObserver: NSObject {
             ScenesWindowSizeConfig.defaultSceneLatestSystemFrame = newSystemFrame
         }
         #endif
+    }
+
+    public func stopObserving() {
+        observation?.invalidate()
+        observation = nil
     }
 }
 
