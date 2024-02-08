@@ -3009,7 +3009,6 @@
 			isa = PBXGroup;
 			children = (
 				425573E42B58380D00145217 /* CarPlay.framework */,
-				422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */,
 				11B63B0E297A19DC00D908ED /* MatterSupport.framework */,
 				1112EA92271B78690038BBFC /* UserNotifications.framework */,
 				117318AC25199E220013E010 /* Foundation.framework */,
