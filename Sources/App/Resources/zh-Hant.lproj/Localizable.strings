@@ -16,9 +16,9 @@
 "about.review.title" = "留個評論吧";
 "about.title" = "關於";
 "about.website.title" = "網站";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "建立自動化";
+"actions_configurator.action.footer" = "定義當動作執行時將執行什麼動作，或可以手動使用下面的範例觸發器。";
+"actions_configurator.action.title" = "執行";
 "actions_configurator.rows.background_color.title" = "背景顏色";
 "actions_configurator.rows.icon.title" = "圖示";
 "actions_configurator.rows.icon_color.title" = "圖示顏色";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "同時也可藉由自訂變更以下場景屬性：%@";
 "actions_configurator.visual_section.server_defined" = "此觸發由伺服器設定所控制。";
 "addButtonLabel" = "新增";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "要自動為動作建立自動化，請將您的 Home Assistant 更新為 2024.2 以上版本";
+"alerts.action_automation_editor.unavailable.title" = "請更新 Home Assistant";
 "alerts.alert.ok" = "好";
 "alerts.auth_required.message" = "伺服器拒絕您的憑證，必須再次登入以繼續。";
 "alerts.auth_required.title" = "必須登入以繼續";

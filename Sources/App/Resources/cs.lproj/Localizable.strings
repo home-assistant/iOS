@@ -16,9 +16,9 @@
 "about.review.title" = "Napište recenzi";
 "about.title" = "O aplikaci";
 "about.website.title" = "Webová stránka";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "Vytvořit automatizaci";
+"actions_configurator.action.footer" = "Definuje, co se vykoná při provedení Akce; případně můžete níže uvedený příklad spouštěče použít ručně.";
+"actions_configurator.action.title" = "Vykonat";
 "actions_configurator.rows.background_color.title" = "Barva pozadí";
 "actions_configurator.rows.icon.title" = "Ikona";
 "actions_configurator.rows.icon_color.title" = "Barva ikony";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Je možné změnit přizpůsobením atributů scény: %@";
 "actions_configurator.visual_section.server_defined" = "Vzhled této akce je řízen konfigurací serveru.";
 "addButtonLabel" = "Přidat";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "Chcete-li automaticky vytvořit automatizaci pro akci, aktualizujte Home Assistanta alespoň na verzi 2024.2.";
+"alerts.action_automation_editor.unavailable.title" = "Aktualizovat Home Assistanta";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Server odmítl Vaše přihlašovací údaje a pro pokračování se musíte znovu přihlásit.";
 "alerts.auth_required.title" = "Chcete-li pokračovat, musíte se přihlásit";
