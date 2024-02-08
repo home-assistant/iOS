@@ -1001,6 +1001,7 @@ extension WebViewController: WKScriptMessageHandler {
                                 "canWriteTag": Current.tags.isNFCAvailable,
                                 "canCommissionMatter": Current.matter.isAvailable,
                                 "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
+                                "hasQRScanner": true,
                             ]
                         ))
                     }
@@ -1061,6 +1062,19 @@ extension WebViewController: WKScriptMessageHandler {
                 }
             case .threadImportCredentials:
                 threadCredentialsRequested()
+            case .qrCodeScanner:
+                response = Guarantee { seal in
+                    guard let title = incomingMessage.Payload?["title"] as? String,
+                          let description = incomingMessage.Payload?["description"] as? String,
+                          let incomingMessageId = incomingMessage.ID else { return }
+                    qrCodeScannerRequested(
+                        title: title,
+                        description: description,
+                        alternativeOptionLabel: incomingMessage.Payload?["alternative_option_label"] as? String,
+                        incomingMessageId: incomingMessageId,
+                        seal: seal
+                    )
+                }
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -1105,6 +1119,57 @@ extension WebViewController: WKScriptMessageHandler {
             threadManagementView.modalTransitionStyle = .crossDissolve
             present(threadManagementView, animated: true)
         }
+    }
+
+    private func qrCodeScannerRequested(
+        title: String,
+        description: String,
+        alternativeOptionLabel: String?,
+        incomingMessageId: Int,
+        seal: @escaping (WebSocketMessage) -> Void
+    ) {
+        let qrCodeScannerView = UIHostingController(rootView: QRScannerView(
+            title: title,
+            description: description,
+            alternativeOptionLabel: alternativeOptionLabel,
+            completion: { result in
+                switch result {
+                case .cancelled:
+                    seal(
+                        WebSocketMessage(
+                            id: incomingMessageId,
+                            type: "result",
+                            result: [
+                                "action": "canceled",
+                            ]
+                        )
+                    )
+                case .alternativeOption:
+                    seal(
+                        WebSocketMessage(
+                            id: incomingMessageId,
+                            type: "result",
+                            result: [
+                                "action": "alternative_options",
+                            ]
+                        )
+                    )
+                case let .success(resultString):
+                    seal(
+                        WebSocketMessage(
+                            id: incomingMessageId,
+                            type: "result",
+                            result: [
+                                "action": "scan_result",
+                                "result": resultString,
+                            ]
+                        )
+                    )
+                }
+            }
+        ))
+        qrCodeScannerView.modalPresentationStyle = .fullScreen
+        present(qrCodeScannerView, animated: true)
     }
 }
 

@@ -59,6 +59,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    static var orientationLock = UIInterfaceOrientationMask.all
+
     func application(
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -258,6 +260,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         IntentHandlerFactory.handler(for: intent)
+    }
+
+    func application(
+        _ application: UIApplication,
+        supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
+        AppDelegate.orientationLock
     }
 
     // MARK: - Private helpers
