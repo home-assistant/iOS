@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct QRScannerCameraView: View {
-    @StateObject private var model: QRScannerDataModel
+struct BarcodeScannerCameraView: View {
+    @StateObject private var model: BarcodeScannerDataModel
     private let shouldStartCamera: Bool
 
-    init(model: QRScannerDataModel, shouldStartCamera: Bool = true) {
+    init(model: BarcodeScannerDataModel, shouldStartCamera: Bool = true) {
         self._model = .init(wrappedValue: model)
         self.shouldStartCamera = shouldStartCamera
     }

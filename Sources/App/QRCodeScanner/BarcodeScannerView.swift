@@ -5,13 +5,13 @@ import SwiftUI
 enum QRScannerResult {
     case cancelled
     case alternativeOption
-    case success(String)
+    case success(_ code: String, _ format: String)
 }
 
-struct QRScannerView: View {
+struct BarcodeScannerView: View {
     @Environment(\.dismiss) private var dismiss
     // Use single data model so both camera previews use same camera stream
-    @State private var cameraDataModel = QRScannerDataModel()
+    @State private var cameraDataModel = BarcodeScannerDataModel()
     private let cameraSquareSize: CGFloat = 320
     private let flashlightIcon = MaterialDesignIcons.flashlightIcon.image(
         ofSize: .init(width: 24, height: 24),
@@ -51,8 +51,8 @@ struct QRScannerView: View {
             AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
             UINavigationController.attemptRotationToDeviceOrientation()
 
-            cameraDataModel.camera.qrFound = { code in
-                self.completion(.success(code))
+            cameraDataModel.camera.qrFound = { code, format in
+                self.completion(.success(code, format))
                 self.dismiss()
             }
         }
@@ -100,7 +100,7 @@ struct QRScannerView: View {
     }
 
     private var cameraBackground: some View {
-        QRScannerCameraView(model: cameraDataModel)
+        BarcodeScannerCameraView(model: cameraDataModel)
             .ignoresSafeArea()
             .frame(maxWidth: .infinity)
             .frame(maxHeight: .infinity)
@@ -110,7 +110,7 @@ struct QRScannerView: View {
     }
 
     private var cameraSquare: some View {
-        QRScannerCameraView(model: cameraDataModel, shouldStartCamera: false)
+        BarcodeScannerCameraView(model: cameraDataModel, shouldStartCamera: false)
             .ignoresSafeArea()
             .frame(maxWidth: .infinity)
             .frame(maxHeight: .infinity)
@@ -142,5 +142,5 @@ struct QRScannerView: View {
 }
 
 #Preview {
-    QRScannerView(title: "Scan QR-code", description: "Find the code on your device", completion: { _ in })
+    BarcodeScannerView(title: "Scan QR-code", description: "Find the code on your device", completion: { _ in })
 }

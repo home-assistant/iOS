@@ -3,7 +3,7 @@ import CoreImage
 import Shared
 import UIKit
 
-class QRScannerCamera: NSObject {
+class BarcodeScannerCamera: NSObject {
     private let captureSession = AVCaptureSession()
     private var isCaptureSessionConfigured = false
     private var deviceInput: AVCaptureDeviceInput?
@@ -40,7 +40,7 @@ class QRScannerCamera: NSObject {
         }
     }
 
-    var qrFound: ((String) -> Void)?
+    var qrFound: ((_ code: String, _ format: String) -> Void)?
     var isRunning: Bool {
         captureSession.isRunning
     }
@@ -108,11 +108,26 @@ class QRScannerCamera: NSObject {
         captureSession.addOutput(metadataOutput)
 
         metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+
+        var metadataObjectTypes: [AVMetadataObject.ObjectType] = [
+            .qr,
+            .aztec,
+            .code128,
+            .code39,
+            .code93,
+            .dataMatrix,
+            .ean13,
+            .ean8,
+            .itf14,
+            .pdf417,
+            .upce,
+        ]
+
         if #available(iOS 15.4, *) {
-            metadataOutput.metadataObjectTypes = [.qr, .microQR]
-        } else {
-            metadataOutput.metadataObjectTypes = [.qr]
+            metadataObjectTypes.append(.codabar)
         }
+
+        metadataOutput.metadataObjectTypes = metadataObjectTypes
 
         self.deviceInput = deviceInput
         self.videoOutput = videoOutput
@@ -246,7 +261,7 @@ class QRScannerCamera: NSObject {
     }
 }
 
-extension QRScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension BarcodeScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
@@ -263,17 +278,18 @@ extension QRScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-extension QRScannerCamera: AVCaptureMetadataOutputObjectsDelegate {
+extension BarcodeScannerCamera: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(
         _ output: AVCaptureMetadataOutput,
         didOutput metadataObjects: [AVMetadataObject],
         from connection: AVCaptureConnection
     ) {
         if let metadataObject = metadataObjects.first {
+            let format = metadataObject.type.haString
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            qrFound?(stringValue)
+            qrFound?(stringValue, format)
         }
     }
 }
@@ -291,6 +307,29 @@ private extension UIScreen {
             return .landscapeLeft
         } else {
             return .unknown
+        }
+    }
+}
+
+private extension AVMetadataObject.ObjectType {
+    var haString: String {
+        if #available(iOS 15.4, *), self == .codabar {
+            return "codabar"
+        }
+
+        switch self {
+        case .qr: return "qr_code"
+        case .aztec: return "aztec"
+        case .code128: return "code_128"
+        case .code39: return "code_39"
+        case .code93: return "code_93"
+        case .dataMatrix: return "data_matrix"
+        case .ean13: return "ean_13"
+        case .ean8: return "ean_8"
+        case .itf14: return "itf"
+        case .pdf417: return "pdf417"
+        case .upce: return "upc_e"
+        default: return "unknown"
         }
     }
 }

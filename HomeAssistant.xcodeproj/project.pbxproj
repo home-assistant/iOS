@@ -504,11 +504,11 @@
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
-		42266B112B740E4C00E94A71 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* QRScannerView.swift */; };
+		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B142B740F0700E94A71 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 42266B132B740F0700E94A71 /* CodeScanner */; };
-		42266B1D2B741FB400E94A71 /* QRScannerCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B172B741FB300E94A71 /* QRScannerCameraView.swift */; };
-		42266B1F2B741FB400E94A71 /* QRScannerDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B192B741FB300E94A71 /* QRScannerDataModel.swift */; };
-		42266B202B741FB400E94A71 /* QRScannerCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B1A2B741FB400E94A71 /* QRScannerCamera.swift */; };
+		42266B1D2B741FB400E94A71 /* BarcodeScannerCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */; };
+		42266B1F2B741FB400E94A71 /* BarcodeScannerDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */; };
+		42266B202B741FB400E94A71 /* BarcodeScannerCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
@@ -1574,11 +1574,10 @@
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
 		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
-		42266B102B740E4C00E94A71 /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
-		42266B172B741FB300E94A71 /* QRScannerCameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRScannerCameraView.swift; sourceTree = "<group>"; };
-		42266B192B741FB300E94A71 /* QRScannerDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRScannerDataModel.swift; sourceTree = "<group>"; };
-		42266B1A2B741FB400E94A71 /* QRScannerCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRScannerCamera.swift; sourceTree = "<group>"; };
-		422894BF2B03B76200C1DAFB /* ThreadNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ThreadNetwork.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/System/Library/Frameworks/ThreadNetwork.framework; sourceTree = DEVELOPER_DIR; };
+		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerCameraView.swift; sourceTree = "<group>"; };
+		42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerDataModel.swift; sourceTree = "<group>"; };
+		42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerCamera.swift; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2B32B2B5C8100E9F001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -3067,7 +3066,7 @@
 			isa = PBXGroup;
 			children = (
 				42266B152B741F9F00E94A71 /* Camera */,
-				42266B102B740E4C00E94A71 /* QRScannerView.swift */,
+				42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */,
 			);
 			path = QRCodeScanner;
 			sourceTree = "<group>";
@@ -3075,9 +3074,9 @@
 		42266B152B741F9F00E94A71 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
-				42266B1A2B741FB400E94A71 /* QRScannerCamera.swift */,
-				42266B172B741FB300E94A71 /* QRScannerCameraView.swift */,
-				42266B192B741FB300E94A71 /* QRScannerDataModel.swift */,
+				42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */,
+				42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */,
+				42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -5670,7 +5669,7 @@
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
-				42266B202B741FB400E94A71 /* QRScannerCamera.swift in Sources */,
+				42266B202B741FB400E94A71 /* BarcodeScannerCamera.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
@@ -5710,7 +5709,7 @@
 				42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
-				42266B1D2B741FB400E94A71 /* QRScannerCameraView.swift in Sources */,
+				42266B1D2B741FB400E94A71 /* BarcodeScannerCameraView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
@@ -5751,7 +5750,7 @@
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
-				42266B112B740E4C00E94A71 /* QRScannerView.swift in Sources */,
+				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
@@ -5775,7 +5774,7 @@
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
-				42266B1F2B741FB400E94A71 /* QRScannerDataModel.swift in Sources */,
+				42266B1F2B741FB400E94A71 /* BarcodeScannerDataModel.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,

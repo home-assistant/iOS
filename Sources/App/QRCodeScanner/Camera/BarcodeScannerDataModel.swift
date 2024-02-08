@@ -2,8 +2,8 @@ import AVFoundation
 import os.log
 import SwiftUI
 
-final class QRScannerDataModel: ObservableObject {
-    let camera = QRScannerCamera()
+final class BarcodeScannerDataModel: ObservableObject {
+    let camera = BarcodeScannerCamera()
 
     @Published var viewfinderImage: Image?
     init() {
