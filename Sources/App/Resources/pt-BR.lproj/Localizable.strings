@@ -16,9 +16,9 @@
 "about.review.title" = "Deixe um comentário";
 "about.title" = "Sobre";
 "about.website.title" = "Site";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "Criar automação";
+"actions_configurator.action.footer" = "Defina o que será executado quando a Ação for executada, alternativamente você pode usar o gatilho de exemplo abaixo manualmente.";
+"actions_configurator.action.title" = "Executar";
 "actions_configurator.rows.background_color.title" = "Cor do fundo";
 "actions_configurator.rows.icon.title" = "Ícone";
 "actions_configurator.rows.icon_color.title" = "Cor do ícone";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Você também pode alterá-los personalizando os atributos da cena: %@";
 "actions_configurator.visual_section.server_defined" = "A aparência desta ação é controlada pela configuração do servidor.";
 "addButtonLabel" = "Adicionar";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "Para criar automaticamente uma automação para uma Ação, atualize seu Assistente Doméstico para pelo menos a versão 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Atualize o Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "O servidor rejeitou suas credenciais e você deve entrar novamente para continuar.";
 "alerts.auth_required.title" = "Você deve fazer login para continuar";
@@ -70,7 +70,7 @@
 "carPlay.no_entities.title" = "Nenhuma entidade compatível com CarPlay disponível.";
 "carPlay.notification.action.intro.body" = "Toque para criar sua primeira ação do iOS";
 "carPlay.notification.action.intro.title" = "Criar ação do iOS";
-"carPlay.state.loading.title" = "Loading…";
+"carPlay.state.loading.title" = "Carregando…";
 "carPlay.unlock.confirmation.title" = "Tem certeza de que deseja executar a ação de desbloqueio em %@?";
 "carplay.labels.already_added_server" = "Adicionado";
 "carplay.labels.empty_domain_list" = "Nenhum domínio disponível";

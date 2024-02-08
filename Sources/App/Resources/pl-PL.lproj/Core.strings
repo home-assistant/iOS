@@ -55,8 +55,8 @@
 "component::climate::entity_component::_::state_attributes::swing_mode::state::on" = "wł.";
 "component::counter::entity_component::_::state_attributes::editable::state::false" = "nie";
 "component::counter::entity_component::_::state_attributes::editable::state::true" = "tak";
-"component::cover::entity_component::_::state::closed" = "zamknięte";
-"component::cover::entity_component::_::state::open" = "otwarte";
+"component::cover::entity_component::_::state::closed" = "zamknięta";
+"component::cover::entity_component::_::state::open" = "otwarta";
 "component::cover::title" = "Roleta";
 "component::deluge::entity::sensor::status::state::idle" = "brak aktywności";
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "wył.";
