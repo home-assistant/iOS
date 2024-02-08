@@ -11,7 +11,8 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.themeUpdate.rawValue, "theme-update")
         XCTAssertEqual(WebViewExternalBusMessage.matterCommission.rawValue, "matter/commission")
         XCTAssertEqual(WebViewExternalBusMessage.threadImportCredentials.rawValue, "thread/import_credentials")
+        XCTAssertEqual(WebViewExternalBusMessage.qrCodeScanner.rawValue, "qr_code/scan")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 9)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 10)
     }
 }
