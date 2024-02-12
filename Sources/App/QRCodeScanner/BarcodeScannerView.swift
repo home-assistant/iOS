@@ -48,18 +48,9 @@ struct BarcodeScannerView: View {
             topInformation
         }
         .onAppear {
-            AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
-            UINavigationController.attemptRotationToDeviceOrientation()
-
             cameraDataModel.camera.qrFound = { code, format in
                 self.completion(.success(code, format))
                 self.dismiss()
-            }
-        }
-        .onDisappear {
-            DispatchQueue.main.async {
-                AppDelegate.orientationLock = UIInterfaceOrientationMask.all
-                UINavigationController.attemptRotationToDeviceOrientation()
             }
         }
     }
@@ -143,4 +134,10 @@ struct BarcodeScannerView: View {
 
 #Preview {
     BarcodeScannerView(title: "Scan QR-code", description: "Find the code on your device", completion: { _ in })
+}
+
+class BarcodeScannerHostingController: UIHostingController<BarcodeScannerView> {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        [.portrait]
+    }
 }

@@ -1128,7 +1128,7 @@ extension WebViewController: WKScriptMessageHandler {
         incomingMessageId: Int,
         seal: @escaping (WebSocketMessage) -> Void
     ) {
-        let qrCodeScannerView = UIHostingController(rootView: BarcodeScannerView(
+        let qrCodeScannerView = BarcodeScannerHostingController(rootView: BarcodeScannerView(
             title: title,
             description: description,
             alternativeOptionLabel: alternativeOptionLabel,
