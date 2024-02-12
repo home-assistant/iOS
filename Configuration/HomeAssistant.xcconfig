@@ -101,3 +101,7 @@ CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES
 CLANG_ANALYZER_NONNULL = YES
 CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES
 GCC_NO_COMMON_BLOCKS = YES
+
+// Add ThreadNetwork weak reference for iOS and macOS
+OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -weak_framework ThreadNetwork
+OTHER_LDFLAGS[sdk=macosx*] = $(inherited) -weak_framework ThreadNetwork
