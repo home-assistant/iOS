@@ -66,6 +66,7 @@ struct BarcodeScannerView: View {
                     .foregroundColor(.white.opacity(0.8))
                     .frame(maxWidth: .infinity, alignment: .leading)
             })
+            .accessibilityHint(.init(L10n.closeLabel))
             Group {
                 Text(title)
                     .padding(.top)

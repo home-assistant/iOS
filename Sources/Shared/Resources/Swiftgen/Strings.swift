@@ -16,6 +16,8 @@ public enum L10n {
   public static var alwaysOpenLabel: String { return L10n.tr("Localizable", "always_open_label") }
   /// Cancel
   public static var cancelLabel: String { return L10n.tr("Localizable", "cancel_label") }
+  /// Close
+  public static var closeLabel: String { return L10n.tr("Localizable", "close_label") }
   /// Continue
   public static var continueLabel: String { return L10n.tr("Localizable", "continue_label") }
   /// Copy

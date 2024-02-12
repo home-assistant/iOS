@@ -116,6 +116,7 @@
 "debug_section_label" = "Debug";
 "delete" = "Delete";
 "done_label" = "Done";
+"close_label" = "Close";
 "error_label" = "Error";
 "extensions.map.location.new" = "New Location";
 "extensions.map.location.original" = "Original Location";
