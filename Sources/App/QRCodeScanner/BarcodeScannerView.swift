@@ -2,14 +2,9 @@ import CodeScanner
 import Shared
 import SwiftUI
 
-enum QRScannerResult {
-    case cancelled
-    case alternativeOption
-    case success(_ code: String, _ format: String)
-}
-
 struct BarcodeScannerView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: BarcodeScannerViewModel
     // Use single data model so both camera previews use same camera stream
     @State private var cameraDataModel = BarcodeScannerDataModel()
     private let cameraSquareSize: CGFloat = 320
@@ -21,18 +16,17 @@ struct BarcodeScannerView: View {
     private let title: String
     private let description: String
     private let alternativeOptionLabel: String?
-    private let completion: (QRScannerResult) -> Void
 
     init(
         title: String,
         description: String,
         alternativeOptionLabel: String? = nil,
-        completion: @escaping (QRScannerResult) -> Void
+        incomingMessageId: Int
     ) {
         self.title = title
         self.description = description
         self.alternativeOptionLabel = alternativeOptionLabel
-        self.completion = completion
+        self._viewModel = .init(wrappedValue: .init(incomingMessageId: incomingMessageId))
     }
 
     var body: some View {
@@ -49,8 +43,7 @@ struct BarcodeScannerView: View {
         }
         .onAppear {
             cameraDataModel.camera.qrFound = { code, format in
-                self.completion(.success(code, format))
-                self.dismiss()
+                viewModel.scannedCode(code, format: format)
             }
         }
     }
@@ -58,7 +51,7 @@ struct BarcodeScannerView: View {
     private var topInformation: some View {
         VStack(spacing: 8) {
             Button(action: {
-                completion(.cancelled)
+                viewModel.aborted(.canceled)
                 dismiss()
             }, label: {
                 Image(systemName: "xmark")
@@ -78,8 +71,7 @@ struct BarcodeScannerView: View {
 
             if let alternativeOptionLabel {
                 Button {
-                    completion(.alternativeOption)
-                    dismiss()
+                    viewModel.aborted(.alternativeOptions)
                 } label: {
                     Text(alternativeOptionLabel)
                         .font(.subheadline)
@@ -134,10 +126,10 @@ struct BarcodeScannerView: View {
 }
 
 #Preview {
-    BarcodeScannerView(title: "Scan QR-code", description: "Find the code on your device", completion: { _ in })
+    BarcodeScannerView(title: "Scan QR-code", description: "Find the code on your device", incomingMessageId: 1)
 }
 
-class BarcodeScannerHostingController: UIHostingController<BarcodeScannerView> {
+final class BarcodeScannerHostingController: UIHostingController<BarcodeScannerView> {
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         [.portrait]
     }
