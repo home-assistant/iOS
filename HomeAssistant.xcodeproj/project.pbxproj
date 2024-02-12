@@ -505,7 +505,6 @@
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
-		42266B142B740F0700E94A71 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 42266B132B740F0700E94A71 /* CodeScanner */; };
 		42266B1D2B741FB400E94A71 /* BarcodeScannerCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */; };
 		42266B1F2B741FB400E94A71 /* BarcodeScannerDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */; };
 		42266B202B741FB400E94A71 /* BarcodeScannerCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */; };
@@ -2212,7 +2211,6 @@
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
-				42266B142B740F0700E94A71 /* CodeScanner in Frameworks */,
 				B9820AF29664869FD0B25CDF /* Pods_iOS_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4252,7 +4250,6 @@
 			);
 			name = App;
 			packageProductDependencies = (
-				42266B132B740F0700E94A71 /* CodeScanner */,
 			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
@@ -4696,7 +4693,6 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
-				42266B122B740F0700E94A71 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -7967,17 +7963,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		42266B122B740F0700E94A71 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/twostraws/CodeScanner";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.3;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
 		116E2AAC27765D0100B330F2 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -7986,11 +7971,6 @@
 		116E2AAE27765D0600B330F2 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
-		};
-		42266B132B740F0700E94A71 /* CodeScanner */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42266B122B740F0700E94A71 /* XCRemoteSwiftPackageReference "CodeScanner" */;
-			productName = CodeScanner;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
