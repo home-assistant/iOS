@@ -16,9 +16,9 @@
 "about.review.title" = "Jäta arvustus";
 "about.title" = "Teave";
 "about.website.title" = "Koduleht";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "Loo automatiseerimine";
+"actions_configurator.action.footer" = "Määratle mida toimingu tegemisel käivitatakse, teise võimalusena võid allolevat näidispäästikut käsitsi kasutada.";
+"actions_configurator.action.title" = "Käivita";
 "actions_configurator.rows.background_color.title" = "Taustavärv";
 "actions_configurator.rows.icon.title" = "Ikoon";
 "actions_configurator.rows.icon_color.title" = "Ikooni värv";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Neid saab muuta ka Scene atribuutide kohandamisega: %@";
 "actions_configurator.visual_section.server_defined" = "Selle toimingu välimust juhib serveri konfiguratsioon.";
 "addButtonLabel" = "Lisa";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "Toimingu automaatseks loomiseks värskenda Home Assistant vähemalt versioonile 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "Uuenda oma  Home Assistantit";
 "alerts.alert.ok" = "Sobib";
 "alerts.auth_required.message" = "Server on mandaadi tagasi lükanud ja jätkamiseks pead uuesti sisse logima.";
 "alerts.auth_required.title" = "Jätkamiseks pead sisse logima";

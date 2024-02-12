@@ -16,9 +16,9 @@
 "about.review.title" = "Írja meg véleményét";
 "about.title" = "Névjegy";
 "about.website.title" = "Weboldal";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "Automatizmus létrehozása";
+"actions_configurator.action.footer" = "Adja meg, hogy mi lesz végrehajtva a művelet végrehajtásakor, másik lehetőségként manuálisan is használhatja az alábbi példaeseményindítót.";
+"actions_configurator.action.title" = "Végrehajt";
 "actions_configurator.rows.background_color.title" = "Háttérszín";
 "actions_configurator.rows.icon.title" = "Ikon";
 "actions_configurator.rows.icon_color.title" = "Ikon színe";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Ezeket a jelenet attribútumainak testreszabásával is megváltoztathatja: %@";
 "actions_configurator.visual_section.server_defined" = "A művelet megjelenését a kiszolgáló konfigurációja szabályozza.";
 "addButtonLabel" = "Hozzáadás";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "A művelet automatizálásokk létrehozásához frissítse a Home Assistantot legalább a 2024.2-es verzióra";
+"alerts.action_automation_editor.unavailable.title" = "Kérjük, frissítse a Home Assistantot";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "A szerver elutasította a hitelesítő adatait, a folytatáshoz újra be kell jelentkeznie.";
 "alerts.auth_required.title" = "A folytatáshoz bejelentkezés szükséges";

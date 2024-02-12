@@ -71,6 +71,12 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         #endif
     }
 
+    func sceneWillResignActive(_ scene: UIScene) {
+        #if targetEnvironment(macCatalyst)
+        WindowScenesManager.shared.sceneWillResignActive(scene)
+        #endif
+    }
+
     func sceneDidDisconnect(_ scene: UIScene) {
         windowController = nil
         window = nil

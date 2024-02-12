@@ -1,4 +1,5 @@
 import Foundation
+import Shared
 import UIKit
 
 final class WindowSizeObserver: NSObject {
@@ -8,9 +9,9 @@ final class WindowSizeObserver: NSObject {
     init(windowScene: UIWindowScene) {
         self.observedScene = windowScene
         super.init()
-        #if targetEnvironment(macCatalyst)
+
+        guard Current.isCatalyst else { return }
         startObserving()
-        #endif
     }
 
     private func startObserving() {
@@ -22,6 +23,11 @@ final class WindowSizeObserver: NSObject {
             ScenesWindowSizeConfig.defaultSceneLatestSystemFrame = newSystemFrame
         }
         #endif
+    }
+
+    public func stopObserving() {
+        observation?.invalidate()
+        observation = nil
     }
 }
 

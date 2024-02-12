@@ -16,9 +16,9 @@
 "about.review.title" = "Yorum bırakın";
 "about.title" = "Hakkında";
 "about.website.title" = "Web sitesi";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "Otomasyon oluşturun";
+"actions_configurator.action.footer" = "Eylem gerçekleştirildiğinde neyin yürütüleceğini tanımlayın; alternatif olarak aşağıdaki örnek tetikleyiciyi manuel olarak kullanabilirsiniz.";
+"actions_configurator.action.title" = "Yürüt";
 "actions_configurator.rows.background_color.title" = "Arka plan rengi";
 "actions_configurator.rows.icon.title" = "Simge";
 "actions_configurator.rows.icon_color.title" = "Simge Rengi";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Bunları ayrıca Sahne özelliklerini özelleştirerek de değiştirebilirsiniz: %@";
 "actions_configurator.visual_section.server_defined" = "Bu eylemin görünümü, sunucu yapılandırması tarafından kontrol edilir.";
 "addButtonLabel" = "Ekle";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "Bir Eylem için otomatik olarak otomasyon oluşturmak üzere lütfen Home Asistanınızı en az 2024.2 sürümüne güncelleyin.";
+"alerts.action_automation_editor.unavailable.title" = "Lütfen Home Assistant'ı güncelleyin";
 "alerts.alert.ok" = "Tamam";
 "alerts.auth_required.message" = "Sunucu kimlik bilgilerinizi reddetti ve devam etmek için tekrar oturum açmanız gerekiyor.";
 "alerts.auth_required.title" = "Devam etmek için giriş yapınız";
