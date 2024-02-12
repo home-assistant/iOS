@@ -1,4 +1,3 @@
-import CodeScanner
 import Shared
 import SwiftUI
 
@@ -72,6 +71,7 @@ struct BarcodeScannerView: View {
             if let alternativeOptionLabel {
                 Button {
                     viewModel.aborted(.alternativeOptions)
+                    dismiss()
                 } label: {
                     Text(alternativeOptionLabel)
                         .font(.subheadline)
