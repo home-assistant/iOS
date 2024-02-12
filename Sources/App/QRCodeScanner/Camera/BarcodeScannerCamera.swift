@@ -10,6 +10,7 @@ class BarcodeScannerCamera: NSObject {
     private var videoOutput: AVCaptureVideoDataOutput?
     private let metadataOutput = AVCaptureMetadataOutput()
     private var sessionQueue: DispatchQueue!
+    private let feedbackGenerator = UINotificationFeedbackGenerator()
     private var allBackCaptureDevices: [AVCaptureDevice] {
         AVCaptureDevice.DiscoverySession(
             deviceTypes: [
@@ -61,12 +62,10 @@ class BarcodeScannerCamera: NSObject {
 
     override init() {
         super.init()
-        initialize()
-    }
+        self.sessionQueue = DispatchQueue(label: "session queue")
+        self.captureDevice = availableCaptureDevices.first ?? AVCaptureDevice.default(for: .video)
 
-    private func initialize() {
-        sessionQueue = DispatchQueue(label: "session queue")
-        captureDevice = availableCaptureDevices.first ?? AVCaptureDevice.default(for: .video)
+        feedbackGenerator.prepare()
     }
 
     private func configureCaptureSession(completionHandler: (_ success: Bool) -> Void) {
@@ -288,7 +287,7 @@ extension BarcodeScannerCamera: AVCaptureMetadataOutputObjectsDelegate {
             let format = metadataObject.type.haString
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            feedbackGenerator.notificationOccurred(.success)
             qrFound?(stringValue, format)
         }
     }
