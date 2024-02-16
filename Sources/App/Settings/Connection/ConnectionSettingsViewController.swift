@@ -175,6 +175,19 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 })
             }
 
+            <<< ButtonRowWithPresent<ConnectionCustomHeaderViewController> { row in
+                row.cellStyle = .value1
+                row.title = "Custom Headers"
+                row.displayValueFor = { [server] _ in
+                    return String(server.info.connection.customHeaders?.count ?? 0)
+                }
+                row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
+                    ConnectionCustomHeaderViewController(server: server, row: row)
+                }), onDismiss: { [navigationController] _ in
+                    navigationController?.popViewController(animated: true)
+                })
+            }
+
             +++ Section(L10n.SettingsDetails.Privacy.title)
 
             <<< PushRow<ServerLocationPrivacy> {

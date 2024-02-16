@@ -44,6 +44,12 @@ public struct ConnectionInfo: Codable, Equatable {
         -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         return securityExceptions.evaluate(challenge)
     }
+    
+    public var customHeaders: [CustomHeaderStruct]? {
+        didSet {
+            Current.Log.error("updated customHeader to \(customHeaders)")
+        }
+    }
 
     public init(
         externalURL: URL?,
@@ -55,7 +61,8 @@ public struct ConnectionInfo: Codable, Equatable {
         internalSSIDs: [String]?,
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
-        securityExceptions: SecurityExceptions
+        securityExceptions: SecurityExceptions,
+        customHeaders: [CustomHeaderStruct]?
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -67,6 +74,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
+        self.customHeaders = customHeaders
     }
 
     public init(from decoder: Decoder) throws {
@@ -86,6 +94,7 @@ public struct ConnectionInfo: Codable, Equatable {
             SecurityExceptions.self,
             forKey: .securityExceptions
         ) ?? .init()
+        self.customHeaders = try container.decodeIfPresent([CustomHeaderStruct].self, forKey: .customHeaders)
     }
 
     public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -276,6 +285,30 @@ public struct ConnectionInfo: Codable, Equatable {
 
             return UInt8(String(first) + String(second), radix: 16)
         })
+    }
+}
+
+public struct CustomHeaderStruct: Codable, Equatable {
+    public var key: String = ""
+    public var value: String = ""
+    public var useInternal: Bool = false
+    public var useExternal: Bool = false
+    
+    public init(){}
+    
+    public init(key: String, value: String, useInternal: Bool, useExternal: Bool){
+        self.key = key
+        self.value = value
+        self.useInternal = useInternal
+        self.useExternal = useExternal
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.key = try container.decode(String.self, forKey: .key)
+        self.value = try container.decode(String.self, forKey: .value)
+        self.useInternal = try container.decode(Bool.self, forKey: .useInternal)
+        self.useExternal = try container.decode(Bool.self, forKey: .useExternal)
     }
 }
 

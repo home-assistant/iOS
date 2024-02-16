@@ -15,7 +15,8 @@ struct ServerFixture {
                 internalSSIDs: nil,
                 internalHardwareAddresses: nil,
                 isLocalPushEnabled: false,
-                securityExceptions: .init(exceptions: [])
+                securityExceptions: .init(exceptions: []),
+                customHeaders: nil
             ),
             token: .init(
                 accessToken: "",

@@ -14,7 +14,8 @@ internal extension ServerInfo {
                 internalSSIDs: nil,
                 internalHardwareAddresses: nil,
                 isLocalPushEnabled: true,
-                securityExceptions: .init()
+                securityExceptions: .init(),
+                customHeaders: nil
             ),
             token: .init(
                 accessToken: "FakeAccessToken",
