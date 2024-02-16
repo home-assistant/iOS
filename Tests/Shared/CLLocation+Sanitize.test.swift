@@ -104,7 +104,6 @@ class CLLocationSanitizeTests: XCTestCase {
         }
     }
 
-    @available(iOS 13.4, *)
     func testCourseAccuracy() throws {
         for invalid in invalids {
             courseAccuracy = invalid

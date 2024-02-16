@@ -229,7 +229,6 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertNil(json["vertical_accuracy"])
     }
 
-    @available(iOS 13.4, *)
     func testGPSEnterNoBattery() {
         Current.device.batteries = { [] }
 
@@ -269,7 +268,6 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
     }
 
-    @available(iOS 13.4, *)
     func testGPSEnter() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
@@ -309,7 +307,6 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
     }
 
-    @available(iOS 13.4, *)
     func testGPSExit() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
@@ -349,7 +346,6 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
     }
 
-    @available(iOS 13.4, *)
     func testGPSEnterHome() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 
@@ -389,7 +385,6 @@ class WebhookUpdateLocationTests: XCTestCase {
         XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
     }
 
-    @available(iOS 13.4, *)
     func testGPSExitHome() {
         Current.device.batteries = { [DeviceBattery(level: 44, state: .charging, attributes: [:])] }
 

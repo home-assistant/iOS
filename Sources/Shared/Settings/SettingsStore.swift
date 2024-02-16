@@ -113,8 +113,6 @@ public class SettingsStore {
         ]
     }
 
-    // prior to iOS 12, this didn't work very well in WKWebView
-    @available(iOS 12, *)
     public var pageZoom: PageZoom {
         get {
             if let pageZoom = PageZoom(preference: prefs.integer(forKey: "page_zoom")) {

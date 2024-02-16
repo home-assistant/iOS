@@ -1,7 +1,6 @@
 import ColorPickerRow
 import Eureka
 import Foundation
-import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit

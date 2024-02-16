@@ -263,8 +263,8 @@
 		119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE913263325790099F7D8 /* IconDrawable+Settings.swift */; };
 		119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE944263349E50099F7D8 /* HAFormViewController.swift */; };
 		119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */; };
-		119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
-		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
+		119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */; };
+		119EC3C824D5119300617D51 /* MobileAppConfigAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */; };
 		11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A183B22511BCF300CA326A /* LifecycleManager.swift */; };
 		11A31CAF252128D300D50A78 /* MacBridge.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = 1167402225198F9A00F51626 /* MacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3BD2C26192210005237E6 /* LocalPushManager.swift */; };
@@ -497,6 +497,12 @@
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
 		368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */; };
 		38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */; };
+		3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
+		3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */; };
+		3997926E2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */; };
+		3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */; };
+		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
+		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
@@ -774,7 +780,7 @@
 		B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
 		B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
 		B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911E2151F90300A326DC /* LocationHistory.swift */; };
-		B67CE89D22200F220034C1D0 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* Config.swift */; };
+		B67CE89D22200F220034C1D0 /* ConfigResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* ConfigResponse.swift */; };
 		B67CE89E22200F220034C1D0 /* DiscoveredHomeAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAEE1D8F44DC00A0D225 /* DiscoveredHomeAssistant.swift */; };
 		B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */; };
@@ -882,7 +888,7 @@
 		D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */; };
 		D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
 		D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */; };
-		D0EEF316214DD7A400D1D360 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* Config.swift */; };
+		D0EEF316214DD7A400D1D360 /* ConfigResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* ConfigResponse.swift */; };
 		D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAEE1D8F44DC00A0D225 /* DiscoveredHomeAssistant.swift */; };
 		D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
@@ -1396,7 +1402,7 @@
 		119DE913263325790099F7D8 /* IconDrawable+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IconDrawable+Settings.swift"; sourceTree = "<group>"; };
 		119DE944263349E50099F7D8 /* HAFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAFormViewController.swift; sourceTree = "<group>"; };
 		119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRootDataSource.swift; sourceTree = "<group>"; };
-		119EC3C624D5119300617D51 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
+		119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigAction.swift; sourceTree = "<group>"; };
 		119EC3D724D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Intents.strings"; sourceTree = "<group>"; };
 		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -1568,6 +1574,9 @@
 		29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32DB55A889E2163C52C335D2 /* Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Matter-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Matter-metadata.plist"; sourceTree = "<group>"; };
+		399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPushCategory.swift; sourceTree = "<group>"; };
+		3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPush.swift; sourceTree = "<group>"; };
+		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
@@ -2050,7 +2059,7 @@
 		B6E2D4D42270706200446DFA /* ha-loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "ha-loading.json"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
-		B6F02BF11CB470570029ABE7 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		B6F02BF11CB470570029ABE7 /* ConfigResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigResponse.swift; sourceTree = "<group>"; };
 		B6FD055E2284072700AC45BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B6FD055F2284079E00AC45BA /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Intents.strings; sourceTree = "<group>"; };
 		B6FD05612284079E00AC45BA /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -3044,6 +3053,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3997926C2B7F906C00231B54 /* MobileAppConfig */ = {
+			isa = PBXGroup;
+			children = (
+				119EC3C624D5119300617D51 /* MobileAppConfigAction.swift */,
+				399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */,
+				3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */,
+				399792702B7F909900231B54 /* MobileAppConfig.swift */,
+			);
+			path = MobileAppConfig;
+			sourceTree = "<group>";
+		};
 		420FE8472B5569ED00878E06 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -3748,12 +3768,12 @@
 		B6F02BEC1CB46E810029ABE7 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
-				B6F02BF11CB470570029ABE7 /* Config.swift */,
+				3997926C2B7F906C00231B54 /* MobileAppConfig */,
+				B6F02BF11CB470570029ABE7 /* ConfigResponse.swift */,
 				B626AAEE1D8F44DC00A0D225 /* DiscoveredHomeAssistant.swift */,
 				491E98FE25D543560077BBE3 /* LogbookEntry.swift */,
 				B6872E652226842100C475D1 /* MobileAppRegistrationResponse.swift */,
 				11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */,
-				119EC3C624D5119300617D51 /* MobileAppConfig.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -5858,6 +5878,7 @@
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
+				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
@@ -5967,6 +5988,7 @@
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
+				399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				1121CD4D271295AD0071C2AA /* Style.swift in Sources */,
 				116570782702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
@@ -5980,7 +6002,7 @@
 				11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				11B38EF3275C54A300205C7B /* PerformActionIntentHandler.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
-				119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */,
+				119EC3C824D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
 				115BC82F2677093A00452430 /* FocusStatusWrapper.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveredHomeAssistant.swift in Sources */,
 				1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
@@ -5995,6 +6017,7 @@
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
+				3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
 				11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
@@ -6005,7 +6028,7 @@
 				118261FE24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */,
-				B67CE89D22200F220034C1D0 /* Config.swift in Sources */,
+				B67CE89D22200F220034C1D0 /* ConfigResponse.swift in Sources */,
 				11F855D924DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */,
 				11AF4D20249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
@@ -6115,6 +6138,7 @@
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				11F20BFC274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
+				399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
@@ -6169,6 +6193,7 @@
 				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
 				11B6B592294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
+				3997926E2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				11B38EE8275C54A200205C7B /* WidgetActionsIntentHandler.swift in Sources */,
@@ -6181,7 +6206,7 @@
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
-				119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */,
+				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
@@ -6201,6 +6226,7 @@
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
+				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,
@@ -6215,7 +6241,7 @@
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,
-				D0EEF316214DD7A400D1D360 /* Config.swift in Sources */,
+				D0EEF316214DD7A400D1D360 /* ConfigResponse.swift in Sources */,
 				11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */,

@@ -2,7 +2,6 @@ import Alamofire
 import Eureka
 import HAKit
 import MBProgressHUD
-import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit
