@@ -124,7 +124,7 @@ final class CarPlayAreasViewModel {
 
         templateProvider?.paginatedList.updateItems(items: items)
     }
-    
+
     /// - returns: area_id : [device_id]
     private func mapToareasAndEntities(devicesAndAreas: [HADeviceAreaResponse]) -> [String: [String]] {
         devicesAndAreas.reduce(into: [:]) { partialResult, device in
@@ -139,7 +139,7 @@ final class CarPlayAreasViewModel {
             }
         }
     }
-    
+
     /// - returns: area_id : [entity_id]
     private func mapToAreasAndEntitiesDict(areasAndEntities: [HAEntityAreaResponse]) -> [String: [String]] {
         areasAndEntities.reduce(into: [:]) { partialResult, entity in
@@ -153,7 +153,6 @@ final class CarPlayAreasViewModel {
                 partialResult[areaId] = [entityId]
             }
         }
-
     }
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {

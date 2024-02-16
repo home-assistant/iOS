@@ -1,7 +1,7 @@
 import Foundation
 import Shared
 
-class ScaleFactorMutator {
+enum ScaleFactorMutator {
     fileprivate static var sceneIdentifiers = Set<String>()
     public static func record(sceneIdentifier: String) {
         swizzleIfNeeded()

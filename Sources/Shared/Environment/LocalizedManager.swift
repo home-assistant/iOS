@@ -51,7 +51,7 @@ public class LocalizedManager {
         let request = StringProviderRequest(key: key, table: table, defaultValue: defaultValue)
         let override = stringProviders.lazy.compactMap { $0(request) }.first
 
-        if let override = override {
+        if let override {
             return override
         }
 

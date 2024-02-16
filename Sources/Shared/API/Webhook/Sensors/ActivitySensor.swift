@@ -48,7 +48,7 @@ public class ActivitySensor: SensorProvider {
         Current.motion.queryStartEndOnQueueHandler(start, end, queue) { activities, error in
             if let latestActivity = activities?.last {
                 seal.fulfill(latestActivity)
-            } else if let error = error {
+            } else if let error {
                 seal.reject(error)
             } else {
                 seal.reject(ActivityError.noData)

@@ -112,7 +112,7 @@ public extension ClientEventTableViewController {
 }
 
 extension UITableView {
-    func applyChanges<T>(changes: RealmCollectionChange<T>) {
+    func applyChanges(changes: RealmCollectionChange<some Any>) {
         switch changes {
         case .initial: reloadData()
         case let .update(_, deletions, insertions, updates):

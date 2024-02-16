@@ -24,7 +24,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
 
         self.isModalInPresentation = true
 
-        if let category = category {
+        if let category {
             self.category = category
             if self.category.isServerControlled {
                 self.defaultMultivalueOptions = []
@@ -301,7 +301,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
         var identifier = "new_action_" + UUID().uuidString
         var title = L10n.NotificationsConfigurator.NewAction.title
 
-        if let action = action {
+        if let action {
             identifier = action.Identifier
             title = action.Title
         }
@@ -324,7 +324,7 @@ class NotificationCategoryConfigurator: HAFormViewController, TypedRowController
                     Current.Log.verbose("action \(vc.action)")
 
                     realm.reentrantWrite {
-                        guard let self = self else { return }
+                        guard let self else { return }
                         // only add into realm if the category is also persisted
                         self.category.realm?.add(vc.action, update: .all)
 

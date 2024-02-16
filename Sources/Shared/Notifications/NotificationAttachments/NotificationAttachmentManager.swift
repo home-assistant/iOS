@@ -53,7 +53,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 throw error
             } else {
                 #if os(iOS)
-                return .value(try self.attachment(for: error, api: api))
+                return try .value(attachment(for: error, api: api))
                 #else
                 throw error
                 #endif
@@ -92,7 +92,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
                 throw error
             } else {
                 #if os(iOS)
-                return .value(try self.savedImage(for: error, api: api).0)
+                return try .value(self.savedImage(for: error, api: api).0)
                 #else
                 throw error
                 #endif
@@ -161,7 +161,7 @@ class NotificationAttachmentManagerImpl: NotificationAttachmentManager {
     ) throws -> UNNotificationAttachment {
         let (url, localizedString) = try savedImage(for: error, api: api)
 
-        return with(try UNNotificationAttachment(
+        return try with(UNNotificationAttachment(
             identifier: "error",
             url: url,
             options: [

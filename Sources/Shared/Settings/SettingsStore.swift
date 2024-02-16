@@ -75,7 +75,7 @@ public class SettingsStore {
     public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
         public let zoom: Int
 
-        internal init?(preference: Int) {
+        init?(preference: Int) {
             guard Self.allCases.contains(where: { $0.zoom == preference }) else {
                 // in case one of the options causes problems, removing it from allCases will kill it
                 Current.Log.info("disregarding zoom preference for \(preference)")
@@ -85,7 +85,7 @@ public class SettingsStore {
             self.zoom = preference
         }
 
-        internal init(_ zoom: IntegerLiteralType) {
+        init(_ zoom: IntegerLiteralType) {
             self.zoom = zoom
         }
 
@@ -173,7 +173,7 @@ public class SettingsStore {
             }
         }
         set {
-            if let newValue = newValue {
+            if let newValue {
                 precondition(newValue > 0)
                 prefs.set(newValue, forKey: "periodicUpdateInterval")
             } else {
@@ -190,7 +190,7 @@ public class SettingsStore {
         public var updates: Bool
         public var updatesIncludeBetas: Bool
 
-        internal static func key(for keyPath: KeyPath<Privacy, Bool>) -> String {
+        static func key(for keyPath: KeyPath<Privacy, Bool>) -> String {
             switch keyPath {
             case \.messaging: return "messagingEnabled"
             case \.crashes: return "crashesEnabled"
@@ -202,7 +202,7 @@ public class SettingsStore {
             }
         }
 
-        internal static func `default`(for keyPath: KeyPath<Privacy, Bool>) -> Bool {
+        static func `default`(for keyPath: KeyPath<Privacy, Bool>) -> Bool {
             switch keyPath {
             case \.messaging: return true
             case \.crashes: return false
@@ -292,7 +292,7 @@ public class SettingsStore {
                 server = Current.servers.all.first
             }
 
-            if let server = server {
+            if let server {
                 return (server, prefs.string(forKey: "menuItemTemplate") ?? "")
             } else {
                 return nil
@@ -315,7 +315,7 @@ public class SettingsStore {
         public var significantLocationChange: Bool
         public var pushNotifications: Bool
 
-        internal static func key(for keyPath: KeyPath<LocationSource, Bool>) -> String {
+        static func key(for keyPath: KeyPath<LocationSource, Bool>) -> String {
             switch keyPath {
             case \.zone: return "locationUpdateOnZone"
             case \.backgroundFetch: return "locationUpdateOnBackgroundFetch"

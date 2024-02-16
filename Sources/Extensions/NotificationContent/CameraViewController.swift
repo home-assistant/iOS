@@ -77,7 +77,7 @@ class CameraViewController: UIViewController, NotificationCategory {
                 .compactMap { controllerClass -> () -> Promise<UIViewController & CameraStreamHandler> in
                     {
                         do {
-                            return .value(try controllerClass.init(api: api, response: result))
+                            return try .value(controllerClass.init(api: api, response: result))
                         } catch {
                             return Promise(error: error)
                         }

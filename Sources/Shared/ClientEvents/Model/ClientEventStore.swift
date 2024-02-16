@@ -14,7 +14,7 @@ public struct ClientEventStore {
     public func getEvents(filter: String? = nil) -> AnyRealmCollection<ClientEvent> {
         let realm = Current.realm()
         let objects = realm.objects(ClientEvent.self).sorted(byKeyPath: "date", ascending: false)
-        if let filter = filter, filter.isEmpty == false {
+        if let filter, filter.isEmpty == false {
             return AnyRealmCollection(objects.filter(NSPredicate(format: "text contains[c] %@", filter)))
         } else {
             return AnyRealmCollection(objects)

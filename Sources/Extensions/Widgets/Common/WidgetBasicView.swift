@@ -155,7 +155,7 @@ struct WidgetBasicView: View {
             case .regular, .condensed:
                 HStack(alignment: .center, spacing: 6.0) {
                     icon
-                    if let subtext = subtext {
+                    if let subtext {
                         VStack(alignment: .leading, spacing: -2) {
                             text
                             subtext
@@ -172,7 +172,7 @@ struct WidgetBasicView: View {
                     icon
                     Spacer()
                     text
-                    if let subtext = subtext {
+                    if let subtext {
                         subtext
                     }
                 }

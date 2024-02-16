@@ -5,9 +5,9 @@ import XCTest
 
 class LocalizedStrings: XCTestCase {
     func testLanguages() throws {
-        let expressions: [NSRegularExpression] = [
-            try NSRegularExpression(pattern: "%{1,2}[+0123456789$.luq]*?[sduiefgcCp@]", options: []),
-            try NSRegularExpression(pattern: "\\$\\{[^}]+\\}", options: []),
+        let expressions: [NSRegularExpression] = try [
+            NSRegularExpression(pattern: "%{1,2}[+0123456789$.luq]*?[sduiefgcCp@]", options: []),
+            NSRegularExpression(pattern: "\\$\\{[^}]+\\}", options: []),
         ]
 
         for bundle in [
@@ -41,7 +41,7 @@ class LocalizedStrings: XCTestCase {
         var stringsFiles = [String]()
 
         for case let url as URL in try XCTUnwrap(FileManager.default.enumerator(
-            at: try XCTUnwrap(bundle.resourceURL),
+            at: XCTUnwrap(bundle.resourceURL),
             includingPropertiesForKeys: [.isDirectoryKey],
             options: [.skipsSubdirectoryDescendants]
         )) {
@@ -68,7 +68,7 @@ class LocalizedStrings: XCTestCase {
 
         return try stringsFiles.map { strings in
             func value(for language: String) throws -> LanguageWithStrings {
-                try .init(url: try XCTUnwrap(bundle.url(
+                try .init(url: XCTUnwrap(bundle.url(
                     forResource: strings,
                     withExtension: "strings",
                     subdirectory: nil,
@@ -76,11 +76,11 @@ class LocalizedStrings: XCTestCase {
                 )))
             }
 
-            return LanguageSet(
+            return try LanguageSet(
                 name: strings,
-                english: try value(for: "en"),
-                other: Dictionary(uniqueKeysWithValues: try languages.map { language in
-                    (key: language, value: try value(for: language))
+                english: value(for: "en"),
+                other: Dictionary(uniqueKeysWithValues: languages.map { language in
+                    try (key: language, value: value(for: language))
                 })
             )
         }

@@ -127,7 +127,7 @@ public class TokenManager {
         refreshPromiseCache.queue.sync { [self, server] in
             let tokenInfo = server.info.token
 
-            if let refreshPromise = self.refreshPromiseCache.promise {
+            if let refreshPromise = refreshPromiseCache.promise {
                 Current.Log.info("using cached refreshToken promise")
                 return refreshPromise
             }

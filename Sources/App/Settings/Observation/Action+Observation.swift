@@ -43,7 +43,7 @@ extension Action {
 
             let updateWatch = Promise<Void> { seal in
                 let error = HomeAssistantAPI.SyncWatchContext()
-                if let error = error {
+                if let error {
                     seal.reject(error)
                 } else {
                     seal.fulfill(())

@@ -3,12 +3,12 @@ import Foundation
 import PromiseKit
 import UserNotifications
 
-internal protocol NotificationAttachmentParser {
+protocol NotificationAttachmentParser {
     init()
     func attachmentInfo(from content: UNNotificationContent) -> Guarantee<NotificationAttachmentParserResult>
 }
 
-internal enum NotificationAttachmentParserResult: Equatable {
+enum NotificationAttachmentParserResult: Equatable {
     case fulfilled(NotificationAttachmentInfo)
     case missing
     case rejected(Error)
@@ -42,7 +42,7 @@ internal enum NotificationAttachmentParserResult: Equatable {
     }
 }
 
-internal struct NotificationAttachmentInfo: Equatable {
+struct NotificationAttachmentInfo: Equatable {
     var url: URL
     var needsAuth: Bool
     var typeHint: CFString?
@@ -52,11 +52,11 @@ internal struct NotificationAttachmentInfo: Equatable {
     var attachmentOptions: [String: Any] {
         var options = [String: Any]()
 
-        if let typeHint = typeHint {
+        if let typeHint {
             options[UNNotificationAttachmentOptionsTypeHintKey] = typeHint
         }
 
-        if let hideThumbnail = hideThumbnail {
+        if let hideThumbnail {
             options[UNNotificationAttachmentOptionsThumbnailHiddenKey] = hideThumbnail
         }
 

@@ -23,13 +23,13 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
             cell.textLabel?.textColor = .label
         }
 
-        if let icon = icon, !isDestructive {
+        if let icon, !isDestructive {
             cell.imageView?.image = icon.settingsIcon(for: cell.traitCollection)
         } else {
             cell.imageView?.image = nil
         }
 
-        if let accessoryIcon = accessoryIcon {
+        if let accessoryIcon {
             let imageView = cell.accessoryView as? UIImageView ?? UIImageView()
             let color: UIColor
 

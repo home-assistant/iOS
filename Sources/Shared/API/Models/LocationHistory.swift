@@ -30,9 +30,9 @@ public class LocationHistoryEntry: Object {
         self.init()
 
         var loc = CLLocation()
-        if let location = location {
+        if let location {
             loc = location
-        } else if let zone = zone {
+        } else if let zone {
             loc = zone.location
         }
 

@@ -40,7 +40,7 @@ class WebViewWindowController {
         // must be before the seal fires, or it may request during deinit of an old one
         window.rootViewController = newValue
 
-        if let newWebViewController = newWebViewController {
+        if let newWebViewController {
             // any kind of ->webviewcontroller is the same, even if we are for some reason replacing an existing one
             if webViewControllerPromise.isFulfilled {
                 webViewControllerPromise = .value(newWebViewController)
@@ -59,7 +59,7 @@ class WebViewWindowController {
         let navigationController = UINavigationController()
         navigationController.setNavigationBarHidden(true, animated: false)
 
-        if let rootViewController = rootViewController {
+        if let rootViewController {
             navigationController.viewControllers = [rootViewController]
         }
         return navigationController
@@ -166,7 +166,7 @@ class WebViewWindowController {
 
     private func selectServer(prompt: String? = nil, includeSettings: Bool = false) -> Promise<Server?> {
         let select = ServerSelectViewController()
-        if let prompt = prompt {
+        if let prompt {
             select.prompt = prompt
         }
         if includeSettings {
@@ -178,7 +178,7 @@ class WebViewWindowController {
         }
         let promise = select.result.ensureThen { [weak select] in
             Guarantee { seal in
-                if let select = select, select.presentingViewController != nil {
+                if let select, select.presentingViewController != nil {
                     select.dismiss(animated: true, completion: {
                         seal(())
                     })
@@ -228,7 +228,7 @@ class WebViewWindowController {
             }
 
             selectServer(prompt: prompt).done { [self] server in
-                if let server = server {
+                if let server {
                     open(from: from, server: server, urlString: openUrlRaw, skipConfirm: true)
                 }
             }.catch { error in
@@ -264,9 +264,9 @@ class WebViewWindowController {
         }
 
         let triggerOpen = { [self] in
-            if let webviewURL = webviewURL {
+            if let webviewURL {
                 navigate(to: webviewURL, on: server)
-            } else if let externalURL = externalURL {
+            } else if let externalURL {
                 openURLInBrowser(externalURL, presentedViewController)
             }
         }
@@ -364,7 +364,7 @@ class WebViewWindowController {
             }
 
             selectServer(includeSettings: true).done { [self] server in
-                if let server = server {
+                if let server {
                     open(server: server)
                 }
             }.catch { error in
@@ -457,7 +457,7 @@ extension WebViewWindowController: OnboardingStateObserver {
                     restorationActivity = nil
                 }
 
-                if let controller = controller {
+                if let controller {
                     updateRootViewController(to: webViewNavigationController(rootViewController: controller))
                 }
             }

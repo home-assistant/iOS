@@ -71,16 +71,16 @@ public class WebSocketMessage: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(MessageType, forKey: .MessageType)
-        if let ID = ID {
+        if let ID {
             try container.encode(ID, forKey: .ID)
         }
-        if let Success = Success {
+        if let Success {
             try container.encode(Success, forKey: .Success)
         }
-        if let Message = Message {
+        if let Message {
             try container.encode(Message, forKey: .Message)
         }
-        if let Result = Result {
+        if let Result {
             try container.encode(Result, forKey: .Result)
         }
         if let Payload {

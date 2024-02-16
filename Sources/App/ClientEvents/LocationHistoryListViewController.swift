@@ -82,7 +82,7 @@ extension LocationHistoryListViewController: LocationHistoryDetailMoveDelegate {
         from row: RowOf<LocationHistoryDetailViewController>,
         in direction: LocationHistoryDetailViewController.MoveDirection
     ) -> ButtonRowWithPresent<LocationHistoryDetailViewController>? {
-        guard let indexPath = row.indexPath, let section = section else {
+        guard let indexPath = row.indexPath, let section else {
             return nil
         }
 
@@ -94,7 +94,7 @@ extension LocationHistoryListViewController: LocationHistoryDetailMoveDelegate {
         default: nextIndex = nil
         }
 
-        if let nextIndex = nextIndex {
+        if let nextIndex {
             return section[nextIndex] as? ButtonRowWithPresent<LocationHistoryDetailViewController>
         } else {
             return nil
@@ -112,7 +112,7 @@ extension LocationHistoryListViewController: LocationHistoryDetailMoveDelegate {
         _ controller: LocationHistoryDetailViewController,
         move direction: LocationHistoryDetailViewController.MoveDirection
     ) {
-        guard let navigationController = navigationController,
+        guard let navigationController,
               let nextRow = row(from: controller.row, in: direction),
               let nextController = nextRow.presentationMode?.makeController() else {
             return

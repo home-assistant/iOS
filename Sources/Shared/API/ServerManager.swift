@@ -31,7 +31,7 @@ public extension ServerManager {
     }
 
     func server(forServerIdentifier rawIdentifier: String?) -> Server? {
-        if let rawIdentifier = rawIdentifier {
+        if let rawIdentifier {
             return server(for: .init(rawValue: rawIdentifier))
         } else {
             return nil
@@ -82,7 +82,7 @@ public extension ServerManager {
     }
 }
 
-internal protocol ServerManagerKeychain {
+protocol ServerManagerKeychain {
     func removeAll() throws
     func allKeys() -> [String]
     func getData(_ key: String) throws -> Data?
@@ -148,7 +148,7 @@ extension Keychain: ServerManagerKeychain {
     }
 }
 
-internal final class ServerManagerImpl: ServerManager {
+final class ServerManagerImpl: ServerManager {
     private var keychain: ServerManagerKeychain
     private var historicKeychain: ServerManagerKeychain
     private var encoder: JSONEncoder
@@ -373,11 +373,11 @@ internal final class ServerManagerImpl: ServerManager {
             let versionString = userDefaults.string(forKey: "version") ?? "2021.1"
             let name = userDefaults.string(forKey: "location_name") ?? ServerInfo.defaultName
 
-            var serverInfo = ServerInfo(
+            var serverInfo = try ServerInfo(
                 name: name,
-                connection: try decoder.decode(ConnectionInfo.self, from: connectionInfoData),
-                token: try decoder.decode(TokenInfo.self, from: tokenInfoData),
-                version: try Version(hassVersion: versionString)
+                connection: decoder.decode(ConnectionInfo.self, from: connectionInfoData),
+                token: decoder.decode(TokenInfo.self, from: tokenInfoData),
+                version: Version(hassVersion: versionString)
             )
 
             if let name = userDefaults.string(forKey: "override_device_name") {

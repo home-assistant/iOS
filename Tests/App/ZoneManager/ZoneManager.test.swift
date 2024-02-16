@@ -249,7 +249,7 @@ class ZoneManagerTests: XCTestCase {
 
         processor.promiseToReturn = .value(())
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         expectation.assertForOverFulfill = false // changing zones adds logs and we don't care
         loggedEventsUpdatedExpectation = expectation
 
@@ -425,7 +425,7 @@ class ZoneManagerTests: XCTestCase {
 
         seal.reject(TestError.anyError)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         loggedEventsUpdatedExpectation = expectation
 
         seal.fulfill(())
@@ -457,7 +457,7 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(processor.performEvent, event)
         XCTAssertTrue(loggedEvents.isEmpty)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         loggedEventsUpdatedExpectation = expectation
 
         seal.fulfill(())
@@ -514,7 +514,7 @@ private class FakeRegionFilter: ZoneManagerRegionFilter {
     ) -> AnyCollection<CLRegion> {
         lastAskedZones = zones
 
-        if let regionsBlock = regionsBlock {
+        if let regionsBlock {
             return regionsBlock()
         } else {
             return AnyCollection(zones.flatMap(\.regionsForMonitoring))

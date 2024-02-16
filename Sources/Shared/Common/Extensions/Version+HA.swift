@@ -3,9 +3,9 @@ import Version
 
 public extension Version {
     private static func replacements() throws -> [(regex: NSRegularExpression, replacement: String)] {
-        [
-            (regex: try NSRegularExpression(pattern: #"\.([a-zA-Z])"#, options: []), replacement: #"-$1"#),
-            (regex: try NSRegularExpression(pattern: #"([0-9])([a-zA-Z])"#, options: []), replacement: #"$1-$2"#),
+        try [
+            (regex: NSRegularExpression(pattern: #"\.([a-zA-Z])"#, options: []), replacement: #"-$1"#),
+            (regex: NSRegularExpression(pattern: #"([0-9])([a-zA-Z])"#, options: []), replacement: #"$1-$2"#),
         ]
     }
 

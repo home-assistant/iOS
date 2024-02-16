@@ -6,7 +6,7 @@ import UIKit
 @objc class SettingsSceneDelegate: BasicSceneDelegate {
     private var navigationController: UINavigationController? {
         didSet {
-            if let navigationController = navigationController {
+            if let navigationController {
                 navigationController.delegate = self
                 update(navigationController: navigationController)
             }
@@ -155,7 +155,7 @@ extension SettingsSceneDelegate: NSToolbarDelegate {
     }
 
     fileprivate func selectItemForIdentifier(_ identifier: NSToolbarItem.Identifier) {
-        if let viewController = viewController(for: identifier), let navigationController = navigationController {
+        if let viewController = viewController(for: identifier), let navigationController {
             scene?.title = SettingsRootDataSource.buttonRows.first(where: { $0.tag == identifier.rawValue })?.title
 
             // before, so it can be reset by the controller

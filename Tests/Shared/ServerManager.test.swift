@@ -290,7 +290,7 @@ class ServerManagerTests: XCTestCase {
 
     private func notificationContent(webhookID: String?) -> UNNotificationContent {
         let content = UNMutableNotificationContent()
-        if let webhookID = webhookID {
+        if let webhookID {
             content.userInfo["webhook_id"] = webhookID
         }
         return content
@@ -387,7 +387,7 @@ class ServerManagerTests: XCTestCase {
 
         var decoded: ServerInfo {
             get throws {
-                try JSONDecoder().decode(ServerInfo.self, from: try XCTUnwrap(keychain.data["fake1"]))
+                try JSONDecoder().decode(ServerInfo.self, from: XCTUnwrap(keychain.data["fake1"]))
             }
         }
 
@@ -543,8 +543,8 @@ class ServerManagerTests: XCTestCase {
             expiration: Date(timeIntervalSinceNow: 1000)
         )
 
-        try historicKeychain.set(try encoder.encode(connectionInfo), key: "connectionInfo")
-        try historicKeychain.set(try encoder.encode(tokenInfo), key: "tokenInfo")
+        try historicKeychain.set(encoder.encode(connectionInfo), key: "connectionInfo")
+        try historicKeychain.set(encoder.encode(tokenInfo), key: "tokenInfo")
         Current.settingsStore.prefs.set(version, forKey: "version")
         Current.settingsStore.prefs.set(overrideDeviceName, forKey: "override_device_name")
         Current.settingsStore.prefs.set(locationName, forKey: "location_name")
@@ -649,7 +649,7 @@ private class FakeObserver: ServerObserver {
     }
 
     func serversDidChange(_ serverManager: ServerManager) {
-        if let expectation = expectation {
+        if let expectation {
             expectation.fulfill()
         } else {
             XCTFail("observed without expectation")

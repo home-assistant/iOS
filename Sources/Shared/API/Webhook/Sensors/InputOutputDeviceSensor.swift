@@ -49,7 +49,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         #endif
     }
 
-    private func addObserver<PropertyType: HACoreBlahProperty>(object: ObservedObjectType, property: PropertyType) {
+    private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
         guard !observedObjects.contains(object) else { return }
 
         let observedStatus = property.addListener(objectID: object.id) { [weak self] in
@@ -64,17 +64,17 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
     // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
 
     #if targetEnvironment(macCatalyst)
-    func addCoreAudioObserver<PropertyType>(
+    func addCoreAudioObserver(
         for id: AudioObjectID,
-        property: HACoreAudioProperty<PropertyType>
+        property: HACoreAudioProperty<some Any>
     ) {
         addObserver(object: .coreAudio(id), property: property)
     }
 
     #if canImport(CoreMediaIO)
-    func addCoreMediaObserver<PropertyType>(
+    func addCoreMediaObserver(
         for id: CMIOObjectID,
-        property: HACoreMediaProperty<PropertyType>
+        property: HACoreMediaProperty<some Any>
     ) {
         addObserver(object: .coreMedia(id), property: property)
     }

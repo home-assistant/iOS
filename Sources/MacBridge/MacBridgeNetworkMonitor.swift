@@ -18,7 +18,7 @@ class MacBridgeNetworkMonitor {
         self.wifiClient = CWWiFiClient.shared()
 
         let callback: SCDynamicStoreCallBack = { _, _, context in
-            guard let context = context else { return }
+            guard let context else { return }
             let this = Unmanaged<MacBridgeNetworkMonitor>.fromOpaque(context).takeUnretainedValue()
             this.storeDidChange()
         }
@@ -38,7 +38,7 @@ class MacBridgeNetworkMonitor {
     }
 
     var networkConnectivity: MacBridgeNetworkConnectivityImpl {
-        if let cachedNetworkConnectivity = cachedNetworkConnectivity {
+        if let cachedNetworkConnectivity {
             return cachedNetworkConnectivity
         } else {
             let new = newNetworkConnectivity()
@@ -78,7 +78,7 @@ class MacBridgeNetworkMonitor {
         NotificationCenter.default.post(name: Self.connectivityDidChangeNotification, object: nil)
     }
 
-    internal func newNetworkConnectivity() -> MacBridgeNetworkConnectivityImpl {
+    func newNetworkConnectivity() -> MacBridgeNetworkConnectivityImpl {
         let primaryInterface = currentInterface
         let wifiInterfaces = wifiClient.interfaces() ?? []
         let wifi: MacBridgeWiFiImpl? = wifiInterfaces.compactMap { interface -> MacBridgeWiFiImpl? in

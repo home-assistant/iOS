@@ -66,8 +66,8 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         let result = step.perform(point: .beforeRegister)
         let testError = HAError.internal(debugDescription: "unit-test")
 
-        connection.pendingRequests.forEach {
-            $0.completion(.failure(testError))
+        for pendingRequest in connection.pendingRequests {
+            pendingRequest.completion(.failure(testError))
         }
 
         XCTAssertThrowsError(try hang(result)) { error in
@@ -78,8 +78,8 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
     func testRequestWrongDataType() {
         let result = step.perform(point: .beforeRegister)
 
-        connection.pendingRequests.forEach {
-            $0.completion(.success(.primitive(true)))
+        for pendingRequest in connection.pendingRequests {
+            pendingRequest.completion(.success(.primitive(true)))
         }
 
         XCTAssertThrowsError(try hang(result)) { error in

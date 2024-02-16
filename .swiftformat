@@ -1,4 +1,4 @@
---swiftversion 5.3
+--swiftversion 5.8
 
 --exclude vendor,Pods,**/Swiftgen/**,**/Resources/**,fastlane,**/Assets/**
 

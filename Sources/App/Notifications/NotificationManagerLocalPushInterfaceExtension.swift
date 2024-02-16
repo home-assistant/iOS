@@ -62,7 +62,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     override init() {
         super.init()
-        syncStates = PerServerContainer<LocalPushStateSync>(constructor: { server in
+        self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { server in
             let sync = LocalPushStateSync(settingsKey: PushProviderConfiguration.defaultSettingsKey(for: server))
             let token = sync.observe { [weak self] _ in
                 self?.notifyObservers(for: [server])
@@ -93,7 +93,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 Current.Log.info("configuring push for \(ssid): \(servers)")
 
                 let existing = managers?.first(where: { $0.matchSSIDs == [ssid] })
-                if let existing = existing {
+                if let existing {
                     usedManagers.insert(existing)
                 }
                 updatedManagers.append(updateManager(

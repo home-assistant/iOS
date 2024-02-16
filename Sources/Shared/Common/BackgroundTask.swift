@@ -24,7 +24,7 @@ public enum HomeAssistantBackgroundTask {
         wrapping: (TimeInterval?) -> Promise<ReturnType>
     ) -> Promise<ReturnType> {
         func describe(_ identifier: IdentifierType?) -> String {
-            if let identifier = identifier {
+            if let identifier {
                 #if os(iOS)
                 if let identifier = identifier as? UIBackgroundTaskIdentifier {
                     return String(describing: identifier.rawValue)

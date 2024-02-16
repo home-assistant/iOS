@@ -74,14 +74,14 @@ class ComplicationFamilySelectViewController: HAFormViewController, RowControlle
 
                         return ComplicationEditViewController(config: complication)
                     }, onDismiss: { [weak self] vc in
-                        guard let self = self, let vc = vc as? ComplicationEditViewController else { return }
+                        guard let self, let vc = vc as? ComplicationEditViewController else { return }
 
                         if vc.config.realm == nil {
                             // not saved
-                            self.navigationController?.popViewController(animated: true)
+                            navigationController?.popViewController(animated: true)
                         } else {
                             // saved
-                            self.onDismissCallback?(self)
+                            onDismissCallback?(self)
                         }
                     })
                 }

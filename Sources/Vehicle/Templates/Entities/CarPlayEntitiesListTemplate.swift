@@ -47,7 +47,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     }
 
     func updateItems(entityProviders: [CarPlayEntityListItem]) {
-        entityProviders.forEach { entityProvider in
+        for entityProvider in entityProviders {
             entityProvider.template.handler = { [weak self] _, completion in
                 self?.viewModel.handleEntityTap(entity: entityProvider.entity, completion: completion)
             }

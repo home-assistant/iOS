@@ -74,14 +74,14 @@ public extension UnkeyedDecodingContainer {
     }
 
     mutating func decode(_ type: [String: Any].Type) throws -> [String: Any] {
-        let nestedContainer = try self.nestedContainer(keyedBy: JSONCodingKeys.self)
+        let nestedContainer = try nestedContainer(keyedBy: JSONCodingKeys.self)
         return try nestedContainer.decode(type)
     }
 }
 
 public extension KeyedEncodingContainerProtocol where Key == JSONCodingKeys {
     mutating func encode(_ value: [String: Any]) throws {
-        try value.forEach({ key, value in
+        for (key, value) in value {
             let key = JSONCodingKeys(stringValue: key)
             switch value {
             case let value as Bool:
@@ -105,7 +105,7 @@ public extension KeyedEncodingContainerProtocol where Key == JSONCodingKeys {
                 let err = EncodingError.Context(codingPath: codingPath + [key], debugDescription: "Invalid JSON value")
                 throw EncodingError.invalidValue(value, err)
             }
-        })
+        }
     }
 }
 
@@ -127,7 +127,7 @@ public extension KeyedEncodingContainerProtocol {
 
 public extension UnkeyedEncodingContainer {
     mutating func encode(_ value: [Any]) throws {
-        try value.enumerated().forEach({ index, value in
+        for (index, value) in value.enumerated() {
             switch value {
             case let value as Bool:
                 try encode(value)
@@ -151,11 +151,11 @@ public extension UnkeyedEncodingContainer {
                 let err = EncodingError.Context(codingPath: codingPath + keys, debugDescription: "Invalid JSON value")
                 throw EncodingError.invalidValue(value, err)
             }
-        })
+        }
     }
 
     mutating func encode(_ value: [String: Any]) throws {
-        var nestedContainer = self.nestedContainer(keyedBy: JSONCodingKeys.self)
+        var nestedContainer = nestedContainer(keyedBy: JSONCodingKeys.self)
         try nestedContainer.encode(value)
     }
 }

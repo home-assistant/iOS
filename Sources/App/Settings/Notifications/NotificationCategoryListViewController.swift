@@ -78,7 +78,7 @@ class NotificationCategoryListViewController: HAFormViewController {
         var identifier = "new_category_" + UUID().uuidString
         var title = L10n.SettingsDetails.Notifications.NewCategory.title
 
-        if let category = category {
+        if let category {
             identifier = category.Identifier
             title = category.Name
         }

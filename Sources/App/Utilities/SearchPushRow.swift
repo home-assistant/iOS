@@ -35,7 +35,7 @@ open class _SearchSelectorViewController<
             object: nil,
             queue: .main
         ) { [tableView] note in
-            guard let tableView = tableView,
+            guard let tableView,
                   let screenFrameValue = note.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? NSValue else {
                 return
             }

@@ -41,7 +41,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
             "one": WebhookSensorResponse(success: true).toJSON(),
         ]
 
-        let expectation = self.expectation(description: "result")
+        let expectation = expectation(description: "result")
         handler.handle(request: .value(request), result: .value(result)).done { handlerResult in
             XCTAssertNil(handlerResult.notification)
             expectation.fulfill()
@@ -56,7 +56,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
             "one": ["not an object here"],
         ]
 
-        let expectation = self.expectation(description: "result")
+        let expectation = expectation(description: "result")
         handler.handle(request: .value(request), result: .value(result)).done { handlerResult in
             XCTAssertNil(handlerResult.notification)
             expectation.fulfill()

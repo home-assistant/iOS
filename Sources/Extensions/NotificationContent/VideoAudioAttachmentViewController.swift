@@ -15,7 +15,7 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
     let needsEndSecurityScoped: Bool
 
     required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
-        guard let attachmentURL = attachmentURL else {
+        guard let attachmentURL else {
             throw PlayerAttachmentError.noAttachment
         }
 
@@ -55,7 +55,7 @@ class PlayerAttachmentViewController: UIViewController, NotificationCategory {
             oldValue?.view.removeFromSuperview()
             oldValue?.removeFromParent()
 
-            if let videoViewController = videoViewController {
+            if let videoViewController {
                 view.addSubview(videoViewController.view)
                 videoViewController.view.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([

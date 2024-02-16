@@ -126,7 +126,7 @@ public enum Constants {
         SharedPlistFiles.Info.cfBundleShortVersionString
     }
 
-    internal static var clientVersion: Version {
+    static var clientVersion: Version {
         // swiftlint:disable:next force_try
         var clientVersion = try! Version(version)
         clientVersion.build = build

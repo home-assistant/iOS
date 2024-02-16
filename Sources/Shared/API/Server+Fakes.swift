@@ -1,6 +1,6 @@
 import Foundation
 
-internal extension ServerInfo {
+extension ServerInfo {
     static func fake() -> ServerInfo {
         var value = ServerInfo(
             name: "Fake Server",
@@ -34,7 +34,7 @@ internal extension ServerInfo {
     }
 }
 
-internal extension Server {
+extension Server {
     static func fake(
         identifier: Identifier<Server> = .init(rawValue: UUID().uuidString),
         initial: ServerInfo = .fake(),
@@ -46,7 +46,7 @@ internal extension Server {
     }
 }
 
-internal class FakeServerManager: ServerManager {
+class FakeServerManager: ServerManager {
     var all = [Server]()
     var observers = [WeakWrapper]()
 

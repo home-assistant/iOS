@@ -35,7 +35,7 @@ extension AppEnvironment {
     }
 }
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     @available(iOS, deprecated: 13.0)
     var window: UIWindow? {
@@ -144,12 +144,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc internal func openAbout() {
+    @objc func openAbout() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .about)
     }
 
-    @objc internal func openMenuUrl(_ command: AnyObject) {
+    @objc func openMenuUrl(_ command: AnyObject) {
         guard let command = command as? UICommand, let url = MenuManager.url(from: command) else {
             return
         }
@@ -160,18 +160,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @objc internal func openPreferences() {
+    @objc func openPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         sceneManager.activateAnyScene(for: .settings)
     }
 
-    @objc internal func openActionsPreferences() {
+    @objc func openActionsPreferences() {
         precondition(Current.sceneManager.supportsMultipleScenes)
         let delegate: Guarantee<SettingsSceneDelegate> = sceneManager.scene(for: .init(activity: .settings))
         delegate.done { $0.pushActions(animated: true) }
     }
 
-    @objc internal func openHelp() {
+    @objc func openHelp() {
         openURLInBrowser(
             URL(string: "https://companion.home-assistant.io")!,
             nil

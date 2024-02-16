@@ -69,11 +69,11 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
             server.update { info in
                 info.connection.set(address: givenURL, for: urlType)
 
-                if let useCloud = useCloud {
+                if let useCloud {
                     info.connection.useCloud = useCloud
                 }
 
-                if let localPush = localPush {
+                if let localPush {
                     info.connection.isLocalPushEnabled = localPush
                 }
 
@@ -105,7 +105,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 return Current.webhooks.sendTest(server: server, baseURL: url)
             }
 
-            if let givenURL = givenURL, useCloud != true {
+            if let givenURL, useCloud != true {
                 return Current.webhooks.sendTest(server: server, baseURL: givenURL)
             }
 
@@ -299,7 +299,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         locationManager?.delegate = permissionDelegate
 
         section.hidden = .function([], { _ in
-            if let locationManager = locationManager {
+            if let locationManager {
                 return locationManager.authorizationStatus == .authorizedAlways &&
                     locationManager.accuracyAuthorization == .fullAccuracy
             } else {

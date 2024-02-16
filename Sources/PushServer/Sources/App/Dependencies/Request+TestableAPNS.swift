@@ -16,7 +16,7 @@ extension Request.TestableAPNS: APNSwiftClient {
         request.application.environment == .testing
     }
 
-    internal struct PendingSend {
+    struct PendingSend {
         var promise: EventLoopPromise<Void>
         var payload: ByteBuffer
         var pushType: APNSwiftConnection.PushType

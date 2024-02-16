@@ -77,7 +77,7 @@ class WebhookManagerTests: XCTestCase {
         })
 
         func waitRunLoop(queue: DispatchQueue = .main, count: Int = 1) {
-            let expectation = self.expectation(description: "run loop")
+            let expectation = expectation(description: "run loop")
             expectation.expectedFulfillmentCount = count
             for _ in 0 ..< count {
                 queue.async { expectation.fulfill() }
@@ -123,10 +123,10 @@ class WebhookManagerTests: XCTestCase {
         )
 
         let expectation = expectation(description: "completion handler")
-        manager.urlSession(
+        try manager.urlSession(
             manager.currentRegularSessionInfo.session,
             task: task,
-            didReceive: try SecTrust.unitTestDotExampleDotCom1.authenticationChallenge(),
+            didReceive: SecTrust.unitTestDotExampleDotCom1.authenticationChallenge(),
             completionHandler: { disposition, credential in
                 XCTAssertEqual(disposition, .performDefaultHandling)
                 XCTAssertNil(credential)
@@ -893,7 +893,7 @@ private func XCTAssertEqualWebhookRequest(
 ) {
     do {
         let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
-        let lhs = try mapper.map(JSONObject: try JSONSerialization.jsonObject(with: lhsData ?? Data(), options: []))
+        let lhs = try mapper.map(JSONObject: JSONSerialization.jsonObject(with: lhsData ?? Data(), options: []))
         XCTAssertEqualWebhookRequest(lhs, rhs, server: server, file: file, line: line)
     } catch {
         XCTFail("got error: \(error)", file: file, line: line)

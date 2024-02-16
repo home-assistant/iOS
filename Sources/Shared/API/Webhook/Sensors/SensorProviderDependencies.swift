@@ -5,17 +5,17 @@ public protocol SensorProviderUpdateSignaler: AnyObject {
 }
 
 public class SensorProviderDependencies {
-    internal var updateSignalHandler: (SensorProvider.Type) -> Void = { _ in }
+    var updateSignalHandler: (SensorProvider.Type) -> Void = { _ in }
     private var updateSignalers: [String: [SensorProviderUpdateSignaler]] = [:]
 
     private func key(for sensorProvider: SensorProvider) -> String {
         String(describing: type(of: sensorProvider))
     }
 
-    internal func existingSignaler<SignalerType: SensorProviderUpdateSignaler>(
+    func existingSignaler<SignalerType: SensorProviderUpdateSignaler>(
         for sensorProvider: SensorProvider
     ) -> SignalerType? {
-        let key = self.key(for: sensorProvider)
+        let key = key(for: sensorProvider)
         return updateSignalers[key]?.compactMap({ $0 as? SignalerType }).first
     }
 

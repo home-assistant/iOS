@@ -17,12 +17,12 @@ class InputAccessoryView: UIView {
 
     var contentView: UIView? {
         willSet {
-            if let contentView = contentView, contentView != newValue, contentView.superview == self {
+            if let contentView, contentView != newValue, contentView.superview == self {
                 contentView.removeFromSuperview()
             }
         }
         didSet {
-            if let contentView = contentView {
+            if let contentView {
                 addSubview(contentView)
 
                 NSLayoutConstraint.activate([

@@ -24,7 +24,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
             self.circular = circular
         }
 
-        init<T: Sequence>(_ sequence: T) where T.Element == CLRegion {
+        init(_ sequence: some Sequence<CLRegion>) {
             let counts = sequence.reduce(into: (beacon: 0, circular: 0)) { counts, region in
                 if region is CLCircularRegion {
                     counts.circular += 1
@@ -82,7 +82,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         let sourceLocation: CLLocation?
         let sourceDecision: String
 
-        if let lastLocation = lastLocation {
+        if let lastLocation {
             sourceLocation = lastLocation
             sourceDecision = "last_location"
         } else if let homeLocation = zones.first(where: \.isHome)?.location {
@@ -96,7 +96,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         // We've exceeded the limit, so we need to start reducing.
         // We aim to clip off the ones that are further away.
         let sorted = segmented.sorted { lhs, rhs in
-            if let sourceLocation = sourceLocation {
+            if let sourceLocation {
                 // We have a location to compare against, so do distance
                 return lhs.key.location.distance(from: sourceLocation) < rhs.key.location.distance(from: sourceLocation)
             } else {

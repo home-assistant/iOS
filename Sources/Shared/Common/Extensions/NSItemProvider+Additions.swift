@@ -3,8 +3,8 @@ import Foundation
 import PromiseKit
 
 public struct ItemProviderRequest<Type> {
-    internal let utType: String
-    internal init(_ utType: CFString) {
+    let utType: String
+    init(_ utType: CFString) {
         self.utType = utType as String
     }
 

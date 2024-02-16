@@ -21,7 +21,7 @@ class NotificationActionConfigurator: HAFormViewController, TypedRowControllerTy
 
         self.isModalInPresentation = true
 
-        if let action = action {
+        if let action {
             self.action = action
             self.newAction = false
         }
@@ -200,7 +200,7 @@ class NotificationActionConfigurator: HAFormViewController, TypedRowControllerTy
                 tag: "exampleTrigger",
                 header: L10n.ActionsConfigurator.TriggerExample.title,
                 yamlGetter: { [weak form, category] in
-                    guard let form = form else { return "" }
+                    guard let form else { return "" }
 
                     let formVals = form.values(includeHidden: true)
 

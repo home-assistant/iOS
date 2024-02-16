@@ -68,11 +68,10 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
             case .fulfilled:
                 completion(true)
             case let .rejected(error):
-                self
-                    .showAlert(type: .error(
-                        title: L10n.errorLabel,
-                        message: error.localizedDescription
-                    ))
+                showAlert(type: .error(
+                    title: L10n.errorLabel,
+                    message: error.localizedDescription
+                ))
                 completion(false)
             }
         }

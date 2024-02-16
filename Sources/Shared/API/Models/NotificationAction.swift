@@ -84,7 +84,7 @@ public class NotificationAction: Object {
         if #available(iOS 15, watchOS 8, *) {
             let actionIcon: UNNotificationActionIcon?
 
-            if let icon = icon, icon.hasPrefix("sfsymbols:") {
+            if let icon, icon.hasPrefix("sfsymbols:") {
                 actionIcon = .init(systemImageName: icon.replacingOccurrences(of: "sfsymbols:", with: ""))
             } else {
                 actionIcon = nil

@@ -11,7 +11,7 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     private func event(api: HomeAssistantAPI) -> Promise<(eventType: String, eventData: [String: String])> {
-        guard let extensionContext = extensionContext else {
+        guard let extensionContext else {
             return .init(error: EventError.invalidExtensionContext)
         }
 

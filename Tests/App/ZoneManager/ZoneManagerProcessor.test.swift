@@ -167,7 +167,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         let event = ZoneManagerEvent(eventType: .locationChange(locations))
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -209,7 +209,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         let event = ZoneManagerEvent(eventType: .locationChange(locations))
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -280,7 +280,7 @@ class ZoneManagerProcessorTests: XCTestCase {
                 associatedZone: circularRegionZone
             ))
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -307,7 +307,7 @@ class ZoneManagerProcessorTests: XCTestCase {
                 associatedZone: circularRegionZone
             ))
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -331,7 +331,7 @@ class ZoneManagerProcessorTests: XCTestCase {
                 associatedZone: circularRegionZone
             ))
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -354,7 +354,7 @@ class ZoneManagerProcessorTests: XCTestCase {
                 associatedZone: circularRegionZone
             ))
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -377,7 +377,7 @@ class ZoneManagerProcessorTests: XCTestCase {
                 associatedZone: beaconRegionZone
             ))
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -400,7 +400,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -442,7 +442,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -493,7 +493,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -544,7 +544,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -619,7 +619,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()
@@ -749,7 +749,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         oneShotLocationSeal.fulfill(oneShotLocation)
         submitLocationSeal.fulfill(())
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure { expectation.fulfill() }.cauterize()
 
         wait(for: [expectation], timeout: 10.0)
@@ -838,7 +838,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         oneShotLocationSeal.fulfill(oneShotLocation)
         submitLocationSeal.fulfill(())
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure { expectation.fulfill() }.cauterize()
 
         wait(for: [expectation], timeout: 10.0)
@@ -880,7 +880,7 @@ class ZoneManagerProcessorTests: XCTestCase {
         )
         let promise = processor.perform(event: event)
 
-        let expectation = self.expectation(description: "promise")
+        let expectation = expectation(description: "promise")
         promise.ensure {
             expectation.fulfill()
         }.cauterize()

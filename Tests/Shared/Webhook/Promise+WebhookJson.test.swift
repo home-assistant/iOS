@@ -138,7 +138,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedDictionary() throws {
         let dictionary = ["key": "value"]
         let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
-        let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
+        let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
         XCTAssertEqual(try hang(json) as? [String: String], dictionary)
@@ -147,7 +147,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedArray() throws {
         let array = ["one", "two"]
         let data = try JSONSerialization.data(withJSONObject: array, options: [])
-        let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
+        let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
         XCTAssertEqual(try hang(json) as? [String], array)
@@ -156,7 +156,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedString() throws {
         let string = "value"
         let data = try JSONSerialization.data(withJSONObject: string, options: [.fragmentsAllowed])
-        let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
+        let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
         XCTAssertEqual(try hang(json) as? String, string)
@@ -165,7 +165,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     func testEncryptedNoSecret() throws {
         let object = ["test": true]
         let data = try JSONSerialization.data(withJSONObject: object, options: [])
-        let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
+        let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { nil })
 
         XCTAssertThrowsError(try hang(json)) { error in
@@ -188,7 +188,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
     func testEncryptedBadKey() throws {
         let data = try JSONSerialization.data(withJSONObject: ["test": true], options: [])
-        let promise = Promise<Data>.value(try Self.encryptedResponse(data: data))
+        let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { [0, 1, 2, 3, 4] })
 
         XCTAssertThrowsError(try hang(json)) { error in

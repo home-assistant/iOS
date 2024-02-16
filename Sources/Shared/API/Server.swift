@@ -177,7 +177,7 @@ public final class Server: Hashable, Comparable, CustomStringConvertible {
             let oldValue = getter()
             let didUpdate = setter(newValue)
             if newValue != oldValue, didUpdate {
-                observers.values.forEach { observer in
+                for observer in observers.values {
                     DispatchQueue.main.async {
                         observer(newValue)
                     }

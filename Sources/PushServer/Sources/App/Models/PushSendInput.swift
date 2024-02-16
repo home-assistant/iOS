@@ -21,7 +21,7 @@ struct PushRegistrationInfo: Content {
         self.webhookId = try container.decodeIfPresent(String.self, forKey: .webhookId)
     }
 
-    internal init(appId: String, appVersion: String, osVersion: String, webhookId: String?) {
+    init(appId: String, appVersion: String, osVersion: String, webhookId: String?) {
         self.appId = appId
         self.appVersion = appVersion
         self.osVersion = osVersion
@@ -54,7 +54,7 @@ struct PushSendInput: Content {
         }
     }
 
-    internal init(encrypted: Bool, encryptedData: String?, registrationInfo: PushRegistrationInfo, pushToken: String) {
+    init(encrypted: Bool, encryptedData: String?, registrationInfo: PushRegistrationInfo, pushToken: String) {
         self.encrypted = encrypted
         self.encryptedData = encryptedData
         self.registrationInfo = registrationInfo

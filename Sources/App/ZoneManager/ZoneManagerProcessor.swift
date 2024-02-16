@@ -74,7 +74,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
                         return .value(event.associatedLocation)
                     }
                 }.map { location in
-                    if let location = location {
+                    if let location {
                         return accuracyFuzzers.fuzz(location: location, for: event)
                     } else {
                         return nil
@@ -154,7 +154,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return ignore(.unknownRegionState)
         }
 
-        guard let zone = zone else {
+        guard let zone else {
             return ignore(.unknownRegion)
         }
 

@@ -6,7 +6,7 @@ enum AccountInitialsImage {
         // matching
         // https://github.com/home-assistant/frontend/blob/42bf350034b7a53f0c6ba76791ea9d2a65bf6d67/src/components/user/ha-user-badge.ts
 
-        guard let string = string else {
+        guard let string else {
             return "?"
         }
 
@@ -24,7 +24,7 @@ enum AccountInitialsImage {
     }
 
     static func image(for name: String?, size: CGSize = Self.defaultSize) -> UIImage {
-        let initials = self.initials(for: name)
+        let initials = initials(for: name)
 
         let rect = CGRect(origin: .zero, size: size)
         let image = UIGraphicsImageRenderer(size: size).image { context in

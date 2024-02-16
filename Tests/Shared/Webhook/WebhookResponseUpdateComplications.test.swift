@@ -142,7 +142,7 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
             "c3|fwc3k1": 3,
         ]
 
-        let expectation = self.expectation(description: "result")
+        let expectation = expectation(description: "result")
         handler.handle(request: .value(request), result: .value(result)).done { handlerResult in
             XCTAssertNil(handlerResult.notification)
             expectation.fulfill()

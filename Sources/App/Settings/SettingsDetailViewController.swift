@@ -468,10 +468,10 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             with(toggleAllSwitch) {
                 $0.title = L10n.SettingsDetails.Actions.Scenes.selectAll
                 $0.onChange { [weak self] row in
-                    guard let self = self,
+                    guard let self,
                           let value = row.value else { return }
-                    self.realm.reentrantWrite {
-                        scenes.forEach { scene in
+                    realm.reentrantWrite {
+                        for scene in scenes {
                             scene.actionEnabled = value
                         }
                     }

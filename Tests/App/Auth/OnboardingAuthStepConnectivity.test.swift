@@ -44,8 +44,8 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
         statusCode: Int
     ) {
         do {
-            client.urlProtocol(proto, didReceive: try XCTUnwrap(HTTPURLResponse(
-                url: try XCTUnwrap(authDetails).url,
+            try client.urlProtocol(proto, didReceive: XCTUnwrap(HTTPURLResponse(
+                url: XCTUnwrap(authDetails).url,
                 statusCode: statusCode,
                 httpVersion: nil,
                 headerFields: nil
@@ -135,8 +135,8 @@ class OnboardingAuthStepConnectivityTests: XCTestCase {
 
         func newSecTrust() throws -> SecTrust {
             var secTrust: SecTrust?
-            SecTrustCreateWithCertificates([
-                try XCTUnwrap(SecCertificateCreateWithData(nil, certificate as CFData)),
+            try SecTrustCreateWithCertificates([
+                XCTUnwrap(SecCertificateCreateWithData(nil, certificate as CFData)),
             ] as CFArray, nil, &secTrust)
             return try XCTUnwrap(secTrust)
         }
@@ -371,7 +371,7 @@ class ConnectivityURLProtocol: URLProtocol {
     override class func canInit(with request: URLRequest) -> Bool { true }
 
     override func startLoading() {
-        if let client = client {
+        if let client {
             Self.handler(self, client)
         }
     }

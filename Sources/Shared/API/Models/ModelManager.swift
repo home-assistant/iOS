@@ -282,15 +282,15 @@ public class ModelManager: ServerObserver {
         }).asVoid()
     }
 
-    internal enum StoreError: Error {
+    enum StoreError: Error {
         case missingPrimaryKey
     }
 
-    internal func store<UM: Object & UpdatableModel, C: Collection>(
+    func store<UM: Object & UpdatableModel>(
         type realmObjectType: UM.Type,
         from server: Server,
-        sourceModels: C
-    ) -> Promise<Void> where C.Element == UM.Source {
+        sourceModels: some Collection<UM.Source>
+    ) -> Promise<Void> {
         let realm = Current.realm()
         return realm.reentrantWrite {
             guard let realmPrimaryKey = realmObjectType.primaryKey() else {

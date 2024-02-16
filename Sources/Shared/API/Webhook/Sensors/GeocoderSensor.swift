@@ -8,7 +8,7 @@ public class GeocoderSensor: SensorProvider {
         case noLocation
     }
 
-    internal enum UserDefaultsKeys: String {
+    enum UserDefaultsKeys: String {
         case geocodeUseZone = "geocoded_location_use_zone"
 
         var title: String {
@@ -55,7 +55,7 @@ public class GeocoderSensor: SensorProvider {
                 .map { CNPostalAddressFormatter.string(from: $0, style: .mailingAddress) }
                 .first(where: { $0.isEmpty == false })
 
-            if let address = address {
+            if let address {
                 sensor.State = address
             }
 

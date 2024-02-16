@@ -40,7 +40,7 @@ class NotificationSubControllerMap: NotificationSubController {
 
         elements.map.addAnnotation(location, with: .red)
 
-        if let secondLocation = secondLocation {
+        if let secondLocation {
             pinLocations.append(secondLocation)
             elements.map.addAnnotation(secondLocation, with: .green)
         }

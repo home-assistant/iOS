@@ -69,7 +69,7 @@ class IncomingURLHandler {
                         queryParameters: queryParameters
                     )
                 })
-            } else if let server = server {
+            } else if let server {
                 windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
             } else {
                 windowController.openSelectingServer(

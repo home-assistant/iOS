@@ -13,7 +13,7 @@ public class CrashReporterImpl: CrashReporter {
     public var hasCrashReporter: Bool = false
     public var hasAnalytics: Bool = false
 
-    internal func setup() {
+    func setup() {
         guard Current.settingsStore.privacy.crashes else {
             return
         }

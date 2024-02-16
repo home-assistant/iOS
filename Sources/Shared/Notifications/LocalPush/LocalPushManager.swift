@@ -97,7 +97,7 @@ public class LocalPushManager {
     }
 
     public func invalidate() {
-        if let subscription = subscription {
+        if let subscription {
             Current.Log.info("cancelling")
             subscription.cancel()
         } else {

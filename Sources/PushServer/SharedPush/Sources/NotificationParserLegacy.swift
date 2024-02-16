@@ -82,7 +82,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             }
         }()
 
-        if let commandPayload = commandPayload {
+        if let commandPayload {
             var payload = commandPayload.payload
 
             if let push = data["push"] as? [String: Any], let badge = push["badge"] as? Int {

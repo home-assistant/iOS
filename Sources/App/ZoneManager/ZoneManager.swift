@@ -100,8 +100,8 @@ class ZoneManager {
         }.get { [weak self] _ in
             // a location change means we should consider changing our monitored regions
             // ^ not tap for this side effect because we don't want to do this on failure
-            guard let self = self else { return }
-            self.sync(zones: AnyCollection(self.zones))
+            guard let self else { return }
+            sync(zones: AnyCollection(zones))
         }.then {
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Updated location",
