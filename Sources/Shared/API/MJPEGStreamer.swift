@@ -7,7 +7,7 @@ class MJPEGStreamerSessionDelegate: SessionDelegate {
     static var taskUserInfoKey: AnyHashable = "taskUserInfoKey"
 
     // if/when alamofire also implements this again, we need to update to handle it as the breakpoint between images
-    func urlSession(
+    override func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didReceive response: URLResponse,
