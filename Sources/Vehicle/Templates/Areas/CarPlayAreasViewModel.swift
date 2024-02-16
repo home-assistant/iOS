@@ -82,42 +82,14 @@ final class CarPlayAreasViewModel {
         devicesAndAreas: [HADeviceAreaResponse],
         server: Server
     ) {
-        /// area_id : [device_id]
-        var areasAndDevicesDict: [String: [String]] = [:]
-
-        // Get all devices from an area
-        devicesAndAreas.forEach { device in
-            if let areaId = device.areaId, let deviceId = device.deviceId {
-                if var deviceIds = areasAndDevicesDict[areaId] {
-                    deviceIds.append(deviceId)
-                    areasAndDevicesDict[areaId] = deviceIds
-                } else {
-                    areasAndDevicesDict[areaId] = [deviceId]
-                }
-            }
-        }
-
-        /// area_id : [entity_id]
-        var areasAndEntitiesDict: [String: [String]] = [:]
-
-        // Get all entities from an area
-        areasAndEntities.forEach { entity in
-            if let areaId = entity.areaId, let entityId = entity.entityId {
-                if var entityIds = areasAndEntitiesDict[areaId] {
-                    entityIds.append(entityId)
-                    areasAndEntitiesDict[areaId] = entityIds
-                } else {
-                    areasAndEntitiesDict[areaId] = [entityId]
-                }
-            }
-        }
-
+        let areasAndDevicesDict = mapToareasAndEntities(devicesAndAreas: devicesAndAreas)
+        var areasAndEntitiesDict = mapToAreasAndEntitiesDict(areasAndEntities: areasAndEntities)
         /// device_id : [entity_id]
         var deviceChildrenEntities: [String: [String]] = [:]
 
         // Get entities from a device
-        areasAndDevicesDict.forEach { areaAndDevices in
-            areaAndDevices.value.forEach { deviceId in
+        for areaAndDevices in areasAndDevicesDict {
+            for deviceId in areaAndDevices.value {
                 deviceChildrenEntities[deviceId] = areasAndEntities.filter { $0.deviceId == deviceId }
                     .compactMap(\.entityId)
             }
@@ -151,6 +123,37 @@ final class CarPlayAreasViewModel {
         }
 
         templateProvider?.paginatedList.updateItems(items: items)
+    }
+    
+    /// - returns: area_id : [device_id]
+    private func mapToareasAndEntities(devicesAndAreas: [HADeviceAreaResponse]) -> [String: [String]] {
+        devicesAndAreas.reduce(into: [:]) { partialResult, device in
+            guard let areaId = device.areaId, let deviceId = device.deviceId else {
+                return
+            }
+            if var deviceIds = partialResult[deviceId] {
+                deviceIds.append(deviceId)
+                partialResult[areaId] = deviceIds
+            } else {
+                partialResult[areaId] = [deviceId]
+            }
+        }
+    }
+    
+    /// - returns: area_id : [entity_id]
+    private func mapToAreasAndEntitiesDict(areasAndEntities: [HAEntityAreaResponse]) -> [String: [String]] {
+        areasAndEntities.reduce(into: [:]) { partialResult, entity in
+            guard let areaId = entity.areaId, let entityId = entity.entityId else {
+                return
+            }
+            if var entityIds = partialResult[areaId] {
+                entityIds.append(entityId)
+                partialResult[areaId] = entityIds
+            } else {
+                partialResult[areaId] = [entityId]
+            }
+        }
+
     }
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
