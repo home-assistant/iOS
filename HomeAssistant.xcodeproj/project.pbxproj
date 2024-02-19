@@ -529,6 +529,8 @@
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
+		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
+		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -1660,6 +1662,7 @@
 		4278DFCE2B45C66A0087C9D7 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFCF2B45C66A0087C9D7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFD02B45C66A0087C9D7 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Core.strings; sourceTree = "<group>"; };
+		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingView.swift; sourceTree = "<group>"; };
@@ -4790,6 +4793,7 @@
 				B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */,
 				B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */,
 				B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */,
+				4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */,
 				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
 				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
 				420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */,
@@ -4952,6 +4956,7 @@
 			files = (
 				B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */,
 				CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */,
+				427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6540,6 +6545,7 @@
 				4242A2CF2B2B5C9E00E9F001 /* sv */,
 				4242A2D02B2B5C9F00E9F001 /* es-ES */,
 				4242A2D12B2B5C9F00E9F001 /* es-MX */,
+				4279407E2B8369EA001D7E14 /* bg */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
