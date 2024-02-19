@@ -716,6 +716,17 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 _ = vc.navigationController?.popViewController(animated: true)
 
                 if let vc = vc as? ActionConfigurator {
+                    defer {
+                        if vc.shouldOpenAutomationEditor {
+                            vc.navigationController?.dismiss(animated: true, completion: {
+                                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                                    .done { controller in
+                                        controller.openActionAutomationEditor(actionId: vc.action.ID)
+                                    }
+                            })
+                        }
+                    }
+
                     if vc.shouldSave == false {
                         Current.Log.verbose("Not saving action to DB and returning early!")
                         return
@@ -734,15 +745,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     }.done {
                         self?.updatePositions()
                     }.cauterize()
-
-                    if vc.shouldOpenAutomationEditor {
-                        vc.navigationController?.dismiss(animated: true, completion: {
-                            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                                .done { controller in
-                                    controller.openActionAutomationEditor(actionId: vc.action.ID)
-                                }
-                        })
-                    }
                 }
             })
         }
