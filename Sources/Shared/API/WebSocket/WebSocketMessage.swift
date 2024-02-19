@@ -61,8 +61,8 @@ public class WebSocketMessage: Codable {
         self.command = nil
     }
 
-    public init(command: String, payload: [String: Any]? = nil) {
-        self.ID = -1
+    public init(id: Int = -1, command: String, payload: [String: Any]? = nil) {
+        self.ID = id
         self.MessageType = "command"
         self.command = command
         self.Payload = payload
