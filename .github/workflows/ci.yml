@@ -22,7 +22,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
@@ -46,9 +46,9 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -60,7 +60,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache: Gems"
         id: cache_gems
         with:
@@ -84,13 +84,13 @@ jobs:
       - name: Run tests
         run: bundle exec fastlane test
 
-      - uses: codecov/codecov-action@v3.1.0
+      - uses: codecov/codecov-action@v4.0.1
         name: "Upload Code Coverage"
         with:
           xcode: true
           xcode_archive_path: fastlane/test_output/Tests-Unit.xcresult
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload Test Logs"
         if: ${{ always() }}
         with:
@@ -100,7 +100,7 @@ jobs:
             ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
             ~/Library/Logs/scan
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload Simulator App"
         with:
           name: ios-simulator
@@ -111,9 +111,9 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache: Pods"
         id: cache_pods
         with:
@@ -125,7 +125,7 @@ jobs:
             ${{ runner.os }}-pods-${{ env.DEVELOPER_DIR }}-
             ${{ hashFiles('**/Gemfile.lock', '**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache: Gems"
         id: cache_gems
         with:
