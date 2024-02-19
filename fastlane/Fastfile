@@ -350,7 +350,7 @@ lane :unused_strings do
                          .select { |full, _key| full.include?('.') }
                          # find any strings that don't have matches in code
                          .select { |_full, key| system("git grep --ignore-case --quiet #{key} -- ../*.swift") == false }
-    unused_strings.each { |full, _key| puts full }
+    unused_strings.each_key { |full| puts full }
     puts "- Found #{unused_strings.count} unused strings"
   end
 end
@@ -586,7 +586,7 @@ platform :mac do
       output_directory: './build/macos',
       export_options: {
         signingStyle: 'manual',
-        provisioningProfiles: specifiers.transform_values { |v| v.sub(/Mac Dev ID/, 'Mac App Store') }
+        provisioningProfiles: specifiers.transform_values { |v| v.sub('Mac Dev ID', 'Mac App Store') }
       }
     )
 
