@@ -453,8 +453,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Zapamatovat poslední stránku";
 "settings_details.general.title" = "Obecné";
-"settings_details.general.visibility.options.dock" = "Dock";
-"settings_details.general.visibility.options.dock_and_menu_bar" = "Dock a panel nabídek";
+"settings_details.general.visibility.options.dock" = "Dok";
+"settings_details.general.visibility.options.dock_and_menu_bar" = "Dok a panel nabídek";
 "settings_details.general.visibility.options.menu_bar" = "Panel nabídek";
 "settings_details.general.visibility.title" = "Zobrazit aplikaci v...";
 "settings_details.location.background_refresh.disabled" = "Zakázáno";
