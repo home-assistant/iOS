@@ -13,6 +13,7 @@ class MJPEGStreamerSessionDelegate: SessionDelegate {
         didReceive response: URLResponse,
         completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
     ) {
+        super.urlSession(session, dataTask: dataTask, didReceive: response, completionHandler: completionHandler)
         NotificationCenter.default.post(
             name: Self.didReceiveResponse,
             object: self,
