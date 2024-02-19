@@ -61,7 +61,7 @@ class WebhookManagerTests: XCTestCase {
         sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
     }
 
-    func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() {
+    func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() throws {
         let mainIdentifier = manager.currentBackgroundSessionInfo.identifier
         let testIdentifier = manager.currentBackgroundSessionInfo.identifier + "-test" + UUID().uuidString
 
@@ -105,9 +105,10 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(mainPromise))
         XCTAssertNoThrow(try hang(testPromise))
 
+        let underlyingQueue = try XCTUnwrap(manager.currentBackgroundSessionInfo.session.delegateQueue.underlyingQueue)
         // for the clearing of session infos
         waitRunLoop(
-            queue: manager.currentBackgroundSessionInfo.session.delegateQueue.underlyingQueue!,
+            queue: underlyingQueue,
             count: 2
         )
 
