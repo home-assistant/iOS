@@ -1,6 +1,6 @@
 "0aqrcy" = "Nie udało się: ${error}";
 "2KWKqM" = "Nie udało się, Home Assistant jest obecnie niedostępny";
-"2LIxe4" = "Failed: ${error}";
+"2LIxe4" = "Nie udało się: ${error}";
 "2b0Uo4" = "Usługa";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Zaktualizowano";

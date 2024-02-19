@@ -16,9 +16,9 @@
 "about.review.title" = "Lascia una recensione";
 "about.title" = "Informazioni";
 "about.website.title" = "Sito web";
-"actions_configurator.action.create_automation" = "Create automation";
-"actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.create_automation" = "Crea automazione";
+"actions_configurator.action.footer" = "Definisci cosa verrà eseguito quando viene eseguita l'azione, in alternativa puoi usare manualmente il trigger di esempio qui sotto.";
+"actions_configurator.action.title" = "Esegui";
 "actions_configurator.rows.background_color.title" = "Colore dello sfondo";
 "actions_configurator.rows.icon.title" = "Icona";
 "actions_configurator.rows.icon_color.title" = "Colore dell'icona";
@@ -32,8 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Puoi anche cambiarli personalizzando gli attributi della Scena: %@";
 "actions_configurator.visual_section.server_defined" = "L'aspetto di questa azione è controllato dalla configurazione del server.";
 "addButtonLabel" = "Aggiungi";
-"alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
-"alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
+"alerts.action_automation_editor.unavailable.body" = "Per creare automaticamente un'automazione per un'azione, aggiorna il tuo Home Assistant almeno alla versione 2024.2";
+"alerts.action_automation_editor.unavailable.title" = "É richiesto l'aggiornamento di Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Il server ha rifiutato le credenziali, e devi accedere nuovamente per continuare.";
 "alerts.auth_required.title" = "È necessario accedere per continuare";
