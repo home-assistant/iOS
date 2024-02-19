@@ -105,6 +105,12 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
         let asset: AVURLAsset
 
+        var headers = [String:String]()
+        if let tempHeaders = api.server.info.connection.activeCustomHeaders() {
+            for header in tempHeaders {
+                headers[header.key] = header.value
+            }
+        }
         if !url.isFileURL, api.server.info.connection.securityExceptions.hasExceptions {
             asset = .init(url: url, options: [
                 // from WebKit, which has the same behavioral requirements we have
@@ -114,6 +120,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
                 // we cannot support security exceptions, because auth challenges do not occur
                 "AVURLAssetUseClientURLLoadingExclusively": true,
                 "AVURLAssetRequiresCustomURLLoadingKey": true,
+                "AVURLAssetHTTPHeaderFieldsKey": headers,
             ])
         } else {
             asset = .init(url: url)

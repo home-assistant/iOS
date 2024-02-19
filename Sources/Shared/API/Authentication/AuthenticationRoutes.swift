@@ -4,9 +4,10 @@ import Foundation
 struct RouteInfo: Alamofire.URLRequestConvertible {
     let route: AuthenticationRoute
     let baseURL: URL
+    let headers: HTTPHeaders
 
     func asURLRequest() throws -> URLRequest {
-        try route.asURLRequestWith(baseURL: baseURL)
+        try route.asURLRequestWith(baseURL: baseURL, headers: headers)
     }
 }
 
@@ -15,8 +16,8 @@ enum AuthenticationRoute {
     case refreshToken(token: String)
     case revokeToken(token: String)
 
-    func asURLRequestWith(baseURL: URL) throws -> URLRequest {
-        let baseRequest = try URLRequest(url: baseURL.appendingPathComponent(path), method: method)
+    func asURLRequestWith(baseURL: URL, headers: HTTPHeaders) throws -> URLRequest {
+        let baseRequest = try URLRequest(url: baseURL.appendingPathComponent(path), method: method, headers: headers)
         let request: URLRequest
         if let parameters = parameters {
             request = try URLEncoding.httpBody.encode(baseRequest, with: parameters)

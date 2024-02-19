@@ -51,9 +51,16 @@ public class TokenManager {
         code: String,
         connectionInfo: inout ConnectionInfo
     ) -> Promise<TokenInfo> {
-        AuthenticationAPI.fetchToken(
+        var headers = HTTPHeaders()
+        if let tempHeaders = connectionInfo.activeCustomHeaders() {
+            for header in tempHeaders {
+                headers.add(name: header.key, value: header.value)
+            }
+        }
+        return AuthenticationAPI.fetchToken(
             authorizationCode: code,
             baseURL: connectionInfo.activeURL(),
+            headers: headers,
             exceptions: connectionInfo.securityExceptions
         )
     }

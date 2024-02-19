@@ -72,7 +72,8 @@ public class HomeAssistantAPI {
                                     try server.info.connection.securityExceptions.evaluate(secTrust)
                                 }
                             )
-                        }
+                        },
+                        HACustomHeaders: server.info.connection.activeCustomHeaders()
                     )
                 } catch {
                     Current.Log.error("couldn't create connection info: \(error)")

@@ -369,7 +369,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         ]
 
         if ignoredPaths.allSatisfy({ !url.path.hasPrefix($0) }) {
-            webView.load(URLRequest(url: url))
+            webView.load(addHeaders(request: URLRequest(url: url), urlToCheck: url))
         } else {
             openURLInBrowser(url, self)
         }
@@ -466,7 +466,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
             if let webviewURL = server.info.connection.webviewURL() {
                 decisionHandler(.cancel)
-                webView.load(URLRequest(url: webviewURL))
+                webView.load(addHeaders(request: URLRequest(url: webviewURL), urlToCheck: webviewURL))
             } else {
                 // we don't have anything we can do about this
                 decisionHandler(.allow)
@@ -608,15 +608,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-        let request: URLRequest
+        var request: URLRequest
 
         if Current.settingsStore.restoreLastURL,
            let initialURL = initialURL, initialURL.baseIsEqual(to: webviewURL) {
             Current.Log.info("restoring initial url path: \(initialURL.path)")
-            request = URLRequest(url: initialURL)
+            request = addHeaders(request: URLRequest(url: initialURL), urlToCheck: initialURL)
         } else {
             Current.Log.info("loading default url path: \(webviewURL.path)")
-            request = URLRequest(url: webviewURL)
+            request = addHeaders(request: URLRequest(url: webviewURL), urlToCheck: webviewURL)
         }
 
         webView.load(request)
@@ -628,7 +628,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
                 webView.reload()
             } else {
-                webView.load(URLRequest(url: webviewURL))
+                webView.load(addHeaders(request: URLRequest(url: webviewURL), urlToCheck: webviewURL))
             }
         }
     }
@@ -862,6 +862,18 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         )
         alert.addAction(.init(title: L10n.okLabel, style: .default))
         present(alert, animated: true)
+    }
+
+    private func addHeaders(request: URLRequest, urlToCheck: URL) -> URLRequest {
+        var request = request
+        if server.info.connection.activeURL().baseIsEqual(to: urlToCheck) {
+            if let headers = server.info.connection.activeCustomHeaders() {
+                for header in headers {
+                   request.setValue(header.value, forHTTPHeaderField: header.key)
+                }
+            }
+        }
+        return request
     }
 }
 

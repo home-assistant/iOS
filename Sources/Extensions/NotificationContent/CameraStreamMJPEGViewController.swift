@@ -106,11 +106,17 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         }
 
         let url = api.server.info.connection.activeURL().appendingPathComponent(path)
+        var headers = HTTPHeaders()
+        if let tempHeaders = api.server.info.connection.activeCustomHeaders() {
+            for header in tempHeaders {
+                headers.add(name: header.key, value: header.value)
+            }
+        }
 
         // assume 16:9
         lastSize = CGSize(width: 16, height: 9)
 
-        streamer.streamImages(fromURL: url) { [weak self, imageView] image, error in
+        streamer.streamImages(fromURL: url, headers: headers) { [weak self, imageView] image, error in
             guard let image = image else {
                 self?.seal.reject(MJPEGError.networkError(path: path, error: error))
                 return

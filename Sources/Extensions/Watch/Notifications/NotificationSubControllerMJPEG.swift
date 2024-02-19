@@ -1,3 +1,4 @@
+import Alamofire
 import Foundation
 import PromiseKit
 import Shared
@@ -10,7 +11,7 @@ class NotificationSubControllerMJPEG: NotificationSubController {
 
     required init?(api: HomeAssistantAPI, notification: UNNotification) {
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String,
-              entityId.starts(with: "camera.") else {
+                entityId.starts(with: "camera.") else {
             return nil
         }
 
@@ -32,9 +33,16 @@ class NotificationSubControllerMJPEG: NotificationSubController {
 
         return Promise<Void> { seal in
             let apiURL = api.server.info.connection.activeAPIURL()
+            var headers = HTTPHeaders()
+            if let tempHeaders = api.server.info.connection.activeCustomHeaders() {
+                for header in tempHeaders {
+                    headers.add(name: header.key, value: header.value)
+                }
+            }
+
             let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
-            streamer.streamImages(fromURL: queryUrl) { uiImage, error in
+            streamer.streamImages(fromURL: queryUrl, headers: headers) { uiImage, error in
                 if let error = error {
                     seal.reject(error)
                 } else if let uiImage = uiImage {

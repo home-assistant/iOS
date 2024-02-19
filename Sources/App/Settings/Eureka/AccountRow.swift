@@ -200,15 +200,21 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     } else {
                         throw FetchAvatarError.missingURL
                     }
-                }.map { path throws -> URL in
+                }.map { path throws -> (URL, HTTPHeaders) in
                     let url = server.info.connection.activeURL().appendingPathComponent(path)
+                    var headers = HTTPHeaders()
+                    if let tempHeaders = server.info.connection.activeCustomHeaders() {
+                        for header in tempHeaders {
+                            headers.add(name: header.key, value: header.value)
+                        }
+                    }
                     if let lastTask = lastTask, lastTask.error == nil, lastTask.request?.url == url {
                         throw FetchAvatarError.alreadySet
                     }
-                    return url
-                }.then { url -> Promise<Data> in
+                    return (url, headers)
+                }.then { (url, headers) -> Promise<Data> in
                     Promise<Data> { seal in
-                        lastTask = api.manager.download(url).validate().responseData { result in
+                        lastTask = api.manager.download(url, headers: headers).validate().responseData { result in
                             seal.resolve(result.result)
                         }
                     }

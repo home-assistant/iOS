@@ -1,6 +1,7 @@
 import Alamofire
 import Foundation
 import Version
+import HAKit
 #if os(watchOS)
 import Communicator
 #endif
@@ -44,12 +45,8 @@ public struct ConnectionInfo: Codable, Equatable {
         -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         return securityExceptions.evaluate(challenge)
     }
-    
-    public var customHeaders: [CustomHeaderStruct]? {
-        didSet {
-            Current.Log.error("updated customHeader to \(customHeaders)")
-        }
-    }
+
+    public var customHeaders: [CustomHeaderStruct]?
 
     public init(
         externalURL: URL?,
@@ -246,12 +243,12 @@ public struct ConnectionInfo: Codable, Equatable {
     /// Returns true if current SSID is SSID marked for internal URL use.
     public var isOnInternalNetwork: Bool {
         if let current = Current.connectivity.currentWiFiSSID(),
-           internalSSIDs?.contains(current) == true {
+            internalSSIDs?.contains(current) == true {
             return true
         }
 
         if let current = Current.connectivity.currentNetworkHardwareAddress(),
-           internalHardwareAddresses?.contains(current) == true {
+            internalHardwareAddresses?.contains(current) == true {
             return true
         }
 
@@ -286,6 +283,19 @@ public struct ConnectionInfo: Codable, Equatable {
             return UInt8(String(first) + String(second), radix: 16)
         })
     }
+
+    public func activeCustomHeaders() -> [(key: String, value: String)]? {
+        if let headers = customHeaders {
+            var activeHeaders = [(key: String, value: String)]()
+            if activeURLType == .internal {
+                activeHeaders = headers.filter{ $0.useInternal }.map{(key: $0.key, value: $0.value)}
+            } else if activeURLType == .external {
+                activeHeaders = headers.filter{ $0.useExternal }.map{(key: $0.key, value: $0.value)}
+            }
+            return activeHeaders
+        }
+        return nil
+    }
 }
 
 public struct CustomHeaderStruct: Codable, Equatable {
@@ -293,16 +303,16 @@ public struct CustomHeaderStruct: Codable, Equatable {
     public var value: String = ""
     public var useInternal: Bool = false
     public var useExternal: Bool = false
-    
+
     public init(){}
-    
+
     public init(key: String, value: String, useInternal: Bool, useExternal: Bool){
         self.key = key
         self.value = value
         self.useInternal = useInternal
         self.useExternal = useExternal
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.key = try container.decode(String.self, forKey: .key)

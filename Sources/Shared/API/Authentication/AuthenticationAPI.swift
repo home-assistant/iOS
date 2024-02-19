@@ -28,9 +28,16 @@ public class AuthenticationAPI {
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
         Promise { seal in
             let token = tokenInfo.refreshToken
+            var headers = HTTPHeaders()
+            if let tempHeaders = server.info.connection.activeCustomHeaders() {
+                for header in tempHeaders {
+                    headers.add(name: header.key, value: header.value)
+                }
+            }
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.refreshToken(token: token),
-                baseURL: server.info.connection.activeURL()
+                baseURL: server.info.connection.activeURL(),
+                headers: headers
             )
             let request = session.request(routeInfo)
 
@@ -49,9 +56,16 @@ public class AuthenticationAPI {
     public func revokeToken(tokenInfo: TokenInfo) -> Promise<Bool> {
         Promise { seal in
             let token = tokenInfo.accessToken
+            var headers = HTTPHeaders()
+            if let tempHeaders = server.info.connection.activeCustomHeaders() {
+                for header in tempHeaders {
+                    headers.add(name: header.key, value: header.value)
+                }
+            }
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.revokeToken(token: token),
-                baseURL: server.info.connection.activeURL()
+                baseURL: server.info.connection.activeURL(),
+                headers: headers
             )
             let request = session.request(routeInfo)
 
@@ -68,6 +82,7 @@ public class AuthenticationAPI {
     public static func fetchToken(
         authorizationCode: String,
         baseURL: URL,
+        headers: HTTPHeaders,
         exceptions: SecurityExceptions
     ) -> Promise<TokenInfo> {
         let session = Session(serverTrustManager: CustomServerTrustManager(exceptions: exceptions))
@@ -75,7 +90,8 @@ public class AuthenticationAPI {
         return Promise { seal in
             let routeInfo = RouteInfo(
                 route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                baseURL: baseURL
+                baseURL: baseURL,
+                headers: headers
             )
             let request = session.request(routeInfo)
 

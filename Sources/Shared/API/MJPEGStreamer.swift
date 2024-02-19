@@ -61,12 +61,12 @@ public class MJPEGStreamer {
         )
     }
 
-    public func streamImages(fromURL url: URL, callback: @escaping (UIImage?, Error?) -> Void) {
+    public func streamImages(fromURL url: URL, headers: HTTPHeaders? = nil, callback: @escaping (UIImage?, Error?) -> Void) {
         self.callback = callback
 
         request?.cancel()
         request = manager
-            .streamRequest(url)
+            .streamRequest(url, headers: headers)
             .validate()
             .responseStream(on: queue, stream: { [weak self] stream in
                 switch stream.event {
