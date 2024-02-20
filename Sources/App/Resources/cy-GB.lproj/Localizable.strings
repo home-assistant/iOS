@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Dileu";
 "client_events.view.clear_confirm.message" = "Ni ellir dadwneud hyn.";
 "client_events.view.clear_confirm.title" = "Ydych chi'n siŵr eich bod chi am eisiau dileu digwyddiad?";
+"close_label" = "Close";
 "continue_label" = "Continue";
 "copy_label" = "Copy";
 "database.problem.delete" = "Delete Database & Quit App";

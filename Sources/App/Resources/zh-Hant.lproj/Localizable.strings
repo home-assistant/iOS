@@ -108,6 +108,7 @@
 "client_events.view.clear" = "清除";
 "client_events.view.clear_confirm.message" = "此動作無法復原。";
 "client_events.view.clear_confirm.title" = "確定要清除所有事件？";
+"close_label" = "Close";
 "continue_label" = "繼續";
 "copy_label" = "複製";
 "database.problem.delete" = "刪除資料數據並退出 App";

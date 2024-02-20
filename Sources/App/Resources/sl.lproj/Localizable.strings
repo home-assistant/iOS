@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Clear";
 "client_events.view.clear_confirm.message" = "This cannot be undone.";
 "client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
+"close_label" = "Close";
 "continue_label" = "Nadaljuj";
 "copy_label" = "Copy";
 "database.problem.delete" = "Delete Database & Quit App";

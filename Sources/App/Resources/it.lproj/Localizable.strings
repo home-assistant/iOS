@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Pulisci";
 "client_events.view.clear_confirm.message" = "Questo non può essere annullato.";
 "client_events.view.clear_confirm.title" = "Sei sicuro di voler cancellare tutti gli eventi?";
+"close_label" = "Close";
 "continue_label" = "Continua";
 "copy_label" = "Copia";
 "database.problem.delete" = "Elimina il database e chiudi l'applicazione";

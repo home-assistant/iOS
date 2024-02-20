@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Очистити";
 "client_events.view.clear_confirm.message" = "Це не можна скасовувати.";
 "client_events.view.clear_confirm.title" = "Ви впевнені, що хочете очистити всі події?";
+"close_label" = "Close";
 "continue_label" = "Продовжити";
 "copy_label" = "Копіювати";
 "database.problem.delete" = "Видалити базу даних і вийти з програми";
