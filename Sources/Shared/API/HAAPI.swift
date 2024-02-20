@@ -60,6 +60,12 @@ public class HomeAssistantAPI {
         self.server = server
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
+        var customHeaders: [HAHeader] = []
+        if var headers = server.info.connection.activeCustomHeaders() {
+            for header in  headers {
+                customHeaders.append(HAHeader(key: header.key, value: header.value))
+            }
+        }
         self.connection = HAKit.connection(configuration: .init(
             connectionInfo: {
                 do {
@@ -73,7 +79,7 @@ public class HomeAssistantAPI {
                                 }
                             )
                         },
-                        HACustomHeaders: server.info.connection.activeCustomHeaders()
+                        customHeaders: customHeaders
                     )
                 } catch {
                     Current.Log.error("couldn't create connection info: \(error)")
