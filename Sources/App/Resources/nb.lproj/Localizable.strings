@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Klarer";
 "client_events.view.clear_confirm.message" = "Dette kan ikke angres.";
 "client_events.view.clear_confirm.title" = "Er du sikker på at du vil fjerne alle hendelser?";
+"close_label" = "Close";
 "continue_label" = "Fortsette";
 "copy_label" = "Kopiere";
 "database.problem.delete" = "Slett database og avslutt app";

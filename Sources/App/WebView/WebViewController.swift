@@ -25,6 +25,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var keepAliveTimer: Timer?
     private var initialURL: URL?
+    private var barCodeScannerController: UIViewController?
 
     private let settingsButton: UIButton! = {
         let button = UIButton()
@@ -839,19 +840,22 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             showActionAutomationEditorNotAvailable()
             return
         }
-        sendExternalBus(message: .init(command: "automation/editor/show", payload: [
-            "config": [
-                "trigger": [
-                    [
-                        "platform": "event",
-                        "event_type": "ios.action_fired",
-                        "event_data": [
-                            "actionID": actionId,
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
+            payload: [
+                "config": [
+                    "trigger": [
+                        [
+                            "platform": "event",
+                            "event_type": "ios.action_fired",
+                            "event_data": [
+                                "actionID": actionId,
+                            ],
                         ],
                     ],
                 ],
-            ],
-        ]))
+            ]
+        ))
     }
 
     private func showActionAutomationEditorNotAvailable() {
@@ -1013,6 +1017,7 @@ extension WebViewController: WKScriptMessageHandler {
                                 "canWriteTag": Current.tags.isNFCAvailable,
                                 "canCommissionMatter": Current.matter.isAvailable,
                                 "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
+                                "hasQRScanner": true,
                             ]
                         ))
                     }
@@ -1073,6 +1078,24 @@ extension WebViewController: WKScriptMessageHandler {
                 }
             case .threadImportCredentials:
                 threadCredentialsRequested()
+            case .barCodeScanner:
+                guard let title = incomingMessage.Payload?["title"] as? String,
+                      let description = incomingMessage.Payload?["description"] as? String,
+                      let incomingMessageId = incomingMessage.ID else { return }
+                qrCodeScannerRequested(
+                    title: title,
+                    description: description,
+                    alternativeOptionLabel: incomingMessage.Payload?["alternative_option_label"] as? String,
+                    incomingMessageId: incomingMessageId
+                )
+            case .barCodeScannerClose:
+                barCodeScannerController?.dismiss(animated: true)
+            case .barCodeScannerNotify:
+                guard let message = incomingMessage.Payload?["message"] as? String else { return }
+                let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+                alert.addAction(.init(title: L10n.okLabel, style: .default))
+                let controller = barCodeScannerController ?? self
+                controller.present(alert, animated: false, completion: nil)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -1084,7 +1107,7 @@ extension WebViewController: WKScriptMessageHandler {
     }
 
     @discardableResult
-    private func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
+    public func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
         Promise<Void> { seal in
             DispatchQueue.main.async { [self] in
                 do {
@@ -1117,6 +1140,23 @@ extension WebViewController: WKScriptMessageHandler {
             threadManagementView.modalTransitionStyle = .crossDissolve
             present(threadManagementView, animated: true)
         }
+    }
+
+    private func qrCodeScannerRequested(
+        title: String,
+        description: String,
+        alternativeOptionLabel: String?,
+        incomingMessageId: Int
+    ) {
+        barCodeScannerController = BarcodeScannerHostingController(rootView: BarcodeScannerView(
+            title: title,
+            description: description,
+            alternativeOptionLabel: alternativeOptionLabel,
+            incomingMessageId: incomingMessageId
+        ))
+        barCodeScannerController?.modalPresentationStyle = .fullScreen
+        guard let barCodeScannerController else { return }
+        present(barCodeScannerController, animated: true)
     }
 }
 

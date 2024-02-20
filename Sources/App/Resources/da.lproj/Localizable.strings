@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Ryd";
 "client_events.view.clear_confirm.message" = "Dette kan ikke fortrydes.";
 "client_events.view.clear_confirm.title" = "Er du sikker på, at du vil rydde alle hændelser?";
+"close_label" = "Close";
 "continue_label" = "Fortsæt";
 "copy_label" = "Kopiér";
 "database.problem.delete" = "Slet database og afslut app";

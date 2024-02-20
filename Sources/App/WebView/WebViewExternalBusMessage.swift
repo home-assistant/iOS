@@ -10,4 +10,13 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case themeUpdate = "theme-update"
     case matterCommission = "matter/commission"
     case threadImportCredentials = "thread/import_credentials"
+    case barCodeScanner = "bar_code/scan"
+    case barCodeScannerClose = "bar_code/close"
+    case barCodeScannerNotify = "bar_code/notify"
+}
+
+enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
+    case showAutomationEditor = "automation/editor/show"
+    case barCodeScanResult = "bar_code/scan_result"
+    case barCodeScanAborted = "bar_code/aborted"
 }

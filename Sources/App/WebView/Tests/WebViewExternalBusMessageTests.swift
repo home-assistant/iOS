@@ -11,7 +11,18 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.themeUpdate.rawValue, "theme-update")
         XCTAssertEqual(WebViewExternalBusMessage.matterCommission.rawValue, "matter/commission")
         XCTAssertEqual(WebViewExternalBusMessage.threadImportCredentials.rawValue, "thread/import_credentials")
+        XCTAssertEqual(WebViewExternalBusMessage.barCodeScanner.rawValue, "bar_code/scan")
+        XCTAssertEqual(WebViewExternalBusMessage.barCodeScannerClose.rawValue, "bar_code/close")
+        XCTAssertEqual(WebViewExternalBusMessage.barCodeScannerNotify.rawValue, "bar_code/notify")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 9)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 12)
+    }
+
+    func test_externalBus_outgoing_messageKeys() {
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue, "automation/editor/show")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanResult.rawValue, "bar_code/scan_result")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanAborted.rawValue, "bar_code/aborted")
+
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 3)
     }
 }

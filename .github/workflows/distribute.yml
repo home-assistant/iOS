@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.0.1.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.2.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
@@ -16,13 +16,13 @@ env:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
         kind: [mac, ios]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Brews
         run: brew bundle
@@ -55,33 +55,33 @@ jobs:
       - name: Dump Version Information
         run: cat Configuration/Version.xcconfig
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload iOS IPA"
         if: success() && matrix.kind == 'ios'
         with:
           name: ios-app-store.ipa
           path: build/ios/Home Assistant.ipa
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload iOS dSYMs"
         if: success() && matrix.kind == 'ios'
         with:
           name: ios.dSYM.zip
           path: build/ios/Home Assistant.app.dSYM.zip
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload Mac Developer ID App"
         if: success() && matrix.kind == 'mac'
         with:
           name: mac-developer-id.zip
           path: build/macos/home-assistant-mac.zip
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload Mac App Store Package"
         if: success() && matrix.kind == 'mac'
         with:
           name: mac-app-store.pkg
           path: build/macos/Home Assistant.pkg
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: "Upload Mac dSYMs"
         if: success() && matrix.kind == 'mac'
         with:

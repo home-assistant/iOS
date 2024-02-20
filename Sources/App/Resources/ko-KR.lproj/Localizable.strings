@@ -108,6 +108,7 @@
 "client_events.view.clear" = "지우기";
 "client_events.view.clear_confirm.message" = "이 작업은 취소할 수 없습니다.";
 "client_events.view.clear_confirm.title" = "모든 이벤트를 지우시겠습니까?";
+"close_label" = "Close";
 "continue_label" = "계속하기";
 "copy_label" = "복사";
 "database.problem.delete" = "데이터베이스 삭제 및 앱 종료";

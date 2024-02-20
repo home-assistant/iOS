@@ -504,6 +504,11 @@
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
+		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
+		42266B1D2B741FB400E94A71 /* BarcodeScannerCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */; };
+		42266B1F2B741FB400E94A71 /* BarcodeScannerDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */; };
+		42266B202B741FB400E94A71 /* BarcodeScannerCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */; };
+		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
@@ -524,6 +529,8 @@
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
+		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
+		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -1571,6 +1578,11 @@
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
 		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
+		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerCameraView.swift; sourceTree = "<group>"; };
+		42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerDataModel.swift; sourceTree = "<group>"; };
+		42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerCamera.swift; sourceTree = "<group>"; };
+		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2B32B2B5C8100E9F001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -1652,6 +1664,7 @@
 		4278DFCE2B45C66A0087C9D7 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFCF2B45C66A0087C9D7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFD02B45C66A0087C9D7 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Core.strings; sourceTree = "<group>"; };
+		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingView.swift; sourceTree = "<group>"; };
@@ -3058,6 +3071,26 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		42266B0F2B740E3600E94A71 /* QRCodeScanner */ = {
+			isa = PBXGroup;
+			children = (
+				42266B152B741F9F00E94A71 /* Camera */,
+				42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */,
+				42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */,
+			);
+			path = QRCodeScanner;
+			sourceTree = "<group>";
+		};
+		42266B152B741F9F00E94A71 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				42266B1A2B741FB400E94A71 /* BarcodeScannerCamera.swift */,
+				42266B172B741FB300E94A71 /* BarcodeScannerCameraView.swift */,
+				42266B192B741FB300E94A71 /* BarcodeScannerDataModel.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
 		425573C52B55729E00145217 /* Servers */ = {
 			isa = PBXGroup;
 			children = (
@@ -3499,6 +3532,7 @@
 		B657A8E81CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				42266B0F2B740E3600E94A71 /* QRCodeScanner */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
@@ -4765,6 +4799,7 @@
 				B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */,
 				B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */,
 				B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */,
+				4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */,
 				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
 				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
 				420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */,
@@ -4927,6 +4962,7 @@
 			files = (
 				B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */,
 				CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */,
+				427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5616,6 +5652,7 @@
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
+				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */,
@@ -5639,6 +5676,7 @@
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
+				42266B202B741FB400E94A71 /* BarcodeScannerCamera.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
@@ -5678,6 +5716,7 @@
 				42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
+				42266B1D2B741FB400E94A71 /* BarcodeScannerCameraView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
@@ -5720,6 +5759,7 @@
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
+				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
@@ -5743,6 +5783,7 @@
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
+				42266B1F2B741FB400E94A71 /* BarcodeScannerDataModel.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
@@ -6512,6 +6553,7 @@
 				4242A2CF2B2B5C9E00E9F001 /* sv */,
 				4242A2D02B2B5C9F00E9F001 /* es-ES */,
 				4242A2D12B2B5C9F00E9F001 /* es-MX */,
+				4279407E2B8369EA001D7E14 /* bg */,
 			);
 			name = AppIntentVocabulary.plist;
 			sourceTree = "<group>";
