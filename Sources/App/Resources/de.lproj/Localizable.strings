@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Leeren";
 "client_events.view.clear_confirm.message" = "Dies kann nicht rückgängig gemacht werden.";
 "client_events.view.clear_confirm.title" = "Bist du sicher, dass du alle Ereignisse löschen willst?";
+"close_label" = "Close";
 "continue_label" = "Weiter";
 "copy_label" = "Kopieren";
 "database.problem.delete" = "Datenbank löschen & App beenden";

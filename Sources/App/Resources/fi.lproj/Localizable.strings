@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Tyhjennä";
 "client_events.view.clear_confirm.message" = "Tätä ei voi kumota.";
 "client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
+"close_label" = "Close";
 "continue_label" = "Jatka";
 "copy_label" = "Kopioi";
 "database.problem.delete" = "Poista tietokanta ja sulje sovellus";

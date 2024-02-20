@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Esborrar";
 "client_events.view.clear_confirm.message" = "Això no es pot desfer.";
 "client_events.view.clear_confirm.title" = "Esteu segur que voleu esborrar tots els esdeveniments?";
+"close_label" = "Close";
 "continue_label" = "Continua";
 "copy_label" = "Copiar";
 "database.problem.delete" = "Eliminar la base de dades i sortir de l'aplicació";

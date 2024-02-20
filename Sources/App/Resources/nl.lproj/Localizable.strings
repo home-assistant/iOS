@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Wis";
 "client_events.view.clear_confirm.message" = "Deze aanpassing kan niet ongedaan gemaakt worden";
 "client_events.view.clear_confirm.title" = "Weet je zeker dat je alle acties wilt wissen?";
+"close_label" = "Close";
 "continue_label" = "Ga verder";
 "copy_label" = "Kopiëren";
 "database.problem.delete" = "Database verwijderen en app afsluiten";

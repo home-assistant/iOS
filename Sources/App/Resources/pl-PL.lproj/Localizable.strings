@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Wyczyść";
 "client_events.view.clear_confirm.message" = "Tego nie można cofnąć.";
 "client_events.view.clear_confirm.title" = "Czy na pewno chcesz wyczyścić wszystkie wydarzenia?";
+"close_label" = "Close";
 "continue_label" = "Kontynuuj";
 "copy_label" = "Kopiuj";
 "database.problem.delete" = "Usuń bazę i opuść aplikację";

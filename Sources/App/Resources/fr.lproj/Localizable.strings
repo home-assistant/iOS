@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Nettoyer";
 "client_events.view.clear_confirm.message" = "Êtes-vous sûr ? Cette action est définitive.";
 "client_events.view.clear_confirm.title" = "Voulez-vous vraiment effacer tous les événements?";
+"close_label" = "Close";
 "continue_label" = "Continuer";
 "copy_label" = "Copie";
 "database.problem.delete" = "Supprimer la base de données et quitter l'application";
@@ -582,11 +583,11 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "share_extension.entered_placeholder" = "\"entré\" dans l'événement";
 "share_extension.error.title" = "Impossible d'envoyer";
 "success_label" = "Succès";
-"thread.credentials.border_agent_id_title" = "Border Agent ID";
-"thread.credentials.network_key_title" = "Network Key";
-"thread.credentials.network_name_title" = "Network Name";
+"thread.credentials.border_agent_id_title" = "ID du \"Border Agent\"";
+"thread.credentials.network_key_title" = "Clé réseau";
+"thread.credentials.network_name_title" = "Nom du réseau";
 "thread.credentials.no_credential_available" = "Vous n'avez aucune information d'identification disponible sur votre trousseau iCloud";
-"thread.credentials.screen_title" = "Thread Credentials";
+"thread.credentials.screen_title" = "Informations d'identification Thread";
 "thread.credentials.share_credentials.no_credentials_message" = "Assurez-vous que vous êtes connecté avec votre compte iCloud qui est propriétaire d'un domicile dans Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Vous n'avez aucune information d'identification à partager";
 "thread.credentials.share_credentials_button_title" = "Partager les informations d'identification avec Home Assistant";

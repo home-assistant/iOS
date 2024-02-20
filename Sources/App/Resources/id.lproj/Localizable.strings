@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Hapus";
 "client_events.view.clear_confirm.message" = "Ini tidak dapat diurungkan.";
 "client_events.view.clear_confirm.title" = "Yakin ingin menghapus semua peristiwa?";
+"close_label" = "Close";
 "continue_label" = "Lanjutkan";
 "copy_label" = "Salin";
 "database.problem.delete" = "Hapus Basis Data dan Keluar dari Aplikasi";

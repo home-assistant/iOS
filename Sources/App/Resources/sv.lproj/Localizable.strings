@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Rensa";
 "client_events.view.clear_confirm.message" = "Detta kan inte ångras.";
 "client_events.view.clear_confirm.title" = "Är du säker på att du vill ta bort alla händelser?";
+"close_label" = "Close";
 "continue_label" = "Fortsätt";
 "copy_label" = "Kopiera";
 "database.problem.delete" = "Radera databasen & stäng appen";

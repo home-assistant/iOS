@@ -108,6 +108,7 @@
 "client_events.view.clear" = "Limpiar";
 "client_events.view.clear_confirm.message" = "Esto no se puede deshacer.";
 "client_events.view.clear_confirm.title" = "¿Está seguro de que desea borrar todos los eventos?";
+"close_label" = "Close";
 "continue_label" = "Continúa";
 "copy_label" = "Copiar";
 "database.problem.delete" = "Eliminar la base de datos y salir de la aplicación";
