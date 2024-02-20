@@ -102,12 +102,14 @@ final class ConnectionCustomHeaderViewController: HAFormViewController, TypedRow
 
     func getHeaderRow(_ inputHeader: CustomHeaderStruct?) -> ButtonRowWithPresent<CustomHeaderConfigurator> {
         var customHeader = inputHeader
-        var title = ""
+        var title = "New Header"
+        var identifier = UUID().uuidString
         var useInternal = false
         var useExternal = false
 
         if let passedHeader = inputHeader {
             title = passedHeader.key
+            identifier = passedHeader.key
             useInternal = passedHeader.useInternal
             useExternal = passedHeader.useExternal
         }
@@ -115,7 +117,7 @@ final class ConnectionCustomHeaderViewController: HAFormViewController, TypedRow
         return ButtonRowWithPresent<CustomHeaderConfigurator> { row in
             row.cellStyle = .subtitle
             row.title = title
-            row.tag = title
+            row.tag = identifier
             row.displayValueFor = { _ in
                 self.getSubtitle(useInternal: useInternal, useExternal: useExternal)
             }
