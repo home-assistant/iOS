@@ -76,14 +76,43 @@ final class CarPlayAreasViewModel {
         )
     }
 
+    // swiftlint:disable cyclomatic_complexity
     private func updateAreas(
         _ areas: [HAAreaResponse],
         areasAndEntities: [HAEntityAreaResponse],
         devicesAndAreas: [HADeviceAreaResponse],
         server: Server
     ) {
-        let areasAndDevicesDict = mapToareasAndEntities(devicesAndAreas: devicesAndAreas)
-        var areasAndEntitiesDict = mapToAreasAndEntitiesDict(areasAndEntities: areasAndEntities)
+        /// area_id : [device_id]
+        var areasAndDevicesDict: [String: [String]] = [:]
+
+        // Get all devices from an area
+        for device in devicesAndAreas {
+            if let areaId = device.areaId, let deviceId = device.deviceId {
+                if var deviceIds = areasAndDevicesDict[areaId] {
+                    deviceIds.append(deviceId)
+                    areasAndDevicesDict[areaId] = deviceIds
+                } else {
+                    areasAndDevicesDict[areaId] = [deviceId]
+                }
+            }
+        }
+
+        /// area_id : [entity_id]
+        var areasAndEntitiesDict: [String: [String]] = [:]
+
+        // Get all entities from an area
+        for entity in areasAndEntities {
+            if let areaId = entity.areaId, let entityId = entity.entityId {
+                if var entityIds = areasAndEntitiesDict[areaId] {
+                    entityIds.append(entityId)
+                    areasAndEntitiesDict[areaId] = entityIds
+                } else {
+                    areasAndEntitiesDict[areaId] = [entityId]
+                }
+            }
+        }
+
         /// device_id : [entity_id]
         var deviceChildrenEntities: [String: [String]] = [:]
 
@@ -125,35 +154,7 @@ final class CarPlayAreasViewModel {
         templateProvider?.paginatedList.updateItems(items: items)
     }
 
-    /// - returns: area_id : [device_id]
-    private func mapToareasAndEntities(devicesAndAreas: [HADeviceAreaResponse]) -> [String: [String]] {
-        devicesAndAreas.reduce(into: [:]) { partialResult, device in
-            guard let areaId = device.areaId, let deviceId = device.deviceId else {
-                return
-            }
-            if var deviceIds = partialResult[deviceId] {
-                deviceIds.append(deviceId)
-                partialResult[areaId] = deviceIds
-            } else {
-                partialResult[areaId] = [deviceId]
-            }
-        }
-    }
-
-    /// - returns: area_id : [entity_id]
-    private func mapToAreasAndEntitiesDict(areasAndEntities: [HAEntityAreaResponse]) -> [String: [String]] {
-        areasAndEntities.reduce(into: [:]) { partialResult, entity in
-            guard let areaId = entity.areaId, let entityId = entity.entityId else {
-                return
-            }
-            if var entityIds = partialResult[areaId] {
-                entityIds.append(entityId)
-                partialResult[areaId] = entityIds
-            } else {
-                partialResult[areaId] = [entityId]
-            }
-        }
-    }
+    // swiftlint:enable cyclomatic_complexity
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
         let entitiesCachedStates = Current.api(for: server).connection.caches.states
