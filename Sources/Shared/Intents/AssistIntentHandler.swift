@@ -82,7 +82,7 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         }.done { object, original in
             Current.Log.info("finishing with \(object)")
             let value = IntentAssistResult(identifier: nil, display: object.speech)
-            value.json = String(decoding: try JSONSerialization.data(withJSONObject: original), as: UTF8.self)
+            value.json = try String(decoding: JSONSerialization.data(withJSONObject: original), as: UTF8.self)
             completion(.success(result: value))
         }.catch { error in
             Current.Log.error("erroring with \(error)")

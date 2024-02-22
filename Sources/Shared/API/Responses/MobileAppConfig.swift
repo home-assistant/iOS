@@ -41,7 +41,7 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
         public init(map: Map) throws {
             self.title = try map.value("title", default: "Missing title")
             // we fall back to 'action' for android-style dynamic actions
-            self.identifier = try map.value("identifier", default: try map.value("action", default: "missing"))
+            self.identifier = try map.value("identifier", default: map.value("action", default: "missing"))
             self.authenticationRequired = try map.value("authenticationRequired", default: false)
             self.behavior = try map.value("behavior", default: "default")
             self.activationMode = try map.value("activationMode", default: "background")
@@ -81,7 +81,7 @@ public struct MobileAppConfigPushCategory: ImmutableMappable, UpdatableModelSour
 public struct MobileAppConfigPush: ImmutableMappable {
     public var categories: [MobileAppConfigPushCategory]
 
-    internal init(categories: [MobileAppConfigPushCategory] = []) {
+    init(categories: [MobileAppConfigPushCategory] = []) {
         self.categories = []
     }
 
@@ -94,7 +94,7 @@ public struct MobileAppConfig: ImmutableMappable {
     public var push: MobileAppConfigPush
     public var actions: [MobileAppConfigAction]
 
-    internal init(push: MobileAppConfigPush = .init(), actions: [MobileAppConfigAction] = []) {
+    init(push: MobileAppConfigPush = .init(), actions: [MobileAppConfigAction] = []) {
         self.push = push
         self.actions = actions
     }

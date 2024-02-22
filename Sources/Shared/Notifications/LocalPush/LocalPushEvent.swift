@@ -168,7 +168,7 @@ private struct Sound {
     func asSound() -> UNNotificationSound? {
         let defaultSound: UNNotificationSound = {
             if critical {
-                if let level = level {
+                if let level {
                     return .defaultCriticalSound(withAudioVolume: level)
                 } else {
                     return .defaultCritical
@@ -185,7 +185,7 @@ private struct Sound {
             return defaultSound
             #else
             if critical {
-                if let level = level {
+                if let level {
                     return .criticalSoundNamed(name, withAudioVolume: level)
                 } else {
                     return .criticalSoundNamed(name)

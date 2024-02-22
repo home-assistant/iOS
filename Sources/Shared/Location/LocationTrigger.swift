@@ -30,7 +30,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
     case Unknown = "Unknown"
 
     public func oneShotTimeout(maximum: TimeInterval?) -> TimeInterval {
-        if let maximum = maximum {
+        if let maximum {
             // the system appears to have given us a reasonable baseline, leave some time for network call
             return max(maximum - 5.0, 1.0)
         }

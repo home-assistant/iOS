@@ -123,7 +123,7 @@ public class ConnectivitySensor: SensorProvider {
         let networkInfo = Current.connectivity.telephonyCarriers()
         let radioTech = Current.connectivity.telephonyRadioAccessTechnology()
 
-        if let networkInfo = networkInfo {
+        if let networkInfo {
             return when(fulfilled: networkInfo.map {
                 carrierSensor(
                     carrier: $0.value,
@@ -161,7 +161,7 @@ public class ConnectivitySensor: SensorProvider {
             "Allows VoIP": carrier.allowsVOIP,
         ]
 
-        if let radioTech = radioTech {
+        if let radioTech {
             sensor.Attributes?["Current Radio Technology"] = Self.getRadioTechName(radioTech)
         }
 

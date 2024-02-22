@@ -116,7 +116,7 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
                 handler: { [self] _ in
                     let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces)
 
-                    guard let name = name, name.isEmpty == false,
+                    guard let name, name.isEmpty == false,
                           !registeredDevices.contains(where: { $0.matches(name: name) }) else {
                         promptForDeviceName(
                             deviceName: deviceName,

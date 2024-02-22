@@ -8,7 +8,7 @@ public struct SensorObserverUpdate {
     public let sensors: Guarantee<[WebhookSensor]>
     public let on: Date
 
-    internal init(sensors: Guarantee<[WebhookSensor]>) {
+    init(sensors: Guarantee<[WebhookSensor]>) {
         self.sensors = sensors
         self.on = Current.date()
     }
@@ -58,7 +58,7 @@ public class SensorContainer {
     public func register(observer: SensorObserver) {
         observers.add(observer)
 
-        if let lastUpdate = lastUpdate {
+        if let lastUpdate {
             observer.sensorContainer(self, didUpdate: lastUpdate)
         }
     }
@@ -103,7 +103,7 @@ public class SensorContainer {
 
     private var lastUpdate: SensorObserverUpdate? {
         didSet {
-            guard let lastUpdate = lastUpdate else { return }
+            guard let lastUpdate else { return }
             observers
                 .allObjects
                 .compactMap { $0 as? SensorObserver }
@@ -137,7 +137,7 @@ public class SensorContainer {
 
     private var lastSentSensors: HAProtected<LastSentSensors> = .init(value: .init())
 
-    internal func sensors(
+    func sensors(
         reason: SensorProviderRequest.Reason,
         limitedTo: [SensorProvider.Type]? = nil,
         location: CLLocation? = nil,
@@ -153,7 +153,7 @@ public class SensorContainer {
         let generatedSensors = firstly {
             let promises = providers
                 .filter { providerType in
-                    if let limitedTo = limitedTo {
+                    if let limitedTo {
                         return limitedTo.contains(where: { ObjectIdentifier($0) == ObjectIdentifier(providerType) })
                     } else {
                         return true
@@ -191,8 +191,8 @@ public class SensorContainer {
                 lastSentSensors.combine(with: new, ignoringExisting: ignoringExisting)
                 return lastSentSensors.sensors
             }.sorted(by: { [weak self] lhs, rhs in
-                guard let self = self else { return true }
-                switch (self.isEnabled(sensor: lhs), self.isEnabled(sensor: rhs)) {
+                guard let self else { return true }
+                switch (isEnabled(sensor: lhs), isEnabled(sensor: rhs)) {
                 case (true, true): return lhs < rhs
                 case (false, false): return lhs < rhs
                 case (true, false): return true
@@ -202,9 +202,9 @@ public class SensorContainer {
         })
 
         return generatedSensors.mapValues { [weak self] sensor -> WebhookSensor in
-            guard let self = self else { return sensor }
+            guard let self else { return sensor }
 
-            if self.isAllowedToSend(sensor: sensor, for: server) {
+            if isAllowedToSend(sensor: sensor, for: server) {
                 return sensor
             } else {
                 return WebhookSensor(redacting: sensor)

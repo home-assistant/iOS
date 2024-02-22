@@ -10,7 +10,7 @@ public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>
         super.init(tag: tag)
 
         displayValueFor = { value in
-            guard let value = value else { return nil }
+            guard let value else { return nil }
 
             switch value {
             case .authorizedAlways:
@@ -33,7 +33,7 @@ public final class LocationAccuracyRow: Row<LabelCellOf<CLAccuracyAuthorization>
         super.init(tag: tag)
 
         displayValueFor = { value in
-            guard let value = value else { return nil }
+            guard let value else { return nil }
 
             switch value {
             case .fullAccuracy: return L10n.SettingsDetails.Location.LocationAccuracy.full
@@ -50,7 +50,7 @@ public final class MotionPermissionRow: Row<LabelCellOf<CMAuthorizationStatus>>,
         super.init(tag: tag)
 
         displayValueFor = { value in
-            guard let value = value else { return nil }
+            guard let value else { return nil }
 
             switch value {
             case .authorized:
@@ -71,7 +71,7 @@ public final class FocusPermissionRow: Row<LabelCellOf<FocusStatusWrapper.Author
         super.init(tag: tag)
 
         displayValueFor = { value in
-            guard let value = value else { return nil }
+            guard let value else { return nil }
 
             switch value {
             case .authorized:
@@ -90,7 +90,7 @@ public final class BackgroundRefreshStatusRow: Row<LabelCellOf<UIBackgroundRefre
         super.init(tag: tag)
 
         displayValueFor = { value in
-            guard let value = value else { return nil }
+            guard let value else { return nil }
 
             switch value {
             case .restricted, .denied:

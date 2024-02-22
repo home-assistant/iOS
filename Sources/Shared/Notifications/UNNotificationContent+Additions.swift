@@ -13,7 +13,7 @@ public extension UNNotificationContent {
     }
 
     static func combinedAction(base: String, appended: String) -> String {
-        [base, appended].joined(separator: String(Self.separator))
+        [base, appended].joined(separator: String(separator))
     }
 
     var userInfoActionConfigs: [MobileAppConfigPushCategory.Action] {

@@ -37,7 +37,7 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         let (requestPromise, requestResolver) = Promise<(data: Data, response: URLResponse)>.pending()
 
         let task = session.dataTask(with: authDetails.url) { data, response, error in
-            if let data = data, let response = response {
+            if let data, let response {
                 requestResolver.fulfill((data, response))
             } else {
                 requestResolver.resolve(nil, error)

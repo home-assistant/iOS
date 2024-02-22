@@ -114,7 +114,7 @@ public class MJPEGStreamer {
         case .endOfResponse:
             let image = UIImage(data: pendingData)
             pendingData.removeAll(keepingCapacity: true)
-            if let image = image {
+            if let image {
                 DispatchQueue.main.async { [self] in
                     callback?(image, nil)
                 }

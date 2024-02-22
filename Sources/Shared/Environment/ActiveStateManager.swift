@@ -69,7 +69,7 @@ public class ActiveStateManager {
         setup()
     }
 
-    internal var idleTimer: Timer? {
+    var idleTimer: Timer? {
         willSet {
             Current.Log.info(newValue == nil ? "removing timer" : "starting timer")
             idleTimer?.invalidate()
@@ -280,7 +280,7 @@ private enum UpdateType: CaseIterable {
             }
         })
 
-        if let found = found {
+        if let found {
             self = found
         } else {
             return nil

@@ -46,9 +46,9 @@ public class PedometerSensor: SensorProvider {
         let end = Current.date()
         let start = Current.calendar().startOfDay(for: end)
         Current.pedometer.queryStartEndHandler(start, end) { data, error in
-            if let data = data {
+            if let data {
                 seal.fulfill(data)
-            } else if let error = error {
+            } else if let error {
                 seal.reject(error)
             } else {
                 seal.reject(PedometerError.noData)

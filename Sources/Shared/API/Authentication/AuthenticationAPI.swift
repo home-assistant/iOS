@@ -101,7 +101,7 @@ extension DataRequest {
         validate { _, response, data in
             if case 200 ..< 300 = response.statusCode {
                 return .success(())
-            } else if let data = data {
+            } else if let data {
                 let errorCode: String?
                 let error: String?
 

@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 import XCTest
+
 final class WebViewExternalBusMessageTests: XCTestCase {
     func test_externalBus_messageKeys() {
         XCTAssertEqual(WebViewExternalBusMessage.configGet.rawValue, "config/get")

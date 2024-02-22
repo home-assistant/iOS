@@ -74,7 +74,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 let manager = Current.notificationManager.localPushManager
 
                 let updateValue = { [weak row, server] in
-                    guard let row = row else { return }
+                    guard let row else { return }
                     switch manager.status(for: server) {
                     case .disabled:
                         row.value = L10n.SettingsDetails.Notifications.LocalPush.Status.disabled
@@ -124,7 +124,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 var timer: Timer?
 
                 $0.onChange { [server] row in
-                    if let timer = timer, timer.isValid {
+                    if let timer, timer.isValid {
                         timer.fireDate = Current.date().addingTimeInterval(1.0)
                     } else {
                         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false, block: { _ in

@@ -26,7 +26,7 @@ public final class RLMScene: Object, UpdatableModel {
         }
         set {
             precondition(realm?.isInWriteTransaction == true)
-            guard let realm = realm else { return }
+            guard let realm else { return }
             backingActionEnabled = newValue
             updateAction(realm: realm)
         }
@@ -115,15 +115,15 @@ public final class RLMScene: Object, UpdatableModel {
         action.Name = name ?? identifier
         action.Text = name ?? identifier
 
-        if let backgroundColor = backgroundColor {
+        if let backgroundColor {
             action.BackgroundColor = backgroundColor
         }
 
-        if let textColor = textColor {
+        if let textColor {
             action.TextColor = textColor
         }
 
-        if let iconColor = iconColor {
+        if let iconColor {
             action.IconColor = iconColor
         }
 

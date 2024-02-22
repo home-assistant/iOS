@@ -12,7 +12,7 @@ extension URL {
 
     // port will be removed if 80 or 443 by WKWebView, so we provide defaults for comparison
     var portWithFallback: Int? {
-        if let port = port {
+        if let port {
             return port
         }
 

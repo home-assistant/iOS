@@ -14,12 +14,15 @@ final class FakeCache: Cache {
         eventLoop.makeSucceededFuture(values[key] as? T)
     }
 
-    func set<T>(_ key: String, to value: T?) -> EventLoopFuture<Void> where T: Encodable {
+    func set(_ key: String, to value: (some Encodable)?) -> EventLoopFuture<Void> {
         set(key, to: value, expiresIn: nil)
     }
 
-    func set<T>(_ key: String, to value: T?, expiresIn expirationTime: CacheExpirationTime?) -> EventLoopFuture<Void>
-        where T: Encodable {
+    func set(
+        _ key: String,
+        to value: (some Encodable)?,
+        expiresIn expirationTime: CacheExpirationTime?
+    ) -> EventLoopFuture<Void> {
         values[key] = value
         expirations[key] = value != nil ? expirationTime : nil
         return eventLoop.makeSucceededFuture(())

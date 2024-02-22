@@ -76,6 +76,7 @@ final class CarPlayAreasViewModel {
         )
     }
 
+    // swiftlint:disable cyclomatic_complexity
     private func updateAreas(
         _ areas: [HAAreaResponse],
         areasAndEntities: [HAEntityAreaResponse],
@@ -86,7 +87,7 @@ final class CarPlayAreasViewModel {
         var areasAndDevicesDict: [String: [String]] = [:]
 
         // Get all devices from an area
-        devicesAndAreas.forEach { device in
+        for device in devicesAndAreas {
             if let areaId = device.areaId, let deviceId = device.deviceId {
                 if var deviceIds = areasAndDevicesDict[areaId] {
                     deviceIds.append(deviceId)
@@ -101,7 +102,7 @@ final class CarPlayAreasViewModel {
         var areasAndEntitiesDict: [String: [String]] = [:]
 
         // Get all entities from an area
-        areasAndEntities.forEach { entity in
+        for entity in areasAndEntities {
             if let areaId = entity.areaId, let entityId = entity.entityId {
                 if var entityIds = areasAndEntitiesDict[areaId] {
                     entityIds.append(entityId)
@@ -116,8 +117,8 @@ final class CarPlayAreasViewModel {
         var deviceChildrenEntities: [String: [String]] = [:]
 
         // Get entities from a device
-        areasAndDevicesDict.forEach { areaAndDevices in
-            areaAndDevices.value.forEach { deviceId in
+        for areaAndDevices in areasAndDevicesDict {
+            for deviceId in areaAndDevices.value {
                 deviceChildrenEntities[deviceId] = areasAndEntities.filter { $0.deviceId == deviceId }
                     .compactMap(\.entityId)
             }
@@ -152,6 +153,8 @@ final class CarPlayAreasViewModel {
 
         templateProvider?.paginatedList.updateItems(items: items)
     }
+
+    // swiftlint:enable cyclomatic_complexity
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
         let entitiesCachedStates = Current.api(for: server).connection.caches.states

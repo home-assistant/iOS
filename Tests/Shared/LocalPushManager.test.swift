@@ -49,7 +49,7 @@ class LocalPushManagerTests: XCTestCase {
 
     private func setUpManager(webhookID: String, version: Version? = nil) {
         api.server.info.connection.webhookID = webhookID
-        if let version = version {
+        if let version {
             api.server.info.version = version
         }
 
@@ -64,7 +64,7 @@ class LocalPushManagerTests: XCTestCase {
 
     private func fireConnectionChange() {
         api.server.info.connection.internalHardwareAddresses = [UUID().uuidString]
-        let expectation = self.expectation(description: "loop")
+        let expectation = expectation(description: "loop")
         DispatchQueue.main.async {
             expectation.fulfill()
         }

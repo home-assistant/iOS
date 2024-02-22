@@ -39,11 +39,11 @@ public struct ServerAlert: Codable, Equatable {
         }
 
         public func shouldTrigger(for compare: Version) -> Bool {
-            if let min = min, let max = max {
+            if let min, let max {
                 return compare >= min && compare <= max
-            } else if let min = min {
+            } else if let min {
                 return compare >= min
-            } else if let max = max {
+            } else if let max {
                 return compare <= max
             } else {
                 // no provided min or max means it doesn't affect this version at all
@@ -71,7 +71,7 @@ public struct ServerAlert: Codable, Equatable {
         self.core = try container.decodeIfPresent(VersionRequirement.self, forKey: .core) ?? .init(min: nil, max: nil)
     }
 
-    internal init(
+    init(
         id: String,
         date: Date,
         url: URL,
@@ -103,7 +103,7 @@ public struct ServerAlert: Codable, Equatable {
 public class ServerAlerter {
     private var apiUrl: URL { URL(string: "https://alerts.home-assistant.io/mobile.json")! }
 
-    internal enum AlerterError: LocalizedError {
+    enum AlerterError: LocalizedError {
         case privacyDisabled
 
         var errorDescription: String? {
@@ -130,7 +130,7 @@ public class ServerAlerter {
             struct FailableServerAlert: Decodable {
                 var alert: ServerAlert?
                 init(from decoder: Decoder) throws {
-                    alert = try? ServerAlert(from: decoder)
+                    self.alert = try? ServerAlert(from: decoder)
                 }
             }
             return try with(JSONDecoder()) {

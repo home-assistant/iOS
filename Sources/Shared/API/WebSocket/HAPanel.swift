@@ -85,8 +85,8 @@ public struct HAPanels: HADataDecodable, Codable, Equatable {
             throw HADataError.missingKey("root")
         }
 
-        self.init(
-            panelsByPath: try dictionary
+        try self.init(
+            panelsByPath: dictionary
                 .compactMapKeys {
                     if $0.hasPrefix("_") {
                         return nil

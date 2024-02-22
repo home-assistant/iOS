@@ -53,7 +53,7 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
                 case let .waitingToReconnect(lastError: error, atLatest: atLatest, retryCount: count):
                     var components = [String]()
 
-                    if let error = error {
+                    if let error {
                         components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.error(
                             error.localizedDescription
                         ))
@@ -92,8 +92,8 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
         super.init(tag: tag)
 
         displayValueFor = { [weak self] value in
-            if let value = value, let self = self {
-                return self.displayStyle.message(for: value)
+            if let value, let self {
+                return displayStyle.message(for: value)
             } else {
                 return nil
             }
@@ -147,7 +147,7 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
 
     private weak var lastAlertController: UIAlertController?
     private func presentAlert() {
-        guard let value = value else { return }
+        guard let value else { return }
 
         let alert = UIAlertController(
             title: DisplayStyle.alert.title(for: value),

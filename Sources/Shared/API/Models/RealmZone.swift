@@ -115,7 +115,7 @@ public final class RLMZone: Object, UpdatableModel {
 
     public var regionsForMonitoring: [CLRegion] {
         #if os(iOS)
-        if let beaconRegion = beaconRegion {
+        if let beaconRegion {
             return [beaconRegion]
         } else {
             return circularRegionsForMonitoring
@@ -239,8 +239,8 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     public var isBeaconRegion: Bool {
-        if self.isInvalidated { return false }
-        return self.BeaconUUID != nil
+        if isInvalidated { return false }
+        return BeaconUUID != nil
     }
 
     override public var debugDescription: String {

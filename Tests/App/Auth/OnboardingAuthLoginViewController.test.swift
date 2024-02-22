@@ -10,7 +10,7 @@ class OnboardingAuthLoginViewControllerImplTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        controller = .init(authDetails: try .init(baseURL: URL(string: "https://www.example.com")!))
+        controller = try .init(authDetails: .init(baseURL: URL(string: "https://www.example.com")!))
     }
 
     func testError() {

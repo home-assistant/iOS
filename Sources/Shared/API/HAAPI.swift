@@ -243,7 +243,7 @@ public class HomeAssistantAPI {
             // using a random file name so we always have one, see https://github.com/home-assistant/iOS/issues/1068
             .appendingPathComponent(UUID().uuidString, isDirectory: false)
 
-        if let downloadingURL = downloadingURL {
+        if let downloadingURL {
             return url.appendingPathExtension(downloadingURL.pathExtension)
         } else {
             return url
@@ -498,7 +498,7 @@ public class HomeAssistantAPI {
         case .zoneOnly:
             if updateType == .BeaconRegionEnter {
                 update = .init(trigger: updateType, usingNameOf: zone)
-            } else if let rawLocation = rawLocation {
+            } else if let rawLocation {
                 // note this is a different zone than the event - e.g. the zone may be the one we are exiting
                 update = .init(trigger: updateType, usingNameOf: RLMZone.zone(of: rawLocation, in: server))
             } else {
@@ -579,13 +579,13 @@ public class HomeAssistantAPI {
         var eventData: [String: Any] = sharedEventDeviceInfo
         eventData["actionName"] = identifier
 
-        if let category = category {
+        if let category {
             eventData["categoryName"] = category
         }
-        if let actionData = actionData {
+        if let actionData {
             eventData["action_data"] = actionData
         }
-        if let textInput = textInput {
+        if let textInput {
             eventData["response_info"] = textInput
             eventData["textInput"] = textInput
         }
@@ -602,10 +602,10 @@ public class HomeAssistantAPI {
         var eventData = [String: Any]()
         eventData["action"] = identifier
 
-        if let actionData = actionData {
+        if let actionData {
             eventData["action_data"] = actionData
         }
-        if let textInput = textInput {
+        if let textInput {
             eventData["reply_text"] = textInput
         }
 
@@ -629,7 +629,7 @@ public class HomeAssistantAPI {
         actionID: String,
         source: ActionSource
     ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
-        return (serviceDomain: "scene", serviceName: "turn_on", serviceData: ["entity_id": actionID])
+        (serviceDomain: "scene", serviceName: "turn_on", serviceData: ["entity_id": actionID])
     }
 
     public func tagEvent(
@@ -780,7 +780,7 @@ public class HomeAssistantAPI {
         UpdateSensors(trigger: trigger, limitedTo: nil, location: location)
     }
 
-    internal func UpdateSensors(
+    func UpdateSensors(
         trigger: LocationUpdateTrigger,
         limitedTo: [SensorProvider.Type]?,
         location: CLLocation? = nil

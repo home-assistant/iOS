@@ -135,7 +135,7 @@ class SensorDetailViewController: HAFormViewController, SensorObserver {
                             setter(row.value ?? 0)
                         }
 
-                        if let displayValueFor = displayValueFor {
+                        if let displayValueFor {
                             $0.displayValueFor = displayValueFor
                         }
                     }
@@ -147,7 +147,7 @@ class SensorDetailViewController: HAFormViewController, SensorObserver {
                             setter(row.value ?? 0)
                         }
 
-                        if let displayValueFor = displayValueFor {
+                        if let displayValueFor {
                             $0.displayValueFor = displayValueFor
                         }
 

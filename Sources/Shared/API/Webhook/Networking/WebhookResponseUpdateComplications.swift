@@ -90,7 +90,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
     }
 
     #if os(watchOS)
-    internal static func updateComplications() {
+    static func updateComplications() {
         let server = CLKComplicationServer.sharedInstance()
 
         server.activeComplications?.forEach {

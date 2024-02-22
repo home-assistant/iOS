@@ -19,7 +19,7 @@ public struct Style {
         override func didMoveToSuperview() {
             super.didMoveToSuperview()
 
-            if let superview = superview {
+            if let superview {
                 switch traitCollection.userInterfaceIdiom {
                 case .pad, .mac:
                     widthAnchor.constraint(equalTo: superview.readableContentGuide.widthAnchor)

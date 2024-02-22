@@ -1,7 +1,7 @@
 import Foundation
 
 // https://github.com/home-assistant/frontend/blob/92d30a889663008317f7a28faa65beea025f0bfd/src/components/ha-icon.ts
-struct MDIMigration {
+enum MDIMigration {
     // MDI Version number is based on number of icons, so count is directly related to version
     static let migrationNumber: Int = MaterialDesignIcons.count / 1000 - 5
 

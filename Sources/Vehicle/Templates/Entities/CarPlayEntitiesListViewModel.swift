@@ -99,9 +99,9 @@ final class CarPlayEntitiesListViewModel {
 
     func handleEntityTap(entity: HAEntity, completion: @escaping () -> Void) {
         firstly { [weak self] () -> Promise<Void> in
-            guard let self = self else { return .init(error: CPEntityError.unknown) }
+            guard let self else { return .init(error: CPEntityError.unknown) }
 
-            let api = Current.api(for: self.server)
+            let api = Current.api(for: server)
 
             if let domain = Domain(rawValue: entity.domain), domain == .lock {
                 templateProvider?.displayLockConfirmation(entity: entity, completion: {

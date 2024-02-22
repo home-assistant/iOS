@@ -28,7 +28,7 @@ public class StorageSensor: SensorProvider {
                 throw StorageError.noData
             }
         }.map { (volumes: [URLResourceKey: Int64]) -> [WebhookSensor] in
-            [try Self.sensor(for: volumes)]
+            try [Self.sensor(for: volumes)]
         }
     }
 

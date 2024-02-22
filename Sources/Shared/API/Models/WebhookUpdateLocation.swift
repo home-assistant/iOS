@@ -46,7 +46,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
             useLocation = true
         }
 
-        if let location = location, useLocation {
+        if let location, useLocation {
             self.location = location.coordinate
 
             if location.speed > -1 {
@@ -64,7 +64,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
             if location.horizontalAccuracy > -1 {
                 self.horizontalAccuracy = location.horizontalAccuracy
             }
-        } else if let zone = zone {
+        } else if let zone {
             if trigger != .BeaconRegionExit {
                 self.location = zone.center
                 self.horizontalAccuracy = zone.Radius

@@ -61,7 +61,7 @@ class WebhookManagerTests: XCTestCase {
         sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
     }
 
-    func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() {
+    func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() throws {
         let mainIdentifier = manager.currentBackgroundSessionInfo.identifier
         let testIdentifier = manager.currentBackgroundSessionInfo.identifier + "-test" + UUID().uuidString
 
@@ -77,7 +77,7 @@ class WebhookManagerTests: XCTestCase {
         })
 
         func waitRunLoop(queue: DispatchQueue = .main, count: Int = 1) {
-            let expectation = self.expectation(description: "run loop")
+            let expectation = expectation(description: "run loop")
             expectation.expectedFulfillmentCount = count
             for _ in 0 ..< count {
                 queue.async { expectation.fulfill() }
@@ -105,9 +105,10 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(mainPromise))
         XCTAssertNoThrow(try hang(testPromise))
 
+        let underlyingQueue = try XCTUnwrap(manager.currentBackgroundSessionInfo.session.delegateQueue.underlyingQueue)
         // for the clearing of session infos
         waitRunLoop(
-            queue: manager.currentBackgroundSessionInfo.session.delegateQueue.underlyingQueue!,
+            queue: underlyingQueue,
             count: 2
         )
 
@@ -123,10 +124,10 @@ class WebhookManagerTests: XCTestCase {
         )
 
         let expectation = expectation(description: "completion handler")
-        manager.urlSession(
+        try manager.urlSession(
             manager.currentRegularSessionInfo.session,
             task: task,
-            didReceive: try SecTrust.unitTestDotExampleDotCom1.authenticationChallenge(),
+            didReceive: SecTrust.unitTestDotExampleDotCom1.authenticationChallenge(),
             completionHandler: { disposition, credential in
                 XCTAssertEqual(disposition, .performDefaultHandling)
                 XCTAssertNil(credential)
@@ -893,7 +894,7 @@ private func XCTAssertEqualWebhookRequest(
 ) {
     do {
         let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
-        let lhs = try mapper.map(JSONObject: try JSONSerialization.jsonObject(with: lhsData ?? Data(), options: []))
+        let lhs = try mapper.map(JSONObject: JSONSerialization.jsonObject(with: lhsData ?? Data(), options: []))
         XCTAssertEqualWebhookRequest(lhs, rhs, server: server, file: file, line: line)
     } catch {
         XCTFail("got error: \(error)", file: file, line: line)

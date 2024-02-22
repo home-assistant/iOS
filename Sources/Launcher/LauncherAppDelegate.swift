@@ -23,9 +23,9 @@ class LauncherAppDelegate: NSObject, NSApplicationDelegate {
         openConfiguration.activates = false
 
         NSWorkspace.shared.openApplication(at: appURL, configuration: openConfiguration) { [self] app, error in
-            if let app = app {
+            if let app {
                 print("launched app: \(app)")
-            } else if let error = error {
+            } else if let error {
                 print("failed to launch app: \(error)")
             }
 

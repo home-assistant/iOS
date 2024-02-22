@@ -1,7 +1,8 @@
 import Foundation
+
 extension URL {
     var queryDictionary: [String: [String]]? {
-        if let query = query {
+        if let query {
             var dictionary = [String: [String]]()
 
             for keyValueString in query.components(separatedBy: "&") {

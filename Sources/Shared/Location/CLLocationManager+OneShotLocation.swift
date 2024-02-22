@@ -47,7 +47,7 @@ enum OneShotError: Error, Equatable, LocalizedError, CustomNSError {
     }
 }
 
-internal struct PotentialLocation: Comparable, CustomStringConvertible {
+struct PotentialLocation: Comparable, CustomStringConvertible {
     static func desiredAccuracy(for accuracy: CLAccuracyAuthorization) -> CLLocationAccuracy {
         switch accuracy {
         case .fullAccuracy: return 100.0
@@ -165,7 +165,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
     }
 }
 
-internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
+final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
     private(set) var promise: Promise<CLLocation>
     private let seal: Resolver<CLLocation>
     private let locationManager: CLLocationManager
@@ -231,7 +231,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         let bestLocation = potentialLocations.sorted().last
 
-        if let bestLocation = bestLocation {
+        if let bestLocation {
             switch bestLocation.quality {
             case .perfect:
                 Current.Log.info("Got a perfect location!")

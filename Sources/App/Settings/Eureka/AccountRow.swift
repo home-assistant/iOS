@@ -65,7 +65,7 @@ class AccountCell: Cell<AccountRowValue>, CellType {
             let locationName = server.info.name
             let size = AccountInitialsImage.defaultSize
 
-            if let imageView = imageView {
+            if let imageView {
                 if let image = accountRow?.cachedImage {
                     UIView.transition(
                         with: imageView,
@@ -104,7 +104,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
     override func customDidSelect() {
         super.customDidSelect()
         if !isDisabled {
-            if let presentationMode = presentationMode {
+            if let presentationMode {
                 if let controller = presentationMode.makeController() {
                     presentationMode.present(controller, row: self, presentingController: cell.formViewController()!)
                 } else {
@@ -173,10 +173,10 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
         let connection = api.connection
 
         accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
-            guard let self = self else { return }
+            guard let self else { return }
             Current.Log.verbose("got user from user \(user)")
-            self.cachedUserName = user.name
-            self.updateCell()
+            cachedUserName = user.name
+            updateCell()
 
             var lastTask: Request? {
                 didSet {
@@ -185,7 +185,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                 }
             }
 
-            self.avatarSubscription = connection.caches.states.subscribe { [weak self] _, states in
+            avatarSubscription = connection.caches.states.subscribe { [weak self] _, states in
                 firstly { () -> Guarantee<Set<HAEntity>> in
                     Guarantee.value(states.all)
                 }.map { states throws -> HAEntity in
@@ -202,7 +202,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     }
                 }.map { path throws -> URL in
                     let url = server.info.connection.activeURL().appendingPathComponent(path)
-                    if let lastTask = lastTask, lastTask.error == nil, lastTask.request?.url == url {
+                    if let lastTask, lastTask.error == nil, lastTask.request?.url == url {
                         throw FetchAvatarError.alreadySet
                     }
                     return url

@@ -16,7 +16,7 @@ protocol ZoneManagerAccuracyFuzzer {
     ) -> ZoneManagerAccuracyFuzzerChange?
 }
 
-extension Sequence where Element == ZoneManagerAccuracyFuzzer {
+extension Sequence<ZoneManagerAccuracyFuzzer> {
     func fuzz(location originalLocation: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
         reduce(originalLocation) { location, fuzzer in
             if let change = fuzzer.fuzz(for: location, for: event) {

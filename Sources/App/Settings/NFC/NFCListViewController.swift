@@ -164,7 +164,7 @@ class NFCListViewController: HAFormViewController {
             }
 
             after(life: textField).done {
-                if let token = token {
+                if let token {
                     NotificationCenter.default.removeObserver(token)
                 }
                 token = nil

@@ -51,7 +51,7 @@ final class CarPlayActionsViewModel {
             trigger: nil
         )
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+            if let error {
                 Current.Log
                     .info("Error scheduling CarPlay Introduction action notification: \(error.localizedDescription)")
             }

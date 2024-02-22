@@ -125,7 +125,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             complication = nil
         }
 
-        if let complication = complication {
+        if let complication {
             Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
         } else {
             Current.Log.verbose("unknown or no complication launched the app")

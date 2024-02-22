@@ -117,7 +117,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         ).then { [weak self] controller -> Promise<Void> in
             self?.activeViewController = controller
 
-            guard let controller = controller else {
+            guard let controller else {
                 return .value(())
             }
 

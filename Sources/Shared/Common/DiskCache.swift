@@ -47,7 +47,7 @@ public final class DiskCacheImpl: DiskCache {
         return promise
     }
 
-    public func set<T: Codable>(_ value: T, for key: String) -> Promise<Void> {
+    public func set(_ value: some Codable, for key: String) -> Promise<Void> {
         let data: Data
 
         do {

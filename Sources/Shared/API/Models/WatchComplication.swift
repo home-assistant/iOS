@@ -202,7 +202,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return value
         default:
             Current.Log.info("unsure how to float-ify \(type(of: value)), trying as a string")
-            return Self.percentileNumber(from: String(describing: value))
+            return percentileNumber(from: String(describing: value))
         }
     }
 
@@ -363,19 +363,19 @@ public class WatchComplication: Object, ImmutableMappable {
         switch Template {
         case .CircularSmallRingImage:
             let template = CLKComplicationTemplateCircularSmallRingImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
             return template
         case .CircularSmallSimpleImage:
             let template = CLKComplicationTemplateCircularSmallSimpleImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -383,7 +383,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .CircularSmallStackImage:
             let template = CLKComplicationTemplateCircularSmallStackImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.line1ImageProvider = iconProvider
             } else {
                 return nil
@@ -401,7 +401,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
@@ -429,19 +429,19 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ExtraLargeRingImage:
             let template = CLKComplicationTemplateExtraLargeRingImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
             return template
         case .ExtraLargeSimpleImage:
             let template = CLKComplicationTemplateExtraLargeSimpleImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -449,7 +449,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ExtraLargeStackImage:
             let template = CLKComplicationTemplateExtraLargeStackImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.line1ImageProvider = iconProvider
             } else {
                 return nil
@@ -491,7 +491,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
@@ -519,19 +519,19 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularSmallRingImage:
             let template = CLKComplicationTemplateModularSmallRingImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
             return template
         case .ModularSmallSimpleImage:
             let template = CLKComplicationTemplateModularSmallSimpleImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -539,7 +539,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .ModularSmallStackImage:
             let template = CLKComplicationTemplateModularSmallStackImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.line1ImageProvider = iconProvider
             } else {
                 return nil
@@ -581,7 +581,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
@@ -693,7 +693,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .UtilitarianSmallFlat:
             let template = CLKComplicationTemplateUtilitarianSmallFlat()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 // optional
@@ -706,12 +706,12 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .UtilitarianSmallRingImage:
             let template = CLKComplicationTemplateUtilitarianSmallRingImage()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
@@ -723,14 +723,14 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            let ringData = self.ringData
+            let ringData = ringData
             template.fillFraction = ringData.fraction
             template.ringStyle = ringData.style
             template.tintColor = ringData.color
             return template
         case .UtilitarianSmallSquare:
             let template = CLKComplicationTemplateUtilitarianSmallSquare()
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 return nil
@@ -743,7 +743,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let iconProvider = iconProvider {
+            if let iconProvider {
                 template.imageProvider = iconProvider
             } else {
                 // optional
@@ -764,7 +764,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -782,7 +782,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCornerGaugeText:
             let template = CLKComplicationTemplateGraphicCornerGaugeText()
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -844,7 +844,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -857,7 +857,7 @@ public class WatchComplication: Object, ImmutableMappable {
             } else {
                 return nil
             }
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -870,7 +870,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCircularClosedGaugeText:
             let template = CLKComplicationTemplateGraphicCircularClosedGaugeText()
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -883,7 +883,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCircularOpenGaugeSimpleText:
             let template = CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText()
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -901,7 +901,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicCircularOpenGaugeRangeText:
             let template = CLKComplicationTemplateGraphicCircularOpenGaugeRangeText()
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil
@@ -957,7 +957,7 @@ public class WatchComplication: Object, ImmutableMappable {
             return template
         case .GraphicRectangularTextGauge:
             let template = CLKComplicationTemplateGraphicRectangularTextGauge()
-            if let gaugeProvider = gaugeProvider {
+            if let gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             } else {
                 return nil

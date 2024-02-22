@@ -258,7 +258,7 @@ public enum PermissionType {
             })
         case .notification:
             UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
-                if let error = error {
+                if let error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
                 }
                 DispatchQueue.main.async {

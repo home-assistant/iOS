@@ -37,7 +37,7 @@ final class WindowScenesManager {
     }
 
     // Create cascade effect so windows don't overlap
-    internal func adjustedSystemFrame(
+    func adjustedSystemFrame(
         _ systemFrame: CGRect,
         for screenSize: CGSize,
         numberOfConnectedScenes: Int

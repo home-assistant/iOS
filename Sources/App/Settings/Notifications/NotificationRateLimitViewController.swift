@@ -91,7 +91,7 @@ class NotificationRateLimitListViewController: HAFormViewController {
         }
 
         firstly { () -> Promise<RateLimitResponse> in
-            if let initialPromise = initialPromise {
+            if let initialPromise {
                 self.initialPromise = nil
                 return initialPromise
             } else {

@@ -58,7 +58,7 @@ extension Promise where T == Data {
         secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
-        if let statusCode = statusCode {
+        if let statusCode {
             switch statusCode {
             case 204, 205:
                 return .value(())

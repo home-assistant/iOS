@@ -40,7 +40,7 @@ private let googleChromeCallbackScheme: String = "googlechrome-x-callback:"
 private let characterSet: CharacterSet = .urlQueryAllowed
 
 private func encodeByAddingPercentEscapes(_ input: String?) -> String {
-    if let input = input {
+    if let input {
         if let percentEncoded = input.addingPercentEncoding(withAllowedCharacters: characterSet) {
             return percentEncoded
         }
@@ -98,7 +98,7 @@ open class OpenInChromeController {
                 } else if scheme == "https" {
                     chromeScheme = googleChromeHTTPSScheme
                 }
-                if let chromeScheme = chromeScheme {
+                if let chromeScheme {
                     let absoluteURLString = url.absoluteString
                     let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
                     let chromeURLString = chromeScheme + absoluteURLString.suffix(from: lowerBound)

@@ -33,7 +33,7 @@ class BarcodeScannerCamera: NSObject {
 
     private var captureDevice: AVCaptureDevice? {
         didSet {
-            guard let captureDevice = captureDevice else { return }
+            guard let captureDevice else { return }
             Current.Log.info("Using capture device: \(captureDevice.localizedName)")
             sessionQueue.async {
                 self.updateSessionForCaptureDevice(captureDevice)
@@ -79,7 +79,7 @@ class BarcodeScannerCamera: NSObject {
         }
 
         guard
-            let captureDevice = captureDevice,
+            let captureDevice,
             let deviceInput = try? AVCaptureDeviceInput(device: captureDevice) else {
             Current.Log.error("Failed to obtain video input.")
             return
@@ -199,14 +199,14 @@ class BarcodeScannerCamera: NSObject {
         if isCaptureSessionConfigured {
             if !captureSession.isRunning {
                 sessionQueue.async { [self] in
-                    self.captureSession.startRunning()
+                    captureSession.startRunning()
                 }
             }
             return
         }
 
         sessionQueue.async { [self] in
-            self.configureCaptureSession { success in
+            configureCaptureSession { success in
                 guard success else { return }
                 self.captureSession.startRunning()
             }

@@ -103,9 +103,9 @@ PODS:
     - Realm (= 10.35.0)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.50.3)
+  - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
-  - SwiftLint (0.49.1)
+  - SwiftLint (0.54.0)
   - SwiftMessages (9.0.6):
     - SwiftMessages/App (= 9.0.6)
   - SwiftMessages/App (9.0.6)
@@ -141,9 +141,9 @@ DEPENDENCIES:
   - RealmSwift
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
-  - SwiftFormat/CLI (= 0.50.3)
+  - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
-  - SwiftLint (= 0.49.1)
+  - SwiftLint (= 0.54.0)
   - SwiftMessages
   - UIColor_Hex_Swift
   - Version
@@ -274,9 +274,9 @@ SPEC CHECKSUMS:
   RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 61cda3819dc3a7d69795ce0430e1e1d53c4a4fb2
+  SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
-  SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
+  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
   UIColor_Hex_Swift: 31cd3e47440f07a20d2503a36bb0437a445b3c29
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
@@ -284,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 22fc24cfd665bd31532e7b68cf2aee22abb132b2
+PODFILE CHECKSUM: a1fb8b74054208eb193f5366db79acab04a209b0
 
 COCOAPODS: 1.15.2

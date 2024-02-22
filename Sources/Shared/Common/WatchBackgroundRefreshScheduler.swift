@@ -26,7 +26,7 @@ public class WatchBackgroundRefreshScheduler {
         #endif
     }
 
-    internal func nextFireDate() -> Date {
+    func nextFireDate() -> Date {
         // Apple documents that, if we have an active complication, we can reliably refresh 4 times per hour
         // so we divide this into 0 / 15 / 30 / 45
         let possibleComponents = stride(from: 0, to: 60, by: 15).map { minute in

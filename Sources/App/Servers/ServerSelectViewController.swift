@@ -77,7 +77,7 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
     private func setupForm() {
         form.removeAll()
 
-        if let prompt = prompt, !prompt.isEmpty {
+        if let prompt, !prompt.isEmpty {
             form +++ InfoLabelRow {
                 $0.title = prompt
             }

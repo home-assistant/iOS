@@ -105,7 +105,7 @@ public extension Realm {
                     // but it seems like some time in the past, it allowed the same identifier to be inserted >1 time
                     var discoveredIdentifiers = Set<String>()
                     migration.enumerateObjects(ofType: NotificationCategory.className()) { _, newObject in
-                        if let newObject = newObject, let identifier = newObject["Identifier"] as? String {
+                        if let newObject, let identifier = newObject["Identifier"] as? String {
                             if discoveredIdentifiers.contains(identifier) {
                                 migration.delete(newObject)
                             } else {
@@ -155,7 +155,7 @@ public extension Realm {
 
                 if oldVersion < 18 {
                     // set the serverIdentifier to the historic value for anything synced earlier
-                    func migrate<T: Object & UpdatableModel>(_ modelType: T.Type) {
+                    func migrate(_ modelType: (some Object & UpdatableModel).Type) {
                         migration.enumerateObjects(ofType: modelType.className()) { _, newObject in
                             newObject?[modelType.serverIdentifierKey()] = Server.historicId.rawValue
                         }
@@ -339,12 +339,12 @@ public extension Realm {
 
         if isInWriteTransaction {
             promise = Promise { seal in
-                seal.fulfill(try block())
+                try seal.fulfill(block())
             }
         } else {
             promise = Current.backgroundTask(withName: "realm-write") { _ in
                 Promise<Result> { seal in
-                    seal.fulfill(try write(withoutNotifying: tokens, block))
+                    try seal.fulfill(write(withoutNotifying: tokens, block))
                 }
             }
         }

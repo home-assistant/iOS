@@ -82,7 +82,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
             }
 
             tag.queryNDEFStatus { status, capacity, error in
-                if let error = error {
+                if let error {
                     session.invalidate(errorMessage: error.localizedDescription)
                     seal.reject(error)
                     return
@@ -101,7 +101,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
                     }
 
                     tag.writeNDEF(message) { error in
-                        if let error = error {
+                        if let error {
                             session.invalidate(errorMessage: error.localizedDescription)
                             seal.reject(error)
                         } else {

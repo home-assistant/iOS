@@ -159,7 +159,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.addGestureRecognizer(sidebarGestureRecognizer)
 
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
             guard let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
                   let cleanURL = URL(string: currentURL), let scheme = cleanURL.scheme else {
@@ -171,12 +171,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 return
             }
 
-            self.userActivity?.webpageURL = cleanURL
-            self.userActivity?.userInfo = [
+            userActivity?.webpageURL = cleanURL
+            userActivity?.userInfo = [
                 RestorableStateKey.lastURL.rawValue: cleanURL,
-                RestorableStateKey.server.rawValue: self.server.identifier.rawValue,
+                RestorableStateKey.server.rawValue: server.identifier.rawValue,
             ]
-            self.userActivity?.becomeCurrent()
+            userActivity?.becomeCurrent()
         }
 
         webView.navigationDelegate = self
@@ -252,7 +252,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         case server(Server)
 
         init?(_ userActivity: NSUserActivity?) {
-            if let userActivity = userActivity {
+            if let userActivity {
                 self = .userActivity(userActivity)
             } else {
                 return nil
@@ -612,7 +612,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let request: URLRequest
 
         if Current.settingsStore.restoreLastURL,
-           let initialURL = initialURL, initialURL.baseIsEqual(to: webviewURL) {
+           let initialURL, initialURL.baseIsEqual(to: webviewURL) {
             Current.Log.info("restoring initial url path: \(initialURL.path)")
             request = URLRequest(url: initialURL)
         } else {
@@ -824,8 +824,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             withTimeInterval: 5.0,
             repeats: true,
             block: { [weak self] timer in
-                if let self = self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
-                    self.sendExternalBus(message: .init(command: "restart"))
+                if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
+                    sendExternalBus(message: .init(command: "restart"))
                 }
 
                 if UIApplication.shared.applicationState == .active {
@@ -913,7 +913,7 @@ extension WebViewController: WKScriptMessageHandler {
                     // Current.Log.verbose("Responding to getExternalAuth with: \(callbackName)(true, \(jsonString))")
                     let script = "\(callbackName)(true, \(jsonString))"
                     self.webView.evaluateJavaScript(script, completionHandler: { result, error in
-                        if let error = error {
+                        if let error {
                             Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
                         }
 
@@ -941,7 +941,7 @@ extension WebViewController: WKScriptMessageHandler {
                 self.webView.evaluateJavaScript(script, completionHandler: { _, error in
                     Current.onboardingObservation.needed(.logout)
 
-                    if let error = error {
+                    if let error {
                         Current.Log.error("Failed calling sign out callback: \(error)")
                     }
 
@@ -1104,7 +1104,7 @@ extension WebViewController: WKScriptMessageHandler {
                     let script = "window.externalBus(\(jsonString))"
                     Current.Log.verbose("sending \(jsonString)")
                     webView.evaluateJavaScript(script, completionHandler: { _, error in
-                        if let error = error {
+                        if let error {
                             Current.Log.error("failed to fire message to externalBus: \(error)")
                         }
                         seal.resolve(error)

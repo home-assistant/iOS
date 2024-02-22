@@ -57,7 +57,7 @@ class SceneManager {
             }
         }
 
-        func resolve<T>(with possible: T) {
+        func resolve(with possible: some Any) {
             handleBlock(possible)
         }
     }
@@ -77,13 +77,13 @@ class SceneManager {
 
     init() {
         Current.realmFatalPresentation = { [weak self] viewController in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let under = UIViewController()
             under.view.backgroundColor = .black
             under.modalPresentationStyle = .fullScreen
 
-            self.webViewWindowControllerPromise.done { parent in
+            webViewWindowControllerPromise.done { parent in
                 parent.present(under, animated: false, completion: {
                     under.present(viewController, animated: true, completion: nil)
                 })

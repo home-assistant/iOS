@@ -29,7 +29,7 @@ extension UIApplication {
                     query = nil
                 }
 
-                if let bundleIdentifier = bundleIdentifier {
+                if let bundleIdentifier {
                     return URL(string: "x-apple.systempreferences:\(bundleIdentifier)?\(query ?? "")")!
                 } else {
                     return nil

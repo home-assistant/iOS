@@ -37,8 +37,8 @@ class NotificationParserLegacyTests: XCTestCase {
         notificationCases = try enumerator.allObjects
             .map { try XCTUnwrap($0 as? URL) }
             .filter { $0.pathExtension == "json" }
-            .map { ($0.lastPathComponent, try Data(contentsOf: $0)) }
-            .map { ($0.0, try JSONSerialization.jsonObject(with: $0.1, options: [])) }
+            .map { try ($0.lastPathComponent, Data(contentsOf: $0)) }
+            .map { try ($0.0, JSONSerialization.jsonObject(with: $0.1, options: [])) }
             .map {
                 var notificationCase = try NotificationCase(jsonObject: $0.1)
                 notificationCase.name = $0.0

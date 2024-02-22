@@ -92,7 +92,7 @@ struct OnboardingAuthError: LocalizedError {
                 extraInfo = nil
             }
 
-            if let extraInfo = extraInfo {
+            if let extraInfo {
                 return extraInfo + "\n\n" + underlying.localizedDescription
             } else {
                 return underlying.localizedDescription
@@ -101,7 +101,7 @@ struct OnboardingAuthError: LocalizedError {
     }
 
     var responseString: String? {
-        guard let data = data, let dataString = String(data: data, encoding: .utf8) else {
+        guard let data, let dataString = String(data: data, encoding: .utf8) else {
             return nil
         }
 

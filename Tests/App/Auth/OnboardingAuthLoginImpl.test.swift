@@ -17,7 +17,7 @@ class OnboardingAuthLoginImplTests: XCTestCase {
         login = OnboardingAuthLoginImpl()
         login.loginViewControllerClass = FakeOnboardingAuthLoginViewController.self
 
-        authDetails = try OnboardingAuthDetails(baseURL: try XCTUnwrap(URL(string: "http://example.com:8123")))
+        authDetails = try OnboardingAuthDetails(baseURL: XCTUnwrap(URL(string: "http://example.com:8123")))
     }
 
     func testCancelled() throws {
@@ -36,14 +36,14 @@ class OnboardingAuthLoginImplTests: XCTestCase {
     func testInvalidURL() throws {
         let result = login.open(authDetails: authDetails, sender: sender)
         let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
-        viewController.resolver.fulfill(try XCTUnwrap(URL(string: "homeassistant://auth-callback?no_code_here=true")))
+        try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?no_code_here=true")))
         XCTAssertThrowsError(try hang(result))
     }
 
     func testSuccess() throws {
         let result = login.open(authDetails: authDetails, sender: sender)
         let viewController = try XCTUnwrap(FakeOnboardingAuthLoginViewController.lastCreated)
-        viewController.resolver.fulfill(try XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
+        try viewController.resolver.fulfill(XCTUnwrap(URL(string: "homeassistant://auth-callback?code=code_123")))
         XCTAssertEqual(try hang(result), "code_123")
     }
 }

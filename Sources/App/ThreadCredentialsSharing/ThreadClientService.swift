@@ -33,7 +33,7 @@ final class ThreadClientService: THClientProtocol {
 
         // All credentials retrieve the rest of the credentials after user acceps permission dialog
         // This call may fail, but we don't want to throw error since preferredCredential succeeded
-        var allCredentials: Set<THCredentials> = (try? await client.allCredentials()) ?? []
+        var allCredentials: Set<THCredentials> = await (try? client.allCredentials()) ?? []
         allCredentials = allCredentials.filter { $0.borderAgentID != preferredCredential.borderAgentID }
         allCredentials.insert(preferredCredential)
 

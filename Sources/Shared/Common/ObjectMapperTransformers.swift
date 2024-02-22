@@ -75,7 +75,7 @@ open class FloatToIntTransform: TransformType {
     }
 
     open func transformToJSON(_ value: Float?) -> Int? {
-        guard let value = value else { return nil }
+        guard let value else { return nil }
         return Int(value * 100)
     }
 }
@@ -94,7 +94,7 @@ open class CLLocationCoordinate2DTransform: TransformType {
     }
 
     open func transformToJSON(_ value: CLLocationCoordinate2D?) -> [Double]? {
-        guard let value = value else { return nil }
+        guard let value else { return nil }
         return value.toArray()
     }
 }
@@ -110,7 +110,7 @@ open class TimeIntervalToString: TransformType {
     }
 
     open func transformToJSON(_ value: TimeInterval?) -> String? {
-        guard let value = value else { return nil }
+        guard let value else { return nil }
         let interval = Int(value)
         let seconds = interval % 60
         let minutes = (interval / 60) % 60

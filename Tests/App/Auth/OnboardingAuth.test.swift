@@ -480,14 +480,14 @@ class FakeOnboardingAuthPostStepBeforeRegister: FakeOnboardingAuthPostStep {
 class FakeOnboardingAuthPostStepBeforeRegister1: FakeOnboardingAuthPostStepBeforeRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any) {
         didSet {
-            (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
+            (wasInvokedPromise, wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
 
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
-                Self.wasInvokedResolver?(())
+                wasInvokedResolver?(())
             }
         }
     }
@@ -525,14 +525,14 @@ class FakeOnboardingAuthPostStepRegister: FakeOnboardingAuthPostStep {
 class FakeOnboardingAuthPostStepRegister1: FakeOnboardingAuthPostStepRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any) {
         didSet {
-            (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
+            (wasInvokedPromise, wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
 
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
-                Self.wasInvokedResolver?(())
+                wasInvokedResolver?(())
             }
         }
     }
@@ -570,14 +570,14 @@ class FakeOnboardingAuthPostStepAfterRegister: FakeOnboardingAuthPostStep {
 class FakeOnboardingAuthPostStepAfterRegister1: FakeOnboardingAuthPostStepAfterRegister, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any) {
         didSet {
-            (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
+            (wasInvokedPromise, wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
 
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
-                Self.wasInvokedResolver?(())
+                wasInvokedResolver?(())
             }
         }
     }
@@ -615,14 +615,14 @@ class FakeOnboardingAuthPostStepComplete: FakeOnboardingAuthPostStep {
 class FakeOnboardingAuthPostStepComplete1: FakeOnboardingAuthPostStepComplete, FakeAuthStepResultable {
     static var result: Promise<Void> = .init(error: TestError.any) {
         didSet {
-            (Self.wasInvokedPromise, Self.wasInvokedResolver) = Guarantee<Void>.pending()
+            (wasInvokedPromise, wasInvokedResolver) = Guarantee<Void>.pending()
         }
     }
 
     static var wasInvoked: Bool = false {
         didSet {
             if wasInvoked {
-                Self.wasInvokedResolver?(())
+                wasInvokedResolver?(())
             }
         }
     }

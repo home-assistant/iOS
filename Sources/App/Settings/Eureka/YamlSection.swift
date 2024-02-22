@@ -54,7 +54,7 @@ public final class YamlSection: Section {
     }
 
     @available(*, unavailable)
-    required init<S>(_ elements: S) where S: Sequence, S.Element == BaseRow {
+    required init(_ elements: some Sequence<BaseRow>) {
         fatalError("init(_:) has not been implemented")
     }
 

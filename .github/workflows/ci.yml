@@ -34,12 +34,12 @@ jobs:
       - name: SwiftLint
         run: |
           docker run --rm -v `pwd`:`pwd` -w `pwd` \
-            ghcr.io/realm/swiftlint:0.49.1 \
+            ghcr.io/realm/swiftlint:0.54.0 \
             swiftlint lint --strict --config .swiftlint.yml --reporter github-actions-logging
       - name: SwiftFormat
         run: |
           docker run --rm -v `pwd`:`pwd` -w `pwd` \
-            ghcr.io/nicklockwood/swiftformat:0.50.3 \
+            ghcr.io/nicklockwood/swiftformat:0.53.1 \
             --lint --config .swiftformat .
 
   test:

@@ -72,7 +72,7 @@ class ServerAlerterTests: XCTestCase {
         encoder.outputFormatting = [.sortedKeys]
         encoder.dateEncodingStrategy = .iso8601
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        let result = String(data: try encoder.encode(alert), encoding: .utf8)
+        let result = try String(data: encoder.encode(alert), encoding: .utf8)
         XCTAssertEqual(
             result,
             "{\"admin_only\":false,\"core\":{\"max\":\"20.0\",\"min\":null},\"date\":\"2021-01-16T22:54:43Z\",\"id\":\"id\",\"ios\":{\"max\":null,\"min\":\"100.1.0\"},\"message\":\"Some message\",\"url\":\"http:\\/\\/example.com\"}"

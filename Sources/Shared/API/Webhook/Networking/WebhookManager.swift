@@ -3,7 +3,7 @@ import ObjectMapper
 import PromiseKit
 import UserNotifications
 
-internal enum WebhookError: LocalizedError, Equatable, CancellableError {
+enum WebhookError: LocalizedError, Equatable, CancellableError {
     case unregisteredIdentifier(handler: String)
     case unexpectedType(given: String, desire: String)
     case unacceptableStatusCode(Int)
@@ -48,12 +48,12 @@ public class WebhookManager: NSObject {
         "non-background"
     }
 
-    internal var sessionInfos = Set<WebhookSessionInfo>()
-    internal var currentBackgroundSessionInfo: WebhookSessionInfo {
+    var sessionInfos = Set<WebhookSessionInfo>()
+    var currentBackgroundSessionInfo: WebhookSessionInfo {
         sessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
     }
 
-    internal var currentRegularSessionInfo: WebhookSessionInfo {
+    var currentRegularSessionInfo: WebhookSessionInfo {
         sessionInfo(forIdentifier: Self.currentRegularURLSessionIdentifier)
     }
 
@@ -83,11 +83,11 @@ public class WebhookManager: NSObject {
 
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
 
-    internal var serverCache = [Identifier<Server>: Server]()
+    var serverCache = [Identifier<Server>: Server]()
 
     // MARK: - Lifecycle
 
-    override internal init() {
+    override init() {
         let specificKey = DispatchSpecificKey<Bool>()
         let underlyingQueue = DispatchQueue(label: "webhookmanager-data")
         underlyingQueue.setSpecific(key: specificKey, value: true)
@@ -109,7 +109,7 @@ public class WebhookManager: NSObject {
         register(responseHandler: WebhookResponseUnhandled.self, for: .unhandled)
     }
 
-    internal func register(
+    func register(
         responseHandler: WebhookResponseHandler.Type,
         for identifier: WebhookResponseIdentifier
     ) {
@@ -227,7 +227,7 @@ public class WebhookManager: NSObject {
                         with: urlRequest,
                         from: data,
                         completionHandler: { data, response, error in
-                            if let data = data, let response = response {
+                            if let data, let response {
                                 seal.fulfill((data, response))
                             } else {
                                 seal.resolve(nil, error)
@@ -506,7 +506,7 @@ public class WebhookManager: NSObject {
         Promise { seal in
             let webhookURL: URL
 
-            if let baseURL = baseURL {
+            if let baseURL {
                 webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
             } else {
                 webhookURL = server.info.connection.webhookURL()
@@ -528,7 +528,7 @@ public class WebhookManager: NSObject {
     private func handle(result: WebhookResponseHandlerResult) {
         if let notification = result.notification {
             UNUserNotificationCenter.current().add(notification) { error in
-                if let error = error {
+                if let error {
                     Current.Log.error("failed to add notification for result \(result): \(error)")
                 }
             }
@@ -592,7 +592,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
     }
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        let sessionInfo = self.sessionInfo(for: session)
+        let sessionInfo = sessionInfo(for: session)
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
         let statusCode = (task.response as? HTTPURLResponse)?.statusCode
 
@@ -684,7 +684,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
     }
 }
 
-internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
+class WebhookSessionInfo: CustomStringConvertible, Hashable {
     let identifier: String
     let eventGroup: DispatchGroup
     let session: URLSession

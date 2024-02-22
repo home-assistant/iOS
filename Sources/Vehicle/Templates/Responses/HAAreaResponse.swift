@@ -8,15 +8,15 @@ struct HAAreaResponse: HADataDecodable {
     let picture: String?
 
     init(data: HAData) throws {
-        self.init(
-            aliases: try data.decode("aliases"),
-            areaId: try data.decode("area_id"),
-            name: try data.decode("name"),
+        try self.init(
+            aliases: data.decode("aliases"),
+            areaId: data.decode("area_id"),
+            name: data.decode("name"),
             picture: try? data.decode("picture")
         )
     }
 
-    internal init(aliases: [String], areaId: String, name: String, picture: String? = nil) {
+    init(aliases: [String], areaId: String, name: String, picture: String? = nil) {
         self.aliases = aliases
         self.areaId = areaId
         self.name = name
@@ -37,7 +37,7 @@ struct HAEntityAreaResponse: HADataDecodable {
         )
     }
 
-    internal init(areaId: String?, entityId: String?, deviceId: String?) {
+    init(areaId: String?, entityId: String?, deviceId: String?) {
         self.areaId = areaId
         self.entityId = entityId
         self.deviceId = deviceId
@@ -55,7 +55,7 @@ struct HADeviceAreaResponse: HADataDecodable {
         )
     }
 
-    internal init(areaId: String?, deviceId: String?) {
+    init(areaId: String?, deviceId: String?) {
         self.areaId = areaId
         self.deviceId = deviceId
     }

@@ -30,7 +30,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
     var eventType: EventType
     var associatedZone: RLMZone?
 
-    internal init(
+    init(
         eventType: ZoneManagerEvent.EventType,
         associatedZone: RLMZone? = nil
     ) {

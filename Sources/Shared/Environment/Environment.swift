@@ -49,7 +49,7 @@ public var Current: AppEnvironment {
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
 public class AppEnvironment {
-    internal init() {
+    init() {
         PromiseKit.conf.logHandler = { event in
             Current.Log.info {
                 switch event {
@@ -74,7 +74,7 @@ public class AppEnvironment {
         }
     }
 
-    internal func setup() {
+    func setup() {
         _ = Current // just to make sure we don't crash for this case
 
         (crashReporter as? CrashReporterImpl)?.setup()

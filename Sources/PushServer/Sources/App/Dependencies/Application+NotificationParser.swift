@@ -29,7 +29,7 @@ extension Application.Parser: LegacyNotificationParser {
         from input: [String: Any],
         defaultRegistrationInfo: @autoclosure () -> [String: String]
     ) -> LegacyNotificationParserResult {
-        if let parser = parser {
+        if let parser {
             return parser.result(from: input, defaultRegistrationInfo: defaultRegistrationInfo())
         } else {
             fatalError("parser not configured")

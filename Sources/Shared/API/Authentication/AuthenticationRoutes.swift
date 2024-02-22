@@ -18,7 +18,7 @@ enum AuthenticationRoute {
     func asURLRequestWith(baseURL: URL) throws -> URLRequest {
         let baseRequest = try URLRequest(url: baseURL.appendingPathComponent(path), method: method)
         let request: URLRequest
-        if let parameters = parameters {
+        if let parameters {
             request = try URLEncoding.httpBody.encode(baseRequest, with: parameters)
         } else {
             request = baseRequest

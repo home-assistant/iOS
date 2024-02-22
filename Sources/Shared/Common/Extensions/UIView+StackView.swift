@@ -1,4 +1,5 @@
 import UIKit
+
 #if os(iOS)
 
 public extension UIView {
@@ -23,7 +24,7 @@ public extension UIView {
             required init?(coder: NSCoder) { fatalError() }
             override func didMoveToSuperview() {
                 super.didMoveToSuperview()
-                if let superview = superview, superview.layoutGuides.contains(laterGuide) {
+                if let superview, superview.layoutGuides.contains(laterGuide) {
                     heightAnchor.constraint(equalTo: laterGuide.heightAnchor).isActive = true
                 }
             }

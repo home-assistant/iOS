@@ -71,7 +71,7 @@ class NotificationSettingsViewController: HAFormViewController {
 
                 var lastValue: Int?
                 let update = { [weak row = $0] in
-                    guard let row = row else { return }
+                    guard let row else { return }
 
                     let value = UIApplication.shared.applicationIconBadgeNumber
                     guard value != lastValue else { return }

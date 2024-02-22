@@ -62,7 +62,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         }
 
         session.connect(to: tag) { [seal] error in
-            if let error = error {
+            if let error {
                 session.invalidate(errorMessage: error.localizedDescription)
                 seal.reject(error)
                 return
@@ -76,7 +76,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                     seal.reject(displayError)
                 default:
                     ndefTag.readNDEF { message, error in
-                        if let message = message {
+                        if let message {
                             seal.fulfill(message)
                             session.invalidate()
                         } else {

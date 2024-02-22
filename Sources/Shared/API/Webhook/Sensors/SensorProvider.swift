@@ -26,7 +26,7 @@ public struct SensorProviderRequest {
         self.serverVersion = serverVersion
     }
 
-    internal var lastUpdateReason: String {
+    var lastUpdateReason: String {
         switch reason {
         case .registration:
             return "registration"

@@ -175,7 +175,7 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
 
             let alert = UIAlertController(
                 title: L10n.Onboarding.ManualSetup.CouldntMakeUrl.title,
-                message: L10n.Onboarding.ManualSetup.CouldntMakeUrl.message(self.urlField.text ?? ""),
+                message: L10n.Onboarding.ManualSetup.CouldntMakeUrl.message(urlField.text ?? ""),
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
@@ -266,7 +266,7 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
     }
 
     @objc private func keyboardWillChangeFrame(_ note: Notification) {
-        guard let scrollView = scrollView,
+        guard let scrollView,
               let frameValue = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
             return
         }

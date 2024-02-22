@@ -140,14 +140,14 @@ class PushController {
         let sentString = String(decoding: apns.payload, as: UTF8.self)
         req.logger.debug("sent: \(sentString)")
         let response = Response(status: .created)
-        try response.content.encode(PushSendOutput(
+        await try response.content.encode(PushSendOutput(
             target: input.pushToken,
             messageId: messageId,
             pushType: apns.pushType.rawValue,
             collapseIdentifier: apns.collapseIdentifier,
             rateLimits: .init(
                 rateLimits: rateLimits,
-                resetsAt: await req.application.rateLimits.expirationDate(for: input.pushToken)
+                resetsAt: req.application.rateLimits.expirationDate(for: input.pushToken)
             ),
             sentPayload: sentString
         ))
