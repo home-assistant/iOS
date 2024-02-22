@@ -4,7 +4,7 @@ import ObjectMapper
 public struct MobileAppConfigPush: ImmutableMappable {
     public var categories: [MobileAppConfigPushCategory]
 
-    internal init(categories: [MobileAppConfigPushCategory] = []) {
+    init(categories: [MobileAppConfigPushCategory] = []) {
         self.categories = []
     }
 

@@ -5,7 +5,7 @@ public struct MobileAppConfig: ImmutableMappable {
     public var push: MobileAppConfigPush
     public var actions: [MobileAppConfigAction]
 
-    internal init(push: MobileAppConfigPush = .init(), actions: [MobileAppConfigAction] = []) {
+    init(push: MobileAppConfigPush = .init(), actions: [MobileAppConfigAction] = []) {
         self.push = push
         self.actions = actions
     }
