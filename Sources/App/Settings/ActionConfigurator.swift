@@ -305,7 +305,9 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
     private func saveAndAutomate() {
         if form.validate().count == 0 {
             Current.Log.verbose("Category form is valid, calling dismiss callback!")
-            shouldSave = true
+            if !action.isServerControlled {
+                shouldSave = true
+            }
             shouldOpenAutomationEditor = true
             onDismissCallback?(self)
         }
