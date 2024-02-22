@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Kustuta";
 "client_events.view.clear_confirm.message" = "Seda ei saa tagasi võtta.";
 "client_events.view.clear_confirm.title" = "Kas soovid kindlasti kõik sündmused kustutada?";
-"close_label" = "Close";
+"close_label" = "Sulge";
 "continue_label" = "Jätka";
 "copy_label" = "Kopeeri";
 "database.problem.delete" = "Kustuta andmebaas ja sulge rakendus";

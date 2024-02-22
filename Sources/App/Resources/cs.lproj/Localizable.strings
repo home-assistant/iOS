@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Vymazat";
 "client_events.view.clear_confirm.message" = "Toto nelze vrátit zpět.";
 "client_events.view.clear_confirm.title" = "Opravdu chcete vymazat všechny události?";
-"close_label" = "Close";
+"close_label" = "Zavřít";
 "continue_label" = "Pokračovat";
 "copy_label" = "Kopírovat";
 "database.problem.delete" = "Smazat databázi a ukončit aplikaci";

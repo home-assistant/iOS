@@ -7,7 +7,7 @@
 "about.forums.title" = "Forum";
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
-"about.help_localize.title" = "Hilf bei der Lokalisierung der App!";
+"about.help_localize.title" = "Hilf bei der Übersetzung der App!";
 "about.home_assistant_on_facebook.title" = "Home Assistant auf Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant auf Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
@@ -40,7 +40,7 @@
 "alerts.confirm.cancel" = "Abbrechen";
 "alerts.confirm.confirm" = "Bestätigen";
 "alerts.confirm.ok" = "OK";
-"alerts.deprecations.notification_category.message" = "Du musst zu Aktionen migrieren, die in der Benachrichtigung selbst vor %1$@ definiert sind.";
+"alerts.deprecations.notification_category.message" = "Du musst (den Code?) zu Aktionen verschieben, die in der Benachrichtigung selbst vor %1$@ definiert sind.";
 "alerts.deprecations.notification_category.title" = "Benachrichtigungskategorien sind veraltet";
 "alerts.open_url_from_deep_link.message" = "Soll der Link (%@) aus der Mitteilung wirklich geöffnet werden?";
 "alerts.open_url_from_notification.message" = "Adresse aus der Benachrichtigung (%@) öffnen?";
@@ -71,16 +71,16 @@
 "carPlay.notification.action.intro.body" = "Tippe, um deine erste iOS-Aktion zu erstellen";
 "carPlay.notification.action.intro.title" = "iOS-Aktion erstellen";
 "carPlay.state.loading.title" = "Laden...";
-"carPlay.unlock.confirmation.title" = "Bist du sicher, dass du die Entsperraktion für %@ ausführen möchtest?";
+"carPlay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Aufschließen für %@ ausführen möchtest?";
 "carplay.labels.already_added_server" = "Bereits hinzugefügt";
 "carplay.labels.empty_domain_list" = "Keine Domänen verfügbar";
 "carplay.labels.no_servers_available" = "Keine Server verfügbar. Füge einen Server in der App hinzu.";
 "carplay.labels.servers" = "Server";
-"carplay.lock.confirmation.title" = "Bist du sicher, dass du die Sperraktion für %@ ausführen möchtest?";
+"carplay.lock.confirmation.title" = "Bist du sicher, dass du die Aktion Zuschließen für %@ ausführen möchtest?";
 "carplay.navigation.button.next" = "Weiter";
 "carplay.navigation.button.previous" = "Zurück";
-"carplay.unlock.confirmation.title" = "Bist du sicher, dass du die Entsperraktion für %@ ausführen möchtest?";
-"cl_error.description.deferred_accuracy_too_low" = "Der verzögerte Modus wird für die angeforderte Genauigkeit nicht unterstützt.";
+"carplay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Zuschließen für %@ ausführen möchtest?";
+"cl_error.description.deferred_accuracy_too_low" = "Der Modus Aufschieben wird für die angeforderte Genauigkeit nicht unterstützt.";
 "cl_error.description.deferred_canceled" = "Die Anforderung für verzögerte Aktualisierungen wurde von deiner App oder vom Standortmanager abgebrochen.";
 "cl_error.description.deferred_distance_filtered" = "Der verzögerte Modus unterstützt keine Distanzfilter.";
 "cl_error.description.deferred_failed" = "Der Standortmanager hat aus einem unbekannten Grund nicht in den verzögerten Modus gewechselt.";
@@ -88,9 +88,9 @@
 "cl_error.description.denied" = "Der Zugriff auf den Standortdienst wurde vom Benutzer verweigert.";
 "cl_error.description.geocode_canceled" = "Die Geocode-Anforderung wurde abgebrochen.";
 "cl_error.description.geocode_found_no_result" = "Die Geocode-Anfrage ergab kein Ergebnis.";
-"cl_error.description.geocode_found_partial_result" = "Die Geocodeanforderung ergab ein Teilergebnis.";
+"cl_error.description.geocode_found_partial_result" = "Die Geocode-Anfrage ergab ein Teilergebnis.";
 "cl_error.description.heading_failure" = "Die Überschrift konnte nicht ermittelt werden.";
-"cl_error.description.location_unknown" = "Der Standortmanager konnte momentan keinen Standortwert abrufen.";
+"cl_error.description.location_unknown" = "Der Standortmanager konnte keinen Standortwert abrufen.";
 "cl_error.description.network" = "Das Netzwerk war nicht verfügbar oder ein Netzwerkfehler ist aufgetreten.";
 "cl_error.description.ranging_failure" = "Ein allgemeiner Bereichsfehler ist aufgetreten.";
 "cl_error.description.ranging_unavailable" = "Bereich ist deaktiviert.";
@@ -100,7 +100,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location konnte die Regionsüberwachungsfunktion nicht sofort initialisieren.";
 "cl_error.description.unknown" = "Unbekannter Core Location-Fehler";
 "client_events.event_type.location_update" = "Standortaktualisierung";
-"client_events.event_type.networkRequest" = "HTTP-Request";
+"client_events.event_type.networkRequest" = "Netzwerkanfrage";
 "client_events.event_type.notification" = "Benachrichtigung";
 "client_events.event_type.notification.title" = "Eine Push-Benachrichtigung empfangen: %@";
 "client_events.event_type.service_call" = "Service-Aufruf";
@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Leeren";
 "client_events.view.clear_confirm.message" = "Dies kann nicht rückgängig gemacht werden.";
 "client_events.view.clear_confirm.title" = "Bist du sicher, dass du alle Ereignisse löschen willst?";
-"close_label" = "Close";
+"close_label" = "Schließen";
 "continue_label" = "Weiter";
 "copy_label" = "Kopieren";
 "database.problem.delete" = "Datenbank löschen & App beenden";
@@ -121,15 +121,15 @@
 "extensions.map.location.new" = "Neuer Standort";
 "extensions.map.location.original" = "Ursprünglicher Standort";
 "extensions.map.payload_missing_homeassistant.message" = "Payload enthielt kein Home Assistant Wörterbuch!";
-"extensions.map.value_missing_or_uncastable.latitude.message" = "Breitengrad wurde nicht gefunden oder konnte nicht auf Zeichenfolge übersetzt werden!";
-"extensions.map.value_missing_or_uncastable.longitude.message" = "Länge wurde nicht gefunden oder konnte nicht auf Zeichenfolge übersetzt werden!";
-"extensions.notification_content.error.no_entity_id" = "Keine Entity_id in der Payload gefunden!";
+"extensions.map.value_missing_or_uncastable.latitude.message" = "Breitengrad wurde nicht gefunden oder konnte nicht in eine Zeichenfolge (String) übersetzt werden!";
+"extensions.map.value_missing_or_uncastable.longitude.message" = "Längengrad wurde nicht gefunden oder konnte nicht in eine Zeichenfolge (String) übersetzt werden!";
+"extensions.notification_content.error.no_entity_id" = "Keine entity_id in der Payload gefunden!";
 "extensions.notification_content.error.request.auth_failed" = "Authentifizierung fehlgeschlagen!";
 "extensions.notification_content.error.request.entity_not_found" = "Entität '%@' nicht gefunden!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-Stream nicht verfügbar";
 "extensions.notification_content.error.request.other" = "Kein HTTP-200 (OK) Status code erhalten (%li)";
 "ha_api.api_error.cant_build_url" = "API-URL kann nicht erstellt werden.";
-"ha_api.api_error.invalid_response" = "Ungültige Antwort vom Home Assistant erhalten";
+"ha_api.api_error.invalid_response" = "Ungültige Antwort von Home Assistant erhalten";
 "ha_api.api_error.manager_not_available" = "HA API Manager ist nicht verfügbar";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Die mobile_app-Komponente wurde nicht geladen. Bitte füge sie deiner Konfiguration hinzu, starte Home Assistant neu und versuche es erneut.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Deine Home Assistant-Version (%@) ist zu alt. Aktualisiere mindestens auf Version %@, um die App verwenden zu können.";
@@ -176,7 +176,7 @@
 "nfc.detail.tag_value" = "Tag Id";
 "nfc.detail.title" = "NFC Tag";
 "nfc.generic_tag_read" = "Tag gelesen";
-"nfc.list.description" = "Von der App beschriebene NFC-Tags lösen eine Mitteilung aus, wenn du diese nahe an das Gerät bringst. Das Antippen der Mitteilung öffnet die App und löst ein Event aus. \
+"nfc.list.description" = "Von der App beschriebene NFC-Tags lösen eine Mitteilung aus, wenn du dein Gerät in ihre Nähe bringst. Das Antippen der Mitteilung öffnet die App und löst ein Event aus. \
 \
 Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC-Tags, auf dem Home Assistant installiert ist.";
 "nfc.list.learn_more" = "Mehr Informationen";
@@ -205,9 +205,9 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notification_service.parser.camera.invalid_entity" = "Gegebene entity_id ist falsch.";
 "notification_service.parser.url.invalid_url" = "Die angegebene URL ist falsch.";
 "notification_service.parser.url.no_url" = "Es wurde keine URL angegeben.";
-"notifications_configurator.action.rows.authentication_required.footer" = "Wenn der Benutzer mit dieser Option eine Aktion auswählt, fordert das System den Benutzer auf, das Gerät zu entsperren. Nach dem Entsperren wird der Home Assistant über die ausgewählte Aktion informiert.";
+"notifications_configurator.action.rows.authentication_required.footer" = "Bei aktivierter Option wird der Benutzer nach Auswahl einer Benachrichtigungs-Aktion vom System aufgefordert das Gerät zu entsperren. Die Aktionswahl wird erst nach erfolgreicher Authentifizierung an Home Assistant weitergegeben.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentifizierung erforderlich";
-"notifications_configurator.action.rows.destructive.footer" = "Wenn aktiviert, wird die Aktionsschaltfläche mit besonderer Hervorhebung angezeigt, um anzuzeigen, dass sie eine destruktive Aufgabe ausführt.";
+"notifications_configurator.action.rows.destructive.footer" = "Wenn aktiviert, erfolgt eine besondere Hervorhebung der Aktionsschaltfläche, um zu signalisieren, dass sie eine destruktive Aufgabe ausführt.";
 "notifications_configurator.action.rows.destructive.title" = "Destruktiv";
 "notifications_configurator.action.rows.foreground.footer" = "Wenn du dies aktivierst, wird die App gestartet, wenn sie sich beim Tippen auf eine Benachrichtigung im Hintergrund befindet";
 "notifications_configurator.action.rows.foreground.title" = "App starten";
@@ -215,7 +215,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notifications_configurator.action.rows.text_input_placeholder.title" = "Platzhalter";
 "notifications_configurator.action.rows.title.title" = "Titel";
 "notifications_configurator.action.text_input.title" = "Text Input";
-"notifications_configurator.category.example_call.title" = "Beispiel für einen Serviceabruf";
+"notifications_configurator.category.example_call.title" = "Beispiel für einen Serviceaufruf";
 "notifications_configurator.category.navigation_bar.title" = "Kategorie-Konfigurator";
 "notifications_configurator.category.preview_notification.body" = "Dies ist eine Testbenachrichtigung für die Benachrichtigungskategorie %@";
 "notifications_configurator.category.preview_notification.title" = "Testbenachrichtigung";
@@ -223,7 +223,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "notifications_configurator.category.rows.actions.header" = "Aktionen";
 "notifications_configurator.category.rows.category_summary.default" = "%%u Benachrichtigungen in %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "Eine Formatzeichenfolge für die zusammenfassende Beschreibung, die verwendet wird, wenn das System die Benachrichtigungen nach Kategorien gruppiert. Du kannst optional '%%u' verwenden, um die Anzahl der Benachrichtigungen in der Gruppe und '%%@', um das Zusammenfassungsargument der Push-Payload anzuzeigen.";
-"notifications_configurator.category.rows.category_summary.header" = "Kategorie Zusammenfassung";
+"notifications_configurator.category.rows.category_summary.header" = "Kategorie-Zusammenfassung";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u Benachrichtigungen";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Dieser Text wird nur angezeigt, wenn die Benachrichtigungsvorschau ausgeblendet ist. Verwende '%%u' für die Anzahl der Nachrichten desselben Threads.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Versteckter Platzhalter für die Vorschau";
@@ -262,10 +262,10 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.allow" = "Erlauben";
 "onboarding.permissions.allowed" = "Beendet";
 "onboarding.permissions.change_later_note" = "Diese Berechtigung kann später in den Einstellungen geändert werden";
-"onboarding.permissions.focus.bullet.automations" = "Fokus basierte Automatisierungen";
+"onboarding.permissions.focus.bullet.automations" = "Fokusbasierte Automatisierungen";
 "onboarding.permissions.focus.bullet.instant" = "Sofortige Updates, wenn sich der Status ändert";
-"onboarding.permissions.focus.description" = "Erlauben, dass der Fokusmodus an Home Assistant gesendet werden darf";
-"onboarding.permissions.focus.grant_description" = "Erlaube die Fokusberechtigung, um Sensoren für deinen Fokusstatus zu erstellen, auch bekannt als \"Nicht stören\".";
+"onboarding.permissions.focus.description" = "Erlauben, dass der verwendete Fokusmodus an Home Assistant gesendet werden darf";
+"onboarding.permissions.focus.grant_description" = "Erteile diese Focusbererechtigung, um Sensoren für deinen aktuell verwendeten Fokus zu erstellen (z.B. \"Nicht stören\").";
 "onboarding.permissions.focus.title" = "Fokus";
 "onboarding.permissions.location.bullet.automations" = "Anwesenheitsbasierte Automatisierungen";
 "onboarding.permissions.location.bullet.history" = "Standortverlauf verfolgen";
@@ -291,20 +291,20 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.scanning.title" = "Sucht nach Servern";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
-Home Assistant ist eine kostenlose und quelloffene Hausautomatisierungssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
+Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
 "preview_output" = "Vorschau der Ausgabe";
 "requires_version" = "Erfordert %@ oder neuer.";
 "retry_label" = "Erneut versuchen";
 "sensors.active.setting.time_until_idle" = "Zeit bis zum Leerlauf";
-"sensors.geocoded_location.setting.use_zones" = "Verwenden Sie den Zonennamen";
+"sensors.geocoded_location.setting.use_zones" = "Verwende den Zonennamen";
 "settings.connection_section.activate_server" = "Aktivieren";
 "settings.connection_section.activate_swipe_hint" = "Schnelle Aktivierung mit einem Drei-Finger-Wischen nach links oder rechts beim Anzeigen eines Servers.";
 "settings.connection_section.add_server" = "Server hinzufügen";
 "settings.connection_section.all_servers" = "Alle Server";
-"settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine einrichten, außer du möchtest die Cloud deaktivieren.";
-"settings.connection_section.connecting_via" = "Verbinde über";
+"settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine URL einrichten, außer du möchtest die Cloud deaktivieren.";
+"settings.connection_section.connecting_via" = "Verbunden über";
 "settings.connection_section.delete_server.message" = "Möchtest du diesen Server wirklich löschen?";
 "settings.connection_section.delete_server.progress" = "Server wird gelöscht...";
 "settings.connection_section.delete_server.title" = "Server löschen";

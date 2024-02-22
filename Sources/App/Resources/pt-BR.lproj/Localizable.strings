@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Limpar";
 "client_events.view.clear_confirm.message" = "Isto não pode ser desfeito.";
 "client_events.view.clear_confirm.title" = "Tem certeza de que deseja limpar todos os eventos?";
-"close_label" = "Close";
+"close_label" = "Fechar";
 "continue_label" = "Continuar";
 "copy_label" = "Copiar";
 "database.problem.delete" = "Excluir banco de dados e sair do aplicativo";

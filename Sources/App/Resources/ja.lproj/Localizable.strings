@@ -108,7 +108,7 @@
 "client_events.view.clear" = "クリア";
 "client_events.view.clear_confirm.message" = "これは、元に戻すことはできません。";
 "client_events.view.clear_confirm.title" = "すべてのイベントをクリアしてもよろしいですか？";
-"close_label" = "Close";
+"close_label" = "閉じる";
 "continue_label" = "続行";
 "copy_label" = "コピー";
 "database.problem.delete" = "データベースを削除してアプリを終了する";
