@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Очистить";
 "client_events.view.clear_confirm.message" = "Это не может быть отменено.";
 "client_events.view.clear_confirm.title" = "Вы уверены, что хотите удалить все события?";
-"close_label" = "Close";
+"close_label" = "Закрыть";
 "continue_label" = "Продолжить";
 "copy_label" = "Копировать";
 "database.problem.delete" = "Удалить базу данных и выйти из приложения";

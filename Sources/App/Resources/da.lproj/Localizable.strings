@@ -17,7 +17,7 @@
 "about.title" = "Om";
 "about.website.title" = "Hjemmeside";
 "actions_configurator.action.create_automation" = "Opret automatisering";
-"actions_configurator.action.footer" = "Definer, hvad der skal udføres, når handlingen bliver udført. Alternativt kan du bruge eksemplet på triggeren nedenfor manuelt.";
+"actions_configurator.action.footer" = "Definér, hvad der skal udføres, når handlingen bliver udført. Alternativt kan du bruge eksemplet på triggeren nedenfor manuelt.";
 "actions_configurator.action.title" = "Udfør";
 "actions_configurator.rows.background_color.title" = "Baggrundsfarve";
 "actions_configurator.rows.icon.title" = "Ikon";
@@ -33,7 +33,7 @@
 "actions_configurator.visual_section.server_defined" = "Udseendet af denne handling styres af serverkonfigurationen.";
 "addButtonLabel" = "Tilføj";
 "alerts.action_automation_editor.unavailable.body" = "Hvis du automatisk vil oprette en automatisering for en handling, skal du opdatere din Home Assistant til version 2024.2 eller nyere.";
-"alerts.action_automation_editor.unavailable.title" = "Opdater venligst Home Assistant";
+"alerts.action_automation_editor.unavailable.title" = "Opdatér venligst Home Assistant";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Serveren har afvist dine legitimationsoplysninger, og du skal logge ind igen for at fortsætte.";
 "alerts.auth_required.title" = "Du skal logge ind for at fortsætte";
@@ -103,12 +103,12 @@
 "client_events.event_type.networkRequest" = "Netværksanmodning";
 "client_events.event_type.notification" = "Notifikation";
 "client_events.event_type.notification.title" = "Modtog en push-notifikation: %@";
-"client_events.event_type.service_call" = "Servicekald";
+"client_events.event_type.service_call" = "Tjenestekald";
 "client_events.event_type.unknown" = "Ukendt";
 "client_events.view.clear" = "Ryd";
 "client_events.view.clear_confirm.message" = "Dette kan ikke fortrydes.";
 "client_events.view.clear_confirm.title" = "Er du sikker på, at du vil rydde alle hændelser?";
-"close_label" = "Close";
+"close_label" = "Luk";
 "continue_label" = "Fortsæt";
 "copy_label" = "Kopiér";
 "database.problem.delete" = "Slet database og afslut app";
@@ -163,7 +163,7 @@
 "menu.application.about" = "Om %@";
 "menu.application.preferences" = "Indstillinger…";
 "menu.file.update_sensors" = "Opdatér sensorer";
-"menu.help.help" = "%@ Hjælp";
+"menu.help.help" = "%@-hjælp";
 "menu.status_item.quit" = "Afslut";
 "menu.status_item.toggle" = "Skift %1$@";
 "menu.view.reload_page" = "Genindlæs side";
@@ -263,14 +263,14 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.permissions.allowed" = "Udført";
 "onboarding.permissions.change_later_note" = "Du kan ændre denne tilladelse senere i Indstillinger";
 "onboarding.permissions.focus.bullet.automations" = "Fokus-baserede automatiseringer";
-"onboarding.permissions.focus.bullet.instant" = "Øjeblikkelige opdateringer, når status ændres";
+"onboarding.permissions.focus.bullet.instant" = "Øjeblikkelige opdateringer når status ændres";
 "onboarding.permissions.focus.description" = "Tillad, at det sendes til Home Assistant, om Fokusfunktion er slået til";
 "onboarding.permissions.focus.grant_description" = "Giv fokustilladelse for at oprette sensorer til din fokus-status, også kendt som \"Forstyr ikke\"";
 "onboarding.permissions.focus.title" = "Fokus";
 "onboarding.permissions.location.bullet.automations" = "Tilstedeværelsesbaserede automatiseringer";
 "onboarding.permissions.location.bullet.history" = "Spor lokalitetshistorik";
 "onboarding.permissions.location.bullet.wifi" = "Intern webadresse derhjemme";
-"onboarding.permissions.location.description" = "Aktiver lokalitetstjenester for at muliggøre automatiseringer med tilstedeværelsesdetektering.";
+"onboarding.permissions.location.description" = "Aktivér lokalitetstjenester for at muliggøre automatiseringer med tilstedeværelsesdetektering.";
 "onboarding.permissions.location.grant_description" = "Giv lokalitetstilladelse for at oprette en device_tracker til din enhed.";
 "onboarding.permissions.location.title" = "Lokalitet";
 "onboarding.permissions.motion.bullet.activity" = "Sensor for den aktuelle aktivitetstype";
@@ -279,7 +279,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.permissions.motion.description" = "Tillad, at bevægelsesaktivitet og skridttællerdata sendes til Home Assistant";
 "onboarding.permissions.motion.grant_description" = "Giv bevægelsestilladelse for at oprette sensorer til bevægelses- og skridttællerdata.";
 "onboarding.permissions.motion.title" = "Bevægelse og skridttæller";
-"onboarding.permissions.notification.bullet.alert" = "Få besked fra notifikationer";
+"onboarding.permissions.notification.bullet.alert" = "Få besked vha. notifikationer";
 "onboarding.permissions.notification.bullet.badge" = "Opdatér app-ikon badge";
 "onboarding.permissions.notification.bullet.commands" = "Send kommandoer til din enhed";
 "onboarding.permissions.notification.description" = "Tillad, at push-notifikationer sendes fra din Home Assistant";
@@ -318,7 +318,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.internal_base_url.title" = "Intern webadresse";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Tilføj ny hardwareadresse";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Intern URL vil blive brugt, når den primære netværksgrænseflade har en MAC-adresse, der matcher en af disse hardwareadresser.";
-"settings.connection_section.internal_url_hardware_addresses.header" = "hardwareadresser";
+"settings.connection_section.internal_url_hardware_addresses.header" = "Hardware-adresser";
 "settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardwareadresser skal følge formatet aa:bb:cc:dd:ee:ff";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Tilføj nyt SSID";
 "settings.connection_section.internal_url_ssids.footer" = "Intern webadresse vil blive brugt, når der er oprettet forbindelse til tilføjede SSID'er";
@@ -330,7 +330,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.location_send_type.setting.zone_only" = "Kun zonenavn";
 "settings.connection_section.location_send_type.title" = "Lokalitet sendt";
 "settings.connection_section.logged_in_as" = "Logget ind som";
-"settings.connection_section.remote_ui_url.title" = "Web-adresse til ekstern UI";
+"settings.connection_section.remote_ui_url.title" = "Ekstern webadresse til UI";
 "settings.connection_section.sensor_send_type.setting.all" = "Alle";
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
 "settings.connection_section.sensor_send_type.title" = "Sensorer sendt";
@@ -414,7 +414,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.general.app_icon.enum.caribbean_green" = "Caribisk grøn";
 "settings_details.general.app_icon.enum.classic" = "Klassisk";
 "settings_details.general.app_icon.enum.cornflower_blue" = "Majsblomstblå";
-"settings_details.general.app_icon.enum.crimson" = "Crimson";
+"settings_details.general.app_icon.enum.crimson" = "Højrød";
 "settings_details.general.app_icon.enum.dev" = "Udviklings";
 "settings_details.general.app_icon.enum.electric_violet" = "Elektrisk violet";
 "settings_details.general.app_icon.enum.fire_orange" = "Ildorange";
@@ -433,7 +433,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.purple" = "Lilla";
 "settings_details.general.app_icon.enum.red" = "Rød";
-"settings_details.general.app_icon.enum.release" = "Udgivelse";
+"settings_details.general.app_icon.enum.release" = "Standard";
 "settings_details.general.app_icon.enum.white" = "Hvid";
 "settings_details.general.app_icon.title" = "App-ikon";
 "settings_details.general.device_name.title" = "Enhedsnavn";
@@ -561,7 +561,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging skal være aktiveret for at push-notifikationer kan fungere.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privatliv";
-"settings_details.updates.check_for_updates.include_betas" = "Inkluder betaudgivelser";
+"settings_details.updates.check_for_updates.include_betas" = "Inkludér betaudgivelser";
 "settings_details.updates.check_for_updates.title" = "Søg automatisk efter opdateringer";
 "settings_details.watch.title" = "Apple Watch";
 "settings_sensors.detail.attributes" = "Egenskaber";

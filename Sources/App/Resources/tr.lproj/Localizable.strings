@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Temizle";
 "client_events.view.clear_confirm.message" = "Bu geri alınamaz.";
 "client_events.view.clear_confirm.title" = "Tüm olayları temizlemek istediğinizden emin misiniz?";
-"close_label" = "Close";
+"close_label" = "Kapat";
 "continue_label" = "Devam et";
 "copy_label" = "Kopyala";
 "database.problem.delete" = "Veritabanını Sil ve Uygulamadan Çık";

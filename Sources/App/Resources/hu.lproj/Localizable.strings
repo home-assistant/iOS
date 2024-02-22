@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Törlés";
 "client_events.view.clear_confirm.message" = "Ezt nem lehet visszavonni.";
 "client_events.view.clear_confirm.title" = "Biztos, hogy az összes eseményt törölni szeretné?";
-"close_label" = "Close";
+"close_label" = "Bezárás";
 "continue_label" = "Tovább";
 "copy_label" = "Másolás";
 "database.problem.delete" = "Adatbázis törlése és kilépés az alkalmazásból";
