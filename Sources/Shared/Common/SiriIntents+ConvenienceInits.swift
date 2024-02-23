@@ -5,7 +5,6 @@ import Intents
 import MapKit
 import UIColor_Hex_Swift
 
-@available(iOS 12, *)
 public extension CallServiceIntent {
     convenience init(domain: String, service: String) {
         self.init()
@@ -23,7 +22,6 @@ public extension CallServiceIntent {
     }
 }
 
-@available(iOS 12, *)
 public extension FireEventIntent {
     convenience init(eventName: String) {
         self.init()
@@ -41,7 +39,6 @@ public extension FireEventIntent {
     }
 }
 
-@available(iOS 12, *)
 public extension SendLocationIntent {
     convenience init(place: CLPlacemark) {
         self.init()
@@ -56,7 +53,6 @@ public extension SendLocationIntent {
     }
 }
 
-@available(iOS 12, *)
 public extension PerformActionIntent {
     convenience init(action: Action) {
         self.init()
@@ -77,7 +73,6 @@ public extension PerformActionIntent {
     }
 }
 
-@available(iOS 12, *)
 public extension IntentAction {
     convenience init(action: Action) {
         #if os(iOS)
@@ -117,7 +112,6 @@ public extension IntentAction {
     }
 }
 
-@available(iOS 12, *)
 public extension WidgetActionsIntent {
     static let widgetKind = "WidgetActions"
 }
@@ -180,7 +174,6 @@ public extension IntentPanel {
     }
 }
 
-@available(iOS 12, *)
 public extension WidgetOpenPageIntent {
     static let widgetKind = "WidgetOpenPage"
 }

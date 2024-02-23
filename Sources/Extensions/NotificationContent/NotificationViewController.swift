@@ -1,7 +1,6 @@
 import Alamofire
 import KeychainAccess
 import MBProgressHUD
-import ObjectMapper
 import PromiseKit
 import Shared
 import UIKit

@@ -1,18 +1,18 @@
 import Foundation
 
-public enum NeededType {
-    case logout
-    case error
+public enum OnboardingState {
+    public enum NeededType {
+        case logout
+        case error
 
-    public var shouldShowError: Bool {
-        switch self {
-        case .logout: return false
-        case .error: return true
+        public var shouldShowError: Bool {
+            switch self {
+            case .logout: return false
+            case .error: return true
+            }
         }
     }
-}
 
-public enum OnboardingState {
     case complete
     case didConnect
     case needed(NeededType)
@@ -44,7 +44,7 @@ public class OnboardingStateObservation {
         notify(for: .complete)
     }
 
-    public func needed(_ type: NeededType) {
+    public func needed(_ type: OnboardingState.NeededType) {
         notify(for: .needed(type))
     }
 

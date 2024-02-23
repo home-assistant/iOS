@@ -303,7 +303,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 return locationManager.authorizationStatus == .authorizedAlways &&
                     locationManager.accuracyAuthorization == .fullAccuracy
             } else {
-                return CLLocationManager.authorizationStatus() == .authorizedAlways
+                return locationManager?.authorizationStatus == .authorizedAlways
             }
         })
         section.evaluateHidden()
@@ -325,7 +325,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
             }
 
             $0.onCellSelection { _, _ in
-                if CLLocationManager.authorizationStatus() == .notDetermined {
+                if locationManager?.authorizationStatus == .notDetermined {
                     locationManager?.requestAlwaysAuthorization()
                 } else {
                     UIApplication.shared.openSettings(destination: .location)
