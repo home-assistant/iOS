@@ -558,7 +558,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.privacy.crash_reporting.description" = "Позволяет глубже отслеживать сбои и другие ошибки в приложении, что позволяет быстрее публиковать исправления. Никакая информация, позволяющая идентифицировать пользователя, не отправляется, кроме базовой информации об устройстве. Вы должны перезапустить приложение, чтобы изменения этого параметра вступили в силу.";
 "settings_details.privacy.crash_reporting.sentry" = "В настоящее время эта функция использует Sentry в качестве места назначения отчета.";
 "settings_details.privacy.crash_reporting.title" = "Отчеты о сбоях";
-"settings_details.privacy.messaging.description" = "Облачные сообщения Firebase необходимы для доставки уведомлений на телефон.";
+"settings_details.privacy.messaging.description" = "Firebase Cloud Messaging необходим для доставки уведомлений на телефон.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Конфиденциальность";
 "settings_details.updates.check_for_updates.include_betas" = "Включая бета-версии";
