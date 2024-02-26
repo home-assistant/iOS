@@ -108,7 +108,7 @@
 "client_events.view.clear" = "清除";
 "client_events.view.clear_confirm.message" = "操作无法撤消。";
 "client_events.view.clear_confirm.title" = "您确定要清除所有事件吗？";
-"close_label" = "Close";
+"close_label" = "关闭";
 "continue_label" = "继续";
 "copy_label" = "复制";
 "database.problem.delete" = "删除数据库并退出应用程序";

@@ -108,7 +108,7 @@
 "client_events.view.clear" = "Εκκαθάριση";
 "client_events.view.clear_confirm.message" = "Αυτό δεν μπορεί να αναιρεθεί.";
 "client_events.view.clear_confirm.title" = "Είστε βέβαιοι ότι θέλετε να διαγράψετε όλα τα συμβάντα;";
-"close_label" = "Close";
+"close_label" = "Κλείσιμο";
 "continue_label" = "Συνέχεια";
 "copy_label" = "Αντιγραφή";
 "database.problem.delete" = "Διαγραφή βάσης δεδομένων και έξοδος από την εφαρμογή";
