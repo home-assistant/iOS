@@ -36,7 +36,7 @@ class SensorListViewController: HAFormViewController, SensorObserver {
                 $0.options = {
                     var options: [TimeInterval?] = [nil, 20, 60, 120, 300, 600, 900, 1800, 3600]
 
-                    if Current.appConfiguration == .Debug {
+                    if Current.appConfiguration == .debug {
                         options.insert(contentsOf: [2, 5], at: 1)
                     }
 

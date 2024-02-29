@@ -70,7 +70,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         var tokenType: MessagingAPNSTokenType = .prod
 
-        if Current.appConfiguration == .Debug {
+        if Current.appConfiguration == .debug {
             tokenType = .sandbox
         }
 

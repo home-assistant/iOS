@@ -10,7 +10,7 @@ extension NotificationCategory {
 
         Current.modelManager.observe(for: AnyRealmCollection(categories)) { collection in
             let fastlane = Promise<Set<UNNotificationCategory>> { seal in
-                guard Current.appConfiguration == .FastlaneSnapshot else {
+                guard Current.appConfiguration == .fastlaneSnapshot else {
                     return seal.fulfill(Set())
                 }
 

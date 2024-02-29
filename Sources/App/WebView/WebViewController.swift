@@ -46,7 +46,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         button.layer.masksToBounds = true
 
         button.translatesAutoresizingMaskIntoConstraints = false
-        if Current.appConfiguration == .FastlaneSnapshot {
+        if Current.appConfiguration == .fastlaneSnapshot {
             button.alpha = 0
         }
         return button
@@ -1158,7 +1158,7 @@ extension WebViewController: UIScrollViewDelegate {
 
 extension ConnectionInfo {
     mutating func webviewURLComponents() -> URLComponents? {
-        if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
+        if Current.appConfiguration == .fastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
             return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
         guard var components = URLComponents(url: activeURL(), resolvingAgainstBaseURL: true) else {

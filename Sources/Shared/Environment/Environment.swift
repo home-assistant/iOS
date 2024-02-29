@@ -8,20 +8,20 @@ import Version
 import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
-    case FastlaneSnapshot
-    case Debug
-    case Beta
-    case Release
+    case fastlaneSnapshot
+    case debug
+    case beta
+    case release
 
     public var description: String {
         switch self {
-        case .FastlaneSnapshot:
+        case .fastlaneSnapshot:
             return "fastlane"
-        case .Debug:
+        case .debug:
             return "debug"
-        case .Beta:
+        case .beta:
             return "beta"
-        case .Release:
+        case .release:
             return "release"
         }
     }
@@ -241,13 +241,13 @@ public class AppEnvironment {
 
     public var appConfiguration: AppConfiguration {
         if isFastlaneSnapshot {
-            return .FastlaneSnapshot
+            return .fastlaneSnapshot
         } else if isDebug {
-            return .Debug
+            return .debug
         } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta"), isTestFlight {
-            return .Beta
+            return .beta
         } else {
-            return .Release
+            return .release
         }
     }
 

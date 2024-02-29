@@ -69,7 +69,7 @@ class DebugSettingsViewController: HAFormViewController {
         var firstPinLatitude = "40.785091"
         var firstPinLongitude = "-73.968285"
 
-        if Current.appConfiguration == .FastlaneSnapshot,
+        if Current.appConfiguration == .fastlaneSnapshot,
            let lat = prefs.string(forKey: "mapPin1Latitude"),
            let lon = prefs.string(forKey: "mapPin1Longitude") {
             firstPinLatitude = lat
@@ -79,7 +79,7 @@ class DebugSettingsViewController: HAFormViewController {
         var secondPinLatitude = "40.758896"
         var secondPinLongitude = "-73.985130"
 
-        if Current.appConfiguration == .FastlaneSnapshot,
+        if Current.appConfiguration == .fastlaneSnapshot,
            let lat = prefs.string(forKey: "mapPin2Latitude"),
            let lon = prefs.string(forKey: "mapPin2Longitude") {
             secondPinLatitude = lat
@@ -113,7 +113,7 @@ class DebugSettingsViewController: HAFormViewController {
 
         var entityID = "camera.amcrest_camera"
 
-        if Current.appConfiguration == .FastlaneSnapshot,
+        if Current.appConfiguration == .fastlaneSnapshot,
            let snapshotEntityID = prefs.string(forKey: "cameraEntityID") {
             entityID = snapshotEntityID
         }
