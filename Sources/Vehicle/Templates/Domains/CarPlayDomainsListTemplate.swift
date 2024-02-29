@@ -29,7 +29,6 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     }
 
     func updateList(domains: [Domain]) {
-        let userInterfaceStyle = interfaceController?.carTraitCollection.userInterfaceStyle
         let items: [CPListItem] = domains.map { domain in
             let itemTitle = domain.localizedDescription
             let listItem = CPListItem(
@@ -39,7 +38,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
                     .carPlayIcon() : domain.icon
                     .carPlayIcon()
             )
-            listItem.accessoryType = CPListItemAccessoryType.disclosureIndicator
+            listItem.accessoryType = .disclosureIndicator
             listItem.handler = { [weak self] _, completion in
                 self?.viewModel.listItemHandler(domain: domain.rawValue)
                 completion()
