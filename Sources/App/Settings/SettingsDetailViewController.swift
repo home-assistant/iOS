@@ -956,9 +956,9 @@ enum AppIcon: String, CaseIterable {
 
     var isDefault: Bool {
         switch Current.appConfiguration {
-        case .Debug where self == .Dev: return true
-        case .Beta where self == .Beta: return true
-        case .Release where self == .Release: return true
+        case .debug where self == .Dev: return true
+        case .beta where self == .Beta: return true
+        case .release where self == .Release: return true
         default: return false
         }
     }

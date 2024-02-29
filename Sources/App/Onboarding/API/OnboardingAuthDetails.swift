@@ -15,11 +15,11 @@ class OnboardingAuthDetails: Equatable {
         let scheme: String
         let clientID: String
 
-        if Current.appConfiguration == .Debug {
+        if Current.appConfiguration == .debug {
             clientID = "https://home-assistant.io/iOS/dev-auth"
             redirectURI = "homeassistant-dev://auth-callback"
             scheme = "homeassistant-dev"
-        } else if Current.appConfiguration == .Beta {
+        } else if Current.appConfiguration == .beta {
             clientID = "https://home-assistant.io/iOS/beta-auth"
             redirectURI = "homeassistant-beta://auth-callback"
             scheme = "homeassistant-beta"

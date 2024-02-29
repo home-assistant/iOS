@@ -31,9 +31,9 @@ enum AuthenticationRoute {
     private var clientID: String {
         var clientID = "https://home-assistant.io/iOS"
 
-        if Current.appConfiguration == .Debug {
+        if Current.appConfiguration == .debug {
             clientID = "https://home-assistant.io/iOS/dev-auth"
-        } else if Current.appConfiguration == .Beta {
+        } else if Current.appConfiguration == .beta {
             clientID = "https://home-assistant.io/iOS/beta-auth"
         }
         return clientID

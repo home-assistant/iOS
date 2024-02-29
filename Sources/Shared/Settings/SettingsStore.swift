@@ -27,11 +27,11 @@ public class SettingsStore {
         let baseString = Current.device.identifierForVendor() ?? deviceID
 
         switch Current.appConfiguration {
-        case .Beta:
+        case .beta:
             return "beta_" + baseString
-        case .Debug:
+        case .debug:
             return "debug_" + baseString
-        case .FastlaneSnapshot, .Release:
+        case .fastlaneSnapshot, .release:
             return baseString
         }
     }
@@ -384,7 +384,7 @@ public class SettingsStore {
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
 
-        if Current.appConfiguration != .Release {
+        if Current.appConfiguration != .release {
             return "\(baseID)_\(Current.appConfiguration.description.lowercased())"
         }
 

@@ -129,7 +129,7 @@ class OnboardingScanningViewController: UIViewController {
 
         discovery.observer = self
 
-        if Current.appConfiguration == .Debug {
+        if Current.appConfiguration == .debug {
             for (idx, instance) in [
                 DiscoveredHomeAssistant(
                     manualURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic")!,

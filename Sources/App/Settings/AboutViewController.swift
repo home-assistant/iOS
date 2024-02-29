@@ -57,7 +57,7 @@ class AboutViewController: HAFormViewController {
 
             +++ pushLookingButtonRow {
                 $0.title = L10n.About.Beta.title
-                $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .Beta)
+                $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .beta)
             }.onCellSelection { _, _ in
                 let urlStr: String
                 if Current.isCatalyst {

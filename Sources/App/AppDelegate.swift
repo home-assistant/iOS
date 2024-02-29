@@ -464,9 +464,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupFirebase() {
         let optionsFile: String = {
             switch Current.appConfiguration {
-            case .Beta: return "GoogleService-Info-Beta"
-            case .Debug, .FastlaneSnapshot: return "GoogleService-Info-Debug"
-            case .Release: return "GoogleService-Info-Release"
+            case .beta: return "GoogleService-Info-Beta"
+            case .debug, .fastlaneSnapshot: return "GoogleService-Info-Debug"
+            case .release: return "GoogleService-Info-Release"
             }
         }()
         if let optionsPath = Bundle.main.path(forResource: optionsFile, ofType: "plist"),
