@@ -1,12 +1,5 @@
-//
-//  WidgetActions.swift
-//  
-//
-//  Created by Bruno Pantaleão on 01/03/2024.
-//
-
-import Foundation
 import AppIntents
+import Foundation
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
@@ -15,7 +8,19 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     static var title: LocalizedStringResource = "Actions"
     static var description = IntentDescription("View and run actions")
 
-    @Parameter(title: "Actions", size: [.systemSmall: 1, .systemMedium: 8, .systemLarge: 16, .systemExtraLarge: 32, .accessoryInline: 1, .accessoryCorner: 1, .accessoryCircular: 1, .accessoryRectangular: 2])
+    @Parameter(
+        title: "Actions",
+        size: [
+            .systemSmall: 1,
+            .systemMedium: 8,
+            .systemLarge: 16,
+            .systemExtraLarge: 32,
+            .accessoryInline: 1,
+            .accessoryCorner: 1,
+            .accessoryCircular: 1,
+            .accessoryRectangular: 2,
+        ]
+    )
     var actions: [IntentActionAppEntity]?
 
     static var parameterSummary: some ParameterSummary {
@@ -32,9 +37,8 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
 }
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-fileprivate extension IntentDialog {
+private extension IntentDialog {
     static var actionsParameterConfiguration: Self {
         "Which actions?"
     }
 }
-

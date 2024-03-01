@@ -1,14 +1,7 @@
-//
-//  PerformAction.swift
-//
-//
-//  Created by Bruno Pantaleão on 29/02/2024.
-//
-
-import Foundation
 import AppIntents
-import Shared
+import Foundation
 import PromiseKit
+import Shared
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableIntent {
@@ -25,7 +18,7 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
     }
 
     static var predictionConfiguration: some IntentPredictionConfiguration {
-        IntentPrediction(parameters: (\.$action)) { action in
+        IntentPrediction(parameters: \.$action) { action in
             DisplayRepresentation(
                 title: "\(action!)",
                 subtitle: "Perform the action"
@@ -46,8 +39,11 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
                 switch result {
                 case .fulfilled:
                     continuation.resume()
-                case .rejected(let error):
-                    Current.Log.error("Failed to run action \(intentAction.displayString), error: \(error.localizedDescription)")
+                case let .rejected(error):
+                    Current.Log
+                        .error(
+                            "Failed to run action \(intentAction.displayString), error: \(error.localizedDescription)"
+                        )
                     continuation.resume(throwing: error)
                 }
             }
@@ -58,21 +54,24 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
 }
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-fileprivate extension IntentDialog {
+private extension IntentDialog {
     static func actionParameterDisambiguationIntro(count: Int, action: IntentActionAppEntity) -> Self {
         "There are \(count) options matching ‘\(action)’."
     }
+
     static func actionParameterConfirmation(action: IntentActionAppEntity) -> Self {
         "Just to confirm, you wanted ‘\(action)’?"
     }
+
     static var actionParameterConfiguration: Self {
         "Which action?"
     }
+
     static func responseSuccess(action: IntentActionAppEntity) -> Self {
         "Done"
     }
+
     static func responseFailure(error: String) -> Self {
         "Failed: \(error)"
     }
 }
-

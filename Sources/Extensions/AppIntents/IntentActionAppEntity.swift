@@ -1,12 +1,5 @@
-//
-//  IntentActionAppEntity.swift
-//  
-//
-//  Created by Bruno Pantaleão on 29/02/2024.
-//
-
-import Foundation
 import AppIntents
+import Foundation
 import Shared
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
@@ -15,15 +8,15 @@ struct IntentActionAppEntity: AppEntity {
 
     struct IntentActionAppEntityQuery: EntityQuery, EntityStringQuery {
         func entities(for identifiers: [IntentActionAppEntity.ID]) async throws -> [IntentActionAppEntity] {
-            return getActionEntities().filter { identifiers.contains($0.id) }
+            getActionEntities().filter { identifiers.contains($0.id) }
         }
 
         func entities(matching string: String) async throws -> [IntentActionAppEntity] {
-            return getActionEntities().filter { $0.displayString.contains(string) }
+            getActionEntities().filter { $0.displayString.contains(string) }
         }
 
         func suggestedEntities() async throws -> [IntentActionAppEntity] {
-            return getActionEntities()
+            getActionEntities()
         }
 
         private func getActionEntities() -> [IntentActionAppEntity] {
@@ -31,6 +24,7 @@ struct IntentActionAppEntity: AppEntity {
             return Array(actions.map { IntentActionAppEntity(id: $0.ID, displayString: $0.Name) })
         }
     }
+
     static var defaultQuery = IntentActionAppEntityQuery()
 
     var id: String // if your identifier is not a String, conform the entity to EntityIdentifierConvertible.
@@ -44,4 +38,3 @@ struct IntentActionAppEntity: AppEntity {
         self.displayString = displayString
     }
 }
-

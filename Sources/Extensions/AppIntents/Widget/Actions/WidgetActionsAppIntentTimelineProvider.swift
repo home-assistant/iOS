@@ -1,6 +1,6 @@
+import AppIntents
 import Shared
 import WidgetKit
-import AppIntents
 
 @available(iOS 17, *)
 struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
