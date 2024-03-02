@@ -793,7 +793,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 cell.selectionStyle = .default
             }
             $0.onCellSelection { _, row in
-                if CLLocationManager.authorizationStatus() == .notDetermined {
+                if locationManager.authorizationStatus == .notDetermined {
                     locationManager.requestAlwaysAuthorization()
                 } else {
                     UIApplication.shared.openSettings(destination: .location)
