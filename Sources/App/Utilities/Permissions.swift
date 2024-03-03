@@ -174,10 +174,11 @@ public enum PermissionType {
     }
 
     var status: PermissionStatus {
+        let locationManager = CLLocationManager()
         switch self {
         case .location:
             guard CLLocationManager.locationServicesEnabled() else { return .restricted }
-            return CLLocationManager.authorizationStatus().genericStatus
+            return locationManager.authorizationStatus.genericStatus
         case .motion:
             return CMMotionActivityManager.authorizationStatus().genericStatus
         case .notification:
@@ -290,13 +291,6 @@ public extension UNAuthorizationOptions {
             opts.insert(.criticalAlert)
         }
 
-        opts.insert(.announcement)
-
-        if #available(iOS 15, *) {
-            // this is also deprecated in iOS 15 in favor of the entitlement, but it does seem to be required in b1
-            opts.insert(.timeSensitive)
-        }
-
         return opts
     }
 }
@@ -332,7 +326,7 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
     func requestPermission(_ completionHandler: @escaping LocationPermissionCompletionBlock) {
         self.completionHandler = completionHandler
 
-        let status = CLLocationManager.authorizationStatus()
+        let status = locationManager.authorizationStatus
 
         switch status {
         case .authorizedWhenInUse, .notDetermined:
@@ -344,7 +338,7 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
     }
 
     var isAuthorized: Bool {
-        switch CLLocationManager.authorizationStatus() {
+        switch locationManager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             return true
         case .denied, .notDetermined, .restricted:
