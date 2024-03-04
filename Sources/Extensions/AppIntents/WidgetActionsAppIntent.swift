@@ -1,8 +1,10 @@
 import AppIntents
 import Foundation
+import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
-struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent,
+    ProgressReportingIntent {
     static let intentClassName = "WidgetActionsIntent"
 
     static var title: LocalizedStringResource = "Actions"
@@ -28,10 +30,16 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     }
 
     func perform() async throws -> some IntentResult {
-        guard let action = $actions.wrappedValue?.first else { return .result() }
+        progress.totalUnitCount = 100
+        progress.completedUnitCount = 70
+        guard let action = $actions.wrappedValue?.first else {
+            Current.Log.error("No action defined or available for widget")
+            return .result()
+        }
         let intent = PerformAction()
         intent.action = action
-        let result = try await intent.perform()
+        let _ = try await intent.perform()
+        progress.completedUnitCount = 100
         return .result()
     }
 }
