@@ -28,11 +28,10 @@ public final class DiskCacheImpl: DiskCache {
             var coordinatorError: NSError?
             coordinator.coordinate(
                 readingItemAt: Self.URL(in: container, for: key),
-                options: [],
                 error: &coordinatorError
             ) { url in
                 do {
-                    let data = try Data(contentsOf: url, options: [])
+                    let data = try Data(contentsOf: url)
                     let value = try JSONDecoder().decode(T.self, from: data)
                     seal.fulfill(value)
                 } catch {
@@ -63,11 +62,10 @@ public final class DiskCacheImpl: DiskCache {
             var coordinatorError: NSError?
             coordinator.coordinate(
                 writingItemAt: Self.URL(in: container, for: key),
-                options: [],
                 error: &coordinatorError
             ) { url in
                 do {
-                    try data.write(to: url, options: [])
+                    try data.write(to: url)
                     seal.fulfill(())
                 } catch {
                     seal.reject(error)

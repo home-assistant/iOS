@@ -15,7 +15,7 @@ public extension CallServiceIntent {
         self.init()
         self.service = "\(domain).\(service)"
 
-        if let payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
+        if let payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload),
            let jsonString = String(data: jsonData, encoding: .utf8) {
             self.payload = jsonString
         }
@@ -32,7 +32,7 @@ public extension FireEventIntent {
         self.init()
         self.eventName = eventName
 
-        if let payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
+        if let payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload),
            let jsonString = String(data: jsonData, encoding: .utf8) {
             self.eventData = jsonString
         }

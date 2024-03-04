@@ -134,7 +134,7 @@ public extension Realm {
                 if oldVersion < 15 {
                     migration.enumerateObjects(ofType: RLMScene.className()) { oldObject, newObject in
                         if let data = oldObject?["underlyingSceneData"] as? Data,
-                           let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                            let attributes = json["attributes"] as? [String: Any] {
                             newObject?["backgroundColor"] = attributes["background_color"] as? String
                             newObject?["textColor"] = attributes["text_color"] as? String
@@ -206,14 +206,14 @@ public extension Realm {
 
                         if let oldData = newObject?[dataKey] as? Data,
                            let oldJson = try? JSONSerialization
-                           .jsonObject(with: oldData, options: []) as? [String: Any],
+                           .jsonObject(with: oldData) as? [String: Any],
                            let oldIconDict = oldJson[iconDictKey] as? [String: String],
                            let oldIconIcon = oldIconDict[iconDictIconKey] {
                             var updatedIconDict = oldIconDict
                             updatedIconDict[iconDictIconKey] = MDIMigration.migrate(icon: oldIconIcon)
                             var updatedJson = oldJson
                             updatedJson[iconDictKey] = updatedIconDict
-                            if let newData = try? JSONSerialization.data(withJSONObject: updatedJson, options: []) {
+                            if let newData = try? JSONSerialization.data(withJSONObject: updatedJson) {
                                 newObject?[dataKey] = newData
                             }
                         }

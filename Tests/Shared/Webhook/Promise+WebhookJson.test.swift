@@ -30,7 +30,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
         print("json: \(json)")
 
-        let data = try JSONSerialization.data(withJSONObject: json, options: [])
+        let data = try JSONSerialization.data(withJSONObject: json)
 
         return data
     }
@@ -103,7 +103,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
     func testUnencryptedDictionary() throws {
         let dictionary = ["key": "value"]
-        let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+        let data = try JSONSerialization.data(withJSONObject: dictionary)
         let promise = Promise<Data>.value(data)
         let json = promise.webhookJson(statusCode: 200, secretGetter: { nil })
 
@@ -112,7 +112,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
     func testUnencryptedArray() throws {
         let array = ["one", "two"]
-        let data = try JSONSerialization.data(withJSONObject: array, options: [])
+        let data = try JSONSerialization.data(withJSONObject: array)
         let promise = Promise<Data>.value(data)
         let json = promise.webhookJson(statusCode: 200, secretGetter: { nil })
 
@@ -137,7 +137,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
     func testEncryptedDictionary() throws {
         let dictionary = ["key": "value"]
-        let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+        let data = try JSONSerialization.data(withJSONObject: dictionary)
         let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
@@ -146,7 +146,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
     func testEncryptedArray() throws {
         let array = ["one", "two"]
-        let data = try JSONSerialization.data(withJSONObject: array, options: [])
+        let data = try JSONSerialization.data(withJSONObject: array)
         let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { Self.secret })
 
@@ -164,7 +164,7 @@ class PromiseWebhookJsonTests: XCTestCase {
 
     func testEncryptedNoSecret() throws {
         let object = ["test": true]
-        let data = try JSONSerialization.data(withJSONObject: object, options: [])
+        let data = try JSONSerialization.data(withJSONObject: object)
         let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { nil })
 
@@ -177,7 +177,7 @@ class PromiseWebhookJsonTests: XCTestCase {
         let data = try JSONSerialization.data(withJSONObject: [
             "encrypted": true,
             "encrypted_data": "moo======",
-        ], options: [])
+        ])
         let promise = Promise<Data>.value(data)
         let json = promise.webhookJson(statusCode: 200, secretGetter: { [0, 1, 2, 3, 4] })
 
@@ -187,7 +187,7 @@ class PromiseWebhookJsonTests: XCTestCase {
     }
 
     func testEncryptedBadKey() throws {
-        let data = try JSONSerialization.data(withJSONObject: ["test": true], options: [])
+        let data = try JSONSerialization.data(withJSONObject: ["test": true])
         let promise = try Promise<Data>.value(Self.encryptedResponse(data: data))
         let json = promise.webhookJson(statusCode: 200, secretGetter: { [0, 1, 2, 3, 4] })
 

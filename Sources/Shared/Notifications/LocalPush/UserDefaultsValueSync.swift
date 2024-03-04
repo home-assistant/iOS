@@ -16,7 +16,6 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
         self.userDefaults.addObserver(
             self,
             forKeyPath: settingsKey,
-            options: [],
             context: nil
         )
     }

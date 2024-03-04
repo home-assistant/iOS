@@ -6,8 +6,8 @@ import XCTest
 class LocalizedStrings: XCTestCase {
     func testLanguages() throws {
         let expressions: [NSRegularExpression] = try [
-            NSRegularExpression(pattern: "%{1,2}[+0123456789$.luq]*?[sduiefgcCp@]", options: []),
-            NSRegularExpression(pattern: "\\$\\{[^}]+\\}", options: []),
+            NSRegularExpression(pattern: "%{1,2}[+0123456789$.luq]*?[sduiefgcCp@]"),
+            NSRegularExpression(pattern: "\\$\\{[^}]+\\}"),
         ]
 
         for bundle in [
@@ -109,7 +109,6 @@ class LocalizedStrings: XCTestCase {
         let matches = expressions.flatMap { expression in
             expression.matches(
                 in: string,
-                options: [],
                 range: NSRange(location: 0, length: string.utf16.count)
             )
         }

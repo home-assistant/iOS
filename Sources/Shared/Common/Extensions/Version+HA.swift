@@ -4,8 +4,8 @@ import Version
 public extension Version {
     private static func replacements() throws -> [(regex: NSRegularExpression, replacement: String)] {
         try [
-            (regex: NSRegularExpression(pattern: #"\.([a-zA-Z])"#, options: []), replacement: #"-$1"#),
-            (regex: NSRegularExpression(pattern: #"([0-9])([a-zA-Z])"#, options: []), replacement: #"$1-$2"#),
+            (regex: NSRegularExpression(pattern: #"\.([a-zA-Z])"#), replacement: #"-$1"#),
+            (regex: NSRegularExpression(pattern: #"([0-9])([a-zA-Z])"#), replacement: #"$1-$2"#),
         ]
     }
 
@@ -13,7 +13,6 @@ public extension Version {
         let sanitized = try Self.replacements().reduce(into: hassVersion) { result, pair in
             result = pair.regex.stringByReplacingMatches(
                 in: result,
-                options: [],
                 range: NSRange(location: 0, length: result.count),
                 withTemplate: pair.replacement
             )
