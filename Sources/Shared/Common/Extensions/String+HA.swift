@@ -14,7 +14,7 @@ extension String {
     func dictionary() -> [String: Any]? {
         if let data = data(using: .utf8) {
             do {
-                return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                return try JSONSerialization.jsonObject(with: data) as? [String: Any]
             } catch {
                 print("Error serializing JSON string to dict: \(error)")
             }

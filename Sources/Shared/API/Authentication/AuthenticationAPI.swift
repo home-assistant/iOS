@@ -105,7 +105,7 @@ extension DataRequest {
                 let errorCode: String?
                 let error: String?
 
-                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     errorCode = json["error"] as? String
                     error = json["error_description"] as? String
                 } else {

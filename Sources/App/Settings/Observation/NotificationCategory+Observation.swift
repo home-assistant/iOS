@@ -18,8 +18,7 @@ extension NotificationCategory {
                     UNNotificationCategory(
                         identifier: identifier,
                         actions: [],
-                        intentIdentifiers: [],
-                        options: []
+                        intentIdentifiers: []
                     )
                 }))
             }
@@ -35,8 +34,7 @@ extension NotificationCategory {
                     dynamicActions = [
                         UNNotificationAction(
                             identifier: "LOADING",
-                            title: L10n.NotificationService.loadingDynamicActions,
-                            options: []
+                            title: L10n.NotificationService.loadingDynamicActions
                         ),
                     ]
                 }
@@ -44,8 +42,7 @@ extension NotificationCategory {
                 categories.insert(UNNotificationCategory(
                     identifier: "DYNAMIC",
                     actions: dynamicActions,
-                    intentIdentifiers: [],
-                    options: []
+                    intentIdentifiers: []
                 ))
 
                 seal.fulfill(categories)

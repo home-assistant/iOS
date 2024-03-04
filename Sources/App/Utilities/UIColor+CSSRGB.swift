@@ -12,7 +12,6 @@ public extension UIColor {
 
         guard let match = pattern.firstMatch(
             in: string,
-            options: [],
             range: NSRange(location: 0, length: string.utf16.count)
         ) else {
             return nil

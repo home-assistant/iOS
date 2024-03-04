@@ -49,7 +49,7 @@ func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
 func convertToDictionary(text: String) -> [String: Any]? {
     if let data = text.data(using: .utf8) {
         do {
-            return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            return try JSONSerialization.jsonObject(with: data) as? [String: Any]
         } catch {
             Current.Log.error("Error converting JSON string to dict: \(error)")
         }
