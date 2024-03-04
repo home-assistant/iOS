@@ -1,3 +1,4 @@
+import AppIntents
 import Shared
 import SwiftUI
 import WidgetKit
@@ -29,8 +30,32 @@ struct WidgetBasicContainerView: View {
         ZStack {
             model.backgroundColor
                 .opacity(0.8)
-            WidgetBasicView(model: model, sizeStyle: .single)
-                .widgetURL(model.widgetURL.withWidgetAuthenticity())
+            if case let .widgetURL(url) = model.interactionType {
+                WidgetBasicView(model: model, sizeStyle: .single)
+                    .widgetURL(url.withWidgetAuthenticity())
+            } else {
+                if #available(iOS 17.0, *), let intent = intent(for: model) {
+                    Button(intent: intent) {
+                        WidgetBasicView(model: model, sizeStyle: .single)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    @available(iOS 17.0, *)
+    private func intent(for model: WidgetBasicViewModel) -> (any AppIntent)? {
+        switch model.interactionType {
+        case .widgetURL:
+            return nil
+        case let .appIntent(widgetIntentType):
+            switch widgetIntentType {
+            case .action:
+                let intent = WidgetActionsAppIntent()
+                intent.actions = [IntentActionAppEntity(id: model.id, displayString: model.title)]
+                return intent
+            }
         }
     }
 
@@ -63,8 +88,17 @@ struct WidgetBasicContainerView: View {
                             // stacking the color under makes the Link's highlight state nicer
                             model.backgroundColor
                                 .opacity(0.8)
-                            Link(destination: model.widgetURL.withWidgetAuthenticity()) {
-                                WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                            if case let .widgetURL(url) = model.interactionType {
+                                Link(destination: url.withWidgetAuthenticity()) {
+                                    WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                                }
+                            } else {
+                                if #available(iOS 17.0, *), let intent = intent(for: model) {
+                                    Button(intent: intent) {
+                                        WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
                             }
                         }
                     }
