@@ -29,6 +29,22 @@ public class MatterWrapper {
         #endif
     }
 
+    public var threadCredentialsStoreInKeychainEnabled: Bool {
+        #if canImport(ThreadNetwork) && !targetEnvironment(macCatalyst)
+        if #available(iOS 16.4, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
+    }
+
+    #if os(iOS)
+    public var threadClientService: THClientProtocol = ThreadClientService()
+    #endif
+
     public var lastCommissionServerIdentifier: Identifier<Server>? {
         get { Current.settingsStore.prefs.string(forKey: "lastCommissionServerID").flatMap { .init(rawValue: $0) } }
         set { Current.settingsStore.prefs.set(newValue?.rawValue, forKey: "lastCommissionServerID") }

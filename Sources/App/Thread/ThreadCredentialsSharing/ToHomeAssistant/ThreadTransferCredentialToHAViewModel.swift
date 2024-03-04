@@ -2,16 +2,11 @@ import Foundation
 import HAKit
 import Shared
 
-final class ThreadCredentialsSharingViewModel: ObservableObject {
-    enum AlertType {
-        case empty(title: String, message: String)
-        case error(title: String, message: String)
-    }
-
+final class ThreadTransferCredentialToHAViewModel: ThreadCredentialsSharingViewModelProtocol {
     @Published var credentials: [ThreadCredential] = []
     @Published var showAlert = false
-    @Published var alertType: AlertType?
-    @Published var showImportSuccess = false
+    @Published var alertType: ThreadCredentialsAlertType?
+    @Published var showOperationSuccess = false
 
     private let threadClient: THClientProtocol
     private let connection: HAConnection
@@ -23,7 +18,7 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
     }
 
     @MainActor
-    func retrieveAllCredentials() async {
+    func mainOperation() async {
         do {
             credentials = try await threadClient.retrieveAllCredentials()
 
@@ -44,7 +39,7 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
     @MainActor
     private func processImport() {
         guard let first = credentialsToImport.first else {
-            showImportSuccess = true
+            showOperationSuccess = true
             return
         }
 
@@ -77,7 +72,7 @@ final class ThreadCredentialsSharingViewModel: ObservableObject {
         }
     }
 
-    private func showAlert(type: AlertType) {
+    private func showAlert(type: ThreadCredentialsAlertType) {
         alertType = type
         showAlert = true
     }
