@@ -64,11 +64,11 @@ public enum Constants {
 
         let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)
 
-        guard groupDir != nil else {
+        guard let groupDir else {
             fatalError("Unable to get groupDir.")
         }
 
-        return groupDir!
+        return groupDir
     }
 
     public static var LogsDirectory: URL {
