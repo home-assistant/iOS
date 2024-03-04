@@ -21,7 +21,6 @@ struct ThreadCredential {
 #if canImport(ThreadNetwork)
 import ThreadNetwork
 
-@available(iOS 15, *)
 final class ThreadClientService: THClientProtocol {
     private let client = THClient()
 
@@ -55,7 +54,6 @@ final class ThreadClientService: THClientProtocol {
 }
 #else
 /// For SwiftUI Preview
-@available(iOS 15, *)
 final class ThreadClientService: THClientProtocol {
     func retrieveAllCredentials() async throws -> [ThreadCredential] {
         []

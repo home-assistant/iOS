@@ -209,14 +209,7 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         }
 
         if let cachedLocation = locationManager.location {
-            let authorization: CLAccuracyAuthorization
-
-            if #available(watchOS 7, *) {
-                authorization = locationManager.accuracyAuthorization
-            } else {
-                authorization = .fullAccuracy
-            }
-
+            let authorization: CLAccuracyAuthorization = locationManager.accuracyAuthorization
             let potentialLocation = PotentialLocation(location: cachedLocation, accuracyAuthorization: authorization)
             potentialLocations.append(potentialLocation)
         }
@@ -256,14 +249,7 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         precondition(Thread.isMainThread)
 
-        let authorization: CLAccuracyAuthorization
-
-        if #available(watchOS 7, *) {
-            authorization = manager.accuracyAuthorization
-        } else {
-            authorization = .fullAccuracy
-        }
-
+        let authorization: CLAccuracyAuthorization = manager.accuracyAuthorization
         let updatedPotentialLocations = locations.map {
             PotentialLocation(location: $0, accuracyAuthorization: authorization)
         }

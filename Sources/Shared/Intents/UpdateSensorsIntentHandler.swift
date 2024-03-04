@@ -1,7 +1,6 @@
 import Foundation
 import PromiseKit
 
-@available(iOS 13, watchOS 6, *)
 class UpdateSensorsIntentHandler: NSObject, UpdateSensorsIntentHandling {
     func handle(intent: UpdateSensorsIntent, completion: @escaping (UpdateSensorsIntentResponse) -> Void) {
         Current.Log.info("starting")

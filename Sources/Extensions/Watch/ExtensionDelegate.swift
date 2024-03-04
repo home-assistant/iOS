@@ -28,16 +28,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
-        var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
-        if #available(watchOS 6.0, *) {
-            opts.insert(.announcement)
-        }
+        let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
 
-        if #available(watchOSApplicationExtension 6.0, *) {
-            WKExtension.shared().registerForRemoteNotifications()
-        }
+        WKExtension.shared().registerForRemoteNotifications()
 
-        UNUserNotificationCenter.current().requestAuthorization(options: opts) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: options) { granted, error in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
         }
 
@@ -113,8 +108,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
         let complication: WatchComplication?
 
-        if #available(watchOS 7, *),
-           let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
+        if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
             complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: identifier)
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,

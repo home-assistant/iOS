@@ -513,13 +513,7 @@ public class HomeAssistantAPI {
         return firstly {
             let realm = Current.realm()
             return when(resolved: realm.reentrantWrite {
-                let accuracyAuthorization: CLAccuracyAuthorization
-
-                if #available(watchOS 7, *) {
-                    accuracyAuthorization = CLLocationManager().accuracyAuthorization
-                } else {
-                    accuracyAuthorization = .fullAccuracy
-                }
+                let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
 
                 realm.add(LocationHistoryEntry(
                     updateType: updateType,

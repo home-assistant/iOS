@@ -246,11 +246,7 @@ extension HAEntity {
             return nil
         }
 
-        if #available(watchOS 6.0, *) {
-            let relativeFormatter = RelativeDateTimeFormatter()
-            return relativeFormatter.localizedString(for: date, relativeTo: Date())
-        } else {
-            return nil
-        }
+        let relativeFormatter = RelativeDateTimeFormatter()
+        return relativeFormatter.localizedString(for: date, relativeTo: Date())
     }
 }

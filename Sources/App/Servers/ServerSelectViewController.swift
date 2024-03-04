@@ -56,7 +56,7 @@ class ServerSelectViewController: HAFormViewController, ServerObserver, UIAdapti
             parent.presentationController?.delegate = self
 
             // sheet is a little annoying (even with large detent) with many servers
-            if #available(iOS 15, *), Current.servers.all.count <= 4 {
+            if Current.servers.all.count <= 4 {
                 with(parent.sheetPresentationController) {
                     $0?.detents = [.medium(), .large()]
                 }

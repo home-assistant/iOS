@@ -7,13 +7,11 @@ public protocol DiskCache {
     func set<T: Codable>(_ value: T, for key: String) -> Promise<Void>
 }
 
-@available(iOS 13, watchOS 6, *)
 private struct DiskCacheKey: EnvironmentKey {
     static let defaultValue = Current.diskCache
 }
 
 // also in AppEnvironment
-@available(iOS 13, watchOS 6, *)
 public extension EnvironmentValues {
     var diskCache: DiskCache {
         get { self[DiskCacheKey.self] }

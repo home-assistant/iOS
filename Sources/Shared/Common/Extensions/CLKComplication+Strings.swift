@@ -178,7 +178,6 @@ public enum ComplicationGroupMember: String, Comparable {
         }
     }
 
-    @available(watchOS 7.0, *)
     public var placeholderComplicationDescriptor: CLKComplicationDescriptor {
         CLKComplicationDescriptor(
             identifier: "placeholder-" + rawValue,
@@ -412,16 +411,9 @@ public enum ComplicationGroupMember: String, Comparable {
             return template
         case .graphicRectangular:
             if isPlaceholder {
-                if #available(watchOS 7, *) {
-                    let template = CLKComplicationTemplateGraphicRectangularFullImage()
-                    template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-                    return template
-                } else {
-                    let template = CLKComplicationTemplateGraphicRectangularLargeImage()
-                    template.textProvider = CLKSimpleTextProvider(text: "Home Assistant")
-                    template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
-                    return template
-                }
+                let template = CLKComplicationTemplateGraphicRectangularFullImage()
+                template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
+                return template
             } else {
                 let template = CLKComplicationTemplateGraphicRectangularStandardBody()
                 template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)

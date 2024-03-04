@@ -76,13 +76,5 @@ struct LegacyWidgetActions: Widget {
 }
 
 enum WidgetActionSupportedFamilies {
-    static var families: [WidgetFamily] {
-        var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
-
-        if #available(iOS 15, *) {
-            supportedFamilies.append(.systemExtraLarge)
-        }
-
-        return supportedFamilies
-    }
+    static var families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
 }

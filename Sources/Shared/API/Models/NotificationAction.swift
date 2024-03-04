@@ -81,34 +81,30 @@ public class NotificationAction: Object {
             }
         }
 
-        if #available(iOS 15, watchOS 8, *) {
-            let actionIcon: UNNotificationActionIcon?
+        let actionIcon: UNNotificationActionIcon?
 
-            if let icon, icon.hasPrefix("sfsymbols:") {
-                actionIcon = .init(systemImageName: icon.replacingOccurrences(of: "sfsymbols:", with: ""))
-            } else {
-                actionIcon = nil
-            }
-
-            if TextInput {
-                action = UNTextInputNotificationAction(
-                    identifier: Identifier,
-                    title: Title,
-                    options: options,
-                    icon: actionIcon,
-                    textInputButtonTitle: TextInputButtonTitle,
-                    textInputPlaceholder: TextInputPlaceholder
-                )
-            } else {
-                action = UNNotificationAction(
-                    identifier: Identifier,
-                    title: Title,
-                    options: options,
-                    icon: actionIcon
-                )
-            }
+        if let icon, icon.hasPrefix("sfsymbols:") {
+            actionIcon = .init(systemImageName: icon.replacingOccurrences(of: "sfsymbols:", with: ""))
         } else {
-            action = baseAction()
+            actionIcon = nil
+        }
+
+        if TextInput {
+            action = UNTextInputNotificationAction(
+                identifier: Identifier,
+                title: Title,
+                options: options,
+                icon: actionIcon,
+                textInputButtonTitle: TextInputButtonTitle,
+                textInputPlaceholder: TextInputPlaceholder
+            )
+        } else {
+            action = UNNotificationAction(
+                identifier: Identifier,
+                title: Title,
+                options: options,
+                icon: actionIcon
+            )
         }
 
         return action

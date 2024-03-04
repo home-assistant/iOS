@@ -3,7 +3,6 @@ import Intents
 import PromiseKit
 import UIKit
 
-@available(iOS 13, watchOS 6, *)
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     typealias Intent = FireEventIntent
 
@@ -19,7 +18,6 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         completion(IntentServer.all, nil)
     }
 
-    @available(watchOS 7, *)
     func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void

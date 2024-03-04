@@ -97,9 +97,7 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
             server.reloadTimeline(for: $0)
         }
 
-        if #available(watchOS 7, *) {
-            server.reloadComplicationDescriptors()
-        }
+        server.reloadComplicationDescriptors()
     }
     #endif
 }

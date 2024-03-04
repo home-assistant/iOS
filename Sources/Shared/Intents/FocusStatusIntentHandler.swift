@@ -2,7 +2,6 @@ import Foundation
 import Intents
 import PromiseKit
 
-@available(iOS 15, watchOS 8, *)
 class FocusStatusIntentHandler: NSObject, INShareFocusStatusIntentHandling {
     func handle(intent: INShareFocusStatusIntent, completion: @escaping (INShareFocusStatusIntentResponse) -> Void) {
         let currentState = intent.focusStatus

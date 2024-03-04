@@ -33,10 +33,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
         navigationItem.compactAppearance = appearance
-
-        if #available(iOS 15, *) {
-            navigationItem.compactScrollEdgeAppearance = appearance
-        }
+        navigationItem.compactScrollEdgeAppearance = appearance
 
         navigationItem.leftBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel)),
@@ -63,9 +60,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
 
         webView.navigationDelegate = self
 
-        if #available(iOS 15, *) {
-            setContentScrollView(webView.scrollView)
-        }
+        setContentScrollView(webView.scrollView)
 
         view.backgroundColor = .systemBackground
         edgesForExtendedLayout = []

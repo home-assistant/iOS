@@ -54,9 +54,7 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertNil(content.sound)
         XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "webhook_id"]))
         XCTAssertEqual(content.userInfo["webhook_id"] as? String, server.info.connection.webhookID)
-        if #available(iOS 15, watchOS 8, *) {
-            XCTAssertEqual(content.interruptionLevel, .active)
-        }
+        XCTAssertEqual(content.interruptionLevel, .active)
     }
 
     func testFullWithoutSound() {
@@ -86,9 +84,7 @@ class LocalPushEventTests: XCTestCase {
         XCTAssertEqual(content.categoryIdentifier, "some_category")
         XCTAssertEqual(Set(content.userInfo.keys), Set(["aps", "extra", "webhook_id"]))
         XCTAssertEqual(content.userInfo["webhook_id"] as? String, server.info.connection.webhookID)
-        if #available(iOS 15, watchOS 8, *) {
-            XCTAssertEqual(content.interruptionLevel, .timeSensitive)
-        }
+        XCTAssertEqual(content.interruptionLevel, .timeSensitive)
     }
 
     func testSoundNonCriticalNamed() {
@@ -231,10 +227,6 @@ class LocalPushEventTests: XCTestCase {
     }
 
     func testInterruptionLevels() throws {
-        guard #available(iOS 15, watchOS 8, *) else {
-            throw XCTSkip("not valid on this OS")
-        }
-
         let levels: [String: UNNotificationInterruptionLevel] = [
             "passive": .passive,
             "active": .active,

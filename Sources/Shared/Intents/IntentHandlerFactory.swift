@@ -1,7 +1,6 @@
 import Foundation
 import Intents
 
-@available(iOS 13, watchOS 6, *)
 public enum IntentHandlerFactory {
     // swiftlint:disable:next cyclomatic_complexity
     public static func handler(for intent: INIntent) -> Any {
@@ -33,10 +32,10 @@ public enum IntentHandlerFactory {
             if intent is OpenPageIntent || intent is WidgetOpenPageIntent {
                 return OpenPageIntentHandler()
             }
-            if #available(iOS 15, watchOS 8, *), intent is INShareFocusStatusIntent {
+            if intent is INShareFocusStatusIntent {
                 return FocusStatusIntentHandler()
             }
-            if #available(watchOS 7, *), intent is WidgetActionsIntent {
+            if intent is WidgetActionsIntent {
                 return WidgetActionsIntentHandler()
             }
             return self
