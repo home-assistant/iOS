@@ -16,7 +16,6 @@ public class FocusStatusWrapper {
         case denied
         case authorized
 
-        @available(iOS 15, watchOS 8, *)
         init(authorizationStatus: INFocusStatusAuthorizationStatus) {
             switch authorizationStatus {
             case .notDetermined:
@@ -40,34 +39,22 @@ public class FocusStatusWrapper {
     }
 
     public lazy var isAvailable: () -> Bool = { [weak self] in
-        if #available(iOS 15, watchOS 8, *) {
-            if Current.isAppExtension {
-                return self?.lastStatus != nil
-            } else {
-                return true
-            }
+        if Current.isAppExtension {
+            return self?.lastStatus != nil
         } else {
-            return false
+            return true
         }
     }
 
     public var authorizationStatus: () -> AuthorizationStatus = {
-        if #available(iOS 15, watchOS 8, *) {
-            return .init(authorizationStatus: INFocusStatusCenter.default.authorizationStatus)
-        }
-
-        return .restricted
+        .init(authorizationStatus: INFocusStatusCenter.default.authorizationStatus)
     }
 
     public var requestAuthorization: () -> Guarantee<AuthorizationStatus> = {
         let (promise, seal) = Guarantee<AuthorizationStatus>.pending()
 
-        if #available(iOS 15, watchOS 8, *) {
-            INFocusStatusCenter.default.requestAuthorization { result in
-                seal(.init(authorizationStatus: result))
-            }
-        } else {
-            seal(.restricted)
+        INFocusStatusCenter.default.requestAuthorization { result in
+            seal(.init(authorizationStatus: result))
         }
 
         return promise
@@ -76,7 +63,6 @@ public class FocusStatusWrapper {
     public struct Status: Equatable {
         public var isFocused: Bool?
 
-        @available(iOS 15, watchOS 8, *)
         public init(focusStatus: INFocusStatus) {
             self.init(
                 isFocused: focusStatus.isFocused
@@ -88,7 +74,6 @@ public class FocusStatusWrapper {
         }
     }
 
-    @available(iOS 15, watchOS 8, *)
     public func update(fromReceived status: INFocusStatus?) {
         precondition(Current.isAppExtension)
         lastStatus = status.flatMap { Status(focusStatus: $0) }
@@ -96,13 +81,10 @@ public class FocusStatusWrapper {
     }
 
     public lazy var status: () -> Status = { [weak self] in
-        if #available(iOS 15, watchOS 8, *) {
-            if Current.isAppExtension, let lastStatus = self?.lastStatus {
-                return lastStatus
-            } else {
-                return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
-            }
+        if Current.isAppExtension, let lastStatus = self?.lastStatus {
+            return lastStatus
+        } else {
+            return .init(focusStatus: INFocusStatusCenter.default.focusStatus)
         }
-        return .init(isFocused: nil)
     }
 }

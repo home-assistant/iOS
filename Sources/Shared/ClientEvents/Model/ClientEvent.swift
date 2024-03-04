@@ -53,11 +53,7 @@ public class ClientEvent: Object {
             }
 
             do {
-                var writeOptions: JSONSerialization.WritingOptions = [.prettyPrinted]
-
-                if #available(watchOS 6, *) {
-                    writeOptions.insert(.withoutEscapingSlashes)
-                }
+                let writeOptions: JSONSerialization.WritingOptions = [.prettyPrinted, .withoutEscapingSlashes]
 
                 jsonData = try JSONSerialization.data(withJSONObject: payload, options: writeOptions)
             } catch {

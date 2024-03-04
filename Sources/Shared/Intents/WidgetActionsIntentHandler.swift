@@ -2,7 +2,6 @@ import Foundation
 import Intents
 import PromiseKit
 
-@available(watchOS 7, *)
 class WidgetActionsIntentHandler: NSObject, WidgetActionsIntentHandling {
     func provideActionsOptionsCollection(
         for intent: WidgetActionsIntent,

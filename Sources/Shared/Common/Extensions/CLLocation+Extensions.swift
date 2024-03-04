@@ -103,54 +103,30 @@ public extension CLCircularRegion {
 
 public extension CLLocation {
     func fuzzingAccuracy(by amount: CLLocationDistance) -> CLLocation {
-        if #available(watchOS 6.2, *) {
-            return CLLocation(
-                coordinate: coordinate,
-                altitude: altitude,
-                horizontalAccuracy: horizontalAccuracy + amount + 1,
-                verticalAccuracy: verticalAccuracy,
-                course: course,
-                courseAccuracy: courseAccuracy,
-                speed: speed,
-                speedAccuracy: speedAccuracy,
-                timestamp: timestamp
-            )
-        } else {
-            return CLLocation(
-                coordinate: coordinate,
-                altitude: altitude,
-                horizontalAccuracy: horizontalAccuracy + amount + 1,
-                verticalAccuracy: verticalAccuracy,
-                course: course,
-                speed: speed,
-                timestamp: timestamp
-            )
-        }
+        CLLocation(
+            coordinate: coordinate,
+            altitude: altitude,
+            horizontalAccuracy: horizontalAccuracy + amount + 1,
+            verticalAccuracy: verticalAccuracy,
+            course: course,
+            courseAccuracy: courseAccuracy,
+            speed: speed,
+            speedAccuracy: speedAccuracy,
+            timestamp: timestamp
+        )
     }
 
     func changingCoordinate(to fuzzedCoordinate: CLLocationCoordinate2D) -> CLLocation {
-        if #available(watchOS 6.2, *) {
-            return CLLocation(
-                coordinate: fuzzedCoordinate,
-                altitude: altitude,
-                horizontalAccuracy: horizontalAccuracy,
-                verticalAccuracy: verticalAccuracy,
-                course: course,
-                courseAccuracy: courseAccuracy,
-                speed: speed,
-                speedAccuracy: speedAccuracy,
-                timestamp: timestamp
-            )
-        } else {
-            return CLLocation(
-                coordinate: fuzzedCoordinate,
-                altitude: altitude,
-                horizontalAccuracy: horizontalAccuracy,
-                verticalAccuracy: verticalAccuracy,
-                course: course,
-                speed: speed,
-                timestamp: timestamp
-            )
-        }
+        CLLocation(
+            coordinate: fuzzedCoordinate,
+            altitude: altitude,
+            horizontalAccuracy: horizontalAccuracy,
+            verticalAccuracy: verticalAccuracy,
+            course: course,
+            courseAccuracy: courseAccuracy,
+            speed: speed,
+            speedAccuracy: speedAccuracy,
+            timestamp: timestamp
+        )
     }
 }

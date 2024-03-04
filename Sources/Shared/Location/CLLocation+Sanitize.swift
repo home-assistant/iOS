@@ -8,7 +8,7 @@ extension CLLocation {
 
     func sanitized() throws -> CLLocation {
         // FB9030164 iOS 14.5 (at least betas) started reporting vertical accuracy as non-finite
-        var doubleKeyPaths: [KeyPath<CLLocation, Double>: Result<Double, SanitizeFailure>] = [
+        let doubleKeyPaths: [KeyPath<CLLocation, Double>: Result<Double, SanitizeFailure>] = [
             \.horizontalAccuracy: .failure(.invalid("horizontalAccuracy")),
             \.verticalAccuracy: .success(-1),
             \.altitude: .success(0),
@@ -17,11 +17,8 @@ extension CLLocation {
             \.course: .success(-1),
             \.speed: .success(-1),
             \.speedAccuracy: .success(-1),
+            \.courseAccuracy: .success(-1),
         ]
-
-        if #available(watchOS 6.2, *) {
-            doubleKeyPaths[\.courseAccuracy] = .success(-1)
-        }
 
         func isValid(_ value: Double) -> Bool {
             value.isFinite && !value.isNaN
@@ -49,28 +46,16 @@ extension CLLocation {
             longitude: sanitize(\.coordinate.longitude)
         )
 
-        if #available(watchOS 6.2, *) {
-            return try CLLocation(
-                coordinate: sanitizedCoordinate,
-                altitude: sanitize(\.altitude),
-                horizontalAccuracy: sanitize(\.horizontalAccuracy),
-                verticalAccuracy: sanitize(\.verticalAccuracy),
-                course: sanitize(\.course),
-                courseAccuracy: sanitize(\.courseAccuracy),
-                speed: sanitize(\.speed),
-                speedAccuracy: sanitize(\.speedAccuracy),
-                timestamp: timestamp
-            )
-        } else {
-            return try CLLocation(
-                coordinate: sanitizedCoordinate,
-                altitude: sanitize(\.altitude),
-                horizontalAccuracy: sanitize(\.horizontalAccuracy),
-                verticalAccuracy: sanitize(\.verticalAccuracy),
-                course: sanitize(\.course),
-                speed: sanitize(\.speed),
-                timestamp: timestamp
-            )
-        }
+        return try CLLocation(
+            coordinate: sanitizedCoordinate,
+            altitude: sanitize(\.altitude),
+            horizontalAccuracy: sanitize(\.horizontalAccuracy),
+            verticalAccuracy: sanitize(\.verticalAccuracy),
+            course: sanitize(\.course),
+            courseAccuracy: sanitize(\.courseAccuracy),
+            speed: sanitize(\.speed),
+            speedAccuracy: sanitize(\.speedAccuracy),
+            timestamp: timestamp
+        )
     }
 }

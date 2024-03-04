@@ -2,7 +2,6 @@ import Intents
 import ObjectMapper
 import PromiseKit
 
-@available(iOS 13, watchOS 6, *)
 class AssistIntentHandler: NSObject, AssistIntentHandling {
     typealias Intent = AssistIntent
 
@@ -18,7 +17,6 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         completion(IntentServer.all, nil)
     }
 
-    @available(watchOS 7, *)
     func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void
@@ -37,7 +35,6 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         completion(Locale.current.intentLanguages, nil)
     }
 
-    @available(watchOS 7, *)
     func provideLanguageOptionsCollection(
         for intent: AssistIntent,
         with completion: @escaping (INObjectCollection<IntentLanguage>?, Error?) -> Void

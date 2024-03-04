@@ -3,7 +3,6 @@ import Foundation
 import RealmSwift
 import Shared
 
-@available(iOS 15.0, *)
 final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private var actions: Results<Action>?
     private let viewModel: CarPlayActionsViewModel

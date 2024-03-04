@@ -3,7 +3,6 @@ import Intents
 import PromiseKit
 import UIKit
 
-@available(iOS 13, watchOS 6, *)
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
     typealias Intent = RenderTemplateIntent
 
@@ -19,7 +18,6 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
         completion(IntentServer.all, nil)
     }
 
-    @available(watchOS 7, *)
     func provideServerOptionsCollection(
         for intent: Intent,
         with completion: @escaping (INObjectCollection<IntentServer>?, Error?) -> Void

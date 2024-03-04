@@ -12,7 +12,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let model: WatchComplication?
 
-        if #available(watchOS 7, *), complication.identifier != CLKDefaultComplicationIdentifier {
+        if complication.identifier != CLKDefaultComplicationIdentifier {
             // existing complications that were configured pre-7 have no identifier set
             // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
             model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: complication.identifier)
@@ -35,20 +35,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             template = generated
         } else {
             Current.Log.info {
-                if #available(watchOS 7, *) {
-                    return "no configured template for \(complication.identifier), providing placeholder"
-                } else {
-                    return "no configured template for \(complication.family.rawValue), providing placeholder"
-                }
+                "no configured template for \(complication.identifier), providing placeholder"
             }
 
-            if #available(watchOS 7, *) {
-                template = ComplicationGroupMember(family: complication.family)
-                    .fallbackTemplate(for: complication.identifier)
-            } else {
-                template = ComplicationGroupMember(family: complication.family)
-                    .fallbackTemplate(for: nil)
-            }
+            template = ComplicationGroupMember(family: complication.family)
+                .fallbackTemplate(for: complication.identifier)
         }
 
         return template
@@ -76,11 +67,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void
     ) {
         Current.Log.verbose {
-            if #available(watchOS 7, *) {
-                return "Providing template for \(complication.identifier) family \(complication.family.description)"
-            } else {
-                return "Providing template for \(complication.family.description)"
-            }
+            "Providing template for \(complication.identifier) family \(complication.family.description)"
         }
 
         let date = Date().encodedForComplication(family: complication.family) ?? Date()
@@ -98,7 +85,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
     // MARK: - Complication Descriptors
 
-    @available(watchOS 7.0, *)
     func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
         let configured = Current.realm().objects(WatchComplication.self)
             .map(\.complicationDescriptor)

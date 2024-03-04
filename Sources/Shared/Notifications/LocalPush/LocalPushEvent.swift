@@ -108,7 +108,7 @@ struct LocalPushEvent: HADataDecodable {
             if let sound = aps["sound"] as? [String: Any] {
                 content.sound = Sound(dictionary: sound).asSound()
             }
-            if #available(iOS 15, watchOS 8, *), let level = aps["interruption-level"] as? String {
+            if let level = aps["interruption-level"] as? String {
                 content.interruptionLevel = .init(apsValue: level)
             }
         }
@@ -198,7 +198,6 @@ private struct Sound {
     }
 }
 
-@available(iOS 15, watchOS 8, *)
 private extension UNNotificationInterruptionLevel {
     init(apsValue: String) {
         switch apsValue.lowercased() {

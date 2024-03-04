@@ -208,7 +208,6 @@ public class WatchComplication: Object, ImmutableMappable {
 
     #if os(watchOS)
 
-    @available(watchOS 7.0, *)
     public var complicationDescriptor: CLKComplicationDescriptor {
         CLKComplicationDescriptor(
             identifier: identifier,

@@ -32,15 +32,7 @@ struct WidgetActions: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
-        .supportedFamilies({
-            var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
-
-            if #available(iOS 15, *) {
-                supportedFamilies.append(.systemExtraLarge)
-            }
-
-            return supportedFamilies
-        }())
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
         .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }

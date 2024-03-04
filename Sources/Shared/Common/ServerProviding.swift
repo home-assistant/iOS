@@ -16,7 +16,6 @@ extension GetCameraImageIntent: ServerIntentProviding {}
 extension RenderTemplateIntent: ServerIntentProviding {}
 extension AssistIntent: ServerIntentProviding {}
 
-@available(iOS 13, watchOS 6, *)
 extension IntentPanel: ServerIntentProviding {
     // this custom type as a property does not persist correctly in a configured widget
     // FB9779882
