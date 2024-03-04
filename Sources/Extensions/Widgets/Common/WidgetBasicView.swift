@@ -45,7 +45,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     }
 
     enum WidgetIntentType: Hashable {
-        case action
+        case action(id: String, name: String)
     }
 }
 

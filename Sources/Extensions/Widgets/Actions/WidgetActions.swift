@@ -20,7 +20,7 @@ struct WidgetActions: Widget {
                         id: action.ID,
                         title: action.Text,
                         subtitle: nil,
-                        interactionType: .appIntent(.action),
+                        interactionType: .appIntent(.action(id: action.ID, name: action.Name)),
                         icon: MaterialDesignIcons(serversideValueNamed: action.IconName),
                         textColor: .init(hex: action.TextColor),
                         iconColor: .init(hex: action.IconColor),
@@ -33,9 +33,6 @@ struct WidgetActions: Widget {
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
         .supportedFamilies(WidgetActionSupportedFamilies.families)
-        .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
-            Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
-        }
     }
 }
 
