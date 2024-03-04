@@ -1006,6 +1006,8 @@ extension WebViewController: WKScriptMessageHandler {
                                 "canCommissionMatter": Current.matter.isAvailable,
                                 "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
                                 "hasQRScanner": true,
+                                "canTransferThreadCredentialsToKeychain": Current.matter
+                                    .threadCredentialsStoreInKeychainEnabled,
                             ]
                         ))
                     }
@@ -1065,12 +1067,12 @@ extension WebViewController: WKScriptMessageHandler {
                     Current.Log.error(error)
                 }
             case .threadImportCredentials:
-                threadCredentialsRequested()
+                transferKeychainThreadCredentialsToHARequested()
             case .barCodeScanner:
                 guard let title = incomingMessage.Payload?["title"] as? String,
                       let description = incomingMessage.Payload?["description"] as? String,
                       let incomingMessageId = incomingMessage.ID else { return }
-                qrCodeScannerRequested(
+                barcodeScannerRequested(
                     title: title,
                     description: description,
                     alternativeOptionLabel: incomingMessage.Payload?["alternative_option_label"] as? String,
@@ -1084,6 +1086,13 @@ extension WebViewController: WKScriptMessageHandler {
                 alert.addAction(.init(title: L10n.okLabel, style: .default))
                 let controller = barCodeScannerController ?? self
                 controller.present(alert, animated: false, completion: nil)
+            case .threadStoreCredentialInAppleKeychain:
+                guard let macExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
+                      let activeOperationalDataset = incomingMessage.Payload?["active_operational_dataset"] as? String else { return }
+                transferHAThreadCredentialsToKeychain(
+                    macExtendedAddress: macExtendedAddress,
+                    activeOperationalDataset: activeOperationalDataset
+                )
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -1117,12 +1126,13 @@ extension WebViewController: WKScriptMessageHandler {
         }
     }
 
-    private func threadCredentialsRequested() {
+    private func transferKeychainThreadCredentialsToHARequested() {
         if #available(iOS 16.4, *) {
-            let threadManagementView = UIHostingController(rootView: ThreadCredentialsSharingView(viewModel: .init(
-                server: server,
-                threadClient: ThreadClientService()
-            )))
+            let threadManagementView =
+                UIHostingController(
+                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
+                        .buildTransferToHomeAssistant(server: server)
+                )
             threadManagementView.view.backgroundColor = .clear
             threadManagementView.modalPresentationStyle = .overFullScreen
             threadManagementView.modalTransitionStyle = .crossDissolve
@@ -1130,7 +1140,24 @@ extension WebViewController: WKScriptMessageHandler {
         }
     }
 
-    private func qrCodeScannerRequested(
+    private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
+        if #available(iOS 16.4, *) {
+            let threadManagementView =
+                UIHostingController(
+                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
+                        .buildTransferToAppleKeychain(
+                            macExtendedAddress: macExtendedAddress,
+                            activeOperationalDataset: activeOperationalDataset
+                        )
+                )
+            threadManagementView.view.backgroundColor = .clear
+            threadManagementView.modalPresentationStyle = .overFullScreen
+            threadManagementView.modalTransitionStyle = .crossDissolve
+            present(threadManagementView, animated: true)
+        }
+    }
+
+    private func barcodeScannerRequested(
         title: String,
         description: String,
         alternativeOptionLabel: String?,
