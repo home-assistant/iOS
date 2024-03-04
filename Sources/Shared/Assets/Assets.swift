@@ -28,6 +28,7 @@ public enum Asset {
   public enum SharedAssets {
     public static let logo = ImageAsset(name: "Logo")
     public static let statusItemIcon = ImageAsset(name: "statusItemIcon")
+    public static let thread = ImageAsset(name: "thread")
   }
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

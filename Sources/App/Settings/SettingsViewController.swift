@@ -117,10 +117,18 @@ class SettingsViewController: HAFormViewController {
         }
 
         if contentSections.contains(.help) {
-            form +++ Section()
+            let section = Section()
+
+            if #available(iOS 17, *), !Current.isCatalyst {
+                section <<< SettingsRootDataSource.Row.thread.row
+            }
+
+            section
                 <<< SettingsRootDataSource.Row.help.row
                 <<< SettingsRootDataSource.Row.privacy.row
                 <<< SettingsRootDataSource.Row.debugging.row
+
+            form +++ section
         }
 
         form +++ Section()

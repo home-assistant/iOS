@@ -545,7 +545,20 @@
 		4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
-		42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */; };
+		42B94BA62B95D3C300DEE060 /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BA52B95D3C300DEE060 /* CollapsibleView.swift */; };
+		42B94BBA2B95D4D200DEE060 /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BAD2B95D42800DEE060 /* ThreadCredentialsSharingToKeychainViewModel.swift */; };
+		42B94BBB2B95D4D200DEE060 /* ThreadTransferCredentialToHAViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BAB2B95D42800DEE060 /* ThreadTransferCredentialToHAViewModel.swift */; };
+		42B94BBC2B95D4D200DEE060 /* ThreadCredentialsSharingViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BAE2B95D42800DEE060 /* ThreadCredentialsSharingViewModelProtocol.swift */; };
+		42B94BBE2B95D4EB00DEE060 /* ThreadCredentialsSharingViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BAC2B95D42800DEE060 /* ThreadCredentialsSharingViewModel.test.swift */; };
+		42B94BBF2B95D4F000DEE060 /* ThreadCredentialsSharing.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BB32B95D45300DEE060 /* ThreadCredentialsSharing.test.swift */; };
+		42B94BC42B95D52600DEE060 /* ThreadCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BC22B95D52600DEE060 /* ThreadCredential.swift */; };
+		42B94BC52B95D52600DEE060 /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BC32B95D52600DEE060 /* ThreadClientService.swift */; };
+		42B94BD02B95D59E00DEE060 /* ThreadCredentialsManagementView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BCA2B95D59A00DEE060 /* ThreadCredentialsManagementView+Build.swift */; };
+		42B94BD12B95D59E00DEE060 /* ThreadCredentialsManagementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BC92B95D59A00DEE060 /* ThreadCredentialsManagementViewModel.swift */; };
+		42B94BD22B95D59E00DEE060 /* ThreadCredentialsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BC82B95D59A00DEE060 /* ThreadCredentialsManagementView.swift */; };
+		42B94BD32B95D59E00DEE060 /* ThreadCredentialDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BCB2B95D59A00DEE060 /* ThreadCredentialDetailsView.swift */; };
+		42B94BD52B95D5D600DEE060 /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BD42B95D5D600DEE060 /* SimulatorThreadClientService.swift */; };
+		42B94BD72B95D69900DEE060 /* UIImage+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BD62B95D69900DEE060 /* UIImage+SharedAssets.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -567,13 +580,10 @@
 		42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */; };
 		42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */; };
 		42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */; };
-		42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */; };
 		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
-		42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */; };
-		42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B72B10279D0093B31A /* ThreadClientService.swift */; };
 		42F5CAEB2B10CED600409816 /* ThreadCredentialsSharing+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */; };
 		42F5CAEC2B10CED600409816 /* ThreadCredentialsSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
@@ -1684,13 +1694,24 @@
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		42B94BA52B95D3C300DEE060 /* CollapsibleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleView.swift; sourceTree = "<group>"; };
+		42B94BAB2B95D42800DEE060 /* ThreadTransferCredentialToHAViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTransferCredentialToHAViewModel.swift; sourceTree = "<group>"; };
+		42B94BAC2B95D42800DEE060 /* ThreadCredentialsSharingViewModel.test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModel.test.swift; sourceTree = "<group>"; };
+		42B94BAD2B95D42800DEE060 /* ThreadCredentialsSharingToKeychainViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingToKeychainViewModel.swift; sourceTree = "<group>"; };
+		42B94BAE2B95D42800DEE060 /* ThreadCredentialsSharingViewModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelProtocol.swift; sourceTree = "<group>"; };
+		42B94BB32B95D45300DEE060 /* ThreadCredentialsSharing.test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharing.test.swift; sourceTree = "<group>"; };
+		42B94BC22B95D52600DEE060 /* ThreadCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredential.swift; sourceTree = "<group>"; };
+		42B94BC32B95D52600DEE060 /* ThreadClientService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
+		42B94BC82B95D59A00DEE060 /* ThreadCredentialsManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThreadCredentialsManagementView.swift; path = Sources/App/Settings/Thread/ThreadCredentialsManagementView.swift; sourceTree = SOURCE_ROOT; };
+		42B94BC92B95D59A00DEE060 /* ThreadCredentialsManagementViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThreadCredentialsManagementViewModel.swift; path = Sources/App/Settings/Thread/ThreadCredentialsManagementViewModel.swift; sourceTree = SOURCE_ROOT; };
+		42B94BCA2B95D59A00DEE060 /* ThreadCredentialsManagementView+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ThreadCredentialsManagementView+Build.swift"; path = "Sources/App/Settings/Thread/ThreadCredentialsManagementView+Build.swift"; sourceTree = SOURCE_ROOT; };
+		42B94BCB2B95D59A00DEE060 /* ThreadCredentialDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThreadCredentialDetailsView.swift; path = Sources/App/Settings/Thread/Views/ThreadCredentialDetailsView.swift; sourceTree = SOURCE_ROOT; };
+		42B94BD42B95D5D600DEE060 /* SimulatorThreadClientService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorThreadClientService.swift; sourceTree = "<group>"; };
+		42B94BD62B95D69900DEE060 /* UIImage+SharedAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SharedAssets.swift"; sourceTree = "<group>"; };
 		42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingView.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
-		42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModel.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
-		42CA28B72B10279D0093B31A /* ThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
-		42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorThreadClientService.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -1722,7 +1743,6 @@
 		42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayPaginatedListTemplate.swift; sourceTree = "<group>"; };
 		42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAreaResponse.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
-		42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelTests.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsSharing+build.swift"; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -3166,6 +3186,7 @@
 		426740A62B1738F900C1DD73 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				42B94BD62B95D69900DEE060 /* UIImage+SharedAssets.swift */,
 				426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */,
 			);
 			path = Extensions;
@@ -3198,15 +3219,61 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
+		42B94BB52B95D46200DEE060 /* ToHomeAssistant */ = {
+			isa = PBXGroup;
+			children = (
+				42B94BAB2B95D42800DEE060 /* ThreadTransferCredentialToHAViewModel.swift */,
+			);
+			path = ToHomeAssistant;
+			sourceTree = "<group>";
+		};
+		42B94BB62B95D46C00DEE060 /* ToAppleKeychain */ = {
+			isa = PBXGroup;
+			children = (
+				42B94BAD2B95D42800DEE060 /* ThreadCredentialsSharingToKeychainViewModel.swift */,
+			);
+			path = ToAppleKeychain;
+			sourceTree = "<group>";
+		};
+		42B94BC12B95D52600DEE060 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				42B94BC22B95D52600DEE060 /* ThreadCredential.swift */,
+				42B94BC32B95D52600DEE060 /* ThreadClientService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		42B94BC62B95D57400DEE060 /* Thread */ = {
+			isa = PBXGroup;
+			children = (
+				42B94BC72B95D58000DEE060 /* ThreadCredentialsManagement */,
+				42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */,
+			);
+			path = Thread;
+			sourceTree = "<group>";
+		};
+		42B94BC72B95D58000DEE060 /* ThreadCredentialsManagement */ = {
+			isa = PBXGroup;
+			children = (
+				42B94BCB2B95D59A00DEE060 /* ThreadCredentialDetailsView.swift */,
+				42B94BC82B95D59A00DEE060 /* ThreadCredentialsManagementView.swift */,
+				42B94BCA2B95D59A00DEE060 /* ThreadCredentialsManagementView+Build.swift */,
+				42B94BC92B95D59A00DEE060 /* ThreadCredentialsManagementViewModel.swift */,
+			);
+			path = ThreadCredentialsManagement;
+			sourceTree = "<group>";
+		};
 		42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */ = {
 			isa = PBXGroup;
 			children = (
-				42F5CAB72B10AD8C00409816 /* Tests */,
-				42CA28B92B1028250093B31A /* Mocks */,
+				42B94BD42B95D5D600DEE060 /* SimulatorThreadClientService.swift */,
 				42CA28A62B1012DE0093B31A /* ThreadCredentialsSharingView.swift */,
-				42CA28B32B101E560093B31A /* ThreadCredentialsSharingViewModel.swift */,
-				42CA28B72B10279D0093B31A /* ThreadClientService.swift */,
 				42F5CADF2B10CD2D00409816 /* ThreadCredentialsSharing+build.swift */,
+				42B94BAE2B95D42800DEE060 /* ThreadCredentialsSharingViewModelProtocol.swift */,
+				42B94BB62B95D46C00DEE060 /* ToAppleKeychain */,
+				42B94BB52B95D46200DEE060 /* ToHomeAssistant */,
+				42F5CAB72B10AD8C00409816 /* Tests */,
 			);
 			path = ThreadCredentialsSharing;
 			sourceTree = "<group>";
@@ -3222,6 +3289,7 @@
 		42CA28B12B101D9C0093B31A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				42B94BA52B95D3C300DEE060 /* CollapsibleView.swift */,
 				42CA28AF2B101D6B0093B31A /* CardView.swift */,
 				42CA28B52B1022680093B31A /* HAButton.swift */,
 			);
@@ -3236,14 +3304,6 @@
 				429C721F2B28D0EC00BCD558 /* Haptics.swift */,
 			);
 			path = Utilities;
-			sourceTree = "<group>";
-		};
-		42CA28B92B1028250093B31A /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				42CA28BA2B1028330093B31A /* SimulatorThreadClientService.swift */,
-			);
-			path = Mocks;
 			sourceTree = "<group>";
 		};
 		42CE8FAB2B46C11E00C707F9 /* Domain */ = {
@@ -3273,7 +3333,8 @@
 		42F5CAB72B10AD8C00409816 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				42F5CAB82B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift */,
+				42B94BAC2B95D42800DEE060 /* ThreadCredentialsSharingViewModel.test.swift */,
+				42B94BB32B95D45300DEE060 /* ThreadCredentialsSharing.test.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -3593,7 +3654,7 @@
 				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
-				42CA28A52B1012B00093B31A /* ThreadCredentialsSharing */,
+				42B94BC62B95D57400DEE060 /* Thread */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				11AD2E2A2528FDB700FBC437 /* WebView */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
@@ -3882,6 +3943,7 @@
 				D0B25BC72130C9BB00678C2C /* Location */,
 				D0EEF325214DF30D00D1D360 /* Notifications */,
 				D0EEF31C214DDD3800D1D360 /* Resources */,
+				42B94BC12B95D52600DEE060 /* Services */,
 				D0C884782122A64500CCB501 /* Settings */,
 				42CA28B22B101DA70093B31A /* Utilities */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
@@ -5700,7 +5762,6 @@
 				425573E72B5838BB00145217 /* HATypedRequest+CarPlay.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
-				42F5CAE92B10CED600409816 /* ThreadCredentialsSharingViewModel.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
@@ -5710,7 +5771,6 @@
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
-				42CA28BB2B1028330093B31A /* SimulatorThreadClientService.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
@@ -5740,6 +5800,7 @@
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
+				42B94BBB2B95D4D200DEE060 /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				11B92AF2266F23DA00786588 /* NotificationManagerLocalPushInterfaceExtension.swift in Sources */,
@@ -5777,6 +5838,8 @@
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
+				42B94BD32B95D59E00DEE060 /* ThreadCredentialDetailsView.swift in Sources */,
+				42B94BBC2B95D4D200DEE060 /* ThreadCredentialsSharingViewModelProtocol.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */,
 				D0C88462211ED16300CCB501 /* OnboardingAuth.swift in Sources */,
@@ -5784,7 +5847,6 @@
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
 				420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
-				42F5CAEA2B10CED600409816 /* ThreadClientService.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
@@ -5818,7 +5880,9 @@
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
+				42B94BD12B95D59E00DEE060 /* ThreadCredentialsManagementViewModel.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
+				42B94BD02B95D59E00DEE060 /* ThreadCredentialsManagementView+Build.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
@@ -5841,9 +5905,11 @@
 				42266B1F2B741FB400E94A71 /* BarcodeScannerDataModel.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
+				42B94BBA2B95D4D200DEE060 /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
+				42B94BD22B95D59E00DEE060 /* ThreadCredentialsManagementView.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
@@ -5860,6 +5926,7 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */,
+				42B94BBF2B95D4F000DEE060 /* ThreadCredentialsSharing.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
@@ -5867,8 +5934,8 @@
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
 				11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */,
-				42F5CAB92B10AD9800409816 /* ThreadCredentialsSharingViewModelTests.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
+				42B94BBE2B95D4EB00DEE060 /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
@@ -6125,6 +6192,7 @@
 				42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */,
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */,
+				42B94BC42B95D52600DEE060 /* ThreadCredential.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
 				11C9E43B2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
@@ -6134,6 +6202,7 @@
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,
+				42B94BD72B95D69900DEE060 /* UIImage+SharedAssets.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
@@ -6185,6 +6254,7 @@
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
+				42B94BA62B95D3C300DEE060 /* CollapsibleView.swift in Sources */,
 				11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */,
 				11C4628824B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
@@ -6214,6 +6284,8 @@
 				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EE3275C54A200205C7B /* OpenPageIntentHandler.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
+				42B94BD52B95D5D600DEE060 /* SimulatorThreadClientService.swift in Sources */,
+				42B94BC52B95D52600DEE060 /* ThreadClientService.swift in Sources */,
 				11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
