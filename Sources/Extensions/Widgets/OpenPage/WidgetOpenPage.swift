@@ -22,7 +22,7 @@ struct WidgetOpenPage: Widget {
                                 id: panel.identifier!,
                                 title: panel.displayString,
                                 subtitle: showSubtitle ? Current.servers.server(for: panel)?.info.name : nil,
-                                widgetURL: panel.widgetURL,
+                                interactionType: .widgetURL(panel.widgetURL),
                                 icon: panel.materialDesignIcon,
                                 showsChevron: true,
                                 textColor: .white,

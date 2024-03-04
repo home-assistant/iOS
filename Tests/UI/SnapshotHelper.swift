@@ -128,11 +128,10 @@ open class Snapshot: NSObject {
         app.launchArguments += ["-FASTLANE_SNAPSHOT", "YES", "-ui_testing"]
 
         do {
-            let launchArguments = try String(contentsOf: path, encoding: String.Encoding.utf8)
-            let regex = try NSRegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
+            let launchArguments = try String(contentsOf: path, encoding: .utf8)
+            let regex = try NSRegularExpression(pattern: "(\\\".+?\\\"|\\S+)")
             let matches = regex.matches(
                 in: launchArguments,
-                options: [],
                 range: NSRange(location: 0, length: launchArguments.count)
             )
             let results = matches.map { result -> String in

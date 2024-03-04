@@ -76,10 +76,10 @@
 "carplay.labels.empty_domain_list" = "Keine Domänen verfügbar";
 "carplay.labels.no_servers_available" = "Keine Server verfügbar. Füge einen Server in der App hinzu.";
 "carplay.labels.servers" = "Server";
-"carplay.lock.confirmation.title" = "Bist du sicher, dass du die Aktion Zuschließen für %@ ausführen möchtest?";
+"carplay.lock.confirmation.title" = "Bist du sicher, dass du %@ Abschließen ausführen möchtest?";
 "carplay.navigation.button.next" = "Weiter";
 "carplay.navigation.button.previous" = "Zurück";
-"carplay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Zuschließen für %@ ausführen möchtest?";
+"carplay.unlock.confirmation.title" = "Bist du sicher, dass du %@ Aufschließen ausführen möchtest?";
 "cl_error.description.deferred_accuracy_too_low" = "Der Modus Aufschieben wird für die angeforderte Genauigkeit nicht unterstützt.";
 "cl_error.description.deferred_canceled" = "Die Anforderung für verzögerte Aktualisierungen wurde von deiner App oder vom Standortmanager abgebrochen.";
 "cl_error.description.deferred_distance_filtered" = "Der verzögerte Modus unterstützt keine Distanzfilter.";

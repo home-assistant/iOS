@@ -1,3 +1,4 @@
+import AppIntents
 import Foundation
 import Shared
 import SwiftUI
@@ -7,7 +8,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
         id: String,
         title: String,
         subtitle: String?,
-        widgetURL: URL,
+        interactionType: InteractionType,
         icon: MaterialDesignIcons,
         showsChevron: Bool = false,
         textColor: Color = Color.black,
@@ -17,7 +18,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
         self.id = id
         self.title = title
         self.subtitle = subtitle
-        self.widgetURL = widgetURL
+        self.interactionType = interactionType
         self.textColor = textColor
         self.icon = icon
         self.showsChevron = showsChevron
@@ -29,7 +30,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
 
     var title: String
     var subtitle: String?
-    var widgetURL: URL
+    var interactionType: InteractionType
 
     var icon: MaterialDesignIcons
     var showsChevron: Bool
@@ -37,6 +38,15 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     var backgroundColor: Color
     var textColor: Color
     var iconColor: Color
+
+    enum InteractionType: Hashable {
+        case widgetURL(URL)
+        case appIntent(WidgetIntentType)
+    }
+
+    enum WidgetIntentType: Hashable {
+        case action
+    }
 }
 
 enum WidgetBasicSizeStyle {

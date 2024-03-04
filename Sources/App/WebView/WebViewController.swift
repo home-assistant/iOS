@@ -870,9 +870,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
 extension String {
     func matchingStrings(regex: String) -> [[String]] {
-        guard let regex = try? NSRegularExpression(pattern: regex, options: []) else { return [] }
+        guard let regex = try? NSRegularExpression(pattern: regex) else { return [] }
         let nsString = self as NSString
-        let results = regex.matches(in: self, options: [], range: NSRange(location: 0, length: nsString.length))
+        let results = regex.matches(in: self, range: NSRange(location: 0, length: nsString.length))
         return results.map { result in
             (0 ..< result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound
@@ -907,7 +907,7 @@ extension WebViewController: WKScriptMessageHandler {
             firstly {
                 Current.api(for: server).tokenManager.authDictionaryForWebView(forceRefresh: force)
             }.done { dictionary in
-                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
                 if let jsonString = String(data: jsonData!, encoding: .utf8) {
                     // Current.Log.verbose("Responding to getExternalAuth with: \(callbackName)(true, \(jsonString))")
                     let script = "\(callbackName)(true, \(jsonString))"

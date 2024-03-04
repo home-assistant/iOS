@@ -285,7 +285,6 @@ class MenuManager {
             title: L10n.Menu.Actions.title,
             image: nil,
             identifier: .haActions,
-            options: [],
             children: Array(children)
         )
     }

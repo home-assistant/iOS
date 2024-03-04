@@ -15,7 +15,7 @@ public struct ItemProviderRequest<Type> {
 public extension NSItemProvider {
     func item<T>(for request: ItemProviderRequest<T>) -> Promise<T> {
         Promise { seal in
-            loadItem(forTypeIdentifier: request.utType, options: nil, completionHandler: { value, error in
+            loadItem(forTypeIdentifier: request.utType, completionHandler: { value, error in
                 seal.resolve(value as? T, error)
             })
         }

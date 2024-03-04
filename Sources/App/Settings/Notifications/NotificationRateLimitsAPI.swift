@@ -30,7 +30,7 @@ class NotificationRateLimitsAPI {
                 urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 urlRequest.httpBody = try JSONSerialization.data(withJSONObject: [
                     "push_token": pushID,
-                ], options: [])
+                ])
                 return .value(urlRequest)
             } catch {
                 return .init(error: error)

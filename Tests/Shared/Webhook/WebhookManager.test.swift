@@ -894,7 +894,7 @@ private func XCTAssertEqualWebhookRequest(
 ) {
     do {
         let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
-        let lhs = try mapper.map(JSONObject: JSONSerialization.jsonObject(with: lhsData ?? Data(), options: []))
+        let lhs = try mapper.map(JSONObject: JSONSerialization.jsonObject(with: lhsData ?? Data()))
         XCTAssertEqualWebhookRequest(lhs, rhs, server: server, file: file, line: line)
     } catch {
         XCTFail("got error: \(error)", file: file, line: line)

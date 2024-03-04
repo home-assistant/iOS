@@ -45,7 +45,7 @@ public class WatchComplication: Object, ImmutableMappable {
                 return [String: Any]()
             }
             do {
-                let dict = try JSONSerialization.jsonObject(with: dictionaryData, options: []) as? [String: Any]
+                let dict = try JSONSerialization.jsonObject(with: dictionaryData) as? [String: Any]
                 return dict!
             } catch {
                 return [String: Any]()
@@ -54,7 +54,7 @@ public class WatchComplication: Object, ImmutableMappable {
 
         set {
             do {
-                let data = try JSONSerialization.data(withJSONObject: newValue, options: [])
+                let data = try JSONSerialization.data(withJSONObject: newValue)
                 complicationData = data
             } catch {
                 complicationData = nil

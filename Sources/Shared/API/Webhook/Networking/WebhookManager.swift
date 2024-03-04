@@ -374,7 +374,7 @@ public class WebhookManager: NSObject {
                 let temporaryFile = temporaryDirectory
                     .appendingPathComponent(UUID().uuidString)
                     .appendingPathExtension("json")
-                try data.write(to: temporaryFile, options: [])
+                try data.write(to: temporaryFile)
 
                 task = sessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
 

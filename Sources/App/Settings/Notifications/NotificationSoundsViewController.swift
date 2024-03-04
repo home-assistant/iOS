@@ -307,8 +307,7 @@ class NotificationSoundsViewController: HAFormViewController, UIDocumentPickerDe
         do {
             let files = try FileManager.default.contentsOfDirectory(
                 at: librarySoundsURL(),
-                includingPropertiesForKeys: nil,
-                options: []
+                includingPropertiesForKeys: nil
             )
             return files.filter({ $0.lastPathComponent.hasSuffix(suffix) })
         } catch {
