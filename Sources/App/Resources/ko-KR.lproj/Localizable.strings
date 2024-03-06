@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "이 작업은 취소할 수 없습니다.";
 "client_events.view.clear_confirm.title" = "모든 이벤트를 지우시겠습니까?";
 "close_label" = "Close";
+"component.collapsible_view.collapse" = "Collapse";
+"component.collapsible_view.expand" = "Expand";
 "continue_label" = "계속하기";
 "copy_label" = "복사";
 "database.problem.delete" = "데이터베이스 삭제 및 앱 종료";
@@ -561,6 +563,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.privacy.messaging.description" = "푸시 알림이 작동하려면 Firebase Cloud Messaging을 활성화해야 합니다.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "개인정보 보호";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "베타 릴리스 포함";
 "settings_details.updates.check_for_updates.title" = "자동으로 업데이트 확인";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "share_extension.entered_placeholder" = "이벤트에서 '입력됨'";
 "share_extension.error.title" = "보낼 수 없음";
 "success_label" = "성공";
+"thread.active_operational_data_set.title" = "Active operational data set";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.network_key_title" = "네트워크 키";
 "thread.credentials.network_name_title" = "네트워크 이름";
@@ -591,6 +596,14 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home의 홈 소유자인 iCloud 계정으로 로그인했는지 확인하세요.";
 "thread.credentials.share_credentials.no_credentials_title" = "공유할 사용자 인증 정보가 없습니다.";
 "thread.credentials.share_credentials_button_title" = "Home Assistant와 자격 증명 공유";
+"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.management.title" = "Thread Credentials";
+"thread.network_key.title" = "Network Key";
+"thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.title" = "Operation failed";
+"thread.transter_to_apple.title" = "Transfer to Apple Keychain";
+"thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "연결에 실패했습니다.";
 "token_error.expired" = "토큰이 만료되었습니다.";
 "token_error.token_unavailable" = "토큰을 사용할 수 없습니다.";

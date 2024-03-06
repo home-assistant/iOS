@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Êtes-vous sûr ? Cette action est définitive.";
 "client_events.view.clear_confirm.title" = "Voulez-vous vraiment effacer tous les événements?";
 "close_label" = "Fermer";
+"component.collapsible_view.collapse" = "Collapse";
+"component.collapsible_view.expand" = "Expand";
 "continue_label" = "Continuer";
 "copy_label" = "Copie";
 "database.problem.delete" = "Supprimer la base de données et quitter l'application";
@@ -561,6 +563,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging doit être activé pour que les notifications push fonctionnent.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Vie privée";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Inclure les versions bêta";
 "settings_details.updates.check_for_updates.title" = "Rechercher automatiquement les mises à jour";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "share_extension.entered_placeholder" = "\"entré\" dans l'événement";
 "share_extension.error.title" = "Impossible d'envoyer";
 "success_label" = "Succès";
+"thread.active_operational_data_set.title" = "Active operational data set";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "ID du \"Border Agent\"";
 "thread.credentials.network_key_title" = "Clé réseau";
 "thread.credentials.network_name_title" = "Nom du réseau";
@@ -591,6 +596,14 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "thread.credentials.share_credentials.no_credentials_message" = "Assurez-vous que vous êtes connecté avec votre compte iCloud qui est propriétaire d'un domicile dans Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Vous n'avez aucune information d'identification à partager";
 "thread.credentials.share_credentials_button_title" = "Partager les informations d'identification avec Home Assistant";
+"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.management.title" = "Thread Credentials";
+"thread.network_key.title" = "Network Key";
+"thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.title" = "Operation failed";
+"thread.transter_to_apple.title" = "Transfer to Apple Keychain";
+"thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "La connexion a échoué.";
 "token_error.expired" = "Le jeton a expiré.";
 "token_error.token_unavailable" = "Le jeton n'est pas disponible.";

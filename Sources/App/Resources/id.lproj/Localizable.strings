@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Ini tidak dapat diurungkan.";
 "client_events.view.clear_confirm.title" = "Yakin ingin menghapus semua peristiwa?";
 "close_label" = "Tutup";
+"component.collapsible_view.collapse" = "Ciutkan";
+"component.collapsible_view.expand" = "Bentangkan";
 "continue_label" = "Lanjutkan";
 "copy_label" = "Salin";
 "database.problem.delete" = "Hapus Basis Data dan Keluar dari Aplikasi";
@@ -353,7 +355,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.details_section.notification_settings_row.title" = "Notifikasi";
 "settings.details_section.watch_row.title" = "Apple Watch";
 "settings.developer.annoying_background_notifications.title" = "Info Latar Belakang yang Mengganggu";
-"settings.developer.camera_notification.notification.body" = "Perluas ini untuk menampilkan ekstensi konten kamera";
+"settings.developer.camera_notification.notification.body" = "Bentangkan ini untuk menampilkan ekstensi konten kamera";
 "settings.developer.camera_notification.title" = "Tampilkan ekstensi konten notifikasi kamera";
 "settings.developer.copy_realm.alert.message" = "Realm disalin dari %@ ke %@";
 "settings.developer.copy_realm.alert.title" = "Realm yang Disalin";
@@ -368,7 +370,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.developer.export_log_files.title" = "Ekspor file log";
 "settings.developer.footer" = "Jangan utak-atik di sini, jika Anda tidak tahu apa yang Anda lakukan!";
 "settings.developer.header" = "Pengembang";
-"settings.developer.map_notification.notification.body" = "Perluas ini untuk menampilkan ekstensi konten peta";
+"settings.developer.map_notification.notification.body" = "Bentangkan ini untuk menampilkan ekstensi konten peta";
 "settings.developer.map_notification.title" = "Memperlihatkan ekstensi konten notifikasi peta";
 "settings.developer.mock_thread_credentials_sharing.title" = "Simulator Berbagi Kredensial Thread";
 "settings.developer.show_log_files.title" = "Tampilkan file log di Finder";
@@ -561,6 +563,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging harus diaktifkan agar notifikasi push berfungsi.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privasi";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Sertakan Rilis Beta";
 "settings_details.updates.check_for_updates.title" = "Periksa Pembaruan Secara Otomatis";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "share_extension.entered_placeholder" = "peristiwa 'masuk'";
 "share_extension.error.title" = "Tidak Dapat Mengirim";
 "success_label" = "Sukses";
+"thread.active_operational_data_set.title" = "Himpunan data operasional aktif";
+"thread.border_agent_id.title" = "ID Agen Perbatasan";
 "thread.credentials.border_agent_id_title" = "ID Agen Perbatasan";
 "thread.credentials.network_key_title" = "Kunci Jaringan";
 "thread.credentials.network_name_title" = "Nama Jaringan";
@@ -591,6 +596,14 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "thread.credentials.share_credentials.no_credentials_message" = "Pastikan Anda masuk dengan akun iCloud Anda yang unakan sebagai pemilik Rumah di Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Anda tidak memiliki kredensial untuk dibagikan";
 "thread.credentials.share_credentials_button_title" = "Bagikan kredensial dengan Home Assistant";
+"thread.extended_pan_id.title" = "ID PAN yang diperluas";
+"thread.management.title" = "Kredensial Thread";
+"thread.network_key.title" = "Kunci Jaringan";
+"thread.store_in_keychain.error.generic.body" = "Gagal menyimpan kredensial thread di rantai kunci, periksa log untuk informasi lebih lanjut.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Gagal mengonversi input ke heksadesimal saat menyimpan kredensial thread di rantai kunci";
+"thread.store_in_keychain.error.title" = "Operasi gagal";
+"thread.transter_to_apple.title" = "Transfer ke Rantai Kunci Apple";
+"thread.transter_to_homeassistant.title" = "Transfer ke Home Assistant";
 "token_error.connection_failed" = "Koneksi gagal.";
 "token_error.expired" = "Token kedaluwarsa.";
 "token_error.token_unavailable" = "Token tidak tersedia.";

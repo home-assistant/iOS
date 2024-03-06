@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Questo non può essere annullato.";
 "client_events.view.clear_confirm.title" = "Sei sicuro di voler cancellare tutti gli eventi?";
 "close_label" = "Chiudi";
+"component.collapsible_view.collapse" = "Collapse";
+"component.collapsible_view.expand" = "Expand";
 "continue_label" = "Continua";
 "copy_label" = "Copia";
 "database.problem.delete" = "Elimina il database e chiudi l'applicazione";
@@ -561,6 +563,7 @@
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging deve essere abilitato affinché le notifiche push funzionino.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privacy";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Includi versioni beta";
 "settings_details.updates.check_for_updates.title" = "Controlla automaticamente gli aggiornamenti";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@
 "share_extension.entered_placeholder" = "'inserito' nell'evento";
 "share_extension.error.title" = "Impossibile inviare";
 "success_label" = "Successo";
+"thread.active_operational_data_set.title" = "Active operational data set";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.network_key_title" = "Chiave di rete";
 "thread.credentials.network_name_title" = "Nome della rete";
@@ -591,6 +596,14 @@
 "thread.credentials.share_credentials.no_credentials_message" = "Assicurati di aver effettuato l'accesso con il tuo account iCloud che è proprietario di una Home in Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Non hai credenziali da condividere";
 "thread.credentials.share_credentials_button_title" = "Condividi le credenziali con Home Assistant";
+"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.management.title" = "Thread Credentials";
+"thread.network_key.title" = "Network Key";
+"thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.title" = "Operation failed";
+"thread.transter_to_apple.title" = "Transfer to Apple Keychain";
+"thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "Connessione fallita.";
 "token_error.expired" = "Il token è scaduto.";
 "token_error.token_unavailable" = "Il Token non è disponibile.";
