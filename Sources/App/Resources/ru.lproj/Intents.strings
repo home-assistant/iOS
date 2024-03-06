@@ -1,7 +1,7 @@
 "0aqrcy" = "Сбой: ${error}";
 "2KWKqM" = "Ошибка: Home Assistant не отвечает";
 "2LIxe4" = "Сбой: ${error}";
-"2b0Uo4" = "Service";
+"2b0Uo4" = "Служба";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Обновлено";
 "4tpAXn" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";
@@ -20,7 +20,7 @@
 "BwZv3u" = "Какой сервер?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Открыть ${page}";
-"DdnZyl" = "Got the latest still from ${cameraID}";
+"DdnZyl" = "Получил последний кадр от ${cameraID}";
 "DhCruz" = "Результат помощи";
 "DqfwpO" = "Сервер";
 "DsasVx" = "Ошибка";
@@ -88,7 +88,7 @@
 "ftQHJw" = "Какой сервер?";
 "fuRWMi" = "Отправить ${location} в Home Assistant";
 "g8g7Af" = "Perform the action";
-"gI3mme" = "What service data do you want to send?";
+"gI3mme" = "Какие данные службы вы хотите отправить?";
 "gePUyy" = "Местоположение";
 "glRCfJ" = "Ошибка: Home Assistant в настоящее время недоступен";
 "gv7Gg6" = "Местоположение";
@@ -108,7 +108,7 @@
 "lNmaCR" = "Шаблон";
 "lxHlyQ" = "Запустить событие";
 "mAibJP" = "Ошибка: Home Assistant в настоящее время недоступен";
-"mJ6CrP" = "Failed to send ${eventName}: ${error}";
+"mJ6CrP" = "Не удалось отправить ${eventName}: ${error}";
 "mZnRHS" = "${eventName} запущено";
 "mi6B62" = "Какие данные вы хотите отправить вместе с событием?";
 "ni0OSe" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";

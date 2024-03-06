@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "This cannot be undone.";
 "client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
 "close_label" = "Close";
+"component.collapsible_view.collapse" = "Collapse";
+"component.collapsible_view.expand" = "Expand";
 "continue_label" = "Продължи";
 "copy_label" = "Copy";
 "database.problem.delete" = "Delete Database & Quit App";
@@ -561,6 +563,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.privacy.messaging.description" = "Трябва да е активирано Firebase Cloud Messaging, за да функционират push известията.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Поверителност";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Включване на бета версии";
 "settings_details.updates.check_for_updates.title" = "Автоматична проверка за актуализации";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistant е безплатен и с отворен код софтуер 
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
 "success_label" = "Success";
+"thread.active_operational_data_set.title" = "Active operational data set";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "ИД на граничен агент";
 "thread.credentials.network_key_title" = "Мрежов ключ";
 "thread.credentials.network_name_title" = "Име на мрежата";
@@ -591,6 +596,14 @@ Home Assistant е безплатен и с отворен код софтуер 
 "thread.credentials.share_credentials.no_credentials_message" = "Уверете се, че сте влезли в своя iCloud акаунт, който е собственик на Дом в Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Нямате идентификационни данни за споделяне";
 "thread.credentials.share_credentials_button_title" = "Споделете идентификационни данни с Home Assistant";
+"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.management.title" = "Thread Credentials";
+"thread.network_key.title" = "Network Key";
+"thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.title" = "Operation failed";
+"thread.transter_to_apple.title" = "Transfer to Apple Keychain";
+"thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "Connection failed.";
 "token_error.expired" = "Token is expired.";
 "token_error.token_unavailable" = "Token is unavailable.";

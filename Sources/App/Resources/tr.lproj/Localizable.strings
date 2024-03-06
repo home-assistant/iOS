@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Bu geri alınamaz.";
 "client_events.view.clear_confirm.title" = "Tüm olayları temizlemek istediğinizden emin misiniz?";
 "close_label" = "Kapat";
+"component.collapsible_view.collapse" = "Collapse";
+"component.collapsible_view.expand" = "Expand";
 "continue_label" = "Devam et";
 "copy_label" = "Kopyala";
 "database.problem.delete" = "Veritabanını Sil ve Uygulamadan Çık";
@@ -561,6 +563,7 @@
 "settings_details.privacy.messaging.description" = "Push bildirimlerinin çalışabilmesi için Firebase Bulut Mesajlaşma etkinleştirilmelidir.";
 "settings_details.privacy.messaging.title" = "Firebase Bulut Mesajlaşma";
 "settings_details.privacy.title" = "Gizlilik";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Beta Sürümlerini Dahil Et";
 "settings_details.updates.check_for_updates.title" = "Güncelleştirmeleri Otomatik Olarak Denetle";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@
 "share_extension.entered_placeholder" = "Etkinliğe 'girildi'";
 "share_extension.error.title" = "Gönderilemedi";
 "success_label" = "Başarılı!";
+"thread.active_operational_data_set.title" = "Active operational data set";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "Sınır Ajanı Kimliği";
 "thread.credentials.network_key_title" = "Ağ Anahtarı";
 "thread.credentials.network_name_title" = "Ağ Adı";
@@ -591,6 +596,14 @@
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home'da bir Evin sahibi olan iCloud hesabınızla oturum açtığınızdan emin olun.";
 "thread.credentials.share_credentials.no_credentials_title" = "Paylaşacak kimlik bilgileriniz yok";
 "thread.credentials.share_credentials_button_title" = "Kimlik bilgilerinizi Ev Asistanı ile paylaşın";
+"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.management.title" = "Thread Credentials";
+"thread.network_key.title" = "Network Key";
+"thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.title" = "Operation failed";
+"thread.transter_to_apple.title" = "Transfer to Apple Keychain";
+"thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "Bağlantı kurulamadı.";
 "token_error.expired" = "Anahtar süresi doldu.";
 "token_error.token_unavailable" = "Anahtar kullanılamıyor.";

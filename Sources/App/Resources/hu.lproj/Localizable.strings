@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Ezt nem lehet visszavonni.";
 "client_events.view.clear_confirm.title" = "Biztos, hogy az összes eseményt törölni szeretné?";
 "close_label" = "Bezárás";
+"component.collapsible_view.collapse" = "Összecsuk";
+"component.collapsible_view.expand" = "Kibővít";
 "continue_label" = "Tovább";
 "copy_label" = "Másolás";
 "database.problem.delete" = "Adatbázis törlése és kilépés az alkalmazásból";
@@ -561,6 +563,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.privacy.messaging.description" = "A Firebase Cloud Messagingnek engedélyezve kell lennie a push értesítések működéséhez.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Adatvédelem";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Tartalmazza a béta kiadásokat";
 "settings_details.updates.check_for_updates.title" = "Frissítések automatikus keresése";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "share_extension.entered_placeholder" = "'entered' az eseményben";
 "share_extension.error.title" = "Nem sikerült elküldeni";
 "success_label" = "Sikerült";
+"thread.active_operational_data_set.title" = "Aktív működési adatkészlet";
+"thread.border_agent_id.title" = "Border Agent azonosító";
 "thread.credentials.border_agent_id_title" = "Border Agent azonosító";
 "thread.credentials.network_key_title" = "Hálózati kulcs";
 "thread.credentials.network_name_title" = "Hálózat neve";
@@ -591,6 +596,14 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "thread.credentials.share_credentials.no_credentials_message" = "Győződjön meg róla, hogy bejelentkezett az iCloud fiókjával, amely egy Otthon tulajdonosa az Apple Home-ban.";
 "thread.credentials.share_credentials.no_credentials_title" = "Nincsenek megosztandó hitelesítő adatai";
 "thread.credentials.share_credentials_button_title" = "Hitelesítő adatok megosztása a Home Assistanttal";
+"thread.extended_pan_id.title" = "Kiterjesztett PAN azonosító";
+"thread.management.title" = "Thread hitelesítő adatai";
+"thread.network_key.title" = "Hálózati kulcs";
+"thread.store_in_keychain.error.generic.body" = "Nem sikerült tárolni a thread hitelesítő adatait a kulcskarikában, további információért ellenőrizze a naplókat.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Nem sikerült hexadecimálisra konvertálni a bemenetet, miközben a Thread hitelesítő adatait a kulcskarikában tárolta";
+"thread.store_in_keychain.error.title" = "A művelet sikertelen";
+"thread.transter_to_apple.title" = "Átvitel az Apple-kulcskarikára";
+"thread.transter_to_homeassistant.title" = "Átvitel a Home Assistantba";
 "token_error.connection_failed" = "A kapcsolat sikertelen.";
 "token_error.expired" = "A token lejárt.";
 "token_error.token_unavailable" = "A token nem elérhető.";

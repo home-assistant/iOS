@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Detta kan inte ångras.";
 "client_events.view.clear_confirm.title" = "Är du säker på att du vill ta bort alla händelser?";
 "close_label" = "Close";
+"component.collapsible_view.collapse" = "Collapse";
+"component.collapsible_view.expand" = "Expand";
 "continue_label" = "Fortsätt";
 "copy_label" = "Kopiera";
 "database.problem.delete" = "Radera databasen & stäng appen";
@@ -562,6 +564,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging måste vara aktiverat för att push-meddelanden ska fungera.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Integritet";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Inkludera betaversioner";
 "settings_details.updates.check_for_updates.title" = "Sök automatiskt efter uppdateringar";
 "settings_details.watch.title" = "Apple Watch";
@@ -584,6 +587,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "share_extension.entered_placeholder" = "'inlagt' i händelse";
 "share_extension.error.title" = "Kunde inte skicka";
 "success_label" = "Lyckades";
+"thread.active_operational_data_set.title" = "Active operational data set";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.network_key_title" = "Nätverksnyckel";
 "thread.credentials.network_name_title" = "Nätverksnamn";
@@ -592,6 +597,14 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "thread.credentials.share_credentials.no_credentials_message" = "Se till att du är inloggad med ditt iCloud-konto som är ägare till ett hem i Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Du har inga inloggningsuppgifter att dela";
 "thread.credentials.share_credentials_button_title" = "Dela autentiseringsuppgifter med Home Assistant";
+"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.management.title" = "Thread Credentials";
+"thread.network_key.title" = "Network Key";
+"thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.title" = "Operation failed";
+"thread.transter_to_apple.title" = "Transfer to Apple Keychain";
+"thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
 "token_error.connection_failed" = "Anslutningen misslyckades.";
 "token_error.expired" = "Token har upphört att gälla.";
 "token_error.token_unavailable" = "Token är inte tillgänglig.";

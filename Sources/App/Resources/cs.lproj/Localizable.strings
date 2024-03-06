@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Toto nelze vrátit zpět.";
 "client_events.view.clear_confirm.title" = "Opravdu chcete vymazat všechny události?";
 "close_label" = "Zavřít";
+"component.collapsible_view.collapse" = "Sbalit";
+"component.collapsible_view.expand" = "Rozbalit";
 "continue_label" = "Pokračovat";
 "copy_label" = "Kopírovat";
 "database.problem.delete" = "Smazat databázi a ukončit aplikaci";
@@ -561,6 +563,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.privacy.messaging.description" = "Aby push oznámení fungovala, musí být povolena služba Firebase Cloud Messaging.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Soukromí";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Zahrnout beta verze";
 "settings_details.updates.check_for_updates.title" = "Automaticky kontrolovat aktualizace";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "share_extension.entered_placeholder" = "\"entered\" v události";
 "share_extension.error.title" = "Nelze odeslat";
 "success_label" = "Úspěch";
+"thread.active_operational_data_set.title" = "Aktivní soubor provozních dat";
+"thread.border_agent_id.title" = "ID hraničního agenta";
 "thread.credentials.border_agent_id_title" = "ID hraničního agenta";
 "thread.credentials.network_key_title" = "Síťový klíč";
 "thread.credentials.network_name_title" = "Název sítě";
@@ -591,6 +596,14 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "thread.credentials.share_credentials.no_credentials_message" = "Ujistěte se, že jste přihlášeni pomocí svého účtu iCloud, který je vlastníkem domácnosti v Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Nemáte přihlašovací údaje, které byste mohli sdílet";
 "thread.credentials.share_credentials_button_title" = "Sdílet přihlašovací údaje s Home Assistantem";
+"thread.extended_pan_id.title" = "ID rozšířené PAN";
+"thread.management.title" = "Přihlašovací údaje Thread";
+"thread.network_key.title" = "Síťový klíč";
+"thread.store_in_keychain.error.generic.body" = "Nepodařilo se uložit přihlašovací údaje Thread do klíčenky. Další informace naleznete v protokolech.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Při ukládání pověření Thread do klíčenky se nepodařilo převést vstup na hexadecimální.";
+"thread.store_in_keychain.error.title" = "Operace se nezdařila";
+"thread.transter_to_apple.title" = "Převod do klíčenky Apple";
+"thread.transter_to_homeassistant.title" = "Přenést do Home Assistanta";
 "token_error.connection_failed" = "Připojení se nezdařilo.";
 "token_error.expired" = "Platnost tokenu vypršela.";
 "token_error.token_unavailable" = "Token není k dispozici.";

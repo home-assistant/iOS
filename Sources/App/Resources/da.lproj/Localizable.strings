@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "Dette kan ikke fortrydes.";
 "client_events.view.clear_confirm.title" = "Er du sikker på, at du vil rydde alle hændelser?";
 "close_label" = "Luk";
+"component.collapsible_view.collapse" = "Skjul";
+"component.collapsible_view.expand" = "Udvid";
 "continue_label" = "Fortsæt";
 "copy_label" = "Kopiér";
 "database.problem.delete" = "Slet database og afslut app";
@@ -561,6 +563,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging skal være aktiveret for at push-notifikationer kan fungere.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privatliv";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Inkludér betaudgivelser";
 "settings_details.updates.check_for_updates.title" = "Søg automatisk efter opdateringer";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "share_extension.entered_placeholder" = "'indtastet' i hændelse";
 "share_extension.error.title" = "Kunne ikke sende";
 "success_label" = "Succes!";
+"thread.active_operational_data_set.title" = "Aktivt operationelt datasæt";
+"thread.border_agent_id.title" = "Grænseagent-id";
 "thread.credentials.border_agent_id_title" = "Grænseagent-id";
 "thread.credentials.network_key_title" = "Netværksnøgle";
 "thread.credentials.network_name_title" = "Netværksnavn";
@@ -591,6 +596,14 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "thread.credentials.share_credentials.no_credentials_message" = "Sørg for, at du er logget ind med din iCloud-konto, som er ejer af et hjem i Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Du har ikke legitimationsoplysninger at dele";
 "thread.credentials.share_credentials_button_title" = "Del legitimationsoplysninger med Home Assistant";
+"thread.extended_pan_id.title" = "Udvidet PAN-ID";
+"thread.management.title" = "Thread-legitimationsoplysninger";
+"thread.network_key.title" = "Netværksnøgle";
+"thread.store_in_keychain.error.generic.body" = "Kunne ikke gemme Thread-legitimationsoplysninger i nøglering. Tjek logfiler for flere oplysninger.";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Kunne ikke konvertere input til hexadecimal under lagring af Thread-legitimationsoplysninger i nøglering";
+"thread.store_in_keychain.error.title" = "Handlingen mislykkedes";
+"thread.transter_to_apple.title" = "Overførsel til Apple-nøglering";
+"thread.transter_to_homeassistant.title" = "Overfør til Home Assistant";
 "token_error.connection_failed" = "Forbindelsen mislykkedes.";
 "token_error.expired" = "Token er udløbet.";
 "token_error.token_unavailable" = "Token er ikke tilgængelig.";

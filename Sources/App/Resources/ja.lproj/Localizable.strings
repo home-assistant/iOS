@@ -109,6 +109,8 @@
 "client_events.view.clear_confirm.message" = "これは、元に戻すことはできません。";
 "client_events.view.clear_confirm.title" = "すべてのイベントをクリアしてもよろしいですか？";
 "close_label" = "閉じる";
+"component.collapsible_view.collapse" = "たたむ";
+"component.collapsible_view.expand" = "展開";
 "continue_label" = "続行";
 "copy_label" = "コピー";
 "database.problem.delete" = "データベースを削除してアプリを終了する";
@@ -561,6 +563,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.privacy.messaging.description" = "プッシュ通知を機能させるには、Firebase Cloud Messaging を有効にする必要があります。";
 "settings_details.privacy.messaging.title" = "Firebaseクラウドメッセージング";
 "settings_details.privacy.title" = "プライバシー";
+"settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "ベータリリースを含める";
 "settings_details.updates.check_for_updates.title" = "アップデートを自動的にチェック";
 "settings_details.watch.title" = "Apple Watch";
@@ -583,6 +586,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "share_extension.entered_placeholder" = "イベントに'入力' されました";
 "share_extension.error.title" = "送信できませんでした";
 "success_label" = "成功";
+"thread.active_operational_data_set.title" = "アクティブな運用データセット";
+"thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.network_key_title" = "ネットワークキー";
 "thread.credentials.network_name_title" = "ネットワーク名";
@@ -591,6 +596,14 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home のホーム所有者である iCloud アカウントでログインしていることを確認してください。";
 "thread.credentials.share_credentials.no_credentials_title" = "共有する資格情報がありません";
 "thread.credentials.share_credentials_button_title" = "Home Assistantと認証情報を共有する";
+"thread.extended_pan_id.title" = "拡張PAN ID";
+"thread.management.title" = "Thread 認証情報";
+"thread.network_key.title" = "ネットワークキー";
+"thread.store_in_keychain.error.generic.body" = "Thread 認証情報をキーチェーンに保存できませんでした。詳細についてはログを確認してください。";
+"thread.store_in_keychain.error.hexadecimal_conversion.body" = "Thread 認証情報をキーチェーンに保存するときに入力を 16 進数に変換できませんでした";
+"thread.store_in_keychain.error.title" = "操作に失敗しました";
+"thread.transter_to_apple.title" = "Apple キーチェーンに転送";
+"thread.transter_to_homeassistant.title" = "Home Assistantに転送";
 "token_error.connection_failed" = "接続に失敗しました。";
 "token_error.expired" = "トークンの有効期限が切れています。";
 "token_error.token_unavailable" = "トークンが利用できません。";
