@@ -51,13 +51,13 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.11.0):
     - GoogleUtilities/Logger
-  - HAKit (0.3):
-    - HAKit/Core (= 0.3)
-  - HAKit/Core (0.3):
+  - HAKit (0.4):
+    - HAKit/Core (= 0.4)
+  - HAKit/Core (0.4):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.3):
+  - HAKit/Mocks (0.4):
     - HAKit/Core
-  - HAKit/PromiseKit (0.3):
+  - HAKit/PromiseKit (0.4):
     - HAKit/Core
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
@@ -128,9 +128,9 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4`)
   - KeychainAccess
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
@@ -198,8 +198,8 @@ EXTERNAL SOURCES:
     :branch: master
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :branch: main
     :git: https://github.com/home-assistant/HAKit.git
+    :tag: '0.4'
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -230,8 +230,8 @@ CHECKOUT OPTIONS:
     :commit: ba4ebbcc4e368e901de666870fc2a4524474a4c7
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :commit: 1f0202aaaaac56efceaa4df8d3546c9dfecb4c29
     :git: https://github.com/home-assistant/HAKit.git
+    :tag: '0.4'
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -259,7 +259,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 35ecbbc68ff547fca80f9326c9622e79288c7149
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
-  HAKit: 5b5ed6dcd685f372fd76f0ef88f000924377794e
+  HAKit: 45fd77a3fa8cf4e50d59912ce50b9fe5382b6ffe
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   lottie-ios: b3846a9fa8ca1a1a3bebfa256ebe8b6fd4aaaaad
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -284,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: a7b441ab3abe3b363fd84d7dc2eb2e1e62134487
+PODFILE CHECKSUM: b239f1d2193f66871c004d7195fc7a181a91ad07
 
 COCOAPODS: 1.15.2
