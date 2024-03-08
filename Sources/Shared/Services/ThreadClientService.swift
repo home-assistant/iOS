@@ -4,12 +4,11 @@ import Foundation
 import ThreadNetwork
 
 @available(iOS 15, *)
-public final class ThreadClientService: THClientProtocol {
-    private let client = THClient()
-
+public final class ThreadClientService: ThreadClientProtocol {
     public init() {}
 
     public func retrieveAllCredentials() async throws -> [ThreadCredential] {
+        let client = THClient()
         let placeholder = "Unknown"
 
         // Thre preferred credential call is necessary as it triggers a permission dialog
@@ -45,7 +44,7 @@ public final class ThreadClientService: THClientProtocol {
             throw ThreadClientServiceError.failedToConvertToHexadecimal
         }
 
-        try await client.storeCredentials(
+        try await THClient().storeCredentials(
             forBorderAgent: borderAgent,
             activeOperationalDataSet: activeOperationalDataSet
         )
@@ -61,7 +60,7 @@ public final class ThreadClientService: THClientProtocol {
             completion(ThreadClientServiceError.failedToConvertToHexadecimal)
             return
         }
-        client.storeCredentials(
+        THClient().storeCredentials(
             forBorderAgent: borderAgent,
             activeOperationalDataSet: activeOperationalDataSet,
             completion: completion
