@@ -16,15 +16,15 @@ final class ThreadTransferCredentialToKeychainViewModel: ThreadCredentialsSharin
 
     @MainActor
     func mainOperation() async {
-//        do {
-//            try await Current.matter.threadClientService.saveCredential(
-//                macExtendedAddress: macExtendedAddress,
-//                operationalDataSet: activeOperationalDataset
-//            )
-//            showOperationSuccess = true
-//        } catch {
-//            handleError(error)
-//        }
+        do {
+            try await Current.matter.threadClientService.saveCredential(
+                macExtendedAddress: macExtendedAddress,
+                operationalDataSet: activeOperationalDataset
+            )
+            showOperationSuccess = true
+        } catch {
+            handleError(error)
+        }
     }
 
     private func handleError(_ error: Error?) {
