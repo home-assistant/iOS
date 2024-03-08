@@ -42,7 +42,7 @@ public class MatterWrapper {
     }
 
     #if os(iOS)
-    public var threadClientService: THClientProtocol = ThreadClientService()
+    public var threadClientService: ThreadClientProtocol = ThreadClientService()
     #endif
 
     public var lastCommissionServerIdentifier: Identifier<Server>? {

@@ -1,15 +1,5 @@
 import Foundation
 
-public protocol THClientProtocol {
-    func retrieveAllCredentials() async throws -> [ThreadCredential]
-    func saveCredential(macExtendedAddress: String, operationalDataSet: String) async throws
-    func saveCredential(macExtendedAddress: String, operationalDataSet: String, completion: @escaping (Error?) -> Void)
-}
-
-public enum ThreadClientServiceError: Error {
-    case failedToConvertToHexadecimal
-}
-
 #if canImport(ThreadNetwork)
 import ThreadNetwork
 
@@ -81,7 +71,7 @@ public final class ThreadClientService: THClientProtocol {
 #else
 /// For SwiftUI Preview
 @available(iOS 15, *)
-public final class ThreadClientService: THClientProtocol {
+public final class ThreadClientService: ThreadClientProtocol {
     public init() {}
     public func retrieveAllCredentials() async throws -> [ThreadCredential] {
         []
