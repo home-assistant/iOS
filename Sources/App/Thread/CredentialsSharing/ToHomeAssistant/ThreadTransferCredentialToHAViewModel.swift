@@ -8,11 +8,11 @@ final class ThreadTransferCredentialToHAViewModel: ThreadCredentialsSharingViewM
     @Published var alertType: ThreadCredentialsAlertType?
     @Published var showOperationSuccess = false
 
-    private let threadClient: THClientProtocol
+    private let threadClient: ThreadClientProtocol
     private let connection: HAConnection
     private var credentialsToImport: [String] = []
 
-    init(server: Server, threadClient: THClientProtocol) {
+    init(server: Server, threadClient: ThreadClientProtocol) {
         self.threadClient = threadClient
         self.connection = Current.api(for: server).connection
     }

@@ -1,7 +1,7 @@
 import Foundation
 import Shared
 
-final class SimulatorThreadClientService: THClientProtocol {
+final class SimulatorThreadClientService: ThreadClientProtocol {
     func saveCredential(
         macExtendedAddress: String,
         operationalDataSet: String,
