@@ -56,22 +56,25 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 private extension IntentDialog {
     static func actionParameterDisambiguationIntro(count: Int, action: IntentActionAppEntity) -> Self {
-        "There are \(count) options matching ‘\(action)’."
+        .init(stringLiteral: L10n.AppIntents.PerformAction.actionParameterDisambiguationIntro(
+            count,
+            action.displayString
+        ))
     }
 
     static func actionParameterConfirmation(action: IntentActionAppEntity) -> Self {
-        "Just to confirm, you wanted ‘\(action)’?"
+        .init(stringLiteral: L10n.AppIntents.PerformAction.actionParameterConfirmation(action.displayString))
     }
 
     static var actionParameterConfiguration: Self {
-        "Which action?"
+        .init(stringLiteral: L10n.AppIntents.PerformAction.actionParameterConfiguration)
     }
 
     static func responseSuccess(action: IntentActionAppEntity) -> Self {
-        "Done"
+        .init(stringLiteral: L10n.AppIntents.PerformAction.responseSuccess)
     }
 
     static func responseFailure(error: String) -> Self {
-        "Failed: \(error)"
+        .init(stringLiteral: L10n.AppIntents.PerformAction.responseFailure(error))
     }
 }

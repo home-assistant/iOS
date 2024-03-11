@@ -251,6 +251,31 @@ public enum L10n {
     }
   }
 
+  public enum AppIntents {
+    public enum PerformAction {
+      /// Which action?
+      public static var actionParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_configuration") }
+      /// Just to confirm, you wanted ‘%@’?
+      public static func actionParameterConfirmation(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_confirmation", String(describing: p1))
+      }
+      /// There are %@ options matching ‘%@’.
+      public static func actionParameterDisambiguationIntro(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_disambiguation_intro", String(describing: p1), String(describing: p2))
+      }
+      /// Failed: %@
+      public static func responseFailure(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "app_intents.perform_action.response_failure", String(describing: p1))
+      }
+      /// Done
+      public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
+    }
+    public enum WidgetAction {
+      /// Which actions?
+      public static var actionsParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.widget_action.actions_parameter_configuration") }
+    }
+  }
+
   public enum CarPlay {
     public enum Action {
       public enum Intro {
