@@ -19,8 +19,12 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusMessage.threadStoreCredentialInAppleKeychain.rawValue,
             "thread/store_in_platform_keychain"
         )
+        XCTAssertEqual(
+            WebViewExternalBusMessage.assistShow.rawValue,
+            "assist/show"
+        )
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 13)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 14)
     }
 
     func test_externalBus_outgoing_messageKeys() {

@@ -6,6 +6,7 @@ struct Widgets: WidgetBundle {
     var body: some Widget {
         actionsWidget()
         WidgetOpenPage()
+        WidgetAssist()
     }
 
     private func actionsWidget() -> some Widget {
