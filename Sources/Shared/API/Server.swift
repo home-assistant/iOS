@@ -166,7 +166,7 @@ public struct ServerInfo: Codable, Equatable {
 }
 
 public final class Server: Hashable, Comparable, CustomStringConvertible {
-    public static var historicId: Identifier<Server> = "historic"
+    public static let historicId: Identifier<Server> = "historic"
 
     public let identifier: Identifier<Server>
     public var info: ServerInfo {

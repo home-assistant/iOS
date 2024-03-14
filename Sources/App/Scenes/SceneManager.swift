@@ -45,7 +45,7 @@ struct SceneManagerPreSceneCompatibility {
 
 class SceneManager {
     // types too hard here
-    fileprivate static var activityUserInfoKeyResolver = "resolver"
+    fileprivate static let activityUserInfoKeyResolver = "resolver"
 
     private struct PendingResolver {
         private var handleBlock: (Any) -> Void

@@ -138,7 +138,6 @@ public extension Version {
     static let canSendDeviceID: Version = .init(minor: 104)
     static let pedometerIconsAvailable: Version = .init(minor: 105)
     static let tagWebhookAvailable: Version = .init(minor: 114, prerelease: "b5")
-    static let tagPlatformTrigger: Version = .init(minor: 115, prerelease: "any0")
     static let actionSyncing: Version = .init(minor: 115, prerelease: "any0")
     static let localPushConfirm: Version = .init(major: 2021, minor: 10, prerelease: "any0")
     static let externalBusCommandRestart: Version = .init(major: 2021, minor: 12, prerelease: "b6")

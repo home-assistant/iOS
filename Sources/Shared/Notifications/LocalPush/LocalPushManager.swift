@@ -13,7 +13,7 @@ public class LocalPushManager {
     public let server: Server
     public weak var delegate: LocalPushManagerDelegate?
 
-    public static var stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
+    public static let stateDidChange: Notification.Name = .init(rawValue: "LocalPushManagerStateDidChange")
 
     public enum State: Equatable, Codable {
         case establishing

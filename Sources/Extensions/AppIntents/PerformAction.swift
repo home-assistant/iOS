@@ -7,8 +7,8 @@ import Shared
 struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableIntent {
     static let intentClassName = "PerformActionIntent"
 
-    static var title: LocalizedStringResource = "Perform Action"
-    static var description = IntentDescription("Performs an action defined in the app")
+    static let title: LocalizedStringResource = "Perform Action"
+    static let description = IntentDescription("Performs an action defined in the app")
 
     @Parameter(title: "Action")
     var action: IntentActionAppEntity?

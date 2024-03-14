@@ -32,13 +32,13 @@ final class WindowSizeObserver: NSObject {
 }
 
 enum ScenesWindowSizeConfig {
-    static var defaultSceneLastestSystemFrameDataKey = "default-scene-latest-system-frame-data"
+    private static let defaultSceneLatestSystemFrameDataKey = "default-scene-latest-system-frame-data"
     private static var defaultSceneLatestSystemFrameData: Data? {
         get {
-            prefs.data(forKey: ScenesWindowSizeConfig.defaultSceneLastestSystemFrameDataKey)
+            prefs.data(forKey: ScenesWindowSizeConfig.defaultSceneLatestSystemFrameDataKey)
         }
         set {
-            prefs.set(newValue, forKey: ScenesWindowSizeConfig.defaultSceneLastestSystemFrameDataKey)
+            prefs.set(newValue, forKey: ScenesWindowSizeConfig.defaultSceneLatestSystemFrameDataKey)
         }
     }
 

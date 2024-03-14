@@ -9,8 +9,8 @@ public extension URL {
 }
 
 public extension URLComponents {
-    private static var authenticityName = "widgetAuthenticity"
-    private static var serverName = "server"
+    private static let authenticityName = "widgetAuthenticity"
+    private static let serverName = "server"
 
     mutating func insertWidgetAuthenticity() {
         queryItems = (queryItems ?? []) + [

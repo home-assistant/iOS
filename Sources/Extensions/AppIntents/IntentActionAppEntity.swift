@@ -4,7 +4,7 @@ import Shared
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct IntentActionAppEntity: AppEntity {
-    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Action")
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Action")
 
     struct IntentActionAppEntityQuery: EntityQuery, EntityStringQuery {
         func entities(for identifiers: [IntentActionAppEntity.ID]) async throws -> [IntentActionAppEntity] {
@@ -25,7 +25,7 @@ struct IntentActionAppEntity: AppEntity {
         }
     }
 
-    static var defaultQuery = IntentActionAppEntityQuery()
+    static let defaultQuery = IntentActionAppEntityQuery()
 
     var id: String // if your identifier is not a String, conform the entity to EntityIdentifierConvertible.
     var displayString: String

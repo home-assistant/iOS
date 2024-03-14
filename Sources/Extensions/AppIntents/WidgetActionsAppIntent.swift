@@ -7,8 +7,8 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     ProgressReportingIntent {
     static let intentClassName = "WidgetActionsIntent"
 
-    static var title: LocalizedStringResource = "Actions"
-    static var description = IntentDescription("View and run actions")
+    static let title: LocalizedStringResource = "Actions"
+    static let description = IntentDescription("View and run actions")
 
     @Parameter(
         title: "Actions",

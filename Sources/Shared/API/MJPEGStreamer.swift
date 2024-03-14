@@ -3,8 +3,8 @@ import Foundation
 import UIKit
 
 class MJPEGStreamerSessionDelegate: SessionDelegate {
-    static var didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")
-    static var taskUserInfoKey: AnyHashable = "taskUserInfoKey"
+    static let didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")
+    static let taskUserInfoKey: AnyHashable = "taskUserInfoKey"
 
     // if/when alamofire also implements this again, we need to update to handle it as the breakpoint between images
     override func urlSession(

@@ -2,7 +2,7 @@ import ObjectMapper
 import UserNotifications
 
 public extension UNNotificationContent {
-    private static var separator: String = "@duplicate_identifier-"
+    private static let separator: String = "@duplicate_identifier-"
 
     static func uncombinedAction(from identifier: String) -> String {
         if identifier.contains(separator), let substring = identifier.components(separatedBy: separator).first {
