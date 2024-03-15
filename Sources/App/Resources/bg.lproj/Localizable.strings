@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Прочетете повече";
 "announcement.drop_support.subtitle" = "След внимателно обмисляне ще преустановим поддръжката на iOS 12, 13 и 14 в предстоящите си актуализации.";
 "announcement.drop_support.title" = "Важна актуализация";
+"app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
+"app_intents.perform_action.response_failure" = "Failed: %@";
+"app_intents.perform_action.response_success" = "Done";
+"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Докоснете, за да продължите на вашия iPhone";
 "carPlay.action.intro.item.title" = "Създайте първото си действие";

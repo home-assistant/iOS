@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Baca lebih lanjut";
 "announcement.drop_support.subtitle" = "Setelah mempertimbangkan dengan cermat, kami akan menghentikan dukungan untuk iOS 12, 13, dan 14 pada pembaruan mendatang.";
 "announcement.drop_support.title" = "Pembaruan penting";
+"app_intents.perform_action.action_parameter_configuration" = "Aksi yang mana?";
+"app_intents.perform_action.action_parameter_confirmation" = "Sekadar konfirmasi, Anda menginginkan '%@'?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "Ada %@ opsi yang cocok dengan '%@'.";
+"app_intents.perform_action.response_failure" = "Gagal: %@";
+"app_intents.perform_action.response_success" = "Selesai";
+"app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
 "carPlay.action.intro.item.title" = "Buat aksi pertama Anda";

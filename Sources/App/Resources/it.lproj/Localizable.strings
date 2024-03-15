@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Leggi di più";
 "announcement.drop_support.subtitle" = "Dopo un'attenta valutazione, nei nostri prossimi aggiornamenti interromperemo il supporto per iOS 12, 13 e 14.";
 "announcement.drop_support.title" = "Aggiornamento importante";
+"app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
+"app_intents.perform_action.response_failure" = "Failed: %@";
+"app_intents.perform_action.response_success" = "Done";
+"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "cancel_label" = "Annulla";
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";
 "carPlay.action.intro.item.title" = "Crea la tua prima azione";

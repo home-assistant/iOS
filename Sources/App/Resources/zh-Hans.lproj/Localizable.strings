@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "阅读其他";
 "announcement.drop_support.subtitle" = "经过深思熟虑，我们将在即将到来的更新中停止对 iOS 12、13 和 14 的支持。";
 "announcement.drop_support.title" = "重要更新";
+"app_intents.perform_action.action_parameter_configuration" = "那个操作？";
+"app_intents.perform_action.action_parameter_confirmation" = "确认一下，你想要“%@”？";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "有%@选项匹配“%@”。";
+"app_intents.perform_action.response_failure" = "失败：%@";
+"app_intents.perform_action.response_success" = "完成";
+"app_intents.widget_action.actions_parameter_configuration" = "哪些操作？";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在iPhone上点击以继续";
 "carPlay.action.intro.item.title" = "创建您的第一个操作";
