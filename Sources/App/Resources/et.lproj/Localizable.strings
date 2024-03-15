@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Lisateave";
 "announcement.drop_support.subtitle" = "Pärast hoolikat kaalumist lõpetame oma tulevastes värskendustes iOS 12, 13 ja 14 toe.";
 "announcement.drop_support.title" = "Oluline uuendus";
+"app_intents.perform_action.action_parameter_configuration" = "Milline toiming?";
+"app_intents.perform_action.action_parameter_confirmation" = "Lihtsalt kinnita, kas sa tahtsid ' %@ '?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "On %@ valikut mis vastavad '%@'.";
+"app_intents.perform_action.response_failure" = "Nurjus: %@";
+"app_intents.perform_action.response_success" = "Valmis";
+"app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";

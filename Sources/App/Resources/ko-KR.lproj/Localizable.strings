@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "더 알아보기";
 "announcement.drop_support.subtitle" = "신중한 검토 끝에 향후 업데이트에서 iOS 12, 13, 14에 대한 지원을 중단할 예정입니다.";
 "announcement.drop_support.title" = "중요 업데이트";
+"app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
+"app_intents.perform_action.response_failure" = "Failed: %@";
+"app_intents.perform_action.response_success" = "Done";
+"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "cancel_label" = "취소";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";

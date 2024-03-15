@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Bővebben";
 "announcement.drop_support.subtitle" = "Alapos mérlegelés után a következő frissítéseinkben megszüntetjük az iOS 12, 13 és 14 támogatását.";
 "announcement.drop_support.title" = "Fontos frissítés";
+"app_intents.perform_action.action_parameter_configuration" = "Melyik művelet?";
+"app_intents.perform_action.action_parameter_confirmation" = "Csak megerősítésképp, ezt szeretné: ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "%@ lehetőség található a(z) ‘%@’ kifejezésre.";
+"app_intents.perform_action.response_failure" = "Sikertelen: %@";
+"app_intents.perform_action.response_success" = "Kész";
+"app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";

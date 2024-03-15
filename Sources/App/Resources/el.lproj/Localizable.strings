@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Διαβάστε περισσότερα";
 "announcement.drop_support.subtitle" = "Μετά από προσεκτική εξέταση, θα διακόψουμε την υποστήριξη για τα iOS 12, 13 και 14 στις επερχόμενες ενημερώσεις μας.";
 "announcement.drop_support.title" = "Σημαντική ενημέρωση";
+"app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
+"app_intents.perform_action.response_failure" = "Failed: %@";
+"app_intents.perform_action.response_success" = "Done";
+"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
@@ -360,7 +366,7 @@
 "settings.developer.copy_realm.alert.message" = "Αντιγράφηκε Realm από %@ σε %@";
 "settings.developer.copy_realm.alert.title" = "Το Realm αντιγράφηκε";
 "settings.developer.copy_realm.title" = "Αντιγράψτε το Realm από την ομάδα εφαρμογών στα Έγγραφα";
-"settings.developer.crashlytics_test.fatal.notification.body" = "ΣΗΜΕΙΩΣΗ: Αυτό δεν θα λειτουργήσει εάν είναι συνδεδεμένος ο εντοπιστής σφαλμάτων! Όταν πατήσετε OK, η εφαρμογή θα διακοπεί. Στη συνέχεια, πρέπει να ανοίξετε ξανά την εφαρμογή και να περιμένετε έως και 5 λεπτά για να εμφανιστεί το σφάλμα στην κονσόλα";
+"settings.developer.crashlytics_test.fatal.notification.body" = "ΣΗΜΕΙΩΣΗ: Αυτό δεν θα λειτουργήσει εάν είναι συνδεδεμένος ο εντοπιστής σφαλμάτων! Οταν πατήσετε OK, η εφαρμογή θα διακοπεί. Στη συνέχεια, πρέπει να ανοίξετε ξανά την εφαρμογή και να περιμένετε έως και 5 λεπτά για να εμφανιστεί το σφάλμα στην κονσόλα";
 "settings.developer.crashlytics_test.fatal.notification.title" = "Πρόκειται να συντριβεί";
 "settings.developer.crashlytics_test.fatal.title" = "Δοκιμάστε το μοιραίο σφάλμα Crashlytics";
 "settings.developer.crashlytics_test.non_fatal.notification.body" = "Όταν πατήσετε OK, ένα μη θανατηφόρο σφάλμα θα σταλεί στο Crashlytics. Μπορεί να χρειαστούν έως και 5 λεπτά για να εμφανιστεί στην κονσόλα.";
