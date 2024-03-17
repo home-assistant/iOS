@@ -138,8 +138,8 @@
 "component::mqtt::selector::set_ca_cert::options::off" = "Изключен";
 "component::netatmo::device_automation::trigger_subtype::away" = "Отсъства";
 "component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away" = "Отсъства";
-"component::overkiz::entity::select::open_closed_partial::state::closed" = "Затворен";
-"component::overkiz::entity::select::open_closed_partial::state::open" = "Отворен";
+"component::overkiz::entity::select::open_closed_partial::state::closed" = "Затворено";
+"component::overkiz::entity::select::open_closed_partial::state::open" = "Отворенo";
 "component::overkiz::entity::select::open_closed_pedestrian::state::closed" = "Затворено";
 "component::overkiz::entity::select::open_closed_pedestrian::state::open" = "Отворенo";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::closed" = "Затворено";
@@ -157,7 +157,7 @@
 "component::renson::entity::sensor::breeze_level::state::off" = "Изключено";
 "component::renson::entity::sensor::manual_level::state::off" = "Изключено";
 "component::renson::entity::sensor::ventilation_level::state::off" = "Изключено";
-"component::renson::selector::level_setting::options::off" = "Изключено";
+"component::renson::selector::level_setting::options::off" = "Изключен";
 "component::reolink::entity::select::auto_quick_reply_message::state::off" = "Изключен";
 "component::reolink::entity::select::floodlight_mode::state::off" = "Изключен";
 "component::roborock::entity::select::mop_intensity::state::off" = "Изключен";
@@ -245,8 +245,8 @@
 "component::vacuum::entity_component::_::state::off" = "Изключено";
 "component::vacuum::entity_component::_::state::on" = "Включено";
 "component::vacuum::entity_component::_::state::paused" = "В пауза";
-"component::valve::entity_component::_::state::closed" = "Затворен";
-"component::valve::entity_component::_::state::open" = "Отворена";
+"component::valve::entity_component::_::state::closed" = "Затворено";
+"component::valve::entity_component::_::state::open" = "Отворенo";
 "component::water_heater::entity_component::_::state::off" = "Изключен";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::off" = "Изключен";
 "component::water_heater::entity_component::_::state_attributes::away_mode::state::on" = "Включен";
