@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Lue lisää";
 "announcement.drop_support.subtitle" = "Huolellisen harkinnan jälkeen lopetamme iOS 12:n, 13:n ja 14:n tuen tulevissa päivityksissämme.";
 "announcement.drop_support.title" = "Tärkeä päivitys";
+"app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
+"app_intents.perform_action.response_failure" = "Failed: %@";
+"app_intents.perform_action.response_success" = "Done";
+"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "cancel_label" = "Peruuta";
 "carPlay.action.intro.item.body" = "Napauta jatkaaksesi iPhonessasi";
 "carPlay.action.intro.item.title" = "Luo ensimmäinen toiminto";

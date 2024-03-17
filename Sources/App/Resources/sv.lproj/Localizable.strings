@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Läs mer";
 "announcement.drop_support.subtitle" = "Efter noggrant övervägande kommer vi att avbryta supporten för iOS 12, 13 och 14 i våra kommande uppdateringar.";
 "announcement.drop_support.title" = "Viktig uppdatering";
+"app_intents.perform_action.action_parameter_configuration" = "Which action?";
+"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
+"app_intents.perform_action.response_failure" = "Failed: %@";
+"app_intents.perform_action.response_success" = "Done";
+"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";

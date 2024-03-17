@@ -1,4 +1,5 @@
 import AppIntents
+import AudioToolbox
 import Foundation
 import Shared
 
@@ -30,6 +31,9 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     }
 
     func perform() async throws -> some IntentResult {
+        // Unfortunately this is the only 'haptics' that work with widgets
+        // ideally in the future this should use CoreHaptics for a better experience
+        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         progress.totalUnitCount = 100
         progress.completedUnitCount = 70
         guard let action = $actions.wrappedValue?.first else {

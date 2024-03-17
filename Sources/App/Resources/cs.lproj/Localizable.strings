@@ -52,6 +52,12 @@
 "announcement.drop_support.button_read_more" = "Přečtěte si více";
 "announcement.drop_support.subtitle" = "Po pečlivém zvážení ukončíme podporu pro iOS 12, 13 a 14 v našich nadcházejících aktualizacích.";
 "announcement.drop_support.title" = "Důležitá aktualizace";
+"app_intents.perform_action.action_parameter_configuration" = "Která akce?";
+"app_intents.perform_action.action_parameter_confirmation" = "Jen pro potvrzení, chtěli jste \"%@\"?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "Existuje %@ možností odpovídajících \"%@\".";
+"app_intents.perform_action.response_failure" = "Selhalo: %@";
+"app_intents.perform_action.response_success" = "Hotovo";
+"app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";
 "carPlay.action.intro.item.title" = "Vytvořte svou první akci";
