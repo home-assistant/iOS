@@ -293,7 +293,7 @@ extension AssistViewModel: AVCaptureAudioDataOutputSampleBufferDelegate {
             Current.Log.error("Failed to send audio samples to websocket connection")
             return
         }
-        self.connection.sendSttAudio(.init(
+        _ = self.connection.send(.init(
             type: .sttData(sttBinaryHandlerId),
             data: ["audioData": data.base64EncodedString()]
         ))
@@ -303,6 +303,6 @@ extension AssistViewModel: AVCaptureAudioDataOutputSampleBufferDelegate {
     private func finishSendingAudio() {
         guard canSendAudioData,
               let sttBinaryHandlerId else { return }
-        connection.sendSttAudio(.init(type: .sttData(sttBinaryHandlerId)))
+        _ = connection.send(.init(type: .sttData(sttBinaryHandlerId)))
     }
 }
