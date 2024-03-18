@@ -14,7 +14,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: fwal/setup-swift@v1
+      - uses: fwal/setup-swift@v2
         with:
           swift-version: "5.8"
       - uses: actions/checkout@v4
