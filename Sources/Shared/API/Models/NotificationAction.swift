@@ -62,25 +62,6 @@ public class NotificationAction: Object {
 
     public var action: UNNotificationAction {
         let action: UNNotificationAction
-
-        let baseAction: () -> UNNotificationAction = { [self] in
-            if TextInput {
-                return UNTextInputNotificationAction(
-                    identifier: Identifier,
-                    title: Title,
-                    options: options,
-                    textInputButtonTitle: TextInputButtonTitle,
-                    textInputPlaceholder: TextInputPlaceholder
-                )
-            } else {
-                return UNNotificationAction(
-                    identifier: Identifier,
-                    title: Title,
-                    options: options
-                )
-            }
-        }
-
         let actionIcon: UNNotificationActionIcon?
 
         if let icon, icon.hasPrefix("sfsymbols:") {
