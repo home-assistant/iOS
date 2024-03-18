@@ -12,7 +12,7 @@ end
 if ENV['ONLY_SUPPORT_MODULES']
   # some of our CI scripts only need e.g. SwiftLint
   # this allows us to skip a lot of installation when unnecessary
-  platform :ios, '12.0'
+  platform :ios, '15.0'
   support_modules
   workspace 'abstract.workspace'
 
