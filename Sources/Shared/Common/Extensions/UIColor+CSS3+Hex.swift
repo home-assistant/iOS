@@ -26,7 +26,7 @@ import UIKit
 
 public extension UIColor {
     /**
-     Creates an immuatble UIColor instance specified by a hex string, CSS color name, or nil.
+     Creates an immutable UIColor instance specified by a hex string, CSS color name, or nil.
      - parameter hexString: A case insensitive String? representing a hex or CSS value e.g.
      - **"abc"**
      - **"abc7"**
@@ -55,27 +55,7 @@ public extension UIColor {
         )
     }
 
-    /**
-     Returns a hex equivalent of this UIColor.
-     - Parameter includeAlpha:   Optional parameter to include the alpha hex.
-     color.hexDescription() -> "ff0000"
-     color.hexDescription(true) -> "ff0000aa"
-     - Returns: A new string with `String` with the color's hexidecimal value.
-     */
-    func hexDescription(_ includeAlpha: Bool = false) -> String {
-        guard cgColor.numberOfComponents == 4 else {
-            return "Color not RGB."
-        }
-        let a = cgColor.components!.map { Int($0 * CGFloat(255)) }
-        let color = String(format: "%02x%02x%02x", a[0], a[1], a[2])
-        if includeAlpha {
-            let alpha = String(format: "%02x", a[3])
-            return "\(color)\(alpha)"
-        }
-        return color
-    }
-
-    fileprivate enum UIColorMasks: CUnsignedInt {
+    private enum UIColorMasks: CUnsignedInt {
         case redMask = 0xFF00_0000
         case greenMask = 0x00FF_0000
         case blueMask = 0x0000_FF00
@@ -98,11 +78,11 @@ public extension UIColor {
         }
     }
 
-    fileprivate static func normalize(_ hex: String?) -> String {
+    private static func normalize(_ hex: String?) -> String {
         guard var hexString = hex else {
             return "00000000"
         }
-        if let cssColor = cssToHexDictionairy[hexString.uppercased()] {
+        if let cssColor = cssToHexDictionary[hexString.uppercased()] {
             return cssColor.count == 8 ? cssColor : cssColor + "ff"
         }
         if hexString.hasPrefix("#") {
@@ -121,15 +101,15 @@ public extension UIColor {
     /**
      All modern browsers support the following 140 color names (see http://www.w3schools.com/cssref/css_colornames.asp)
      */
-    fileprivate static func hexFromCssName(_ cssName: String) -> String {
+    private static func hexFromCssName(_ cssName: String) -> String {
         let key = cssName.uppercased()
-        if let hex = cssToHexDictionairy[key] {
+        if let hex = cssToHexDictionary[key] {
             return hex
         }
         return cssName
     }
 
-    fileprivate static let cssToHexDictionairy: [String: String] = [
+    private static let cssToHexDictionary: [String: String] = [
         "CLEAR": "00000000",
         "TRANSPARENT": "00000000",
         "": "00000000",

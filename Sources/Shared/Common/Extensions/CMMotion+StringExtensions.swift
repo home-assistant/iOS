@@ -48,13 +48,11 @@ extension CMMotionActivity {
 
 extension CMMotionActivityConfidence {
     var description: String {
-        if self == CMMotionActivityConfidence.low {
-            return "Low"
-        } else if self == CMMotionActivityConfidence.medium {
-            return "Medium"
-        } else if self == CMMotionActivityConfidence.high {
-            return "High"
+        switch self {
+        case .low: "Low"
+        case .medium: "Medium"
+        case .high: "High"
+        @unknown default: "Unknown"
         }
-        return "Unknown"
     }
 }

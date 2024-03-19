@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
+          ruby-version: "3.1"
           bundler-cache: true
       - name: YamlLint
         run: yamllint --strict --format github .
@@ -108,8 +108,8 @@ jobs:
 
   size:
     if: |
-        ${{ github.event_name == 'pull_request'}} &&
-        ${{ github.event.pull_request.head.repo.full_name == 'home-assistant/iOS' }}
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
     runs-on: macos-14
     timeout-minutes: 60
     steps:

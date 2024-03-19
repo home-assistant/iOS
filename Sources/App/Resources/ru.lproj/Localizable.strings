@@ -73,7 +73,7 @@
 "carPlay.navigation.tab.areas" = "Зоны";
 "carPlay.navigation.tab.domains" = "Управление";
 "carPlay.no_actions.title" = "Откройте приложение для iOS, чтобы создавать действия для CarPlay.";
-"carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.no_entities.title" = "Объекты, совместимые с CarPlay, недоступны.";
 "carPlay.notification.action.intro.body" = "Нажмите, чтобы создать свое первое действие в iOS";
 "carPlay.notification.action.intro.title" = "Создание действия iOS";
 "carPlay.state.loading.title" = "Загрузка…";
