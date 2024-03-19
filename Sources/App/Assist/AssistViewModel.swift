@@ -11,25 +11,30 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var inputText = ""
     @Published var isRecording = false
 
-    private var captureSession: AVCaptureSession?
     private let connection: HAConnection
     private let server: Server
+    private var audioRecorder: AudioRecorderProtocol
+    private var audioPlayer: AudioPlayerProtocol
 
     private var sttBinaryHandlerId: UInt8?
     private var cancellable: HACancellable?
-
-    private var debugAudioHexString = ""
     private var canSendAudioData = false
-    private var audioSampleRate: Double = 16000
-    private let player = AVPlayer()
 
-    init(server: Server, preferredPipelineId: String = "") {
+    init(
+        server: Server,
+        preferredPipelineId: String = "",
+        audioRecorder: AudioRecorderProtocol,
+        audioPlayer: AudioPlayerProtocol
+    ) {
         self.server = server
         self.connection = Current.api(for: server).connection
         self.preferredPipelineId = preferredPipelineId
+        self.audioRecorder = audioRecorder
+        self.audioPlayer = audioPlayer
         super.init()
+
         connection.delegate = self
-        registerForRecordingNotifications()
+        self.audioRecorder.delegate = self
     }
 
     deinit {
@@ -44,8 +49,8 @@ final class AssistViewModel: NSObject, ObservableObject {
     func onDisappear() {
         cancellable?.cancel()
         connection.disconnect()
-        captureSession?.stopRunning()
-        player.pause()
+        audioRecorder.stopRecording()
+        audioPlayer.pause()
     }
 
     private func handleAssistEvent(data: AssistResponse, cancellable: HACancellable) {
@@ -88,7 +93,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         case .ttsEnd:
             guard let mediaUrlPath = data.data?.ttsOutput?.urlPath else { return }
             let mediaUrl = server.info.connection.activeURL().appendingPathComponent(mediaUrlPath)
-            playTTS(url: mediaUrl)
+            audioPlayer.play(url: mediaUrl)
         case .error:
             Current.Log.error("Received error while interating with Assist: \(data)")
             appendToChat(.init(content: "Error: \(data)", itemType: .error))
@@ -98,7 +103,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @MainActor
     func assistWithText() {
-        player.pause()
+        audioPlayer.pause()
         cancellable?.cancel()
         stopStreaming()
 
@@ -121,7 +126,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @MainActor
     func assistWithAudio() {
-        player.pause()
+        audioPlayer.pause()
 
         if isRecording {
             stopStreaming()
@@ -131,16 +136,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         // Remove text from input to make animation look better
         inputText = ""
 
-        setupAudioRecorder()
-        guard let captureSession else { return }
-        DispatchQueue.global().async { [weak self] in
-            captureSession.startRunning()
-            self?.isRecording = true
-        }
+        audioRecorder.startRecording()
 
         connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
             preferredPipelineId: preferredPipelineId,
-            audioSampleRate: audioSampleRate
+            audioSampleRate: audioRecorder.audioSampleRate
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable
@@ -173,44 +173,10 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
     }
 
-    private func setupAudioRecorder() {
-        let audioSession = AVAudioSession.sharedInstance()
-        guard let captureDevice = AVCaptureDevice.default(for: .audio) else {
-            Current.Log.error("Failed to get capture device to record audio for Assist")
-            return
-        }
-
-        do {
-            try audioSession.setCategory(.record, mode: .default)
-            try audioSession.setPreferredSampleRate(16000)
-            try audioSession.setPreferredOutputNumberOfChannels(1)
-
-            try audioSession.setActive(true)
-            let audioInput = try AVCaptureDeviceInput(device: captureDevice)
-
-            captureSession = AVCaptureSession()
-            captureSession?.addInput(audioInput)
-
-            Current.Log.info("Audio sample rate: \(audioSession.sampleRate)")
-            audioSampleRate = audioSession.sampleRate
-
-            let audioOutput = AVCaptureAudioDataOutput()
-
-            audioOutput.setSampleBufferDelegate(self, queue: DispatchQueue.global(qos: .userInteractive))
-            captureSession?.addOutput(audioOutput)
-        } catch {
-            let message = "Error starting audio streaming: \(error.localizedDescription)"
-            Current.Log.error(message)
-            debugAppendChatMessage(message)
-            stopStreaming()
-        }
-    }
-
     func stopStreaming() {
         isRecording = false
         canSendAudioData = false
-        captureSession?.stopRunning()
-
+        audioRecorder.stopRecording()
         finishSendingAudio()
         sttBinaryHandlerId = nil
         Current.Log.info("Stop recording audio for Assist")
@@ -228,51 +194,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         appendToChat(.init(content: "DEBUG: \(message)", itemType: .info))
         #endif
     }
-
-    private func registerForRecordingNotifications() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(sessionDidStartRunning),
-            name: .AVCaptureSessionDidStartRunning,
-            object: captureSession
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(sessionDidStopRunning),
-            name: .AVCaptureSessionDidStopRunning,
-            object: captureSession
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(sessionRuntimeError),
-            name: .AVCaptureSessionRuntimeError,
-            object: captureSession
-        )
-    }
-
-    @objc private func sessionDidStartRunning(notification: Notification) {
-        isRecording = true
-    }
-
-    @objc private func sessionDidStopRunning(notification: Notification) {
-        isRecording = false
-    }
-
-    @objc private func sessionRuntimeError(notification: Notification) {
-        if let error = notification.userInfo?[AVCaptureSessionErrorKey] as? AVError {
-            let message = "AVCaptureSession runtime error: \(error)"
-            debugAppendChatMessage(message)
-            Current.Log.error(message)
-        }
-    }
-
-    private func playTTS(url: URL) {
-        let playerItem = AVPlayerItem(url: url)
-        player.replaceCurrentItem(with: playerItem)
-        player.play()
-    }
 }
 
 extension AssistViewModel: HAConnectionDelegate {
@@ -281,28 +202,27 @@ extension AssistViewModel: HAConnectionDelegate {
     }
 }
 
-extension AssistViewModel: AVCaptureAudioDataOutputSampleBufferDelegate {
-    func captureOutput(
-        _ output: AVCaptureOutput,
-        didOutput sampleBuffer: CMSampleBuffer,
-        from connection: AVCaptureConnection
-    ) {
-        guard canSendAudioData,
-              let sttBinaryHandlerId,
-              let data = sampleBuffer.audioSamples() else {
-            Current.Log.error("Failed to send audio samples to websocket connection")
-            return
-        }
+extension AssistViewModel: AudioRecorderDelegate {
+    func didOutputSample(data: Data) {
+        guard canSendAudioData, let sttBinaryHandlerId else { return }
         _ = self.connection.send(.init(
-            type: .sttData(sttBinaryHandlerId),
+            type: .sttData(.init(sttBinaryHandlerId: sttBinaryHandlerId)),
             data: ["audioData": data.base64EncodedString()]
         ))
+    }
+
+    func didStartRecording() {
+        isRecording = true
+    }
+
+    func didStopRecording() {
+        isRecording = false
     }
 
     /// Sends stt binary handler id as a single byte to tell Assist pipeline that audio session is over
     private func finishSendingAudio() {
         guard canSendAudioData,
               let sttBinaryHandlerId else { return }
-        _ = connection.send(.init(type: .sttData(sttBinaryHandlerId)))
+        _ = connection.send(.init(type: .sttData(.init(sttBinaryHandlerId: sttBinaryHandlerId))))
     }
 }

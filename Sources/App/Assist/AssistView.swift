@@ -5,6 +5,8 @@ struct AssistView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AssistViewModel
 
+    private let iconSize: CGSize = .init(width: 28, height: 28)
+    private let iconColor: UIColor = .gray
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     private var isIpad: Bool {
         UIDevice.current.userInterfaceIdiom == .pad
@@ -49,7 +51,6 @@ struct AssistView: View {
 
     private var pipelinesPicker: some View {
         VStack {
-            // TODO: localize this even thought not visible, voice over reads out this
             Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
                 ForEach(viewModel.pipelines, id: \.id) { pipeline in
                     Text(pipeline.name)
@@ -77,37 +78,41 @@ struct AssistView: View {
     }
 
     private var chatList: some View {
-        ZStack(alignment: .top) {
-            ScrollView {
-                ScrollViewReader { proxy in
-                    VStack {
-                        ForEach(viewModel.chatItems, id: \.id) { item in
-                            makeChatBubble(item: item)
-                                .id(item.id)
+        ZStack(alignment: .bottom) {
+            ZStack(alignment: .top) {
+                ScrollView {
+                    ScrollViewReader { proxy in
+                        VStack {
+                            ForEach(viewModel.chatItems, id: \.id) { item in
+                                makeChatBubble(item: item)
+                                    .id(item.id)
+                            }
+                        }
+                        .padding()
+                        .onChange(of: viewModel.chatItems) { _ in
+                            proxy.scrollTo(viewModel.chatItems.last?.id)
                         }
                     }
-                    .padding()
-                    .onChange(of: viewModel.chatItems) { _ in
-                        proxy.scrollTo(viewModel.chatItems.last?.id)
-                    }
                 }
+                linearGradientDivider(position: .top)
             }
-            linearGradientDivider
+            linearGradientDivider(position: .bottom)
         }
     }
 
-    private var linearGradientDivider: some View {
+    /// Position is where it will be placed related to the list
+    private func linearGradientDivider(position: UnitPoint) -> some View {
         VStack {}
             .frame(maxWidth: .infinity)
             .frame(height: 22)
             .background(LinearGradient(colors: [
                 Color(uiColor: .systemBackground),
                 .clear,
-            ], startPoint: .top, endPoint: .bottom))
+            ], startPoint: position, endPoint: position == .top ? .bottom : .top))
     }
 
     private var bottomBar: some View {
-        HStack(spacing: .zero) {
+        HStack(spacing: Spaces.two) {
             TextField("", text: $viewModel.inputText)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
@@ -116,12 +121,17 @@ struct AssistView: View {
                 .onSubmit {
                     viewModel.assistWithText()
                 }
-            assistSendTextButton
-                .padding(.horizontal, Spaces.one)
-            assistMicButton
+            if viewModel.inputText.isEmpty {
+                assistMicButton
+            } else {
+                assistSendTextButton
+            }
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, Spaces.two)
-        .padding(.bottom, isIpad ? Spaces.two : Spaces.one)
+        .padding(.vertical)
+        .padding(.bottom, isIpad ? Spaces.two : Spaces.half)
+        .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
     }
 
     private var assistSendTextButton: some View {
@@ -148,7 +158,8 @@ struct AssistView: View {
         }, label: {
             micIcon
         })
-        .font(.system(size: viewModel.isRecording ? 60 : 32))
+        .font(.system(size: viewModel.isRecording ? 70 : iconSize.width))
+        .padding(viewModel.isRecording ? [] : .trailing)
         .animation(.smooth, value: viewModel.isRecording)
         .onChange(of: viewModel.isRecording) { newValue in
             if !newValue {
@@ -158,27 +169,33 @@ struct AssistView: View {
     }
 
     private var sendIcon: some View {
-        Image(systemName: "paperplane.circle.fill")
+        Image(uiImage: MaterialDesignIcons.sendIcon.image(ofSize: iconSize, color: iconColor))
             .symbolRenderingMode(.palette)
             .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
     }
 
+    @ViewBuilder
     private var micIcon: some View {
-        let micIcon = "mic.circle.fill"
+        let icon = MaterialDesignIcons.microphoneIcon.image(ofSize: iconSize, color: iconColor)
         if #available(iOS 17.0, *) {
-            return Image(systemName: viewModel.isRecording ? "waveform.badge.mic" : micIcon)
-                .symbolEffect(
-                    .variableColor.cumulative.dimInactiveLayers.nonReversing,
-                    options: viewModel.isRecording ? .repeating : .nonRepeating,
-                    value: viewModel.isRecording
-                )
-                .symbolRenderingMode(.palette)
-                .foregroundStyle(viewModel.isRecording ? .gray : .white, Color.asset(Asset.Colors.haPrimary))
+            ZStack {
+                Image(systemName: "waveform.circle.fill")
+                    .symbolEffect(
+                        .variableColor.cumulative.dimInactiveLayers.nonReversing,
+                        options: .repeating,
+                        value: viewModel.isRecording
+                    )
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
+                    .opacity(viewModel.isRecording ? 1 : 0)
+                Image(uiImage: icon)
+                    .opacity(viewModel.isRecording ? 0 : 1)
+            }
         } else {
             if viewModel.isRecording {
-                return Image(systemName: "stop.circle")
+                Image(systemName: "stop.circle")
             } else {
-                return Image(systemName: micIcon)
+                Image(uiImage: icon)
             }
         }
     }
@@ -217,11 +234,4 @@ struct AssistView: View {
             [.allCorners]
         }
     }
-}
-
-#Preview {
-    VStack {}
-        .sheet(isPresented: .constant(true), content: {
-            AssistView(viewModel: .init(server: ServerFixture.standard))
-        })
 }

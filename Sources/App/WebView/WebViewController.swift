@@ -1099,7 +1099,7 @@ extension WebViewController: WKScriptMessageHandler {
                 )
             case .assistShow:
                 guard overlayAppController == nil else { return }
-                let assistView = UIHostingController(rootView: AssistView(viewModel: .init(server: server)))
+                let assistView = UIHostingController(rootView: AssistView.build(server: server))
                 present(assistView, animated: true, completion: nil)
                 overlayAppController = assistView
             }
