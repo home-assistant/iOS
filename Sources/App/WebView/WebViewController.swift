@@ -27,7 +27,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var initialURL: URL?
     private var barCodeScannerController: UIViewController?
 
-    private let settingsButton: UIButton! = {
+    private let settingsButton: UIButton = {
         let button = UIButton()
         button.setImage(
             MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
