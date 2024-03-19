@@ -22,7 +22,7 @@ public extension Data {
             }
         }
 
-        self.init(bytes: byteArray)
+        self.init(byteArray)
     }
 }
 
