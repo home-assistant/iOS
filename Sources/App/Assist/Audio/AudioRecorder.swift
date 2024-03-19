@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 import Shared
 
 protocol AudioRecorderProtocol {
@@ -17,7 +17,7 @@ protocol AudioRecorderDelegate: AnyObject {
 
 final class AudioRecorder: NSObject, AudioRecorderProtocol {
     weak var delegate: AudioRecorderDelegate?
-    
+
     private(set) var audioSampleRate: Double = 16000
     private var captureSession: AVCaptureSession?
 

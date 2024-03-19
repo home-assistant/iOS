@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 
 protocol AudioPlayerProtocol {
     func play(url: URL)
@@ -14,7 +14,7 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
         player.replaceCurrentItem(with: playerItem)
         player.play()
     }
-    
+
     func pause() {
         player.pause()
     }

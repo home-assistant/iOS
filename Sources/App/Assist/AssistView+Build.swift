@@ -7,10 +7,10 @@ extension AssistView {
         preferredPipelineId: String = ""
     ) -> AssistView {
         let viewModel = AssistViewModel(
-            server: server,
             preferredPipelineId: preferredPipelineId,
             audioRecorder: AudioRecorder(),
-            audioPlayer: AudioPlayer()
+            audioPlayer: AudioPlayer(),
+            assistService: AssistService(server: server)
         )
         return .init(viewModel: viewModel)
     }

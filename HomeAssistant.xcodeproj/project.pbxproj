@@ -543,6 +543,7 @@
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
+		4291068E2BA9D93500D452F9 /* AssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068D2BA9D93500D452F9 /* AssistService.swift */; };
 		4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */; };
 		4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36C2B90DB630051B63C /* PerformAction.swift */; };
 		4296C3762B91F0F50051B63C /* WidgetActionsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */; };
@@ -1707,6 +1708,7 @@
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		4291068D2BA9D93500D452F9 /* AssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistService.swift; sourceTree = "<group>"; };
 		4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentActionAppEntity.swift; sourceTree = "<group>"; };
 		4296C36C2B90DB630051B63C /* PerformAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
@@ -3317,6 +3319,7 @@
 				42B94BDC2B9606CD00DEE060 /* AssistView.swift */,
 				429106882BA9D5F700D452F9 /* AssistView+Build.swift */,
 				4283383F2BA1B17C004798C2 /* AssistRequests.swift */,
+				4291068D2BA9D93500D452F9 /* AssistService.swift */,
 			);
 			path = Assist;
 			sourceTree = "<group>";
@@ -5904,6 +5907,7 @@
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
+				4291068E2BA9D93500D452F9 /* AssistService.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
 				42266B1D2B741FB400E94A71 /* BarcodeScannerCameraView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
