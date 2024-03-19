@@ -4,6 +4,7 @@ import SwiftUI
 struct AssistView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AssistViewModel
+    @FocusState private var isFirstResponder: Bool
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -86,6 +87,7 @@ struct AssistView: View {
                             ForEach(viewModel.chatItems, id: \.id) { item in
                                 makeChatBubble(item: item)
                                     .id(item.id)
+                                    .padding(.bottom)
                             }
                         }
                         .padding()
@@ -115,6 +117,7 @@ struct AssistView: View {
         HStack(spacing: Spaces.two) {
             TextField("", text: $viewModel.inputText)
                 .textFieldStyle(.roundedBorder)
+                .focused($isFirstResponder)
                 .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
                 .opacity(viewModel.isRecording ? 0 : 1)
                 .animation(.smooth, value: viewModel.isRecording)
@@ -149,6 +152,7 @@ struct AssistView: View {
 
     private var assistMicButton: some View {
         Button(action: {
+            isFirstResponder = false
             feedbackGenerator.notificationOccurred(.warning)
             if viewModel.isRecording {
                 viewModel.stopStreaming()
