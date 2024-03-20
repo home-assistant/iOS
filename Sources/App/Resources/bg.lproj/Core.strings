@@ -117,7 +117,7 @@
 "component::light::title" = "Осветление";
 "component::litterrobot::entity::sensor::status_code::state::off" = "Изключен";
 "component::litterrobot::entity::sensor::status_code::state::p" = "В пауза";
-"component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Изключено";
+"component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Изключен";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "В пауза";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Активирано";
 "component::lock::entity_component::_::state::locked" = "Заключена";
@@ -134,7 +134,7 @@
 "component::media_player::entity_component::_::state_attributes::is_volume_muted::state::true" = "Да";
 "component::media_player::entity_component::_::state_attributes::repeat::state::off" = "Изключен";
 "component::media_player::entity_component::_::state_attributes::shuffle::state::false" = "Изключено";
-"component::media_player::entity_component::_::state_attributes::shuffle::state::true" = "Включено";
+"component::media_player::entity_component::_::state_attributes::shuffle::state::true" = "Включен";
 "component::mqtt::selector::set_ca_cert::options::off" = "Изключен";
 "component::netatmo::device_automation::trigger_subtype::away" = "Отсъства";
 "component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away" = "Отсъства";
