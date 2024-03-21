@@ -1098,10 +1098,7 @@ extension WebViewController: WKScriptMessageHandler {
                     activeOperationalDataset: activeOperationalDataset
                 )
             case .assistShow:
-                guard overlayAppController == nil else { return }
-                let assistView = UIHostingController(rootView: AssistView.build(server: server))
-                present(assistView, animated: true, completion: nil)
-                overlayAppController = assistView
+                showAssist(server: server, pipeline: "")
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -1133,6 +1130,24 @@ extension WebViewController: WKScriptMessageHandler {
                 }
             }
         }
+    }
+
+    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
+        if AssistSession.shared.inProgress {
+            AssistSession.shared.requestNewSession(.init(
+                server: server,
+                pipelineId: pipeline,
+                autoStartRecording: autoStartRecording
+            ))
+            return
+        }
+        let assistView = UIHostingController(rootView: AssistView.build(
+            server: server,
+            preferredPipelineId: pipeline,
+            autoStartRecording: autoStartRecording
+        ))
+        present(assistView, animated: true, completion: nil)
+        overlayAppController = assistView
     }
 
     private func transferKeychainThreadCredentialsToHARequested() {

@@ -1,8 +1,7 @@
 import Foundation
 import HAKit
-import Shared
 
-protocol AssistServiceProtocol {
+public protocol AssistServiceProtocol {
     var delegate: AssistServiceDelegate? { get set }
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void)
     func assist(source: AssistSource)
@@ -10,7 +9,7 @@ protocol AssistServiceProtocol {
     func finishSendingAudio()
 }
 
-protocol AssistServiceDelegate: AnyObject {
+public protocol AssistServiceDelegate: AnyObject {
     func didReceiveEvent(_ event: AssistEvent)
     func didReceiveSttContent(_ content: String)
     func didReceiveIntentEndContent(_ content: String)
@@ -18,13 +17,13 @@ protocol AssistServiceDelegate: AnyObject {
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
 }
 
-enum AssistSource {
+public enum AssistSource {
     case text(input: String, pipelineId: String)
     case audio(pipelineId: String, audioSampleRate: Double)
 }
 
-final class AssistService: AssistServiceProtocol {
-    weak var delegate: AssistServiceDelegate?
+public final class AssistService: AssistServiceProtocol {
+    public weak var delegate: AssistServiceDelegate?
 
     private let connection: HAConnection
     private let server: Server
@@ -32,7 +31,7 @@ final class AssistService: AssistServiceProtocol {
     private var cancellable: HACancellable?
     private var sttBinaryHandlerId: UInt8?
 
-    init(
+    public init(
         server: Server
     ) {
         self.server = server
@@ -43,7 +42,7 @@ final class AssistService: AssistServiceProtocol {
         cancellable?.cancel()
     }
 
-    func assist(source: AssistSource) {
+    public func assist(source: AssistSource) {
         switch source {
         case let .text(input, pipelineId):
             assistWithText(input: input, pipelineId: pipelineId)
@@ -52,9 +51,8 @@ final class AssistService: AssistServiceProtocol {
         }
     }
 
-    func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
-        connection.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
-            guard let self else { return }
+    public func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
+        connection.send(AssistRequests.fetchPipelinesTypedRequest) { result in
             switch result {
             case let .success(response):
                 completion(response)
@@ -65,7 +63,7 @@ final class AssistService: AssistServiceProtocol {
         }
     }
 
-    func sendAudioData(_ data: Data) {
+    public func sendAudioData(_ data: Data) {
         guard let sttBinaryHandlerId else { return }
         _ = connection.send(.init(
             type: .sttData(.init(sttBinaryHandlerId: sttBinaryHandlerId)),
@@ -73,7 +71,7 @@ final class AssistService: AssistServiceProtocol {
         ))
     }
 
-    func finishSendingAudio() {
+    public func finishSendingAudio() {
         guard let sttBinaryHandlerId else { return }
         _ = connection.send(.init(type: .sttData(.init(sttBinaryHandlerId: sttBinaryHandlerId))))
     }

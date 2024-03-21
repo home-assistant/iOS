@@ -2,45 +2,37 @@ import Foundation
 import Intents
 
 public enum IntentHandlerFactory {
-    // swiftlint:disable:next cyclomatic_complexity
     public static func handler(for intent: INIntent) -> Any {
         let handler: Any = {
-            if intent is FireEventIntent {
+            switch intent {
+            case is FireEventIntent:
                 return FireEventIntentHandler()
-            }
-            if intent is CallServiceIntent {
+            case is CallServiceIntent:
                 return CallServiceIntentHandler()
-            }
-            if intent is SendLocationIntent {
+            case is SendLocationIntent:
                 return SendLocationIntentHandler()
-            }
-            if intent is GetCameraImageIntent {
+            case is GetCameraImageIntent:
                 return GetCameraImageIntentHandler()
-            }
-            if intent is RenderTemplateIntent {
+            case is RenderTemplateIntent:
                 return RenderTemplateIntentHandler()
-            }
-            if intent is PerformActionIntent {
+            case is PerformActionIntent:
                 return PerformActionIntentHandler()
-            }
-            if intent is UpdateSensorsIntent {
+            case is UpdateSensorsIntent:
                 return UpdateSensorsIntentHandler()
-            }
-            if intent is AssistIntent {
+            case is AssistIntent:
                 return AssistIntentHandler()
-            }
-            if intent is OpenPageIntent || intent is WidgetOpenPageIntent {
+            case is OpenPageIntent, is WidgetOpenPageIntent:
                 return OpenPageIntentHandler()
-            }
-            if intent is INShareFocusStatusIntent {
+            case is INShareFocusStatusIntent:
                 return FocusStatusIntentHandler()
-            }
-            if intent is WidgetActionsIntent {
+            case is WidgetActionsIntent:
                 return WidgetActionsIntentHandler()
+            case is AssistInAppIntent:
+                return AssistInAppIntentHandler()
+            default:
+                return self
             }
-            return self
         }()
-
         Current.Log.info("for \(intent) found handler \(handler)")
         return handler
     }

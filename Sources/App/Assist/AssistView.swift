@@ -4,6 +4,7 @@ import SwiftUI
 struct AssistView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AssistViewModel
+    @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
@@ -34,9 +35,11 @@ struct AssistView: View {
         }
         .navigationViewStyle(.stack)
         .onAppear {
+            assistSession.inProgress = true
             viewModel.onAppear()
         }
         .onDisappear {
+            assistSession.inProgress = false
             viewModel.onDisappear()
         }
     }

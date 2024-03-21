@@ -12,22 +12,28 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var isRecording = false
     @Published var showPipelineErrorAlert = false
 
+    private var server: Server
     private var audioRecorder: AudioRecorderProtocol
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
+    private var autoStartRecording: Bool
 
     private var canSendAudioData = false
 
     init(
+        server: Server,
         preferredPipelineId: String = "",
         audioRecorder: AudioRecorderProtocol,
         audioPlayer: AudioPlayerProtocol,
-        assistService: AssistServiceProtocol
+        assistService: AssistServiceProtocol,
+        autoStartRecording: Bool
     ) {
+        self.server = server
         self.preferredPipelineId = preferredPipelineId
         self.audioRecorder = audioRecorder
         self.audioPlayer = audioPlayer
         self.assistService = assistService
+        self.autoStartRecording = autoStartRecording
         super.init()
 
         self.audioRecorder.delegate = self
@@ -36,6 +42,8 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     @MainActor
     func onAppear() {
+        AssistSession.shared.delegate = self
+        checkForAutoRecordingAndStart()
         fetchPipelines()
     }
 
@@ -83,6 +91,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         )
     }
 
+    private func replaceAssistService(server: Server) {
+        assistService = AssistService(server: server)
+        assistService.delegate = self
+    }
+
     private func appendToChat(_ item: AssistChatItem) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
@@ -112,6 +125,15 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
         Current.Log.info("Stop recording audio for Assist")
+    }
+
+    private func checkForAutoRecordingAndStart() {
+        if autoStartRecording {
+            autoStartRecording = false
+            Task {
+                await assistWithAudio()
+            }
+        }
     }
 
     private func showPipelineError() {
@@ -164,5 +186,20 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         audioPlayer.play(url: mediaUrl)
+    }
+}
+
+extension AssistViewModel: AssistSessionDelegate {
+    func didRequestNewSession(_ context: AssistSessionContext) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if context.server != server {
+                server = server
+                replaceAssistService(server: context.server)
+            }
+            preferredPipelineId = context.pipelineId
+            autoStartRecording = context.autoStartRecording
+            onAppear()
+        }
     }
 }

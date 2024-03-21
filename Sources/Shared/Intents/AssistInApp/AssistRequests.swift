@@ -1,9 +1,8 @@
 import Foundation
 import HAKit
-import Shared
 
-enum AssistRequests {
-    static func assistByVoiceTypedSubscription(
+public enum AssistRequests {
+    public static func assistByVoiceTypedSubscription(
         preferredPipelineId: String,
         audioSampleRate: Double
     ) -> HATypedSubscription<AssistResponse> {
@@ -17,7 +16,7 @@ enum AssistRequests {
         ]))
     }
 
-    static func assistByTextTypedSubscription(
+    public static func assistByTextTypedSubscription(
         preferredPipelineId: String,
         inputText: String
     ) -> HATypedSubscription<AssistResponse> {
@@ -31,7 +30,7 @@ enum AssistRequests {
         ]))
     }
 
-    static var fetchPipelinesTypedRequest: HATypedRequest<PipelineResponse> {
+    public static var fetchPipelinesTypedRequest: HATypedRequest<PipelineResponse> {
         .init(request: HARequest(type: .webSocket("assist_pipeline/pipeline/list")))
     }
 }

@@ -90,6 +90,27 @@ class IncomingURLHandler {
     func handle(userActivity: NSUserActivity) -> Bool {
         Current.Log.info(userActivity)
 
+        if let assistInAppIntent = userActivity.interaction?.intent as? AssistInAppIntent {
+            guard let server = Current.servers.server(for: assistInAppIntent) else { return false }
+            let pipeline = assistInAppIntent.pipeline
+            let autoStartRecording = Bool(exactly: assistInAppIntent.withVoice ?? 0) ?? false
+
+            windowController.webViewControllerPromise.pipe { result in
+                switch result {
+                case let .fulfilled(webView):
+                    webView.showAssist(
+                        server: server,
+                        pipeline: pipeline?.identifier ?? "",
+                        autoStartRecording: autoStartRecording
+                    )
+                case let .rejected(error):
+                    Current.Log.error("Failed to obtain webview to open Assist In App")
+                }
+            }
+
+            return true
+        }
+
         switch Current.tags.handle(userActivity: userActivity) {
         case let .handled(type):
             let (icon, text) = { () -> (MaterialDesignIcons, String) in
