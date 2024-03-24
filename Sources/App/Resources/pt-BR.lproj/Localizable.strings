@@ -52,12 +52,12 @@
 "announcement.drop_support.button_read_more" = "Leia mais";
 "announcement.drop_support.subtitle" = "Após consideração cuidadosa, descontinuaremos o suporte para iOS 12, 13 e 14 em nossas próximas atualizações.";
 "announcement.drop_support.title" = "Atualização Importante";
-"app_intents.perform_action.action_parameter_configuration" = "Which action?";
-"app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
-"app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
-"app_intents.perform_action.response_failure" = "Failed: %@";
-"app_intents.perform_action.response_success" = "Done";
-"app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"app_intents.perform_action.action_parameter_configuration" = "Qual ação?";
+"app_intents.perform_action.action_parameter_confirmation" = "Só para confirmar, você queria ‘%@’?";
+"app_intents.perform_action.action_parameter_disambiguation_intro" = "Existem %@ opções correspondentes a ‘%@’.";
+"app_intents.perform_action.response_failure" = "Falhou: %@";
+"app_intents.perform_action.response_success" = "Feito";
+"app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Toque para continuar em seu iPhone";
 "carPlay.action.intro.item.title" = "Crie sua primeira ação";
@@ -115,7 +115,7 @@
 "client_events.view.clear_confirm.message" = "Isto não pode ser desfeito.";
 "client_events.view.clear_confirm.title" = "Tem certeza de que deseja limpar todos os eventos?";
 "close_label" = "Fechar";
-"component.collapsible_view.collapse" = "Colapso";
+"component.collapsible_view.collapse" = "Colapsar";
 "component.collapsible_view.expand" = "Expandir";
 "continue_label" = "Continuar";
 "copy_label" = "Copiar";
