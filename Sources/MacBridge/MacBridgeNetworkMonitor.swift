@@ -3,7 +3,7 @@ import Foundation
 import SystemConfiguration
 
 class MacBridgeNetworkMonitor {
-    static var connectivityDidChangeNotification: Notification.Name = .init("ha_connectivityDidChange")
+    static let connectivityDidChangeNotification: Notification.Name = .init("ha_connectivityDidChange")
 
     private let wifiClient: CWWiFiClient
     private var scStore: SCDynamicStore!

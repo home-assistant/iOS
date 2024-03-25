@@ -1,8 +1,8 @@
 public struct PushProviderConfiguration: Codable {
-    public static var providerConfigurationKey = "ha_configurations"
+    public static let providerConfigurationKey = "ha_configurations"
 
-    public var serverIdentifier: Identifier<Server>
-    public var settingsKey: String
+    public let serverIdentifier: Identifier<Server>
+    public let settingsKey: String
 
     public init(serverIdentifier: Identifier<Server>, settingsKey: String) {
         self.serverIdentifier = serverIdentifier

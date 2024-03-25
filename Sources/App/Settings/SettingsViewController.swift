@@ -8,11 +8,11 @@ class SettingsViewController: HAFormViewController {
         init(rawValue: Int) { self.rawValue = rawValue }
         init(integerLiteral value: IntegerLiteralType) { self.init(rawValue: value) }
 
-        static var servers: ContentSection = 0b1
-        static var general: ContentSection = 0b10
-        static var integrations: ContentSection = 0b100
-        static var help: ContentSection = 0b1000
-        static var all = ContentSection(rawValue: ~0b0)
+        static let servers: ContentSection = 0b1
+        static let general: ContentSection = 0b10
+        static let integrations: ContentSection = 0b100
+        static let help: ContentSection = 0b1000
+        static let all = ContentSection(rawValue: ~0b0)
     }
 
     let contentSections: ContentSection

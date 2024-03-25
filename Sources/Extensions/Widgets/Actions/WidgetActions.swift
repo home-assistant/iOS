@@ -73,5 +73,5 @@ struct LegacyWidgetActions: Widget {
 }
 
 enum WidgetActionSupportedFamilies {
-    static var families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
+    static let families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
 }

@@ -28,7 +28,7 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
 }
 
 public extension DateFormatter {
-    static var iso8601Milliseconds: DateFormatter = {
+    static let iso8601Milliseconds: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"

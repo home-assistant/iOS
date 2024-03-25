@@ -95,7 +95,7 @@ public class ModelManager: ServerObserver {
             ]
         }
 
-        public static var defaults: [Self] = [
+        public static let defaults: [Self] = [
             CleanupDefinition(
                 model: LocationHistoryEntry.self,
                 createdKey: #keyPath(LocationHistoryEntry.CreatedAt)
@@ -229,7 +229,7 @@ public class ModelManager: ServerObserver {
             })
         }
 
-        public static var defaults: [Self] = [
+        public static let defaults: [Self] = [
             .states(domain: "zone", type: RLMZone.self),
             .states(domain: "scene", type: RLMScene.self),
         ]
@@ -257,7 +257,7 @@ public class ModelManager: ServerObserver {
             _ modelManager: ModelManager
         ) -> Promise<Void>
 
-        public static var defaults: [Self] = [
+        public static let defaults: [Self] = [
             FetchDefinition(update: { api, queue, manager in
                 api.GetMobileAppConfig().then(on: queue) {
                     when(fulfilled: [

@@ -23,7 +23,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private let refreshControl = UIRefreshControl()
     private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
-    private var keepAliveTimer: Timer?
     private var initialURL: URL?
     private var barCodeScannerController: UIViewController?
 

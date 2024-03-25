@@ -3,7 +3,7 @@ import Shared
 import UIKit
 
 final class WindowScenesManager {
-    static var shared = WindowScenesManager()
+    static let shared = WindowScenesManager()
     private(set) var windowSizeObservers: [WindowSizeObserver] = []
 
     func sceneDidBecomeActive(_ scene: UIWindowScene) {

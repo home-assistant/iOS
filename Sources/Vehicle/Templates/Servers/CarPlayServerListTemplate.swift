@@ -5,7 +5,7 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
-    private(set) static var carPlayPreferredServerKey = "carPlay-server"
+    static let carPlayPreferredServerKey = "carPlay-server"
 
     private let viewModel: CarPlayServerListViewModel
 
