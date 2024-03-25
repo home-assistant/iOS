@@ -150,7 +150,7 @@
 "component::plugwise::entity::select::dhw_mode::state::off" = "Fra";
 "component::plugwise::entity::select::regulation_mode::state::off" = "Fra";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Inaktiv";
-"component::prusalink::entity::sensor::printer_state::state::paused" = "Pause";
+"component::prusalink::entity::sensor::printer_state::state::paused" = "På pause";
 "component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Inaktiv";
 "component::remote::entity_component::_::state::off" = "Fra";
 "component::remote::entity_component::_::state::on" = "Til";
