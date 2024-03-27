@@ -66,14 +66,14 @@ public final class AssistService: AssistServiceProtocol {
     public func sendAudioData(_ data: Data) {
         guard let sttBinaryHandlerId else { return }
         _ = connection.send(.init(
-            type: .sttData(.init(sttBinaryHandlerId: sttBinaryHandlerId)),
+            type: .sttData(.init(rawValue: sttBinaryHandlerId)),
             data: ["audioData": data.base64EncodedString()]
         ))
     }
 
     public func finishSendingAudio() {
         guard let sttBinaryHandlerId else { return }
-        _ = connection.send(.init(type: .sttData(.init(sttBinaryHandlerId: sttBinaryHandlerId))))
+        _ = connection.send(.init(type: .sttData(.init(rawValue: sttBinaryHandlerId))))
     }
 
     private func assistWithAudio(pipelineId: String, audioSampleRate: Double) {
