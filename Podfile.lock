@@ -128,9 +128,9 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
-  - HAKit (from `../HAKit`)
-  - HAKit/Mocks (from `../HAKit`)
-  - HAKit/PromiseKit (from `../HAKit`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `write-haconnection`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `write-haconnection`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `write-haconnection`)
   - KeychainAccess
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
@@ -198,7 +198,8 @@ EXTERNAL SOURCES:
     :branch: master
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :path: "../HAKit"
+    :branch: write-haconnection
+    :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -228,6 +229,9 @@ CHECKOUT OPTIONS:
   Eureka:
     :commit: ba4ebbcc4e368e901de666870fc2a4524474a4c7
     :git: https://github.com/xmartlabs/Eureka
+  HAKit:
+    :commit: 3168c9282fc1203b92bd012033c04fb91e46d05d
+    :git: https://github.com/home-assistant/HAKit.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -280,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 798f0d734a3e39528e24dac3f1325c13e103ae2d
+PODFILE CHECKSUM: d49c0f4d830d05af1418ddf2d24801c0cc0c2a84
 
 COCOAPODS: 1.15.2

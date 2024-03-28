@@ -35,9 +35,9 @@ pod 'Version'
 pod 'XCGLogger'
 
 pod 'Starscream', git: 'https://github.com/zacwest/starscream', branch: 'ha-swift-api'
-pod 'HAKit', path: '../HAKit'
-pod 'HAKit/PromiseKit', path: '../HAKit'
-pod 'HAKit/Mocks', path: '../HAKit'
+pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', branch: 'write-haconnection'
+pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', branch: 'write-haconnection'
+pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', branch: 'write-haconnection'
 
 def test_pods
   pod 'OHHTTPStubs/Swift'
