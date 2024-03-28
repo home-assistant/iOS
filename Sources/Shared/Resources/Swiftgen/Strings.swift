@@ -2799,6 +2799,12 @@ public enum L10n {
       /// Actions
       public static var title: String { return L10n.tr("Localizable", "widgets.actions.title") }
     }
+    public enum Assist {
+      /// Open Assist in the app
+      public static var description: String { return L10n.tr("Localizable", "widgets.assist.description") }
+      /// Assist
+      public static var title: String { return L10n.tr("Localizable", "widgets.assist.title") }
+    }
     public enum OpenPage {
       /// Open a frontend page in Home Assistant.
       public static var description: String { return L10n.tr("Localizable", "widgets.open_page.description") }

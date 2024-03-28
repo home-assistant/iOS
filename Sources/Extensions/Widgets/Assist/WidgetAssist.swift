@@ -14,12 +14,9 @@ struct WidgetAssist: Widget {
             }
         )
         .contentMarginsDisabledIfAvailable()
-        .configurationDisplayName(L10n.Widgets.OpenPage.title)
-        .description(L10n.Widgets.OpenPage.description)
+        .configurationDisplayName(L10n.Widgets.Assist.title)
+        .description(L10n.Widgets.Assist.description)
         .supportedFamilies(supportedFamilies)
-        .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
-            Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
-        }
     }
 
     private var supportedFamilies: [WidgetFamily] {
