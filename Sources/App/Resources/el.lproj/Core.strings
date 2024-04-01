@@ -57,7 +57,7 @@
 "component::counter::entity_component::_::state_attributes::editable::state::true" = "Ναι";
 "component::cover::entity_component::_::state::closed" = "Κλειστό";
 "component::cover::entity_component::_::state::open" = "Ανοικτό";
-"component::cover::title" = "Κάλυμμα";
+"component::cover::title" = "Ρολό";
 "component::deluge::entity::sensor::status::state::idle" = "Αδρανής";
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "Ανενεργό";
 "component::demo::entity::sensor::thermostat_mode::state::away" = "Εκτός σπιτιού";
@@ -136,8 +136,8 @@
 "component::media_player::entity_component::_::state_attributes::shuffle::state::false" = "Ανενεργό";
 "component::media_player::entity_component::_::state_attributes::shuffle::state::true" = "Ενεργό";
 "component::mqtt::selector::set_ca_cert::options::off" = "Ανενεργό";
-"component::netatmo::device_automation::trigger_subtype::away" = "εκτός";
-"component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away" = "Εκτός";
+"component::netatmo::device_automation::trigger_subtype::away" = "Εκτός σπιτιού";
+"component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away" = "Εκτός σπιτιού";
 "component::overkiz::entity::select::open_closed_partial::state::closed" = "Κλειστό";
 "component::overkiz::entity::select::open_closed_partial::state::open" = "Ανοιχτό";
 "component::overkiz::entity::select::open_closed_pedestrian::state::closed" = "Κλειστό";
