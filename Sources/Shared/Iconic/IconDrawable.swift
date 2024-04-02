@@ -167,7 +167,7 @@ extension IconDrawable {
     public static func register() {
 
         // No need to register the font more than once
-        if UIFont.familyNames.map({ $0.replacingOccurrences(of: " ", with: "") }).contains(familyName) {
+        if UIFont.familyNames.contains(familyName) {
             return
         }
 
