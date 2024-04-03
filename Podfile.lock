@@ -102,7 +102,7 @@ PODS:
   - RealmSwift (10.35.0):
     - Realm (= 10.35.0)
   - Sodium (0.9.1)
-  - Starscream (4.0.4)
+  - Starscream (4.0.8)
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
   - SwiftLint (0.54.0)
@@ -128,9 +128,9 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.1`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.1`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.1`)
   - KeychainAccess
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
@@ -140,7 +140,6 @@ DEPENDENCIES:
   - ReachabilitySwift
   - RealmSwift
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
-  - Starscream (from `https://github.com/zacwest/starscream`, branch `ha-swift-api`)
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
   - SwiftLint (= 0.54.0)
@@ -172,6 +171,7 @@ SPEC REPOS:
     - ReachabilitySwift
     - Realm
     - RealmSwift
+    - Starscream
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -198,17 +198,14 @@ EXTERNAL SOURCES:
     :branch: master
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :branch: main
     :git: https://github.com/home-assistant/HAKit.git
+    :tag: 0.4.1
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
     :branch: xcode-14.0.1
     :git: https://github.com/zacwest/swift-sodium.git
-  Starscream:
-    :branch: ha-swift-api
-    :git: https://github.com/zacwest/starscream
   ViewRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -230,17 +227,14 @@ CHECKOUT OPTIONS:
     :commit: ba4ebbcc4e368e901de666870fc2a4524474a4c7
     :git: https://github.com/xmartlabs/Eureka
   HAKit:
-    :commit: 8d1361d372c744fe4a8978767f62b6dc9648e254
     :git: https://github.com/home-assistant/HAKit.git
+    :tag: 0.4.1
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
   Sodium:
     :commit: c66991f2ea610d437b31656795226c8e52002abd
     :git: https://github.com/zacwest/swift-sodium.git
-  Starscream:
-    :commit: 1871b44435eb636633dce9eb0ca84ed3aac6e0dc
-    :git: https://github.com/zacwest/starscream
   ViewRow:
     :commit: 3428a3b825a5641ae7fb65f3f787aba2b1b4dab9
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -273,7 +267,7 @@ SPEC CHECKSUMS:
   Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
   RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
-  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
@@ -284,6 +278,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 31a4ad38edd7784f609d0da52cfdb9b0ca1b2d3c
+PODFILE CHECKSUM: 842e2967764412efa26d9625026ccc049608b78e
 
 COCOAPODS: 1.15.2
