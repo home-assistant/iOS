@@ -17,9 +17,20 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
 }
 
-public enum AssistSource {
+public enum AssistSource: Equatable {
     case text(input: String, pipelineId: String)
     case audio(pipelineId: String, audioSampleRate: Double)
+
+    public static func == (lhs: AssistSource, rhs: AssistSource) -> Bool {
+        switch (lhs, rhs) {
+        case let (.text(lhsInput, lhsPipelineId), .text(rhsInput, rhsPipelineId)):
+            return lhsInput == rhsInput && lhsPipelineId == rhsPipelineId
+        case let (.audio(lhsPipelineId, lhsSampleRate), .audio(rhsPipelineId, rhsSampleRate)):
+            return lhsPipelineId == rhsPipelineId && lhsSampleRate == rhsSampleRate
+        default:
+            return false
+        }
+    }
 }
 
 public final class AssistService: AssistServiceProtocol {

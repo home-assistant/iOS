@@ -39,6 +39,35 @@ public struct Pipeline: HADataDecodable {
         self.wakeWordEntity = try? data.decode("wake_word_entity")
         self.wakeWordId = try? data.decode("wake_word_id")
     }
+
+    /// Mainly for test purposes
+    public init(
+        conversationEngine: String? = nil,
+        conversationLanguage: String? = nil,
+        id: String,
+        language: String? = nil,
+        name: String,
+        sttEngine: String? = nil,
+        sttLanguage: String? = nil,
+        ttsEngine: String? = nil,
+        ttsLanguage: String? = nil,
+        ttsVoice: String? = nil,
+        wakeWordEntity: String? = nil,
+        wakeWordId: String? = nil
+    ) {
+        self.conversationEngine = conversationEngine
+        self.conversationLanguage = conversationLanguage
+        self.id = id
+        self.language = language
+        self.name = name
+        self.sttEngine = sttEngine
+        self.sttLanguage = sttLanguage
+        self.ttsEngine = ttsEngine
+        self.ttsLanguage = ttsLanguage
+        self.ttsVoice = ttsVoice
+        self.wakeWordEntity = wakeWordEntity
+        self.wakeWordId = wakeWordId
+    }
 }
 
 public struct AssistResponse: HADataDecodable {

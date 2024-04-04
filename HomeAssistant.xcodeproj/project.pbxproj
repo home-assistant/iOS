@@ -555,6 +555,10 @@
 		4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
+		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
+		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
+		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
+		42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E62BBEAAE80083D045 /* MockAssistService.swift */; };
 		42B94BDD2B9606CD00DEE060 /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
 		42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDC2B9606CD00DEE060 /* AssistView.swift */; };
@@ -1723,6 +1727,10 @@
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.test.swift; sourceTree = "<group>"; };
+		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
+		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
+		42A818E62BBEAAE80083D045 /* MockAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAssistService.swift; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
 		42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistViewModel.swift; sourceTree = "<group>"; };
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
@@ -3262,9 +3270,29 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
+		42A818DE2BBEA8050083D045 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				42A818E12BBEA9650083D045 /* Mocks */,
+				42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		42A818E12BBEA9650083D045 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */,
+				42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */,
+				42A818E62BBEAAE80083D045 /* MockAssistService.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		42B94BD92B9606CD00DEE060 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				42A818DE2BBEA8050083D045 /* Tests */,
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
@@ -6079,14 +6107,18 @@
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
+				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
+				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
+				42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */,
 				11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */,
 				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
 				11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */,
 				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
+				42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */,
 				42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,

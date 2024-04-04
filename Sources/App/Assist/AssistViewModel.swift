@@ -16,9 +16,10 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var audioRecorder: AudioRecorderProtocol
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
-    private var autoStartRecording: Bool
+    private(set) var autoStartRecording: Bool
+    private(set) var audioTask: Task<Void, Error>?
 
-    private var canSendAudioData = false
+    private(set) var canSendAudioData = false
 
     init(
         server: Server,
@@ -50,6 +51,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     func onDisappear() {
         audioRecorder.stopRecording()
         audioPlayer.pause()
+        audioTask?.cancel()
     }
 
     @MainActor
@@ -96,11 +98,9 @@ final class AssistViewModel: NSObject, ObservableObject {
         assistService.delegate = self
     }
 
+    @MainActor
     private func appendToChat(_ item: AssistChatItem) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            chatItems.append(item)
-        }
+        chatItems.append(item)
     }
 
     @MainActor
@@ -130,7 +130,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private func checkForAutoRecordingAndStart() {
         if autoStartRecording {
             autoStartRecording = false
-            Task {
+            audioTask = Task {
                 await assistWithAudio()
             }
         }
@@ -172,10 +172,12 @@ extension AssistViewModel: AssistServiceDelegate {
         }
     }
 
+    @MainActor
     func didReceiveSttContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .input))
     }
 
+    @MainActor
     func didReceiveIntentEndContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .output))
     }
