@@ -10,7 +10,7 @@
 "about.help_localize.title" = "Βοηθήστε να μεταφραστεί η εφαρμογή!";
 "about.home_assistant_on_facebook.title" = "Το Home Assistant στο Facebook";
 "about.home_assistant_on_twitter.title" = "Το Home Assistant στο Twitter";
-"about.logo.app_title" = "Συνοδευτική Εφαρμογή Home Assistant";
+"about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Ζωντανέψτε το σπίτι σας";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Αφήστε μια κριτική";
@@ -72,7 +72,7 @@
 "carPlay.navigation.tab.actions" = "Ενέργειες";
 "carPlay.navigation.tab.areas" = "Περιοχές";
 "carPlay.navigation.tab.domains" = "Ελεγχος";
-"carPlay.no_actions.title" = "Ανοίξτε την Συνοδευτική Εφαρμογή Home Assistant για iOS για να δημιουργήσετε ενέργειες για το CarPlay.";
+"carPlay.no_actions.title" = "Ανοίξτε το Home Assistant Companion για iOS για να δημιουργήσετε ενέργειες για το CarPlay.";
 "carPlay.no_entities.title" = "Δεν υπάρχουν διαθέσιμες οντότητες συμβατές με CarPlay.";
 "carPlay.notification.action.intro.body" = "Πατήστε για να δημιουργήσετε την πρώτη σας ενέργεια iOS";
 "carPlay.notification.action.intro.title" = "Δημιουργία ενέργειας iOS";

@@ -48,7 +48,7 @@
 "component::climate::entity_component::_::state::off" = "Av";
 "component::climate::entity_component::_::state_attributes::fan_mode::state::off" = "Av";
 "component::climate::entity_component::_::state_attributes::fan_mode::state::on" = "På";
-"component::climate::entity_component::_::state_attributes::hvac_action::state::idle" = "Idle";
+"component::climate::entity_component::_::state_attributes::hvac_action::state::idle" = "Inaktiv";
 "component::climate::entity_component::_::state_attributes::hvac_action::state::off" = "Av";
 "component::climate::entity_component::_::state_attributes::preset_mode::state::home" = "Hjemme";
 "component::climate::entity_component::_::state_attributes::swing_mode::state::off" = "Av";
@@ -111,7 +111,7 @@
 "component::input_text::entity_component::_::state_attributes::editable::state::false" = "Nei";
 "component::input_text::entity_component::_::state_attributes::editable::state::true" = "Ja";
 "component::ipp::entity::sensor::printer::state::idle" = "Inaktiv";
-"component::lawn_mower::entity_component::_::state::paused" = "Satt på pause";
+"component::lawn_mower::entity_component::_::state::paused" = "Pauset";
 "component::light::entity_component::_::state::off" = "Av";
 "component::light::entity_component::_::state::on" = "På";
 "component::light::title" = "Lys";
