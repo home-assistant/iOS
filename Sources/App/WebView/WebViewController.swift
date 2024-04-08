@@ -1003,7 +1003,7 @@ extension WebViewController: WKScriptMessageHandler {
                                 "canWriteTag": Current.tags.isNFCAvailable,
                                 "canCommissionMatter": Current.matter.isAvailable,
                                 "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
-                                "hasQRScanner": true,
+                                "hasBarCodeScanner": true,
                                 "canTransferThreadCredentialsToKeychain": Current.matter
                                     .threadCredentialsStoreInKeychainEnabled,
                             ]
