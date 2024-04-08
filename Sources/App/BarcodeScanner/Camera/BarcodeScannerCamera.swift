@@ -41,7 +41,10 @@ class BarcodeScannerCamera: NSObject {
         }
     }
 
-    var qrFound: ((_ code: String, _ format: String) -> Void)?
+    /// Last time a barcode was detected
+    private var lastDetection: Date?
+
+    var barcodeFound: ((_ code: String, _ format: String) -> Void)?
     var isRunning: Bool {
         captureSession.isRunning
     }
@@ -241,6 +244,18 @@ class BarcodeScannerCamera: NSObject {
         }
     }
 
+    func turnOffFlashlight() {
+        guard let captureDevice, captureDevice.hasTorch else { return }
+
+        do {
+            try captureDevice.lockForConfiguration()
+            captureDevice.torchMode = .off
+            captureDevice.unlockForConfiguration()
+        } catch {
+            Current.Log.info("Flashlight could not be turned off: \(error)")
+        }
+    }
+
     private var deviceOrientation: UIDeviceOrientation {
         var orientation = UIDevice.current.orientation
         if orientation == UIDeviceOrientation.unknown {
@@ -283,12 +298,18 @@ extension BarcodeScannerCamera: AVCaptureMetadataOutputObjectsDelegate {
         didOutput metadataObjects: [AVMetadataObject],
         from connection: AVCaptureConnection
     ) {
+        // Avoid several detections if user keeps camera pointing to the same barcode
+        if let lastDetection {
+            guard Date().timeIntervalSince(lastDetection) > 1.5 else { return }
+        }
+
         if let metadataObject = metadataObjects.first {
             let format = metadataObject.type.haString
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
             feedbackGenerator.notificationOccurred(.success)
-            qrFound?(stringValue, format)
+            lastDetection = Date()
+            barcodeFound?(stringValue, format)
         }
     }
 }

@@ -26,6 +26,10 @@ final class BarcodeScannerDataModel: ObservableObject {
     func toggleFlashlight() {
         camera.toggleFlashlight()
     }
+
+    func turnOffFlashlight() {
+        camera.turnOffFlashlight()
+    }
 }
 
 private extension CIImage {
