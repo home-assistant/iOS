@@ -1087,8 +1087,8 @@ extension WebViewController: WKScriptMessageHandler {
                 )
             case .barCodeScannerClose:
                 if let barCodeController = overlayAppController as? BarcodeScannerHostingController {
-                    barCodeScannerController?.dismissAllViewControllersAbove()
-                    barCodeScannerController?.dismiss(animated: true)
+                    barCodeController.dismissAllViewControllersAbove()
+                    barCodeController.dismiss(animated: true)
                 }
             case .barCodeScannerNotify:
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
