@@ -214,6 +214,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         styleUI()
         updateWebViewForServerValues()
+
+        #if DEBUG
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        #endif
     }
 
     public func showSettingsViewController() {
@@ -1077,6 +1083,7 @@ extension WebViewController: WKScriptMessageHandler {
                     incomingMessageId: incomingMessageId
                 )
             case .barCodeScannerClose:
+                barCodeScannerController?.dismissAllViewControllersAbove()
                 barCodeScannerController?.dismiss(animated: true)
             case .barCodeScannerNotify:
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
