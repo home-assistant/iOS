@@ -41,9 +41,12 @@ struct BarcodeScannerView: View {
             topInformation
         }
         .onAppear {
-            cameraDataModel.camera.qrFound = { code, format in
+            cameraDataModel.camera.barcodeFound = { code, format in
                 viewModel.scannedCode(code, format: format)
             }
+        }
+        .onDisappear {
+            cameraDataModel.turnOffFlashlight()
         }
     }
 
@@ -108,7 +111,7 @@ struct BarcodeScannerView: View {
                         .stroke(Color.blue, lineWidth: 1)
                         .frame(width: cameraSquareSize, height: cameraSquareSize)
                     Button(action: {
-                        toggleFlashlight()
+                        cameraDataModel.toggleFlashlight()
                     }, label: {
                         Image(uiImage: flashlightIcon)
                             .padding()
@@ -118,10 +121,6 @@ struct BarcodeScannerView: View {
                     })
                 }
             }
-    }
-
-    private func toggleFlashlight() {
-        cameraDataModel.toggleFlashlight()
     }
 }
 

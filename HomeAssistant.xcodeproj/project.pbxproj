@@ -555,6 +555,7 @@
 		4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
+    42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
@@ -1727,6 +1728,7 @@
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.test.swift; sourceTree = "<group>"; };
 		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
@@ -3220,6 +3222,7 @@
 			children = (
 				42FCCFD52B9B195D0057783F /* UIImage+SharedAssets.swift */,
 				426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */,
+				42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */,
 				42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */,
 			);
 			path = Extensions;
@@ -4960,7 +4963,6 @@
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
 				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */,
-				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -6377,6 +6379,7 @@
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */,
+				42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */,
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,

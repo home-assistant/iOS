@@ -216,6 +216,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         styleUI()
         updateWebViewForServerValues()
+
+        #if DEBUG
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        #endif
     }
 
     public func showSettingsViewController() {
@@ -1005,7 +1011,7 @@ extension WebViewController: WKScriptMessageHandler {
                                 "canWriteTag": Current.tags.isNFCAvailable,
                                 "canCommissionMatter": Current.matter.isAvailable,
                                 "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
-                                "hasQRScanner": true,
+                                "hasBarCodeScanner": true,
                                 "canTransferThreadCredentialsToKeychain": Current.matter
                                     .threadCredentialsStoreInKeychainEnabled,
                                 "hasAssist": true,
@@ -1081,7 +1087,8 @@ extension WebViewController: WKScriptMessageHandler {
                 )
             case .barCodeScannerClose:
                 if let barCodeController = overlayAppController as? BarcodeScannerHostingController {
-                    barCodeController.dismiss(animated: true)
+                  barCodeScannerController?.dismissAllViewControllersAbove()
+                  barCodeScannerController?.dismiss(animated: true)
                 }
             case .barCodeScannerNotify:
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
