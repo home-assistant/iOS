@@ -129,7 +129,7 @@ struct AssistView: View {
                 .focused($isFirstResponder)
                 .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
                 .frame(height: 45)
-                .padding(.horizontal)
+                .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
                 .overlay(content: {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(.gray)
