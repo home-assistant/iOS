@@ -14,6 +14,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case barCodeScanner = "bar_code/scan"
     case barCodeScannerClose = "bar_code/close"
     case barCodeScannerNotify = "bar_code/notify"
+    case assistShow = "assist/show"
 }
 
 enum WebViewExternalBusOutgoingMessage: String, CaseIterable {

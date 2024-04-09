@@ -186,3 +186,7 @@ public extension IntentServer {
         Current.servers.all.map { IntentServer(server: $0) }
     }
 }
+
+public extension AssistInAppIntent {
+    static let widgetKind = "WidgetAssist"
+}
