@@ -569,6 +569,13 @@
 		42C373B22BC5382900898990 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B12BC5382900898990 /* HostingController.swift */; };
 		42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B02BC536AA00898990 /* WatchHomeView.swift */; };
 		42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */; };
+		42C373BA2BC5826800898990 /* WatchAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B92BC5826800898990 /* WatchAssistView.swift */; };
+		42C373BC2BC582CF00898990 /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
+		42C373BF2BC5836D00898990 /* WatchAssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373BE2BC5836D00898990 /* WatchAssistViewModel.swift */; };
+		42C373C22BC5840200898990 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373C12BC5840200898990 /* ChatBubbleView.swift */; };
+		42C373C32BC5840200898990 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373C12BC5840200898990 /* ChatBubbleView.swift */; };
+		42C373C42BC5844700898990 /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
+		42C373C52BC584AB00898990 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -1743,6 +1750,9 @@
 		42C373B02BC536AA00898990 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		42C373B12BC5382900898990 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
+		42C373B92BC5826800898990 /* WatchAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistView.swift; sourceTree = "<group>"; };
+		42C373BE2BC5836D00898990 /* WatchAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistViewModel.swift; sourceTree = "<group>"; };
+		42C373C12BC5840200898990 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -3298,6 +3308,7 @@
 		42B94BD92B9606CD00DEE060 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				42C373C02BC583F400898990 /* Views */,
 				42A818DE2BBEA8050083D045 /* Tests */,
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */,
@@ -3327,6 +3338,32 @@
 				42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		42C373B72BC5824D00898990 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				42C373B82BC5825B00898990 /* Assist */,
+				42C373B62BC55C3A00898990 /* Home */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		42C373B82BC5825B00898990 /* Assist */ = {
+			isa = PBXGroup;
+			children = (
+				42C373B92BC5826800898990 /* WatchAssistView.swift */,
+				42C373BE2BC5836D00898990 /* WatchAssistViewModel.swift */,
+			);
+			path = Assist;
+			sourceTree = "<group>";
+		};
+		42C373C02BC583F400898990 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				42C373C12BC5840200898990 /* ChatBubbleView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {
@@ -3993,8 +4030,8 @@
 		B6CC5D922159D10E00833E5D /* Watch */ = {
 			isa = PBXGroup;
 			children = (
+				42C373B72BC5824D00898990 /* Features */,
 				42C373B12BC5382900898990 /* HostingController.swift */,
-				42C373B62BC55C3A00898990 /* Home */,
 				B672AB592216C41000175465 /* Utilities */,
 				B6CC5DAA2159D60900833E5D /* Resources */,
 				11FA935A263FAA7C0015F1FC /* Notifications */,
@@ -6051,6 +6088,7 @@
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
+				42C373C22BC5840200898990 /* ChatBubbleView.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -6216,6 +6254,7 @@
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
+				42C373C42BC5844700898990 /* View+RoundedCorner.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
 				11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
@@ -6280,6 +6319,7 @@
 				B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */,
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
+				42C373C52BC584AB00898990 /* Color+ColorAsset.swift in Sources */,
 				11CFD78227364F450082D557 /* Identifier.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
@@ -6369,14 +6409,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
+				42C373BC2BC582CF00898990 /* AssistChatItem.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
+				42C373C32BC5840200898990 /* ChatBubbleView.swift in Sources */,
 				42C373B22BC5382900898990 /* HostingController.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
+				42C373BA2BC5826800898990 /* WatchAssistView.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
+				42C373BF2BC5836D00898990 /* WatchAssistViewModel.swift in Sources */,
 				42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */,
 				42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
