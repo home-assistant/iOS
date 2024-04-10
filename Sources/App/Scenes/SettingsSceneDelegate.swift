@@ -120,7 +120,7 @@ extension SettingsButtonRow {
 
 extension SettingsSceneDelegate: NSToolbarDelegate {
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        SettingsRootDataSource.buttonRows.map(\.toolbarItemIdentifier)
+        SettingsRootDataSource.buttonRows.filter(\.isAvailableForMac).map(\.toolbarItemIdentifier)
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {

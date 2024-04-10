@@ -104,6 +104,7 @@ enum SettingsRootDataSource {
         SettingsButtonRow {
             $0.title = L10n.SettingsDetails.Thread.title
             $0.image = .sharedAssetsImage(named: "thread")
+            $0.isAvailableForMac = false
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 guard #available(iOS 17, *) else { return UIViewController() }
                 return UIHostingController(rootView: ThreadCredentialsManagementView.build())

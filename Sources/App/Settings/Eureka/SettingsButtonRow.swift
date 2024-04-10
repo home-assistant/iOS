@@ -10,6 +10,7 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
     var icon: MaterialDesignIcons?
     var image: UIImage?
     var accessoryIcon: MaterialDesignIcons?
+    var isAvailableForMac = true
 
     override public func updateCell() {
         super.updateCell()
