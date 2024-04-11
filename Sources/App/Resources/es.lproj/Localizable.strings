@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -839,6 +840,8 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "widgets.actions.description" = "Realiza acciones del Hombre Assistante.";
 "widgets.actions.not_configured" = "No se ha configurado ninguna acción";
 "widgets.actions.title" = "Acciones";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Open a frontend page in Home Assistant.";
 "widgets.open_page.not_configured" = "No hay páginas disponibles";
 "widgets.open_page.title" = "Abre la página";

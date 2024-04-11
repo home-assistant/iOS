@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Απέτυχαν: %@";
 "app_intents.perform_action.response_success" = "Εγινε";
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
@@ -839,6 +840,8 @@
 "widgets.actions.description" = "Εκτελέστε ενέργειες Home Assistant.";
 "widgets.actions.not_configured" = "Δεν έχουν ρυθμιστεί ενέργειες";
 "widgets.actions.title" = "Ενέργειες";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";

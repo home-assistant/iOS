@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Trykk for å fortsette på din iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -839,6 +840,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.actions.description" = "Utfør Home Assistant handlinger.";
 "widgets.actions.not_configured" = "Ingen handlinger konfigurert";
 "widgets.actions.title" = "Handlinger";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Åpne en frontend -side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgjengelig";
 "widgets.open_page.title" = "Åpne side";

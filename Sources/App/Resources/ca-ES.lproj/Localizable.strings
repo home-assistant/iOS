@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Cancel·lar";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -839,6 +840,8 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "widgets.actions.description" = "Realitza accions del Home Assistant.";
 "widgets.actions.not_configured" = "No hi ha accions configurades";
 "widgets.actions.title" = "Accions";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Obrir una pàgina del Home Assistant";
 "widgets.open_page.not_configured" = "No hi ha pàgines disponibles";
 "widgets.open_page.title" = "Obre la pàgina";

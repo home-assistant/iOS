@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Falhou: %@";
 "app_intents.perform_action.response_success" = "Feito";
 "app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Toque para continuar em seu iPhone";
 "carPlay.action.intro.item.title" = "Crie sua primeira ação";
@@ -839,6 +840,8 @@
 "widgets.actions.description" = "Execute as ações do Home Assistant.";
 "widgets.actions.not_configured" = "Nenhuma ação configurada";
 "widgets.actions.title" = "Ações";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";

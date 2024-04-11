@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Başarısız: %@";
 "app_intents.perform_action.response_success" = "Bitti";
 "app_intents.widget_action.actions_parameter_configuration" = "Hangi eylemler?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "İptal";
 "carPlay.action.intro.item.body" = "iPhone'unuzda devam etmek için dokunun";
 "carPlay.action.intro.item.title" = "İlk eyleminizi oluşturun";
@@ -839,6 +840,8 @@
 "widgets.actions.description" = "Home Assistant eylemlerini gerçekleştirin.";
 "widgets.actions.not_configured" = "Yapılandırılmış aksiyon Yok";
 "widgets.actions.title" = "Aksiyonlar";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Home Assistant'ta bir ön sayfası açın.";
 "widgets.open_page.not_configured" = "Kullanılabilir Sayfa Yok";
 "widgets.open_page.title" = "Sayfayı Aç";
