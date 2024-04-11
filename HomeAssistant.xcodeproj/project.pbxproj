@@ -555,7 +555,6 @@
 		4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
-    42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
@@ -566,6 +565,10 @@
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42B94BED2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
+		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
+		42C373B22BC5382900898990 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B12BC5382900898990 /* HostingController.swift */; };
+		42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B02BC536AA00898990 /* WatchHomeView.swift */; };
+		42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -866,7 +869,6 @@
 		B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A258472232539900ADD202 /* WebhookUpdateLocation.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
 		B6AAD7A81D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E69F216A940700D39A26 /* ActionRow.swift */; };
 		B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */; };
 		B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */; };
 		B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
@@ -881,7 +883,6 @@
 		B6C09153215206BB00A326DC /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
 		B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D872159D10E00833E5D /* Assets.xcassets */; };
-		B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D932159D10E00833E5D /* InterfaceController.swift */; };
 		B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */; };
 		B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D972159D10E00833E5D /* ComplicationController.swift */; };
 		B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D992159D10F00833E5D /* Assets.xcassets */; };
@@ -1728,7 +1729,6 @@
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
-		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.test.swift; sourceTree = "<group>"; };
 		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
@@ -1738,6 +1738,11 @@
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
 		42B94BE72B9607D100DEE060 /* AssistModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssistModel.swift; path = Sources/Shared/Intents/AssistInApp/AssistModel.swift; sourceTree = SOURCE_ROOT; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
+		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
+		42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		42C373B02BC536AA00898990 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
+		42C373B12BC5382900898990 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
+		42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -2108,7 +2113,6 @@
 		B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-NotificationService.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		B6AAD7A51D827DD40090B220 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B6B2E69F216A940700D39A26 /* ActionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRow.swift; sourceTree = "<group>"; };
 		B6B2E6A1216AC21400D39A26 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionConfigurator.swift; sourceTree = "<group>"; };
 		B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationEditViewController.swift; sourceTree = "<group>"; };
@@ -2122,7 +2126,6 @@
 		B6CC5D872159D10E00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CC5D892159D10E00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-WatchExtension-Watch.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B6CC5D932159D10E00833E5D /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
 		B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		B6CC5D972159D10E00833E5D /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
 		B6CC5D992159D10F00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -3317,6 +3320,15 @@
 			path = AssistInApp;
 			sourceTree = "<group>";
 		};
+		42C373B62BC55C3A00898990 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				42C373B02BC536AA00898990 /* WatchHomeView.swift */,
+				42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
@@ -3973,6 +3985,7 @@
 				B6CC5D842159D10D00833E5D /* Interface.storyboard */,
 				B6CC5D872159D10E00833E5D /* Assets.xcassets */,
 				B6CC5D892159D10E00833E5D /* Info.plist */,
+				42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */,
 			);
 			path = WatchApp;
 			sourceTree = "<group>";
@@ -3980,13 +3993,13 @@
 		B6CC5D922159D10E00833E5D /* Watch */ = {
 			isa = PBXGroup;
 			children = (
+				42C373B12BC5382900898990 /* HostingController.swift */,
+				42C373B62BC55C3A00898990 /* Home */,
 				B672AB592216C41000175465 /* Utilities */,
 				B6CC5DAA2159D60900833E5D /* Resources */,
-				B6CC5D932159D10E00833E5D /* InterfaceController.swift */,
+				11FA935A263FAA7C0015F1FC /* Notifications */,
 				B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
-				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
-				11FA935A263FAA7C0015F1FC /* Notifications */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -4884,6 +4897,7 @@
 					B6CC5D812159D10D00833E5D = {
 						CreatedOnToolsVersion = 10.0;
 						DevelopmentTeam = QMQYCKL255;
+						LastSwiftMigration = 1530;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -6359,11 +6373,12 @@
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
-				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
-				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
+				42C373B22BC5382900898990 /* HostingController.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
+				42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */,
+				42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7555,6 +7570,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
+				CLANG_ENABLE_MODULES = YES;
 				IBSC_MODULE = WatchExtension_Watch;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -7563,6 +7579,8 @@
 				);
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/WatchApp/WatchApp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -7958,6 +7976,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
+				CLANG_ENABLE_MODULES = YES;
 				IBSC_MODULE = WatchExtension_Watch;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -7966,6 +7985,9 @@
 				);
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/WatchApp/WatchApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -7974,6 +7996,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
+				CLANG_ENABLE_MODULES = YES;
 				IBSC_MODULE = WatchExtension_Watch;
 				INFOPLIST_FILE = Sources/WatchApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -7982,6 +8005,8 @@
 				);
 				PROVISIONING_SUFFIX = .watchkitapp;
 				SDKROOT = watchos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/WatchApp/WatchApp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
