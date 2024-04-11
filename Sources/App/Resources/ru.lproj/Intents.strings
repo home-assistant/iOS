@@ -14,14 +14,14 @@
 "8BMgur" = "Готово";
 "8skKro" = "Какие действия?";
 "A1pokw" = "Обратиться к помощнику";
-"B28HAk" = "Помощь";
+"B28HAk" = "Assist";
 "B4bXyc" = "Готово";
 "BafuI1" = "Язык";
 "BwZv3u" = "Какой сервер?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Открыть ${page}";
 "DdnZyl" = "Получил последний кадр от ${cameraID}";
-"DhCruz" = "Результат помощи";
+"DhCruz" = "Результат Assist";
 "DqfwpO" = "Сервер";
 "DsasVx" = "Ошибка";
 "EA0zLv" = "Есть ${count} вариантов, соответствующих '${server} '.";
@@ -77,7 +77,7 @@
 "cK9jdK" = "Сбой: ${error}";
 "cLmTme" = "Действие";
 "cuflz3" = "Ошибка: Home Assistant в настоящее время недоступен";
-"d65H6l" = "Помочь с \"${text}\"";
+"d65H6l" = "Assist с \"${text}\"";
 "dFHPYK" = "Performed ${action}";
 "eObn2i" = "Страница";
 "f1KX0Q" = "View and run actions";
@@ -132,7 +132,7 @@
 "sfDGvk" = "Интерпретированный шаблон";
 "txfcnn" = "Текст";
 "tycImk" = "Выполняет действие, определенное в приложении";
-"uqeIcc" = "Помочь с \"${text}\"";
+"uqeIcc" = "Assist с \"${text}\"";
 "v7TSD5" = "Отправить местоположение";
 "vAIAF2" = "Отправляет обновление датчика в Home Assistant";
 "vebd70" = "Сервер";

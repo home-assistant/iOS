@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -840,6 +841,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.actions.description" = "Utför Home Assistant-åtgärder.";
 "widgets.actions.not_configured" = "Inga åtgärder inställda";
 "widgets.actions.title" = "Åtgärder";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Öppna en frontend-sida i Home Assistant.";
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";

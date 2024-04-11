@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Gagal: %@";
 "app_intents.perform_action.response_success" = "Selesai";
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
 "carPlay.action.intro.item.title" = "Buat aksi pertama Anda";
@@ -839,6 +840,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.actions.description" = "Luncurkan aksi Home Assistant";
 "widgets.actions.not_configured" = "Tidak Ada Aksi yang Dikonfigurasi";
 "widgets.actions.title" = "Aksi";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Buka halaman antarmuka di Home Assistant.";
 "widgets.open_page.not_configured" = "Tidak Ada Halaman yang Tersedia";
 "widgets.open_page.title" = "Buka Halaman";

@@ -1,41 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="17701" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="32700.99.1234" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="17500"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="22609"/>
     </dependencies>
     <scenes>
         <!--Home Assistant-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="WatchApp" customModuleProvider="target">
-                    <items>
-                        <table alignment="left" id="wzm-z7-qRv">
-                            <items>
-                                <tableRow identifier="actionRowType" id="Kqb-lS-KNT" customClass="ActionRowType" customModule="WatchApp" customModuleProvider="target">
-                                    <group key="rootItem" width="1" height="42" alignment="left" id="bW2-9l-fJW">
-                                        <items>
-                                            <imageView width="24" height="24" alignment="left" verticalAlignment="center" id="YLy-LH-2Xz"/>
-                                            <label width="0.84999999999999998" height="1" alignment="left" text="Label" textAlignment="left" id="sVJ-HO-sLu"/>
-                                        </items>
-                                    </group>
-                                    <connections>
-                                        <outlet property="group" destination="bW2-9l-fJW" id="Gyh-bC-dVq"/>
-                                        <outlet property="image" destination="YLy-LH-2Xz" id="wsC-6W-roZ"/>
-                                        <outlet property="label" destination="sVJ-HO-sLu" id="VvI-Ig-iNo"/>
-                                    </connections>
-                                </tableRow>
-                            </items>
-                        </table>
-                        <label alignment="center" verticalAlignment="center" text="No actions configured. Configure actions on your phone to dismiss this message." textAlignment="center" numberOfLines="10" id="rFf-ux-R1e"/>
-                    </items>
-                    <connections>
-                        <outlet property="noActionsLabel" destination="rFf-ux-R1e" id="NKi-TH-3oN"/>
-                        <outlet property="tableView" destination="wzm-z7-qRv" id="vZo-SJ-Vm2"/>
-                    </connections>
-                </controller>
+                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="HostingController" customModule="WatchExtension_Watch"/>
             </objects>
             <point key="canvasLocation" x="34" y="32"/>
         </scene>

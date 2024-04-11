@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Nurjus: %@";
 "app_intents.perform_action.response_success" = "Valmis";
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
+"assist.pipelines_picker.title" = "Abilise kanalid";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";
@@ -839,6 +840,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.actions.description" = "Käivita Home Assistanti toimingud.";
 "widgets.actions.not_configured" = "Tegevusi pole seadistatud";
 "widgets.actions.title" = "Tegevused";
+"widgets.assist.description" = "Ava abiline rakenduses";
+"widgets.assist.title" = "Abiline";
 "widgets.open_page.description" = "AvaHome Assistantis esileht.";
 "widgets.open_page.not_configured" = "Lehekülgi pole saadaval";
 "widgets.open_page.title" = "Ava lehekülg";

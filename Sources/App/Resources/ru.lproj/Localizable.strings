@@ -18,7 +18,7 @@
 "about.website.title" = "Наш сайт";
 "actions_configurator.action.create_automation" = "Создать автоматизацию";
 "actions_configurator.action.footer" = "Определите, что будет исполняться при выполнении действия, в качестве альтернативы вы можете использовать приведенный ниже пример триггера самостоятельно.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.title" = "Выполнение";
 "actions_configurator.rows.background_color.title" = "Цвет фона";
 "actions_configurator.rows.icon.title" = "Значок";
 "actions_configurator.rows.icon_color.title" = "Цвет значка";
@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Готово";
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Отмена";
 "carPlay.action.intro.item.body" = "Нажмите, чтобы продолжить на iPhone";
 "carPlay.action.intro.item.title" = "Создать свое первое действие";
@@ -186,7 +187,7 @@
 "nfc.generic_tag_read" = "Чтение меток";
 "nfc.list.description" = "NFC-метки, записанные приложением, будут отображать уведомление, когда вы поднесете к ним свое устройство. Активация уведомления приведет к запуску приложения и запуску события.\
 \
-Теги будут работать на любом устройстве с установленным Home Assistant, которое имеет аппаратную поддержку для их чтения.";
+Метки будут работать на любом устройстве с установленным Home Assistant, которое имеет аппаратную поддержку для их чтения.";
 "nfc.list.learn_more" = "Узнайте больше";
 "nfc.list.read_tag" = "Считать метку";
 "nfc.list.title" = "NFC-метки";
@@ -839,6 +840,8 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.actions.description" = "Выполнение действий Home Assistant.";
 "widgets.actions.not_configured" = "Никаких действий не настроено";
 "widgets.actions.title" = "Действия";
+"widgets.assist.description" = "Открыть Assist в приложении";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Открыть страницу интерфейса в Home Assistant.";
 "widgets.open_page.not_configured" = "Нет доступных страниц";
 "widgets.open_page.title" = "Открыть страницу";

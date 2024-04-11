@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "失败：%@";
 "app_intents.perform_action.response_success" = "完成";
 "app_intents.widget_action.actions_parameter_configuration" = "哪些操作？";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在iPhone上点击以继续";
 "carPlay.action.intro.item.title" = "创建您的第一个操作";
@@ -838,6 +839,8 @@
 "widgets.actions.description" = "执行Home Assistant动作。";
 "widgets.actions.not_configured" = "未配置任何动作";
 "widgets.actions.title" = "动作";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";

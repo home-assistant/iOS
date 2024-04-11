@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "בוצע";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "ביטול";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -839,6 +840,8 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "widgets.actions.description" = "בצע פעולות של הום אסיסטנט";
 "widgets.actions.not_configured" = "לא הוגדרו פעולות";
 "widgets.actions.title" = "פעולות";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "פתח דף פרונטאנד בהום אסיסטנט";
 "widgets.open_page.not_configured" = "אין דפים זמינים";
 "widgets.open_page.title" = "פתיחת דף";
