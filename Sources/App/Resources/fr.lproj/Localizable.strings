@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Échec : %@";
 "app_intents.perform_action.response_success" = "Terminé";
 "app_intents.widget_action.actions_parameter_configuration" = "Quelles actions ?";
+"assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Annuler";
 "carPlay.action.intro.item.body" = "Appuyez pour continuer sur votre iPhone";
 "carPlay.action.intro.item.title" = "Créez votre première action";
@@ -839,6 +840,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.actions.description" = "Exécutez les actions de Home Assistant.";
 "widgets.actions.not_configured" = "Aucune action configurée";
 "widgets.actions.title" = "Actions";
+"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Ouvrez une page frontale dans Home Assistant.";
 "widgets.open_page.not_configured" = "Aucune page disponible";
 "widgets.open_page.title" = "Ouvrir la page";
