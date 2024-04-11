@@ -2422,8 +2422,8 @@
 		1115018C2528411200DCFA94 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				FD3BC66429BA000A00B19FBE /* Vehicle */,
 				B657A8E81CA646EB00121384 /* App */,
+				FD3BC66429BA000A00B19FBE /* CarPlay */,
 				111501A72528412C00DCFA94 /* Extensions */,
 				11DE9D8425B6103C0081C0ED /* Launcher */,
 				1167402325198F9A00F51626 /* MacBridge */,
@@ -4323,12 +4323,12 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		FD3BC66429BA000A00B19FBE /* Vehicle */ = {
+		FD3BC66429BA000A00B19FBE /* CarPlay */ = {
 			isa = PBXGroup;
 			children = (
 				FD3BC66A29BA00B100B19FBE /* Templates */,
 			);
-			path = Vehicle;
+			path = CarPlay;
 			sourceTree = "<group>";
 		};
 		FD3BC66A29BA00B100B19FBE /* Templates */ = {
