@@ -85,11 +85,12 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
+        #if os(iOS)
         if let aps = payload["aps"] as? [String: Any],
-           let badge = aps["badge"] as? Int
-        {
+           let badge = aps["badge"] as? Int {
             UIApplication.shared.applicationIconBadgeNumber = badge
         }
+        #endif
         // https://stackoverflow.com/a/56657888/6324550
         return Promise<Void> { seal in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
