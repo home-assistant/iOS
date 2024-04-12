@@ -86,7 +86,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
         if let aps = payload["aps"] as? [String: Any],
-           let badge = payload["badge"] as? Int
+           let badge = aps["badge"] as? Int
         {
             UIApplication.shared.applicationIconBadgeNumber = badge
         }
