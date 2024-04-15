@@ -58,7 +58,7 @@
 "app_intents.perform_action.response_failure" = "Fehlgeschlagen: %@";
 "app_intents.perform_action.response_success" = "Fertig";
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
-"assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.pipelines_picker.title" = "Assist-Pipelines";
 "cancel_label" = "Abbrechen";
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
 "carPlay.action.intro.item.title" = "Erstelle deine erste Aktion";
@@ -842,7 +842,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.actions.description" = "Home Assistant Aktionen durchführen.";
 "widgets.actions.not_configured" = "Keine Aktionen eingerichtet";
 "widgets.actions.title" = "Aktionen";
-"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.description" = "Assist in der App öffnen";
 "widgets.assist.title" = "Assist";
 "widgets.open_page.description" = "Öffnen Sie eine Frontend-Seite in Home Assistant.";
 "widgets.open_page.not_configured" = "Keine Seiten verfügbar";

@@ -58,9 +58,9 @@
 "app_intents.perform_action.response_failure" = "失败：%@";
 "app_intents.perform_action.response_success" = "完成";
 "app_intents.widget_action.actions_parameter_configuration" = "哪些操作？";
-"assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.pipelines_picker.title" = "语音助手管道";
 "cancel_label" = "取消";
-"carPlay.action.intro.item.body" = "在iPhone上点击以继续";
+"carPlay.action.intro.item.body" = "在 iPhone 上点击以继续";
 "carPlay.action.intro.item.title" = "创建您的第一个操作";
 "carPlay.labels.already_added_server" = "已添加";
 "carPlay.labels.empty_domain_list" = "没有可用的域";
@@ -403,8 +403,8 @@
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在.yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
 "settings_details.actions.actions_synced.header" = "同步的动作";
-"settings_details.actions.carPlay.available.title" = "在CarPlay中显示";
-"settings_details.actions.footer" = "用于Apple手表应用、应用图标操作、“今日”小组件和CarPlay的操作。";
+"settings_details.actions.carPlay.available.title" = "在 CarPlay 中显示";
+"settings_details.actions.footer" = "用于 Apple 手表应用、应用图标操作、“今日”小组件和 CarPlay 的操作。";
 "settings_details.actions.footer_mac" = "操作用于应用程序菜单和小部件。";
 "settings_details.actions.learn.button.title" = "iOS操作简介";
 "settings_details.actions.scenes.customize_action" = "自定义";
@@ -839,8 +839,8 @@
 "widgets.actions.description" = "执行Home Assistant动作。";
 "widgets.actions.not_configured" = "未配置任何动作";
 "widgets.actions.title" = "动作";
-"widgets.assist.description" = "Open Assist in the app";
-"widgets.assist.title" = "Assist";
+"widgets.assist.description" = "在应用中打开语音助手";
+"widgets.assist.title" = "语音助手";
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";

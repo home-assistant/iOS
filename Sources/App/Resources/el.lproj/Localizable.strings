@@ -489,7 +489,7 @@
 "settings_details.location.notifications.exit.title" = "Ειδοποιήσεις εξαγωγής ζώνης";
 "settings_details.location.notifications.header" = "Ειδοποιήσεις τοποθεσίας";
 "settings_details.location.notifications.location_change.title" = "Σημαντικές ειδοποιήσεις αλλαγής τοποθεσίας";
-"settings_details.location.notifications.push_notification.title" = "Ώθηση ειδοποιήσεων αίτησης θέσης";
+"settings_details.location.notifications.push_notification.title" = "Ωθηση ειδοποιήσεων αίτησης θέσης";
 "settings_details.location.notifications.url_scheme.title" = "Ειδοποιήσεις τοποθεσίας σχήματος URL";
 "settings_details.location.notifications.x_callback_url.title" = "Ειδοποιήσεις τοποθεσίας X-Callback-URL";
 "settings_details.location.title" = "Τοποθεσία";
@@ -536,8 +536,8 @@
 "settings_details.notifications.rate_limits.attempts" = "Προσπάθειες";
 "settings_details.notifications.rate_limits.delivered" = "Παραδόθηκε";
 "settings_details.notifications.rate_limits.errors" = "Σφάλματα";
-"settings_details.notifications.rate_limits.footer" = "Επιτρέπονται 300 ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ώρας (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Επιτρέπονται %u ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ώρας (UTC).";
+"settings_details.notifications.rate_limits.footer" = "Επιτρέπονται 300 ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ωρας (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Επιτρέπονται %u ειδοποιήσεις push ανά 24 ώρες. Τα όρια τιμών επαναφέρονται στα μεσάνυχτα της Παγκόσμιας Συντονισμένης Ωρας (UTC).";
 "settings_details.notifications.rate_limits.header" = "Όρια τιμών";
 "settings_details.notifications.rate_limits.resets_in" = "Επαναφορά σε";
 "settings_details.notifications.rate_limits.total" = "Σύνολο";
