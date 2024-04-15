@@ -44,7 +44,7 @@ struct WatchAssistView<ViewModel>: View where ViewModel: WatchAssistViewModelPro
 
 #if DEBUG
 #Preview {
-    WatchAssistView(viewModel: MockWatchAssistViewModel())
+    WatchAssistView<MockWatchAssistViewModel>(viewModel: MockWatchAssistViewModel())
 }
 
 final class MockWatchAssistViewModel: WatchAssistViewModelProtocol {

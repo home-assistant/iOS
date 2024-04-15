@@ -17,9 +17,9 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
     var body: some View {
         ZStack {
             list
-            noActionsView
             stateView
         }
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.onAppear()
         }
@@ -63,32 +63,45 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
     }
 
     private var list: some View {
-        List(viewModel.actions, id: \.id) { action in
-            Button {
-                viewModel.runActionId(action.id)
-            } label: {
-                HStack(spacing: Spaces.one) {
-                    Image(uiImage: MaterialDesignIcons(named: action.iconName).image(
-                        ofSize: .init(width: 24, height: 24),
-                        color: .init(hex: action.iconColor)
-                    ))
-                    Text(action.name)
-                        .foregroundStyle(Color(uiColor: .init(hex: action.textColor)))
-                }
+        List {
+            assistButton
+            if viewModel.actions.isEmpty {
+                Text(L10n.Watch.Labels.noAction)
             }
-            .listRowBackground(
-                Color(uiColor: .init(hex: action.backgroundColor))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            )
+            ForEach(viewModel.actions, id: \.id) { action in
+                Button {
+                    viewModel.runActionId(action.id)
+                } label: {
+                    HStack(spacing: Spaces.one) {
+                        Image(uiImage: MaterialDesignIcons(named: action.iconName).image(
+                            ofSize: .init(width: 24, height: 24),
+                            color: .init(hex: action.iconColor)
+                        ))
+                        Text(action.name)
+                            .foregroundStyle(Color(uiColor: .init(hex: action.textColor)))
+                    }
+                }
+                .listRowBackground(
+                    Color(uiColor: .init(hex: action.backgroundColor))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                )
+            }
         }
         .animation(.easeInOut, value: viewModel.actions)
+        .background(LinearGradient(colors: [
+            Color.asset(Asset.Colors.haPrimary),
+            .clear
+        ], startPoint: .top, endPoint: .bottom))
     }
 
-    private var noActionsView: some View {
-        Text(L10n.Watch.Labels.noAction)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .animation(.easeInOut, value: viewModel.actions)
-            .opacity(viewModel.actions.isEmpty ? 1 : 0)
+    private var assistButton: some View {
+        NavigationLink {
+            WatchAssistView<WatchAssistViewModel>.build()
+        } label: {
+            Image(uiImage: MaterialDesignIcons.microphoneIcon.image(ofSize: .init(width: 24, height: 24), color: .white))
+                .frame(maxWidth: .infinity, alignment: .center)
+
+        }
     }
 }
 

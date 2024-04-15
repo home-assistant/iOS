@@ -590,6 +590,7 @@
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
+		42EAAB142BC7E4F100BF9292 /* WatchAssistView+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EAAB132BC7E4F100BF9292 /* WatchAssistView+build.swift */; };
 		42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */; };
 		42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */; };
 		42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */; };
@@ -1772,6 +1773,7 @@
 		42DD84372B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Frontend.strings; sourceTree = "<group>"; };
 		42DD84382B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
+		42EAAB132BC7E4F100BF9292 /* WatchAssistView+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+build.swift"; sourceTree = "<group>"; };
 		42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
 		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
 		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
@@ -3354,6 +3356,7 @@
 			children = (
 				42C373B92BC5826800898990 /* WatchAssistView.swift */,
 				42C373BE2BC5836D00898990 /* WatchAssistViewModel.swift */,
+				42EAAB132BC7E4F100BF9292 /* WatchAssistView+build.swift */,
 			);
 			path = Assist;
 			sourceTree = "<group>";
@@ -6421,6 +6424,7 @@
 				42C373BA2BC5826800898990 /* WatchAssistView.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
 				42C373BF2BC5836D00898990 /* WatchAssistViewModel.swift in Sources */,
+				42EAAB142BC7E4F100BF9292 /* WatchAssistView+build.swift in Sources */,
 				42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */,
 				42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
