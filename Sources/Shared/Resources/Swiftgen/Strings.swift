@@ -2830,6 +2830,10 @@ public enum L10n {
       /// Assist
       public static var title: String { return L10n.tr("Localizable", "widgets.assist.title") }
     }
+    public enum Button {
+      /// Reload all widgets
+      public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
+    }
     public enum OpenPage {
       /// Open a frontend page in Home Assistant.
       public static var description: String { return L10n.tr("Localizable", "widgets.open_page.description") }

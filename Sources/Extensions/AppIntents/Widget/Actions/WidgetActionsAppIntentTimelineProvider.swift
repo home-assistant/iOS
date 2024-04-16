@@ -12,7 +12,10 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        .init(entries: [Self.entry(for: configuration, in: context)], policy: .never)
+        .init(
+            entries: [Self.entry(for: configuration, in: context)],
+            policy: .after(Current.date().addingTimeInterval(expiration.converted(to: .seconds).value))
+        )
     }
 
     func placeholder(in context: Context) -> WidgetActionsEntry {
@@ -25,6 +28,10 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
 
         return WidgetActionsEntry(actions: actions)
+    }
+
+    private var expiration: Measurement<UnitDuration> {
+        .init(value: 24, unit: .hours)
     }
 
     private static func entry(for configuration: Intent, in context: Context) -> Entry {
