@@ -34,9 +34,9 @@ pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
 
-pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.1'
-pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.1'
-pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', tag: '0.4.1'
+pod 'HAKit', git: 'https://github.com/home-assistant/HAKit.git', branch: 'avoid-json-cache'
+pod 'HAKit/PromiseKit', git: 'https://github.com/home-assistant/HAKit.git', branch: 'avoid-json-cache'
+pod 'HAKit/Mocks', git: 'https://github.com/home-assistant/HAKit.git', branch: 'avoid-json-cache'
 
 def test_pods
   pod 'OHHTTPStubs/Swift'
