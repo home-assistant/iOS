@@ -11,6 +11,7 @@ struct WidgetAssist: Widget {
             provider: WidgetAssistProvider(),
             content: { entry in
                 WidgetAssistView(entry: entry)
+                    .widgetBackground(Color.clear)
             }
         )
         .contentMarginsDisabledIfAvailable()
