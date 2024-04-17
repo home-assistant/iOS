@@ -5,6 +5,16 @@ struct WidgetAssistView: View {
     @Environment(\.widgetFamily) private var widgetFamily
     let entry: WidgetAssistEntry
 
+    private var subtitle: String {
+        // Even though server is not visible, show ".unknownConfiguration"
+        // so user knows it needs to be set
+        if entry.pipeline == nil || entry.server == nil {
+            return L10n.Widgets.Assist.unknownConfiguration
+        }
+
+        return entry.pipeline?.displayString ?? L10n.Widgets.Assist.unknownConfiguration
+    }
+
     var body: some View {
         content
     }
@@ -13,36 +23,51 @@ struct WidgetAssistView: View {
     private var content: some View {
         switch widgetFamily {
         case .accessoryCircular:
-            VStack {
-                Image(uiImage: MaterialDesignIcons.microphoneMessageIcon.image(
-                    ofSize: .init(width: 40, height: 40),
-                    color: UIColor(asset: Asset.Colors.haPrimary)
-                ))
-                .foregroundStyle(.ultraThickMaterial)
-                .padding(Spaces.one)
-            }
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(Circle())
+            accessoryCircular
         default:
-            VStack(alignment: .leading) {
-                Image(uiImage: MaterialDesignIcons.microphoneMessageIcon.image(
-                    ofSize: .init(width: 40, height: 40),
-                    color: UIColor(asset: Asset.Colors.haPrimary)
-                ))
-                .foregroundStyle(.ultraThickMaterial)
-                .padding(Spaces.one)
-                Spacer()
+            singleHomeScreenItem
+        }
+    }
+
+    private var accessoryCircular: some View {
+        VStack {
+            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
+                ofSize: .init(width: 30, height: 30),
+                color: .white
+            ))
+            .foregroundStyle(.ultraThickMaterial)
+            .padding(Spaces.one)
+        }
+        .background(Color(uiColor: .secondarySystemBackground))
+        .clipShape(Circle())
+    }
+
+    private var singleHomeScreenItem: some View {
+        VStack(spacing: Spaces.two) {
+            Spacer()
+            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
+                ofSize: .init(width: 56, height: 56),
+                color: UIColor(asset: Asset.Colors.haPrimary)
+            ))
+            .foregroundStyle(.ultraThickMaterial)
+            VStack(spacing: .zero) {
                 Group {
-                    Text(entry.server?.displayString ?? "Unknown")
+                    Text(L10n.Widgets.Assist.actionTitle)
                         .font(.footnote.bold())
-                    Text(entry.pipeline?.displayString ?? "Unknown")
+                        .foregroundColor(Color(uiColor: .label))
+                    Text(subtitle)
                         .font(.footnote.weight(.light))
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.center)
                 }
                 .foregroundColor(.gray)
+                .frame(maxWidth: .infinity, alignment: .center)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-            .background(Color(uiColor: .systemBackground))
+            Spacer()
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Spaces.two)
+        .background(Color(uiColor: .systemBackground))
     }
 }

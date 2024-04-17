@@ -2825,10 +2825,14 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "widgets.actions.title") }
     }
     public enum Assist {
+      /// Ask Assist
+      public static var actionTitle: String { return L10n.tr("Localizable", "widgets.assist.action_title") }
       /// Open Assist in the app
       public static var description: String { return L10n.tr("Localizable", "widgets.assist.description") }
       /// Assist
       public static var title: String { return L10n.tr("Localizable", "widgets.assist.title") }
+      /// Configure
+      public static var unknownConfiguration: String { return L10n.tr("Localizable", "widgets.assist.unknown_configuration") }
     }
     public enum Button {
       /// Reload all widgets
