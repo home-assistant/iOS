@@ -840,8 +840,10 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.actions.description" = "Voer Home Assistant-acties uit.";
 "widgets.actions.not_configured" = "Geen acties geconfigureerd";
 "widgets.actions.title" = "Acties";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Open een frontend-pagina in Home Assistant";
 "widgets.open_page.not_configured" = "Geen pagina's beschikbaar";
 "widgets.open_page.title" = "Open pagina";

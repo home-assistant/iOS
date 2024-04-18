@@ -18,7 +18,7 @@
 "about.website.title" = "Verkkosivusto";
 "actions_configurator.action.create_automation" = "Luo automaatio";
 "actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
-"actions_configurator.action.title" = "Execute";
+"actions_configurator.action.title" = "Suorita";
 "actions_configurator.rows.background_color.title" = "Taustaväri";
 "actions_configurator.rows.icon.title" = "Kuvake";
 "actions_configurator.rows.icon_color.title" = "Kuvakkeen väri";
@@ -56,7 +56,7 @@
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
 "app_intents.perform_action.response_failure" = "Failed: %@";
-"app_intents.perform_action.response_success" = "Done";
+"app_intents.perform_action.response_success" = "Valmis";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Peruuta";
@@ -77,7 +77,7 @@
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
 "carPlay.notification.action.intro.body" = "Napauta luodaksesi ensimmäisen iOS-toiminnon";
 "carPlay.notification.action.intro.title" = "Luo iOS-toiminto";
-"carPlay.state.loading.title" = "Loading…";
+"carPlay.state.loading.title" = "Ladataan…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
 "carplay.labels.empty_domain_list" = "No domains available";
@@ -115,7 +115,7 @@
 "client_events.view.clear" = "Tyhjennä";
 "client_events.view.clear_confirm.message" = "Tätä ei voi kumota.";
 "client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
-"close_label" = "Close";
+"close_label" = "Sulje";
 "component.collapsible_view.collapse" = "Pienennä";
 "component.collapsible_view.expand" = "Laajenna";
 "continue_label" = "Jatka";
@@ -840,8 +840,10 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.title" = "Toiminnot";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Avaa käyttöliittymäsivu Home Assistantissa.";
 "widgets.open_page.not_configured" = "Sivuja ei saatavilla";
 "widgets.open_page.title" = "Avaa sivu";

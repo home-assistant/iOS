@@ -840,8 +840,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.actions.description" = "Käivita Home Assistanti toimingud.";
 "widgets.actions.not_configured" = "Tegevusi pole seadistatud";
 "widgets.actions.title" = "Tegevused";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Ava abiline rakenduses";
 "widgets.assist.title" = "Abiline";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "AvaHome Assistantis esileht.";
 "widgets.open_page.not_configured" = "Lehekülgi pole saadaval";
 "widgets.open_page.title" = "Ava lehekülg";

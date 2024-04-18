@@ -58,7 +58,7 @@
 "app_intents.perform_action.response_failure" = "Sikertelen: %@";
 "app_intents.perform_action.response_success" = "Kész";
 "app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
-"assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.pipelines_picker.title" = "Assist folyamatok";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";
@@ -840,8 +840,10 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.actions.description" = "Hajtsa végre a Home Assistant műveleteket.";
 "widgets.actions.not_configured" = "Nincs konfigurált művelet";
 "widgets.actions.title" = "Műveletek";
-"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.description" = "Nyissa meg az Assist-et az alkalmazásban";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Nyisson meg egy kezelőfelületet a Home Assistant alkalmazásban.";
 "widgets.open_page.not_configured" = "Nincsenek elérhető oldalak";
 "widgets.open_page.title" = "Oldal megnyitása";

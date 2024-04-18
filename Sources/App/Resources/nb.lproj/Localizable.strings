@@ -840,8 +840,10 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.actions.description" = "Utfør Home Assistant handlinger.";
 "widgets.actions.not_configured" = "Ingen handlinger konfigurert";
 "widgets.actions.title" = "Handlinger";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Åpne en frontend -side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgjengelig";
 "widgets.open_page.title" = "Åpne side";

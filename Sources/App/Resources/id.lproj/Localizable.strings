@@ -840,8 +840,10 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.actions.description" = "Luncurkan aksi Home Assistant";
 "widgets.actions.not_configured" = "Tidak Ada Aksi yang Dikonfigurasi";
 "widgets.actions.title" = "Aksi";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Buka halaman antarmuka di Home Assistant.";
 "widgets.open_page.not_configured" = "Tidak Ada Halaman yang Tersedia";
 "widgets.open_page.title" = "Buka Halaman";

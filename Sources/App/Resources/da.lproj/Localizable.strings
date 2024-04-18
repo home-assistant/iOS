@@ -840,8 +840,10 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.actions.description" = "Udfør Home Assistant-handlinger.";
 "widgets.actions.not_configured" = "Ingen handlinger konfigureret";
 "widgets.actions.title" = "Handlinger";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Åbn Assist i appen";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Åbn en brugerflade-side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgængelig";
 "widgets.open_page.title" = "Åbn side";

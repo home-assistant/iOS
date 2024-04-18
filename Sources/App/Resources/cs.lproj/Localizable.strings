@@ -840,8 +840,10 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.actions.description" = "Provede akce v Home Assistantovi.";
 "widgets.actions.not_configured" = "Akce nejsou nastaveny";
 "widgets.actions.title" = "Akce";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Otevřete Assist v aplikaci";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Otevřete frontendovou stránku v Home Assistantovi.";
 "widgets.open_page.not_configured" = "Nejsou k dispozici žádné stránky";
 "widgets.open_page.title" = "Otevřít stránku";

@@ -840,8 +840,10 @@
 "widgets.actions.description" = "Εκτελέστε ενέργειες Home Assistant.";
 "widgets.actions.not_configured" = "Δεν έχουν ρυθμιστεί ενέργειες";
 "widgets.actions.title" = "Ενέργειες";
-"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.description" = "Ανοίξτε το Assist στην εφαρμογή";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";

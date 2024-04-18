@@ -840,8 +840,10 @@
 "widgets.actions.description" = "Execute as ações do Home Assistant.";
 "widgets.actions.not_configured" = "Nenhuma ação configurada";
 "widgets.actions.title" = "Ações";
-"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.description" = "Abra o Assist no aplicativo";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";
