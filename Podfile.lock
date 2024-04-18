@@ -51,13 +51,13 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.11.0):
     - GoogleUtilities/Logger
-  - HAKit (0.4):
-    - HAKit/Core (= 0.4)
-  - HAKit/Core (0.4):
+  - HAKit (0.4.1):
+    - HAKit/Core (= 0.4.1)
+  - HAKit/Core (0.4.1):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.4):
+  - HAKit/Mocks (0.4.1):
     - HAKit/Core
-  - HAKit/PromiseKit (0.4):
+  - HAKit/PromiseKit (0.4.1):
     - HAKit/Core
     - PromiseKit (~> 6.13)
   - KeychainAccess (4.2.2)
@@ -102,7 +102,7 @@ PODS:
   - RealmSwift (10.35.0):
     - Realm (= 10.35.0)
   - Sodium (0.9.1)
-  - Starscream (4.0.8)
+  - Starscream (4.0.4)
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
   - SwiftLint (0.54.0)
@@ -140,6 +140,7 @@ DEPENDENCIES:
   - ReachabilitySwift
   - RealmSwift
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
+  - Starscream (from `https://github.com/bgoncal/starscream`, branch `ha-URLSession-fix`)
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
   - SwiftLint (= 0.54.0)
@@ -171,7 +172,6 @@ SPEC REPOS:
     - ReachabilitySwift
     - Realm
     - RealmSwift
-    - Starscream
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -206,6 +206,9 @@ EXTERNAL SOURCES:
   Sodium:
     :branch: xcode-14.0.1
     :git: https://github.com/zacwest/swift-sodium.git
+  Starscream:
+    :branch: ha-URLSession-fix
+    :git: https://github.com/bgoncal/starscream
   ViewRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -235,6 +238,9 @@ CHECKOUT OPTIONS:
   Sodium:
     :commit: c66991f2ea610d437b31656795226c8e52002abd
     :git: https://github.com/zacwest/swift-sodium.git
+  Starscream:
+    :commit: 7e3d24425c20649105cb4bdd612b6bab66f73ade
+    :git: https://github.com/bgoncal/starscream
   ViewRow:
     :commit: 3428a3b825a5641ae7fb65f3f787aba2b1b4dab9
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -253,7 +259,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 35ecbbc68ff547fca80f9326c9622e79288c7149
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
-  HAKit: 45fd77a3fa8cf4e50d59912ce50b9fe5382b6ffe
+  HAKit: 6fdc0f9377c5fbff3b656260478566c55f323f08
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   lottie-ios: b3846a9fa8ca1a1a3bebfa256ebe8b6fd4aaaaad
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -267,7 +273,7 @@ SPEC CHECKSUMS:
   Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
   RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
-  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
+  Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
@@ -278,6 +284,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 842e2967764412efa26d9625026ccc049608b78e
+PODFILE CHECKSUM: de1ec07132a70a9e59a3f1cdf4333427c216e72f
 
 COCOAPODS: 1.15.2
