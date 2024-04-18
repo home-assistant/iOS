@@ -840,8 +840,10 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.title" = "Actions";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "ഹോം അസിസ്റ്റന്റിൽ ഒരു മുൻ പേജ് തുറക്കുക.";
 "widgets.open_page.not_configured" = "പേജുകളൊന്നും ലഭ്യമല്ല";
 "widgets.open_page.title" = "പേജ് തുറക്കുക";

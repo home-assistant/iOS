@@ -839,8 +839,10 @@
 "widgets.actions.description" = "执行Home Assistant动作。";
 "widgets.actions.not_configured" = "未配置任何动作";
 "widgets.actions.title" = "动作";
+"widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "在应用中打开语音助手";
 "widgets.assist.title" = "语音助手";
+"widgets.assist.unknown_configuration" = "Configure";
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";
