@@ -844,6 +844,7 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "פתח דף פרונטאנד בהום אסיסטנט";
 "widgets.open_page.not_configured" = "אין דפים זמינים";
 "widgets.open_page.title" = "פתיחת דף";
