@@ -844,6 +844,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Home Assistant에서 프론트엔드 페이지를 엽니다.";
 "widgets.open_page.not_configured" = "해당 페이지가 없습니다";
 "widgets.open_page.title" = "페이지 열기";

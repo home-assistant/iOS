@@ -845,6 +845,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Öppna en frontend-sida i Home Assistant.";
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";

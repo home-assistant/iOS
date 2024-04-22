@@ -840,10 +840,11 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.actions.description" = "Home Assistantのアクションを実行する。";
 "widgets.actions.not_configured" = "アクションの設定なし";
 "widgets.actions.title" = "アクション";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "アシストに質問する";
 "widgets.assist.description" = "アプリでアシストを開く";
 "widgets.assist.title" = "アシスト";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "設定";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Home Assistantでフロントエンドページを開きます。";
 "widgets.open_page.not_configured" = "利用できるページがありません";
 "widgets.open_page.title" = "ページを開く";

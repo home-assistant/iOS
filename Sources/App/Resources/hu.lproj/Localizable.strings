@@ -840,10 +840,11 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.actions.description" = "Hajtsa végre a Home Assistant műveleteket.";
 "widgets.actions.not_configured" = "Nincs konfigurált művelet";
 "widgets.actions.title" = "Műveletek";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Kérdezzen az Assist-tól";
 "widgets.assist.description" = "Nyissa meg az Assist-et az alkalmazásban";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Beállítás";
+"widgets.button.reload_timeline" = "Minden widget újratöltése";
 "widgets.open_page.description" = "Nyisson meg egy kezelőfelületet a Home Assistant alkalmazásban.";
 "widgets.open_page.not_configured" = "Nincsenek elérhető oldalak";
 "widgets.open_page.title" = "Oldal megnyitása";

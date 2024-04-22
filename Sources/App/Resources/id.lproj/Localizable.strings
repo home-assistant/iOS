@@ -58,7 +58,7 @@
 "app_intents.perform_action.response_failure" = "Gagal: %@";
 "app_intents.perform_action.response_success" = "Selesai";
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
-"assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.pipelines_picker.title" = "Saluran Assist";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
 "carPlay.action.intro.item.title" = "Buat aksi pertama Anda";
@@ -298,7 +298,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.scanning.manual" = "Masukkan Alamat Secara Manual";
 "onboarding.scanning.manual_hint" = "Tidak menemukan server Anda?";
 "onboarding.scanning.title" = "Memindai Server";
-"onboarding.welcome.description" = "Aplikasi ini terhubung ke server Asisten Rumah Anda dan memungkinkan integrasi data tentang Anda dan ponsel Anda.\
+"onboarding.welcome.description" = "Aplikasi ini terhubung ke server Home Assistant Anda dan memungkinkan integrasi data tentang Anda dan ponsel Anda.\
 \
 Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka dengan fokus pada kontrol dan privasi lokal.";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
@@ -840,10 +840,11 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.actions.description" = "Luncurkan aksi Home Assistant";
 "widgets.actions.not_configured" = "Tidak Ada Aksi yang Dikonfigurasi";
 "widgets.actions.title" = "Aksi";
-"widgets.assist.action_title" = "Ask Assist";
-"widgets.assist.description" = "Open Assist in the app";
+"widgets.assist.action_title" = "Tanya Assist";
+"widgets.assist.description" = "Buka Assist di aplikasi";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Konfigurasikan";
+"widgets.button.reload_timeline" = "Muat ulang semua widget";
 "widgets.open_page.description" = "Buka halaman antarmuka di Home Assistant.";
 "widgets.open_page.not_configured" = "Tidak Ada Halaman yang Tersedia";
 "widgets.open_page.title" = "Buka Halaman";

@@ -844,6 +844,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Åpne en frontend -side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgjengelig";
 "widgets.open_page.title" = "Åpne side";
