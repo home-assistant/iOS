@@ -5,7 +5,6 @@ import RealmSwift
 import Shared
 import SwiftUI
 import WebKit
-import WidgetKit
 import XCGLogger
 
 class DebugSettingsViewController: HAFormViewController {
@@ -140,15 +139,6 @@ class DebugSettingsViewController: HAFormViewController {
         Section() <<< SettingsRootDataSource.Row.thread.row
     }
 
-    private var reloadWidgetsButton: ButtonRow {
-        ButtonRow {
-            $0.title = L10n.Widgets.Button.reloadTimeline
-            $0.onCellSelection { _, _ in
-                WidgetCenter.shared.reloadAllTimelines()
-            }
-        }
-    }
-
     private func logs() -> Eureka.Section {
         let section = Section()
 
@@ -259,8 +249,6 @@ class DebugSettingsViewController: HAFormViewController {
             $0.hidden = Condition(booleanLiteral: Current.appConfiguration.rawValue > 1)
             $0.tag = "developerOptions"
         }
-
-        section <<< reloadWidgetsButton
 
         section <<< ButtonRow("onboardTest") {
             $0.title = "Onboard (Initial)"
