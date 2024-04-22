@@ -1,8 +1,9 @@
 import Foundation
+import SwiftUI
 import UIKit
 
-public extension UIImage {
-    static func sharedAssetsImage(named: String) -> UIImage? {
-        UIImage(named: named, in: Bundle(for: AppEnvironment.self), with: nil)
+public extension Image {
+    init(imageAsset: ImageAsset) {
+        self.init(uiImage: imageAsset.image)
     }
 }
