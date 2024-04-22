@@ -844,6 +844,7 @@
 "widgets.assist.description" = "Abra o Assist no aplicativo";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";

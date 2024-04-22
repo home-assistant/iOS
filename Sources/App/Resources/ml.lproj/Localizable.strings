@@ -844,6 +844,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "ഹോം അസിസ്റ്റന്റിൽ ഒരു മുൻ പേജ് തുറക്കുക.";
 "widgets.open_page.not_configured" = "പേജുകളൊന്നും ലഭ്യമല്ല";
 "widgets.open_page.title" = "പേജ് തുറക്കുക";

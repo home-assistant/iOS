@@ -844,6 +844,7 @@ Home Assistant là phần mềm tự động hóa gia đình mã nguồn mở v�
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Mở một trang giao diện người dùng trong Home Assistant.";
 "widgets.open_page.not_configured" = "Không có trang nào";
 "widgets.open_page.title" = "Mở trang";

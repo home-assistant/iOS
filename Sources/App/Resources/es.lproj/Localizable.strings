@@ -844,6 +844,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Open a frontend page in Home Assistant.";
 "widgets.open_page.not_configured" = "No hay páginas disponibles";
 "widgets.open_page.title" = "Abre la página";

@@ -840,10 +840,11 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.actions.description" = "執行 Home Assistant 動作。";
 "widgets.actions.not_configured" = "未設定動作";
 "widgets.actions.title" = "動作";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "詢問助理";
 "widgets.assist.description" = "於 App 中開啟助理";
 "widgets.assist.title" = "助理";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "設定";
+"widgets.button.reload_timeline" = "重新載入所有小工具";
 "widgets.open_page.description" = "於 Home Assistant 中開啟前端頁面。";
 "widgets.open_page.not_configured" = "無頁面可使用";
 "widgets.open_page.title" = "開啟頁面";

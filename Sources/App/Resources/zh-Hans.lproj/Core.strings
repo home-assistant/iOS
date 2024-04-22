@@ -202,7 +202,7 @@
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "已禁用";
 "component::siren::entity_component::_::state::off" = "关闭";
 "component::siren::entity_component::_::state::on" = "开启";
-"component::starlink::entity::binary_sensor::power_save_idle::name" = "空闲";
+"component::starlink::entity::binary_sensor::power_save_idle::name" = "睡眠";
 "component::switch::entity_component::_::state::off" = "关闭";
 "component::switch::entity_component::_::state::on" = "开启";
 "component::switch::title" = "开关";

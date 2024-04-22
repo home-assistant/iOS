@@ -844,6 +844,7 @@
 "widgets.assist.description" = "Uygulamada Assist'i açın";
 "widgets.assist.title" = "Asistan";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Home Assistant'ta bir ön sayfası açın.";
 "widgets.open_page.not_configured" = "Kullanılabilir Sayfa Yok";
 "widgets.open_page.title" = "Sayfayı Aç";
