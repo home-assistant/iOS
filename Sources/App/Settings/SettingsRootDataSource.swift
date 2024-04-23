@@ -105,7 +105,7 @@ enum SettingsRootDataSource {
     private static func thread() -> SettingsButtonRow {
         SettingsButtonRow {
             $0.title = L10n.SettingsDetails.Thread.title
-            $0.image = .sharedAssetsImage(named: "thread")
+            $0.image = Asset.SharedAssets.thread.image
             $0.isAvailableForMac = false
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 guard #available(iOS 17, *) else { return UIViewController() }
