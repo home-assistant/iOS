@@ -462,6 +462,21 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 }
             )
 
+            form +++ ButtonRow {
+                $0.title = L10n.SettingsDetails.Actions.ServerControlled.Update.title
+                $0.onCellSelection { _, _ in
+                    let result = Current.modelManager.fetch()
+                    result.pipe { result in
+                        switch result {
+                        case .fulfilled:
+                            break
+                        case let .rejected(error):
+                            Current.Log.error("Failed to manually update server Actions: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
 
             let toggleAllSwitch = SwitchRow()

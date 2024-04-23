@@ -1455,6 +1455,12 @@ public enum L10n {
         /// Scene Actions
         public static var title: String { return L10n.tr("Localizable", "settings_details.actions.scenes.title") }
       }
+      public enum ServerControlled {
+        public enum Update {
+          /// Update server Actions
+          public static var title: String { return L10n.tr("Localizable", "settings_details.actions.server_controlled.update.title") }
+        }
+      }
       public enum Watch {
         public enum Available {
           /// Show in Watch
