@@ -14,9 +14,7 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     private let resolver: Resolver<URL>
     private let webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
-
-        // "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
-        configuration.applicationNameForUserAgent = HomeAssistantAPI.userAgent + " Mobile/HomeAssistant, like Safari"
+        configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
 
         return WKWebView(frame: .zero, configuration: configuration)
     }()
