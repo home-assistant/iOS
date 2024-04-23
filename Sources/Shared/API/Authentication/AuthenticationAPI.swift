@@ -55,7 +55,7 @@ public class AuthenticationAPI {
             )
             let request = session.request(routeInfo)
 
-            request.validateAuth().response { _ in
+            request.validateAuth().response { response in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
                 //
                 // The request will always respond with an empty body and HTTP status 200,

@@ -949,9 +949,9 @@ extension WebViewController: WKScriptMessageHandler {
 
                     if let error {
                         Current.Log.error("Failed calling sign out callback: \(error)")
+                    } else {
+                        Current.Log.verbose("Successfully informed web client of log out.")
                     }
-
-                    Current.Log.verbose("Successfully informed web client of log out.")
                 })
             }.catch { error in
                 Current.Log.error("Failed to revoke token: \(error)")
