@@ -402,6 +402,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.status_section.version_row.title" = "Versioon";
 "settings.template_edit.title" = "Muuda malli";
 "settings.whats_new.title" = "Mis on uut?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Sünkroonitud toiminguid pole";
 "settings_details.actions.actions_synced.footer" = "Failis .yaml määratletud toimingud ei ole seadmes muudetavad.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Toiminguid saab määratleda ka .yamli konfiguratsioonis.";
@@ -415,6 +416,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.actions.scenes.footer" = "Kui see on lubatud, kuvatakse stseenid koos toimingutega. Kui need on tehtud, käivitavad need stseeni muutused.";
 "settings_details.actions.scenes.select_all" = "Vali kõik";
 "settings_details.actions.scenes.title" = "Stseeni toimingud";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Toimingud";
 "settings_details.actions.watch.available.title" = "Kuva nutikellal";
 "settings_details.general.app_icon.enum.beta" = "Beetaversioon";
@@ -574,6 +576,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.updates.check_for_updates.include_betas" = "Kaasa beetaversioonid";
 "settings_details.updates.check_for_updates.title" = "Uuenduste automaatne kontrollimine";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Atribuudid";
 "settings_sensors.detail.device_class" = "Seadme tüüp";
 "settings_sensors.detail.enabled" = "Lubatud";

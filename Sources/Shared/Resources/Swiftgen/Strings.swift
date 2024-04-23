@@ -1942,7 +1942,7 @@ public enum L10n {
     }
     public enum Widgets {
       public enum ReloadAll {
-        /// This will reload all widgets timeline, use this in case your widgets are stuck in a blank state or not updating for some reason.
+        /// This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.
         public static var description: String { return L10n.tr("Localizable", "settings_details.widgets.reload_all.description") }
         /// Reload all widgets
         public static var title: String { return L10n.tr("Localizable", "settings_details.widgets.reload_all.title") }

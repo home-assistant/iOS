@@ -402,6 +402,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.status_section.version_row.title" = "Versjon";
 "settings.template_edit.title" = "Rediger mal";
 "settings.whats_new.title" = "What's new?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Ingen synkroniserte handlinger";
 "settings_details.actions.actions_synced.footer" = "Handlinger definert i .yaml kan ikke redigeres på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurasjonen.";
@@ -415,6 +416,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.actions.scenes.footer" = "Når dette er aktivert, vises scener ved siden av handlinger. Når de blir utført, utløser de sceneendringer.";
 "settings_details.actions.scenes.select_all" = "Velg alle";
 "settings_details.actions.scenes.title" = "Scene handlinger";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Handlinger";
 "settings_details.actions.watch.available.title" = "Vis i Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.updates.check_for_updates.include_betas" = "Inkluder betaversjoner";
 "settings_details.updates.check_for_updates.title" = "Se etter oppdateringer automatisk";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Attributter";
 "settings_sensors.detail.device_class" = "Enhetsklasse";
 "settings_sensors.detail.enabled" = "Aktivert";
