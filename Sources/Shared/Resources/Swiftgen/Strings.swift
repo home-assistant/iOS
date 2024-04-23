@@ -1407,6 +1407,10 @@ public enum L10n {
       /// What's new?
       public static var title: String { return L10n.tr("Localizable", "settings.whats_new.title") }
     }
+    public enum Widgets {
+      /// Widgets
+      public static var title: String { return L10n.tr("Localizable", "settings.widgets.title") }
+    }
   }
 
   public enum SettingsDetails {
@@ -1929,6 +1933,14 @@ public enum L10n {
     public enum Watch {
       /// Apple Watch
       public static var title: String { return L10n.tr("Localizable", "settings_details.watch.title") }
+    }
+    public enum Widgets {
+      public enum ReloadAll {
+        /// This will reload all widgets timeline, use this in case your widgets are stuck in a blank state or not updating for some reason.
+        public static var description: String { return L10n.tr("Localizable", "settings_details.widgets.reload_all.description") }
+        /// Reload all widgets
+        public static var title: String { return L10n.tr("Localizable", "settings_details.widgets.reload_all.title") }
+      }
     }
   }
 

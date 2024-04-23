@@ -28,6 +28,7 @@ enum SettingsRootDataSource {
         case sensors
         case complications
         case nfc
+        case widgets
         case help
         case privacy
         case debugging
@@ -45,6 +46,7 @@ enum SettingsRootDataSource {
                 case .sensors: return SettingsRootDataSource.sensors()
                 case .complications: return SettingsRootDataSource.complications()
                 case .nfc: return SettingsRootDataSource.nfc()
+                case .widgets: return SettingsRootDataSource.widgets()
                 case .help: return SettingsRootDataSource.help()
                 case .privacy: return SettingsRootDataSource.privacy()
                 case .debugging: return SettingsRootDataSource.debugging()
@@ -154,6 +156,16 @@ enum SettingsRootDataSource {
             $0.hidden = .isCatalyst
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 NFCListViewController()
+            }, onDismiss: nil)
+        }
+    }
+
+    private static func widgets() -> SettingsButtonRow {
+        SettingsButtonRow {
+            $0.title = L10n.Settings.Widgets.title
+            $0.icon = .widgetsIcon
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                UIHostingController(rootView: WidgetsSettingsView.build())
             }, onDismiss: nil)
         }
     }
