@@ -402,6 +402,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Redigera mall";
 "settings.whats_new.title" = "Vad är nytt?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Inga synkade åtgärder";
 "settings_details.actions.actions_synced.footer" = "Åtgärder definierade i .yaml kan inte redigeras på enheten.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Åtgärder kan också definieras i .yaml-konfigurationen.";
@@ -415,6 +416,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.actions.scenes.footer" = "Scener visas bredvid åtgärder när de är aktiverade. När de utförs utlöser de scen-förändringar.";
 "settings_details.actions.scenes.select_all" = "Välj alla";
 "settings_details.actions.scenes.title" = "Scen-åtgärder";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Åtgärder";
 "settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -575,6 +577,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.updates.check_for_updates.include_betas" = "Inkludera betaversioner";
 "settings_details.updates.check_for_updates.title" = "Sök automatiskt efter uppdateringar";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Egenskaper";
 "settings_sensors.detail.device_class" = "Enhets-klass";
 "settings_sensors.detail.enabled" = "Aktiverad";

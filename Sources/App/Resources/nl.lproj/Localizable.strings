@@ -402,6 +402,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.status_section.version_row.title" = "Versie";
 "settings.template_edit.title" = "Sjabloon bewerken";
 "settings.whats_new.title" = "What's new?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Geen gesynchroniseerde acties";
 "settings_details.actions.actions_synced.footer" = "Acties die zijn gedefinieerd in .yaml, kunnen niet op het apparaat worden bewerkt.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Acties kunnen ook worden gedefinieerd in de .yaml-configuratie.";
@@ -415,6 +416,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.actions.scenes.footer" = "Wanneer ingeschakeld, worden Scènes naast acties weergegeven. Wanneer uitgevoerd, activeren ze scèneveranderingen.";
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Scene Acties";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Acties";
 "settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Bèta";
@@ -574,6 +576,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.updates.check_for_updates.include_betas" = "Beta-releases opnemen";
 "settings_details.updates.check_for_updates.title" = "Automatisch controleren op updates";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Attributen";
 "settings_sensors.detail.device_class" = "apparaatklasse";
 "settings_sensors.detail.enabled" = "Ingeschakeld";

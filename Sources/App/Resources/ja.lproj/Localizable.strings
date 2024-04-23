@@ -402,6 +402,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.status_section.version_row.title" = "バージョン";
 "settings.template_edit.title" = "テンプレートの編集";
 "settings.whats_new.title" = "新着情報";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "同期されたアクションはありません";
 "settings_details.actions.actions_synced.footer" = ".yamlで定義されたアクションは、デバイス上での編集はできません。";
 "settings_details.actions.actions_synced.footer_no_actions" = "アクションは、.yaml 構成で定義することもできます。";
@@ -415,6 +416,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.actions.scenes.footer" = "有効にすると、アクションと一緒にシーンが表示されます。実行すると、シーン チェンジがトリガーされます。";
 "settings_details.actions.scenes.select_all" = "すべて選択";
 "settings_details.actions.scenes.title" = "シーンアクション";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "アクション";
 "settings_details.actions.watch.available.title" = "Watchで表示";
 "settings_details.general.app_icon.enum.beta" = "ベータ";
@@ -574,6 +576,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.updates.check_for_updates.include_betas" = "ベータリリースを含める";
 "settings_details.updates.check_for_updates.title" = "アップデートを自動的にチェック";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "属性";
 "settings_sensors.detail.device_class" = "デバイスクラス";
 "settings_sensors.detail.enabled" = "有効";
@@ -844,7 +848,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.assist.description" = "アプリでアシストを開く";
 "widgets.assist.title" = "アシスト";
 "widgets.assist.unknown_configuration" = "設定";
-"widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.button.reload_timeline" = "すべてのウィジェットを再読み込み";
 "widgets.open_page.description" = "Home Assistantでフロントエンドページを開きます。";
 "widgets.open_page.not_configured" = "利用できるページがありません";
 "widgets.open_page.title" = "ページを開く";

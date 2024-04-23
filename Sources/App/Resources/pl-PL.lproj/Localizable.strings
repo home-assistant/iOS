@@ -400,6 +400,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.status_section.version_row.title" = "Wersja";
 "settings.template_edit.title" = "Edytuj szablon";
 "settings.whats_new.title" = "Co nowego?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Brak zsynchronizowanych akcji";
 "settings_details.actions.actions_synced.footer" = "Działania zdefiniowane w pliku .yaml nie są edytowalne na urządzeniu.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Akcje mogą być także zdefiniowane w pliku .yaml";
@@ -413,6 +414,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.scenes.footer" = "Po włączeniu sceny wyświetlane są obok akcji. Gdy są wykonywane, wyzwalają zmiany scen.";
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Akcje scen";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Akcje";
 "settings_details.actions.watch.available.title" = "Pokaż na zegarku";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -572,6 +574,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.updates.check_for_updates.include_betas" = "Uwzględnij wersje beta";
 "settings_details.updates.check_for_updates.title" = "Automatycznie sprawdzaj aktualizacje";
 "settings_details.watch.title" = "Zegarek Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Atrybuty";
 "settings_sensors.detail.device_class" = "Klasa urządzenia";
 "settings_sensors.detail.enabled" = "Włączone";
