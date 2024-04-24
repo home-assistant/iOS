@@ -559,6 +559,9 @@
 		4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
+		42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
+		42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
+		42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */; };
 		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
@@ -1737,6 +1740,8 @@
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codable.swift"; sourceTree = "<group>"; };
+		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
 		42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.test.swift; sourceTree = "<group>"; };
 		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
@@ -3246,6 +3251,8 @@
 				42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */,
 				42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */,
 				421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */,
+				42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */,
+				42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -6210,6 +6217,7 @@
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
+				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
@@ -6470,6 +6478,7 @@
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
+				42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */,
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
 				429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */,
 				11B38EE9275C54A200205C7B /* GetCameraImageIntentHandler.swift in Sources */,
@@ -6552,6 +6561,7 @@
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
+				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
