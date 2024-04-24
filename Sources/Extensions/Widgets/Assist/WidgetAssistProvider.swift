@@ -26,8 +26,8 @@ struct WidgetAssistProvider: IntentTimelineProvider {
             return
         }
         let entry = WidgetAssistEntry(
-            server: configuration.server,
-            pipeline: configuration.pipeline,
+            server: server,
+            pipeline: pipeline,
             withVoice: Bool(truncating: configuration.withVoice ?? 1)
         )
         completion(entry)
