@@ -402,6 +402,7 @@
 "settings.status_section.version_row.title" = "Versão";
 "settings.template_edit.title" = "Editar modelo";
 "settings.whats_new.title" = "O que há de novo?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Nenhuma ação sincronizada";
 "settings_details.actions.actions_synced.footer" = "As ações definidas em .yaml não são editáveis no dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "As ações também podem ser definidas na configuração .yaml.";
@@ -415,6 +416,7 @@
 "settings_details.actions.scenes.footer" = "Quando ativado, as cenas são exibidas ao lado das ações. Quando executados, eles acionam mudanças de cena.";
 "settings_details.actions.scenes.select_all" = "Selecionar tudo";
 "settings_details.actions.scenes.title" = "Ações de cena";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Ações";
 "settings_details.actions.watch.available.title" = "Mostrar no relógio";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@
 "settings_details.updates.check_for_updates.include_betas" = "Incluir versões beta";
 "settings_details.updates.check_for_updates.title" = "Verificar atualizações automaticamente";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Atributos";
 "settings_sensors.detail.device_class" = "Classe do dispositivo";
 "settings_sensors.detail.enabled" = "Habilitado";
@@ -840,10 +844,11 @@
 "widgets.actions.description" = "Execute as ações do Home Assistant.";
 "widgets.actions.not_configured" = "Nenhuma ação configurada";
 "widgets.actions.title" = "Ações";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Pergunte ao Assist";
 "widgets.assist.description" = "Abra o Assist no aplicativo";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Configurar";
+"widgets.button.reload_timeline" = "Recarregar todos os widgets";
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";

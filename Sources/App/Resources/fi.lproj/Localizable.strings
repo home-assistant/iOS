@@ -402,6 +402,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings.status_section.version_row.title" = "Versio";
 "settings.template_edit.title" = "Muokkaa mallia";
 "settings.whats_new.title" = "Mikä on uutta?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Ei synkronoituja toimintoja";
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Toiminnot voidaan määrittää myös .yaml konfiguraatiossa.";
@@ -415,6 +416,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
 "settings_details.actions.scenes.select_all" = "Valitse kaikki";
 "settings_details.actions.scenes.title" = "Scene Actions";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Toiminnot";
 "settings_details.actions.watch.available.title" = "Näytä Watchissa";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.updates.check_for_updates.include_betas" = "Sisällytä beta-julkaisut";
 "settings_details.updates.check_for_updates.title" = "Tarkista päivitykset automaattisesti";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Attribuutit";
 "settings_sensors.detail.device_class" = "Laiteluokka";
 "settings_sensors.detail.enabled" = "Käytössä";
@@ -844,6 +848,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Avaa käyttöliittymäsivu Home Assistantissa.";
 "widgets.open_page.not_configured" = "Sivuja ei saatavilla";
 "widgets.open_page.title" = "Avaa sivu";

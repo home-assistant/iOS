@@ -126,6 +126,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
     }
 
     public func update(with object: MobileAppConfigAction, server: Server, using realm: Realm) -> Bool {
+        Current.Log.info("Updating server configured Actions")
         if self.realm == nil {
             ID = object.name
             Name = object.name

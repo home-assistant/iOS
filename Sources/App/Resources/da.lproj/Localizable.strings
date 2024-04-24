@@ -402,6 +402,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Redigér skabelon";
 "settings.whats_new.title" = "Hvad er nyt?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Ingen synkroniserede handlinger";
 "settings_details.actions.actions_synced.footer" = "Handlinger, der er defineret i .yaml, kan ikke redigeres på enheden.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurationen.";
@@ -415,6 +416,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.actions.scenes.footer" = "Når indstillingen er aktiveret, vises Scener sammen med handlinger. Når de udføres, udløser de sceneændringer.";
 "settings_details.actions.scenes.select_all" = "Vælg alle";
 "settings_details.actions.scenes.title" = "Scenehandlinger";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Handlinger";
 "settings_details.actions.watch.available.title" = "Vis på Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.updates.check_for_updates.include_betas" = "Inkludér betaudgivelser";
 "settings_details.updates.check_for_updates.title" = "Søg automatisk efter opdateringer";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Egenskaber";
 "settings_sensors.detail.device_class" = "Enhedsklasse";
 "settings_sensors.detail.enabled" = "Aktiveret";
@@ -840,10 +844,11 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.actions.description" = "Udfør Home Assistant-handlinger.";
 "widgets.actions.not_configured" = "Ingen handlinger konfigureret";
 "widgets.actions.title" = "Handlinger";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Spørg Assist";
 "widgets.assist.description" = "Åbn Assist i appen";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Konfigurér";
+"widgets.button.reload_timeline" = "Genindlæs alle widgets";
 "widgets.open_page.description" = "Åbn en brugerflade-side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgængelig";
 "widgets.open_page.title" = "Åbn side";

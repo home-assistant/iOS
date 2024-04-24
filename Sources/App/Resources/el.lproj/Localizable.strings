@@ -402,6 +402,7 @@
 "settings.status_section.version_row.title" = "Έκδοση";
 "settings.template_edit.title" = "Επεξεργασία Προτύπου";
 "settings.whats_new.title" = "Τι νέο υπάρχει;";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Καμία συγχρονισμένη ενέργεια";
 "settings_details.actions.actions_synced.footer" = "Οι ενέργειες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Οι ενέργειες μπορούν επίσης να οριστούν στη ρύθμιση παραμέτρων .yaml.";
@@ -415,6 +416,7 @@
 "settings_details.actions.scenes.footer" = "Οταν είναι ενεργοποιημένες, οι σκηνές εμφανίζονται παράλληλα με ενέργειες. Οταν εκτελούνται, πυροδοτούν αλλαγές στη σκηνή.";
 "settings_details.actions.scenes.select_all" = "Επιλογή όλων";
 "settings_details.actions.scenes.title" = "Ενέργειες σκηνής";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Ενέργειες";
 "settings_details.actions.watch.available.title" = "Εμφάνιση στο Ρολόι";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@
 "settings_details.updates.check_for_updates.include_betas" = "Συμπερίληψη εκδόσεων beta";
 "settings_details.updates.check_for_updates.title" = "Αυτόματος έλεγχος για ενημερώσεις";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Χαρακτηριστικά";
 "settings_sensors.detail.device_class" = "Κλάση συσκευής";
 "settings_sensors.detail.enabled" = "Ενεργοποιημένο";
@@ -840,10 +844,11 @@
 "widgets.actions.description" = "Εκτελέστε ενέργειες Home Assistant.";
 "widgets.actions.not_configured" = "Δεν έχουν ρυθμιστεί ενέργειες";
 "widgets.actions.title" = "Ενέργειες";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Ρωτήστε το Assist";
 "widgets.assist.description" = "Ανοίξτε το Assist στην εφαρμογή";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Διαμόρφωση";
+"widgets.button.reload_timeline" = "Επαναφόρτωση όλων των γραφικών στοιχείων";
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";

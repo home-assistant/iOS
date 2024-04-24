@@ -399,6 +399,7 @@
 "settings.status_section.version_row.title" = "版本";
 "settings.template_edit.title" = "编辑模板";
 "settings.whats_new.title" = "最新内容";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "没有已同步的动作";
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在.yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
@@ -412,6 +413,7 @@
 "settings_details.actions.scenes.footer" = "启用后，场景将与操作一起显示。执行时，它们会触发场景更改。";
 "settings_details.actions.scenes.select_all" = "全选";
 "settings_details.actions.scenes.title" = "场景动作";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "动作";
 "settings_details.actions.watch.available.title" = "在手表中显示";
 "settings_details.general.app_icon.enum.beta" = "Beta版";
@@ -571,6 +573,8 @@
 "settings_details.updates.check_for_updates.include_betas" = "包括测试版";
 "settings_details.updates.check_for_updates.title" = "自动检查更新";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "属性";
 "settings_sensors.detail.device_class" = "设备类型";
 "settings_sensors.detail.enabled" = "已启用";
@@ -839,10 +843,11 @@
 "widgets.actions.description" = "执行Home Assistant动作。";
 "widgets.actions.not_configured" = "未配置任何动作";
 "widgets.actions.title" = "动作";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "询问语音助手";
 "widgets.assist.description" = "在应用中打开语音助手";
 "widgets.assist.title" = "语音助手";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "配置";
+"widgets.button.reload_timeline" = "重新加载所有小部件";
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";

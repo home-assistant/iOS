@@ -402,6 +402,7 @@
 "settings.status_section.version_row.title" = "Versione";
 "settings.template_edit.title" = "Modifica il template";
 "settings.whats_new.title" = "Cosa c'è di nuovo?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Nessuna azione sincronizzata";
 "settings_details.actions.actions_synced.footer" = "Le azioni definite in .yaml non sono editabili sul dispositivo.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Le azioni possono essere anche definite nella configurazione .yaml.";
@@ -415,6 +416,7 @@
 "settings_details.actions.scenes.footer" = "Quando questa opzione è abilitata, le scene vengono visualizzate accanto alle azioni. Quando vengono eseguite, attivano le modifiche alla scena.";
 "settings_details.actions.scenes.select_all" = "Seleziona tutto";
 "settings_details.actions.scenes.title" = "Azioni scena";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Azioni";
 "settings_details.actions.watch.available.title" = "Mostra in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@
 "settings_details.updates.check_for_updates.include_betas" = "Includi versioni beta";
 "settings_details.updates.check_for_updates.title" = "Controlla automaticamente gli aggiornamenti";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Attributi";
 "settings_sensors.detail.device_class" = "Classe del dispositivo";
 "settings_sensors.detail.enabled" = "Abilitato";
@@ -844,6 +848,7 @@
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Apri una pagina frontend in Home Assistant.";
 "widgets.open_page.not_configured" = "Nessuna pagina disponibile";
 "widgets.open_page.title" = "Aprire la pagina";

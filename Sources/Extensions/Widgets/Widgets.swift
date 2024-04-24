@@ -4,9 +4,9 @@ import WidgetKit
 @main
 struct Widgets: WidgetBundle {
     var body: some Widget {
+        WidgetAssist()
         actionsWidget()
         WidgetOpenPage()
-        WidgetAssist()
     }
 
     private func actionsWidget() -> some Widget {

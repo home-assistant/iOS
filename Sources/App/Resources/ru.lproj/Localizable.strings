@@ -402,6 +402,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings.status_section.version_row.title" = "Версия";
 "settings.template_edit.title" = "Редактировать шаблон";
 "settings.whats_new.title" = "Что нового?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Нет синхронизированных действий";
 "settings_details.actions.actions_synced.footer" = "Действия, определенные в файле .yaml, нельзя редактировать на устройстве.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Действия также могут быть определены в конфигурации файла configuration.yaml.";
@@ -415,6 +416,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.actions.scenes.footer" = "Если включено, сцены отображаются рядом с действиями. При выполнении они вызывают изменение сцены.";
 "settings_details.actions.scenes.select_all" = "Выбрать все";
 "settings_details.actions.scenes.title" = "Действия в сцене";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Действия";
 "settings_details.actions.watch.available.title" = "Показывать в часах";
 "settings_details.general.app_icon.enum.beta" = "Бета";
@@ -574,6 +576,8 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.updates.check_for_updates.include_betas" = "Включая бета-версии";
 "settings_details.updates.check_for_updates.title" = "Автоматическая проверка наличия обновлений";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Атрибуты";
 "settings_sensors.detail.device_class" = "Класс устройства";
 "settings_sensors.detail.enabled" = "Включено";
@@ -840,10 +844,11 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.actions.description" = "Выполнение действий Home Assistant.";
 "widgets.actions.not_configured" = "Никаких действий не настроено";
 "widgets.actions.title" = "Действия";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Попросить Assist";
 "widgets.assist.description" = "Открыть Assist в приложении";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Открыть страницу интерфейса в Home Assistant.";
 "widgets.open_page.not_configured" = "Нет доступных страниц";
 "widgets.open_page.title" = "Открыть страницу";

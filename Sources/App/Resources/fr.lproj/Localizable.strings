@@ -402,6 +402,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings.status_section.version_row.title" = "Version";
 "settings.template_edit.title" = "Modifier le modèle";
 "settings.whats_new.title" = "Quoi de neuf ?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Aucune action synchronisée";
 "settings_details.actions.actions_synced.footer" = "Les actions définies dans .yaml ne sont pas modifiables sur l'appareil.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Les actions peuvent également être définies dans la configuration .yaml.";
@@ -415,6 +416,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.actions.scenes.footer" = "Lorsqu'elle est activée, les scènes s'affichent à côté des actions. Lorsqu'ils sont exécutés, ils déclenchent des changements de scène.";
 "settings_details.actions.scenes.select_all" = "Sélectionner tout";
 "settings_details.actions.scenes.title" = "Éditeur de scène";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Actions";
 "settings_details.actions.watch.available.title" = "Afficher dans Watch";
 "settings_details.general.app_icon.enum.beta" = "Bêta";
@@ -574,6 +576,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.updates.check_for_updates.include_betas" = "Inclure les versions bêta";
 "settings_details.updates.check_for_updates.title" = "Rechercher automatiquement les mises à jour";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Attributs";
 "settings_sensors.detail.device_class" = "Classe d'appareil";
 "settings_sensors.detail.enabled" = "Activé";
@@ -844,6 +848,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.open_page.description" = "Ouvrez une page frontale dans Home Assistant.";
 "widgets.open_page.not_configured" = "Aucune page disponible";
 "widgets.open_page.title" = "Ouvrir la page";

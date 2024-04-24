@@ -402,6 +402,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.status_section.version_row.title" = "Verze";
 "settings.template_edit.title" = "Upravit šablonu";
 "settings.whats_new.title" = "Co je nového?";
+"settings.widgets.title" = "Widgets";
 "settings_details.actions.actions_synced.empty" = "Žádné synchronizované akce";
 "settings_details.actions.actions_synced.footer" = "Akce definované v .yaml nelze upravit v zařízení";
 "settings_details.actions.actions_synced.footer_no_actions" = "Akce mohou být také definovány v konfiguraci .yaml.";
@@ -415,6 +416,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.actions.scenes.footer" = "Pokud je tato možnost povolena, scény se zobrazí společně s akcemi. Při provedení aktivují změny scény.";
 "settings_details.actions.scenes.select_all" = "Vybrat vše";
 "settings_details.actions.scenes.title" = "Akce scény";
+"settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Akce";
 "settings_details.actions.watch.available.title" = "Zobrazit v hodinkách";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -574,6 +576,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.updates.check_for_updates.include_betas" = "Zahrnout beta verze";
 "settings_details.updates.check_for_updates.title" = "Automaticky kontrolovat aktualizace";
 "settings_details.watch.title" = "Apple Watch";
+"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Atributy";
 "settings_sensors.detail.device_class" = "Třída zařízení";
 "settings_sensors.detail.enabled" = "Povoleno";
@@ -840,10 +844,11 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.actions.description" = "Provede akce v Home Assistantovi.";
 "widgets.actions.not_configured" = "Akce nejsou nastaveny";
 "widgets.actions.title" = "Akce";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Zeptat se Assist";
 "widgets.assist.description" = "Otevřete Assist v aplikaci";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Nastavit";
+"widgets.button.reload_timeline" = "Znovu načíst všechny widgety";
 "widgets.open_page.description" = "Otevřete frontendovou stránku v Home Assistantovi.";
 "widgets.open_page.not_configured" = "Nejsou k dispozici žádné stránky";
 "widgets.open_page.title" = "Otevřít stránku";

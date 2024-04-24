@@ -114,6 +114,7 @@ class SettingsViewController: HAFormViewController {
                 <<< SettingsRootDataSource.Row.sensors.row
                 <<< SettingsRootDataSource.Row.complications.row
                 <<< SettingsRootDataSource.Row.nfc.row
+                <<< SettingsRootDataSource.Row.widgets.row
         }
 
         if contentSections.contains(.help) {
