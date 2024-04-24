@@ -14,6 +14,8 @@ class OnboardingAuthLoginViewControllerImpl: UIViewController, OnboardingAuthLog
     private let resolver: Resolver<URL>
     private let webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
+        configuration.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
+
         return WKWebView(frame: .zero, configuration: configuration)
     }()
 

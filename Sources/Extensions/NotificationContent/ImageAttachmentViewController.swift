@@ -58,6 +58,7 @@ class ImageAttachmentViewController: UIViewController, NotificationCategory {
             if UTTypeConformsTo(imageUTI, kUTTypeGIF) {
                 // use a WebView for gif so we can animate without pulling in a third party library
                 let config = with(WKWebViewConfiguration()) {
+                    $0.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
                     $0.userContentController = with(WKUserContentController()) {
                         // we can't use `loadHTMLString` with `<img>` inside to do styling because the webview can't get
                         // the security scoped file if loaded by the service extension so we need to load data directly

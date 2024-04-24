@@ -55,6 +55,11 @@ public class HomeAssistantAPI {
         return "Home Assistant/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
     }
 
+    // "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
+    public static var applicationNameForUserAgent: String {
+        HomeAssistantAPI.userAgent + " Mobile/HomeAssistant, like Safari"
+    }
+
     /// Initialize an API object with an authenticated tokenManager.
     public init(server: Server, urlConfig: URLSessionConfiguration = .default) {
         self.server = server

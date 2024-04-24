@@ -143,8 +143,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         ))
 
         config.userContentController = userContentController
-        // "Mobile/BUILD_NUMBER" is what CodeMirror sniffs for to decide iOS or not; other things likely look for Safari
-        config.applicationNameForUserAgent = HomeAssistantAPI.userAgent + " Mobile/HomeAssistant, like Safari"
+        config.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
 
         webView = WKWebView(frame: view!.frame, configuration: config)
         webView.isOpaque = false
