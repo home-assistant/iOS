@@ -1,6 +1,7 @@
 import AppIntents
 import Shared
 import WidgetKit
+import RealmSwift
 
 @available(iOS 17, *)
 struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
@@ -14,7 +15,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
         .init(
             entries: [Self.entry(for: configuration, in: context)],
-            policy: .after(Current.date().addingTimeInterval(expiration.converted(to: .seconds).value))
+            policy: .after(Current.date().addingTimeInterval(WidgetActionsDataSource.expiration.converted(to: .seconds).value))
         )
     }
 
@@ -30,10 +31,6 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
         return WidgetActionsEntry(actions: actions)
     }
 
-    private var expiration: Measurement<UnitDuration> {
-        .init(value: 24, unit: .hours)
-    }
-
     private static func entry(for configuration: Intent, in context: Context) -> Entry {
         if let existing = configuration.actions?.compactMap({ $0.asAction() }), !existing.isEmpty {
             return .init(actions: existing)
@@ -43,7 +40,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private static func defaultActions(in context: Context) -> [Action] {
-        let allActions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
+        let allActions = WidgetActionsDataSource.actions
         let maxCount = WidgetBasicContainerView.maximumCount(family: context.family)
 
         switch allActions.count {
@@ -61,10 +58,21 @@ extension IntentActionAppEntity {
             return nil
         }
 
-        guard let result = Current.realm().object(ofType: Action.self, forPrimaryKey: id) else {
+        guard let result = Realm.getRealm(objectTypes: [Action.self, RLMScene.self]).object(ofType: Action.self, forPrimaryKey: id) else {
             return nil
         }
 
         return result
     }
+}
+
+final class WidgetActionsDataSource {
+    static var expiration: Measurement<UnitDuration> {
+        .init(value: 24, unit: .hours)
+    }
+
+    static var actions: Results<Action> {
+        return Realm.getRealm(objectTypes: [Action.self, RLMScene.self]).objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
+    }
+
 }
