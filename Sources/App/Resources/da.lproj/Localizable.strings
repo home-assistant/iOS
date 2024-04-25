@@ -416,7 +416,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.actions.scenes.footer" = "Når indstillingen er aktiveret, vises Scener sammen med handlinger. Når de udføres, udløser de sceneændringer.";
 "settings_details.actions.scenes.select_all" = "Vælg alle";
 "settings_details.actions.scenes.title" = "Scenehandlinger";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "Opdatér serverhandlinger";
 "settings_details.actions.title" = "Handlinger";
 "settings_details.actions.watch.available.title" = "Vis på Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -576,8 +576,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.updates.check_for_updates.include_betas" = "Inkludér betaudgivelser";
 "settings_details.updates.check_for_updates.title" = "Søg automatisk efter opdateringer";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "Dette vil genindlæse alle widgets tidslinjer. Brug dette, hvis dine widgets sidder fast i en tom tilstand eller ikke opdateres af en eller anden grund.";
+"settings_details.widgets.reload_all.title" = "Genindlæs alle widgets";
 "settings_sensors.detail.attributes" = "Egenskaber";
 "settings_sensors.detail.device_class" = "Enhedsklasse";
 "settings_sensors.detail.enabled" = "Aktiveret";
