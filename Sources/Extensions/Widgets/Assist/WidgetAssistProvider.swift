@@ -14,6 +14,8 @@ struct WidgetAssistProvider: IntentTimelineProvider {
     typealias Intent = AssistInAppIntent
     typealias Entry = WidgetAssistEntry
 
+    @Environment(\.diskCache) var diskCache: DiskCache
+
     func placeholder(in context: Context) -> WidgetAssistEntry {
         .init()
     }
