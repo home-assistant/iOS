@@ -416,7 +416,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.actions.scenes.footer" = "Wenn diese Option aktiviert ist, werden Szenen neben Aktionen angezeigt. Wenn sie ausgeführt werden, lösen sie Szenenwechsel aus.";
 "settings_details.actions.scenes.select_all" = "Alle auswählen";
 "settings_details.actions.scenes.title" = "Szenen-Aktionen";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "Server-Aktionen aktualisieren";
 "settings_details.actions.title" = "Aktionen";
 "settings_details.actions.watch.available.title" = "Auf der Watch anzeigen";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -576,8 +576,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.updates.check_for_updates.include_betas" = "Beta-Versionen einbeziehen";
 "settings_details.updates.check_for_updates.title" = "Automatisch nach Updates suchen";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "Dadurch werden alle Widget-Zeitleisten neu geladen. Verwende diese Option, wenn deine Widgets in einem leeren Zustand hängen bleiben oder aus irgendeinem Grund nicht aktualisiert werden.";
+"settings_details.widgets.reload_all.title" = "Alle Widgets neu laden";
 "settings_sensors.detail.attributes" = "Attribute";
 "settings_sensors.detail.device_class" = "Geräteklasse";
 "settings_sensors.detail.enabled" = "Aktiviert";

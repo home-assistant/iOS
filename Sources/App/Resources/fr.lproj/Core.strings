@@ -70,7 +70,7 @@
 "component::fan::entity_component::_::state::on" = "Allumé";
 "component::fan::entity_component::_::state_attributes::oscillating::state::false" = "Non";
 "component::fan::entity_component::_::state_attributes::oscillating::state::true" = "Oui";
-"component::fritzbox_callmonitor::entity::sensor::fritzbox_callmonitor::state::idle" = "Veille";
+"component::fritzbox_callmonitor::entity::sensor::fritzbox_callmonitor::state::idle" = "Inactif";
 "component::gardena_bluetooth::entity::switch::state::name" = "Ouvert";
 "component::google_mail::services::set_vacation::fields::enabled::name" = "Activé";
 "component::group::entity_component::_::state::closed" = "Fermé";
