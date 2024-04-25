@@ -15,6 +15,12 @@ struct WidgetAssistView: View {
         return entry.pipeline?.displayString ?? L10n.Widgets.Assist.unknownConfiguration
     }
 
+    init(entry: WidgetAssistEntry) {
+        self.entry = entry
+
+        MaterialDesignIcons.register()
+    }
+
     var body: some View {
         content
     }
