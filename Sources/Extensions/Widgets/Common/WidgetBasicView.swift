@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import SwiftUI
 
-struct WidgetBasicViewModel: Identifiable, Hashable {
+struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     init(
         id: String,
         title: String,
@@ -39,12 +39,12 @@ struct WidgetBasicViewModel: Identifiable, Hashable {
     var textColor: Color
     var iconColor: Color
 
-    enum InteractionType: Hashable {
+    enum InteractionType: Hashable, Encodable {
         case widgetURL(URL)
         case appIntent(WidgetIntentType)
     }
 
-    enum WidgetIntentType: Hashable {
+    enum WidgetIntentType: Hashable, Encodable {
         case action(id: String, name: String)
     }
 }
