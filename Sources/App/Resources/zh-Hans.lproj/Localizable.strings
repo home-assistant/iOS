@@ -601,7 +601,7 @@
 "thread.credentials.network_name_title" = "网络名称";
 "thread.credentials.no_credential_available" = "您的iCloud钥匙串上没有可用的凭据。";
 "thread.credentials.screen_title" = "Thread凭据";
-"thread.credentials.share_credentials.no_credentials_message" = "确保您已使用Apple Home中家庭所有者的iCloud帐户登录。";
+"thread.credentials.share_credentials.no_credentials_message" = "确保您已使用 Apple Home 中家庭所有者的 iCloud 账户登录。";
 "thread.credentials.share_credentials.no_credentials_title" = "您没有可共享的凭据";
 "thread.credentials.share_credentials_button_title" = "与Home Assistant共享凭据";
 "thread.extended_pan_id.title" = "扩展 PAN ID";
