@@ -113,7 +113,7 @@ private extension Action {
     func toWatchActionItem() -> WatchActionItem {
         .init(
             id: ID,
-            name: Name,
+            name: Text,
             iconName: IconName,
             backgroundColor: BackgroundColor,
             iconColor: IconColor,
