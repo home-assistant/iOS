@@ -571,6 +571,7 @@
 		42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDC2B9606CD00DEE060 /* AssistView.swift */; };
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42B94BED2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
+		42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42C373B22BC5382900898990 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B12BC5382900898990 /* HostingController.swift */; };
@@ -1750,6 +1751,7 @@
 		42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistViewModel.swift; sourceTree = "<group>"; };
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
 		42B94BE72B9607D100DEE060 /* AssistModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssistModel.swift; path = Sources/Shared/Intents/AssistInApp/AssistModel.swift; sourceTree = SOURCE_ROOT; };
+		42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeScriptMessageHandler.swift; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchApp-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -2791,6 +2793,7 @@
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 			);
@@ -5957,6 +5960,7 @@
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
+				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
 				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				1185DFB4271FF53800ED7D9A /* OnboardingAuthStepModels.swift in Sources */,

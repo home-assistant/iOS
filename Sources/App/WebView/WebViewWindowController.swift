@@ -75,13 +75,33 @@ class WebViewWindowController {
                 // not changing anything, but handle the promises
                 updateRootViewController(to: rootController)
             } else {
-                if let webViewController = WebViewController(restoring: .init(restorationActivity)) {
+                if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
                     updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
                 } else {
                     updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
                 }
                 restorationActivity = nil
             }
+        }
+    }
+
+    private func makeWebViewIfNotInCache(
+        restorationType: WebViewController.RestorationType?,
+        shouldLoadImmediately: Bool = false
+    ) -> WebViewController? {
+        if let server = restorationType?.server ?? Current.servers.all.first {
+            if let cachedController = cachedWebViewControllers[server.identifier] {
+                return cachedController
+            } else {
+                let newController = WebViewController(
+                    restoring: restorationType,
+                    shouldLoadImmediately: shouldLoadImmediately
+                )
+                cachedWebViewControllers[server.identifier] = newController
+                return newController
+            }
+        } else {
+            return nil
         }
     }
 
@@ -130,12 +150,19 @@ class WebViewWindowController {
                 return .value(controller)
             }
 
-            cachedWebViewControllers[controller.server.identifier] = controller
-
             let (promise, resolver) = Guarantee<WebViewController>.pending()
 
             let perform = { [self] in
-                let newController = cachedWebViewControllers[server.identifier] ?? WebViewController(server: server)
+                let newController: WebViewController = {
+                    if let cachedController = cachedWebViewControllers[server.identifier] {
+                        return cachedController
+                    } else {
+                        let newController = WebViewController(server: server)
+                        cachedWebViewControllers[server.identifier] = newController
+                        return newController
+                    }
+                }()
+
                 updateRootViewController(to: webViewNavigationController(rootViewController: newController))
                 resolver(newController)
             }
@@ -412,7 +439,11 @@ extension WebViewWindowController: OnboardingStateObserver {
                 return
             }
 
-            cachedWebViewControllers.removeAll()
+            onboardingPreloadWebViewController = nil
+            // Remove cached webview for servers that don't exist anymore
+            cachedWebViewControllers = cachedWebViewControllers.filter({ serverIdentifier, _ in
+                Current.servers.all.contains(where: { $0.identifier == serverIdentifier })
+            })
 
             if Current.servers.all.isEmpty {
                 let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
@@ -439,8 +470,8 @@ extension WebViewWindowController: OnboardingStateObserver {
                 open(server: newServer)
             }
         case .didConnect:
-            onboardingPreloadWebViewController = WebViewController(
-                restoring: .init(restorationActivity),
+            onboardingPreloadWebViewController = makeWebViewIfNotInCache(
+                restorationType: .init(restorationActivity),
                 shouldLoadImmediately: true
             )
         case .complete:
@@ -450,8 +481,8 @@ extension WebViewWindowController: OnboardingStateObserver {
                 if let preload = onboardingPreloadWebViewController {
                     controller = preload
                 } else {
-                    controller = WebViewController(
-                        restoring: .init(restorationActivity),
+                    controller = makeWebViewIfNotInCache(
+                        restorationType: .init(restorationActivity),
                         shouldLoadImmediately: true
                     )
                     restorationActivity = nil
