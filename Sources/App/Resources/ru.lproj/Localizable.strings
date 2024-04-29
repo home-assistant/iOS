@@ -235,7 +235,7 @@
 "notifications_configurator.category.rows.category_summary.header" = "Резюме категории";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u уведомления";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Этот текст отображается только в том случае, если у вас скрыт предварительный просмотр уведомлений. Используйте '%%u' для количества сообщений с одним и тем же идентификатором потока.";
-"notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Hidden Preview Placeholder";
+"notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Скрытая заглушка для предварительного просмотра";
 "notifications_configurator.category.rows.name.title" = "Имя";
 "notifications_configurator.identifier" = "Идентификатор";
 "notifications_configurator.new_action.title" = "Новое действие";
@@ -583,7 +583,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_sensors.detail.enabled" = "Включено";
 "settings_sensors.detail.icon" = "Значок";
 "settings_sensors.detail.state" = "Состояние";
-"settings_sensors.disabled_state_replacement" = "Disabled";
+"settings_sensors.disabled_state_replacement" = "Отключено";
 "settings_sensors.focus_permission.title" = "Разрешение на фокусирование";
 "settings_sensors.last_updated.footer" = "Последнее обновление %@";
 "settings_sensors.loading_error.title" = "Не удалось загрузить датчики";
@@ -595,7 +595,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_sensors.settings.header" = "Настройки";
 "settings_sensors.title" = "Датчики";
 "share_extension.entered_placeholder" = "'entered' in event";
-"share_extension.error.title" = "Couldn't Send";
+"share_extension.error.title" = "Не удалось отправить";
 "success_label" = "Успешно";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";

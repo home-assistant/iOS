@@ -402,7 +402,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.status_section.version_row.title" = "Verzió";
 "settings.template_edit.title" = "Sablon szerkesztése";
 "settings.whats_new.title" = "Újdonságok";
-"settings.widgets.title" = "Widgets";
+"settings.widgets.title" = "Widgetek";
 "settings_details.actions.actions_synced.empty" = "Nincsenek szinkronizált műveletek";
 "settings_details.actions.actions_synced.footer" = "A .yaml-ben definiált műveletek nem szerkeszthetők az eszközön.";
 "settings_details.actions.actions_synced.footer_no_actions" = "A műveleteket a .yaml konfigurációban is meg lehet adni.";
@@ -416,7 +416,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.actions.scenes.footer" = "Ha engedélyezve van, a jelenetek a műveletek mellett jelennek meg. Végrehajtásukkor a jelenetváltozásokat indítják el.";
 "settings_details.actions.scenes.select_all" = "Összes kijelölése";
 "settings_details.actions.scenes.title" = "Jelenet műveletek";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "Kiszolgálói műveletek frissítése";
 "settings_details.actions.title" = "Műveletek";
 "settings_details.actions.watch.available.title" = "Megjelenítés a Watch-ban";
 "settings_details.general.app_icon.enum.beta" = "Béta";
@@ -576,8 +576,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.updates.check_for_updates.include_betas" = "Tartalmazza a béta kiadásokat";
 "settings_details.updates.check_for_updates.title" = "Frissítések automatikus keresése";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "Ez újratölti az összes widget idővonalát, használja ezt abban az esetben, ha a widgetek üres állapotban ragadnak, vagy valamilyen okból nem frissülnek.";
+"settings_details.widgets.reload_all.title" = "Minden widget újratöltése";
 "settings_sensors.detail.attributes" = "Attribútumok";
 "settings_sensors.detail.device_class" = "Eszközosztály";
 "settings_sensors.detail.enabled" = "Engedélyezve";

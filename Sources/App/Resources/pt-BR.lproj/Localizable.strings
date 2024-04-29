@@ -416,7 +416,7 @@
 "settings_details.actions.scenes.footer" = "Quando ativado, as cenas são exibidas ao lado das ações. Quando executados, eles acionam mudanças de cena.";
 "settings_details.actions.scenes.select_all" = "Selecionar tudo";
 "settings_details.actions.scenes.title" = "Ações de cena";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "Atualizar ações do servidor";
 "settings_details.actions.title" = "Ações";
 "settings_details.actions.watch.available.title" = "Mostrar no relógio";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -576,8 +576,8 @@
 "settings_details.updates.check_for_updates.include_betas" = "Incluir versões beta";
 "settings_details.updates.check_for_updates.title" = "Verificar atualizações automaticamente";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "Isso recarregará todos os cronogramas de widgets. Use-o caso seus widgets fiquem presos em um estado em branco ou não sejam atualizados por algum motivo.";
+"settings_details.widgets.reload_all.title" = "Recarregar todos os widgets";
 "settings_sensors.detail.attributes" = "Atributos";
 "settings_sensors.detail.device_class" = "Classe do dispositivo";
 "settings_sensors.detail.enabled" = "Habilitado";
