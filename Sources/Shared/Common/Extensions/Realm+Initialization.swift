@@ -29,6 +29,12 @@ public extension Realm {
 
     /// The live data store, located in shared storage.
     static let live: () -> Realm = {
+        getRealm()
+    }
+
+    // swiftlint:disable cyclomatic_complexity
+    /// Mainly used to specify objectTypes in a context such as an extension, otherwise always use "Realm.live"
+    static func getRealm(objectTypes: [ObjectBase.Type]? = nil) -> Realm {
         if NSClassFromString("XCTest") != nil {
             do {
                 return try Realm(configuration: .init(inMemoryIdentifier: "Tests", deleteRealmIfMigrationNeeded: true))
@@ -227,7 +233,8 @@ public extension Realm {
                 // Check for the realm file size to be greater than the max file size, and the amount of bytes
                 // currently used to be less than 50% of the total realm file size
                 return (realmFileSizeInBytes > maxFileSize) && (Double(usedBytes) / Double(realmFileSizeInBytes)) < 0.5
-            }
+            },
+            objectTypes: objectTypes
         )
 
         do {
