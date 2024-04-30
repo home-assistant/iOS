@@ -93,6 +93,10 @@ public class AppEnvironment {
 
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
+    /// Provides the Realm given objectTypes to reduce memory usage mostly in extensions.
+    public func realm(objectTypes: [ObjectBase.Type]) -> Realm {
+        Realm.getRealm(objectTypes: objectTypes)
+    }
 
     #if os(iOS)
     public var realmFatalPresentation: ((UIViewController) -> Void)?

@@ -61,7 +61,7 @@ extension IntentActionAppEntity {
             return nil
         }
 
-        guard let result = Realm.getRealm(objectTypes: [Action.self, RLMScene.self]).object(
+        guard let result = Current.realm(objectTypes: [Action.self, RLMScene.self]).object(
             ofType: Action.self,
             forPrimaryKey: id
         ) else {
@@ -78,7 +78,7 @@ enum WidgetActionsDataSource {
     }
 
     static var actions: Results<Action> {
-        Realm.getRealm(objectTypes: [Action.self, RLMScene.self]).objects(Action.self)
+        Current.realm(objectTypes: [Action.self, RLMScene.self]).objects(Action.self)
             .sorted(byKeyPath: #keyPath(Action.Position))
     }
 }

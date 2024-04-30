@@ -44,7 +44,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         for intent: PerformActionIntent,
         with completion: @escaping ([IntentAction]?, Error?) -> Void
     ) {
-        let actions = Realm.getRealm(objectTypes: [Action.self]).objects(Action.self)
+        let actions = Current.realm(objectTypes: [Action.self]).objects(Action.self)
             .sorted(byKeyPath: #keyPath(Action.Position))
         let performActions = Array(actions.map { IntentAction(action: $0) })
         Current.Log.info { () -> String in

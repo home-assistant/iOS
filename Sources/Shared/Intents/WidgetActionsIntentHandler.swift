@@ -1,14 +1,13 @@
 import Foundation
 import Intents
 import PromiseKit
-import RealmSwift
 
 class WidgetActionsIntentHandler: NSObject, WidgetActionsIntentHandling {
     func provideActionsOptionsCollection(
         for intent: WidgetActionsIntent,
         with completion: @escaping (INObjectCollection<IntentAction>?, Error?) -> Void
     ) {
-        let actions = Realm.getRealm(objectTypes: [Action.self]).objects(Action.self)
+        let actions = Current.realm(objectTypes: [Action.self]).objects(Action.self)
             .sorted(byKeyPath: #keyPath(Action.Position))
         let performActions = Array(actions.map { IntentAction(action: $0) })
         completion(.init(items: performActions), nil)
