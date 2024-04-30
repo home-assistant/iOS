@@ -78,6 +78,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        windowController?.clearCachedControllers()
         windowController = nil
         window = nil
         urlHandler = nil

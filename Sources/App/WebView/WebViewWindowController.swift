@@ -278,6 +278,10 @@ class WebViewWindowController {
         )
     }
 
+    func clearCachedControllers() {
+        cachedWebViewControllers = [:]
+    }
+
     private func open(
         from: OpenSource,
         server: Server,
