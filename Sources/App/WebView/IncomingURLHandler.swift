@@ -5,7 +5,8 @@ import SafariServices
 import Shared
 
 class IncomingURLHandler {
-    weak var windowController: WebViewWindowController?
+    private(set) weak var windowController: WebViewWindowController!
+
     init(windowController: WebViewWindowController) {
         self.windowController = windowController
         registerCallbackURLKitHandlers()
@@ -58,20 +59,20 @@ class IncomingURLHandler {
                 return false
             }
 
-            if let windowController, let presenting = windowController.presentedViewController,
+            if let presenting = windowController.presentedViewController,
                presenting is SFSafariViewController {
                 // Dismiss my.* controller if it's on top - we don't get any other indication
                 presenting.dismiss(animated: true, completion: { [windowController] in
-                    windowController.openSelectingServer(
+                    windowController?.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
                         skipConfirm: true,
                         queryParameters: queryParameters
                     )
                 })
-            } else if let windowController, let server {
+            } else if let server {
                 windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
-            } else if let windowController {
+            } else {
                 windowController.openSelectingServer(
                     from: .deeplink,
                     urlString: rawURL,
@@ -89,7 +90,6 @@ class IncomingURLHandler {
     @discardableResult
     func handle(userActivity: NSUserActivity) -> Bool {
         Current.Log.info(userActivity)
-        guard let windowController else { return false }
 
         if let assistInAppIntent = userActivity.interaction?.intent as? AssistInAppIntent {
             guard let server = Current.servers.server(for: assistInAppIntent) else { return false }
@@ -167,10 +167,7 @@ class IncomingURLHandler {
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
-        guard let windowController else {
-            fatalError("WebViewWindowController nil")
-        }
-        return Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+        Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
             if shortcutItem.type == "sendLocation" {
                 return firstly {
                     Current.location.oneShotLocation(.AppShortcut, remaining)
@@ -513,8 +510,6 @@ extension IncomingURLHandler {
     }
 
     private func performActionURLHandler(_ url: URL, serviceData: [String: String]) {
-        guard let windowController else { return }
-
         let pathComponents = url.pathComponents
         guard pathComponents.count > 1 else {
             Current.Log.error("not enough path components for perform action handler")
