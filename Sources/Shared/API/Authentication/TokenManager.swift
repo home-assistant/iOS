@@ -123,7 +123,7 @@ public class TokenManager {
         }
     }
 
-    private func refreshToken() -> Promise<TokenInfo> {
+    public func refreshToken() -> Promise<TokenInfo> {
         refreshPromiseCache.queue.sync { [self, server] in
             let tokenInfo = server.info.token
 

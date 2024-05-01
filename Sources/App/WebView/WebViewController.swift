@@ -591,8 +591,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     @objc private func connectionInfoDidChange() {
         DispatchQueue.main.async { [self] in
-            loadActiveURLIfNeeded()
-            updateWebViewForServerValues()
+            if webView.url?.host != server.info.connection.activeURL().host {
+                Current.api(for: server).tokenManager.refreshToken().pipe { [weak self] result in
+                    print(result)
+                    self?.loadActiveURLIfNeeded()
+                    self?.updateWebViewForServerValues()
+                }
+            } else {
+                loadActiveURLIfNeeded()
+                updateWebViewForServerValues()
+            }
         }
     }
 
