@@ -129,10 +129,10 @@
 "error_label" = "错误";
 "extensions.map.location.new" = "新位置";
 "extensions.map.location.original" = "原位置";
-"extensions.map.payload_missing_homeassistant.message" = "参数未包含 homeassistant 字典！";
+"extensions.map.payload_missing_homeassistant.message" = "有效载荷不包含 homeassistant 字典 ！";
 "extensions.map.value_missing_or_uncastable.latitude.message" = "纬度未找到或无法转换成字符串！";
 "extensions.map.value_missing_or_uncastable.longitude.message" = "经度未找到或无法转换成字符串！";
-"extensions.notification_content.error.no_entity_id" = "没有在参数中找到 entity_id！";
+"extensions.notification_content.error.no_entity_id" = "有效载荷中未找到 entity_id ！";
 "extensions.notification_content.error.request.auth_failed" = "认证失败！";
 "extensions.notification_content.error.request.entity_not_found" = "实体“%@”未找到！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 流不可用";
@@ -230,7 +230,7 @@
 "notifications_configurator.category.rows.actions.footer" = "类别最多可包含10个动作。";
 "notifications_configurator.category.rows.actions.header" = "动作";
 "notifications_configurator.category.rows.category_summary.default" = "%%u 通知在 %%@";
-"notifications_configurator.category.rows.category_summary.footer" = "系统对类别通知进行分组时使用的摘要描述的格式字符串。您可以选择使用' %%u'来显示组中的通知数，并使用' %%@'来显示推送有效负载中提供的摘要参数。";
+"notifications_configurator.category.rows.category_summary.footer" = "系统对类别通知进行分组时使用的摘要描述的格式字符串。您可以选择使用 %%u 显示组中的通知数，使用 %%@ 显示推送有效载荷中提供的摘要参数。";
 "notifications_configurator.category.rows.category_summary.header" = "类别摘要";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u 通知";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "仅当您隐藏了通知预览时，才会显示此文本。使用' %%u '表示具有相同线程标识符的消息数。";
