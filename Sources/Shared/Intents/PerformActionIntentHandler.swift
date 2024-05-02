@@ -1,6 +1,7 @@
 import Foundation
 import Intents
 import PromiseKit
+import Realm
 
 class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
     func handle(
@@ -43,7 +44,8 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         for intent: PerformActionIntent,
         with completion: @escaping ([IntentAction]?, Error?) -> Void
     ) {
-        let actions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
+        let actions = Current.realm(objectTypes: [Action.self]).objects(Action.self)
+            .sorted(byKeyPath: #keyPath(Action.Position))
         let performActions = Array(actions.map { IntentAction(action: $0) })
         Current.Log.info { () -> String in
             "providing " + performActions.map { action -> String in
