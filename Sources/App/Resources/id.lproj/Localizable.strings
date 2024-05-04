@@ -402,7 +402,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.status_section.version_row.title" = "Versi";
 "settings.template_edit.title" = "Edit Templat";
 "settings.whats_new.title" = "Yang baru";
-"settings.widgets.title" = "Widgets";
+"settings.widgets.title" = "Widget";
 "settings_details.actions.actions_synced.empty" = "Tidak Ada Aksi yang Disinkronkan";
 "settings_details.actions.actions_synced.footer" = "Aksi yang didefinisikan di .yaml tidak dapat diedit di perangkat.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Aksi juga dapat didefinisikan di konfigurasi .yaml.";
@@ -416,7 +416,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.actions.scenes.footer" = "Saat diaktifkan, skenario ditampilkan bersama aksi. Saat dilakukan, perubahan skenario akan dipicu.";
 "settings_details.actions.scenes.select_all" = "Pilih Semua";
 "settings_details.actions.scenes.title" = "Aksi Skenario";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "Perbarui Aksi server";
 "settings_details.actions.title" = "Aksi";
 "settings_details.actions.watch.available.title" = "Tampilkan di Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -576,8 +576,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.updates.check_for_updates.include_betas" = "Sertakan Rilis Beta";
 "settings_details.updates.check_for_updates.title" = "Periksa Pembaruan Secara Otomatis";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "Ini akan memuat ulang semua widget linimasa, gunakan hal ini jika widget Anda terjebak dengan status kosong atau tidak diperbarui karena alasan tertentu.";
+"settings_details.widgets.reload_all.title" = "Muat ulang semua widget";
 "settings_sensors.detail.attributes" = "Atribut";
 "settings_sensors.detail.device_class" = "Kelas Perangkat";
 "settings_sensors.detail.enabled" = "Diaktifkan";
