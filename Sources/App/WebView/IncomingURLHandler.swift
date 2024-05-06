@@ -5,7 +5,8 @@ import SafariServices
 import Shared
 
 class IncomingURLHandler {
-    let windowController: WebViewWindowController
+    private(set) weak var windowController: WebViewWindowController!
+
     init(windowController: WebViewWindowController) {
         self.windowController = windowController
         registerCallbackURLKitHandlers()
@@ -62,7 +63,7 @@ class IncomingURLHandler {
                presenting is SFSafariViewController {
                 // Dismiss my.* controller if it's on top - we don't get any other indication
                 presenting.dismiss(animated: true, completion: { [windowController] in
-                    windowController.openSelectingServer(
+                    windowController?.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
                         skipConfirm: true,
@@ -220,7 +221,7 @@ class IncomingURLHandler {
             }
         ))
 
-        windowController.webViewControllerPromise.done {
+        windowController?.webViewControllerPromise.done {
             $0.present(alert, animated: true, completion: nil)
         }
     }
@@ -232,7 +233,7 @@ class IncomingURLHandler {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-        windowController.webViewControllerPromise.done {
+        windowController?.webViewControllerPromise.done {
             $0.present(alert, animated: true, completion: nil)
         }
     }
@@ -252,7 +253,7 @@ class IncomingURLHandler {
         }
 
         // not animated in because it looks weird during the app launch animation
-        windowController.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
+        windowController?.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
 
         return true
     }

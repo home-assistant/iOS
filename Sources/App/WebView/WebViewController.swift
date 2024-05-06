@@ -109,12 +109,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
+
         let userContentController = WKUserContentController()
-        userContentController.add(self, name: "getExternalAuth")
-        userContentController.add(self, name: "revokeExternalAuth")
-        userContentController.add(self, name: "externalBus")
-        userContentController.add(self, name: "updateThemeColors")
-        userContentController.add(self, name: "logError")
+        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: self)
+        userContentController.add(safeScriptMessageHandler, name: "getExternalAuth")
+        userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
+        userContentController.add(safeScriptMessageHandler, name: "externalBus")
+        userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
+        userContentController.add(safeScriptMessageHandler, name: "logError")
 
         guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
               let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
