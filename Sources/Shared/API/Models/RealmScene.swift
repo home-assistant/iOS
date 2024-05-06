@@ -19,7 +19,7 @@ public final class RLMScene: Object, UpdatableModel {
         }
     }
 
-    @objc private dynamic var backingActionEnabled: Bool = true
+    @objc private dynamic var backingActionEnabled: Bool = false
     public var actionEnabled: Bool {
         get {
             backingActionEnabled
