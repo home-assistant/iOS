@@ -210,6 +210,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.WhatsNew.title
             $0.icon = .starIcon
             $0.accessoryIcon = .openInNewIcon
+            $0.isAvailableForMac = false
             $0.onCellSelection { cell, row in
                 openURLInBrowser(
                     URL(string: "https://www.home-assistant.io/latest-ios-release-notes/")!,
