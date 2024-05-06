@@ -56,8 +56,15 @@ class AssistInAppIntentHandler: NSObject, AssistInAppIntentHandling {
         for intent: AssistInAppIntent,
         with completion: @escaping (INObjectCollection<IntentAssistPipeline>?, (any Error)?) -> Void
     ) {
+        var outputPipelines = [
+            IntentAssistPipeline(
+                identifier: "0",
+                display: L10n.AppIntents.Assist.PreferredPipeline.title
+            ),
+        ]
+
         guard let server = Current.servers.server(for: intent) else {
-            completion(nil, nil)
+            completion(.init(items: outputPipelines), nil)
             return
         }
 
@@ -66,10 +73,10 @@ class AssistInAppIntentHandler: NSObject, AssistInAppIntentHandling {
                 completion(nil, nil)
                 return
             }
-            let result: [IntentAssistPipeline] = pipelines.map { pipeline in
-                IntentAssistPipeline(identifier: pipeline.id, display: pipeline.name)
+            for pipeline in pipelines {
+                outputPipelines.append(IntentAssistPipeline(identifier: pipeline.id, display: pipeline.name))
             }
-            completion(.init(items: result), nil)
+            completion(.init(items: outputPipelines), nil)
         }
     }
 

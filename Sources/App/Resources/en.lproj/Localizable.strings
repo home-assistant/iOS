@@ -58,6 +58,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"app_intents.assist.preferred_pipeline.title" = "Preferred";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";

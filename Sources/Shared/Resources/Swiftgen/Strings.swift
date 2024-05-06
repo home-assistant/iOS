@@ -252,6 +252,12 @@ public enum L10n {
   }
 
   public enum AppIntents {
+    public enum Assist {
+      public enum PreferredPipeline {
+        /// Preferred
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
+      }
+    }
     public enum PerformAction {
       /// Which action?
       public static var actionParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_configuration") }
