@@ -45,6 +45,7 @@ class AboutViewController: HAFormViewController {
                     view.AppTitle.text = L10n.About.Logo.appTitle
                     view.Version.text = HomeAssistantAPI.clientVersionDescription
                     view.Tagline.text = L10n.About.Logo.tagline
+                    view.Image.image = Asset.SharedAssets.logo.image
                     view.addGestureRecognizer(UITapGestureRecognizer(
                         target: self,
                         action: #selector(self.tapAbout(_:))

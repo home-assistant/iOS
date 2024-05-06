@@ -606,7 +606,7 @@
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
 		42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589D2BB4705E00497981 /* WidgetAssistView.swift */; };
 		42FCCFA82B9A05400057783F /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
-		42FCCFD62B9B195D0057783F /* UIImage+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD52B9B195D0057783F /* UIImage+SharedAssets.swift */; };
+		42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */; };
 		42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD72B9B19F70057783F /* ThreadClientService.swift */; };
 		42FCCFDB2B9B19F70057783F /* ThreadCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD82B9B19F70057783F /* ThreadCredential.swift */; };
 		42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFDE2B9B1B600057783F /* BarcodeScannerDataModel.swift */; };
@@ -1795,7 +1795,7 @@
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
 		42F9589D2BB4705E00497981 /* WidgetAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistView.swift; sourceTree = "<group>"; };
 		42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedCorner.swift"; sourceTree = "<group>"; };
-		42FCCFD52B9B195D0057783F /* UIImage+SharedAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SharedAssets.swift"; sourceTree = "<group>"; };
+		42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Image+SharedAssets.swift"; sourceTree = "<group>"; };
 		42FCCFD72B9B19F70057783F /* ThreadClientService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
 		42FCCFD82B9B19F70057783F /* ThreadCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredential.swift; sourceTree = "<group>"; };
 		42FCCFDE2B9B1B600057783F /* BarcodeScannerDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerDataModel.swift; sourceTree = "<group>"; };
@@ -3246,7 +3246,7 @@
 		426740A62B1738F900C1DD73 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				42FCCFD52B9B195D0057783F /* UIImage+SharedAssets.swift */,
+				42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */,
 				426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */,
 				42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */,
 				42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */,
@@ -5003,7 +5003,7 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
-				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "SharedPush" */,
+				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -6516,7 +6516,7 @@
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				11B38EE5275C54A200205C7B /* SendLocationIntentHandler.swift in Sources */,
 				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
-				42FCCFD62B9B195D0057783F /* UIImage+SharedAssets.swift in Sources */,
+				42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */,
 				42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
@@ -8365,7 +8365,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "SharedPush" */ = {
+		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/PushServer/SharedPush;
 		};
