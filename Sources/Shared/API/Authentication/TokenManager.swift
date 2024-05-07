@@ -51,9 +51,15 @@ public class TokenManager {
         code: String,
         connectionInfo: inout ConnectionInfo
     ) -> Promise<TokenInfo> {
-        AuthenticationAPI.fetchToken(
+        guard let url = connectionInfo.activeURL() else {
+            return Promise { seal in
+                seal.reject(ServerConnectionError.noActiveURL)
+            }
+        }
+
+        return AuthenticationAPI.fetchToken(
             authorizationCode: code,
-            baseURL: connectionInfo.activeURL(),
+            baseURL: url,
             exceptions: connectionInfo.securityExceptions
         )
     }
