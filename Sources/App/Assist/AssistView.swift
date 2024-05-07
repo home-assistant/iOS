@@ -52,6 +52,7 @@ struct AssistView: View {
         }
         .buttonStyle(.plain)
         .tint(Color(uiColor: .label))
+        .keyboardShortcut(.cancelAction)
     }
 
     private var pickerMaxWidth: CGFloat? {
@@ -164,6 +165,7 @@ struct AssistView: View {
         .font(.system(size: 32))
         .tint(Color.asset(Asset.Colors.haPrimary))
         .animation(.smooth, value: viewModel.isRecording)
+        .keyboardShortcut(.defaultAction)
     }
 
     private var assistMicButton: some View {
