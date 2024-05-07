@@ -149,7 +149,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
-    public mutating func activeURL() -> URL {
+    public mutating func activeURL() -> URL? {
         if let overrideActiveURLType {
             let overrideURL: URL?
 
@@ -170,7 +170,7 @@ public struct ConnectionInfo: Codable, Equatable {
             }
         }
 
-        let url: URL
+        let url: URL?
 
         if let internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
             activeURLType = .internal
@@ -182,33 +182,36 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .external
             url = externalURL
         } else {
-            // we're missing a url, so try and fall back to one that _could_ work
-            if let remoteUIURL {
-                activeURLType = .remoteUI
-                url = remoteUIURL
-            } else if let internalURL {
-                activeURLType = .internal
-                url = internalURL
-            } else {
-                activeURLType = .internal
-                url = URL(string: "http://homeassistant.local:8123")!
-            }
+            url = nil
+            /*
+             No URL that can be used in this context is available
+             This can happen when only internal URL is set and
+             user tries to access the App remotely
+             */
         }
 
-        return url.sanitized()
+        return url?.sanitized()
     }
 
     /// Returns the activeURL with /api appended.
-    public mutating func activeAPIURL() -> URL {
-        activeURL().appendingPathComponent("api", isDirectory: false)
+    public mutating func activeAPIURL() -> URL? {
+        if let activeURL = activeURL() {
+            return activeURL.appendingPathComponent("api", isDirectory: false)
+        } else {
+            return nil
+        }
     }
 
-    public mutating func webhookURL() -> URL {
+    public mutating func webhookURL() -> URL? {
         if let cloudhookURL, !isOnInternalNetwork {
             return cloudhookURL
         }
 
-        return activeURL().appendingPathComponent(webhookPath, isDirectory: false)
+        if let activeURL = activeURL() {
+            return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
+        } else {
+            return nil
+        }
     }
 
     public var webhookPath: String {
@@ -294,10 +297,15 @@ class ServerRequestAdapter: RequestAdapter {
         var updatedRequest: URLRequest = urlRequest
 
         if let currentURL = urlRequest.url {
-            let expectedURL = server.info.connection.activeURL().adapting(url: currentURL)
-            if currentURL != expectedURL {
-                Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
-                updatedRequest.url = expectedURL
+            if let activeURL = server.info.connection.activeURL() {
+                let expectedURL = activeURL.adapting(url: currentURL)
+                if currentURL != expectedURL {
+                    Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                    updatedRequest.url = expectedURL
+                }
+            } else {
+                Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
+                completion(.failure(ServerConnectionError.noActiveURL))
             }
         }
 
