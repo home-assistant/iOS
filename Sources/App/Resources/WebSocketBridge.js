@@ -8,7 +8,6 @@ const notifyThemeColors = () => {
 
         [
             '--app-header-background-color',
-            '--app-theme-color',
             '--primary-background-color',
             '--text-primary-color',
             '--primary-color',
