@@ -26,7 +26,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var initialURL: URL?
 
     /// A view controller presented by a request from the webview
-    private weak var overlayAppController: UIViewController?
+    private var overlayAppController: UIViewController?
 
     private let settingsButton: UIButton = {
         let button = UIButton()
@@ -232,7 +232,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let settingsView = SettingsViewController()
             settingsView.hidesBottomBarWhenPushed = true
             let navController = UINavigationController(rootViewController: settingsView)
-            navigationController?.present(navController, animated: true, completion: nil)
+            presentOverlayController(controller: navController)
         }
     }
 
@@ -1153,8 +1153,8 @@ extension WebViewController: WKScriptMessageHandler {
             preferredPipelineId: pipeline,
             autoStartRecording: autoStartRecording
         ))
-        present(assistView, animated: true, completion: nil)
-        overlayAppController = assistView
+
+        presentOverlayController(controller: assistView)
     }
 
     private func transferKeychainThreadCredentialsToHARequested() {
@@ -1194,15 +1194,20 @@ extension WebViewController: WKScriptMessageHandler {
         alternativeOptionLabel: String?,
         incomingMessageId: Int
     ) {
-        overlayAppController = BarcodeScannerHostingController(rootView: BarcodeScannerView(
+        let barcodeController = BarcodeScannerHostingController(rootView: BarcodeScannerView(
             title: title,
             description: description,
             alternativeOptionLabel: alternativeOptionLabel,
             incomingMessageId: incomingMessageId
         ))
-        overlayAppController?.modalPresentationStyle = .fullScreen
-        guard let overlayAppController else { return }
-        present(overlayAppController, animated: true)
+        barcodeController.modalPresentationStyle = .fullScreen
+        presentOverlayController(controller: barcodeController)
+    }
+
+    private func presentOverlayController(controller: UIViewController) {
+        overlayAppController?.dismiss(animated: false, completion: nil)
+        overlayAppController = controller
+        present(controller, animated: true, completion: nil)
     }
 }
 
