@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Llegir Més";
 "announcement.drop_support.subtitle" = "Després d'una acurada consideració, deixarem de donar suport a iOS 12, 13 i 14 en les nostres properes actualitzacions.";
 "announcement.drop_support.title" = "Actualització important";
+"app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.perform_action.action_parameter_configuration" = "Quina acció?";
 "app_intents.perform_action.action_parameter_confirmation" = "Només per confirmar, volíeu \"%@\"?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Hi ha %@ opcions que coincideixen amb '%@ '.";

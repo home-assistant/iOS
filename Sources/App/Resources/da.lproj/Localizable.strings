@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Læs mere";
 "announcement.drop_support.subtitle" = "Efter nøje overvejelse vil vi ophøre med at understøtte iOS 12, 13 og 14 i vores kommende opdateringer.";
 "announcement.drop_support.title" = "Vigtig opdatering";
+"app_intents.assist.preferred_pipeline.title" = "Foretrukken";
 "app_intents.perform_action.action_parameter_configuration" = "Hvilken handling?";
 "app_intents.perform_action.action_parameter_confirmation" = "Bare for at bekræfte, at du ønskede '%@'?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Der er %@ muligheder, der matcher '%@'.";

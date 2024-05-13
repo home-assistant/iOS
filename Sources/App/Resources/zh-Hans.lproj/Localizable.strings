@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "阅读其他";
 "announcement.drop_support.subtitle" = "经过深思熟虑，我们将在即将到来的更新中停止对 iOS 12、13 和 14 的支持。";
 "announcement.drop_support.title" = "重要更新";
+"app_intents.assist.preferred_pipeline.title" = "首选";
 "app_intents.perform_action.action_parameter_configuration" = "那个动作 ？";
 "app_intents.perform_action.action_parameter_confirmation" = "确认一下，你想要“%@” ？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "有 %@ 个选项匹配“%@” 。";
@@ -140,7 +141,7 @@
 "ha_api.api_error.cant_build_url" = "无法构建API URL";
 "ha_api.api_error.invalid_response" = "从Home Assistant中收到的反馈无效";
 "ha_api.api_error.manager_not_available" = "Home Assistant API 管理不可用";
-"ha_api.api_error.mobile_app_component_not_loaded" = "未加载mobile_app组件。请将其添加到您的配置中，然后重新启动 Home Assistant 后重试。";
+"ha_api.api_error.mobile_app_component_not_loaded" = "未加载“移动应用”组件。请将其添加到您的配置中，然后重新启动 Home Assistant 并重试。";
 "ha_api.api_error.must_upgrade_home_assistant" = "您的Home Assistant 版本 (%@) 已过期, 必须升级到 %@ 才能继续使用。";
 "ha_api.api_error.not_configured" = "未配置HA API";
 "ha_api.api_error.unacceptable_status_code" = "状态代码 %1$li 不可接受。";
@@ -517,7 +518,7 @@
 "settings_details.notifications.categories_synced.footer" = "设备上不可编辑在.yaml 中定义的类别。";
 "settings_details.notifications.categories_synced.footer_no_categories" = "类别也可以在 .yaml 配置中定义。";
 "settings_details.notifications.categories_synced.header" = "已同步的类别";
-"settings_details.notifications.info" = "使用通知服务向您的设备发送通知。";
+"settings_details.notifications.info" = "使用移动应用通知服务向您的设备发送通知。";
 "settings_details.notifications.local_push.status.available" = "可用（%1$@）";
 "settings_details.notifications.local_push.status.disabled" = "已禁用";
 "settings_details.notifications.local_push.status.establishing" = "正在建立";

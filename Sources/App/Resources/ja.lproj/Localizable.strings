@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "続きを読む";
 "announcement.drop_support.subtitle" = "慎重に検討した結果、今後のアップデートで iOS 12、13、14 のサポートを終了する予定です。";
 "announcement.drop_support.title" = "重要なアップデート";
+"app_intents.assist.preferred_pipeline.title" = "優先";
 "app_intents.perform_action.action_parameter_configuration" = "どのアクション？";
 "app_intents.perform_action.action_parameter_confirmation" = "確認しますが、「 %@ 」が必要でしたか?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "%@に一致するオプションは%@あります。";

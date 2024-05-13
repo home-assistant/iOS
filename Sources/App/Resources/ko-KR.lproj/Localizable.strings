@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "더 알아보기";
 "announcement.drop_support.subtitle" = "신중한 검토 끝에 향후 업데이트에서 iOS 12, 13, 14에 대한 지원을 중단할 예정입니다.";
 "announcement.drop_support.title" = "중요 업데이트";
+"app_intents.assist.preferred_pipeline.title" = "선호됨";
 "app_intents.perform_action.action_parameter_configuration" = "어떤 동작을 원하시나요?";
 "app_intents.perform_action.action_parameter_confirmation" = "확인하기 위해 '%@' 원하셨나요?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "'%@'와 일치하는 %@ 옵션이 있습니다.";
@@ -402,7 +403,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings.status_section.version_row.title" = "버전";
 "settings.template_edit.title" = "템플릿 편집";
 "settings.whats_new.title" = "새로운 기능";
-"settings.widgets.title" = "Widgets";
+"settings.widgets.title" = "위젯";
 "settings_details.actions.actions_synced.empty" = "동기화된 동작 없음";
 "settings_details.actions.actions_synced.footer" = ".yaml에 정의된 동작은 기기에서 편집할 수 없습니다.";
 "settings_details.actions.actions_synced.footer_no_actions" = "동작은 .yaml 구성에서도 정의할 수 있습니다.";
@@ -416,7 +417,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.actions.scenes.footer" = "활성화하면 장면이 동작과 함께 표시됩니다. 동작이 수행되면 장면 변경이 트리거됩니다.";
 "settings_details.actions.scenes.select_all" = "모두 선택";
 "settings_details.actions.scenes.title" = "장면 동작";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "업데이트 서버 동작";
 "settings_details.actions.title" = "동작";
 "settings_details.actions.watch.available.title" = "시계에 표시";
 "settings_details.general.app_icon.enum.beta" = "베타";
@@ -576,8 +577,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.updates.check_for_updates.include_betas" = "베타 릴리스 포함";
 "settings_details.updates.check_for_updates.title" = "자동으로 업데이트 확인";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "모든 위젯 타임라인이 새로고침 됩니다. 모종의 이유로 위젯이 빈화면으로 멈추거나 갱신이 안될경우 사용하세요.";
+"settings_details.widgets.reload_all.title" = "모든 위젯 새로고침";
 "settings_sensors.detail.attributes" = "속성";
 "settings_sensors.detail.device_class" = "기기 클래스";
 "settings_sensors.detail.enabled" = "활성화됨";
@@ -846,9 +847,9 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.actions.title" = "동작";
 "widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Open Assist in the app";
-"widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
-"widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.assist.title" = "어시스트";
+"widgets.assist.unknown_configuration" = "설정";
+"widgets.button.reload_timeline" = "모든 위젯 새로고침";
 "widgets.open_page.description" = "Home Assistant에서 프론트엔드 페이지를 엽니다.";
 "widgets.open_page.not_configured" = "해당 페이지가 없습니다";
 "widgets.open_page.title" = "페이지 열기";
