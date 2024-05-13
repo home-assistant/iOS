@@ -148,6 +148,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
 
     fileprivate enum RowTag: String {
         case url
+        case internalURLWarning
         case ssids
         case hardwareAddresses
         case useCloud
@@ -221,6 +222,10 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                         return true
                     }
                 })
+            }
+            <<< InfoLabelRow {
+                $0.tag = RowTag.internalURLWarning.rawValue
+                $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.SsidRequired.title
             }
 
         if urlType.isAffectedBySSID {
