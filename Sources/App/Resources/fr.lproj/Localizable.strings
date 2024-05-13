@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "En savoir plus";
 "announcement.drop_support.subtitle" = "Après mûre réflexion, nous mettrons fin à la prise en charge d’iOS 12, 13 et 14 dans nos prochaines mises à jour.";
 "announcement.drop_support.title" = "Mise à jour importante";
+"app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.perform_action.action_parameter_configuration" = "Quelle action ?";
 "app_intents.perform_action.action_parameter_confirmation" = "Juste pour confirmer, vous vouliez '%@' ?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Il y a %@ options correspondant à '%@'.";

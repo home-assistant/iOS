@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "閱讀更多";
 "announcement.drop_support.subtitle" = "經過仔細考慮後、我們將在即將推出的更新中停止對 iOS 12、13 和 14 的支援。";
 "announcement.drop_support.title" = "重要更新";
+"app_intents.assist.preferred_pipeline.title" = "首選";
 "app_intents.perform_action.action_parameter_configuration" = "哪個動作？";
 "app_intents.perform_action.action_parameter_confirmation" = "確認要  ‘%@’？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "共有 %@ 個選項符合 ‘%@’。";

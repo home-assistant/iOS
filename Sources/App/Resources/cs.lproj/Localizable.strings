@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Přečtěte si více";
 "announcement.drop_support.subtitle" = "Po pečlivém zvážení ukončíme podporu pro iOS 12, 13 a 14 v našich nadcházejících aktualizacích.";
 "announcement.drop_support.title" = "Důležitá aktualizace";
+"app_intents.assist.preferred_pipeline.title" = "Preferováno";
 "app_intents.perform_action.action_parameter_configuration" = "Která akce?";
 "app_intents.perform_action.action_parameter_confirmation" = "Jen pro potvrzení, chtěli jste \"%@\"?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Existuje %@ možností odpovídajících \"%@\".";

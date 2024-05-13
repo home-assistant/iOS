@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Lue lisää";
 "announcement.drop_support.subtitle" = "Huolellisen harkinnan jälkeen lopetamme iOS 12:n, 13:n ja 14:n tuen tulevissa päivityksissämme.";
 "announcement.drop_support.title" = "Tärkeä päivitys";
+"app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";

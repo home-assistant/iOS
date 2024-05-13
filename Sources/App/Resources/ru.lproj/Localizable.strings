@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Подробнее";
 "announcement.drop_support.subtitle" = "После тщательного рассмотрения мы прекратим поддержку iOS 12, 13 и 14 в наших предстоящих обновлениях.";
 "announcement.drop_support.title" = "Важное обновление";
+"app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.perform_action.action_parameter_configuration" = "Какое действие?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";

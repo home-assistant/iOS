@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Devamını oku";
 "announcement.drop_support.subtitle" = "Dikkatli bir değerlendirmenin ardından gelecek güncellemelerimizde iOS 12, 13 ve 14 desteğine son vereceğiz.";
 "announcement.drop_support.title" = "Önemli güncelleme";
+"app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.perform_action.action_parameter_configuration" = "Hangi eylem?";
 "app_intents.perform_action.action_parameter_confirmation" = "Onaylamak için ' %@ ' mi istediniz?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "' %@ ' ile eşleşen %@ seçenek var.";
