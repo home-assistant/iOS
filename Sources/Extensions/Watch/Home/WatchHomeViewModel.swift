@@ -1,4 +1,6 @@
+import Communicator
 import Foundation
+import PromiseKit
 import RealmSwift
 import Shared
 
@@ -27,6 +29,11 @@ enum WatchHomeViewState {
 }
 
 final class WatchHomeViewModel: WatchHomeViewModelProtocol {
+    enum SendError: Error {
+        case notImmediate
+        case phoneFailed
+    }
+
     @Published var actions: [WatchActionItem] = []
     @Published var state: WatchHomeViewState = .idle {
         didSet {
@@ -50,21 +57,47 @@ final class WatchHomeViewModel: WatchHomeViewModelProtocol {
 
         Current.Log.verbose("Selected action id: \(actionId)")
 
-        guard let server = Current.servers.server(for: selectedAction) else {
-            Current.Log.verbose("Failed to get server for action id: \(actionId)")
-            return
-        }
-
         setState(.loading)
 
-        Current.api(for: server).HandleAction(actionID: actionId, source: .Watch).pipe { [weak self] result in
-            switch result {
-            case .fulfilled:
-                self?.setState(.success)
-            case let .rejected(error):
-                Current.Log.info(error)
-                self?.setState(.failure)
+        firstly { () -> Promise<Void> in
+            Promise { seal in
+                guard Communicator.shared.currentReachability == .immediatelyReachable else {
+                    seal.reject(SendError.notImmediate)
+                    return
+                }
+
+                Current.Log.verbose("Signaling action pressed via phone")
+                let actionMessage = InteractiveImmediateMessage(
+                    identifier: "ActionRowPressed",
+                    content: ["ActionID": selectedAction.ID],
+                    reply: { message in
+                        Current.Log.verbose("Received reply dictionary \(message)")
+                        if message.content["fired"] as? Bool == true {
+                            seal.fulfill(())
+                        } else {
+                            seal.reject(SendError.phoneFailed)
+                        }
+                    }
+                )
+
+                Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
+                Communicator.shared.send(actionMessage, errorHandler: { error in
+                    Current.Log.error("Received error when sending immediate message \(error)")
+                    seal.reject(error)
+                })
             }
+        }.recover { error -> Promise<Void> in
+            guard error == SendError.notImmediate, let server = Current.servers.server(for: selectedAction) else {
+                throw error
+            }
+
+            Current.Log.error("recovering error \(error) by trying locally")
+            return Current.api(for: server).HandleAction(actionID: selectedAction.ID, source: .Watch)
+        }.done { [weak self] in
+            self?.setState(.success)
+        }.catch { [weak self] err in
+            Current.Log.error("Error during action event fire: \(err)")
+            self?.setState(.failure)
         }
     }
 
