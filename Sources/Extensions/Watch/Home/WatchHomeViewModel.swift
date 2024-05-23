@@ -15,10 +15,9 @@ struct WatchActionItem: Equatable {
 
 protocol WatchHomeViewModelProtocol: ObservableObject {
     var actions: [WatchActionItem] { get set }
-    var state: WatchHomeViewState { get set }
     func onAppear()
     func onDisappear()
-    func runActionId(_ actionId: String)
+    func runActionId(_ actionId: String, completion: @escaping (Bool) -> Void)
 }
 
 enum WatchHomeViewState {
@@ -35,11 +34,6 @@ final class WatchHomeViewModel: WatchHomeViewModelProtocol {
     }
 
     @Published var actions: [WatchActionItem] = []
-    @Published var state: WatchHomeViewState = .idle {
-        didSet {
-            resetStateToIdleIfNeeded()
-        }
-    }
 
     private var actionsToken: NotificationToken?
     private var realmActions: [Action] = []
@@ -52,12 +46,13 @@ final class WatchHomeViewModel: WatchHomeViewModelProtocol {
         actionsToken?.invalidate()
     }
 
-    func runActionId(_ actionId: String) {
-        guard let selectedAction = realmActions.first(where: { $0.ID == actionId }) else { return }
+    func runActionId(_ actionId: String, completion: @escaping (Bool) -> Void) {
+        guard let selectedAction = realmActions.first(where: { $0.ID == actionId }) else {
+            completion(false)
+            return
+        }
 
         Current.Log.verbose("Selected action id: \(actionId)")
-
-        setState(.loading)
 
         firstly { () -> Promise<Void> in
             Promise { seal in
@@ -93,17 +88,11 @@ final class WatchHomeViewModel: WatchHomeViewModelProtocol {
 
             Current.Log.error("recovering error \(error) by trying locally")
             return Current.api(for: server).HandleAction(actionID: selectedAction.ID, source: .Watch)
-        }.done { [weak self] in
-            self?.setState(.success)
-        }.catch { [weak self] err in
+        }.done {
+            completion(true)
+        }.catch { err in
             Current.Log.error("Error during action event fire: \(err)")
-            self?.setState(.failure)
-        }
-    }
-
-    private func setState(_ state: WatchHomeViewState) {
-        DispatchQueue.main.async { [weak self] in
-            self?.state = state
+            completion(false)
         }
     }
 
@@ -127,17 +116,6 @@ final class WatchHomeViewModel: WatchHomeViewModelProtocol {
                         .error("Error happened on observe actions for Apple Watch: \(error.localizedDescription)")
                 }
             }
-        }
-    }
-
-    private func resetStateToIdleIfNeeded() {
-        switch state {
-        case .success, .failure:
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                self?.state = .idle
-            }
-        default:
-            break
         }
     }
 }

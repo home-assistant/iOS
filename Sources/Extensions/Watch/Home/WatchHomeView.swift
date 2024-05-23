@@ -18,7 +18,6 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
         ZStack {
             list
             noActionsView
-            stateView
         }
         .onAppear {
             viewModel.onAppear()
@@ -26,32 +25,6 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
         .onDisappear {
             viewModel.onDisappear()
         }
-    }
-
-    @ViewBuilder
-    private var stateView: some View {
-        VStack {
-            switch viewModel.state {
-            case .loading:
-                ProgressView()
-                    .progressViewStyle(.circular)
-            case .success:
-                Image(uiImage: MaterialDesignIcons.checkCircleIcon.image(ofSize: stateIconSize, color: stateIconColor))
-                    .onAppear {
-                        interfaceDevice.play(.success)
-                    }
-            case .failure:
-                Image(uiImage: MaterialDesignIcons.closeIcon.image(ofSize: stateIconSize, color: stateIconColor))
-                    .onAppear {
-                        interfaceDevice.play(.failure)
-                    }
-            case .idle:
-                EmptyView()
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(stateViewBackground)
-        .opacity(viewModel.state != .idle ? 1 : 0)
     }
 
     private var stateViewBackground: some ShapeStyle {
@@ -64,22 +37,8 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
 
     private var list: some View {
         List(viewModel.actions, id: \.id) { action in
-            Button {
-                viewModel.runActionId(action.id)
-            } label: {
-                HStack(spacing: Spaces.one) {
-                    Image(uiImage: MaterialDesignIcons(named: action.iconName).image(
-                        ofSize: .init(width: 24, height: 24),
-                        color: .init(hex: action.iconColor)
-                    ))
-                    Text(action.name)
-                        .foregroundStyle(Color(uiColor: .init(hex: action.textColor)))
-                }
-            }
-            .listRowBackground(
-                Color(uiColor: .init(hex: action.backgroundColor))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            )
+            WatchActionButtonView<ViewModel>(action: action)
+                .environmentObject(viewModel)
         }
         .animation(.easeInOut, value: viewModel.actions)
     }
@@ -95,43 +54,5 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
 #if DEBUG
 #Preview {
     WatchHomeView(viewModel: MockWatchHomeViewModel())
-}
-
-final class MockWatchHomeViewModel: WatchHomeViewModelProtocol {
-    func runActionId(_ actionId: String) {
-        DispatchQueue.main.async {
-            self.state = .loading
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.state = .success
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.state = .failure
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.state = .idle
-        }
-    }
-
-    @Published var actions: [WatchActionItem] = []
-    @Published var state: WatchHomeViewState = .idle
-
-    func onAppear() {
-        actions = [
-            .init(
-                id: "1",
-                name: "Hello",
-                iconName: "ab_testing",
-                backgroundColor: "#34eba8",
-                iconColor: "#4479b3",
-                textColor: "#4479b3"
-            ),
-        ]
-    }
-
-    func onDisappear() {}
 }
 #endif

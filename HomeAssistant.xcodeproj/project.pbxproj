@@ -522,6 +522,8 @@
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
+		423E95C52BFF2F5E00C2094A /* WatchActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */; };
+		423E95C92BFF314F00C2094A /* MockWatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
@@ -1647,6 +1649,8 @@
 		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
 		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
+		423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchActionButtonView.swift; sourceTree = "<group>"; };
+		423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2B32B2B5C8100E9F001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -3198,6 +3202,22 @@
 			path = Widgets;
 			sourceTree = "<group>";
 		};
+		423E95C22BFF2EC500C2094A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		423E95C62BFF314200C2094A /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		425573C52B55729E00145217 /* Servers */ = {
 			isa = PBXGroup;
 			children = (
@@ -3352,6 +3372,8 @@
 		42C373B62BC55C3A00898990 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				423E95C62BFF314200C2094A /* Mocks */,
+				423E95C22BFF2EC500C2094A /* Views */,
 				42C373B02BC536AA00898990 /* WatchHomeView.swift */,
 				42C373B42BC53B1400898990 /* WatchHomeViewModel.swift */,
 			);
@@ -6408,7 +6430,9 @@
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
+				423E95C92BFF314F00C2094A /* MockWatchHomeViewModel.swift in Sources */,
 				42C373B22BC5382900898990 /* HostingController.swift in Sources */,
+				423E95C52BFF2F5E00C2094A /* WatchActionButtonView.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
