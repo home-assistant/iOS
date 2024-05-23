@@ -79,7 +79,7 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
             case .success:
                 makeActionImage(iconName: MaterialDesignIcons.checkIcon.name)
             case .failure:
-                makeActionImage(iconName: MaterialDesignIcons.crossIcon.name)
+                makeActionImage(iconName: MaterialDesignIcons.closeThickIcon.name)
             }
         }
     }
