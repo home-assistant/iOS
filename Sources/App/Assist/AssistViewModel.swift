@@ -85,7 +85,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         inputText = ""
 
         audioRecorder.startRecording()
-        // Wait untill green light from recorded delegate 'didStartRecording'
+        // Wait untill green light from recorder delegate 'didStartRecording'
     }
 
     private func startAssistAudioPipeline(audioSampleRate: Double) {
@@ -105,6 +105,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor
     private func appendToChat(_ item: AssistChatItem) {
         chatItems.append(item)
+        chatItems.append(.init(content: "\(String(audioRecorder.audioSampleRate!))", itemType: .info))
     }
 
     @MainActor
@@ -166,7 +167,12 @@ extension AssistViewModel: AudioRecorderDelegate {
     }
 
     func didStartRecording(with sampleRate: Double) {
-        isRecording = true
+        DispatchQueue.main.async { [weak self] in
+            self?.isRecording = true
+            #if DEBUG
+            self?.appendToChat(.init(content: "didStartRecording(with sampleRate: \(sampleRate)", itemType: .info))
+            #endif
+        }
         startAssistAudioPipeline(audioSampleRate: sampleRate)
     }
 
