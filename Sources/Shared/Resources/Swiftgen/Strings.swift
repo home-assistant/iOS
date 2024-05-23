@@ -283,6 +283,10 @@ public enum L10n {
   }
 
   public enum Assist {
+    public enum Error {
+      /// Failed to obtain Assist pipelines, please check your pipelines configuration.
+      public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
+    }
     public enum PipelinesPicker {
       /// Assist Pipelines
       public static var title: String { return L10n.tr("Localizable", "assist.pipelines_picker.title") }

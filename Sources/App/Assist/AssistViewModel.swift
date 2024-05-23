@@ -10,7 +10,8 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var showScreenLoader = false
     @Published var inputText = ""
     @Published var isRecording = false
-    @Published var showPipelineErrorAlert = false
+    @Published var showError = false
+    @Published var errorMessage = ""
 
     private var server: Server
     private var audioRecorder: AudioRecorderProtocol
@@ -84,11 +85,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         inputText = ""
 
         audioRecorder.startRecording()
+        // Wait untill green light from recorded delegate 'didStartRecording'
+    }
 
+    private func startAssistAudioPipeline(audioSampleRate: Double) {
         assistService.assist(
             source: .audio(
                 pipelineId: preferredPipelineId,
-                audioSampleRate: audioRecorder.audioSampleRate
+                audioSampleRate: audioSampleRate
             )
         )
     }
@@ -109,7 +113,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         assistService.fetchPipelines { [weak self] response in
             self?.showScreenLoader = false
             guard let self, let response else {
-                self?.showPipelineError()
+                self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
             if preferredPipelineId.isEmpty {
@@ -136,9 +140,10 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
     }
 
-    private func showPipelineError() {
+    private func showError(message: String) {
         DispatchQueue.main.async { [weak self] in
-            self?.showPipelineErrorAlert = true
+            self?.errorMessage = message
+            self?.showError = true
         }
     }
 
@@ -151,13 +156,18 @@ final class AssistViewModel: NSObject, ObservableObject {
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
+    func didFailToRecord(error: any Error) {
+        showError(message: error.localizedDescription)
+    }
+
     func didOutputSample(data: Data) {
         guard canSendAudioData else { return }
         assistService.sendAudioData(data)
     }
 
-    func didStartRecording() {
+    func didStartRecording(with sampleRate: Double) {
         isRecording = true
+        startAssistAudioPipeline(audioSampleRate: sampleRate)
     }
 
     func didStopRecording() {

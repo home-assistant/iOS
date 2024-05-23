@@ -42,6 +42,13 @@ struct AssistView: View {
             assistSession.inProgress = false
             viewModel.onDisappear()
         }
+        .alert(isPresented: $viewModel.showError) {
+            .init(
+                title: Text(L10n.errorLabel),
+                message: Text(viewModel.errorMessage),
+                dismissButton: .default(Text(L10n.okLabel))
+            )
+        }
     }
 
     private var closeButton: some View {

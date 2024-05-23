@@ -4,21 +4,26 @@ import Shared
 
 protocol AudioRecorderProtocol {
     var delegate: AudioRecorderDelegate? { get set }
-    var audioSampleRate: Double { get }
+    var audioSampleRate: Double? { get }
     func startRecording()
     func stopRecording()
 }
 
 protocol AudioRecorderDelegate: AnyObject {
     func didOutputSample(data: Data)
-    func didStartRecording()
+    func didStartRecording(with sampleRate: Double)
     func didStopRecording()
+    func didFailToRecord(error: Error)
+}
+
+enum AudioRecorderError: Error {
+    case invalidSampleRate
 }
 
 final class AudioRecorder: NSObject, AudioRecorderProtocol {
     weak var delegate: AudioRecorderDelegate?
 
-    private(set) var audioSampleRate: Double = 16000
+    private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
 
     override init() {
@@ -34,8 +39,12 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         setupAudioRecorder()
         guard let captureSession else { return }
         DispatchQueue.global().async { [weak self] in
-            captureSession.startRunning()
-            self?.delegate?.didStartRecording()
+            if let audioSampleRate = self?.audioSampleRate {
+                captureSession.startRunning()
+                self?.delegate?.didStartRecording(with: audioSampleRate)
+            } else {
+                Current.Log.error("No sample rate available to start recording")
+            }
         }
     }
 
@@ -63,7 +72,11 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             captureSession?.addInput(audioInput)
 
             Current.Log.info("Audio sample rate: \(audioSession.sampleRate)")
-            audioSampleRate = audioSession.sampleRate
+            if audioSession.sampleRate == 0 {
+                throw AudioRecorderError.invalidSampleRate
+            } else {
+                audioSampleRate = audioSession.sampleRate
+            }
 
             let audioOutput = AVCaptureAudioDataOutput()
 
@@ -71,6 +84,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             captureSession?.addOutput(audioOutput)
         } catch {
             Current.Log.error("Error starting audio streaming: \(error.localizedDescription)")
+            delegate?.didFailToRecord(error: error)
         }
     }
 
@@ -98,7 +112,11 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     }
 
     @objc private func sessionDidStartRunning(notification: Notification) {
-        delegate?.didStartRecording()
+        if let audioSampleRate {
+            delegate?.didStartRecording(with: audioSampleRate)
+        } else {
+            Current.Log.error("Audio recorded sessionDidStartRunning triggered without audioSampleRate")
+        }
     }
 
     @objc private func sessionDidStopRunning(notification: Notification) {

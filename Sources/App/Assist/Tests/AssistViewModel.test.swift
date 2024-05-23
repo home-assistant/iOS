@@ -77,7 +77,7 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     func testDidStartRecording() {
-        sut.didStartRecording()
+        sut.didStartRecording(with: 16000)
         XCTAssertTrue(sut.isRecording)
     }
 
