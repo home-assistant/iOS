@@ -21,7 +21,9 @@ struct AssistView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: .zero) {
-                pipelinesPicker
+                if !Current.isCatalyst {
+                    pipelinesPicker
+                }
                 chatList
                 bottomBar
             }
@@ -31,6 +33,12 @@ struct AssistView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     closeButton
                 }
+
+                #if targetEnvironment(macCatalyst)
+                ToolbarItem(placement: .topBarTrailing) {
+                    macPicker
+                }
+                #endif
             }
         }
         .navigationViewStyle(.stack)
@@ -55,10 +63,6 @@ struct AssistView: View {
         .keyboardShortcut(.cancelAction)
     }
 
-    private var pickerMaxWidth: CGFloat? {
-        Current.isCatalyst ? 320 : nil
-    }
-
     private var pipelinesPicker: some View {
         VStack {
             Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
@@ -69,12 +73,25 @@ struct AssistView: View {
                 }
             }
             .pickerStyle(.menu)
-            .frame(maxWidth: pickerMaxWidth)
             .tint(.gray)
         }
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 25))
         .padding(.bottom)
+    }
+
+    private var macPicker: some View {
+        VStack {
+            Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
+                ForEach(viewModel.pipelines, id: \.id) { pipeline in
+                    Text(pipeline.name)
+                        .font(.footnote)
+                        .tag(pipeline.id)
+                }
+            }
+            .pickerStyle(.menu)
+        }
+        .frame(maxWidth: 200, alignment: .trailing)
     }
 
     private func makeChatBubble(item: AssistChatItem) -> some View {
