@@ -77,8 +77,9 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     func testDidStartRecording() {
+        sut.preferredPipelineId = "2"
         sut.didStartRecording(with: 16000)
-        XCTAssertTrue(sut.isRecording)
+        XCTAssertEqual(mockAssistService.assistSource, .audio(pipelineId: "2", audioSampleRate: 16000.0))
     }
 
     func testDidStopRecording() {

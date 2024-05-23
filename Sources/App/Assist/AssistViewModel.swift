@@ -105,7 +105,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor
     private func appendToChat(_ item: AssistChatItem) {
         chatItems.append(item)
-        chatItems.append(.init(content: "\(String(audioRecorder.audioSampleRate!))", itemType: .info))
     }
 
     @MainActor
