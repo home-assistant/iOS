@@ -1,4 +1,4 @@
-"NFCReaderUsageDescription" = "读取和写入 NFC 标签可让您触发事件。";
+"NFCReaderUsageDescription" = "读取和写入可让您触发事件的NFC 标签。";
 "NSCameraUsageDescription" = "拍照并将其发送到您的Home Assistant服务器。";
 "NSCrossWebsiteTrackingUsageDescription" = "如果您的配置需要，可以选择启用跨网站跟踪。";
 "NSFocusStatusUsageDescription" = "以传感器形式报告您的专注模式状态。";
@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "需要访问照片库才能保存网页视图中的照片。";
 "NSPhotoLibraryUsageDescription" = "需要照片权限才能保存页面中的图片。";
 "NSSiriUsageDescription" = "我们使用Siri让创建的快捷方式与应用进行交互";
-"NSSpeechRecognitionUsageDescription" = "用于向 Assist 口述文本。";
+"NSSpeechRecognitionUsageDescription" = "用于向语音助手口述文本。";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "发送位置";
 "TemporaryFullAccuracyReasonManualUpdate" = "使用精确位置，以便将当前位置用于设备跟踪器。";

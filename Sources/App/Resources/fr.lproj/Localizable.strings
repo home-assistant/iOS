@@ -52,7 +52,7 @@
 "announcement.drop_support.button_read_more" = "En savoir plus";
 "announcement.drop_support.subtitle" = "Après mûre réflexion, nous mettrons fin à la prise en charge d’iOS 12, 13 et 14 dans nos prochaines mises à jour.";
 "announcement.drop_support.title" = "Mise à jour importante";
-"app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.assist.preferred_pipeline.title" = "Préféré";
 "app_intents.perform_action.action_parameter_configuration" = "Quelle action ?";
 "app_intents.perform_action.action_parameter_confirmation" = "Juste pour confirmer, vous vouliez '%@' ?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Il y a %@ options correspondant à '%@'.";
@@ -848,7 +848,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.assist.action_title" = "Ask Assist";
 "widgets.assist.description" = "Ouvrir Assist dans l'app";
 "widgets.assist.title" = "Assist";
-"widgets.assist.unknown_configuration" = "Configure";
+"widgets.assist.unknown_configuration" = "Configurer";
 "widgets.button.reload_timeline" = "Recharger tous les widgets";
 "widgets.open_page.description" = "Ouvrez une page frontale dans Home Assistant.";
 "widgets.open_page.not_configured" = "Aucune page disponible";
