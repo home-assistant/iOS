@@ -52,7 +52,7 @@
 "announcement.drop_support.button_read_more" = "Подробнее";
 "announcement.drop_support.subtitle" = "После тщательного рассмотрения мы прекратим поддержку iOS 12, 13 и 14 в наших предстоящих обновлениях.";
 "announcement.drop_support.title" = "Важное обновление";
-"app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.assist.preferred_pipeline.title" = "Предпочтительный";
 "app_intents.perform_action.action_parameter_configuration" = "Какое действие?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
@@ -608,7 +608,7 @@ Home Assistant - это бесплатное программное обеспе
 "thread.credentials.share_credentials.no_credentials_message" = "Убедитесь, что вы вошли в систему под своей учетной записью iCloud, которая является владельцем дома в приложении \"Дом\".";
 "thread.credentials.share_credentials.no_credentials_title" = "У вас нет учетных данных, которыми вы могли бы поделиться";
 "thread.credentials.share_credentials_button_title" = "Поделится учетными данными с Home Assistant";
-"thread.extended_pan_id.title" = "Extended PAN ID";
+"thread.extended_pan_id.title" = "Расширенный PAN ID";
 "thread.management.title" = "Учетные данные Thread";
 "thread.network_key.title" = "Ключ сети";
 "thread.store_in_keychain.error.generic.body" = "Не удалось сохранить учетные данные thread в связке ключей, проверьте журналы для получения дополнительной информации.";

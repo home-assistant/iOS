@@ -52,7 +52,7 @@
 "announcement.drop_support.button_read_more" = "Baca lebih lanjut";
 "announcement.drop_support.subtitle" = "Setelah mempertimbangkan dengan cermat, kami akan menghentikan dukungan untuk iOS 12, 13, dan 14 pada pembaruan mendatang.";
 "announcement.drop_support.title" = "Pembaruan penting";
-"app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.assist.preferred_pipeline.title" = "Diutamakan";
 "app_intents.perform_action.action_parameter_configuration" = "Aksi yang mana?";
 "app_intents.perform_action.action_parameter_confirmation" = "Sekadar konfirmasi, Anda menginginkan '%@'?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Ada %@ opsi yang cocok dengan '%@'.";

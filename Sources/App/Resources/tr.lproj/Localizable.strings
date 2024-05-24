@@ -52,7 +52,7 @@
 "announcement.drop_support.button_read_more" = "Devamını oku";
 "announcement.drop_support.subtitle" = "Dikkatli bir değerlendirmenin ardından gelecek güncellemelerimizde iOS 12, 13 ve 14 desteğine son vereceğiz.";
 "announcement.drop_support.title" = "Önemli güncelleme";
-"app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.assist.preferred_pipeline.title" = "Tercih Edilen";
 "app_intents.perform_action.action_parameter_configuration" = "Hangi eylem?";
 "app_intents.perform_action.action_parameter_confirmation" = "Onaylamak için ' %@ ' mi istediniz?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "' %@ ' ile eşleşen %@ seçenek var.";
@@ -403,7 +403,7 @@
 "settings.status_section.version_row.title" = "Sürüm";
 "settings.template_edit.title" = "Şablonu Düzenle";
 "settings.whats_new.title" = "Yeni ne var?";
-"settings.widgets.title" = "Widgets";
+"settings.widgets.title" = "Widget'lar";
 "settings_details.actions.actions_synced.empty" = "Eşitlenmiş Eylem Yok";
 "settings_details.actions.actions_synced.footer" = ".Yaml'de tanımlanan eylemler cihazda düzenlenemez.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Eylemler ayrıca .yaml yapılandırmasında da tanımlanabilir.";
@@ -417,7 +417,7 @@
 "settings_details.actions.scenes.footer" = "Etkinleştirildiğinde, Sahneler eylemlerin yanında görüntülenir. Gerçekleştirildiklerinde sahne değişikliklerini tetiklerler.";
 "settings_details.actions.scenes.select_all" = "Tümünü Seç";
 "settings_details.actions.scenes.title" = "Sahne Eylemleri";
-"settings_details.actions.server_controlled.update.title" = "Update server Actions";
+"settings_details.actions.server_controlled.update.title" = "Sunucu Eylemlerini Güncelle";
 "settings_details.actions.title" = "Aksiyonlar";
 "settings_details.actions.watch.available.title" = "Watch'ta Göster";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -577,8 +577,8 @@
 "settings_details.updates.check_for_updates.include_betas" = "Beta Sürümlerini Dahil Et";
 "settings_details.updates.check_for_updates.title" = "Güncelleştirmeleri Otomatik Olarak Denetle";
 "settings_details.watch.title" = "Apple Watch";
-"settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
-"settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_details.widgets.reload_all.description" = "Bu, tüm widget'ların zaman çizelgelerini yeniden yükleyecektir; widget'larınızın boş durumda kalması veya herhangi bir nedenle güncellenmemesi durumunda bunu kullanın.";
+"settings_details.widgets.reload_all.title" = "Tüm widget'ları yeniden yükle";
 "settings_sensors.detail.attributes" = "Nitelikler";
 "settings_sensors.detail.device_class" = "Cihaz Sınıfı";
 "settings_sensors.detail.enabled" = "Etkin";
@@ -845,11 +845,11 @@
 "widgets.actions.description" = "Home Assistant eylemlerini gerçekleştirin.";
 "widgets.actions.not_configured" = "Yapılandırılmış aksiyon Yok";
 "widgets.actions.title" = "Aksiyonlar";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "Asistana Sor";
 "widgets.assist.description" = "Uygulamada Assist'i açın";
 "widgets.assist.title" = "Asistan";
-"widgets.assist.unknown_configuration" = "Configure";
-"widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.assist.unknown_configuration" = "Yapılandır";
+"widgets.button.reload_timeline" = "Tüm widget'ları yeniden yükle";
 "widgets.open_page.description" = "Home Assistant'ta bir ön sayfası açın.";
 "widgets.open_page.not_configured" = "Kullanılabilir Sayfa Yok";
 "widgets.open_page.title" = "Sayfayı Aç";
