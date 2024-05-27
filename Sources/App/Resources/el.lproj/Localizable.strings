@@ -52,13 +52,14 @@
 "announcement.drop_support.button_read_more" = "Διαβάστε περισσότερα";
 "announcement.drop_support.subtitle" = "Μετά από προσεκτική εξέταση, θα διακόψουμε την υποστήριξη για τα iOS 12, 13 και 14 στις επερχόμενες ενημερώσεις μας.";
 "announcement.drop_support.title" = "Σημαντική ενημέρωση";
-"app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.assist.preferred_pipeline.title" = "Προτιμώμενο";
 "app_intents.perform_action.action_parameter_configuration" = "Ποια ενέργεια;";
 "app_intents.perform_action.action_parameter_confirmation" = "Απλώς για επιβεβαίωση, θέλατε ‘%@‘;";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Υπάρχουν %@ επιλογές που ταιριάζουν με το ‘%@‘.";
 "app_intents.perform_action.response_failure" = "Απέτυχαν: %@";
 "app_intents.perform_action.response_success" = "Εγινε";
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
+"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";

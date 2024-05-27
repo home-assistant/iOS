@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Selhalo: %@";
 "app_intents.perform_action.response_success" = "Hotovo";
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
+"assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.pipelines_picker.title" = "Potrubí Assist";
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";

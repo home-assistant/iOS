@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Sikertelen: %@";
 "app_intents.perform_action.response_success" = "Kész";
 "app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
+"assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.pipelines_picker.title" = "Assist folyamatok";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";

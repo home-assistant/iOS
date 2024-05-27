@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Готово";
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
+"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Отмена";
 "carPlay.action.intro.item.body" = "Нажмите, чтобы продолжить на iPhone";

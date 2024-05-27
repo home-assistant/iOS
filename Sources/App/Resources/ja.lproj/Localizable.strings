@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "失敗しました: %@";
 "app_intents.perform_action.response_success" = "完了";
 "app_intents.widget_action.actions_parameter_configuration" = "どのアクション？";
+"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "アシストパイプライン";
 "cancel_label" = "キャンセル";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";
