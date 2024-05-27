@@ -19,6 +19,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var assistService: AssistServiceProtocol
     private(set) var autoStartRecording: Bool
     private(set) var audioTask: Task<Void, Error>?
+    private(set) var routineTask: Task<Void, Error>?
 
     private(set) var canSendAudioData = false
 
@@ -45,7 +46,9 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor
     func initialRoutine() {
         AssistSession.shared.delegate = self
-        fetchPipelines { [weak self] in
+        routineTask?.cancel()
+        routineTask = Task.detached { [weak self] in
+            await self?.fetchPipelines()
             self?.checkForAutoRecordingAndStart()
         }
     }
@@ -54,25 +57,13 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder.stopRecording()
         audioPlayer.pause()
         audioTask?.cancel()
+        routineTask?.cancel()
     }
 
     @MainActor
     func assistWithText() {
         audioPlayer.pause()
         stopStreaming()
-
-        guard !inputText.isEmpty else { return }
-        guard !pipelines.isEmpty, !preferredPipelineId.isEmpty else {
-            fetchPipelines { [weak self] in
-                self?.sendAssistTextPrompt()
-            }
-            return
-        }
-        sendAssistTextPrompt()
-    }
-
-    @MainActor
-    private func sendAssistTextPrompt() {
         assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId))
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
@@ -114,20 +105,22 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     @MainActor
-    private func fetchPipelines(completion: @escaping () -> Void) {
+    private func fetchPipelines() async {
         showScreenLoader = true
-        assistService.fetchPipelines { [weak self] response in
-            self?.showScreenLoader = false
-            guard let self, let response else {
-                self?.showError(message: L10n.Assist.Error.pipelinesResponse)
-                completion()
-                return
+        await withCheckedContinuation { [weak self] continuation in
+            self?.assistService.fetchPipelines { [weak self] response in
+                self?.showScreenLoader = false
+                guard let self, let response else {
+                    self?.showError(message: L10n.Assist.Error.pipelinesResponse)
+                    continuation.resume()
+                    return
+                }
+                if preferredPipelineId.isEmpty {
+                    preferredPipelineId = response.preferredPipeline
+                }
+                pipelines = response.pipelines
+                continuation.resume()
             }
-            if preferredPipelineId.isEmpty {
-                preferredPipelineId = response.preferredPipeline
-            }
-            pipelines = response.pipelines
-            completion()
         }
     }
 

@@ -9,6 +9,11 @@ public struct PipelineResponse: HADataDecodable {
         self.preferredPipeline = try data.decode("preferred_pipeline")
         self.pipelines = try data.decode("pipelines")
     }
+
+    public init(preferredPipeline: String, pipelines: [Pipeline]) {
+        self.preferredPipeline = preferredPipeline
+        self.pipelines = pipelines
+    }
 }
 
 public struct Pipeline: HADataDecodable {

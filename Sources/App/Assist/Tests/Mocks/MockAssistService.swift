@@ -4,7 +4,7 @@ import Shared
 
 final class MockAssistService: AssistServiceProtocol {
     weak var delegate: AssistServiceDelegate?
-    var fetchPipelinesCompletion: ((PipelineResponse?) -> Void)?
+    var pipelineResponse: PipelineResponse?
     var fetchPipelinesCalled: Bool = false
     var sendAudioDataCalled: Bool = false
     var assistSource: AssistSource?
@@ -13,7 +13,7 @@ final class MockAssistService: AssistServiceProtocol {
 
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
         fetchPipelinesCalled = true
-        fetchPipelinesCompletion = completion
+        completion(pipelineResponse)
     }
 
     func assist(source: AssistSource) {
