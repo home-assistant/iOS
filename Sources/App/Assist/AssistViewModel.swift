@@ -82,7 +82,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         inputText = ""
 
         audioRecorder.startRecording()
-        // Wait untill green light from recorder delegate 'didStartRecording'
+        // Wait until green light from recorder delegate 'didStartRecording'
     }
 
     private func startAssistAudioPipeline(audioSampleRate: Double) {
