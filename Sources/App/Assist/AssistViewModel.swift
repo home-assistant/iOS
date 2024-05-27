@@ -43,10 +43,11 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     @MainActor
-    func onAppear() {
+    func initialRoutine() {
         AssistSession.shared.delegate = self
-        checkForAutoRecordingAndStart()
-        fetchPipelines()
+        fetchPipelines { [weak self] in
+            self?.checkForAutoRecordingAndStart()
+        }
     }
 
     func onDisappear() {
@@ -62,12 +63,17 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         guard !inputText.isEmpty else { return }
         guard !pipelines.isEmpty, !preferredPipelineId.isEmpty else {
-            fetchPipelines()
+            fetchPipelines { [weak self] in
+                self?.sendAssistTextPrompt()
+            }
             return
         }
+        sendAssistTextPrompt()
+    }
 
+    @MainActor
+    private func sendAssistTextPrompt() {
         assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId))
-
         appendToChat(.init(content: inputText, itemType: .input))
         inputText = ""
     }
@@ -108,18 +114,20 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     @MainActor
-    private func fetchPipelines() {
+    private func fetchPipelines(completion: @escaping () -> Void) {
         showScreenLoader = true
         assistService.fetchPipelines { [weak self] response in
             self?.showScreenLoader = false
             guard let self, let response else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
+                completion()
                 return
             }
             if preferredPipelineId.isEmpty {
                 preferredPipelineId = response.preferredPipeline
             }
             pipelines = response.pipelines
+            completion()
         }
     }
 
@@ -216,7 +224,7 @@ extension AssistViewModel: AssistSessionDelegate {
             }
             preferredPipelineId = context.pipelineId
             autoStartRecording = context.autoStartRecording
-            onAppear()
+            initialRoutine()
         }
     }
 }

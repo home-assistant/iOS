@@ -29,7 +29,7 @@ final class AssistViewModelTests: XCTestCase {
 
     @MainActor
     func testOnAppearFetchPipelines() {
-        sut.onAppear()
+        sut.initialRoutine()
         XCTAssert(mockAssistService.fetchPipelinesCalled)
         XCTAssertEqual(AssistSession.shared.delegate.debugDescription, sut.debugDescription)
     }
@@ -37,7 +37,7 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testOnAppearAutoStartRecording() async throws {
         sut = makeSut(autoStartRecording: true)
-        sut.onAppear()
+        sut.initialRoutine()
         try await sut.audioTask?.value
         XCTAssertNotNil(sut.audioTask)
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
@@ -49,7 +49,7 @@ final class AssistViewModelTests: XCTestCase {
     @MainActor
     func testOnDisappear() {
         sut = makeSut(autoStartRecording: true)
-        sut.onAppear()
+        sut.initialRoutine()
         sut.onDisappear()
 
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)

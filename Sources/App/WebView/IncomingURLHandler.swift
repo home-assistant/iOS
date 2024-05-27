@@ -92,7 +92,7 @@ class IncomingURLHandler {
         Current.Log.info(userActivity)
 
         if let assistInAppIntent = userActivity.interaction?.intent as? AssistInAppIntent {
-            guard let server = Current.servers.server(for: assistInAppIntent) else { return false }
+            guard let server = Current.servers.server(for: assistInAppIntent) ?? Current.servers.all.first else { return false }
             let pipeline = assistInAppIntent.pipeline
             let autoStartRecording = Bool(exactly: assistInAppIntent.withVoice ?? 0) ?? false
 
