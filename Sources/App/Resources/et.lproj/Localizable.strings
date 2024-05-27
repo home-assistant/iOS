@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Nurjus: %@";
 "app_intents.perform_action.response_success" = "Valmis";
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
+"assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.pipelines_picker.title" = "Abilise kanalid";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";

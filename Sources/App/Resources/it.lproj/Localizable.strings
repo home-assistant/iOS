@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Fallito: %@";
 "app_intents.perform_action.response_success" = "Completato";
 "app_intents.widget_action.actions_parameter_configuration" = "Quali azioni?";
+"assist.error.pipelines_response" = "Impossibile ottenere i pipeline Assist, controlla la configurazione dei tuoi pipeline.";
 "assist.pipelines_picker.title" = "Assistenza pipeline";
 "cancel_label" = "Annulla";
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";

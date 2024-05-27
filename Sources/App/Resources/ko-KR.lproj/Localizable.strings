@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "실패: %@";
 "app_intents.perform_action.response_success" = "완료";
 "app_intents.widget_action.actions_parameter_configuration" = "어떤 동작을 원하시나요?";
+"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "취소";
 "carPlay.action.intro.item.body" = "iPhone에서 계속하려면 탭하세요.";
