@@ -522,6 +522,15 @@
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
+		4238893D2C061BC30082A1E7 /* CustomURLCredentialStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238893C2C061BC30082A1E7 /* CustomURLCredentialStorage.swift */; };
+		4238893E2C061BC30082A1E7 /* CustomURLCredentialStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238893C2C061BC30082A1E7 /* CustomURLCredentialStorage.swift */; };
+		423889422C061E610082A1E7 /* OnboardingAuthStepConnectivityDocumentPickerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238893F2C061E580082A1E7 /* OnboardingAuthStepConnectivityDocumentPickerHandler.swift */; };
+		423889442C06201D0082A1E7 /* DebugHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423889432C06201D0082A1E7 /* DebugHelper.swift */; };
+		423889452C06201D0082A1E7 /* DebugHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423889432C06201D0082A1E7 /* DebugHelper.swift */; };
+		423889462C0620280082A1E7 /* DebugHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423889432C06201D0082A1E7 /* DebugHelper.swift */; };
+		4238894D2C06212D0082A1E7 /* ReschIntermediateCA.der in Resources */ = {isa = PBXBuildFile; fileRef = 423889482C0621050082A1E7 /* ReschIntermediateCA.der */; };
+		4238894E2C06212D0082A1E7 /* ReschRootCA.der in Resources */ = {isa = PBXBuildFile; fileRef = 423889492C0621050082A1E7 /* ReschRootCA.der */; };
+		4238894F2C06212D0082A1E7 /* bruno.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 423889472C0621050082A1E7 /* bruno.p12 */; };
 		423E95C52BFF2F5E00C2094A /* WatchActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */; };
 		423E95C92BFF314F00C2094A /* MockWatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
@@ -1649,6 +1658,12 @@
 		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
 		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
+		4238893C2C061BC30082A1E7 /* CustomURLCredentialStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomURLCredentialStorage.swift; sourceTree = "<group>"; };
+		4238893F2C061E580082A1E7 /* OnboardingAuthStepConnectivityDocumentPickerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConnectivityDocumentPickerHandler.swift; sourceTree = "<group>"; };
+		423889432C06201D0082A1E7 /* DebugHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugHelper.swift; sourceTree = "<group>"; };
+		423889472C0621050082A1E7 /* bruno.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = bruno.p12; sourceTree = "<group>"; };
+		423889482C0621050082A1E7 /* ReschIntermediateCA.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = ReschIntermediateCA.der; sourceTree = "<group>"; };
+		423889492C0621050082A1E7 /* ReschRootCA.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = ReschRootCA.der; sourceTree = "<group>"; };
 		423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchActionButtonView.swift; sourceTree = "<group>"; };
 		423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
@@ -2504,6 +2519,7 @@
 				117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */,
 				11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */,
 				114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */,
+				4238893C2C061BC30082A1E7 /* CustomURLCredentialStorage.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -2709,6 +2725,7 @@
 			children = (
 				1185DFA7271FF53800ED7D9A /* OnboardingAuthStepConfig.swift */,
 				1185DFA9271FF53800ED7D9A /* OnboardingAuthStepConnectivity.swift */,
+				4238893F2C061E580082A1E7 /* OnboardingAuthStepConnectivityDocumentPickerHandler.swift */,
 				1185DFAB271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift */,
 				1185DFAD271FF53800ED7D9A /* OnboardingAuthStepModels.swift */,
 				1185DFAA271FF53800ED7D9A /* OnboardingAuthStepNotify.swift */,
@@ -4135,6 +4152,10 @@
 				11F20BFB274D5DA900DFB163 /* Server+Fakes.swift */,
 				113A8D48283C7B1700B9DA32 /* PeriodicUpdateManager.swift */,
 				11B6774C28303D35006E9B1A /* SecurityExceptions.swift */,
+				423889432C06201D0082A1E7 /* DebugHelper.swift */,
+				423889472C0621050082A1E7 /* bruno.p12 */,
+				423889482C0621050082A1E7 /* ReschIntermediateCA.der */,
+				423889492C0621050082A1E7 /* ReschRootCA.der */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -5161,6 +5182,9 @@
 				B606164D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav in Resources */,
 				B60616831D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav in Resources */,
 				B60616401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav in Resources */,
+				4238894D2C06212D0082A1E7 /* ReschIntermediateCA.der in Resources */,
+				4238894E2C06212D0082A1E7 /* ReschRootCA.der in Resources */,
+				4238894F2C06212D0082A1E7 /* bruno.p12 in Resources */,
 				B60616981D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav in Resources */,
 				B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
 				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
@@ -6000,6 +6024,7 @@
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				425573E72B5838BB00145217 /* HATypedRequest+CarPlay.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
+				423889462C0620280082A1E7 /* DebugHelper.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
@@ -6128,6 +6153,7 @@
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
+				423889422C061E610082A1E7 /* OnboardingAuthStepConnectivityDocumentPickerHandler.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
@@ -6297,6 +6323,7 @@
 				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
+				423889452C06201D0082A1E7 /* DebugHelper.swift in Sources */,
 				11CFD785273662DF0082D557 /* Server.swift in Sources */,
 				116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
@@ -6409,6 +6436,7 @@
 				1104FC9225322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
 				118261F824F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */,
 				11C8E8AD24F36535003E7F89 /* DeviceWrapper.swift in Sources */,
+				4238893E2C061BC30082A1E7 /* CustomURLCredentialStorage.swift in Sources */,
 				42CE8FB32B46C46F00C707F9 /* Domain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6501,6 +6529,7 @@
 				B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
+				423889442C06201D0082A1E7 /* DebugHelper.swift in Sources */,
 				11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
@@ -6549,6 +6578,7 @@
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
+				4238893D2C061BC30082A1E7 /* CustomURLCredentialStorage.swift in Sources */,
 				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EE3275C54A200205C7B /* OpenPageIntentHandler.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,

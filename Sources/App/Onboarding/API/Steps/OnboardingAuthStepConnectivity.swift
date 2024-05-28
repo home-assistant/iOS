@@ -93,6 +93,9 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
     ) {
         do {
             try authDetails.exceptions.evaluate(secTrust)
+//            print(SecTrustSetAnchorCertificates(secTrust, DebugHelper.trustedCertificates as CFArray))
+//            print(SecTrustSetAnchorCertificatesOnly(secTrust, false))
+
             completionHandler(.useCredential, .init(trust: secTrust))
         } catch {
             Current.Log.error("received SSL error: \((error as NSError).debugDescription)")
@@ -141,6 +144,8 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
         }
     }
 
+    private var haveDoneThatAlready = false
+
     func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
@@ -165,7 +170,40 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
             completionHandler(.cancelAuthenticationChallenge, nil)
         case NSURLAuthenticationMethodClientCertificate:
             clientCertificateErrorOccurred[task.taskIdentifier] = true
-            completionHandler(.performDefaultHandling, nil)
+
+            let alert = UIAlertController(title: "Client certificate requested", message: "A client certificate was requested. Do you wish to provide one?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Choose Certificate", style: .default, handler: { [sender, authDetails] _ in
+                let document = UIDocumentPickerViewController(forOpeningContentTypes: [.pkcs12], asCopy: false)
+
+                let delegate = OnboardingAuthStepConnectivityDocumentPickerHandler()
+                document.delegate = delegate
+
+                delegate.promise.ensure {
+                    withExtendedLifetime(delegate) {
+                        // keep it around
+                    }
+                }.get { [authDetails] data in
+                    print("*** cert ***: \(data)")
+                    do {
+                        let identity = try SecurityIdentity(data: data!, passphrase: "bruno")
+                        authDetails.exceptions.identity = identity
+
+                        let result = authDetails.exceptions.evaluate(challenge)
+                        completionHandler(result.0, result.1)
+                    } catch SecurityIdentity.IdentityError.incorrectPassphrase {
+                        fatalError()
+                    }
+                }.catch { error in
+                    completionHandler(.cancelAuthenticationChallenge, nil)
+                    pendingResolver.reject(error)
+                }
+
+                sender.present(document, animated: true, completion: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Continue Without Certificate", style: .cancel, handler: { _ in
+                completionHandler(.performDefaultHandling, nil)
+            }))
+            sender.present(alert, animated: true, completion: nil)
         default:
             pendingResolver
                 .reject(OnboardingAuthError(kind: .authenticationUnsupported(
