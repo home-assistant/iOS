@@ -44,7 +44,7 @@ struct AssistView: View {
         .navigationViewStyle(.stack)
         .onAppear {
             assistSession.inProgress = true
-            viewModel.onAppear()
+            viewModel.initialRoutine()
         }
         .onDisappear {
             assistSession.inProgress = false
