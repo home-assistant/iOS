@@ -59,7 +59,7 @@
 "app_intents.perform_action.response_failure" = "Başarısız: %@";
 "app_intents.perform_action.response_success" = "Bitti";
 "app_intents.widget_action.actions_parameter_configuration" = "Hangi eylemler?";
-"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
+"assist.error.pipelines_response" = "Assist ardışık düzenleri alınamadı. Lütfen ardışık düzen yapılandırmanızı kontrol edin.";
 "assist.pipelines_picker.title" = "Yardımcı Hatlar";
 "cancel_label" = "İptal";
 "carPlay.action.intro.item.body" = "iPhone'unuzda devam etmek için dokunun";

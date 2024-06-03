@@ -122,7 +122,7 @@
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Ενεργοποιημένο";
 "component::lock::entity_component::_::state::locked" = "Κλειδωμένη";
 "component::lock::entity_component::_::state::unlocked" = "Ξεκλείδωτη";
-"component::lock::title" = "Κλειδαριά";
+"component::lock::title" = "Κλείδωμα";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Ανενεργό";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "Ενεργό";
 "component::media_player::entity_component::_::state::idle" = "Αδράνεια";
