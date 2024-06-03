@@ -93,9 +93,6 @@ class OnboardingAuthStepConnectivity: NSObject, OnboardingAuthPreStep, URLSessio
     ) {
         do {
             try authDetails.exceptions.evaluate(secTrust)
-//            print(SecTrustSetAnchorCertificates(secTrust, DebugHelper.trustedCertificates as CFArray))
-//            print(SecTrustSetAnchorCertificatesOnly(secTrust, false))
-
             completionHandler(.useCredential, .init(trust: secTrust))
         } catch {
             Current.Log.error("received SSL error: \((error as NSError).debugDescription)")
