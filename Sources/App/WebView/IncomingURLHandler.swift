@@ -104,7 +104,7 @@ class IncomingURLHandler {
                         pipeline: pipeline?.identifier ?? "",
                         autoStartRecording: autoStartRecording
                     )
-                case let .rejected(error):
+                case .rejected:
                     Current.Log.error("Failed to obtain webview to open Assist In App")
                 }
             }

@@ -496,7 +496,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 return .actionSheet
             case .mac:
                 return .alert
-            case .pad, .unspecified:
+            case .pad, .unspecified, .vision:
                 // without a touch to tell us where, an action sheet in the middle of the screen isn't great
                 return .alert
             @unknown default:
