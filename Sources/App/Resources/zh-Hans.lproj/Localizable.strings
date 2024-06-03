@@ -284,10 +284,10 @@
 "onboarding.permissions.location.description" = "启用定位服务以允许状态检测自动化。";
 "onboarding.permissions.location.grant_description" = "允许位置权限为您的设备创建device_tracker。";
 "onboarding.permissions.location.title" = "位置";
-"onboarding.permissions.motion.bullet.activity" = "当前活动类型传感器";
+"onboarding.permissions.motion.bullet.activity" = "当前运动类型传感器";
 "onboarding.permissions.motion.bullet.distance" = "步行距离传感器";
 "onboarding.permissions.motion.bullet.steps" = "步数传感器";
-"onboarding.permissions.motion.description" = "允许将运动数据发送到Home Assistant";
+"onboarding.permissions.motion.description" = "允许将运动活动和计步器数据发送到 Home Assistant";
 "onboarding.permissions.motion.grant_description" = "允许运动权限为运动和计步器数据创建传感器。";
 "onboarding.permissions.motion.title" = "运动和计步器";
 "onboarding.permissions.notification.bullet.alert" = "从通知中获取提醒";

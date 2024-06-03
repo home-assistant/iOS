@@ -59,7 +59,7 @@
 "app_intents.perform_action.response_failure" = "Απέτυχαν: %@";
 "app_intents.perform_action.response_success" = "Εγινε";
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
-"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
+"assist.error.pipelines_response" = "Απέτυχε η λήψη των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";

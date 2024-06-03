@@ -59,7 +59,7 @@
 "app_intents.perform_action.response_failure" = "Gagal: %@";
 "app_intents.perform_action.response_success" = "Selesai";
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
-"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
+"assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.pipelines_picker.title" = "Saluran Assist";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
