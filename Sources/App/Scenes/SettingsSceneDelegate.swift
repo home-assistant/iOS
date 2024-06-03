@@ -3,7 +3,8 @@ import Foundation
 import Shared
 import UIKit
 
-@objc class SettingsSceneDelegate: BasicSceneDelegate {
+@objc
+class SettingsSceneDelegate: BasicSceneDelegate {
     private var navigationController: UINavigationController? {
         didSet {
             if let navigationController {
@@ -150,7 +151,8 @@ extension SettingsSceneDelegate: NSToolbarDelegate {
         }
     }
 
-    @objc private func selectItem(_ item: NSToolbarItem) {
+    @objc
+    private func selectItem(_ item: NSToolbarItem) {
         selectItemForIdentifier(item.itemIdentifier)
     }
 
