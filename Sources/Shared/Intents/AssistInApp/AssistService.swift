@@ -42,6 +42,17 @@ public final class AssistService: AssistServiceProtocol {
     private var cancellable: HACancellable?
     private var sttBinaryHandlerId: UInt8?
 
+    /// Conversation Id that is provided after first interation if available, this keeps context
+    private var conversationId: String?
+    /// This exists to reset conversationId when pipelineId changes
+    private var lastPipelineIdUsed: String? {
+        didSet {
+            if oldValue != lastPipelineIdUsed {
+                conversationId = nil
+            }
+        }
+    }
+
     public init(
         server: Server
     ) {
@@ -88,9 +99,11 @@ public final class AssistService: AssistServiceProtocol {
     }
 
     private func assistWithAudio(pipelineId: String, audioSampleRate: Double) {
+        lastPipelineIdUsed = pipelineId
         connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
             preferredPipelineId: pipelineId,
-            audioSampleRate: audioSampleRate
+            audioSampleRate: audioSampleRate,
+            conversationId: conversationId
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable
@@ -99,9 +112,11 @@ public final class AssistService: AssistServiceProtocol {
     }
 
     private func assistWithText(input: String, pipelineId: String) {
+        lastPipelineIdUsed = pipelineId
         connection.subscribe(to: AssistRequests.assistByTextTypedSubscription(
             preferredPipelineId: pipelineId,
-            inputText: input
+            inputText: input,
+            conversationId: conversationId
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable
@@ -140,6 +155,7 @@ public final class AssistService: AssistServiceProtocol {
         case .intentStart:
             break
         case .intentEnd:
+            conversationId = data.data?.intentOutput?.conversationId
             delegate?.didReceiveIntentEndContent(data.data?.intentOutput?.response?.speech.plain.speech ?? "Unknown")
         case .ttsStart:
             break
