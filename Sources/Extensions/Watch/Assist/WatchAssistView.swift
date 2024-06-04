@@ -47,11 +47,10 @@ struct WatchAssistView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 viewModel.chatItems = [
-                    .init(content: "Bla ba", itemType: .input),
-                    .init(content: "Bla ba", itemType: .input),
-                    .init(content: "Bla ba", itemType: .input),
-                    .init(content: "Bla ba", itemType: .input),
-                    .init(content: "Bla ba", itemType: .output)
+                    .init(content: "How many lights are on?", itemType: .input),
+                    .init(content: "3", itemType: .output),
+                    .init(content: "Turn them off", itemType: .input),
+                    .init(content: "That's done", itemType: .output)
                 ]
             }
         }
@@ -69,6 +68,13 @@ struct WatchAssistView: View {
         .padding(.horizontal, Spaces.two)
         .padding(.top, Spaces.one)
         .padding(.bottom, -Spaces.two)
+        .modify {
+            if #available(watchOS 10, *) {
+                $0.background(.thinMaterial)
+            } else {
+                $0.background(.black.opacity(0.5))
+            }
+        }
     }
 
     private var micImage: some View {
