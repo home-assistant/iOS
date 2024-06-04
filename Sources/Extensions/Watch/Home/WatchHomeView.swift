@@ -15,15 +15,44 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
     }
 
     var body: some View {
-        ZStack {
-            list
-            noActionsView
-        }
+        navigation
         .onAppear {
             viewModel.onAppear()
         }
         .onDisappear {
             viewModel.onDisappear()
+        }
+    }
+
+    @ViewBuilder
+    private var navigation: some View {
+        if #available(watchOS 10, *) {
+            NavigationStack {
+                content
+            }
+        } else {
+            NavigationView {
+                content
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+       list
+        .navigationTitle("")
+        .modify {
+            if #available(watchOS 10, *) {
+                $0.toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink(destination: WatchAssistView.build()) {
+                            Image(systemName: "mic")
+                        }
+                    }
+                }
+            } else {
+                $0
+            }
         }
     }
 
@@ -36,18 +65,22 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
     }
 
     private var list: some View {
-        List(viewModel.actions, id: \.id) { action in
-            WatchActionButtonView<ViewModel>(action: action)
-                .environmentObject(viewModel)
+        List {
+            ForEach(viewModel.actions, id: \.id) { action in
+                WatchActionButtonView<ViewModel>(action: action)
+                    .environmentObject(viewModel)
+            }
+            if viewModel.actions.isEmpty {
+                noActionsView
+            }
         }
         .animation(.easeInOut, value: viewModel.actions)
     }
 
     private var noActionsView: some View {
         Text(L10n.Watch.Labels.noAction)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .animation(.easeInOut, value: viewModel.actions)
-            .opacity(viewModel.actions.isEmpty ? 1 : 0)
+            .font(.footnote)
+            .padding(.vertical)
     }
 }
 
