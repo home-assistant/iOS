@@ -128,9 +128,11 @@ public struct AssistResponse: HADataDecodable {
         public struct IntentOutput: HADataDecodable {
             public init(data: HAData) throws {
                 self.response = try? data.decode("response")
+                self.conversationId = try? data.decode("conversation_id")
             }
 
             public let response: Response?
+            public let conversationId: String?
         }
 
         public struct Response: HADataDecodable {

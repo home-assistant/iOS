@@ -4,30 +4,40 @@ import HAKit
 public enum AssistRequests {
     public static func assistByVoiceTypedSubscription(
         preferredPipelineId: String,
-        audioSampleRate: Double
+        audioSampleRate: Double,
+        conversationId: String?
     ) -> HATypedSubscription<AssistResponse> {
-        .init(request: .init(type: .webSocket("assist_pipeline/run"), data: [
+        var data: [String: Any] = [
             "pipeline": preferredPipelineId,
             "start_stage": "stt",
             "end_stage": "tts",
             "input": [
                 "sample_rate": audioSampleRate,
             ],
-        ]))
+        ]
+        if let conversationId {
+            data["conversation_id"] = conversationId
+        }
+        return .init(request: .init(type: .webSocket("assist_pipeline/run"), data: data))
     }
 
     public static func assistByTextTypedSubscription(
         preferredPipelineId: String,
-        inputText: String
+        inputText: String,
+        conversationId: String?
     ) -> HATypedSubscription<AssistResponse> {
-        .init(request: .init(type: .webSocket("assist_pipeline/run"), data: [
+        var data: [String: Any] = [
             "pipeline": preferredPipelineId,
             "start_stage": "intent",
             "end_stage": "intent",
             "input": [
                 "text": inputText,
             ],
-        ]))
+        ]
+        if let conversationId {
+            data["conversation_id"] = conversationId
+        }
+        return .init(request: .init(type: .webSocket("assist_pipeline/run"), data: data))
     }
 
     public static var fetchPipelinesTypedRequest: HATypedRequest<PipelineResponse> {
