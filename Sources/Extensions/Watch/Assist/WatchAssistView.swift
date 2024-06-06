@@ -43,6 +43,9 @@ struct WatchAssistView: View {
                 viewModel.assist()
             }
         }
+        .onDisappear {
+            viewModel.stopRecording()
+        }
         .onChange(of: viewModel.state) { newValue in
             // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
             let currentDevice = WKInterfaceDevice.current()
@@ -53,6 +56,16 @@ struct WatchAssistView: View {
                 currentDevice.play(.start)
             default:
                 break
+            }
+        }
+        .onChange(of: showSettings) { newValue in
+            if newValue {
+                viewModel.stopRecording()
+            }
+        }
+        .onChange(of: showPipelinesPicker) { newValue in
+            if newValue {
+                viewModel.stopRecording()
             }
         }
         .fullScreenCover(isPresented: $showSettings) {

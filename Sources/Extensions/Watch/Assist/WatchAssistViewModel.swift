@@ -38,6 +38,10 @@ final class WatchAssistViewModel: ObservableObject {
         audioRecorder.startRecording()
     }
 
+    func stopRecording() {
+        audioRecorder.stopRecording()
+    }
+
     private func sendAudioData(data: Data, audioSampleRate: Double) {
         assistService.assist(data: data, sampleRate: audioSampleRate) { success in
             print(success)
