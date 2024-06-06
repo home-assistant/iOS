@@ -307,7 +307,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             if Communicator.shared.currentReachability == .immediatelyReachable {
                 Current.Log.info("sending via phone")
                 Communicator.shared.send(.init(
-                    identifier: "PushAction",
+                    identifier: InteractiveImmediateMessages.pushAction.rawValue,
                     content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
                     reply: { message in
                         Current.Log.verbose("Received reply dictionary \(message)")

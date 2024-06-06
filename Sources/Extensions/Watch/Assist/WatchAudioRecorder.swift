@@ -1,11 +1,3 @@
-//
-//  WatchAudioRecorder.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 04/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import AVFoundation
 import Combine
 
@@ -16,7 +8,13 @@ protocol WatchAudioRecorderDelegate: AnyObject {
     func didFailRecording(error: Error)
 }
 
-final class WatchAudioRecorder: NSObject, ObservableObject {
+protocol WatchAudioRecorderProtocol: ObservableObject {
+    var delegate: WatchAudioRecorderDelegate? { get set }
+    func startRecording()
+    func stopRecording()
+}
+
+final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     private var audioRecorder: AVAudioRecorder?
     private var silenceTimer: Timer?
     private let silenceThreshold: TimeInterval = 3.0
@@ -42,7 +40,7 @@ final class WatchAudioRecorder: NSObject, ObservableObject {
                 AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
                 AVSampleRateKey: 12000,
                 AVNumberOfChannelsKey: 1,
-                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue
+                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue,
             ]
 
             let url = getAudioFileURL()
@@ -55,8 +53,8 @@ final class WatchAudioRecorder: NSObject, ObservableObject {
 //                firstLaunch = false
 //                startRecording()
 //            } else {
-                startMonitoringAudioLevels()
-                delegate?.didStartRecording()
+            startMonitoringAudioLevels()
+            delegate?.didStartRecording()
 //            }
         } catch {
             delegate?.didFailRecording(error: error)
@@ -79,19 +77,20 @@ final class WatchAudioRecorder: NSObject, ObservableObject {
 
     private func startMonitoringAudioLevels() {
         silenceTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            guard let self = self, let audioRecorder = self.audioRecorder else { return }
+            guard let self, let audioRecorder else { return }
             audioRecorder.updateMeters()
 
             let averagePower = audioRecorder.averagePower(forChannel: 0)
-            print(self.silenceLevel)
+            print(silenceLevel)
             print(averagePower)
-            if averagePower < self.silenceLevel {
-                self.silenceTimer?.invalidate()
-                self.silenceTimer = Timer.scheduledTimer(withTimeInterval: self.silenceThreshold, repeats: false) { [weak self] _ in
-                    self?.stopRecording()
-                }
+            if averagePower < silenceLevel {
+                silenceTimer?.invalidate()
+                silenceTimer = Timer
+                    .scheduledTimer(withTimeInterval: silenceThreshold, repeats: false) { [weak self] _ in
+                        self?.stopRecording()
+                    }
             } else {
-                self.silenceTimer?.invalidate()
+                silenceTimer?.invalidate()
             }
         }
     }

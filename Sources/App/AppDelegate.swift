@@ -367,14 +367,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
-            Current.Log.verbose("Received message: \(message.identifier)")
+            Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
 
-            // TODO: move all these to something more strongly typed
+            guard let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
+                Current.Log
+                    .error(
+                        "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
+                    )
+                return
+            }
 
-            if message.identifier == "ActionRowPressed" {
-                Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
-                let responseIdentifier = "ActionRowPressedResponse"
-
+            switch messageId {
+            case .actionRowPressed:
+                let responseIdentifier = InteractiveImmediateResponses.actionRowPressedResponse.rawValue
                 guard let actionID = message.content["ActionID"] as? String,
                       let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
                       let server = Current.servers.server(for: action) else {
@@ -391,8 +396,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Current.Log.error("Error during action event fire: \(err)")
                     message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
                 }
-            } else if message.identifier == "PushAction" {
-                Current.Log.verbose("Received PushAction \(message) \(message.content)")
+            case .pushAction:
                 let responseIdentifier = "PushActionResponse"
 
                 if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
@@ -408,6 +412,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }.catch { error in
                         Current.Log.error("error handling push action: \(error)")
                     }
+                }
+            case .assistPipelinesFetch:
+                enum WatchAssistCommunicatorError: Error {
+                    case pipelinesFetchFailed
+                }
+
+                let responseIdentifier = InteractiveImmediateResponses.assistPipelinesFetchResponse.rawValue
+
+                let serverId = message.content["serverId"] as? String
+                guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
+                    .servers.all.first else {
+                    Current.Log.warning("No server available to execute message \(message)")
+                    message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
+                    return
+                }
+
+                firstly { () -> Promise<Void> in
+                    Promise { seal in
+                        AssistService(server: server).fetchPipelines { pipelinesResponse in
+                            if let pipelines = pipelinesResponse?.pipelines,
+                               let preferredPipeline = pipelinesResponse?.preferredPipeline {
+                                message.reply(.init(identifier: responseIdentifier, content: [
+                                    "pipelines": pipelines.map({ pipeline in
+                                        [
+                                            "name": pipeline.name,
+                                            "id": pipeline.id,
+                                        ]
+                                    }),
+                                    "preferredPipeline": preferredPipeline,
+                                ]))
+                                seal.fulfill(())
+                            } else {
+                                seal.reject(WatchAssistCommunicatorError.pipelinesFetchFailed)
+                            }
+                        }
+                    }
+                }.catch { err in
+                    Current.Log.error("Error during fetch Assist pipelines: \(err)")
+                    message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
                 }
             }
         }

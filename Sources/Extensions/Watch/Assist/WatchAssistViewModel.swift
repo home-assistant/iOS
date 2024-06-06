@@ -1,37 +1,37 @@
-//
-//  WatchAssistViewModel.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 04/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
+import Communicator
 import Foundation
+import PromiseKit
 import Shared
+
+struct WatchPipeline {
+    let id: String
+    let name: String
+}
 
 final class WatchAssistViewModel: ObservableObject {
     enum State {
         case idle
         case recording
         case loading
+        case waitingForPipelineResponse
     }
 
     @Published var chatItems: [AssistChatItem] = []
-
     @Published var state: State = .idle
 
-    private let audioRecorder: WatchAudioRecorder
+    private let audioRecorder: any WatchAudioRecorderProtocol
 
-    private let audioPlayer = AudioPlayer()
-
-    init(audioRecorder: WatchAudioRecorder) {
+    init(
+        audioRecorder: any WatchAudioRecorderProtocol
+    ) {
         self.audioRecorder = audioRecorder
-
         audioRecorder.delegate = self
     }
 
     func assist() {
+        #if DEBUG
         chatItems.append(.init(content: "Hello", itemType: .input))
+        #endif
         audioRecorder.startRecording()
     }
 }
@@ -41,20 +41,19 @@ extension WatchAssistViewModel: WatchAudioRecorderDelegate {
     func didStartRecording() {
         state = .recording
     }
-    
+
     @MainActor
     func didStopRecording() {
-        state = .loading
+        state = .waitingForPipelineResponse
     }
-    
+
     @MainActor
     func didFinishRecording(audioURL: URL) {
-        state = .loading
-        chatItems.append(.init(content: "\(audioURL.absoluteString)", itemType: .input))
-        audioPlayer.play(url: audioURL)
+        state = .waitingForPipelineResponse
     }
-    
+
     func didFailRecording(error: any Error) {
         Current.Log.error("Failed to record Assist audio in watch App: \(error.localizedDescription)")
+        state = .idle
     }
 }

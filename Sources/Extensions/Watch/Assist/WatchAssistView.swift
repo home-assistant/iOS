@@ -1,31 +1,32 @@
-//
-//  WatchAssistView.swift
-//  WatchApp
-//
-//  Created by Bruno Pantaleão on 04/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct WatchAssistView: View {
     @StateObject private var viewModel: WatchAssistViewModel
+    @StateObject private var assistService: WatchAssistService
 
-    init(viewModel: WatchAssistViewModel) {
+    /// Used when there are multiple server
+    @State private var showSettings = false
+    /// Used when there are just one server for quicker access to pipeline selection
+    @State private var showPipelinesPicker = false
+
+    init(
+        viewModel: WatchAssistViewModel,
+        assistService: WatchAssistService
+    ) {
         self._viewModel = .init(wrappedValue: viewModel)
+        self._assistService = .init(wrappedValue: assistService)
     }
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             chatList
-            micRecording
-                .opacity(viewModel.state == .recording ? 1 : 0)
+            stateView
         }
         .animation(.easeInOut, value: viewModel.state)
         .modify {
             if #available(watchOS 10, *) {
-                $0.toolbar( viewModel.state == .recording ? .hidden : .visible, for: .navigationBar)
+                $0.toolbar(viewModel.state == .recording ? .hidden : .visible, for: .navigationBar)
             } else {
                 $0
             }
@@ -34,27 +35,90 @@ struct WatchAssistView: View {
             if #available(watchOS 10, *) {
                 $0.toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: WatchAssistSettings()) {
-                            Image(systemName: "gear")
-                        }
+                        pipelineSelector
                     }
                 }
             } else {
-                $0
+                $0.toolbar {
+                    pipelineSelector
+                }
             }
         }
-        #if DEBUG
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                viewModel.chatItems = [
-                    .init(content: "How many lights are on?", itemType: .input),
-                    .init(content: "3", itemType: .output),
-                    .init(content: "Turn them off", itemType: .input),
-                    .init(content: "That's done", itemType: .output)
-                ]
+            if assistService.pipelines.isEmpty {
+                assistService.fetchPipelines { _ in
+                    viewModel.assist()
+                }
+            } else {
+                viewModel.assist()
             }
         }
-        #endif
+        .onChange(of: viewModel.state) { newValue in
+            // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
+            let currentDevice = WKInterfaceDevice.current()
+            switch newValue {
+            case .recording:
+                currentDevice.play(.start)
+            case .waitingForPipelineResponse:
+                currentDevice.play(.start)
+            default:
+                break
+            }
+        }
+        .fullScreenCover(isPresented: $showSettings) {
+            WatchAssistSettings()
+                .environmentObject(assistService)
+        }
+    }
+
+    @ViewBuilder
+    private var stateView: some View {
+        micRecording
+            .opacity(viewModel.state == .recording ? 1 : 0)
+        ProgressView()
+            .progressViewStyle(.circular)
+            .scaleEffect(.init(floatLiteral: 2))
+            .ignoresSafeArea()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .modify {
+                if #available(watchOS 10, *) {
+                    $0.background(.regularMaterial)
+                } else {
+                    $0.background(.black.opacity(0.5))
+                }
+            }
+            .opacity(viewModel.state == .loading ? 1 : 0)
+    }
+
+    @ViewBuilder
+    private var pipelineSelector: some View {
+        if assistService.pipelines.count > 1 || assistService.servers.count > 1,
+           let firstPipelineNameChar = assistService.pipelines
+           .first(where: { $0.id == assistService.preferredPipeline })?.name.first {
+            Button {
+                if assistService.servers.count > 1 {
+                    showSettings = true
+                } else {
+                    showPipelinesPicker = true
+                }
+            } label: {
+                HStack {
+                    Text(String(firstPipelineNameChar))
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 8))
+                }
+                .padding(.horizontal)
+            }
+            .confirmationDialog(L10n.Assist.PipelinesPicker.title, isPresented: $showPipelinesPicker) {
+                ForEach(assistService.pipelines, id: \.id) { pipeline in
+                    Button {
+                        assistService.preferredPipeline = pipeline.id
+                    } label: {
+                        Text(pipeline.name)
+                    }
+                }
+            }
+        }
     }
 
     private var micButton: some View {
@@ -78,13 +142,14 @@ struct WatchAssistView: View {
     }
 
     private var micImage: some View {
-        Image(systemName: "mic")
-            .font(.system(size: 22))
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.asset(Asset.Colors.haPrimary))
-            .clipShape(RoundedRectangle(cornerRadius: 25))
+        Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+            ofSize: .init(width: 24, height: 24),
+            color: .white
+        ))
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color.asset(Asset.Colors.haPrimary))
+        .clipShape(RoundedRectangle(cornerRadius: 25))
     }
 
     @ViewBuilder
@@ -97,7 +162,7 @@ struct WatchAssistView: View {
                     .font(.system(size: 80))
                     .symbolEffect(
                         .variableColor.cumulative.dimInactiveLayers.nonReversing,
-                        options: viewModel.state == .recording ? .repeating : .nonRepeating,
+                        options: .repeating,
                         value: viewModel.state
                     )
                     .symbolRenderingMode(.palette)
@@ -125,7 +190,11 @@ struct WatchAssistView: View {
             List {
                 ForEach(viewModel.chatItems, id: \.id) { item in
                     makeChatBubble(item: item)
+                        .listRowBackground(Color.clear)
                         .id(item.id)
+                }
+                if viewModel.chatItems.isEmpty {
+                    emptyState
                 }
             }
             .frame(maxHeight: .infinity)
@@ -142,9 +211,25 @@ struct WatchAssistView: View {
         }
     }
 
+    private var emptyState: some View {
+        HStack {
+            Spacer()
+            Image(uiImage: Asset.SharedAssets.casitaDark.image)
+                .resizable()
+                .frame(
+                    width: 70,
+                    height: 70,
+                    alignment: .center
+                )
+                .aspectRatio(contentMode: .fit)
+                .opacity(0.5)
+            Spacer()
+        }
+        .listRowBackground(Color.clear)
+    }
+
     private func makeChatBubble(item: AssistChatItem) -> some View {
         Text(item.content)
-            .listRowBackground(Color.clear)
             .padding(8)
             .padding(.horizontal, 8)
             .background(backgroundForChatItemType(item.itemType))
@@ -156,7 +241,7 @@ struct WatchAssistView: View {
     private func backgroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
         case .input:
-                .asset(Asset.Colors.haPrimary)
+            .asset(Asset.Colors.haPrimary)
         case .output:
             .gray
         case .error:

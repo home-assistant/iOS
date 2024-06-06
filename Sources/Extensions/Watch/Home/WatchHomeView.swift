@@ -16,12 +16,12 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
 
     var body: some View {
         navigation
-        .onAppear {
-            viewModel.onAppear()
-        }
-        .onDisappear {
-            viewModel.onDisappear()
-        }
+            .onAppear {
+                viewModel.onAppear()
+            }
+            .onDisappear {
+                viewModel.onDisappear()
+            }
     }
 
     @ViewBuilder
@@ -39,21 +39,24 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
 
     @ViewBuilder
     private var content: some View {
-       list
-        .navigationTitle("")
-        .modify {
-            if #available(watchOS 10, *) {
-                $0.toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: WatchAssistView.build()) {
-                            Image(systemName: "mic")
+        list
+            .navigationTitle("")
+            .modify {
+                if #available(watchOS 10, *) {
+                    $0.toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            NavigationLink(destination: WatchAssistView.build()) {
+                                Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+                                    ofSize: .init(width: 24, height: 24),
+                                    color: Asset.Colors.haPrimary.color
+                                ))
+                            }
                         }
                     }
+                } else {
+                    $0
                 }
-            } else {
-                $0
             }
-        }
     }
 
     private var stateViewBackground: some ShapeStyle {

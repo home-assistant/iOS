@@ -544,6 +544,10 @@
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
 		425573EF2B589B0F00145217 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
+		426266412C11A63A0081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
+		426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
+		426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
+		426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
 		426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490672C0F1A41002155CC /* WatchAssistView.swift */; };
 		4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
 		4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
@@ -582,6 +586,7 @@
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
 		42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E62BBEAAE80083D045 /* MockAssistService.swift */; };
+		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
 		42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDC2B9606CD00DEE060 /* AssistView.swift */; };
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
@@ -1713,6 +1718,7 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
 		426490672C0F1A41002155CC /* WatchAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistView.swift; sourceTree = "<group>"; };
 		4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistViewModel.swift; sourceTree = "<group>"; };
 		426490742C0F20FF002155CC /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
@@ -1770,6 +1776,7 @@
 		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
 		42A818E62BBEAAE80083D045 /* MockAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAssistService.swift; sourceTree = "<group>"; };
+		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
 		42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistViewModel.swift; sourceTree = "<group>"; };
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
@@ -3336,9 +3343,18 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		426266432C11B0070081A818 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
 		426490662C0F1A27002155CC /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				42B1A7422C11E65100904548 /* WatchAssistService.swift */,
 				421326A92C0FCF2600C7D059 /* Settings */,
 				426490672C0F1A41002155CC /* WatchAssistView.swift */,
 				4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */,
@@ -4231,6 +4247,7 @@
 				42FCCFD92B9B19F70057783F /* Services */,
 				D0C884782122A64500CCB501 /* Settings */,
 				42CA28B22B101DA70093B31A /* Utilities */,
+				426266432C11B0070081A818 /* Watch */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 			);
 			path = Shared;
@@ -5383,6 +5400,7 @@
 				1165705B2702A3BA003906A7 /* Frontend.strings in Resources */,
 				11F855D724DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */,
 				426490712C0F1E62002155CC /* Colors.xcassets in Resources */,
+				426266412C11A63A0081A818 /* SharedAssets.xcassets in Resources */,
 				113E72ED251842BE004006D8 /* Localizable.strings in Resources */,
 				84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */,
 			);
@@ -5412,6 +5430,7 @@
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
 				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
+				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6420,6 +6439,7 @@
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
 				1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
+				426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				119385A5249E8E360097F497 /* StorageSensor.swift in Sources */,
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
 				119A7DF32529761800D7000D /* CLKComplication+Strings.swift in Sources */,
@@ -6520,6 +6540,7 @@
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
+				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */,
 				42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
@@ -6689,6 +6710,7 @@
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
+				426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,

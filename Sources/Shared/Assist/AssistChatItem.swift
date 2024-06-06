@@ -6,7 +6,7 @@ public struct AssistChatItem: Equatable {
         self.content = content
         self.itemType = itemType
     }
-    
+
     public var id: String = UUID().uuidString
     public let content: String
     public let itemType: ItemType
