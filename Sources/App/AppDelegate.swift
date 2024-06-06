@@ -37,7 +37,6 @@ extension AppEnvironment {
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
