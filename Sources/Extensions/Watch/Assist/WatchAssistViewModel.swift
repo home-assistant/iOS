@@ -18,13 +18,16 @@ final class WatchAssistViewModel: ObservableObject {
 
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
+    @Published var assistService: WatchAssistService
 
     private let audioRecorder: any WatchAudioRecorderProtocol
 
     init(
-        audioRecorder: any WatchAudioRecorderProtocol
+        audioRecorder: any WatchAudioRecorderProtocol,
+        assistService: WatchAssistService
     ) {
         self.audioRecorder = audioRecorder
+        self.assistService = assistService
         audioRecorder.delegate = self
     }
 
@@ -33,6 +36,12 @@ final class WatchAssistViewModel: ObservableObject {
         chatItems.append(.init(content: "Hello", itemType: .input))
         #endif
         audioRecorder.startRecording()
+    }
+
+    private func sendAudioData(data: Data, audioSampleRate: Double) {
+        assistService.assist(data: data, sampleRate: audioSampleRate) { success in
+            print(success)
+        }
     }
 }
 
@@ -48,7 +57,13 @@ extension WatchAssistViewModel: WatchAudioRecorderDelegate {
     }
 
     @MainActor
-    func didFinishRecording(audioURL: URL) {
+    func didFinishRecording(audioURL: URL, audioSampleRate: Double) {
+        do {
+            let data = try Data(contentsOf: audioURL)
+            sendAudioData(data: data, audioSampleRate: audioSampleRate)
+        } catch {
+            Current.Log.error("Failed to generate data from audioURL")
+        }
         state = .waitingForPipelineResponse
     }
 

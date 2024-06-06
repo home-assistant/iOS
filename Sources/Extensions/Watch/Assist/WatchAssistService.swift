@@ -33,6 +33,58 @@ final class WatchAssistService: ObservableObject {
         loadPipelines(completion: completion)
     }
 
+    func assist(data: Data, sampleRate: Double, completion: @escaping (Bool) -> Void) {
+        firstly { () -> Promise<Void> in
+            Promise { [weak self] seal in
+                guard let self else { return }
+                guard Communicator.shared.currentReachability == .immediatelyReachable else {
+                    seal.reject(WatchSendError.notImmediate)
+                    return
+                }
+
+                Current.Log.verbose("Signaling Assist audio data")
+                let actionMessage = InteractiveImmediateMessage(
+                    identifier: InteractiveImmediateMessages.assistAudioData.rawValue,
+                    content: [
+                        "serverId": selectedServer,
+                        "pipelineId": preferredPipeline,
+                        "audioData": data,
+                        "sampleRate": sampleRate,
+                    ],
+                    reply: { message in
+                        Current.Log.verbose("Received reply dictionary \(message)")
+                        seal.fulfill(())
+//                        if let pipelines = message.content["pipelines"] as? [[String: String]] {
+                        ////                            self.updatePipelines(
+                        ////                                pipelines,
+                        ////                                preferredPipeline: message.content["preferredPipeline"] as?
+                        /// String ?? ""
+                        ////                            )
+//                            seal.fulfill(())
+//                        } else {
+//                            seal.reject(WatchSendError.phoneFailed)
+//                        }
+                    }
+                )
+
+                Current.Log
+                    .verbose(
+                        "Sending \(InteractiveImmediateMessages.assistPipelinesFetch.rawValue) message \(actionMessage)"
+                    )
+                Communicator.shared.send(actionMessage, errorHandler: { error in
+                    Current.Log.error("Received error when sending immediate message \(error)")
+                    seal.reject(error)
+                })
+            }
+        }
+        .done {
+            completion(true)
+        }.catch { error in
+            Current.Log.error("Error during sending Assist audio data: \(error)")
+            completion(false)
+        }
+    }
+
     private func loadPipelines(serverId: String? = nil, completion: @escaping (Bool) -> Void) {
         let serverId = serverId ?? selectedServer
         firstly { () -> Promise<Void> in

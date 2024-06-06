@@ -6,7 +6,7 @@ struct WatchAssistSettings: View {
 
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: Spaces.two) {
                 VStack {
                     Text(L10n.Settings.ConnectionSection.servers)
                     Picker(selection: $assistService.selectedServer) {

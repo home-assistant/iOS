@@ -3,7 +3,6 @@ import SwiftUI
 
 struct WatchAssistView: View {
     @StateObject private var viewModel: WatchAssistViewModel
-    @StateObject private var assistService: WatchAssistService
 
     /// Used when there are multiple server
     @State private var showSettings = false
@@ -11,11 +10,9 @@ struct WatchAssistView: View {
     @State private var showPipelinesPicker = false
 
     init(
-        viewModel: WatchAssistViewModel,
-        assistService: WatchAssistService
+        viewModel: WatchAssistViewModel
     ) {
         self._viewModel = .init(wrappedValue: viewModel)
-        self._assistService = .init(wrappedValue: assistService)
     }
 
     var body: some View {
@@ -24,13 +21,6 @@ struct WatchAssistView: View {
             stateView
         }
         .animation(.easeInOut, value: viewModel.state)
-        .modify {
-            if #available(watchOS 10, *) {
-                $0.toolbar(viewModel.state == .recording ? .hidden : .visible, for: .navigationBar)
-            } else {
-                $0
-            }
-        }
         .modify {
             if #available(watchOS 10, *) {
                 $0.toolbar {
@@ -45,8 +35,8 @@ struct WatchAssistView: View {
             }
         }
         .onAppear {
-            if assistService.pipelines.isEmpty {
-                assistService.fetchPipelines { _ in
+            if viewModel.assistService.pipelines.isEmpty {
+                viewModel.assistService.fetchPipelines { _ in
                     viewModel.assist()
                 }
             } else {
@@ -67,7 +57,7 @@ struct WatchAssistView: View {
         }
         .fullScreenCover(isPresented: $showSettings) {
             WatchAssistSettings()
-                .environmentObject(assistService)
+                .environmentObject(viewModel.assistService)
         }
     }
 
@@ -92,27 +82,33 @@ struct WatchAssistView: View {
 
     @ViewBuilder
     private var pipelineSelector: some View {
-        if assistService.pipelines.count > 1 || assistService.servers.count > 1,
-           let firstPipelineNameChar = assistService.pipelines
-           .first(where: { $0.id == assistService.preferredPipeline })?.name.first {
+        if viewModel.assistService.pipelines.count > 1 || viewModel.assistService.servers.count > 1,
+           let firstPipelineName = viewModel.assistService.pipelines
+           .first(where: { $0.id == viewModel.assistService.preferredPipeline })?.name,
+           let firstPipelineNameChar = firstPipelineName.first {
             Button {
-                if assistService.servers.count > 1 {
+                if viewModel.assistService.servers.count > 1 {
                     showSettings = true
                 } else {
                     showPipelinesPicker = true
                 }
             } label: {
                 HStack {
-                    Text(String(firstPipelineNameChar))
+                    if #available(watchOS 10, *) {
+                        Text(String(firstPipelineNameChar))
+                    } else {
+                        // When watchS below 10, this item has more space available
+                        Text(String(firstPipelineName))
+                    }
                     Image(systemName: "chevron.down")
                         .font(.system(size: 8))
                 }
                 .padding(.horizontal)
             }
             .confirmationDialog(L10n.Assist.PipelinesPicker.title, isPresented: $showPipelinesPicker) {
-                ForEach(assistService.pipelines, id: \.id) { pipeline in
+                ForEach(viewModel.assistService.pipelines, id: \.id) { pipeline in
                     Button {
-                        assistService.preferredPipeline = pipeline.id
+                        viewModel.assistService.preferredPipeline = pipeline.id
                     } label: {
                         Text(pipeline.name)
                     }

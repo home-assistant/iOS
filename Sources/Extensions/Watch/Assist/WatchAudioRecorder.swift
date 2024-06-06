@@ -1,10 +1,11 @@
 import AVFoundation
 import Combine
+import Shared
 
 protocol WatchAudioRecorderDelegate: AnyObject {
     func didStartRecording()
     func didStopRecording()
-    func didFinishRecording(audioURL: URL)
+    func didFinishRecording(audioURL: URL, audioSampleRate: Double)
     func didFailRecording(error: Error)
 }
 
@@ -19,7 +20,7 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     private var silenceTimer: Timer?
     private let silenceThreshold: TimeInterval = 3.0
     private let silenceLevel: Float = -50.0
-
+    private var audioSampleRate: Double?
     weak var delegate: WatchAudioRecorderDelegate?
 
     private var firstLaunch = true
@@ -38,7 +39,7 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
 
             let settings: [String: Any] = [
                 AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                AVSampleRateKey: 12000,
+                AVSampleRateKey: 16000,
                 AVNumberOfChannelsKey: 1,
                 AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue,
             ]
@@ -48,14 +49,13 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
             audioRecorder?.delegate = self
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.prepareToRecord()
+
+            audioSampleRate = audioRecorder?.format.sampleRate
+            Current.Log.verbose("Using audio sample rate \(String(describing: audioSampleRate))")
             audioRecorder?.record()
-//            if firstLaunch {
-//                firstLaunch = false
-//                startRecording()
-//            } else {
+
             startMonitoringAudioLevels()
             delegate?.didStartRecording()
-//            }
         } catch {
             delegate?.didFailRecording(error: error)
         }
@@ -98,7 +98,14 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
 
 extension WatchAudioRecorder: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        delegate?.didFinishRecording(audioURL: getAudioFileURL())
+        if let audioSampleRate {
+            delegate?.didFinishRecording(audioURL: getAudioFileURL(), audioSampleRate: audioSampleRate)
+        } else {
+            Current.Log.error("Finished recording without audio sample rate available")
+        }
+
+        #if DEBUG
         print(getAudioFileURL())
+        #endif
     }
 }

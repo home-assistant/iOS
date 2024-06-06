@@ -452,6 +452,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Current.Log.error("Error during fetch Assist pipelines: \(err)")
                     message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
                 }
+            case .assistAudioData:
+                enum WatchAssistCommunicatorError: Error {
+                    case pipelinesFetchFailed
+                }
+
+                let responseIdentifier = InteractiveImmediateResponses.assistAudioDataResponse.rawValue
+
+                let serverId = message.content["serverId"] as? String
+                guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
+                    .servers.all.first else {
+                    let errorMessage = "No server available to execute message \(message)"
+                    Current.Log.warning(errorMessage)
+                    message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
+
+                    return
+                }
+
+                firstly { () -> Promise<Void> in
+                    Promise { _ in
+                        let pipelineId = message.content["pipelineId"] as? String ?? ""
+                        guard let sampleRate = message.content["sampleRate"] as? Double else {
+                            let errorMessage = "No sample rate received in message \(message)"
+                            Current.Log.warning(errorMessage)
+                            message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
+                            return
+                        }
+                        AssistService(server: server).assist(source: .audio(
+                            pipelineId: pipelineId,
+                            audioSampleRate: sampleRate
+                        ))
+                        // Move all of this to a separate wrapper to handle delegate
+                    }
+                }.catch { err in
+                    let errorMessage = "Error during fetch Assist pipelines: \(err)"
+                    Current.Log.warning(errorMessage)
+                    message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
+                }
             }
         }
 
