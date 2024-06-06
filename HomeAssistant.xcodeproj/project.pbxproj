@@ -3160,6 +3160,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		396F2B4C2C121D2B002F84FD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
+				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
+				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
+				39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */,
+				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		3997926C2B7F906C00231B54 /* MobileAppConfig */ = {
 			isa = PBXGroup;
 			children = (
@@ -3984,10 +3996,10 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				396F2B4C2C121D2B002F84FD /* Extensions */,
 				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
-				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
@@ -3996,14 +4008,10 @@
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
-				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
-				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
-				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
 				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
-				39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
