@@ -112,8 +112,8 @@
 "component::input_text::entity_component::_::state_attributes::editable::state::true" = "Ναι";
 "component::ipp::entity::sensor::printer::state::idle" = "Σε αδράνεια";
 "component::lawn_mower::entity_component::_::state::paused" = "Σε παύση";
-"component::light::entity_component::_::state::off" = "Κλειστό";
-"component::light::entity_component::_::state::on" = "Ανοιχτό";
+"component::light::entity_component::_::state::off" = "Ανενεργό";
+"component::light::entity_component::_::state::on" = "Ενεργό";
 "component::light::title" = "Φως";
 "component::litterrobot::entity::sensor::status_code::state::off" = "Ανενεργό";
 "component::litterrobot::entity::sensor::status_code::state::p" = "Σε παύση";
