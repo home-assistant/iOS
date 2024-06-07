@@ -229,15 +229,6 @@ extension WatchCommunicatorService {
 extension WatchCommunicatorService: AssistServiceDelegate {
     func didReceiveEvent(_ event: Shared.AssistEvent) {
         Current.Log.info("Watch Assist received event: \(event)")
-        #if DEBUG
-        let message = ImmediateMessage(
-            identifier: InteractiveImmediateResponses.assistSTTResponse.rawValue,
-            content: [
-                "content" : "Event: \(event)"
-            ]
-        )
-        sendMessage(message: message)
-        #endif
     }
     
     func didReceiveSttContent(_ content: String) {

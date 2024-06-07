@@ -34,10 +34,7 @@ final class WatchAssistViewModel: ObservableObject {
     }
     
     func assist() {
-        #if DEBUG
-        chatItems.append(.init(content: "Hello", itemType: .input))
-        #endif
-        audioRecorder.startRecording()
+            audioRecorder.startRecording()
     }
 
     func stopRecording() {
@@ -74,7 +71,7 @@ final class WatchAssistViewModel: ObservableObject {
 
     private func sendAudioData(audioURL: URL, audioSampleRate: Double) {
         assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { success in
-            print(success)
+            Current.Log.info("sendAudioData result: \(success)")
         }
     }
 
