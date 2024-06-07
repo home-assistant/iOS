@@ -3,7 +3,7 @@ import PromiseKit
 import Shared
 
 #if targetEnvironment(simulator)
-class SimulatorTagManager: iOSTagManager {
+final class SimulatorTagManager: iOSTagManager {
     override var isNFCAvailable: Bool {
         true
     }
