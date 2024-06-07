@@ -33,7 +33,7 @@ final class WatchAssistService: ObservableObject {
         loadPipelines(completion: completion)
     }
 
-    func assist(data: Data, sampleRate: Double, completion: @escaping (Bool) -> Void) {
+    func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Bool) -> Void) {
         firstly { () -> Promise<Void> in
             Promise { [weak self] seal in
                 guard let self else { return }
@@ -48,22 +48,12 @@ final class WatchAssistService: ObservableObject {
                     content: [
                         "serverId": selectedServer,
                         "pipelineId": preferredPipeline,
-                        "audioData": data,
+                        "audioURL": audioURL.absoluteString,
                         "sampleRate": sampleRate,
                     ],
                     reply: { message in
                         Current.Log.verbose("Received reply dictionary \(message)")
                         seal.fulfill(())
-//                        if let pipelines = message.content["pipelines"] as? [[String: String]] {
-                        ////                            self.updatePipelines(
-                        ////                                pipelines,
-                        ////                                preferredPipeline: message.content["preferredPipeline"] as?
-                        /// String ?? ""
-                        ////                            )
-//                            seal.fulfill(())
-//                        } else {
-//                            seal.reject(WatchSendError.phoneFailed)
-//                        }
                     }
                 )
 

@@ -29,8 +29,10 @@ final class WatchAssistViewModel: ObservableObject {
         self.audioRecorder = audioRecorder
         self.assistService = assistService
         audioRecorder.delegate = self
-    }
 
+        setupCommunicator()
+    }
+    
     func assist() {
         #if DEBUG
         chatItems.append(.init(content: "Hello", itemType: .input))
@@ -42,9 +44,43 @@ final class WatchAssistViewModel: ObservableObject {
         audioRecorder.stopRecording()
     }
 
-    private func sendAudioData(data: Data, audioSampleRate: Double) {
-        assistService.assist(data: data, sampleRate: audioSampleRate) { success in
+    private func setupCommunicator() {
+        ImmediateMessage.observe { [weak self] message in
+            guard let messageId = InteractiveImmediateResponses(rawValue: message.identifier) else {
+                Current.Log.error("Received communicator message that cant be mapped to messages responses enum")
+                return
+            }
+
+            switch messageId {
+            case .assistSTTResponse:
+                guard let content = message.content["content"] as? String else {
+                    Current.Log.error("Received assistSTTResponse without content")
+                    return
+                }
+                self?.appendChatItem(AssistChatItem(content: content, itemType: .input))
+            case .assistIntentEndResponse:
+                guard let content = message.content["content"] as? String else {
+                    Current.Log.error("Received assistIntentEndResponse without content")
+                    return
+                }
+                self?.appendChatItem(AssistChatItem(content: content, itemType: .output))
+            case .assistTTSResponse:
+                break
+            default:
+                break
+            }
+        }
+    }
+
+    private func sendAudioData(audioURL: URL, audioSampleRate: Double) {
+        assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { success in
             print(success)
+        }
+    }
+
+    private func appendChatItem(_ item: AssistChatItem) {
+        DispatchQueue.main.async { [weak self] in
+            self?.chatItems.append(item)
         }
     }
 }
@@ -62,12 +98,7 @@ extension WatchAssistViewModel: WatchAudioRecorderDelegate {
 
     @MainActor
     func didFinishRecording(audioURL: URL, audioSampleRate: Double) {
-        do {
-            let data = try Data(contentsOf: audioURL)
-            sendAudioData(data: data, audioSampleRate: audioSampleRate)
-        } catch {
-            Current.Log.error("Failed to generate data from audioURL")
-        }
+        sendAudioData(audioURL: audioURL, audioSampleRate: audioSampleRate)
         state = .waitingForPipelineResponse
     }
 

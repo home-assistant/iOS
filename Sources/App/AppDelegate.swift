@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    private var watchCommunicatorService: WatchCommunicatorService?
 
     func application(
         _ application: UIApplication,
@@ -348,163 +349,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupWatchCommunicator() {
-        Current.servers.add(observer: self)
-
-        // This directly mutates the data structure for observations to avoid race conditions.
-
-        Communicator.State.observations.store[.init(queue: .main)] = { state in
-            Current.Log.verbose("Activation state changed: \(state)")
-            _ = HomeAssistantAPI.SyncWatchContext()
-        }
-
-        WatchState.observations.store[.init(queue: .main)] = { watchState in
-            Current.Log.verbose("Watch state changed: \(watchState)")
-            _ = HomeAssistantAPI.SyncWatchContext()
-        }
-
-        Reachability.observations.store[.init(queue: .main)] = { reachability in
-            Current.Log.verbose("Reachability changed: \(reachability)")
-        }
-
-        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
-            Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
-
-            guard let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
-                Current.Log
-                    .error(
-                        "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
-                    )
-                return
-            }
-
-            switch messageId {
-            case .actionRowPressed:
-                let responseIdentifier = InteractiveImmediateResponses.actionRowPressedResponse.rawValue
-                guard let actionID = message.content["ActionID"] as? String,
-                      let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-                      let server = Current.servers.server(for: action) else {
-                    Current.Log.warning("ActionID either does not exist or is not a string in the payload")
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-                    return
-                }
-
-                firstly {
-                    Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
-                }.done {
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-                }.catch { err in
-                    Current.Log.error("Error during action event fire: \(err)")
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-                }
-            case .pushAction:
-                let responseIdentifier = "PushActionResponse"
-
-                if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
-                   let serverIdentifier = message.content["Server"] as? String,
-                   let server = Current.servers.server(forServerIdentifier: serverIdentifier) {
-                    Current.backgroundTask(withName: "watch-push-action") { _ in
-                        firstly {
-                            Current.api(for: server).handlePushAction(for: info)
-                        }.ensure {
-                            message.reply(.init(identifier: responseIdentifier))
-                        }
-                    }.catch { error in
-                        Current.Log.error("error handling push action: \(error)")
-                    }
-                }
-            case .assistPipelinesFetch:
-                enum WatchAssistCommunicatorError: Error {
-                    case pipelinesFetchFailed
-                }
-
-                let responseIdentifier = InteractiveImmediateResponses.assistPipelinesFetchResponse.rawValue
-
-                let serverId = message.content["serverId"] as? String
-                guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
-                    .servers.all.first else {
-                    Current.Log.warning("No server available to execute message \(message)")
-                    message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
-                    return
-                }
-
-                firstly { () -> Promise<Void> in
-                    Promise { seal in
-                        AssistService(server: server).fetchPipelines { pipelinesResponse in
-                            if let pipelines = pipelinesResponse?.pipelines,
-                               let preferredPipeline = pipelinesResponse?.preferredPipeline {
-                                message.reply(.init(identifier: responseIdentifier, content: [
-                                    "pipelines": pipelines.map({ pipeline in
-                                        [
-                                            "name": pipeline.name,
-                                            "id": pipeline.id,
-                                        ]
-                                    }),
-                                    "preferredPipeline": preferredPipeline,
-                                ]))
-                                seal.fulfill(())
-                            } else {
-                                seal.reject(WatchAssistCommunicatorError.pipelinesFetchFailed)
-                            }
-                        }
-                    }
-                }.catch { err in
-                    Current.Log.error("Error during fetch Assist pipelines: \(err)")
-                    message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
-                }
-            case .assistAudioData:
-                enum WatchAssistCommunicatorError: Error {
-                    case pipelinesFetchFailed
-                }
-
-                let responseIdentifier = InteractiveImmediateResponses.assistAudioDataResponse.rawValue
-
-                let serverId = message.content["serverId"] as? String
-                guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
-                    .servers.all.first else {
-                    let errorMessage = "No server available to execute message \(message)"
-                    Current.Log.warning(errorMessage)
-                    message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
-
-                    return
-                }
-
-                firstly { () -> Promise<Void> in
-                    Promise { _ in
-                        let pipelineId = message.content["pipelineId"] as? String ?? ""
-                        guard let sampleRate = message.content["sampleRate"] as? Double else {
-                            let errorMessage = "No sample rate received in message \(message)"
-                            Current.Log.warning(errorMessage)
-                            message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
-                            return
-                        }
-                        AssistService(server: server).assist(source: .audio(
-                            pipelineId: pipelineId,
-                            audioSampleRate: sampleRate
-                        ))
-                        // Move all of this to a separate wrapper to handle delegate
-                    }
-                }.catch { err in
-                    let errorMessage = "Error during fetch Assist pipelines: \(err)"
-                    Current.Log.warning(errorMessage)
-                    message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
-                }
-            }
-        }
-
-        Blob.observations.store[.init(queue: .main)] = { blob in
-            Current.Log.verbose("Received blob: \(blob.identifier)")
-        }
-
-        Context.observations.store[.init(queue: .main)] = { context in
-            Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
-
-            if let modelIdentifier = context.content["watchModel"] as? String {
-                Current.crashReporter.setUserProperty(value: modelIdentifier, name: "PairedAppleWatch")
-            }
-        }
-
-        _ = Communicator.shared
+        watchCommunicatorService = WatchCommunicatorService()
+        watchCommunicatorService?.setup()
     }
 
     func setupLocalization() {
@@ -560,10 +406,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // swiftlint:disable:next file_length
-}
-
-extension AppDelegate: ServerObserver {
-    func serversDidChange(_ serverManager: ServerManager) {
-        _ = HomeAssistantAPI.SyncWatchContext()
-    }
 }

@@ -38,10 +38,13 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
             try audioSession.setActive(true)
 
             let settings: [String: Any] = [
-                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                AVSampleRateKey: 16000,
+                AVFormatIDKey: Int(kAudioFormatLinearPCM),
+                AVSampleRateKey: 16000.0,
                 AVNumberOfChannelsKey: 1,
-                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue,
+                AVLinearPCMBitDepthKey: 16,
+                AVLinearPCMIsBigEndianKey: false,
+                AVLinearPCMIsFloatKey: false,
+                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue
             ]
 
             let url = getAudioFileURL()
@@ -70,9 +73,8 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     }
 
     private func getAudioFileURL() -> URL {
-        let paths = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
-        let documentsDirectory = paths[0]
-        return documentsDirectory.appendingPathComponent("assist.m4a")
+        let sharedGroupContainerDirectory = Constants.AppGroupContainer
+        return sharedGroupContainerDirectory.appendingPathComponent("assist.wav")
     }
 
     private func startMonitoringAudioLevels() {
