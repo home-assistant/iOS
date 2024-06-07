@@ -3,7 +3,7 @@ import Foundation
 import IntentsUI
 import Shared
 
-public class VoiceShortcutCell: Cell<INShortcut>, CellType,
+public final class VoiceShortcutCell: Cell<INShortcut>, CellType,
     INUIAddVoiceShortcutButtonDelegate,
     INUIAddVoiceShortcutViewControllerDelegate,
     INUIEditVoiceShortcutViewControllerDelegate {

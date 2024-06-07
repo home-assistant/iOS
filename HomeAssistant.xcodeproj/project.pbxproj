@@ -502,6 +502,7 @@
 		3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */; };
 		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
+		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
 		42070EE82BAC43240031E96F /* AssistSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE72BAC43240031E96F /* AssistSession.swift */; };
 		42070EEB2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
 		42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
@@ -1633,6 +1634,7 @@
 		399792692B7F904A00231B54 /* MobileAppConfigPushCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPushCategory.swift; sourceTree = "<group>"; };
 		3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPush.swift; sourceTree = "<group>"; };
 		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
+		39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scaledToSize.swift"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		42070EE72BAC43240031E96F /* AssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSession.swift; sourceTree = "<group>"; };
 		42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInAppIntentHandler.swift; sourceTree = "<group>"; };
@@ -2792,7 +2794,6 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
-				42DD84172B14D83400936F16 /* Tests */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
@@ -3054,7 +3055,6 @@
 				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 				42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */,
 				42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */,
-				425573D82B57DDC700145217 /* Tests */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -3160,6 +3160,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		396F2B4C2C121D2B002F84FD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
+				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
+				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
+				39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */,
+				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		3997926C2B7F906C00231B54 /* MobileAppConfig */ = {
 			isa = PBXGroup;
 			children = (
@@ -3169,6 +3181,49 @@
 				399792702B7F909900231B54 /* MobileAppConfig.swift */,
 			);
 			path = MobileAppConfig;
+			sourceTree = "<group>";
+		};
+		39A32EDD2C0E36A400985722 /* Assist */ = {
+			isa = PBXGroup;
+			children = (
+				42A818E12BBEA9650083D045 /* Mocks */,
+				42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */,
+			);
+			path = Assist;
+			sourceTree = "<group>";
+		};
+		39A32EDE2C0E36E900985722 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				425573D92B57DDE000145217 /* WindowScenesManager.test.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		39A32EDF2C0E37FC00985722 /* Thread */ = {
+			isa = PBXGroup;
+			children = (
+				39A32EE02C0E380600985722 /* CredentialsSharing */,
+			);
+			path = Thread;
+			sourceTree = "<group>";
+		};
+		39A32EE02C0E380600985722 /* CredentialsSharing */ = {
+			isa = PBXGroup;
+			children = (
+				42FCCFF12B9B1C310057783F /* SimulatorThreadClientService.swift */,
+				42FCCFE62B9B1C310057783F /* ThreadCredentialsSharing.test.swift */,
+				42FCCFE72B9B1C310057783F /* ThreadCredentialsSharingViewModel.test.swift */,
+			);
+			path = CredentialsSharing;
+			sourceTree = "<group>";
+		};
+		39A32EE32C0E38A100985722 /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
+			);
+			path = WebView;
 			sourceTree = "<group>";
 		};
 		420FE8472B5569ED00878E06 /* Actions */ = {
@@ -3248,14 +3303,6 @@
 			path = Domains;
 			sourceTree = "<group>";
 		};
-		425573D82B57DDC700145217 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				425573D92B57DDE000145217 /* WindowScenesManager.test.swift */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		426740A42B17348700C1DD73 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -3325,15 +3372,6 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
-		42A818DE2BBEA8050083D045 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				42A818E12BBEA9650083D045 /* Mocks */,
-				42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		42A818E12BBEA9650083D045 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -3347,7 +3385,6 @@
 		42B94BD92B9606CD00DEE060 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
-				42A818DE2BBEA8050083D045 /* Tests */,
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
@@ -3417,14 +3454,6 @@
 			path = Domain;
 			sourceTree = "<group>";
 		};
-		42DD84172B14D83400936F16 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		42F1DA6E2B4EE2CE002729BC /* Responses */ = {
 			isa = PBXGroup;
 			children = (
@@ -3492,16 +3521,6 @@
 			path = CredentialsManagement;
 			sourceTree = "<group>";
 		};
-		42FCCFE82B9B1C310057783F /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				42FCCFF12B9B1C310057783F /* SimulatorThreadClientService.swift */,
-				42FCCFE62B9B1C310057783F /* ThreadCredentialsSharing.test.swift */,
-				42FCCFE72B9B1C310057783F /* ThreadCredentialsSharingViewModel.test.swift */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		42FCCFEA2B9B1C310057783F /* ToAppleKeychain */ = {
 			isa = PBXGroup;
 			children = (
@@ -3524,7 +3543,6 @@
 				42FCCFF32B9B1C310057783F /* ThreadCredentialsSharing+build.swift */,
 				42FCCFF42B9B1C310057783F /* ThreadCredentialsSharingView.swift */,
 				42FCCFF52B9B1C310057783F /* ThreadCredentialsSharingViewModelProtocol.swift */,
-				42FCCFE82B9B1C310057783F /* Tests */,
 				42FCCFEA2B9B1C310057783F /* ToAppleKeychain */,
 				42FCCFEC2B9B1C310057783F /* ToHomeAssistant */,
 			);
@@ -3875,6 +3893,10 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				39A32EE32C0E38A100985722 /* WebView */,
+				39A32EDF2C0E37FC00985722 /* Thread */,
+				39A32EDE2C0E36E900985722 /* Scenes */,
+				39A32EDD2C0E36A400985722 /* Assist */,
 				11EFD3C1272642FC000AF78B /* Additions */,
 				116D3A3B2724D81C00EF5D21 /* Auth */,
 				11AD2EA7252900AA00FBC437 /* Resources */,
@@ -3974,10 +3996,10 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				396F2B4C2C121D2B002F84FD /* Extensions */,
 				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
-				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
@@ -3986,12 +4008,9 @@
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
-				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
-				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
-				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
 				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
 			);
 			path = Utilities;
@@ -6004,6 +6023,7 @@
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
+				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
