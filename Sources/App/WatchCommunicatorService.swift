@@ -41,8 +41,12 @@ final class WatchCommunicatorService {
 
         setupMessages()
 
-        Blob.observations.store[.init(queue: .main)] = { blob in
+        Blob.observations.store[.init(queue: .main)] = { [weak self] blob in
             Current.Log.verbose("Received blob: \(blob.identifier)")
+
+            if blob.identifier == InteractiveImmediateMessages.assistAudioData.rawValue {
+                self?.assistAudioData(blob: blob)
+            }
         }
 
         Context.observations.store[.init(queue: .main)] = { context in
@@ -76,7 +80,8 @@ final class WatchCommunicatorService {
             case .assistPipelinesFetch:
                 assistPipelinesFetch(message: message)
             case .assistAudioData:
-                assistAudioData(message: message)
+                // This will be handled by Blob observation due to amount of data
+                break
             }
         }
     }
@@ -164,47 +169,35 @@ extension WatchCommunicatorService {
         }
     }
 
-    private func assistAudioData(message: InteractiveImmediateMessage) {
+    private func assistAudioData(blob: Blob) {
         let responseIdentifier = InteractiveImmediateResponses.assistAudioDataResponse.rawValue
 
-        let serverId = message.content["serverId"] as? String
+        let serverId = blob.metadata?["serverId"] as? String
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
             .servers.all.first else {
-            let errorMessage = "No server available to execute message \(message)"
+            let errorMessage = "No server available to execute message \(blob.identifier)"
             Current.Log.warning(errorMessage)
-            message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
-
             return
         }
 
         firstly { [weak self] () -> Promise<Void> in
             Promise { _ in
-                let pipelineId = message.content["pipelineId"] as? String ?? ""
-                guard let self, let sampleRate = message.content["sampleRate"] as? Double else {
-                    let errorMessage = "No sample rate received in message \(message)"
+                let pipelineId =  blob.metadata?["pipelineId"] as? String ?? ""
+                guard let self, let sampleRate =  blob.metadata?["sampleRate"] as? Double else {
+                    let errorMessage = "No sample rate received in message \(blob.identifier)"
                     Current.Log.error(errorMessage)
-                    message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
                     return
                 }
-                guard let audioURLString = message.content["audioURL"] as? String,
-                      let audioURL = URL(string: audioURLString),
-                let audioData = try? Data(contentsOf: audioURL) else {
-                    let errorMessage = "No audio data received in message \(message)"
-                    Current.Log.error(errorMessage)
-                    message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
-                    return
-                }
+                let audioData = blob.content
                 self.pendingAudioData = audioData
                 self.initAssistServiceIfNeeded(server: server).assist(source: .audio(
                     pipelineId: pipelineId,
                     audioSampleRate: sampleRate
                 ))
-                message.reply(.init(identifier: responseIdentifier, content: [:]))
             }
         }.catch { err in
             let errorMessage = "Error during fetch Assist pipelines: \(err)"
             Current.Log.warning(errorMessage)
-            message.reply(.init(identifier: responseIdentifier, content: ["error": errorMessage]))
         }
     }
 

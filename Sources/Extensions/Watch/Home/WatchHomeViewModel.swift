@@ -30,6 +30,7 @@ enum WatchHomeViewState {
 enum WatchSendError: Error {
     case notImmediate
     case phoneFailed
+    case wrongAudioURLData
 }
 
 final class WatchHomeViewModel: WatchHomeViewModelProtocol {

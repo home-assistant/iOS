@@ -42,29 +42,29 @@ final class WatchAssistService: ObservableObject {
                     return
                 }
 
+                let audioData = try Data(contentsOf: audioURL)
+
                 Current.Log.verbose("Signaling Assist audio data")
-                let actionMessage = InteractiveImmediateMessage(
-                    identifier: InteractiveImmediateMessages.assistAudioData.rawValue,
-                    content: [
-                        "serverId": selectedServer,
-                        "pipelineId": preferredPipeline,
-                        "audioURL": audioURL.absoluteString,
-                        "sampleRate": sampleRate,
-                    ],
-                    reply: { message in
-                        Current.Log.verbose("Received reply dictionary \(message)")
-                        seal.fulfill(())
-                    }
-                )
+                let blob = Blob(identifier: InteractiveImmediateMessages.assistAudioData.rawValue, content: audioData, metadata: [
+                    "serverId": selectedServer,
+                    "pipelineId": preferredPipeline,
+                    "audioURL": audioURL.absoluteString,
+                    "sampleRate": sampleRate,
+                ])
 
                 Current.Log
                     .verbose(
-                        "Sending \(InteractiveImmediateMessages.assistPipelinesFetch.rawValue) message \(actionMessage)"
+                        "Sending \(blob.identifier)"
                     )
-                Communicator.shared.send(actionMessage, errorHandler: { error in
-                    Current.Log.error("Received error when sending immediate message \(error)")
-                    seal.reject(error)
-                })
+                Communicator.shared.transfer(blob) { result in
+                    switch result {
+                    case .success:
+                        seal.fulfill(())
+                    case .failure(let error):
+                        Current.Log.error("Failed to send audio data blob: \(error.localizedDescription)")
+                        seal.reject(error)
+                    }
+                }
             }
         }
         .done {
