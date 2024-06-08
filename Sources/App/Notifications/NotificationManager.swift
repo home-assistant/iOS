@@ -293,7 +293,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
-        var methods: UNNotificationPresentationOptions = [.badge, .sound]
+        var methods: UNNotificationPresentationOptions = [.badge, .sound, .list, .banner]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {
             methods = []
             if presentationOptions.contains("sound") || notification.request.content.sound != nil {
@@ -301,6 +301,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             }
             if presentationOptions.contains("badge") {
                 methods.insert(.badge)
+            }
+            if presentationOptions.contains("list") {
+                methods.insert(.list)
+            }
+            if presentationOptions.contains("banner") {
+                methods.insert(.banner)
             }
         }
         return completionHandler(methods)
