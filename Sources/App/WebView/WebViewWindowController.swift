@@ -4,13 +4,7 @@ import PromiseKit
 import Shared
 import UIKit
 
-@available(iOS, deprecated: 13.0)
-enum StateRestorationKey: String {
-    case mainWindow
-    case webViewNavigationController
-}
-
-class WebViewWindowController {
+final class WebViewWindowController {
     let window: UIWindow
     var restorationActivity: NSUserActivity?
 
@@ -121,20 +115,6 @@ class WebViewWindowController {
             currentController = controller
         }
         return currentController
-    }
-
-    @available(iOS, deprecated: 13.0)
-    func viewController(
-        withRestorationIdentifierPath identifierComponents: [String]
-    ) -> UIViewController? {
-        // iOS 12 and below state restoration code path only
-        if identifierComponents == [StateRestorationKey.webViewNavigationController.rawValue] {
-            let navigationController = webViewNavigationController()
-            window.rootViewController = navigationController
-            return navigationController
-        } else {
-            return nil
-        }
     }
 
     func navigate(to url: URL, on server: Server) {

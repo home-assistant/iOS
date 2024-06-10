@@ -59,8 +59,9 @@ class IncomingURLHandler {
                 return false
             }
 
-            if let presenting = windowController.presentedViewController,
-               presenting is SFSafariViewController {
+            if
+                let presenting = windowController.presentedViewController,
+                presenting is SFSafariViewController {
                 // Dismiss my.* controller if it's on top - we don't get any other indication
                 presenting.dismiss(animated: true, completion: { [windowController] in
                     windowController?.openSelectingServer(
@@ -105,7 +106,7 @@ class IncomingURLHandler {
                         autoStartRecording: autoStartRecording
                     )
                 case let .rejected(error):
-                    Current.Log.error("Failed to obtain webview to open Assist In App")
+                    Current.Log.error("Failed to obtain webview to open Assist In App: \(error.localizedDescription)")
                 }
             }
 
@@ -137,8 +138,9 @@ class IncomingURLHandler {
             if let url = userActivity.webpageURL, url.host?.lowercased() == "my.home-assistant.io" {
                 return showMy(for: url)
             } else if let interaction = userActivity.interaction {
-                if let intent = interaction.intent as? OpenPageIntent,
-                   let panel = intent.page, let path = panel.identifier {
+                if
+                    let intent = interaction.intent as? OpenPageIntent,
+                    let panel = intent.page, let path = panel.identifier {
                     Current.Log.info("launching from shortcuts with panel \(panel)")
 
                     let urlString = "/" + path
@@ -177,8 +179,9 @@ class IncomingURLHandler {
                     })
                 }.asVoid()
             } else {
-                if let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
-                   let server = Current.servers.server(for: action) {
+                if
+                    let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
+                    let server = Current.servers.server(for: action) {
                     Current.sceneManager.showFullScreenConfirm(
                         icon: MaterialDesignIcons(named: action.IconName),
                         text: action.Text,
@@ -517,8 +520,9 @@ extension IncomingURLHandler {
         }
 
         let source: HomeAssistantAPI.ActionSource = {
-            if let sourceString = serviceData["source"],
-               let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
+            if
+                let sourceString = serviceData["source"],
+                let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
                 return source
             } else {
                 return .URLHandler
@@ -527,8 +531,9 @@ extension IncomingURLHandler {
 
         let actionID = url.pathComponents[1]
 
-        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-              let server = Current.servers.server(for: action) else {
+        guard
+            let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
+            let server = Current.servers.server(for: action) else {
             Current.sceneManager.showFullScreenConfirm(
                 icon: .alertCircleIcon,
                 text: L10n.UrlHandler.Error.actionNotFound,

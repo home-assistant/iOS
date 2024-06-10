@@ -37,16 +37,6 @@ extension AppEnvironment {
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    @available(iOS, deprecated: 13.0)
-    var window: UIWindow? {
-        get {
-            sceneManager.compatibility.windowController?.window
-        }
-        set { // swiftlint:disable:this unused_setter_value
-            fatalError("window is not settable in app delegate")
-        }
-    }
-
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
@@ -109,7 +99,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
         setupWatchCommunicator()
-        setupiOS12Features()
 
         return true
     }
@@ -436,19 +425,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         _ = Communicator.shared
-    }
-
-    private func setupiOS12Features() {
-        // Tell the system we have a app notification settings screen and want critical alerts
-        // This is effectively a migration
-
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            guard settings.authorizationStatus == .authorized else { return }
-
-            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { granted, error in
-                Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
-            }
-        }
     }
 
     func setupLocalization() {
