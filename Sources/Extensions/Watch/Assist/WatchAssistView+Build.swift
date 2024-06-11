@@ -5,7 +5,8 @@ extension WatchAssistView {
     static func build() -> WatchAssistView {
         let viewModel = WatchAssistViewModel(
             audioRecorder: WatchAudioRecorder(),
-            assistService: WatchAssistService()
+            assistService: WatchAssistService(),
+            immediateCommunicatorService: .shared
         )
         return WatchAssistView(viewModel: viewModel)
     }

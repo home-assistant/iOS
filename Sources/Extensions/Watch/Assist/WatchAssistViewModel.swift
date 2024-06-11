@@ -19,65 +19,66 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
     @Published var assistService: WatchAssistService
+    @Published var showChatLoader = false
 
     private let audioRecorder: any WatchAudioRecorderProtocol
+    private let immediateCommunicatorService: ImmediateCommunicatorService
 
     init(
         audioRecorder: any WatchAudioRecorderProtocol,
-        assistService: WatchAssistService
+        assistService: WatchAssistService,
+        immediateCommunicatorService: ImmediateCommunicatorService
     ) {
         self.audioRecorder = audioRecorder
         self.assistService = assistService
+        self.immediateCommunicatorService = immediateCommunicatorService
         audioRecorder.delegate = self
-
-        setupCommunicator()
+        immediateCommunicatorService.addObserver(.init(delegate: self))
     }
-    
+
+    deinit {
+        immediateCommunicatorService.removeObserver(self)
+    }
+
     func assist() {
-            audioRecorder.startRecording()
+        audioRecorder.startRecording()
     }
 
     func stopRecording() {
         audioRecorder.stopRecording()
     }
 
-    private func setupCommunicator() {
-        ImmediateMessage.observe { [weak self] message in
-            guard let messageId = InteractiveImmediateResponses(rawValue: message.identifier) else {
-                Current.Log.error("Received communicator message that cant be mapped to messages responses enum")
-                return
-            }
+    private func showChatLoader(show: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.showChatLoader = show
+        }
+    }
 
-            switch messageId {
-            case .assistSTTResponse:
-                guard let content = message.content["content"] as? String else {
-                    Current.Log.error("Received assistSTTResponse without content")
-                    return
-                }
-                self?.appendChatItem(AssistChatItem(content: content, itemType: .input))
-            case .assistIntentEndResponse:
-                guard let content = message.content["content"] as? String else {
-                    Current.Log.error("Received assistIntentEndResponse without content")
-                    return
-                }
-                self?.appendChatItem(AssistChatItem(content: content, itemType: .output))
-            case .assistTTSResponse:
-                break
-            default:
-                break
-            }
+    private func updateState(state: State) {
+        DispatchQueue.main.async { [weak self] in
+            self?.state = state
         }
     }
 
     private func sendAudioData(audioURL: URL, audioSampleRate: Double) {
-        assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { success in
-            Current.Log.info("sendAudioData result: \(success)")
+        showChatLoader(show: true)
+        assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { [weak self] error in
+            if let error {
+                Current.Log.error("Failed to assist from watch error: \(error.localizedDescription)")
+                self?.updateState(state: .idle)
+                #if DEBUG
+                self?.appendChatItem(.init(content: error.localizedDescription, itemType: .info))
+                #endif
+            } else {
+                Current.Log.info("sendAudioData succeeded")
+            }
         }
     }
 
-    private func appendChatItem(_ item: AssistChatItem) {
+    func appendChatItem(_ item: AssistChatItem) {
         DispatchQueue.main.async { [weak self] in
             self?.chatItems.append(item)
+            self?.showChatLoader = false
         }
     }
 }
@@ -102,5 +103,11 @@ extension WatchAssistViewModel: WatchAudioRecorderDelegate {
     func didFailRecording(error: any Error) {
         Current.Log.error("Failed to record Assist audio in watch App: \(error.localizedDescription)")
         state = .idle
+    }
+}
+
+extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
+    func didReceiveChatItem(_ item: AssistChatItem) {
+        appendChatItem(item)
     }
 }

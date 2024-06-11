@@ -4,6 +4,7 @@ import UIKit
 
 struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtocol {
     @StateObject private var viewModel: ViewModel
+    @State private var showAssist = false
 
     private let stateIconSize: CGSize = .init(width: 60, height: 60)
     private let stateIconColor: UIColor = .white
@@ -22,6 +23,9 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             .onDisappear {
                 viewModel.onDisappear()
             }
+            .fullScreenCover(isPresented: $showAssist, content: {
+                WatchAssistView.build()
+            })
     }
 
     @ViewBuilder
@@ -45,12 +49,14 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
                 if #available(watchOS 10, *) {
                     $0.toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            NavigationLink(destination: WatchAssistView.build()) {
+                            Button(action: {
+                                showAssist = true
+                            }, label: {
                                 Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
                                     ofSize: .init(width: 24, height: 24),
                                     color: Asset.Colors.haPrimary.color
                                 ))
-                            }
+                            })
                         }
                     }
                 } else {
@@ -78,6 +84,8 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             }
         }
         .animation(.easeInOut, value: viewModel.actions)
+        // This improves how the overlayed assist view looks
+        .opacity(showAssist ? 0.5 : 1)
     }
 
     private var noActionsView: some View {

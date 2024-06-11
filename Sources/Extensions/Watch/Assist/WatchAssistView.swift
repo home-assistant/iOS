@@ -9,6 +9,8 @@ struct WatchAssistView: View {
     /// Used when there are just one server for quicker access to pipeline selection
     @State private var showPipelinesPicker = false
 
+    private let progressViewId = "progressViewId"
+
     init(
         viewModel: WatchAssistViewModel
     ) {
@@ -35,11 +37,8 @@ struct WatchAssistView: View {
             }
         }
         .onAppear {
-            if viewModel.assistService.pipelines.isEmpty {
-                viewModel.assistService.fetchPipelines { _ in
-                    viewModel.assist()
-                }
-            } else {
+            viewModel.state = .loading
+            viewModel.assistService.fetchPipelines { _ in
                 viewModel.assist()
             }
         }
@@ -130,24 +129,41 @@ struct WatchAssistView: View {
         }
     }
 
+    @ViewBuilder
     private var micButton: some View {
-        Button {
-            viewModel.assist()
-        } label: {
-            micImage
-        }
-        .buttonStyle(.plain)
-        .ignoresSafeArea()
-        .padding(.horizontal, Spaces.two)
-        .padding(.top, Spaces.one)
-        .padding(.bottom, -Spaces.two)
-        .modify {
-            if #available(watchOS 10, *) {
-                $0.background(.thinMaterial)
-            } else {
-                $0.background(.black.opacity(0.5))
+        if viewModel.state != .loading {
+            Button {
+                viewModel.assist()
+            } label: {
+                if viewModel.showChatLoader {
+                   micButtonProgressView
+                } else {
+                    micImage
+                }
+            }
+            .buttonStyle(.plain)
+            .ignoresSafeArea()
+            .padding(.horizontal, Spaces.two)
+            .padding(.top, Spaces.one)
+            .padding(.bottom, -Spaces.two)
+            .disabled(viewModel.showChatLoader)
+            .modify {
+                if #available(watchOS 10, *) {
+                    $0.background(.thinMaterial)
+                } else {
+                    $0.background(.black.opacity(0.5))
+                }
             }
         }
+    }
+
+    private var micButtonProgressView: some View {
+        ProgressView()
+            .progressViewStyle(.circular)
+            .scaleEffect(.init(floatLiteral: 1.5))
+            .frame(maxWidth: .infinity, alignment: .center)
+            .progressViewStyle(.linear)
+            .frame(height: 40)
     }
 
     private var micImage: some View {
@@ -198,9 +214,7 @@ struct WatchAssistView: View {
         ScrollViewReader { proxy in
             List {
                 ForEach(viewModel.chatItems, id: \.id) { item in
-                    makeChatBubble(item: item)
-                        .listRowBackground(Color.clear)
-                        .id(item.id)
+                    ChatBubbleView(item: item)
                 }
                 if viewModel.chatItems.isEmpty {
                     emptyState
@@ -235,62 +249,5 @@ struct WatchAssistView: View {
             Spacer()
         }
         .listRowBackground(Color.clear)
-    }
-
-    private func makeChatBubble(item: AssistChatItem) -> some View {
-        Text(item.content)
-            .padding(8)
-            .padding(.horizontal, 8)
-            .background(backgroundForChatItemType(item.itemType))
-            .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
-    }
-
-    private func backgroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
-        switch itemType {
-        case .input:
-            .asset(Asset.Colors.haPrimary)
-        case .output:
-            .gray
-        case .error:
-            .red
-        case .info:
-            .gray.opacity(0.5)
-        }
-    }
-
-    private func alignmentForChatItemType(_ itemType: AssistChatItem.ItemType) -> Alignment {
-        switch itemType {
-        case .input:
-            .trailing
-        case .output:
-            .leading
-        case .error, .info:
-            .center
-        }
-    }
-
-    private func roundedCornersForChatItemType(_ itemType: AssistChatItem.ItemType) -> UIRectCorner {
-        switch itemType {
-        case .input:
-            [.topLeft, .topRight, .bottomLeft]
-        case .output:
-            [.topLeft, .topRight, .bottomRight]
-        case .error, .info:
-            [.allCorners]
-        }
-    }
-}
-
-#Preview {
-    if #available(watchOS 10, *) {
-        NavigationStack {
-            WatchAssistView.build()
-        }
-    } else {
-        NavigationView {
-            WatchAssistView.build()
-        }
     }
 }

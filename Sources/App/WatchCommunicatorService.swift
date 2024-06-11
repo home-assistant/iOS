@@ -181,7 +181,7 @@ extension WatchCommunicatorService {
         }
 
         firstly { [weak self] () -> Promise<Void> in
-            Promise { _ in
+            Promise { seal in
                 let pipelineId =  blob.metadata?["pipelineId"] as? String ?? ""
                 guard let self, let sampleRate =  blob.metadata?["sampleRate"] as? Double else {
                     let errorMessage = "No sample rate received in message \(blob.identifier)"
@@ -194,6 +194,9 @@ extension WatchCommunicatorService {
                     pipelineId: pipelineId,
                     audioSampleRate: sampleRate
                 ))
+                DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
+                    seal.fulfill(())
+                }
             }
         }.catch { err in
             let errorMessage = "Error during fetch Assist pipelines: \(err)"

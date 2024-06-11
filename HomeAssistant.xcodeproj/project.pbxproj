@@ -527,6 +527,8 @@
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		423E95C52BFF2F5E00C2094A /* WatchActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */; };
 		423E95C92BFF314F00C2094A /* MockWatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */; };
+		423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44EF2C17238200766A99 /* ChatBubbleView.swift */; };
+		423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
@@ -1672,6 +1674,8 @@
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		423E95C32BFF2ED000C2094A /* WatchActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchActionButtonView.swift; sourceTree = "<group>"; };
 		423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWatchHomeViewModel.swift; sourceTree = "<group>"; };
+		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
+		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2B32B2B5C8100E9F001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -3307,6 +3311,14 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		423F44EC2C17232600766A99 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				423F44EF2C17238200766A99 /* ChatBubbleView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		425573C52B55729E00145217 /* Servers */ = {
 			isa = PBXGroup;
 			children = (
@@ -3356,6 +3368,7 @@
 		426490662C0F1A27002155CC /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				423F44EC2C17232600766A99 /* Views */,
 				42B1A7422C11E65100904548 /* WatchAssistService.swift */,
 				421326A92C0FCF2600C7D059 /* Settings */,
 				426490672C0F1A41002155CC /* WatchAssistView.swift */,
@@ -4141,6 +4154,7 @@
 				B6CC5DAA2159D60900833E5D /* Resources */,
 				11FA935A263FAA7C0015F1FC /* Notifications */,
 				B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */,
+				423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */,
 				42C373B12BC5382900898990 /* HostingController.swift */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
 			);
@@ -4678,6 +4692,8 @@
 				11B6B5812948F8E100B8B552 /* PBXTargetDependency */,
 			);
 			name = App;
+			packageProductDependencies = (
+			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
 			productType = "com.apple.product-type.application";
@@ -6538,6 +6554,7 @@
 				110D74CA2640E0DF00406078 /* NotificationSubControllerMedia.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				423E95C92BFF314F00C2094A /* MockWatchHomeViewModel.swift in Sources */,
+				423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */,
 				42C373B22BC5382900898990 /* HostingController.swift in Sources */,
 				421326AB2C0FCF3C00C7D059 /* WatchAssistSettings.swift in Sources */,
 				423E95C52BFF2F5E00C2094A /* WatchActionButtonView.swift in Sources */,
@@ -6547,6 +6564,7 @@
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */,
 				42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */,
+				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
 				4264906E2C0F1B8B002155CC /* WatchAssistViewModel.swift in Sources */,
 			);

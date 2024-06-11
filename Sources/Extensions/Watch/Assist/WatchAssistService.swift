@@ -33,7 +33,7 @@ final class WatchAssistService: ObservableObject {
         loadPipelines(completion: completion)
     }
 
-    func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Bool) -> Void) {
+    func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
         firstly { () -> Promise<Void> in
             Promise { [weak self] seal in
                 guard let self else { return }
@@ -43,19 +43,16 @@ final class WatchAssistService: ObservableObject {
                 }
 
                 let audioData = try Data(contentsOf: audioURL)
+                try FileManager.default.removeItem(at: audioURL)
 
                 Current.Log.verbose("Signaling Assist audio data")
                 let blob = Blob(identifier: InteractiveImmediateMessages.assistAudioData.rawValue, content: audioData, metadata: [
                     "serverId": selectedServer,
                     "pipelineId": preferredPipeline,
-                    "audioURL": audioURL.absoluteString,
                     "sampleRate": sampleRate,
                 ])
 
-                Current.Log
-                    .verbose(
-                        "Sending \(blob.identifier)"
-                    )
+                Current.Log.verbose("Sending \(blob.identifier)")
                 Communicator.shared.transfer(blob) { result in
                     switch result {
                     case .success:
@@ -65,13 +62,16 @@ final class WatchAssistService: ObservableObject {
                         seal.reject(error)
                     }
                 }
+
+                // Extra message just to wake up iPhone from the background to process Blob above
+                Communicator.shared.send(ImmediateMessage(identifier: "wakeup"))
             }
         }
         .done {
-            completion(true)
+            completion(nil)
         }.catch { error in
             Current.Log.error("Error during sending Assist audio data: \(error)")
-            completion(false)
+            completion(error)
         }
     }
 

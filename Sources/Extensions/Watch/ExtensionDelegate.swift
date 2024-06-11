@@ -14,6 +14,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
     fileprivate var watchConnectivityWatchdogTimer: Timer?
 
+    private var immediateCommunicatorService: ImmediateCommunicatorService?
+
     override init() {
         (self.watchConnectivityBackgroundPromise, self.watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
         super.init()
@@ -145,10 +147,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        ImmediateMessage.observations.store[.init(queue: .main)] = { message in
-            Current.Log.verbose("Received message: \(message.identifier)")
+        immediateCommunicatorService = ImmediateCommunicatorService.shared
 
-            self.endWatchConnectivityBackgroundTaskIfNecessary()
+        ImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
+            Current.Log.verbose("Received message: \(message.identifier)")
+            self?.immediateCommunicatorService?.evaluateMessage(message)
+            self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         GuaranteedMessage.observations.store[.init(queue: .main)] = { message in

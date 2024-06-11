@@ -82,9 +82,7 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
             guard let self, let audioRecorder else { return }
             audioRecorder.updateMeters()
 
-            let averagePower = audioRecorder.averagePower(forChannel: 0)
-            print(silenceLevel)
-            print(averagePower)
+            let averagePower = audioRecorder.averagePower(forChannel: 1)
             if averagePower < silenceLevel {
                 silenceTimer?.invalidate()
                 silenceTimer = Timer
