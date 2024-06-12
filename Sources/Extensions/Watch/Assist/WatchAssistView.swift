@@ -3,6 +3,7 @@ import SwiftUI
 
 struct WatchAssistView: View {
     @StateObject private var viewModel: WatchAssistViewModel
+    @EnvironmentObject private var assistService: WatchAssistService
 
     /// Used when there are multiple server
     @State private var showSettings = false
@@ -38,8 +39,12 @@ struct WatchAssistView: View {
         }
         .onAppear {
             viewModel.state = .loading
-            viewModel.assistService.fetchPipelines { _ in
-                viewModel.assist()
+            if assistService.pipelines.isEmpty {
+                assistService.fetchPipelines { _ in
+                    viewModel.assist(assistService)
+                }
+            } else {
+                viewModel.assist(assistService)
             }
         }
         .onDisappear {
@@ -69,7 +74,6 @@ struct WatchAssistView: View {
         }
         .fullScreenCover(isPresented: $showSettings) {
             WatchAssistSettings()
-                .environmentObject(viewModel.assistService)
         }
     }
 
@@ -94,12 +98,12 @@ struct WatchAssistView: View {
 
     @ViewBuilder
     private var pipelineSelector: some View {
-        if viewModel.assistService.pipelines.count > 1 || viewModel.assistService.servers.count > 1,
-           let firstPipelineName = viewModel.assistService.pipelines
-           .first(where: { $0.id == viewModel.assistService.preferredPipeline })?.name,
+        if assistService.pipelines.count > 1 || assistService.servers.count > 1,
+           let firstPipelineName = assistService.pipelines
+           .first(where: { $0.id == assistService.preferredPipeline })?.name,
            let firstPipelineNameChar = firstPipelineName.first {
             Button {
-                if viewModel.assistService.servers.count > 1 {
+                if assistService.servers.count > 1 {
                     showSettings = true
                 } else {
                     showPipelinesPicker = true
@@ -118,9 +122,9 @@ struct WatchAssistView: View {
                 .padding(.horizontal)
             }
             .confirmationDialog(L10n.Assist.PipelinesPicker.title, isPresented: $showPipelinesPicker) {
-                ForEach(viewModel.assistService.pipelines, id: \.id) { pipeline in
+                ForEach(assistService.pipelines, id: \.id) { pipeline in
                     Button {
-                        viewModel.assistService.preferredPipeline = pipeline.id
+                        assistService.preferredPipeline = pipeline.id
                     } label: {
                         Text(pipeline.name)
                     }
@@ -133,7 +137,7 @@ struct WatchAssistView: View {
     private var micButton: some View {
         if viewModel.state != .loading {
             Button {
-                viewModel.assist()
+                viewModel.assist(assistService)
             } label: {
                 if viewModel.showChatLoader {
                    micButtonProgressView
@@ -141,6 +145,9 @@ struct WatchAssistView: View {
                     micImage
                 }
             }
+            /* Double tap for watchOS 11
+            .handGestureShortcut(.primaryAction)
+             */
             .buttonStyle(.plain)
             .ignoresSafeArea()
             .padding(.horizontal, Spaces.two)
@@ -180,7 +187,7 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micRecording: some View {
         Button(action: {
-            viewModel.assist()
+            viewModel.assist(assistService)
         }, label: {
             if #available(watchOS 10.0, *) {
                 Image(systemName: "waveform.circle.fill")

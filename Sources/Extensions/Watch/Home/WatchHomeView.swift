@@ -25,6 +25,7 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             }
             .fullScreenCover(isPresented: $showAssist, content: {
                 WatchAssistView.build()
+                    .environmentObject(viewModel.assistService)
             })
     }
 

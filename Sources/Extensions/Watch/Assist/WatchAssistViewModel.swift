@@ -18,19 +18,19 @@ final class WatchAssistViewModel: ObservableObject {
 
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
-    @Published var assistService: WatchAssistService
     @Published var showChatLoader = false
 
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let immediateCommunicatorService: ImmediateCommunicatorService
 
+    /// Provided via environment object and received by 'assist' method
+    private var assistService: WatchAssistService?
+
     init(
         audioRecorder: any WatchAudioRecorderProtocol,
-        assistService: WatchAssistService,
         immediateCommunicatorService: ImmediateCommunicatorService
     ) {
         self.audioRecorder = audioRecorder
-        self.assistService = assistService
         self.immediateCommunicatorService = immediateCommunicatorService
         audioRecorder.delegate = self
         immediateCommunicatorService.addObserver(.init(delegate: self))
@@ -40,7 +40,8 @@ final class WatchAssistViewModel: ObservableObject {
         immediateCommunicatorService.removeObserver(self)
     }
 
-    func assist() {
+    func assist(_ assistService: WatchAssistService) {
+        self.assistService = assistService
         audioRecorder.startRecording()
     }
 
@@ -62,7 +63,7 @@ final class WatchAssistViewModel: ObservableObject {
 
     private func sendAudioData(audioURL: URL, audioSampleRate: Double) {
         showChatLoader(show: true)
-        assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { [weak self] error in
+        assistService?.assist(audioURL: audioURL, sampleRate: audioSampleRate) { [weak self] error in
             if let error {
                 Current.Log.error("Failed to assist from watch error: \(error.localizedDescription)")
                 self?.updateState(state: .idle)
