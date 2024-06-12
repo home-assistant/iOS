@@ -38,14 +38,7 @@ struct WatchAssistView: View {
             }
         }
         .onAppear {
-            viewModel.state = .loading
-            if assistService.pipelines.isEmpty {
-                assistService.fetchPipelines { _ in
-                    viewModel.assist(assistService)
-                }
-            } else {
-                viewModel.assist(assistService)
-            }
+            initialRoutine()
         }
         .onDisappear {
             viewModel.stopRecording()
@@ -74,6 +67,20 @@ struct WatchAssistView: View {
         }
         .fullScreenCover(isPresented: $showSettings) {
             WatchAssistSettings()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+            initialRoutine()
+        }
+    }
+
+    private func initialRoutine() {
+        viewModel.state = .loading
+        if assistService.pipelines.isEmpty {
+            assistService.fetchPipelines { _ in
+                viewModel.assist(assistService)
+            }
+        } else {
+            viewModel.assist(assistService)
         }
     }
 

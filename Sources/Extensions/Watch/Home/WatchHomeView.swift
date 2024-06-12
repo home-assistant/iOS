@@ -27,6 +27,9 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
                 WatchAssistView.build()
                     .environmentObject(viewModel.assistService)
             })
+            .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+                showAssist = true
+            }
     }
 
     @ViewBuilder

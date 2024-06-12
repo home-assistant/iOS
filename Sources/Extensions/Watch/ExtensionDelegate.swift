@@ -112,17 +112,20 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: identifier)
+            complication = Current.realm(objectTypes: [WatchComplication.self]).object(ofType: WatchComplication.self, forPrimaryKey: identifier)
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
                   let clkFamily = date.complicationFamilyFromEncodedDate {
             let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: family.rawValue)
+            complication = Current.realm(objectTypes: [WatchComplication.self]).object(ofType: WatchComplication.self, forPrimaryKey: family.rawValue)
         } else {
             complication = nil
         }
 
         if let complication {
             Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
+        } else if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
+                  identifier == AssistDefaultComplication.defaultComplicationId {
+            NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
         } else {
             Current.Log.verbose("unknown or no complication launched the app")
         }

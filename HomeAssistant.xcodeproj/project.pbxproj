@@ -529,6 +529,7 @@
 		423E95C92BFF314F00C2094A /* MockWatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */; };
 		423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44EF2C17238200766A99 /* ChatBubbleView.swift */; };
 		423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */; };
+		423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F45202C19D89100766A99 /* AssistDefaultComplication.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
@@ -1676,6 +1677,7 @@
 		423E95C72BFF314C00C2094A /* MockWatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWatchHomeViewModel.swift; sourceTree = "<group>"; };
 		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
+		423F45202C19D89100766A99 /* AssistDefaultComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistDefaultComplication.swift; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2B32B2B5C8100E9F001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -3319,6 +3321,23 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		423F451E2C19D87500766A99 /* Complication */ = {
+			isa = PBXGroup;
+			children = (
+				423F451F2C19D88100766A99 /* Assist */,
+				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
+			);
+			path = Complication;
+			sourceTree = "<group>";
+		};
+		423F451F2C19D88100766A99 /* Assist */ = {
+			isa = PBXGroup;
+			children = (
+				423F45202C19D89100766A99 /* AssistDefaultComplication.swift */,
+			);
+			path = Assist;
+			sourceTree = "<group>";
+		};
 		425573C52B55729E00145217 /* Servers */ = {
 			isa = PBXGroup;
 			children = (
@@ -4149,6 +4168,7 @@
 			isa = PBXGroup;
 			children = (
 				426490662C0F1A27002155CC /* Assist */,
+				423F451E2C19D87500766A99 /* Complication */,
 				42C373B62BC55C3A00898990 /* Home */,
 				B672AB592216C41000175465 /* Utilities */,
 				B6CC5DAA2159D60900833E5D /* Resources */,
@@ -4156,7 +4176,6 @@
 				B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */,
 				423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */,
 				42C373B12BC5382900898990 /* HostingController.swift */,
-				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -4908,7 +4927,7 @@
 			isa = PBXProject;
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Original;
-				LastSwiftUpdateCheck = 1410;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1330;
 				ORGANIZATIONNAME = "Home Assistant";
 				TargetAttributes = {
@@ -6545,6 +6564,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */,
+				423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
