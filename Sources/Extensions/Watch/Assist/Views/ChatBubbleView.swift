@@ -14,10 +14,10 @@ struct ChatBubbleView: View {
 
     var body: some View {
         Text(item.content)
-            .padding(8)
-            .padding(.horizontal, 8)
+            .padding(4)
+            .padding(.horizontal, 4)
             .background(backgroundForChatItemType(item.itemType))
-            .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
+            .roundedCorner(6, corners: roundedCornersForChatItemType(item.itemType))
             .foregroundColor(.white)
             .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
             .listRowBackground(Color.clear)
@@ -61,11 +61,13 @@ struct ChatBubbleView: View {
 }
 
 #Preview {
-    List {
+    LazyVStack(spacing: 8) {
         ChatBubbleView(item: .init(content: "Hello world", itemType: .input))
+            .background(.red)
         ChatBubbleView(item: .init(content: "Hello world", itemType: .output))
         ChatBubbleView(item: .init(content: "Hello world", itemType: .info))
         ChatBubbleView(item: .init(content: "Hello world", itemType: .input))
         ChatBubbleView(item: .init(content: "Hello world", itemType: .output))
     }
+    .background(.green)
 }
