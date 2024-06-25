@@ -1,16 +1,8 @@
-//
-//  WatchCommunicatorService.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 07/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import Foundation
-import Shared
 import Communicator
-import PromiseKit
+import Foundation
 import ObjectMapper
+import PromiseKit
+import Shared
 
 final class WatchCommunicatorService {
     enum WatchAssistCommunicatorError: Error {
@@ -74,7 +66,7 @@ final class WatchCommunicatorService {
 
             switch messageId {
             case .actionRowPressed:
-                self.actionRowPressed(message: message)
+                actionRowPressed(message: message)
             case .pushAction:
                 pushAction(message: message)
             case .assistPipelinesFetch:
@@ -131,6 +123,7 @@ final class WatchCommunicatorService {
 }
 
 // MARK: - Assist
+
 extension WatchCommunicatorService {
     private func assistPipelinesFetch(message: InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.assistPipelinesFetchResponse.rawValue
@@ -182,8 +175,8 @@ extension WatchCommunicatorService {
 
         firstly { [weak self] () -> Promise<Void> in
             Promise { seal in
-                let pipelineId =  blob.metadata?["pipelineId"] as? String ?? ""
-                guard let self, let sampleRate =  blob.metadata?["sampleRate"] as? Double else {
+                let pipelineId = blob.metadata?["pipelineId"] as? String ?? ""
+                guard let self, let sampleRate = blob.metadata?["sampleRate"] as? Double else {
                     let errorMessage = "No sample rate received in message \(blob.identifier)"
                     Current.Log.error(errorMessage)
                     return
@@ -219,7 +212,7 @@ extension WatchCommunicatorService {
     private func sendPendingAudioData() {
         if let pendingAudioData {
             assistService?.sendAudioData(pendingAudioData)
-            /* 
+            /*
              Since Apple watch sends the whole audio all at once, we can notify
              the pipeline that the audio data flow ended
              */
@@ -228,41 +221,43 @@ extension WatchCommunicatorService {
         }
     }
 }
+
 // MARK: - AssistServiceDelegate
+
 extension WatchCommunicatorService: AssistServiceDelegate {
     func didReceiveEvent(_ event: Shared.AssistEvent) {
         Current.Log.info("Watch Assist received event: \(event)")
     }
-    
+
     func didReceiveSttContent(_ content: String) {
         let message = ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistSTTResponse.rawValue,
             content: [
-                "content" : content
+                "content": content,
             ]
         )
         sendMessage(message: message)
     }
-    
+
     func didReceiveIntentEndContent(_ content: String) {
         let message = ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
             content: [
-                "content" : content
+                "content": content,
             ]
         )
         sendMessage(message: message)
     }
-    
+
     func didReceiveGreenLightForAudioInput() {
         sendPendingAudioData()
     }
-    
+
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         let message = ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistTTSResponse.rawValue,
             content: [
-                "mediaURL" : mediaUrl.absoluteString
+                "mediaURL": mediaUrl.absoluteString,
             ]
         )
         sendMessage(message: message)
@@ -270,6 +265,7 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 }
 
 // MARK: - ServerObserver
+
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         _ = HomeAssistantAPI.SyncWatchContext()

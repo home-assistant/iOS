@@ -44,7 +44,7 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
                 AVLinearPCMBitDepthKey: 16,
                 AVLinearPCMIsBigEndianKey: false,
                 AVLinearPCMIsFloatKey: false,
-                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue
+                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue,
             ]
 
             let url = getAudioFileURL()

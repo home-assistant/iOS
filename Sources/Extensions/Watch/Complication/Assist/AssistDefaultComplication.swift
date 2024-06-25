@@ -1,16 +1,8 @@
-//
-//  AssistDefaultComplication.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 12/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import ClockKit
+import Foundation
 import Shared
 
-final class AssistDefaultComplication {
+enum AssistDefaultComplication {
     static let title = "Assist"
     static let launchNotification: Notification.Name = .init("assist-detault-complication-launch")
     static let defaultComplicationId = "default-assist"
@@ -44,7 +36,9 @@ final class AssistDefaultComplication {
                 body1TextProvider: CLKSimpleTextProvider(text: "")
             )
         case .utilitarianSmall:
-            return CLKComplicationTemplateUtilitarianSmallSquare(imageProvider: CLKImageProvider(onePieceImage: bigIcon))
+            return CLKComplicationTemplateUtilitarianSmallSquare(
+                imageProvider: CLKImageProvider(onePieceImage: bigIcon)
+            )
         case .utilitarianSmallFlat:
             return CLKComplicationTemplateUtilitarianSmallFlat(textProvider: CLKSimpleTextProvider(text: title))
         case .utilitarianLarge:
@@ -64,7 +58,9 @@ final class AssistDefaultComplication {
                 textProvider: CLKSimpleTextProvider(text: title)
             )
         case .graphicCircular:
-            return CLKComplicationTemplateGraphicCircularImage(imageProvider: CLKFullColorImageProvider(fullColorImage: bigIcon))
+            return CLKComplicationTemplateGraphicCircularImage(
+                imageProvider: CLKFullColorImageProvider(fullColorImage: bigIcon)
+            )
         case .graphicRectangular:
             return CLKComplicationTemplateGraphicRectangularStandardBody(
                 headerTextProvider: CLKSimpleTextProvider(text: title),

@@ -1,13 +1,5 @@
-//
-//  ChatBubbleView.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 10/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct ChatBubbleView: View {
     let item: AssistChatItem

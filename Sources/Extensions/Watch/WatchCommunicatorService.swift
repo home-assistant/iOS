@@ -1,13 +1,5 @@
-//
-//  WatchCommunicatorService.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 11/06/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import Foundation
 import Communicator
+import Foundation
 import Shared
 
 struct ImmediateCommunicatorServiceObserver {
@@ -19,7 +11,6 @@ protocol ImmediateCommunicatorServiceDelegate: AnyObject {
 }
 
 final class ImmediateCommunicatorService {
-
     static var shared = ImmediateCommunicatorService()
     private var observers: [ImmediateCommunicatorServiceObserver] = []
 
@@ -43,13 +34,13 @@ final class ImmediateCommunicatorService {
                 Current.Log.error("Received assistSTTResponse without content")
                 return
             }
-            observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .input))})
+            observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .input)) })
         case .assistIntentEndResponse:
             guard let content = message.content["content"] as? String else {
                 Current.Log.error("Received assistIntentEndResponse without content")
                 return
             }
-            observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .output))})
+            observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .output)) })
         case .assistTTSResponse:
             break
         default:

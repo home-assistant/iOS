@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+
     private var watchCommunicatorService: WatchCommunicatorService?
 
     func application(

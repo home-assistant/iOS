@@ -27,8 +27,8 @@ struct WatchAssistView: View {
         }
         .animation(.easeInOut, value: viewModel.state)
         /* Double tap for watchOS 11
-        .handGestureShortcut(.primaryAction)
-         */
+         .handGestureShortcut(.primaryAction)
+          */
         .onTapGesture {
             viewModel.assist(assistService)
         }

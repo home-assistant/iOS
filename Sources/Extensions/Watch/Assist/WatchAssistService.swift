@@ -44,18 +44,22 @@ final class WatchAssistService: ObservableObject {
             try FileManager.default.removeItem(at: audioURL)
 
             Current.Log.verbose("Signaling Assist audio data")
-            let blob = Blob(identifier: InteractiveImmediateMessages.assistAudioData.rawValue, content: audioData, metadata: [
-                "serverId": selectedServer,
-                "pipelineId": preferredPipeline,
-                "sampleRate": sampleRate,
-            ])
+            let blob = Blob(
+                identifier: InteractiveImmediateMessages.assistAudioData.rawValue,
+                content: audioData,
+                metadata: [
+                    "serverId": selectedServer,
+                    "pipelineId": preferredPipeline,
+                    "sampleRate": sampleRate,
+                ]
+            )
 
             Current.Log.verbose("Sending \(blob.identifier)")
             Communicator.shared.transfer(blob) { result in
                 switch result {
                 case .success:
                     completion(nil)
-                case .failure(let error):
+                case let .failure(error):
                     Current.Log.error("Failed to send audio data blob: \(error.localizedDescription)")
                     completion(error)
                 }
