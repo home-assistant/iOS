@@ -846,7 +846,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.actions.description" = "Home Assistant 동작을 수행합니다.";
 "widgets.actions.not_configured" = "구성된 동작 없음";
 "widgets.actions.title" = "동작";
-"widgets.assist.action_title" = "Ask Assist";
+"widgets.assist.action_title" = "어시스트에게 문의";
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "어시스트";
 "widgets.assist.unknown_configuration" = "설정";
