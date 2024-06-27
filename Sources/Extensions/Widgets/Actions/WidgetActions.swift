@@ -32,7 +32,7 @@ struct WidgetActions: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
-        .supportedFamilies(WidgetActionSupportedFamilies.families)
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular])
     }
 }
 
@@ -65,13 +65,9 @@ struct LegacyWidgetActions: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
-        .supportedFamilies(WidgetActionSupportedFamilies.families)
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
         .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }
     }
-}
-
-enum WidgetActionSupportedFamilies {
-    static let families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
 }

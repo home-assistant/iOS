@@ -28,8 +28,10 @@ struct WidgetBasicContainerView: View {
 
     func singleView(for model: WidgetBasicViewModel) -> some View {
         ZStack {
-            model.backgroundColor
-                .opacity(0.8)
+            if !Self.clearFamilies.contains(family) {
+                model.backgroundColor
+                    .opacity(0.8)
+            }
             if case let .widgetURL(url) = model.interactionType {
                 WidgetBasicView(model: model, sizeStyle: .single)
                     .widgetURL(url.withWidgetAuthenticity())
@@ -86,8 +88,10 @@ struct WidgetBasicContainerView: View {
                     ForEach(column) { model in
                         ZStack {
                             // stacking the color under makes the Link's highlight state nicer
-                            model.backgroundColor
-                                .opacity(0.8)
+                            if !Self.clearFamilies.contains(family) {
+                                model.backgroundColor
+                                    .opacity(0.8)
+                            }
                             if case let .widgetURL(url) = model.interactionType {
                                 Link(destination: url.withWidgetAuthenticity()) {
                                     WidgetBasicView(model: model, sizeStyle: sizeStyle)
@@ -169,5 +173,15 @@ struct WidgetBasicContainerView: View {
         case .systemExtraLarge: return 32
         @unknown default: return 8
         }
+    }
+    
+    private static var clearFamilies: [WidgetFamily] {
+        var supportedFamilies: [WidgetFamily] = []
+        
+        if #available(iOSApplicationExtension 16.0, *) {
+            supportedFamilies = [.accessoryCircular, .accessoryInline, .accessoryRectangular]
+        }
+        
+        return supportedFamilies
     }
 }
