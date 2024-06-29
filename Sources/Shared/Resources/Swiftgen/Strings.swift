@@ -2866,6 +2866,12 @@ public enum L10n {
       /// Reload all widgets
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
+    public enum Gauge {
+      /// Display numeric states from Home Assistant
+      public static var description: String { return L10n.tr("Localizable", "widgets.gauge.description") }
+      /// Gauge
+      public static var title: String { return L10n.tr("Localizable", "widgets.gauge.title") }
+    }
     public enum OpenPage {
       /// Open a frontend page in Home Assistant.
       public static var description: String { return L10n.tr("Localizable", "widgets.open_page.description") }
