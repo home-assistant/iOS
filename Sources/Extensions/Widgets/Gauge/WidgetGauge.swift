@@ -7,7 +7,7 @@ import WidgetKit
 struct WidgetGauge: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: "WidgetGague",
+            kind: "WidgetGauge",
             intent: WidgetGaugeAppIntent.self,
             provider: WidgetGaugeAppIntentTimelineProvider()
         ) { timelineEntry in
