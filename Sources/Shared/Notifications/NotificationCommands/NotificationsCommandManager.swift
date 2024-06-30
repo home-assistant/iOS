@@ -101,7 +101,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
 @available(iOS 14, watchOS 9, macOS 11, *)
 private struct HandlerReloadWidgets: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("reloading widgtes")
+        Current.Log.verbose("reloading widgets")
         return Promise<Void> { seal in
             DispatchQueue.main.async {
                 WidgetCenter.shared.reloadTimelines(ofKind: "WidgetGauge")
