@@ -390,7 +390,7 @@
 "settings.location_history.title" = "Ιστορικό Τοποθεσίας";
 "settings.navigation_bar.about_button.title" = "Σχετικά";
 "settings.navigation_bar.title" = "Ρυθμίσεις";
-"settings.reset_section.reset_alert.message" = "Οι ρυθμίσεις σας θα επαναρυθμιστούν και αυτή η συσκευή δεν θα καταχωρηθεί από τις ειδοποιήσεις push, καθώς και θα καταργηθεί από τη ρύθμιση παραμέτρων του Home Assistant.";
+"settings.reset_section.reset_alert.message" = "Θα γίνει επαναφορά των ρυθμίσεών σας και αυτή η συσκευή θα καταργηθεί από τις ειδοποιήσεις push και από τη διαμόρφωση του Home Assistant.";
 "settings.reset_section.reset_alert.progress_message" = "Επαναφορά…";
 "settings.reset_section.reset_alert.title" = "Επαναφορά";
 "settings.reset_section.reset_row.title" = "Επαναφορά";
@@ -407,7 +407,7 @@
 "settings.widgets.title" = "Γραφικά στοιχεία";
 "settings_details.actions.actions_synced.empty" = "Καμία συγχρονισμένη ενέργεια";
 "settings_details.actions.actions_synced.footer" = "Οι ενέργειες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";
-"settings_details.actions.actions_synced.footer_no_actions" = "Οι ενέργειες μπορούν επίσης να οριστούν στη ρύθμιση παραμέτρων .yaml.";
+"settings_details.actions.actions_synced.footer_no_actions" = "Οι ενέργειες μπορούν επίσης να οριστούν στη διαμόρφωση .yaml.";
 "settings_details.actions.actions_synced.header" = "Συγχρονισμένες ενέργειες";
 "settings_details.actions.carPlay.available.title" = "Εμφάνιση στο CarPlay";
 "settings_details.actions.footer" = "Οι Ενέργειες χρησιμοποιούνται στην εφαρμογή Apple Watch, στις Ενέργειες Εικονιδίων Εφαρμογών, στο widget Today και στο CarPlay.";
@@ -520,7 +520,7 @@
 "settings_details.notifications.categories.header" = "Κατηγορίες";
 "settings_details.notifications.categories_synced.empty" = "Καμία συγχρονισμένη κατηγορία";
 "settings_details.notifications.categories_synced.footer" = "Οι κατηγορίες που ορίζονται στο .yaml δεν είναι επεξεργάσιμες στη συσκευή.";
-"settings_details.notifications.categories_synced.footer_no_categories" = "Οι κατηγορίες μπορούν επίσης να οριστούν στη ρύθμιση παραμέτρων .yaml.";
+"settings_details.notifications.categories_synced.footer_no_categories" = "Οι κατηγορίες μπορούν επίσης να οριστούν στη διαμόρφωση .yaml.";
 "settings_details.notifications.categories_synced.header" = "Συγχρονισμένες κατηγορίες";
 "settings_details.notifications.info" = "Χρησιμοποιήστε την υπηρεσία ειδοποιήσεων mobile_app για να στείλετε ειδοποιήσεις στη συσκευή σας.";
 "settings_details.notifications.local_push.status.available" = "Διαθέσιμο (%1$@)";
