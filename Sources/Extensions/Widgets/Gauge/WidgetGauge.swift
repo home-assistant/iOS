@@ -7,7 +7,7 @@ import WidgetKit
 struct WidgetGauge: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: "WidgetGauge",
+            kind: "io.robbie.HomeAssistant.widget-gauge",
             intent: WidgetGaugeAppIntent.self,
             provider: WidgetGaugeAppIntentTimelineProvider()
         ) { timelineEntry in

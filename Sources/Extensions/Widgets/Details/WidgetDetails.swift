@@ -7,7 +7,7 @@ import WidgetKit
 struct WidgetDetails: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: "WidgetDetails",
+            kind: "io.robbie.HomeAssistant.widget-details",
             intent: WidgetDetailsAppIntent.self,
             provider: WidgetDetailsAppIntentTimelineProvider()
         ) { timelineEntry in

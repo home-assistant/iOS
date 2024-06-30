@@ -104,8 +104,8 @@ private struct HandlerReloadWidgets: NotificationCommandHandler {
         Current.Log.verbose("reloading widgets")
         return Promise<Void> { seal in
             DispatchQueue.main.async {
-                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetGauge")
-                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetDetails")
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.robbie.HomeAssistant.widget-gauge")
+                WidgetCenter.shared.reloadTimelines(ofKind: "io.robbie.HomeAssistant.widget-details")
                 seal.fulfill(())
             }
         }
