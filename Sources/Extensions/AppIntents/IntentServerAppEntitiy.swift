@@ -38,7 +38,7 @@ struct IntentServerAppEntity: AppEntity, Sendable {
     var id: String
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: .init(stringLiteral: getInfo()?.remoteName ?? "Unknown")
+            title: .init(stringLiteral: getInfo()?.name ?? "Unknown")
         )
     }
     
