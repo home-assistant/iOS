@@ -9,20 +9,50 @@ struct WidgetGaugeView: View {
         switch (entry.gaugeType) {
         case .normal:
             Gauge(value: entry.value) {
-                Text(entry.valueLabel)
+                if entry.valueLabel != nil {
+                    Text(entry.valueLabel!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
             } currentValueLabel: {
-                Text(entry.valueLabel)
+                if entry.valueLabel != nil {
+                    Text(entry.valueLabel!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
             } minimumValueLabel: {
-                Text(entry.min)
+                if entry.min != nil {
+                    Text(entry.min!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
             } maximumValueLabel: {
-                Text(entry.max)
+                if entry.max != nil {
+                    Text(entry.max!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
             }
             .gaugeStyle(.accessoryCircular)
         case .capacity:
             Gauge(value: entry.value) {
-                Text(entry.valueLabel)
+                if entry.valueLabel != nil {
+                    Text(entry.valueLabel!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
             } currentValueLabel: {
-                Text(entry.valueLabel)
+                if entry.valueLabel != nil {
+                    Text(entry.valueLabel!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
             }
             .gaugeStyle(.accessoryCircularCapacity)
         }

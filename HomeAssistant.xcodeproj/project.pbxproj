@@ -511,6 +511,11 @@
 		403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */; };
 		403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
 		403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
+		4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */; };
+		4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BC2C319AA000099C88 /* WidgetDetails.swift */; };
+		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
+		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
+		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		42070EE82BAC43240031E96F /* AssistSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE72BAC43240031E96F /* AssistSession.swift */; };
 		42070EEB2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
 		42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
@@ -1650,6 +1655,10 @@
 		403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGaugeAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGaugeView.swift; sourceTree = "<group>"; };
 		403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentServerAppEntitiy.swift; sourceTree = "<group>"; };
+		4080D5BC2C319AA000099C88 /* WidgetDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetails.swift; sourceTree = "<group>"; };
+		4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsView.swift; sourceTree = "<group>"; };
+		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
+		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42070EE72BAC43240031E96F /* AssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSession.swift; sourceTree = "<group>"; };
 		42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInAppIntentHandler.swift; sourceTree = "<group>"; };
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
@@ -2664,6 +2673,7 @@
 				110E693E24E770BD004AA96D /* Actions */,
 				115560EA27012ED000A8F818 /* OpenPage */,
 				403AE9072C2E214D00D48147 /* Gauge */,
+				4080D5BB2C319A9100099C88 /* Details */,
 				1171508324DFCF960065E874 /* Resources */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
@@ -3260,6 +3270,24 @@
 			path = Gauge;
 			sourceTree = "<group>";
 		};
+		4080D5BB2C319A9100099C88 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				4080D5BC2C319AA000099C88 /* WidgetDetails.swift */,
+				4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
+		4080D5C02C319AF400099C88 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */,
+				4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
 		420FE8472B5569ED00878E06 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -3395,6 +3423,7 @@
 			children = (
 				4296C3732B91F0730051B63C /* Actions */,
 				403AE90A2C2E28A200D48147 /* Gauge */,
+				4080D5C02C319AF400099C88 /* Details */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -5974,6 +6003,8 @@
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
 				42F958992BB4684700497981 /* WidgetAssist.swift in Sources */,
+				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
+				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
@@ -5982,6 +6013,8 @@
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */,
 				4296C3782B91F6260051B63C /* PerformAction.swift in Sources */,
+				4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */,
+				4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */,
 				4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */,
 				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
@@ -6129,6 +6162,7 @@
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
+				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
 				11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */,

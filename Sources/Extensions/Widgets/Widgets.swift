@@ -9,6 +9,7 @@ struct Widgets: WidgetBundle {
         WidgetOpenPage()
         if #available(iOS 17, *) {
             WidgetGauge()
+            WidgetDetails()
         }
     }
 

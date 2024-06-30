@@ -59,10 +59,10 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         let server = configuration.server.getServer() ?? Current.servers.all.first!
         let api = Current.api(for: server)
         
-        let valueTemplate = !configuration.valueTemplate.isEmpty ? configuration.valueTemplate : "0"
-        let valueLabelTemplate = !configuration.valueLabelTemplate.isEmpty ? configuration.valueLabelTemplate : "0"
-        let maxTemplate = configuration.gaugeType == .normal && !configuration.maxTemplate.isEmpty ? configuration.maxTemplate : "0"
-        let minTemplate = configuration.gaugeType == .normal && !configuration.minTemplate.isEmpty ? configuration.minTemplate : "0"
+        let valueTemplate = !configuration.valueTemplate.isEmpty ? configuration.valueTemplate : "0.0"
+        let valueLabelTemplate = !configuration.valueLabelTemplate.isEmpty ? configuration.valueLabelTemplate : "?"
+        let maxTemplate = configuration.gaugeType == .normal && !configuration.maxTemplate.isEmpty ? configuration.maxTemplate : "?"
+        let minTemplate = configuration.gaugeType == .normal && !configuration.minTemplate.isEmpty ? configuration.minTemplate : "?"
         let template = "\(valueTemplate)|\(valueLabelTemplate)|\(maxTemplate)|\(minTemplate)"
         
         let result = await withCheckedContinuation { continuation in
@@ -95,14 +95,17 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             throw WidgetGaugeDataError.badResponse
         }
         
+        let valueText = String(params[1])
+        let maxText = String(params[2])
+        let minText = String(params[3])
         return .init(
             gaugeType: configuration.gaugeType,
             
             value: Double(params[0]) ?? 0.0,
             
-            valueLabel: String(params[1]),
-            max: String(params[2]),
-            min: String(params[3]),
+            valueLabel: valueText != "?" ? valueText : nil,
+            max: maxText != "?" ? maxText : nil,
+            min: minText != "?" ? minText : nil,
             
             runAction: configuration.runAction,
             action: configuration.action?.asAction()
@@ -112,8 +115,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
 
 enum WidgetGaugeDataSource {
     static var expiration: Measurement<UnitDuration> {
-//        .init(value: 2, unit: .hours)
-        .init(value: 2, unit: .minutes)
+        .init(value: 2, unit: .hours)
     }
     
     static var fastExpiration: Measurement<UnitDuration> {
@@ -129,9 +131,9 @@ struct WidgetGaugeEntry: TimelineEntry {
     
     var value: Double
     
-    var valueLabel: String
-    var max: String
-    var min: String
+    var valueLabel: String?
+    var max: String?
+    var min: String?
     
     var runAction: Bool
     var action: Action?

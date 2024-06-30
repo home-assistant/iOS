@@ -6,7 +6,7 @@ import Shared
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = "Gauge"
-    static let description = IntentDescription("Display a gauge using data from templates")
+    static let description = IntentDescription("Display numeric states from Home Assistant in a gauge")
     
     @Parameter(title: "Gauge Type", default: .normal)
     var gaugeType: GaugeTypeAppEnum
@@ -25,9 +25,6 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     
     @Parameter(title: "Min Label Template", default: "", inputOptions: .init(capitalizationType: .none, multiline: true, autocorrect: false, smartQuotes: false, smartDashes: false))
     var minTemplate: String
-    
-    @Parameter(title: "Icon", default: "home", inputOptions: .init(capitalizationType: .none, autocorrect: false, smartQuotes: false, smartDashes: false))
-    var icon: String
     
     @Parameter(title: "Run Action", default: false)
     var runAction: Bool

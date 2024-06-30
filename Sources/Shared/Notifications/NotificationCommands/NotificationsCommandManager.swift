@@ -105,6 +105,7 @@ private struct HandlerReloadWidgets: NotificationCommandHandler {
         return Promise<Void> { seal in
             DispatchQueue.main.async {
                 WidgetCenter.shared.reloadTimelines(ofKind: "WidgetGauge")
+                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetDetails")
                 seal.fulfill(())
             }
         }
