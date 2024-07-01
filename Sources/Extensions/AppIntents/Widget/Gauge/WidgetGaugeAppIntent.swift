@@ -41,19 +41,6 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var valueLabelTemplate: String
 
     @Parameter(
-        title: "Max Label Template",
-        default: "",
-        inputOptions: .init(
-            capitalizationType: .none,
-            multiline: true,
-            autocorrect: false,
-            smartQuotes: false,
-            smartDashes: false
-        )
-    )
-    var maxTemplate: String
-
-    @Parameter(
         title: "Min Label Template",
         default: "",
         inputOptions: .init(
@@ -65,6 +52,19 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
         )
     )
     var minTemplate: String
+
+    @Parameter(
+        title: "Max Label Template",
+        default: "",
+        inputOptions: .init(
+            capitalizationType: .none,
+            multiline: true,
+            autocorrect: false,
+            smartQuotes: false,
+            smartDashes: false
+        )
+    )
+    var maxTemplate: String
 
     @Parameter(title: "Run Action", default: false)
     var runAction: Bool
@@ -82,8 +82,8 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                     \.$valueTemplate
 
                     \.$valueLabelTemplate
-                    \.$maxTemplate
                     \.$minTemplate
+                    \.$maxTemplate
 
                     \.$runAction
                     \.$action
@@ -110,8 +110,8 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                     \.$valueTemplate
 
                     \.$valueLabelTemplate
-                    \.$maxTemplate
                     \.$minTemplate
+                    \.$maxTemplate
 
                     \.$runAction
                 }

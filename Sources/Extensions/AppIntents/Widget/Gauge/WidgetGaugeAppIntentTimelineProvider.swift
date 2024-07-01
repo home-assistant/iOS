@@ -45,7 +45,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         .init(
             gaugeType: .normal,
             value: 0.5,
-            valueLabel: "?", max: "?", min: "?",
+            valueLabel: "?", min: "?", max: "?",
             runAction: false, action: nil
         )
     }
@@ -110,8 +110,8 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             value: Double(params[0]) ?? 0.0,
 
             valueLabel: valueText != "?" ? valueText : nil,
-            max: maxText != "?" ? maxText : nil,
             min: minText != "?" ? minText : nil,
+            max: maxText != "?" ? maxText : nil,
 
             runAction: configuration.runAction,
             action: configuration.action?.asAction()
@@ -138,8 +138,8 @@ struct WidgetGaugeEntry: TimelineEntry {
     var value: Double
 
     var valueLabel: String?
-    var max: String?
     var min: String?
+    var max: String?
 
     var runAction: Bool
     var action: Action?
