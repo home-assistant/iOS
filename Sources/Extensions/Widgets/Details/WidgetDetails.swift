@@ -25,7 +25,7 @@ struct WidgetDetails: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Details.title)
         .description(L10n.Widgets.Details.description)
-        .supportedFamilies([.accessoryInline, .accessoryRectangular])
+        .supportedFamilies(WidgetDetailsSupportedFamilies.families)
     }
 
     private func intent(for entry: WidgetDetailsEntry) -> PerformAction {
@@ -33,4 +33,12 @@ struct WidgetDetails: Widget {
         intent.action = IntentActionAppEntity(id: entry.action!.ID, displayString: entry.action!.Text)
         return intent
     }
+}
+
+@available(iOS 17, *)
+enum WidgetDetailsSupportedFamilies {
+    static let families: [WidgetFamily] = [
+        .accessoryInline,
+        .accessoryRectangular,
+    ]
 }

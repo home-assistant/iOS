@@ -37,19 +37,19 @@ struct WidgetOpenPage: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.OpenPage.title)
         .description(L10n.Widgets.OpenPage.description)
-        .supportedFamilies(supportedFamilies)
+        .supportedFamilies(WidgetOpenPageSupportedFamilies.families)
         .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }
     }
+}
 
-    private var supportedFamilies: [WidgetFamily] {
-        var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
-
-        if #available(iOSApplicationExtension 16.0, *) {
-            supportedFamilies.append(.accessoryCircular)
+enum WidgetOpenPageSupportedFamilies {
+    static var families: [WidgetFamily] {
+        if #available(iOS 16.0, *) {
+            [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular]
+        } else {
+            [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
         }
-
-        return supportedFamilies
     }
 }

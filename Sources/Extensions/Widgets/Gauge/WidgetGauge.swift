@@ -25,7 +25,7 @@ struct WidgetGauge: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Gauge.title)
         .description(L10n.Widgets.Gauge.description)
-        .supportedFamilies([.accessoryCircular])
+        .supportedFamilies(WidgetGaugeSupportedFamilies.families)
     }
 
     private func intent(for entry: WidgetGaugeEntry) -> PerformAction {
@@ -33,4 +33,9 @@ struct WidgetGauge: Widget {
         intent.action = IntentActionAppEntity(id: entry.action!.ID, displayString: entry.action!.Text)
         return intent
     }
+}
+
+@available(iOS 17, *)
+enum WidgetGaugeSupportedFamilies {
+    static let families: [WidgetFamily] = [.accessoryCircular]
 }
