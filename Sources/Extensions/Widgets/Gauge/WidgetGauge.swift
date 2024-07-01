@@ -11,7 +11,7 @@ struct WidgetGauge: Widget {
             intent: WidgetGaugeAppIntent.self,
             provider: WidgetGaugeAppIntentTimelineProvider()
         ) { timelineEntry in
-            if timelineEntry.runAction && timelineEntry.action != nil {
+            if timelineEntry.runAction, timelineEntry.action != nil {
                 Button(intent: intent(for: timelineEntry)) {
                     WidgetGaugeView(entry: timelineEntry)
                         .widgetBackground(Color.clear)
@@ -27,7 +27,7 @@ struct WidgetGauge: Widget {
         .description(L10n.Widgets.Gauge.description)
         .supportedFamilies([.accessoryCircular])
     }
-    
+
     private func intent(for entry: WidgetGaugeEntry) -> PerformAction {
         let intent = PerformAction()
         intent.action = IntentActionAppEntity(id: entry.action!.ID, displayString: entry.action!.Text)

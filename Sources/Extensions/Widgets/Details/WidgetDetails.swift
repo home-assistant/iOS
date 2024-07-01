@@ -11,7 +11,7 @@ struct WidgetDetails: Widget {
             intent: WidgetDetailsAppIntent.self,
             provider: WidgetDetailsAppIntentTimelineProvider()
         ) { timelineEntry in
-            if timelineEntry.runAction && timelineEntry.action != nil {
+            if timelineEntry.runAction, timelineEntry.action != nil {
                 Button(intent: intent(for: timelineEntry)) {
                     WidgetDetailsView(entry: timelineEntry)
                         .widgetBackground(Color.clear)
@@ -27,7 +27,7 @@ struct WidgetDetails: Widget {
         .description(L10n.Widgets.Details.description)
         .supportedFamilies([.accessoryInline, .accessoryRectangular])
     }
-    
+
     private func intent(for entry: WidgetDetailsEntry) -> PerformAction {
         let intent = PerformAction()
         intent.action = IntentActionAppEntity(id: entry.action!.ID, displayString: entry.action!.Text)

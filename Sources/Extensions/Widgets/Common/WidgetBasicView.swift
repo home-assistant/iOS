@@ -106,7 +106,7 @@ enum WidgetBasicSizeStyle {
 
 struct WidgetBasicView: View {
     @Environment(\.widgetFamily) private var widgetFamily
-    
+
     private let model: WidgetBasicViewModel
     private let sizeStyle: WidgetBasicSizeStyle
 
@@ -135,7 +135,7 @@ struct WidgetBasicView: View {
                         endPoint: .bottom
                     )
                 )
-                
+
                 let text = Text(verbatim: model.title)
                     .font(sizeStyle.textFont)
                     .fontWeight(.semibold)
@@ -143,12 +143,12 @@ struct WidgetBasicView: View {
                     .foregroundColor(model.textColor)
                     .lineLimit(nil)
                     .minimumScaleFactor(0.5)
-                
+
                 let subtext: AnyView? = {
                     guard let subtitle = model.subtitle else {
                         return nil
                     }
-                    
+
                     return AnyView(
                         Text(verbatim: subtitle)
                             .font(sizeStyle.subtextFont)
@@ -157,14 +157,14 @@ struct WidgetBasicView: View {
                             .truncationMode(.middle)
                     )
                 }()
-                
+
                 let icon = HStack(alignment: .top, spacing: -1) {
                     Text(verbatim: model.icon.unicode)
                         .font(sizeStyle.iconFont)
                         .minimumScaleFactor(0.2)
                         .foregroundColor(model.iconColor)
                         .fixedSize(horizontal: false, vertical: false)
-                    
+
                     if model.showsChevron {
                         // this sfsymbols is a little more legible at smaller size than mdi:open-in-new
                         Image(systemName: "arrow.up.forward.app")
@@ -172,7 +172,7 @@ struct WidgetBasicView: View {
                             .foregroundColor(model.iconColor)
                     }
                 }
-                
+
                 switch sizeStyle {
                 case .regular, .condensed:
                     HStack(alignment: .center, spacing: 6.0) {

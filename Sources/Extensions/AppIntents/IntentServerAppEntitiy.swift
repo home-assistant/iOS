@@ -22,7 +22,7 @@ struct IntentServerAppEntity: AppEntity, Sendable {
         private func getServerEntities() -> [IntentServerAppEntity] {
             Current.servers.all.map { IntentServerAppEntity(from: $0) }
         }
-        
+
         func defaultResult() async -> IntentServerAppEntity? {
             let server = Current.servers.all.first
             if server == nil {
@@ -41,19 +41,19 @@ struct IntentServerAppEntity: AppEntity, Sendable {
             title: .init(stringLiteral: getInfo()?.name ?? "Unknown")
         )
     }
-    
-    init (identifier: Identifier<Server>) {
+
+    init(identifier: Identifier<Server>) {
         self.id = identifier.rawValue
     }
-    
+
     init(from server: Server) {
         self.init(identifier: server.identifier)
     }
-    
+
     func getServer() -> Server? {
         Current.servers.server(for: .init(rawValue: id))
     }
-    
+
     func getInfo() -> ServerInfo? {
         getServer()?.info
     }

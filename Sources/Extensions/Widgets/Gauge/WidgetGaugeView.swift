@@ -4,9 +4,9 @@ import WidgetKit
 @available(iOS 17.0, *)
 struct WidgetGaugeView: View {
     var entry: WidgetGaugeEntry
-    
+
     var body: some View {
-        switch (entry.gaugeType) {
+        switch entry.gaugeType {
         case .normal:
             Gauge(value: entry.value) {
                 if entry.valueLabel != nil {

@@ -1,7 +1,7 @@
 import Communicator
-import WidgetKit
 import PromiseKit
 import UserNotifications
+import WidgetKit
 
 public protocol NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void>

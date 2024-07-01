@@ -1,12 +1,11 @@
 import AppIntents
+import HAKit
 import RealmSwift
 import Shared
 import WidgetKit
-import HAKit
 
 @available(iOS 17, *)
 struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
-    
     typealias Entry = WidgetDetailsEntry
     typealias Intent = WidgetDetailsAppIntent
 
@@ -54,45 +53,49 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
             Current.Log.error("Failed to fetch data for details widget: No servers exist")
             throw WidgetDetailsDataError.noServers
         }
-        
+
         let server = configuration.server.getServer() ?? Current.servers.all.first!
         let api = Current.api(for: server)
-        
+
         let upperTemplate = !configuration.upperTemplate.isEmpty ? configuration.upperTemplate : "?"
         let lowerTemplate = !configuration.lowerTemplate.isEmpty ? configuration.lowerTemplate : "?"
         let detailsTemplate = !configuration.detailsTemplate.isEmpty ? configuration.detailsTemplate : "?"
         let template = "\(upperTemplate)|\(lowerTemplate)|\(detailsTemplate)"
-        
+
         let result = await withCheckedContinuation { continuation in
-            api.connection.send(.init(type: .rest(.post, "template"), data: ["template": template], shouldRetry: true)) { result in
+            api.connection.send(.init(
+                type: .rest(.post, "template"),
+                data: ["template": template],
+                shouldRetry: true
+            )) { result in
                 continuation.resume(returning: result)
             }
         }
-        
+
         var data: HAData?
-        switch (result) {
+        switch result {
         case let .success(resultData):
             data = resultData
         case let .failure(error):
             Current.Log.error("Failed to render template for details widget: \(error)")
             throw WidgetDetailsDataError.apiError
         }
-        
+
         var renderedTemplate: String?
-        switch (data!) {
+        switch data! {
         case let .primitive(response):
             renderedTemplate = response as? String
         default:
             Current.Log.error("Failed to render template for details widget: Bad response data")
             throw WidgetDetailsDataError.badResponse
         }
-        
+
         let params = renderedTemplate!.split(separator: "|")
         guard params.count == 3 else {
             Current.Log.error("Failed to render template for details widget: Wrong length response")
             throw WidgetDetailsDataError.badResponse
         }
-        
+
         let upperText = String(params[0])
         let lowerText = String(params[1])
         let detailsText = String(params[2])
@@ -100,7 +103,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
             upperText: upperText != "?" ? upperText : nil,
             lowerText: lowerText != "?" ? lowerText : nil,
             detailsText: detailsText != "?" ? detailsText : nil,
-            
+
             runAction: configuration.runAction,
             action: configuration.action?.asAction()
         )
@@ -111,7 +114,7 @@ enum WidgetDetailsDataSource {
     static var expiration: Measurement<UnitDuration> {
         .init(value: 2, unit: .hours)
     }
-    
+
     static var fastExpiration: Measurement<UnitDuration> {
         .init(value: 1, unit: .hours)
     }
@@ -120,11 +123,11 @@ enum WidgetDetailsDataSource {
 @available(iOS 17, *)
 struct WidgetDetailsEntry: TimelineEntry {
     var date = Date()
-    
+
     var upperText: String?
     var lowerText: String?
     var detailsText: String?
-    
+
     var runAction: Bool
     var action: Action?
 }

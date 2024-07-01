@@ -174,14 +174,14 @@ struct WidgetBasicContainerView: View {
         @unknown default: return 8
         }
     }
-    
+
     private static var clearFamilies: [WidgetFamily] {
         var supportedFamilies: [WidgetFamily] = []
-        
+
         if #available(iOSApplicationExtension 16.0, *) {
             supportedFamilies = [.accessoryCircular, .accessoryInline, .accessoryRectangular]
         }
-        
+
         return supportedFamilies
     }
 }

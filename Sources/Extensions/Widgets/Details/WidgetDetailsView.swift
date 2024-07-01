@@ -4,9 +4,9 @@ import WidgetKit
 @available(iOS 17.0, *)
 struct WidgetDetailsView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
-    
+
     var entry: WidgetDetailsEntry
-    
+
     var body: some View {
         if family == .accessoryRectangular {
             VStack(alignment: .leading) {

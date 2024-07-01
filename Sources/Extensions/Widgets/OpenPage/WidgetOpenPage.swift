@@ -42,7 +42,7 @@ struct WidgetOpenPage: Widget {
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }
     }
-    
+
     private var supportedFamilies: [WidgetFamily] {
         var supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
 
