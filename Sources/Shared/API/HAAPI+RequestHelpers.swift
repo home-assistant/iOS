@@ -26,7 +26,10 @@ extension HomeAssistantAPI {
         headers: HTTPHeaders? = nil
     ) -> Promise<String> {
         Promise { seal in
-            let url = server.info.connection.activeAPIURL().appendingPathComponent(path)
+            guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             _ = manager.request(
                 url,
                 method: method,
@@ -54,7 +57,10 @@ extension HomeAssistantAPI {
         headers: HTTPHeaders? = nil
     ) -> Promise<T> {
         Promise { seal in
-            let url = server.info.connection.activeAPIURL().appendingPathComponent(path)
+            guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: AFDataResponse<T>) in
@@ -76,7 +82,10 @@ extension HomeAssistantAPI {
         headers: HTTPHeaders? = nil
     ) -> Promise<[T]> {
         Promise { seal in
-            let url = server.info.connection.activeAPIURL().appendingPathComponent(path)
+            guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseArray { (response: AFDataResponse<[T]>) in
@@ -98,7 +107,10 @@ extension HomeAssistantAPI {
         headers: HTTPHeaders? = nil
     ) -> Promise<T> {
         Promise { seal in
-            let url = server.info.connection.activeAPIURL().appendingPathComponent(path)
+            guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: AFDataResponse<T>) in
@@ -120,7 +132,10 @@ extension HomeAssistantAPI {
         headers: HTTPHeaders? = nil
     ) -> Promise<T> {
         Promise { seal in
-            let url = server.info.connection.activeAPIURL().appendingPathComponent(path)
+            guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: AFDataResponse<T>) in
