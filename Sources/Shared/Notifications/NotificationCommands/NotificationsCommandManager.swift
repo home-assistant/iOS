@@ -104,8 +104,8 @@ private struct HandlerReloadWidgets: NotificationCommandHandler {
         Current.Log.verbose("Reloading widgets triggered by notification command")
         return Promise<Void> { seal in
             DispatchQueue.main.async {
-                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetGauge")
-                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetDetails")
+                WidgetCenter.shared.reloadTimelines(ofKind: AppIntentWidgetKinds.gauge)
+                WidgetCenter.shared.reloadTimelines(ofKind: AppIntentWidgetKinds.details)
                 seal.fulfill(())
             }
         }
