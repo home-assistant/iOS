@@ -2918,6 +2918,12 @@ public enum L10n {
         public static var valueLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.value_label_template") }
         /// Value Template (0-1)
         public static var valueTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.value_template") }
+        public enum GaugeType {
+          /// Capacity
+          public static var capacity: String { return L10n.tr("Localizable", "widgets.gauge.parameters.gauge_type.capacity") }
+          /// Normal
+          public static var normal: String { return L10n.tr("Localizable", "widgets.gauge.parameters.gauge_type.normal") }
+        }
       }
     }
     public enum OpenPage {

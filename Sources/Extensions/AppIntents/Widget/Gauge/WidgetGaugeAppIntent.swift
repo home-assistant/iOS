@@ -136,9 +136,9 @@ enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
     case normal
     case capacity
 
-    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "GaugeType")
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widgets.gauge.parameters.gauge_type")
     static var caseDisplayRepresentations: [GaugeTypeAppEnum: DisplayRepresentation] = [
-        .normal: DisplayRepresentation(title: "Normal"),
-        .capacity: DisplayRepresentation(title: "Capactity"),
+        .normal: DisplayRepresentation(title: "widgets.gauge.parameters.gauge_type.normal"),
+        .capacity: DisplayRepresentation(title: "widgets.gauge.parameters.gauge_type.capacity"),
     ]
 }

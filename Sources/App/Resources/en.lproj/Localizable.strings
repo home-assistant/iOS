@@ -857,6 +857,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
 "widgets.gauge.parameters.gauge_type" = "Gauge Type";
+"widgets.gauge.parameters.gauge_type.normal" = "Normal";
+"widgets.gauge.parameters.gauge_type.capacity" = "Capacity";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_template" = "Value Template (0-1)";
 "widgets.gauge.parameters.value_label_template" = "Value Label Template";
