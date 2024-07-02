@@ -1,6 +1,7 @@
 import Communicator
 import PromiseKit
 import UserNotifications
+import WidgetKit
 
 public protocol NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void>
@@ -19,6 +20,9 @@ public class NotificationCommandManager {
     public init() {
         register(command: "request_location_update", handler: HandlerLocationUpdate())
         register(command: "clear_notification", handler: HandlerClearNotification())
+        if #available(watchOS 9, *) {
+            register(command: "reload_widgets", handler: HandlerReloadWidgets())
+        }
 
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
@@ -88,6 +92,20 @@ private struct HandlerClearNotification: NotificationCommandHandler {
         // https://stackoverflow.com/a/56657888/6324550
         return Promise<Void> { seal in
             DispatchQueue.main.async {
+                seal.fulfill(())
+            }
+        }
+    }
+}
+
+@available(watchOS 9, *)
+private struct HandlerReloadWidgets: NotificationCommandHandler {
+    func handle(_ payload: [String: Any]) -> Promise<Void> {
+        Current.Log.verbose("Reloading widgets triggered by notification command")
+        return Promise<Void> { seal in
+            DispatchQueue.main.async {
+                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetGauge")
+                WidgetCenter.shared.reloadTimelines(ofKind: "WidgetDetails")
                 seal.fulfill(())
             }
         }

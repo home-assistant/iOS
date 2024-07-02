@@ -105,6 +105,8 @@ enum WidgetBasicSizeStyle {
 }
 
 struct WidgetBasicView: View {
+    @Environment(\.widgetFamily) private var widgetFamily
+
     private let model: WidgetBasicViewModel
     private let sizeStyle: WidgetBasicSizeStyle
 
@@ -115,85 +117,96 @@ struct WidgetBasicView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .leading) {
-            Rectangle().fill(
-                LinearGradient(
-                    gradient: .init(colors: [.white.opacity(0.06), .black.opacity(0.06)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-
-            let text = Text(verbatim: model.title)
-                .font(sizeStyle.textFont)
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.leading)
-                .foregroundColor(model.textColor)
-                .lineLimit(nil)
-                .minimumScaleFactor(0.5)
-
-            let subtext: AnyView? = {
-                guard let subtitle = model.subtitle else {
-                    return nil
-                }
-
-                return AnyView(
-                    Text(verbatim: subtitle)
-                        .font(sizeStyle.subtextFont)
-                        .foregroundColor(model.textColor.opacity(0.7))
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                )
-            }()
-
-            let icon = HStack(alignment: .top, spacing: -1) {
-                Text(verbatim: model.icon.unicode)
-                    .font(sizeStyle.iconFont)
-                    .minimumScaleFactor(0.2)
-                    .foregroundColor(model.iconColor)
-                    .fixedSize(horizontal: false, vertical: false)
-
-                if model.showsChevron {
-                    // this sfsymbols is a little more legible at smaller size than mdi:open-in-new
-                    Image(systemName: "arrow.up.forward.app")
-                        .font(sizeStyle.chevronFont)
-                        .foregroundColor(model.iconColor)
-                }
+        switch widgetFamily {
+        case .accessoryCircular, .accessoryRectangular:
+            WidgetCircularView(icon: model.icon)
+        case .accessoryInline:
+            Label {
+                Text(model.title)
+            } icon: {
+                Image(uiImage: model.icon.image(ofSize: .init(width: 10, height: 10), color: .white))
             }
+        default:
+            ZStack(alignment: .leading) {
+                Rectangle().fill(
+                    LinearGradient(
+                        gradient: .init(colors: [.white.opacity(0.06), .black.opacity(0.06)]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
 
-            switch sizeStyle {
-            case .regular, .condensed:
-                HStack(alignment: .center, spacing: 6.0) {
-                    icon
-                    if let subtext {
-                        VStack(alignment: .leading, spacing: -2) {
+                let text = Text(verbatim: model.title)
+                    .font(sizeStyle.textFont)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(model.textColor)
+                    .lineLimit(nil)
+                    .minimumScaleFactor(0.5)
+
+                let subtext: AnyView? = {
+                    guard let subtitle = model.subtitle else {
+                        return nil
+                    }
+
+                    return AnyView(
+                        Text(verbatim: subtitle)
+                            .font(sizeStyle.subtextFont)
+                            .foregroundColor(model.textColor.opacity(0.7))
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    )
+                }()
+
+                let icon = HStack(alignment: .top, spacing: -1) {
+                    Text(verbatim: model.icon.unicode)
+                        .font(sizeStyle.iconFont)
+                        .minimumScaleFactor(0.2)
+                        .foregroundColor(model.iconColor)
+                        .fixedSize(horizontal: false, vertical: false)
+
+                    if model.showsChevron {
+                        // this sfsymbols is a little more legible at smaller size than mdi:open-in-new
+                        Image(systemName: "arrow.up.forward.app")
+                            .font(sizeStyle.chevronFont)
+                            .foregroundColor(model.iconColor)
+                    }
+                }
+
+                switch sizeStyle {
+                case .regular, .condensed:
+                    HStack(alignment: .center, spacing: 6.0) {
+                        icon
+                        if let subtext {
+                            VStack(alignment: .leading, spacing: -2) {
+                                text
+                                subtext
+                            }
+                        } else {
                             text
+                        }
+                        Spacer()
+                    }.padding(
+                        .leading, 12
+                    )
+                case .single, .expanded:
+                    VStack(alignment: .leading, spacing: 0) {
+                        icon
+                        Spacer()
+                        text
+                        if let subtext {
                             subtext
                         }
-                    } else {
-                        text
                     }
-                    Spacer()
-                }.padding(
-                    .leading, 12
-                )
-            case .single, .expanded:
-                VStack(alignment: .leading, spacing: 0) {
-                    icon
-                    Spacer()
-                    text
-                    if let subtext {
-                        subtext
-                    }
+                    .padding(
+                        [.leading, .trailing]
+                    ).padding(
+                        [.top, .bottom],
+                        sizeStyle == .regular ? 10 : /* use default */ nil
+                    )
                 }
-                .padding(
-                    [.leading, .trailing]
-                ).padding(
-                    [.top, .bottom],
-                    sizeStyle == .regular ? 10 : /* use default */ nil
-                )
             }
+            .background(model.backgroundColor)
         }
-        .background(model.backgroundColor)
     }
 }

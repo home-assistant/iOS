@@ -28,8 +28,11 @@ struct WidgetBasicContainerView: View {
 
     func singleView(for model: WidgetBasicViewModel) -> some View {
         ZStack {
-            model.backgroundColor
-                .opacity(0.8)
+            // Check if the widget should be transparent (on the lock screen)
+            if !Self.transparentFamilies.contains(family) {
+                model.backgroundColor
+                    .opacity(0.8)
+            }
             if case let .widgetURL(url) = model.interactionType {
                 WidgetBasicView(model: model, sizeStyle: .single)
                     .widgetURL(url.withWidgetAuthenticity())
@@ -85,9 +88,12 @@ struct WidgetBasicContainerView: View {
                 HStack(spacing: pixelLength) {
                     ForEach(column) { model in
                         ZStack {
-                            // stacking the color under makes the Link's highlight state nicer
-                            model.backgroundColor
-                                .opacity(0.8)
+                            // Check if the widget should be transparent (on the lock screen)
+                            if !Self.transparentFamilies.contains(family) {
+                                // stacking the color under makes the Link's highlight state nicer
+                                model.backgroundColor
+                                    .opacity(0.8)
+                            }
                             if case let .widgetURL(url) = model.interactionType {
                                 Link(destination: url.withWidgetAuthenticity()) {
                                     WidgetBasicView(model: model, sizeStyle: sizeStyle)
@@ -168,6 +174,16 @@ struct WidgetBasicContainerView: View {
         case .systemLarge: return 16
         case .systemExtraLarge: return 32
         @unknown default: return 8
+        }
+    }
+
+    // This is all widgets that are on the lock screen
+    // Lock screen widgets are transparent and don't need a colored background
+    private static var transparentFamilies: [WidgetFamily] {
+        if #available(iOS 16.0, *) {
+            [.accessoryCircular, .accessoryRectangular]
+        } else {
+            []
         }
     }
 }
