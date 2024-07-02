@@ -18,7 +18,7 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
     var body: some View {
         content
             .onChange(of: state) { newValue in
-                // On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
+                // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
                 let currentDevice = WKInterfaceDevice.current()
                 switch newValue {
                 case .success:

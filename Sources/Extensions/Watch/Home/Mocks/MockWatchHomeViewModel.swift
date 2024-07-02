@@ -2,6 +2,7 @@
 import Foundation
 
 final class MockWatchHomeViewModel: WatchHomeViewModelProtocol {
+    @Published var assistService: WatchAssistService = .init()
     @Published var actions: [WatchActionItem] = []
     @Published var state: WatchHomeViewState = .idle
 

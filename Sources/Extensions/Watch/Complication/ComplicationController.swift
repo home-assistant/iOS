@@ -15,12 +15,18 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         if complication.identifier != CLKDefaultComplicationIdentifier {
             // existing complications that were configured pre-7 have no identifier set
             // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
-            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: complication.identifier)
+            model = Current.realm(objectTypes: [WatchComplication.self]).object(
+                ofType: WatchComplication.self,
+                forPrimaryKey: complication.identifier
+            )
         } else {
             // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
             // with the family as the identifier, so we can rely on this code path for older OS and older complications
             let matchedFamily = ComplicationGroupMember(family: complication.family)
-            model = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: matchedFamily.rawValue)
+            model = Current.realm(objectTypes: [WatchComplication.self]).object(
+                ofType: WatchComplication.self,
+                forPrimaryKey: matchedFamily.rawValue
+            )
         }
 
         return model
@@ -33,6 +39,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         if let generated = complicationModel(for: complication)?.CLKComplicationTemplate(family: complication.family) {
             template = generated
+        } else if complication.identifier == AssistDefaultComplication.defaultComplicationId {
+            template = AssistDefaultComplication.createAssistTemplate(for: complication.family)
         } else {
             Current.Log.info {
                 "no configured template for \(complication.identifier), providing placeholder"
@@ -86,13 +94,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // MARK: - Complication Descriptors
 
     func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
-        let configured = Current.realm().objects(WatchComplication.self)
+        let configured = Current.realm(objectTypes: [WatchComplication.self]).objects(WatchComplication.self)
             .map(\.complicationDescriptor)
 
         let placeholders = ComplicationGroupMember.allCases
             .map(\.placeholderComplicationDescriptor)
 
-        handler(configured + placeholders)
+        let assistDefaultComplicationDescriptor = [AssistDefaultComplication.descriptor]
+
+        handler(configured + placeholders + assistDefaultComplicationDescriptor)
     }
 }
 

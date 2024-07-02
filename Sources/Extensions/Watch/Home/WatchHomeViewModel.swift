@@ -15,6 +15,7 @@ struct WatchActionItem: Equatable {
 
 protocol WatchHomeViewModelProtocol: ObservableObject {
     var actions: [WatchActionItem] { get set }
+    var assistService: WatchAssistService { get set }
     func onAppear()
     func onDisappear()
     func runActionId(_ actionId: String, completion: @escaping (Bool) -> Void)
@@ -27,16 +28,22 @@ enum WatchHomeViewState {
     case idle
 }
 
-final class WatchHomeViewModel: WatchHomeViewModelProtocol {
-    enum SendError: Error {
-        case notImmediate
-        case phoneFailed
-    }
+enum WatchSendError: Error {
+    case notImmediate
+    case phoneFailed
+    case wrongAudioURLData
+}
 
+final class WatchHomeViewModel: WatchHomeViewModelProtocol {
     @Published var actions: [WatchActionItem] = []
+    @Published var assistService: WatchAssistService
 
     private var actionsToken: NotificationToken?
     private var realmActions: [Action] = []
+
+    init(assistService: WatchAssistService) {
+        self.assistService = assistService
+    }
 
     func onAppear() {
         setupActionsObservation()
@@ -57,32 +64,35 @@ final class WatchHomeViewModel: WatchHomeViewModelProtocol {
         firstly { () -> Promise<Void> in
             Promise { seal in
                 guard Communicator.shared.currentReachability == .immediatelyReachable else {
-                    seal.reject(SendError.notImmediate)
+                    seal.reject(WatchSendError.notImmediate)
                     return
                 }
 
                 Current.Log.verbose("Signaling action pressed via phone")
                 let actionMessage = InteractiveImmediateMessage(
-                    identifier: "ActionRowPressed",
+                    identifier: InteractiveImmediateMessages.actionRowPressed.rawValue,
                     content: ["ActionID": selectedAction.ID],
                     reply: { message in
                         Current.Log.verbose("Received reply dictionary \(message)")
                         if message.content["fired"] as? Bool == true {
                             seal.fulfill(())
                         } else {
-                            seal.reject(SendError.phoneFailed)
+                            seal.reject(WatchSendError.phoneFailed)
                         }
                     }
                 )
 
-                Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
+                Current.Log
+                    .verbose(
+                        "Sending \(InteractiveImmediateMessages.actionRowPressed.rawValue) message \(actionMessage)"
+                    )
                 Communicator.shared.send(actionMessage, errorHandler: { error in
                     Current.Log.error("Received error when sending immediate message \(error)")
                     seal.reject(error)
                 })
             }
         }.recover { error -> Promise<Void> in
-            guard error == SendError.notImmediate, let server = Current.servers.server(for: selectedAction) else {
+            guard error == WatchSendError.notImmediate, let server = Current.servers.server(for: selectedAction) else {
                 throw error
             }
 

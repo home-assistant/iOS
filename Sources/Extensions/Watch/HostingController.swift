@@ -3,6 +3,6 @@ import SwiftUI
 
 final class HostingController: WKHostingController<WatchHomeView<WatchHomeViewModel>> {
     override var body: WatchHomeView<WatchHomeViewModel> {
-        WatchHomeView(viewModel: .init())
+        WatchHomeView(viewModel: .init(assistService: .init()))
     }
 }

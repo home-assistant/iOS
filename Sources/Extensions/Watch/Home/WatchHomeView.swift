@@ -4,6 +4,7 @@ import UIKit
 
 struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtocol {
     @StateObject private var viewModel: ViewModel
+    @State private var showAssist = false
 
     private let stateIconSize: CGSize = .init(width: 60, height: 60)
     private let stateIconColor: UIColor = .white
@@ -15,16 +16,57 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
     }
 
     var body: some View {
-        ZStack {
-            list
-            noActionsView
+        navigation
+            .onAppear {
+                viewModel.onAppear()
+            }
+            .onDisappear {
+                viewModel.onDisappear()
+            }
+            .fullScreenCover(isPresented: $showAssist, content: {
+                WatchAssistView.build()
+                    .environmentObject(viewModel.assistService)
+            })
+            .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+                showAssist = true
+            }
+    }
+
+    @ViewBuilder
+    private var navigation: some View {
+        if #available(watchOS 10, *) {
+            NavigationStack {
+                content
+            }
+        } else {
+            NavigationView {
+                content
+            }
         }
-        .onAppear {
-            viewModel.onAppear()
-        }
-        .onDisappear {
-            viewModel.onDisappear()
-        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        list
+            .navigationTitle("")
+            .modify {
+                if #available(watchOS 10, *) {
+                    $0.toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                showAssist = true
+                            }, label: {
+                                Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+                                    ofSize: .init(width: 24, height: 24),
+                                    color: Asset.Colors.haPrimary.color
+                                ))
+                            })
+                        }
+                    }
+                } else {
+                    $0
+                }
+            }
     }
 
     private var stateViewBackground: some ShapeStyle {
@@ -36,18 +78,24 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
     }
 
     private var list: some View {
-        List(viewModel.actions, id: \.id) { action in
-            WatchActionButtonView<ViewModel>(action: action)
-                .environmentObject(viewModel)
+        List {
+            ForEach(viewModel.actions, id: \.id) { action in
+                WatchActionButtonView<ViewModel>(action: action)
+                    .environmentObject(viewModel)
+            }
+            if viewModel.actions.isEmpty {
+                noActionsView
+            }
         }
         .animation(.easeInOut, value: viewModel.actions)
+        // This improves how the overlayed assist view looks
+        .opacity(showAssist ? 0.5 : 1)
     }
 
     private var noActionsView: some View {
         Text(L10n.Watch.Labels.noAction)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .animation(.easeInOut, value: viewModel.actions)
-            .opacity(viewModel.actions.isEmpty ? 1 : 0)
+            .font(.footnote)
+            .padding(.vertical)
     }
 }
 
