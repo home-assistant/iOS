@@ -64,6 +64,7 @@ class AccountCell: Cell<AccountRowValue>, CellType {
             let userName = accountRow?.cachedUserName
             let locationName = server.info.name
             let size = AccountInitialsImage.defaultSize
+            let showHACloudBadge = server.info.connection.canUseCloud
 
             if let imageView {
                 if let image = accountRow?.cachedImage {
@@ -80,7 +81,21 @@ class AccountCell: Cell<AccountRowValue>, CellType {
                     imageView.image = AccountInitialsImage.image(for: userName ?? "?")
                 }
 
-                imageView.layer.cornerRadius = ceil(size.height / 2.0)
+                // Cropping image instead of image view to avoid cropping HA cloud badge too
+                imageView.image = imageView.image?.croppedToCircle()
+
+                if showHACloudBadge {
+                    let badgeImage = Asset.SharedAssets.haCloudLogo.image
+                    let haCloudBadge = UIImageView(image: badgeImage)
+                    imageView.addSubview(haCloudBadge)
+                    imageView.contentMode = .scaleAspectFit
+                    haCloudBadge.translatesAutoresizingMaskIntoConstraints = false
+                    haCloudBadge.clipsToBounds = false
+                    NSLayoutConstraint.activate([
+                        haCloudBadge.bottomAnchor.constraint(equalTo: imageView.bottomAnchor),
+                        haCloudBadge.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+                    ])
+                }
             }
 
             accessoryType = .disclosureIndicator

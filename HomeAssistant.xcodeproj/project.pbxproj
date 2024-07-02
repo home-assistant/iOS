@@ -591,6 +591,9 @@
 		42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E62BBEAAE80083D045 /* MockAssistService.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
+		42AA4C822C2DA56100EA2E99 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
+		42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */; };
+		42B94BDD2B9606CD00DEE060 /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
 		42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDC2B9606CD00DEE060 /* AssistView.swift */; };
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
@@ -1785,6 +1788,7 @@
 		42A818E62BBEAAE80083D045 /* MockAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAssistService.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
+		42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Circle.swift"; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
 		42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistViewModel.swift; sourceTree = "<group>"; };
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
@@ -3199,6 +3203,7 @@
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
 				39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */,
+				42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */,
 				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
 			);
 			path = Extensions;
@@ -6207,6 +6212,7 @@
 				1185DF96271FBB9800ED7D9A /* OnboardingAuthLogin.swift in Sources */,
 				425573E62B5838B600145217 /* MaterialDesignIcons+CarPlay.swift in Sources */,
 				421B1C1A2BD65255001ED18C /* WidgetsSettingsView+build.swift in Sources */,
+				42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */,
 				42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */,
