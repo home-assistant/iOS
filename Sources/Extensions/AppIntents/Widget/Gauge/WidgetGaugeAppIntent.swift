@@ -5,17 +5,17 @@ import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "Gauge"
-    static let description = IntentDescription("Display numeric states from Home Assistant in a gauge")
+    static let title: LocalizedStringResource = "widgets.gauge.title"
+    static let description = IntentDescription("widgets.gauge.description")
 
-    @Parameter(title: "Gauge Type", default: .normal)
+    @Parameter(title: "widgets.gauge.parameters.gauge_type", default: .normal)
     var gaugeType: GaugeTypeAppEnum
 
-    @Parameter(title: "Server", default: nil)
+    @Parameter(title: "widgets.gauge.parameters.server", default: nil)
     var server: IntentServerAppEntity
 
     @Parameter(
-        title: "Value Template (0-1)",
+        title: "widgets.gauge.parameters.value_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -28,7 +28,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var valueTemplate: String
 
     @Parameter(
-        title: "Value Label Template",
+        title: "widgets.gauge.parameters.value_label_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -41,7 +41,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var valueLabelTemplate: String
 
     @Parameter(
-        title: "Min Label Template",
+        title: "widgets.gauge.parameters.min_label_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -54,7 +54,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var minTemplate: String
 
     @Parameter(
-        title: "Max Label Template",
+        title: "widgets.gauge.parameters.max_label_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -66,10 +66,10 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var maxTemplate: String
 
-    @Parameter(title: "Run Action", default: false)
+    @Parameter(title: "widgets.gauge.parameters.run_action", default: false)
     var runAction: Bool
 
-    @Parameter(title: "Action", default: nil)
+    @Parameter(title: "widgets.gauge.parameters.action", default: nil)
     var action: IntentActionAppEntity?
 
     static var parameterSummary: some ParameterSummary {

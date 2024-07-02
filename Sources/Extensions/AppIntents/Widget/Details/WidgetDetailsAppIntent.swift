@@ -5,14 +5,14 @@ import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "Details"
-    static let description = IntentDescription("Display states using from Home Assistant in text")
+    static let title: LocalizedStringResource = "widgets.details.title"
+    static let description = IntentDescription("widgets.details.description")
 
-    @Parameter(title: "Server", default: nil)
+    @Parameter(title: "widgets.details.parameters.server", default: nil)
     var server: IntentServerAppEntity
 
     @Parameter(
-        title: "Upper Text Template",
+        title: "widgets.details.parameters.upper_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -25,7 +25,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var upperTemplate: String
 
     @Parameter(
-        title: "Lower Text Template",
+        title: "widgets.details.parameters.lower_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -38,7 +38,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var lowerTemplate: String
 
     @Parameter(
-        title: "Details Text Template (only in rectangular family)",
+        title: "widgets.details.parameters.details_template",
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -50,10 +50,10 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     )
     var detailsTemplate: String
 
-    @Parameter(title: "Run Action (only in rectangular family)", default: false)
+    @Parameter(title: "widgets.details.parameters.run_action", default: false)
     var runAction: Bool
 
-    @Parameter(title: "Action", default: nil)
+    @Parameter(title: "widgets.details.parameters.action", default: nil)
     var action: IntentActionAppEntity?
 
     static var parameterSummary: some ParameterSummary {

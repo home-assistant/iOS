@@ -8,11 +8,11 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     ProgressReportingIntent {
     static let intentClassName = "WidgetActionsIntent"
 
-    static let title: LocalizedStringResource = "Actions"
-    static let description = IntentDescription("View and run actions")
+    static let title: LocalizedStringResource = "widgets.actions.title"
+    static let description = IntentDescription("widgets.actions.description")
 
     @Parameter(
-        title: "Actions",
+        title: "widgets.actions.parameters.action",
         size: [
             .systemSmall: 1,
             .systemMedium: 8,

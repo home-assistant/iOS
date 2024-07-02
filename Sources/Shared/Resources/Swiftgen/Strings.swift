@@ -2857,6 +2857,10 @@ public enum L10n {
       public static var notConfigured: String { return L10n.tr("Localizable", "widgets.actions.not_configured") }
       /// Actions
       public static var title: String { return L10n.tr("Localizable", "widgets.actions.title") }
+      public enum Parameters {
+        /// Action
+        public static var action: String { return L10n.tr("Localizable", "widgets.actions.parameters.action") }
+      }
     }
     public enum Assist {
       /// Ask Assist
@@ -2873,46 +2877,48 @@ public enum L10n {
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
     public enum Details {
-      /// Action
-      public static var action: String { return L10n.tr("Localizable", "widgets.details.action") }
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
-      /// Details Text Template (only in rectangular family)
-      public static var detailsTemplate: String { return L10n.tr("Localizable", "widgets.details.details_template") }
-      /// Lower Text Template
-      public static var lowerTemplate: String { return L10n.tr("Localizable", "widgets.details.lower_template") }
-      /// Max Label Template
-      public static var maxLabelTemplate: String { return L10n.tr("Localizable", "widgets.details.max_label_template") }
-      /// Run Action (only in rectangular family)
-      public static var runAction: String { return L10n.tr("Localizable", "widgets.details.run_action") }
-      /// Server
-      public static var server: String { return L10n.tr("Localizable", "widgets.details.server") }
       /// Details
       public static var title: String { return L10n.tr("Localizable", "widgets.details.title") }
-      /// Upper Text Template
-      public static var upperTemplate: String { return L10n.tr("Localizable", "widgets.details.upper_template") }
+      public enum Parameters {
+        /// Action
+        public static var action: String { return L10n.tr("Localizable", "widgets.details.parameters.action") }
+        /// Details Text Template (only in rectangular family)
+        public static var detailsTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.details_template") }
+        /// Lower Text Template
+        public static var lowerTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.lower_template") }
+        /// Run Action (only in rectangular family)
+        public static var runAction: String { return L10n.tr("Localizable", "widgets.details.parameters.run_action") }
+        /// Server
+        public static var server: String { return L10n.tr("Localizable", "widgets.details.parameters.server") }
+        /// Upper Text Template
+        public static var upperTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.upper_template") }
+      }
     }
     public enum Gauge {
-      /// Action
-      public static var action: String { return L10n.tr("Localizable", "widgets.gauge.action") }
       /// Display numeric states from Home Assistant in a gauge
       public static var description: String { return L10n.tr("Localizable", "widgets.gauge.description") }
-      /// Gauge Type
-      public static var gaugeType: String { return L10n.tr("Localizable", "widgets.gauge.gauge_type") }
-      /// Max Label Template
-      public static var maxLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.max_label_template") }
-      /// Min Label Template
-      public static var minLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.min_label_template") }
-      /// Run Action
-      public static var runAction: String { return L10n.tr("Localizable", "widgets.gauge.run_action") }
-      /// Server
-      public static var server: String { return L10n.tr("Localizable", "widgets.gauge.server") }
       /// Gauge
       public static var title: String { return L10n.tr("Localizable", "widgets.gauge.title") }
-      /// Value Label Template
-      public static var valueLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.value_label_template") }
-      /// Value Template (0-1)
-      public static var valueTemplate: String { return L10n.tr("Localizable", "widgets.gauge.value_template") }
+      public enum Parameters {
+        /// Action
+        public static var action: String { return L10n.tr("Localizable", "widgets.gauge.parameters.action") }
+        /// Gauge Type
+        public static var gaugeType: String { return L10n.tr("Localizable", "widgets.gauge.parameters.gauge_type") }
+        /// Max Label Template
+        public static var maxLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.max_label_template") }
+        /// Min Label Template
+        public static var minLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.min_label_template") }
+        /// Run Action
+        public static var runAction: String { return L10n.tr("Localizable", "widgets.gauge.parameters.run_action") }
+        /// Server
+        public static var server: String { return L10n.tr("Localizable", "widgets.gauge.parameters.server") }
+        /// Value Label Template
+        public static var valueLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.value_label_template") }
+        /// Value Template (0-1)
+        public static var valueTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.value_template") }
+      }
     }
     public enum OpenPage {
       /// Open a frontend page in Home Assistant.
