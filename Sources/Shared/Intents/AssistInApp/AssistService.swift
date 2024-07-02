@@ -3,6 +3,7 @@ import HAKit
 
 public protocol AssistServiceProtocol {
     var delegate: AssistServiceDelegate? { get set }
+    func replaceServer(server: Server)
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void)
     func assist(source: AssistSource)
     func sendAudioData(_ data: Data)
@@ -36,8 +37,8 @@ public enum AssistSource: Equatable {
 public final class AssistService: AssistServiceProtocol {
     public weak var delegate: AssistServiceDelegate?
 
-    private let connection: HAConnection
-    private let server: Server
+    private var connection: HAConnection
+    private var server: Server
 
     private var cancellable: HACancellable?
     private var sttBinaryHandlerId: UInt8?
@@ -62,6 +63,11 @@ public final class AssistService: AssistServiceProtocol {
 
     deinit {
         cancellable?.cancel()
+    }
+
+    public func replaceServer(server: Server) {
+        self.server = server
+        connection = Current.api(for: server).connection
     }
 
     public func assist(source: AssistSource) {

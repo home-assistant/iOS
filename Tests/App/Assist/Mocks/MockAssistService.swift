@@ -10,10 +10,15 @@ final class MockAssistService: AssistServiceProtocol {
     var assistSource: AssistSource?
     var audioDataSent: Data?
     var finishSendingAudioCalled = false
+    var replacedServer: Shared.Server?
 
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
         fetchPipelinesCalled = true
         completion(pipelineResponse)
+    }
+
+    func replaceServer(server: Shared.Server) {
+        replacedServer = server
     }
 
     func assist(source: AssistSource) {

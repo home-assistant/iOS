@@ -49,6 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    private var watchCommunicatorService: WatchCommunicatorService?
+
     func application(
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -348,83 +350,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupWatchCommunicator() {
-        Current.servers.add(observer: self)
-
-        // This directly mutates the data structure for observations to avoid race conditions.
-
-        Communicator.State.observations.store[.init(queue: .main)] = { state in
-            Current.Log.verbose("Activation state changed: \(state)")
-            _ = HomeAssistantAPI.SyncWatchContext()
-        }
-
-        WatchState.observations.store[.init(queue: .main)] = { watchState in
-            Current.Log.verbose("Watch state changed: \(watchState)")
-            _ = HomeAssistantAPI.SyncWatchContext()
-        }
-
-        Reachability.observations.store[.init(queue: .main)] = { reachability in
-            Current.Log.verbose("Reachability changed: \(reachability)")
-        }
-
-        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { message in
-            Current.Log.verbose("Received message: \(message.identifier)")
-
-            // TODO: move all these to something more strongly typed
-
-            if message.identifier == "ActionRowPressed" {
-                Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
-                let responseIdentifier = "ActionRowPressedResponse"
-
-                guard let actionID = message.content["ActionID"] as? String,
-                      let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-                      let server = Current.servers.server(for: action) else {
-                    Current.Log.warning("ActionID either does not exist or is not a string in the payload")
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-                    return
-                }
-
-                firstly {
-                    Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
-                }.done {
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
-                }.catch { err in
-                    Current.Log.error("Error during action event fire: \(err)")
-                    message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
-                }
-            } else if message.identifier == "PushAction" {
-                Current.Log.verbose("Received PushAction \(message) \(message.content)")
-                let responseIdentifier = "PushActionResponse"
-
-                if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-                   let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
-                   let serverIdentifier = message.content["Server"] as? String,
-                   let server = Current.servers.server(forServerIdentifier: serverIdentifier) {
-                    Current.backgroundTask(withName: "watch-push-action") { _ in
-                        firstly {
-                            Current.api(for: server).handlePushAction(for: info)
-                        }.ensure {
-                            message.reply(.init(identifier: responseIdentifier))
-                        }
-                    }.catch { error in
-                        Current.Log.error("error handling push action: \(error)")
-                    }
-                }
-            }
-        }
-
-        Blob.observations.store[.init(queue: .main)] = { blob in
-            Current.Log.verbose("Received blob: \(blob.identifier)")
-        }
-
-        Context.observations.store[.init(queue: .main)] = { context in
-            Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
-
-            if let modelIdentifier = context.content["watchModel"] as? String {
-                Current.crashReporter.setUserProperty(value: modelIdentifier, name: "PairedAppleWatch")
-            }
-        }
-
-        _ = Communicator.shared
+        watchCommunicatorService = WatchCommunicatorService()
+        watchCommunicatorService?.setup()
     }
 
     func setupLocalization() {
@@ -480,10 +407,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // swiftlint:disable:next file_length
-}
-
-extension AppDelegate: ServerObserver {
-    func serversDidChange(_ serverManager: ServerManager) {
-        _ = HomeAssistantAPI.SyncWatchContext()
-    }
 }

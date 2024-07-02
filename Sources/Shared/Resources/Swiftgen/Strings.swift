@@ -291,6 +291,12 @@ public enum L10n {
       /// Assist Pipelines
       public static var title: String { return L10n.tr("Localizable", "assist.pipelines_picker.title") }
     }
+    public enum Watch {
+      public enum MicButton {
+        /// Tap to 
+        public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }
+      }
+    }
   }
 
   public enum CarPlay {

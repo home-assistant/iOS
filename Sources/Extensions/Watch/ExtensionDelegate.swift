@@ -14,6 +14,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     fileprivate var watchConnectivityBackgroundSeal: (()) -> Void
     fileprivate var watchConnectivityWatchdogTimer: Timer?
 
+    private var immediateCommunicatorService: ImmediateCommunicatorService?
+
     override init() {
         (self.watchConnectivityBackgroundPromise, self.watchConnectivityBackgroundSeal) = Guarantee<Void>.pending()
         super.init()
@@ -110,17 +112,26 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: identifier)
+            complication = Current.realm(objectTypes: [WatchComplication.self]).object(
+                ofType: WatchComplication.self,
+                forPrimaryKey: identifier
+            )
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
                   let clkFamily = date.complicationFamilyFromEncodedDate {
             let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(ofType: WatchComplication.self, forPrimaryKey: family.rawValue)
+            complication = Current.realm(objectTypes: [WatchComplication.self]).object(
+                ofType: WatchComplication.self,
+                forPrimaryKey: family.rawValue
+            )
         } else {
             complication = nil
         }
 
         if let complication {
             Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
+        } else if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
+                  identifier == AssistDefaultComplication.defaultComplicationId {
+            NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
         } else {
             Current.Log.verbose("unknown or no complication launched the app")
         }
@@ -145,10 +156,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        ImmediateMessage.observations.store[.init(queue: .main)] = { message in
-            Current.Log.verbose("Received message: \(message.identifier)")
+        immediateCommunicatorService = ImmediateCommunicatorService.shared
 
-            self.endWatchConnectivityBackgroundTaskIfNecessary()
+        ImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
+            Current.Log.verbose("Received message: \(message.identifier)")
+            self?.immediateCommunicatorService?.evaluateMessage(message)
+            self?.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         GuaranteedMessage.observations.store[.init(queue: .main)] = { message in
@@ -307,7 +320,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
             if Communicator.shared.currentReachability == .immediatelyReachable {
                 Current.Log.info("sending via phone")
                 Communicator.shared.send(.init(
-                    identifier: "PushAction",
+                    identifier: InteractiveImmediateMessages.pushAction.rawValue,
                     content: ["PushActionInfo": info.toJSON(), "Server": server.identifier.rawValue],
                     reply: { message in
                         Current.Log.verbose("Received reply dictionary \(message)")
