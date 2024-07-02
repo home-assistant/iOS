@@ -20,7 +20,7 @@ public class NotificationCommandManager {
     public init() {
         register(command: "request_location_update", handler: HandlerLocationUpdate())
         register(command: "clear_notification", handler: HandlerClearNotification())
-        if #available(iOS 14, watchOS 9, macOS 11, *) {
+        if #available(watchOS 9, *) {
             register(command: "reload_widgets", handler: HandlerReloadWidgets())
         }
 
@@ -98,10 +98,10 @@ private struct HandlerClearNotification: NotificationCommandHandler {
     }
 }
 
-@available(iOS 14, watchOS 9, macOS 11, *)
+@available(watchOS 9, *)
 private struct HandlerReloadWidgets: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("reloading widgets")
+        Current.Log.verbose("Reloading widgets triggered by notification command")
         return Promise<Void> { seal in
             DispatchQueue.main.async {
                 WidgetCenter.shared.reloadTimelines(ofKind: "io.robbie.HomeAssistant.widget-gauge")
