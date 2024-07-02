@@ -21,7 +21,6 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     func timeline(for configuration: WidgetGaugeAppIntent, in context: Context) async -> Timeline<Entry> {
         do {
             let snapshot = try await entry(for: configuration, in: context)
-            Current.Log.debug("Reloading gauge widget")
             return .init(
                 entries: [snapshot],
                 policy: .after(
@@ -35,7 +34,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
                 entries: [placeholder(in: context)],
                 policy: .after(
                     Current.date()
-                        .addingTimeInterval(WidgetGaugeDataSource.fastExpiration.converted(to: .seconds).value)
+                        .addingTimeInterval(WidgetGaugeDataSource.expiration.converted(to: .seconds).value)
                 )
             )
         }
@@ -121,11 +120,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
 
 enum WidgetGaugeDataSource {
     static var expiration: Measurement<UnitDuration> {
-        .init(value: 2, unit: .hours)
-    }
-
-    static var fastExpiration: Measurement<UnitDuration> {
-        .init(value: 1, unit: .hours)
+        .init(value: 15, unit: .minutes)
     }
 }
 
