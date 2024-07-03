@@ -254,7 +254,7 @@ enum LegacyNotificationCommandType: String {
     case clearBadge = "clear_badge"
     case clearNotification = "clear_notification"
     case updateComplications = "update_complications"
-    case updateWidgets = "update_wigets"
+    case updateWidgets = "update_widgets"
 }
 
 private extension Dictionary where Value == Any {
