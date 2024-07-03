@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
 "assist.error.pipelines_response" = "Απέτυχε η λήψη των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
