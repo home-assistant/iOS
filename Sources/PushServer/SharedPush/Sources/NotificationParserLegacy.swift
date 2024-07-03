@@ -61,7 +61,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         let commandPayload: CommandPayload? = {
             switch LegacyNotificationCommandType(rawValue: input["message"] as? String ?? "") {
             case .locationUpdate, .locationUpdates:
-                return .init("request_location_update")
+                return .init(LegacyNotificationCommandType.locationUpdate.rawValue)
             case .clearBadge:
                 return .init(isAlert: true, payload: ["aps": ["badge": 0]])
             case .clearNotification:
@@ -75,11 +75,11 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                     homeassistant["collapseId"] = collapseId
                 }
 
-                return .init("clear_notification", homeassistant: homeassistant)
+                return .init(LegacyNotificationCommandType.clearNotification.rawValue, homeassistant: homeassistant)
             case .updateComplications:
-                return .init("update_complications")
+                return .init(LegacyNotificationCommandType.updateComplications.rawValue)
             case .updateWidgets:
-                return .init("update_widgets")
+                return .init(LegacyNotificationCommandType.updateWidgets.rawValue)
             default: return nil
             }
         }()
