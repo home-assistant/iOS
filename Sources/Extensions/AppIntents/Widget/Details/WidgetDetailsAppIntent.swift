@@ -5,14 +5,16 @@ import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "widgets.details.title"
-    static let description = IntentDescription("widgets.details.description")
+    static let title: LocalizedStringResource = .init("widgets.details.title", defaultValue: "Details")
+    static let description = IntentDescription(
+        .init("widgets.details.description", defaultValue: "Display states using from Home Assistant in text")
+    )
 
-    @Parameter(title: "widgets.details.parameters.server", default: nil)
+    @Parameter(title: .init("widgets.details.parameters.server", defaultValue: "Server"), default: nil)
     var server: IntentServerAppEntity
 
     @Parameter(
-        title: "widgets.details.parameters.upper_template",
+        title: .init("widgets.details.parameters.upper_template", defaultValue: "Upper Text Template"),
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -25,7 +27,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var upperTemplate: String
 
     @Parameter(
-        title: "widgets.details.parameters.lower_template",
+        title: .init("widgets.details.parameters.lower_template", defaultValue: "Lower Text Template"),
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -38,7 +40,10 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var lowerTemplate: String
 
     @Parameter(
-        title: "widgets.details.parameters.details_template",
+        title: .init(
+            "widgets.details.parameters.details_template",
+            defaultValue: "Details Text Template (only in rectangular family)"
+        ),
         default: "",
         inputOptions: .init(
             capitalizationType: .none,
@@ -50,10 +55,16 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     )
     var detailsTemplate: String
 
-    @Parameter(title: "widgets.details.parameters.run_action", default: false)
+    @Parameter(
+        title: .init("widgets.details.parameters.run_action", defaultValue: "Run Action (only in rectangular family)"),
+        default: false
+    )
     var runAction: Bool
 
-    @Parameter(title: "widgets.details.parameters.action", default: nil)
+    @Parameter(
+        title: .init("widgets.details.parameters.action", defaultValue: "Action"),
+        default: nil
+    )
     var action: IntentActionAppEntity?
 
     static var parameterSummary: some ParameterSummary {

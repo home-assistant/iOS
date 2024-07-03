@@ -8,11 +8,13 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     ProgressReportingIntent {
     static let intentClassName = "WidgetActionsIntent"
 
-    static let title: LocalizedStringResource = "widgets.actions.title"
-    static let description = IntentDescription("widgets.actions.description")
+    static let title: LocalizedStringResource = .init("widgets.actions.title", defaultValue: "Actions")
+    static let description = IntentDescription(
+        .init("widgets.actions.description", defaultValue: "Perform Home Assistant actions.")
+    )
 
     @Parameter(
-        title: "widgets.actions.parameters.action",
+        title: .init("widgets.actions.parameters.action", defaultValue: "Action"),
         size: [
             .systemSmall: 1,
             .systemMedium: 8,
