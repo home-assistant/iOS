@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "どのアクション？";
 "assist.error.pipelines_response" = "アシスト パイプラインを取得できませんでした。パイプラインの構成を確認してください。";
 "assist.pipelines_picker.title" = "アシストパイプライン";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "キャンセル";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";
 "carPlay.action.intro.item.title" = "最初のアクションを作成する";

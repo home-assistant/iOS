@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Toque para continuar em seu iPhone";
 "carPlay.action.intro.item.title" = "Crie sua primeira ação";

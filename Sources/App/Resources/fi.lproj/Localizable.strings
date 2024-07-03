@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Peruuta";
 "carPlay.action.intro.item.body" = "Napauta jatkaaksesi iPhonessasi";
 "carPlay.action.intro.item.title" = "Luo ensimmäinen toiminto";
