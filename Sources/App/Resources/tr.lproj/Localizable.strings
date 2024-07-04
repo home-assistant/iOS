@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Hangi eylemler?";
 "assist.error.pipelines_response" = "Assist ardışık düzenleri alınamadı. Lütfen ardışık düzen yapılandırmanızı kontrol edin.";
 "assist.pipelines_picker.title" = "Yardımcı Hatlar";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "İptal";
 "carPlay.action.intro.item.body" = "iPhone'unuzda devam etmek için dokunun";
 "carPlay.action.intro.item.title" = "İlk eyleminizi oluşturun";

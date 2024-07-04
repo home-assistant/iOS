@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
 "assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.pipelines_picker.title" = "Assist folyamatok";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";

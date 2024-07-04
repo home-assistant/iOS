@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
 "assist.pipelines_picker.title" = "Assist-Pipelines";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Abbrechen";
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
 "carPlay.action.intro.item.title" = "Erstelle deine erste Aktion";

@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Hvilke handlinger?";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";
 "assist.pipelines_picker.title" = "Assist-pipelines";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Annullér";
 "carPlay.action.intro.item.body" = "Tryk for at fortsætte på din iPhone";
 "carPlay.action.intro.item.title" = "Opret din første handling";
