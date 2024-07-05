@@ -20,12 +20,9 @@ public class NotificationCommandManager {
     public init() {
         register(command: "request_location_update", handler: HandlerLocationUpdate())
         register(command: "clear_notification", handler: HandlerClearNotification())
-        if #available(watchOS 9, *) {
-            register(command: "reload_widgets", handler: HandlerReloadWidgets())
-        }
-
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+        register(command: "update_widgets", handler: HandlerUpdateWidgets())
         #endif
     }
 
@@ -98,20 +95,6 @@ private struct HandlerClearNotification: NotificationCommandHandler {
     }
 }
 
-@available(watchOS 9, *)
-private struct HandlerReloadWidgets: NotificationCommandHandler {
-    func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("Reloading widgets triggered by notification command")
-        return Promise<Void> { seal in
-            DispatchQueue.main.async {
-                WidgetCenter.shared.reloadTimelines(ofKind: AppIntentWidgetKinds.gauge)
-                WidgetCenter.shared.reloadTimelines(ofKind: AppIntentWidgetKinds.details)
-                seal.fulfill(())
-            }
-        }
-    }
-}
-
 #if os(iOS)
 private struct HandlerUpdateComplications: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
@@ -127,6 +110,19 @@ private struct HandlerUpdateComplications: NotificationCommandHandler {
                 name: NotificationCommandManager.didUpdateComplicationsNotification,
                 object: nil
             )
+        }
+    }
+}
+
+private struct HandlerUpdateWidgets: NotificationCommandHandler {
+    func handle(_ payload: [String: Any]) -> Promise<Void> {
+        Current.Log.verbose("Reloading widgets triggered by notification command")
+        return Promise<Void> { seal in
+            DispatchQueue.main.async {
+                WidgetCenter.shared.reloadTimelines(ofKind: AppIntentWidgetKinds.gauge)
+                WidgetCenter.shared.reloadTimelines(ofKind: AppIntentWidgetKinds.details)
+                seal.fulfill(())
+            }
         }
     }
 }
