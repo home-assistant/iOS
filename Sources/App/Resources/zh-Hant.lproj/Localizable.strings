@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "哪個動作？";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
 "assist.pipelines_picker.title" = "助理細部設定";
+"assist.watch.mic_button.title" = "點擊";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "於 iPhone 點擊繼續";
 "carPlay.action.intro.item.title" = "建立第一個觸發動作";

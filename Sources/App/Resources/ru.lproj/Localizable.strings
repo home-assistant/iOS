@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Отмена";
 "carPlay.action.intro.item.body" = "Нажмите, чтобы продолжить на iPhone";
 "carPlay.action.intro.item.title" = "Создать свое первое действие";
@@ -71,7 +72,7 @@
 "carPlay.labels.servers" = "Серверы";
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Далее";
-"carPlay.navigation.button.previous" = "Previous";
+"carPlay.navigation.button.previous" = "Назад";
 "carPlay.navigation.tab.actions" = "Действия";
 "carPlay.navigation.tab.areas" = "Зоны";
 "carPlay.navigation.tab.domains" = "Управление";
@@ -87,7 +88,7 @@
 "carplay.labels.servers" = "Серверы";
 "carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carplay.navigation.button.next" = "Далее";
-"carplay.navigation.button.previous" = "Previous";
+"carplay.navigation.button.previous" = "Назад";
 "carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Отложенный режим не подходит для выбранной точности.";
 "cl_error.description.deferred_canceled" = "Запрос отложенного обновления был отменён вашим приложением или службой геолокации.";
@@ -118,8 +119,8 @@
 "client_events.view.clear_confirm.message" = "Это не может быть отменено.";
 "client_events.view.clear_confirm.title" = "Вы уверены, что хотите удалить все события?";
 "close_label" = "Закрыть";
-"component.collapsible_view.collapse" = "Collapse";
-"component.collapsible_view.expand" = "Expand";
+"component.collapsible_view.collapse" = "Свернуть";
+"component.collapsible_view.expand" = "Развернуть";
 "continue_label" = "Продолжить";
 "copy_label" = "Копировать";
 "database.problem.delete" = "Удалить базу данных и выйти из приложения";

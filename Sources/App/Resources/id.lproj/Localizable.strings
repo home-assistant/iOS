@@ -61,6 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.pipelines_picker.title" = "Saluran Assist";
+"assist.watch.mic_button.title" = "Tap to ";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
 "carPlay.action.intro.item.title" = "Buat aksi pertama Anda";
