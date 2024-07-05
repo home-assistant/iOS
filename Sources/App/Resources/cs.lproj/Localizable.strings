@@ -61,7 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.pipelines_picker.title" = "Potrubí Assist";
-"assist.watch.mic_button.title" = "Tap to ";
+"assist.watch.mic_button.title" = "Klepněte pro:";
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";
 "carPlay.action.intro.item.title" = "Vytvořte svou první akci";

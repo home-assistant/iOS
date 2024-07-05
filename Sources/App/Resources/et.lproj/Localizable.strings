@@ -61,7 +61,7 @@
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.pipelines_picker.title" = "Abilise kanalid";
-"assist.watch.mic_button.title" = "Tap to ";
+"assist.watch.mic_button.title" = "Puuduta, et";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";
