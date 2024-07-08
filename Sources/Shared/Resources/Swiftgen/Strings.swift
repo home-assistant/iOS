@@ -296,6 +296,10 @@ public enum L10n {
         /// Tap to 
         public static var title: String { return L10n.tr("Localizable", "assist.watch.mic_button.title") }
       }
+      public enum NotReachable {
+        /// Assist requires iPhone connectivity. Your iPhone is currently unreachable.
+        public static var title: String { return L10n.tr("Localizable", "assist.watch.not_reachable.title") }
+      }
     }
   }
 

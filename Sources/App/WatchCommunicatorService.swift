@@ -163,8 +163,6 @@ extension WatchCommunicatorService {
     }
 
     private func assistAudioData(blob: Blob) {
-        let responseIdentifier = InteractiveImmediateResponses.assistAudioDataResponse.rawValue
-
         let serverId = blob.metadata?["serverId"] as? String
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
             .servers.all.first else {

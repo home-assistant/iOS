@@ -10,9 +10,11 @@ final class WatchAssistService: ObservableObject {
 
     @Published var pipelines: [WatchPipeline] = []
     @Published var preferredPipeline: String = ""
+    @Published var deviceReachable = false
 
     private let watchPreferredServerUserDefaultsKey = "watch-preferred-server-id"
     private var cancellable: AnyCancellable?
+    private var reachabilityObservation: Observation?
 
     init() {
         Current.servers.add(observer: self)
@@ -20,17 +22,65 @@ final class WatchAssistService: ObservableObject {
             guard let self else { return }
             UserDefaults().setValue(newSelectedServer, forKey: watchPreferredServerUserDefaultsKey)
             self.preferredPipeline = ""
-            loadPipelines(serverId: newSelectedServer) { _ in }
         }
         setupServers()
+        self.reachabilityObservation = Reachability.observe { [weak self] state in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                switch state {
+                case .immediatelyReachable:
+                    self?.deviceReachable = true
+                case .notReachable, .backgroundOnly:
+                    self?.deviceReachable = false
+                }
+            }
+        }
+        self.deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
     }
 
     deinit {
+        endRoutine()
+    }
+
+    func endRoutine() {
         cancellable?.cancel()
+        if let reachabilityObservation {
+            Reachability.unobserve(reachabilityObservation)
+            self.reachabilityObservation = nil
+        }
     }
 
     func fetchPipelines(completion: @escaping (Bool) -> Void) {
-        loadPipelines(completion: completion)
+        guard deviceReachable else {
+            completion(false)
+            return
+        }
+
+        Current.Log.verbose("Signaling fetch Assist pipelines via phone")
+        let actionMessage = InteractiveImmediateMessage(
+            identifier: InteractiveImmediateMessages.assistPipelinesFetch.rawValue,
+            content: ["serverId": selectedServer],
+            reply: { message in
+                Current.Log.verbose("Received reply dictionary \(message)")
+                if let pipelines = message.content["pipelines"] as? [[String: String]] {
+                    self.updatePipelines(
+                        pipelines,
+                        preferredPipeline: message.content["preferredPipeline"] as? String ?? ""
+                    )
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }
+        )
+
+        Current.Log
+            .verbose(
+                "Sending \(InteractiveImmediateMessages.assistPipelinesFetch.rawValue) message \(actionMessage)"
+            )
+        Communicator.shared.send(actionMessage, errorHandler: { error in
+            Current.Log.error("Received error when sending immediate message \(error)")
+            completion(false)
+        })
     }
 
     func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
@@ -64,48 +114,10 @@ final class WatchAssistService: ObservableObject {
                     completion(error)
                 }
             }
-
-            // Extra message just to wake up iPhone from the background to process Blob above
-            Communicator.shared.send(ImmediateMessage(identifier: "wakeup"))
         } catch {
             Current.Log.error("Watch assist failed: \(error.localizedDescription)")
             completion(error)
         }
-    }
-
-    private func loadPipelines(serverId: String? = nil, completion: @escaping (Bool) -> Void) {
-        let serverId = serverId ?? selectedServer
-        guard Communicator.shared.currentReachability == .immediatelyReachable else {
-            completion(false)
-            return
-        }
-
-        Current.Log.verbose("Signaling fetch Assist pipelines via phone")
-        let actionMessage = InteractiveImmediateMessage(
-            identifier: InteractiveImmediateMessages.assistPipelinesFetch.rawValue,
-            content: ["serverId": serverId],
-            reply: { message in
-                Current.Log.verbose("Received reply dictionary \(message)")
-                if let pipelines = message.content["pipelines"] as? [[String: String]] {
-                    self.updatePipelines(
-                        pipelines,
-                        preferredPipeline: message.content["preferredPipeline"] as? String ?? ""
-                    )
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-            }
-        )
-
-        Current.Log
-            .verbose(
-                "Sending \(InteractiveImmediateMessages.assistPipelinesFetch.rawValue) message \(actionMessage)"
-            )
-        Communicator.shared.send(actionMessage, errorHandler: { error in
-            Current.Log.error("Received error when sending immediate message \(error)")
-            completion(false)
-        })
     }
 
     private func updatePipelines(_ pipelines: [[String: String]], preferredPipeline: String) {

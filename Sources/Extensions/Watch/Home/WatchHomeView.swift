@@ -25,7 +25,6 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             }
             .fullScreenCover(isPresented: $showAssist, content: {
                 WatchAssistView.build()
-                    .environmentObject(viewModel.assistService)
             })
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true

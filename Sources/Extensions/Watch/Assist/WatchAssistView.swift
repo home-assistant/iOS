@@ -3,7 +3,6 @@ import SwiftUI
 
 struct WatchAssistView: View {
     @StateObject private var viewModel: WatchAssistViewModel
-    @EnvironmentObject private var assistService: WatchAssistService
 
     /// Used when there are multiple server
     @State private var showSettings = false
@@ -30,7 +29,7 @@ struct WatchAssistView: View {
          .handGestureShortcut(.primaryAction)
           */
         .onTapGesture {
-            viewModel.assist(assistService)
+            viewModel.assist()
         }
         .modify {
             if #available(watchOS 10, *) {
@@ -49,7 +48,7 @@ struct WatchAssistView: View {
             initialRoutine()
         }
         .onDisappear {
-            viewModel.stopRecording()
+            viewModel.endRoutine()
         }
         .onChange(of: viewModel.state) { newValue in
             // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
@@ -81,12 +80,16 @@ struct WatchAssistView: View {
 
     private func initialRoutine() {
         viewModel.state = .loading
-        if assistService.pipelines.isEmpty {
-            assistService.fetchPipelines { _ in
-                viewModel.assist(assistService)
+        if viewModel.assistService.pipelines.isEmpty {
+            Current.Log.info("Watch Assist: pipelines list is empty, trying to fetch pipelines")
+            viewModel.assistService.fetchPipelines { success in
+                Current.Log
+                    .info("Watch Assist: Pipelines fetch done, result: \(success), moving on with assist command")
+                viewModel.assist()
             }
         } else {
-            viewModel.assist(assistService)
+            Current.Log.info("Watch Assist: pipelines list exist, moving on with assist command")
+            viewModel.assist()
         }
     }
 
@@ -111,12 +114,12 @@ struct WatchAssistView: View {
 
     @ViewBuilder
     private var pipelineSelector: some View {
-        if assistService.pipelines.count > 1 || assistService.servers.count > 1,
-           let firstPipelineName = assistService.pipelines
-           .first(where: { $0.id == assistService.preferredPipeline })?.name,
+        if viewModel.assistService.pipelines.count > 1 || viewModel.assistService.servers.count > 1,
+           let firstPipelineName = viewModel.assistService.pipelines
+           .first(where: { $0.id == viewModel.assistService.preferredPipeline })?.name,
            let firstPipelineNameChar = firstPipelineName.first {
             Button {
-                if assistService.servers.count > 1 {
+                if viewModel.assistService.servers.count > 1 {
                     showSettings = true
                 } else {
                     showPipelinesPicker = true
@@ -135,9 +138,9 @@ struct WatchAssistView: View {
                 .padding(.horizontal)
             }
             .confirmationDialog(L10n.Assist.PipelinesPicker.title, isPresented: $showPipelinesPicker) {
-                ForEach(assistService.pipelines, id: \.id) { pipeline in
+                ForEach(viewModel.assistService.pipelines, id: \.id) { pipeline in
                     Button {
-                        assistService.preferredPipeline = pipeline.id
+                        viewModel.assistService.preferredPipeline = pipeline.id
                     } label: {
                         Text(pipeline.name)
                     }
@@ -149,9 +152,15 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micButton: some View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
-            HStack {
-                Text(L10n.Assist.Watch.MicButton.title)
-                Image(systemName: "mic.fill")
+            HStack(spacing: .zero) {
+                if viewModel.assistService.deviceReachable {
+                    Text(L10n.Assist.Watch.MicButton.title)
+                    Image(systemName: "mic.fill")
+                } else {
+                    Image(systemName: "iphone.slash")
+                        .foregroundStyle(.red)
+                        .padding(.trailing)
+                }
             }
             .font(.system(size: 11))
             .foregroundStyle(.gray)
@@ -189,7 +198,7 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micRecording: some View {
         Button(action: {
-            viewModel.assist(assistService)
+            viewModel.assist()
         }, label: {
             if #available(watchOS 10.0, *) {
                 Image(systemName: "waveform.circle.fill")
