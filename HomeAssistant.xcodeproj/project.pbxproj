@@ -503,6 +503,23 @@
 		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
+		4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
+		403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9082C2E220200D48147 /* WidgetGauge.swift */; };
+		403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */; };
+		403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */; };
+		403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */; };
+		403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */; };
+		403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
+		403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
+		404C79762C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */; };
+		404C79772C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */; };
+		404C797F2C3491390010EB81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		404C79802C3491390010EB81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */; };
+		4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BC2C319AA000099C88 /* WidgetDetails.swift */; };
+		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
+		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
+		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		42070EE82BAC43240031E96F /* AssistSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE72BAC43240031E96F /* AssistSession.swift */; };
 		42070EEB2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
 		42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
@@ -589,11 +606,9 @@
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
 		42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E62BBEAAE80083D045 /* MockAssistService.swift */; };
+		42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
-		42AA4C822C2DA56100EA2E99 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
-		42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */; };
-		42B94BDD2B9606CD00DEE060 /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
 		42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDC2B9606CD00DEE060 /* AssistView.swift */; };
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
@@ -1660,6 +1675,17 @@
 		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scaledToSize.swift"; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCircularView.swift; sourceTree = "<group>"; };
+		403AE9082C2E220200D48147 /* WidgetGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGauge.swift; sourceTree = "<group>"; };
+		403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetGaugeAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Gauge/WidgetGaugeAppIntent.swift; sourceTree = SOURCE_ROOT; };
+		403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGaugeAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
+		403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGaugeView.swift; sourceTree = "<group>"; };
+		403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentServerAppEntitiy.swift; sourceTree = "<group>"; };
+		404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentWidgetKinds.swift; sourceTree = "<group>"; };
+		4080D5BC2C319AA000099C88 /* WidgetDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetails.swift; sourceTree = "<group>"; };
+		4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsView.swift; sourceTree = "<group>"; };
+		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
+		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42070EE72BAC43240031E96F /* AssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSession.swift; sourceTree = "<group>"; };
 		42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInAppIntentHandler.swift; sourceTree = "<group>"; };
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
@@ -1786,9 +1812,9 @@
 		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
 		42A818E62BBEAAE80083D045 /* MockAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAssistService.swift; sourceTree = "<group>"; };
+		42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Circle.swift"; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
-		42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Circle.swift"; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
 		42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistViewModel.swift; sourceTree = "<group>"; };
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
@@ -2562,6 +2588,7 @@
 				115560E227010DAB00A8F818 /* WidgetBasicView.swift */,
 				424A7F452B188946008C8DF3 /* WidgetBackground.swift */,
 				424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */,
+				4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -2684,6 +2711,8 @@
 				115560DF27010D6700A8F818 /* Common */,
 				110E693E24E770BD004AA96D /* Actions */,
 				115560EA27012ED000A8F818 /* OpenPage */,
+				403AE9072C2E214D00D48147 /* Gauge */,
+				4080D5BB2C319A9100099C88 /* Details */,
 				1171508324DFCF960065E874 /* Resources */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
@@ -3263,6 +3292,42 @@
 			path = WebView;
 			sourceTree = "<group>";
 		};
+		403AE9072C2E214D00D48147 /* Gauge */ = {
+			isa = PBXGroup;
+			children = (
+				403AE9082C2E220200D48147 /* WidgetGauge.swift */,
+				403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */,
+			);
+			path = Gauge;
+			sourceTree = "<group>";
+		};
+		403AE90A2C2E28A200D48147 /* Gauge */ = {
+			isa = PBXGroup;
+			children = (
+				403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */,
+				403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */,
+			);
+			path = Gauge;
+			sourceTree = "<group>";
+		};
+		4080D5BB2C319A9100099C88 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				4080D5BC2C319AA000099C88 /* WidgetDetails.swift */,
+				4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
+		4080D5C02C319AF400099C88 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */,
+				4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
 		420FE8472B5569ED00878E06 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -3373,14 +3438,6 @@
 			path = Domains;
 			sourceTree = "<group>";
 		};
-		425573D82B57DDC700145217 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				425573D92B57DDE000145217 /* WindowScenesManager.test.swift */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		426266432C11B0070081A818 /* Watch */ = {
 			isa = PBXGroup;
 			children = (
@@ -3458,6 +3515,7 @@
 			children = (
 				4296C3722B91F06D0051B63C /* Widget */,
 				4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */,
+				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
 				4296C36C2B90DB630051B63C /* PerformAction.swift */,
 			);
 			path = AppIntents;
@@ -3467,6 +3525,8 @@
 			isa = PBXGroup;
 			children = (
 				4296C3732B91F0730051B63C /* Actions */,
+				403AE90A2C2E28A200D48147 /* Gauge */,
+				4080D5C02C319AF400099C88 /* Details */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -4491,6 +4551,7 @@
 		D0FF79D020D87CF60034574D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
@@ -5262,6 +5323,7 @@
 				B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */,
 				4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */,
 				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
+				404C797F2C3491390010EB81 /* Localizable.strings in Resources */,
 				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
 				420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */,
 				B60616941D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav in Resources */,
@@ -5462,6 +5524,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */,
+				404C79802C3491390010EB81 /* Localizable.strings in Resources */,
 				B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6054,14 +6117,24 @@
 				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
+				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
 				42F958992BB4684700497981 /* WidgetAssist.swift in Sources */,
+				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
+				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
+				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
+				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
+				403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */,
 				4296C3782B91F6260051B63C /* PerformAction.swift in Sources */,
+				4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */,
+				4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */,
 				4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */,
+				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
+				403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,
 				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
 			);
@@ -6115,6 +6188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
+				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
@@ -6203,6 +6277,7 @@
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
+				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
 				11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */,
@@ -6288,6 +6363,7 @@
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
+				403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
@@ -6455,6 +6531,7 @@
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */,
+				404C79762C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */,
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				1128FF3D297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */,
@@ -6757,6 +6834,7 @@
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
+				404C79772C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
 				426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
