@@ -7,6 +7,10 @@ struct Widgets: WidgetBundle {
         WidgetAssist()
         actionsWidget()
         WidgetOpenPage()
+        if #available(iOS 17, *) {
+            WidgetGauge()
+            WidgetDetails()
+        }
     }
 
     private func actionsWidget() -> some Widget {

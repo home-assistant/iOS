@@ -59,12 +59,12 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         }
 
         let commandPayload: CommandPayload? = {
-            switch input["message"] as? String {
-            case "request_location_update", "request_location_updates":
-                return .init("request_location_update")
-            case "clear_badge":
+            switch LegacyNotificationCommandType(rawValue: input["message"] as? String ?? "") {
+            case .locationUpdate, .locationUpdates:
+                return .init(LegacyNotificationCommandType.locationUpdate.rawValue)
+            case .clearBadge:
                 return .init(isAlert: true, payload: ["aps": ["badge": 0]])
-            case "clear_notification":
+            case .clearNotification:
                 var homeassistant = [String: Any]()
 
                 if let tag = data["tag"] {
@@ -75,9 +75,11 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                     homeassistant["collapseId"] = collapseId
                 }
 
-                return .init("clear_notification", homeassistant: homeassistant)
-            case "update_complications":
-                return .init("update_complications")
+                return .init(LegacyNotificationCommandType.clearNotification.rawValue, homeassistant: homeassistant)
+            case .updateComplications:
+                return .init(LegacyNotificationCommandType.updateComplications.rawValue)
+            case .updateWidgets:
+                return .init(LegacyNotificationCommandType.updateWidgets.rawValue)
             default: return nil
             }
         }()
@@ -244,6 +246,15 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
 
         return .init(headers: headers, payload: payload)
     }
+}
+
+enum LegacyNotificationCommandType: String {
+    case locationUpdate = "request_location_update"
+    case locationUpdates = "request_location_updates"
+    case clearBadge = "clear_badge"
+    case clearNotification = "clear_notification"
+    case updateComplications = "update_complications"
+    case updateWidgets = "update_widgets"
 }
 
 private extension Dictionary where Value == Any {

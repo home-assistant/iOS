@@ -65,7 +65,7 @@ struct LegacyWidgetActions: Widget {
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Actions.title)
         .description(L10n.Widgets.Actions.description)
-        .supportedFamilies(WidgetActionSupportedFamilies.families)
+        .supportedFamilies(WidgetActionSupportedFamilies.legacyFamilies)
         .onBackgroundURLSessionEvents(matching: nil) { identifier, completion in
             Current.webhooks.handleBackground(for: identifier, completionHandler: completion)
         }
@@ -73,5 +73,19 @@ struct LegacyWidgetActions: Widget {
 }
 
 enum WidgetActionSupportedFamilies {
-    static let families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
+    @available(iOS 16.0, *)
+    static let families: [WidgetFamily] = [
+        .systemSmall,
+        .systemMedium,
+        .systemLarge,
+        .systemExtraLarge,
+        .accessoryCircular,
+    ]
+
+    static let legacyFamilies: [WidgetFamily] = [
+        .systemSmall,
+        .systemMedium,
+        .systemLarge,
+        .systemExtraLarge,
+    ]
 }
