@@ -5,7 +5,8 @@ public enum AssistRequests {
     public static func assistByVoiceTypedSubscription(
         preferredPipelineId: String,
         audioSampleRate: Double,
-        conversationId: String?
+        conversationId: String?,
+        hassDeviceId: String?
     ) -> HATypedSubscription<AssistResponse> {
         var data: [String: Any] = [
             "pipeline": preferredPipelineId,
@@ -17,6 +18,9 @@ public enum AssistRequests {
         ]
         if let conversationId {
             data["conversation_id"] = conversationId
+        }
+        if let hassDeviceId {
+            data["device_id"] = hassDeviceId
         }
         return .init(request: .init(type: .webSocket("assist_pipeline/run"), data: data))
     }
