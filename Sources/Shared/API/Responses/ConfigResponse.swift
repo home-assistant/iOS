@@ -4,6 +4,7 @@ import ObjectMapper
 public class ConfigResponse: Mappable {
     public var Components: [String] = []
     public var Version: String = ""
+    public var hassDeviceId: String?
 
     public var TemperatureUnit: String?
     public var LengthUnit: String?
@@ -27,6 +28,7 @@ public class ConfigResponse: Mappable {
     public func mapping(map: Map) {
         Components <- map["components"]
         Version <- map["version"]
+        hassDeviceId <- map["hass_device_id"]
 
         TemperatureUnit <- map["unit_system.temperature"]
         LengthUnit <- map["unit_system.length"]
