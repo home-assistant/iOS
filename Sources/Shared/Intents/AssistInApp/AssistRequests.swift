@@ -6,7 +6,8 @@ public enum AssistRequests {
     public static func assistByVoiceTypedSubscription(
         preferredPipelineId: String?,
         audioSampleRate: Double,
-        conversationId: String?
+        conversationId: String?,
+        hassDeviceId: String?
     ) -> HATypedSubscription<AssistResponse> {
         var data: [String: Any] = [
             "start_stage": "stt",
@@ -21,13 +22,17 @@ public enum AssistRequests {
         if let conversationId {
             data["conversation_id"] = conversationId
         }
+        if let hassDeviceId {
+            data["device_id"] = hassDeviceId
+        }
         return .init(request: .init(type: .webSocket(runCommand), data: data))
     }
 
     public static func assistByTextTypedSubscription(
         preferredPipelineId: String?,
         inputText: String,
-        conversationId: String?
+        conversationId: String?,
+        hassDeviceId: String?
     ) -> HATypedSubscription<AssistResponse> {
         var data: [String: Any] = [
             "start_stage": "intent",
@@ -41,6 +46,9 @@ public enum AssistRequests {
         }
         if let conversationId {
             data["conversation_id"] = conversationId
+        }
+        if let hassDeviceId {
+            data["device_id"] = hassDeviceId
         }
         return .init(request: .init(type: .webSocket(runCommand), data: data))
     }

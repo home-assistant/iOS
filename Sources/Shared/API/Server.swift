@@ -66,6 +66,7 @@ public struct ServerInfo: Codable, Equatable {
     }
 
     public var remoteName: String
+    public var hassDeviceId: String?
     public var sortOrder: Int
     public var version: Version
     public var connection: ConnectionInfo
@@ -84,12 +85,14 @@ public struct ServerInfo: Codable, Equatable {
         case connectionInfo
         case tokenInfo
         case settings
+        case hassDeviceId
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.remoteName = try container.decode(String.self, forKey: .name)
+        self.hassDeviceId = try container.decodeIfPresent(String.self, forKey: .hassDeviceId)
         self.sortOrder = try container.decode(Int.self, forKey: .sortOrder)
         self.connection = try container.decode(ConnectionInfo.self, forKey: .connectionInfo)
         self.token = try container.decode(TokenInfo.self, forKey: .tokenInfo)
@@ -105,6 +108,7 @@ public struct ServerInfo: Codable, Equatable {
         try container.encode(connection, forKey: .connectionInfo)
         try container.encode(token, forKey: .tokenInfo)
         try container.encode(settings, forKey: .settings)
+        try container.encode(hassDeviceId, forKey: .hassDeviceId)
     }
 
     public init(
