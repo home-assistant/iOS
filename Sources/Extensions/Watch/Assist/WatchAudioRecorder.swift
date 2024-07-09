@@ -17,9 +17,6 @@ protocol WatchAudioRecorderProtocol: ObservableObject {
 
 final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     private var audioRecorder: AVAudioRecorder?
-    private var silenceTimer: Timer?
-    private let silenceThreshold: TimeInterval = 3.0
-    private let silenceLevel: Float = -50.0
     private var audioSampleRate: Double?
     weak var delegate: WatchAudioRecorderDelegate?
 
@@ -57,7 +54,6 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
             Current.Log.verbose("Using audio sample rate \(String(describing: audioSampleRate))")
             audioRecorder?.record()
 
-            startMonitoringAudioLevels()
             delegate?.didStartRecording()
         } catch {
             delegate?.didFailRecording(error: error)
@@ -67,32 +63,12 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     func stopRecording() {
         audioRecorder?.stop()
         audioRecorder = nil
-        silenceTimer?.invalidate()
-        silenceTimer = nil
         delegate?.didStopRecording()
     }
 
     private func getAudioFileURL() -> URL {
         let sharedGroupContainerDirectory = Constants.AppGroupContainer
         return sharedGroupContainerDirectory.appendingPathComponent("assist.wav")
-    }
-
-    private func startMonitoringAudioLevels() {
-        silenceTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            guard let self, let audioRecorder else { return }
-            audioRecorder.updateMeters()
-
-            let averagePower = audioRecorder.averagePower(forChannel: 1)
-            if averagePower < silenceLevel {
-                silenceTimer?.invalidate()
-                silenceTimer = Timer
-                    .scheduledTimer(withTimeInterval: silenceThreshold, repeats: false) { [weak self] _ in
-                        self?.stopRecording()
-                    }
-            } else {
-                silenceTimer?.invalidate()
-            }
-        }
     }
 }
 
