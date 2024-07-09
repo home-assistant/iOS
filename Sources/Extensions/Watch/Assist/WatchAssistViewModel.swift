@@ -45,7 +45,10 @@ final class WatchAssistViewModel: ObservableObject {
 
     func initialRoutine() {
         state = .loading
-        if assistService.pipelines.isEmpty {
+        guard !assistService.selectedServer.isEmpty else {
+            fatalError("Server can't be nil")
+        }
+        if assistService.pipelines.isEmpty || assistService.preferredPipeline.isEmpty {
             Current.Log.info("Watch Assist: pipelines list is empty, trying to fetch pipelines")
             assistService.fetchPipelines { [weak self] success in
                 Current.Log

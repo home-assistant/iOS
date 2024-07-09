@@ -136,29 +136,23 @@ extension WatchCommunicatorService {
             return
         }
 
-        firstly { () -> Promise<Void> in
-            Promise { seal in
-                initAssistServiceIfNeeded(server: server).fetchPipelines { pipelinesResponse in
-                    if let pipelines = pipelinesResponse?.pipelines,
-                       let preferredPipeline = pipelinesResponse?.preferredPipeline {
-                        message.reply(.init(identifier: responseIdentifier, content: [
-                            "pipelines": pipelines.map({ pipeline in
-                                [
-                                    "name": pipeline.name,
-                                    "id": pipeline.id,
-                                ]
-                            }),
-                            "preferredPipeline": preferredPipeline,
-                        ]))
-                        seal.fulfill(())
-                    } else {
-                        seal.reject(WatchAssistCommunicatorError.pipelinesFetchFailed)
-                    }
-                }
+        initAssistServiceIfNeeded(server: server).fetchPipelines { pipelinesResponse in
+            if let pipelines = pipelinesResponse?.pipelines,
+               let preferredPipeline = pipelinesResponse?.preferredPipeline {
+                message.reply(.init(identifier: responseIdentifier, content: [
+                    "pipelines": pipelines.map({ pipeline in
+                        [
+                            "name": pipeline.name,
+                            "id": pipeline.id,
+                        ]
+                    }),
+                    "preferredPipeline": preferredPipeline,
+                ]))
+            } else {
+                Current.Log
+                    .error("Error during fetch Assist pipelines: \(WatchAssistCommunicatorError.pipelinesFetchFailed)")
+                message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
             }
-        }.catch { err in
-            Current.Log.error("Error during fetch Assist pipelines: \(err)")
-            message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
         }
     }
 
@@ -171,28 +165,18 @@ extension WatchCommunicatorService {
             return
         }
 
-        firstly { [weak self] () -> Promise<Void> in
-            Promise { seal in
-                let pipelineId = blob.metadata?["pipelineId"] as? String
-                guard let self, let sampleRate = blob.metadata?["sampleRate"] as? Double else {
-                    let errorMessage = "No sample rate received in message \(blob.identifier)"
-                    Current.Log.error(errorMessage)
-                    return
-                }
-                let audioData = blob.content
-                self.pendingAudioData = audioData
-                self.initAssistServiceIfNeeded(server: server).assist(source: .audio(
-                    pipelineId: pipelineId,
-                    audioSampleRate: sampleRate
-                ))
-                DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
-                    seal.fulfill(())
-                }
-            }
-        }.catch { err in
-            let errorMessage = "Error during fetch Assist pipelines: \(err)"
-            Current.Log.warning(errorMessage)
+        let pipelineId = blob.metadata?["pipelineId"] as? String
+        guard let sampleRate = blob.metadata?["sampleRate"] as? Double else {
+            let errorMessage = "No sample rate received in message \(blob.identifier)"
+            Current.Log.error(errorMessage)
+            return
         }
+        let audioData = blob.content
+        pendingAudioData = audioData
+        initAssistServiceIfNeeded(server: server).assist(source: .audio(
+            pipelineId: pipelineId,
+            audioSampleRate: sampleRate
+        ))
     }
 
     private func initAssistServiceIfNeeded(server: Server) -> AssistServiceProtocol {

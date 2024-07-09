@@ -6,23 +6,27 @@ import Shared
 
 final class WatchAssistService: ObservableObject {
     @Published var servers: [Server] = []
-    @Published var selectedServer: String = ""
+    @Published var selectedServer: String = "" {
+        didSet {
+            pipelines = []
+            preferredPipeline = ""
+
+            // Fetch new pipelines in case server changes manually
+            if !oldValue.isEmpty {
+                fetchPipelines(completion: { _ in })
+            }
+        }
+    }
 
     @Published var pipelines: [WatchPipeline] = []
-    @Published var preferredPipeline: String?
+    @Published var preferredPipeline: String = ""
     @Published var deviceReachable = false
+    @Published var isFetchingPipeline = false
 
     private let watchPreferredServerUserDefaultsKey = "watch-preferred-server-id"
-    private var cancellable: AnyCancellable?
     private var reachabilityObservation: Observation?
 
     init() {
-        Current.servers.add(observer: self)
-        self.cancellable = $selectedServer.sink { [weak self] newSelectedServer in
-            guard let self else { return }
-            UserDefaults().setValue(newSelectedServer, forKey: watchPreferredServerUserDefaultsKey)
-            self.preferredPipeline = nil
-        }
         setupServers()
         setupReachability()
     }
@@ -32,7 +36,6 @@ final class WatchAssistService: ObservableObject {
     }
 
     func endRoutine() {
-        cancellable?.cancel()
         if let reachabilityObservation {
             Reachability.unobserve(reachabilityObservation)
             self.reachabilityObservation = nil
@@ -40,25 +43,28 @@ final class WatchAssistService: ObservableObject {
     }
 
     func fetchPipelines(completion: @escaping (Bool) -> Void) {
-        guard deviceReachable else {
+        guard deviceReachable, !selectedServer.isEmpty else {
             completion(false)
             return
         }
-
+        isFetchingPipeline = true
         Current.Log.verbose("Signaling fetch Assist pipelines via phone")
         let actionMessage = InteractiveImmediateMessage(
             identifier: InteractiveImmediateMessages.assistPipelinesFetch.rawValue,
             content: ["serverId": selectedServer],
-            reply: { message in
+            reply: { [weak self] message in
                 Current.Log.verbose("Received reply dictionary \(message)")
                 if let pipelines = message.content["pipelines"] as? [[String: String]] {
-                    self.updatePipelines(
+                    self?.updatePipelines(
                         pipelines,
                         preferredPipeline: message.content["preferredPipeline"] as? String
                     )
                     completion(true)
                 } else {
                     completion(false)
+                }
+                self?.runInMainThread {
+                    self?.isFetchingPipeline = false
                 }
             }
         )
@@ -89,7 +95,9 @@ final class WatchAssistService: ObservableObject {
                 "sampleRate": sampleRate,
             ]
 
-            metadata["pipelineId"] = preferredPipeline
+            if !preferredPipeline.isEmpty {
+                metadata["pipelineId"] = preferredPipeline
+            }
 
             if !selectedServer.isEmpty {
                 metadata["serverId"] = selectedServer
@@ -118,7 +126,7 @@ final class WatchAssistService: ObservableObject {
     }
 
     private func updatePipelines(_ pipelines: [[String: String]], preferredPipeline: String?) {
-        DispatchQueue.main.async { [weak self] in
+        runInMainThread { [weak self] in
             guard let self else { return }
             self.pipelines = pipelines.compactMap({ pipelineRawValue in
                 guard let id = pipelineRawValue["id"], let name = pipelineRawValue["name"] else {
@@ -129,7 +137,7 @@ final class WatchAssistService: ObservableObject {
                     name: name
                 )
             })
-            self.preferredPipeline = preferredPipeline
+            self.preferredPipeline = preferredPipeline ?? ""
         }
     }
 
@@ -139,7 +147,12 @@ final class WatchAssistService: ObservableObject {
            servers.first(where: { $0.identifier.rawValue == preferredServer }) != nil {
             selectedServer = preferredServer
         } else {
-            selectedServer = Current.servers.all.first?.identifier.rawValue ?? ""
+            if let server = Current.servers.all.first?.identifier.rawValue {
+                selectedServer = server
+            } else {
+                selectedServer = ""
+                Current.Log.error("Watch Assist: No server available, this can't happen")
+            }
         }
     }
 
@@ -151,10 +164,10 @@ final class WatchAssistService: ObservableObject {
         }
         deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
     }
-}
 
-extension WatchAssistService: ServerObserver {
-    func serversDidChange(_ serverManager: any Shared.ServerManager) {
-        setupServers()
+    private func runInMainThread(completion: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            completion()
+        }
     }
 }

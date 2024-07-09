@@ -36,13 +36,11 @@ struct WatchAssistView: View {
                 $0.toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         pipelineSelector
-                            .environmentObject(viewModel.assistService)
                     }
                 }
             } else {
                 $0.toolbar {
                     pipelineSelector
-                        .environmentObject(viewModel.assistService)
                 }
             }
         }
@@ -73,7 +71,7 @@ struct WatchAssistView: View {
             }
         }
         .fullScreenCover(isPresented: $showSettings) {
-            WatchAssistSettings()
+            WatchAssistSettings(assistService: viewModel.assistService)
         }
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             viewModel.initialRoutine()
@@ -101,38 +99,10 @@ struct WatchAssistView: View {
 
     @ViewBuilder
     private var pipelineSelector: some View {
-        if viewModel.assistService.pipelines.count > 1 || viewModel.assistService.servers.count > 1,
-           let firstPipelineName = viewModel.assistService.pipelines
-           .first(where: { $0.id == viewModel.assistService.preferredPipeline })?.name,
-           let firstPipelineNameChar = firstPipelineName.first {
-            Button {
-                if viewModel.assistService.servers.count > 1 {
-                    showSettings = true
-                } else {
-                    showPipelinesPicker = true
-                }
-            } label: {
-                HStack {
-                    if #available(watchOS 10, *) {
-                        Text(String(firstPipelineNameChar))
-                    } else {
-                        // When watchS below 10, this item has more space available
-                        Text(firstPipelineName)
-                    }
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 8))
-                }
-                .padding(.horizontal)
-            }
-            .confirmationDialog(L10n.Assist.PipelinesPicker.title, isPresented: $showPipelinesPicker) {
-                ForEach(viewModel.assistService.pipelines, id: \.id) { pipeline in
-                    Button {
-                        viewModel.assistService.preferredPipeline = pipeline.id
-                    } label: {
-                        Text(pipeline.name)
-                    }
-                }
-            }
+        Button {
+            showSettings = true
+        } label: {
+            Image(systemName: "gear")
         }
     }
 
