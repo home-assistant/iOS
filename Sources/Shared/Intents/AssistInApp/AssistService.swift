@@ -123,7 +123,8 @@ public final class AssistService: AssistServiceProtocol {
         connection.subscribe(to: AssistRequests.assistByTextTypedSubscription(
             preferredPipelineId: pipelineId,
             inputText: input,
-            conversationId: conversationId
+            conversationId: conversationId,
+            hassDeviceId: server.info.hassDeviceId
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable
