@@ -245,12 +245,12 @@ extension WatchCommunicatorService: AssistServiceDelegate {
         sendMessage(message: message)
     }
 
-    func didReceiveError(_ error: AssistResponse.AssistError) {
+    func didReceiveError(code: String, message: String) {
         let message = ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistError.rawValue,
             content: [
-                "code": error.code,
-                "message": error.message,
+                "code": code,
+                "message": message,
             ]
         )
         sendMessage(message: message)

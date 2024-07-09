@@ -16,7 +16,7 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveIntentEndContent(_ content: String)
     func didReceiveGreenLightForAudioInput()
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
-    func didReceiveError(_ error: AssistResponse.AssistError)
+    func didReceiveError(code: String, message: String)
 }
 
 public enum AssistSource: Equatable {
@@ -173,7 +173,7 @@ public final class AssistService: AssistServiceProtocol {
         case .error:
             sttBinaryHandlerId = nil
             Current.Log.error("Received error while interating with Assist: \(data)")
-            delegate?.didReceiveError(data.error ?? .init(code: "-1", message: "Unknown error"))
+            delegate?.didReceiveError(code: data.data?.code ?? "-1", message: data.data?.message ?? "Unknown error")
             cancellable.cancel()
         }
     }

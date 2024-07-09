@@ -207,8 +207,9 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     @MainActor
-    func didReceiveError(_ error: AssistResponse.AssistError) {
-        appendToChat(.init(content: "\(error.code) - \(errorMessage)", itemType: .error))
+    func didReceiveError(code: String, message: String) {
+        Current.Log.error("Assist error: \(code)")
+        appendToChat(.init(content: message, itemType: .error))
     }
 }
 

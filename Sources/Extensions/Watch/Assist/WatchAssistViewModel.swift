@@ -176,6 +176,7 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
     }
 
     func didReceiveError(code: String, message: String) {
-        appendChatItem(.init(content: "\(code) - \(message)", itemType: .error))
+        Current.Log.error("Watch Assist error: \(code)")
+        appendChatItem(.init(content: message, itemType: .error))
     }
 }
