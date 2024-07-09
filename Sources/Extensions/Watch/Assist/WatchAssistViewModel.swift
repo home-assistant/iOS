@@ -43,6 +43,25 @@ final class WatchAssistViewModel: ObservableObject {
         endRoutine()
     }
 
+    func initialRoutine() {
+        state = .loading
+        if assistService.pipelines.isEmpty {
+            Current.Log.info("Watch Assist: pipelines list is empty, trying to fetch pipelines")
+            assistService.fetchPipelines { [weak self] success in
+                Current.Log
+                    .info("Watch Assist: Pipelines fetch done, result: \(success), moving on with assist command")
+                if success {
+                    self?.assist()
+                } else {
+                    self?.state = .idle
+                }
+            }
+        } else {
+            Current.Log.info("Watch Assist: pipelines list exist, moving on with assist command")
+            assist()
+        }
+    }
+
     func endRoutine() {
         stopRecording()
         assistService.endRoutine()
@@ -151,5 +170,9 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
 
     func didReceiveTTS(url: URL) {
         audioPlayer.play(url: url)
+    }
+
+    func didReceiveError(code: String, message: String) {
+        appendChatItem(.init(content: "\(code) - \(message)", itemType: .error))
     }
 }

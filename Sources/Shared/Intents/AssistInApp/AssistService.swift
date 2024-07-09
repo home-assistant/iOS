@@ -16,11 +16,12 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveIntentEndContent(_ content: String)
     func didReceiveGreenLightForAudioInput()
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
+    func didReceiveError(_ error: AssistResponse.AssistError)
 }
 
 public enum AssistSource: Equatable {
-    case text(input: String, pipelineId: String)
-    case audio(pipelineId: String, audioSampleRate: Double)
+    case text(input: String, pipelineId: String?)
+    case audio(pipelineId: String?, audioSampleRate: Double)
 
     public static func == (lhs: AssistSource, rhs: AssistSource) -> Bool {
         switch (lhs, rhs) {
@@ -104,7 +105,7 @@ public final class AssistService: AssistServiceProtocol {
         _ = connection.send(.init(type: .sttData(.init(rawValue: sttBinaryHandlerId))))
     }
 
-    private func assistWithAudio(pipelineId: String, audioSampleRate: Double) {
+    private func assistWithAudio(pipelineId: String?, audioSampleRate: Double) {
         lastPipelineIdUsed = pipelineId
         connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
             preferredPipelineId: pipelineId,
@@ -117,7 +118,7 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func assistWithText(input: String, pipelineId: String) {
+    private func assistWithText(input: String, pipelineId: String?) {
         lastPipelineIdUsed = pipelineId
         connection.subscribe(to: AssistRequests.assistByTextTypedSubscription(
             preferredPipelineId: pipelineId,
@@ -172,6 +173,7 @@ public final class AssistService: AssistServiceProtocol {
         case .error:
             sttBinaryHandlerId = nil
             Current.Log.error("Received error while interating with Assist: \(data)")
+            delegate?.didReceiveError(data.error ?? .init(code: "-1", message: "Unknown error"))
             cancellable.cancel()
         }
     }

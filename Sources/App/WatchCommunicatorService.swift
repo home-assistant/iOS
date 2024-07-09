@@ -173,7 +173,7 @@ extension WatchCommunicatorService {
 
         firstly { [weak self] () -> Promise<Void> in
             Promise { seal in
-                let pipelineId = blob.metadata?["pipelineId"] as? String ?? ""
+                let pipelineId = blob.metadata?["pipelineId"] as? String
                 guard let self, let sampleRate = blob.metadata?["sampleRate"] as? Double else {
                     let errorMessage = "No sample rate received in message \(blob.identifier)"
                     Current.Log.error(errorMessage)
@@ -256,6 +256,17 @@ extension WatchCommunicatorService: AssistServiceDelegate {
             identifier: InteractiveImmediateResponses.assistTTSResponse.rawValue,
             content: [
                 "mediaURL": mediaUrl.absoluteString,
+            ]
+        )
+        sendMessage(message: message)
+    }
+
+    func didReceiveError(_ error: AssistResponse.AssistError) {
+        let message = ImmediateMessage(
+            identifier: InteractiveImmediateResponses.assistError.rawValue,
+            content: [
+                "code": error.code,
+                "message": error.message,
             ]
         )
         sendMessage(message: message)

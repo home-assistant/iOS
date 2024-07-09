@@ -9,7 +9,7 @@ final class WatchAssistService: ObservableObject {
     @Published var selectedServer: String = ""
 
     @Published var pipelines: [WatchPipeline] = []
-    @Published var preferredPipeline: String = ""
+    @Published var preferredPipeline: String?
     @Published var deviceReachable = false
 
     private let watchPreferredServerUserDefaultsKey = "watch-preferred-server-id"
@@ -21,20 +21,10 @@ final class WatchAssistService: ObservableObject {
         self.cancellable = $selectedServer.sink { [weak self] newSelectedServer in
             guard let self else { return }
             UserDefaults().setValue(newSelectedServer, forKey: watchPreferredServerUserDefaultsKey)
-            self.preferredPipeline = ""
+            self.preferredPipeline = nil
         }
         setupServers()
-        self.reachabilityObservation = Reachability.observe { [weak self] state in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                switch state {
-                case .immediatelyReachable:
-                    self?.deviceReachable = true
-                case .notReachable, .backgroundOnly:
-                    self?.deviceReachable = false
-                }
-            }
-        }
-        self.deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
+        setupReachability()
     }
 
     deinit {
@@ -64,7 +54,7 @@ final class WatchAssistService: ObservableObject {
                 if let pipelines = message.content["pipelines"] as? [[String: String]] {
                     self.updatePipelines(
                         pipelines,
-                        preferredPipeline: message.content["preferredPipeline"] as? String ?? ""
+                        preferredPipeline: message.content["preferredPipeline"] as? String
                     )
                     completion(true)
                 } else {
@@ -94,14 +84,21 @@ final class WatchAssistService: ObservableObject {
             try FileManager.default.removeItem(at: audioURL)
 
             Current.Log.verbose("Signaling Assist audio data")
+
+            var metadata: [String: Any] = [
+                "sampleRate": sampleRate,
+            ]
+
+            metadata["pipelineId"] = preferredPipeline
+
+            if !selectedServer.isEmpty {
+                metadata["serverId"] = selectedServer
+            }
+
             let blob = Blob(
                 identifier: InteractiveImmediateMessages.assistAudioData.rawValue,
                 content: audioData,
-                metadata: [
-                    "serverId": selectedServer,
-                    "pipelineId": preferredPipeline,
-                    "sampleRate": sampleRate,
-                ]
+                metadata: metadata
             )
 
             Current.Log.verbose("Sending \(blob.identifier)")
@@ -120,7 +117,7 @@ final class WatchAssistService: ObservableObject {
         }
     }
 
-    private func updatePipelines(_ pipelines: [[String: String]], preferredPipeline: String) {
+    private func updatePipelines(_ pipelines: [[String: String]], preferredPipeline: String?) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.pipelines = pipelines.compactMap({ pipelineRawValue in
@@ -132,9 +129,7 @@ final class WatchAssistService: ObservableObject {
                     name: name
                 )
             })
-            if self.preferredPipeline.isEmpty {
-                self.preferredPipeline = preferredPipeline
-            }
+            self.preferredPipeline = preferredPipeline
         }
     }
 
@@ -146,6 +141,15 @@ final class WatchAssistService: ObservableObject {
         } else {
             selectedServer = Current.servers.all.first?.identifier.rawValue ?? ""
         }
+    }
+
+    private func setupReachability() {
+        reachabilityObservation = Reachability.observe { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
+            }
+        }
+        deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
     }
 }
 

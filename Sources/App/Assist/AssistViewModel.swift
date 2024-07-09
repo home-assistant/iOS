@@ -205,6 +205,11 @@ extension AssistViewModel: AssistServiceDelegate {
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         audioPlayer.play(url: mediaUrl)
     }
+
+    @MainActor
+    func didReceiveError(_ error: AssistResponse.AssistError) {
+        appendToChat(.init(content: "\(error.code) - \(errorMessage)", itemType: .error))
+    }
 }
 
 extension AssistViewModel: AssistSessionDelegate {

@@ -36,16 +36,18 @@ struct WatchAssistView: View {
                 $0.toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         pipelineSelector
+                            .environmentObject(viewModel.assistService)
                     }
                 }
             } else {
                 $0.toolbar {
                     pipelineSelector
+                        .environmentObject(viewModel.assistService)
                 }
             }
         }
         .onAppear {
-            initialRoutine()
+            viewModel.initialRoutine()
         }
         .onDisappear {
             viewModel.endRoutine()
@@ -74,22 +76,7 @@ struct WatchAssistView: View {
             WatchAssistSettings()
         }
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
-            initialRoutine()
-        }
-    }
-
-    private func initialRoutine() {
-        viewModel.state = .loading
-        if viewModel.assistService.pipelines.isEmpty {
-            Current.Log.info("Watch Assist: pipelines list is empty, trying to fetch pipelines")
-            viewModel.assistService.fetchPipelines { success in
-                Current.Log
-                    .info("Watch Assist: Pipelines fetch done, result: \(success), moving on with assist command")
-                viewModel.assist()
-            }
-        } else {
-            Current.Log.info("Watch Assist: pipelines list exist, moving on with assist command")
-            viewModel.assist()
+            viewModel.initialRoutine()
         }
     }
 

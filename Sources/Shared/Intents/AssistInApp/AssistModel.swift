@@ -81,6 +81,7 @@ public struct AssistResponse: HADataDecodable {
         let type = try data.decode("type") as String
         self.type = AssistEvent(rawValue: type)!
         self.timestamp = try data.decode("timestamp")
+        self.error = try? data.decode("error")
     }
 
     public struct AssistData: HADataDecodable {
@@ -160,9 +161,25 @@ public struct AssistResponse: HADataDecodable {
         }
     }
 
+    public struct AssistError: HADataDecodable {
+        public init(data: HAData) throws {
+            self.code = try data.decode("code")
+            self.message = try data.decode("message")
+        }
+
+        init(code: String, message: String) {
+            self.code = code
+            self.message = message
+        }
+
+        public let code: String
+        public let message: String
+    }
+
     public let type: AssistEvent
     public let data: AssistData?
     public let timestamp: String
+    public let error: AssistError?
 }
 
 public enum AssistEvent: String, Codable {
