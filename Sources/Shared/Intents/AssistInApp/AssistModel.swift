@@ -90,6 +90,8 @@ public struct AssistResponse: HADataDecodable {
         public let runnerData: RunnerData?
         public let sttOutput: SttOutput?
         public let ttsOutput: TtsOutput?
+        public let code: String?
+        public let message: String?
 
         public init(data: HAData) throws {
             self.pipeline = try? data.decode("data")
@@ -98,6 +100,8 @@ public struct AssistResponse: HADataDecodable {
             self.runnerData = try? data.decode("runner_data")
             self.sttOutput = try? data.decode("stt_output")
             self.ttsOutput = try? data.decode("tts_output")
+            self.code = try? data.decode("code")
+            self.message = try? data.decode("message")
         }
 
         public struct SttOutput: HADataDecodable {

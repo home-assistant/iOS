@@ -25,7 +25,6 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             }
             .fullScreenCover(isPresented: $showAssist, content: {
                 WatchAssistView.build()
-                    .environmentObject(viewModel.assistService)
             })
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true
@@ -56,7 +55,7 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
                             Button(action: {
                                 showAssist = true
                             }, label: {
-                                Image(uiImage: MaterialDesignIcons.microphoneIcon.image(
+                                Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
                                     ofSize: .init(width: 24, height: 24),
                                     color: Asset.Colors.haPrimary.color
                                 ))

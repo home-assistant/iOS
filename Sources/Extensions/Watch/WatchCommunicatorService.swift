@@ -8,6 +8,8 @@ struct ImmediateCommunicatorServiceObserver {
 
 protocol ImmediateCommunicatorServiceDelegate: AnyObject {
     func didReceiveChatItem(_ item: AssistChatItem)
+    func didReceiveTTS(url: URL)
+    func didReceiveError(code: String, message: String)
 }
 
 final class ImmediateCommunicatorService {
@@ -42,7 +44,19 @@ final class ImmediateCommunicatorService {
             }
             observers.forEach({ $0.delegate?.didReceiveChatItem(AssistChatItem(content: content, itemType: .output)) })
         case .assistTTSResponse:
-            break
+            guard let audioURLString = message.content["mediaURL"] as? String,
+                  let audioURL = URL(string: audioURLString) else {
+                Current.Log.error("Received assistTTSResponse without valid media URL")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveTTS(url: audioURL) })
+        case .assistError:
+            guard let code = message.content["code"] as? String,
+                  let message = message.content["message"] as? String else {
+                Current.Log.error("Received assistError without valid code/message")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveError(code: code, message: message) })
         default:
             break
         }

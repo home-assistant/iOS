@@ -15,7 +15,6 @@ struct WatchActionItem: Equatable {
 
 protocol WatchHomeViewModelProtocol: ObservableObject {
     var actions: [WatchActionItem] { get set }
-    var assistService: WatchAssistService { get set }
     func onAppear()
     func onDisappear()
     func runActionId(_ actionId: String, completion: @escaping (Bool) -> Void)
@@ -36,14 +35,9 @@ enum WatchSendError: Error {
 
 final class WatchHomeViewModel: WatchHomeViewModelProtocol {
     @Published var actions: [WatchActionItem] = []
-    @Published var assistService: WatchAssistService
 
     private var actionsToken: NotificationToken?
     private var realmActions: [Action] = []
-
-    init(assistService: WatchAssistService) {
-        self.assistService = assistService
-    }
 
     func onAppear() {
         setupActionsObservation()

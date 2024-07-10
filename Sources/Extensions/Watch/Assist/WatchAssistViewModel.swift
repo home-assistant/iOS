@@ -21,32 +21,73 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var showChatLoader = false
 
     private let audioRecorder: any WatchAudioRecorderProtocol
+    private let audioPlayer: any AudioPlayerProtocol
     private let immediateCommunicatorService: ImmediateCommunicatorService
 
-    /// Provided via environment object and received by 'assist' method
-    private var assistService: WatchAssistService?
+    @Published var assistService: WatchAssistService
 
     init(
         audioRecorder: any WatchAudioRecorderProtocol,
+        audioPlayer: any AudioPlayerProtocol,
         immediateCommunicatorService: ImmediateCommunicatorService
     ) {
         self.audioRecorder = audioRecorder
         self.immediateCommunicatorService = immediateCommunicatorService
+        self.assistService = WatchAssistService()
+        self.audioPlayer = audioPlayer
         audioRecorder.delegate = self
         immediateCommunicatorService.addObserver(.init(delegate: self))
     }
 
     deinit {
+        endRoutine()
+    }
+
+    func initialRoutine() {
+        state = .loading
+        guard !assistService.selectedServer.isEmpty else {
+            fatalError("Server can't be nil")
+        }
+        if assistService.pipelines.isEmpty || assistService.preferredPipeline.isEmpty {
+            Current.Log.info("Watch Assist: pipelines list is empty, trying to fetch pipelines")
+            assistService.fetchPipelines { [weak self] success in
+                Current.Log
+                    .info("Watch Assist: Pipelines fetch done, result: \(success), moving on with assist command")
+                if success {
+                    self?.assist()
+                } else {
+                    self?.state = .idle
+                }
+            }
+        } else {
+            Current.Log.info("Watch Assist: pipelines list exist, moving on with assist command")
+            assist()
+        }
+    }
+
+    func endRoutine() {
+        stopRecording()
+        assistService.endRoutine()
         immediateCommunicatorService.removeObserver(self)
     }
 
-    func assist(_ assistService: WatchAssistService) {
-        self.assistService = assistService
-        audioRecorder.startRecording()
+    func assist() {
+        if assistService.deviceReachable {
+            // Extra message just to wake up iPhone from the background
+            Communicator.shared.send(ImmediateMessage(identifier: "wakeup"))
+            audioRecorder.startRecording()
+        } else {
+            state = .idle
+            showUnreacheableMessage()
+        }
     }
 
     func stopRecording() {
         audioRecorder.stopRecording()
+    }
+
+    private func showUnreacheableMessage() {
+        chatItems.append(.init(content: L10n.Assist.Watch.NotReachable.title, itemType: .error))
     }
 
     private func showChatLoader(show: Bool) {
@@ -62,8 +103,12 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     private func sendAudioData(audioURL: URL, audioSampleRate: Double) {
+        guard assistService.deviceReachable else {
+            showUnreacheableMessage()
+            return
+        }
         showChatLoader(show: true)
-        assistService?.assist(audioURL: audioURL, sampleRate: audioSampleRate) { [weak self] error in
+        assistService.assist(audioURL: audioURL, sampleRate: audioSampleRate) { [weak self] error in
             if let error {
                 Current.Log.error("Failed to assist from watch error: \(error.localizedDescription)")
                 self?.updateState(state: .idle)
@@ -82,33 +127,56 @@ final class WatchAssistViewModel: ObservableObject {
             self?.showChatLoader = false
         }
     }
+
+    private func runInMainThread(completion: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            completion()
+        }
+    }
 }
 
 extension WatchAssistViewModel: WatchAudioRecorderDelegate {
     @MainActor
     func didStartRecording() {
-        state = .recording
+        runInMainThread { [weak self] in
+            self?.state = .recording
+        }
     }
 
     @MainActor
     func didStopRecording() {
-        state = .waitingForPipelineResponse
+        runInMainThread { [weak self] in
+            self?.state = .waitingForPipelineResponse
+        }
     }
 
     @MainActor
     func didFinishRecording(audioURL: URL, audioSampleRate: Double) {
         sendAudioData(audioURL: audioURL, audioSampleRate: audioSampleRate)
-        state = .waitingForPipelineResponse
+        runInMainThread { [weak self] in
+            self?.state = .waitingForPipelineResponse
+        }
     }
 
     func didFailRecording(error: any Error) {
         Current.Log.error("Failed to record Assist audio in watch App: \(error.localizedDescription)")
-        state = .idle
+        runInMainThread { [weak self] in
+            self?.state = .idle
+        }
     }
 }
 
 extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
     func didReceiveChatItem(_ item: AssistChatItem) {
         appendChatItem(item)
+    }
+
+    func didReceiveTTS(url: URL) {
+        audioPlayer.play(url: url)
+    }
+
+    func didReceiveError(code: String, message: String) {
+        Current.Log.error("Watch Assist error: \(code)")
+        appendChatItem(.init(content: message, itemType: .error))
     }
 }
