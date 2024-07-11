@@ -222,11 +222,11 @@
 "component::tuya::entity::select::basic_anti_flicker::state:::0" = "Désactivé";
 "component::tuya::entity::select::basic_nightvision::state:::1" = "Désactivée";
 "component::tuya::entity::select::basic_nightvision::state:::2" = "Activée";
-"component::tuya::entity::select::light_mode::state::none" = "Off";
-"component::tuya::entity::select::relay_status::state::off" = "Off";
-"component::tuya::entity::select::relay_status::state::on" = "On";
-"component::tuya::entity::select::relay_status::state::power_off" = "Off";
-"component::tuya::entity::select::relay_status::state::power_on" = "On";
+"component::tuya::entity::select::light_mode::state::none" = "Désactivé";
+"component::tuya::entity::select::relay_status::state::off" = "Désactivé";
+"component::tuya::entity::select::relay_status::state::on" = "Activé";
+"component::tuya::entity::select::relay_status::state::power_off" = "Désactivé";
+"component::tuya::entity::select::relay_status::state::power_on" = "Activé";
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Fermé";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "En veille";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "En veille";

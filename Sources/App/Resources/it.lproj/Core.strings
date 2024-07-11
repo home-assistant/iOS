@@ -6,7 +6,7 @@
 "common::state::enabled" = "Abilitato";
 "common::state::home" = "In casa";
 "common::state::idle" = "Inattivo";
-"common::state::locked" = "Chiuso/a";
+"common::state::locked" = "Bloccato/a";
 "common::state::no" = "No";
 "common::state::not_home" = "Fuori casa";
 "common::state::off" = "Spento/a";
@@ -14,7 +14,7 @@
 "common::state::open" = "Aperto/a";
 "common::state::paused" = "In pausa";
 "common::state::standby" = "In attesa";
-"common::state::unlocked" = "Aperto/a";
+"common::state::unlocked" = "Sbloccato/a";
 "common::state::yes" = "Sì";
 "component::airzone::entity::select::sleep_times::state::off" = "Spento/a";
 "component::alert::entity_component::_::state::idle" = "Inattivo";
@@ -29,8 +29,8 @@
 "component::binary_sensor::entity_component::door::state::on" = "Aperto/a";
 "component::binary_sensor::entity_component::garage_door::state::off" = "Chiuso/a";
 "component::binary_sensor::entity_component::garage_door::state::on" = "Aperto/a";
-"component::binary_sensor::entity_component::lock::state::off" = "Chiuso/a";
-"component::binary_sensor::entity_component::lock::state::on" = "Aperto/a";
+"component::binary_sensor::entity_component::lock::state::off" = "Bloccato/a";
+"component::binary_sensor::entity_component::lock::state::on" = "Sbloccato/a";
 "component::binary_sensor::entity_component::opening::state::off" = "Chiuso/a";
 "component::binary_sensor::entity_component::opening::state::on" = "Aperto/a";
 "component::binary_sensor::entity_component::presence::state::off" = "Fuori casa";
@@ -75,12 +75,12 @@
 "component::google_mail::services::set_vacation::fields::enabled::name" = "Abilitato";
 "component::group::entity_component::_::state::closed" = "Chiuso/a";
 "component::group::entity_component::_::state::home" = "In casa";
-"component::group::entity_component::_::state::locked" = "Chiuso/a";
+"component::group::entity_component::_::state::locked" = "Bloccato/a";
 "component::group::entity_component::_::state::not_home" = "Fuori casa";
 "component::group::entity_component::_::state::off" = "Spento/a";
 "component::group::entity_component::_::state::on" = "Acceso/a";
 "component::group::entity_component::_::state::open" = "Aperto/a";
-"component::group::entity_component::_::state::unlocked" = "Aperto/a";
+"component::group::entity_component::_::state::unlocked" = "Sbloccato/a";
 "component::hdmi_cec::services::standby::name" = "In attesa";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "Fuori casa";
 "component::homekit_controller::entity::select::ecobee_mode::state::home" = "In casa";
@@ -120,8 +120,8 @@
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Spento/a";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "In pausa";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Abilitato";
-"component::lock::entity_component::_::state::locked" = "Chiuso/a";
-"component::lock::entity_component::_::state::unlocked" = "Aperto/a";
+"component::lock::entity_component::_::state::locked" = "Bloccato/a";
+"component::lock::entity_component::_::state::unlocked" = "Sbloccato/a";
 "component::lock::title" = "Serratura";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Spento/a";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "Acceso/a";
