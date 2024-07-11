@@ -20,6 +20,10 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     private var audioSampleRate: Double?
     weak var delegate: WatchAudioRecorderDelegate?
 
+    private var silenceTimer: Timer?
+    private let silenceThreshold: TimeInterval = 3.0
+    private let silenceLevel: Float = -50.0
+
     private var firstLaunch = true
 
     func startRecording() {
@@ -55,6 +59,9 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
             audioRecorder?.record()
 
             delegate?.didStartRecording()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.startMonitoringAudioLevels()
+            }
         } catch {
             delegate?.didFailRecording(error: error)
         }
@@ -63,12 +70,33 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     func stopRecording() {
         audioRecorder?.stop()
         audioRecorder = nil
+        silenceTimer?.invalidate()
+        silenceTimer = nil
         delegate?.didStopRecording()
     }
 
     private func getAudioFileURL() -> URL {
         let sharedGroupContainerDirectory = Constants.AppGroupContainer
         return sharedGroupContainerDirectory.appendingPathComponent("assist.wav")
+    }
+
+    private func startMonitoringAudioLevels() {
+        silenceTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+            guard let self, let audioRecorder, audioRecorder.isRecording else { return }
+            audioRecorder.updateMeters()
+
+            let averagePower = audioRecorder.averagePower(forChannel: 0)
+            #if DEBUG
+            print("Average power channel 0: \(audioRecorder.averagePower(forChannel: 0))")
+            #endif
+            if averagePower < silenceLevel {
+                silenceTimer?.invalidate()
+                silenceTimer = Timer
+                    .scheduledTimer(withTimeInterval: silenceThreshold, repeats: false) { [weak self] _ in
+                        self?.stopRecording()
+                    }
+            }
+        }
     }
 }
 
@@ -78,10 +106,15 @@ extension WatchAudioRecorder: AVAudioRecorderDelegate {
             delegate?.didFinishRecording(audioURL: getAudioFileURL(), audioSampleRate: audioSampleRate)
         } else {
             Current.Log.error("Finished recording without audio sample rate available")
+            delegate?.didFailRecording(error: WatchRecordingError.noAudioSampleRate)
         }
 
         #if DEBUG
         print(getAudioFileURL())
         #endif
     }
+}
+
+enum WatchRecordingError: Error {
+    case noAudioSampleRate
 }
