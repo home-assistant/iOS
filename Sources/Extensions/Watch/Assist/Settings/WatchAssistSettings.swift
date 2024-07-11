@@ -1,3 +1,5 @@
+import AVFAudio
+import MediaPlayer
 import Shared
 import SwiftUI
 
@@ -11,7 +13,23 @@ struct WatchAssistSettings: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spaces.two) {
-                if !assistService.servers.isEmpty, assistService.selectedServer != nil {
+                HStack {
+                    Text(L10n.Assist.Watch.Volume.title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    VolumeView()
+                }
+                .padding()
+                .background(.gray.opacity(0.2))
+                .modify({ view in
+                    if #available(watchOS 10, *) {
+                        view.background(.ultraThinMaterial)
+                    } else {
+                        view
+                    }
+                })
+                .clipShape(RoundedRectangle(cornerRadius: 35))
+                .padding(.top)
+                if !assistService.servers.isEmpty {
                     VStack {
                         Text(L10n.Settings.ConnectionSection.servers)
                         Picker(selection: $assistService.selectedServer) {
