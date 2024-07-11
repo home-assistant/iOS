@@ -4,11 +4,6 @@ import SwiftUI
 struct WatchAssistView: View {
     @StateObject private var viewModel: WatchAssistViewModel
 
-    /// Used when there are multiple server
-    @State private var showSettings = false
-    /// Used when there are just one server for quicker access to pipeline selection
-    @State private var showPipelinesPicker = false
-
     private let progressViewId = "progressViewId"
 
     init(
@@ -60,17 +55,12 @@ struct WatchAssistView: View {
                 break
             }
         }
-        .onChange(of: showSettings) { newValue in
+        .onChange(of: viewModel.showSettings) { newValue in
             if newValue {
                 viewModel.stopRecording()
             }
         }
-        .onChange(of: showPipelinesPicker) { newValue in
-            if newValue {
-                viewModel.stopRecording()
-            }
-        }
-        .fullScreenCover(isPresented: $showSettings) {
+        .fullScreenCover(isPresented: $viewModel.showSettings) {
             WatchAssistSettings(assistService: viewModel.assistService)
         }
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
@@ -100,7 +90,7 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var pipelineSelector: some View {
         Button {
-            showSettings = true
+            viewModel.showSettings = true
         } label: {
             Image(systemName: "gear")
         }
