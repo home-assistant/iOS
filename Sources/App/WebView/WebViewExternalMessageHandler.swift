@@ -2,9 +2,16 @@ import Foundation
 import PromiseKit
 import Shared
 import SwiftUI
+import Improv_iOS
 
 final class WebViewExternalMessageHandler {
+    
     weak var webViewController: WebViewControllerProtocol?
+    private let improvManager: any ImprovManagerProtocol
+
+    init(improvManager: any ImprovManagerProtocol) {
+        self.improvManager = improvManager
+    }
 
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
@@ -261,6 +268,11 @@ final class WebViewExternalMessageHandler {
     }
 
     func scanImprov() {
-        // Scan in background and display visuals if any Improv is visible
+//        improvManager.scan()
+        let hostingController = UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(improvManager: ImprovManager.shared))
+        hostingController.modalTransitionStyle = .crossDissolve
+        hostingController.modalPresentationStyle = .overFullScreen
+        hostingController.view.backgroundColor = .clear
+        webViewController?.presentOverlayController(controller: hostingController)
     }
 }

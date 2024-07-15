@@ -1,6 +1,7 @@
 @testable import HomeAssistant
 import SwiftUI
 import XCTest
+import Improv_iOS
 
 final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
@@ -8,7 +9,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
     override func setUp() async throws {
         mockWebViewController = MockWebViewController()
-        sut = WebViewExternalMessageHandler()
+        sut = WebViewExternalMessageHandler(improvManager: ImprovManager.shared)
         sut.webViewController = mockWebViewController
     }
 

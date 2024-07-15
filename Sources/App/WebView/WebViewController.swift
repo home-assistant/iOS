@@ -34,7 +34,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private let refreshControl = UIRefreshControl()
     private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
-    let webViewExternalMessageHandler = WebViewExternalMessageHandler()
+    let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
     private var initialURL: URL?
 
@@ -236,6 +236,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
+
+        webViewExternalMessageHandler.scanImprov()
         #endif
     }
 
