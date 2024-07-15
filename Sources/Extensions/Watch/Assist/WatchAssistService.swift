@@ -1,4 +1,3 @@
-import Combine
 import Communicator
 import Foundation
 import PromiseKit
@@ -25,6 +24,7 @@ final class WatchAssistService: ObservableObject {
 
     private let watchPreferredServerUserDefaultsKey = "watch-preferred-server-id"
     private var reachabilityObservation: Observation?
+    private var cancellable: Cancellable?
 
     init() {
         setupServers()
@@ -80,6 +80,7 @@ final class WatchAssistService: ObservableObject {
     }
 
     func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
+        cancellable?.cancel()
         guard Communicator.shared.currentReachability == .immediatelyReachable else {
             completion(WatchSendError.notImmediate)
             return
@@ -110,7 +111,8 @@ final class WatchAssistService: ObservableObject {
             )
 
             Current.Log.verbose("Sending \(blob.identifier)")
-            Communicator.shared.transfer(blob) { result in
+
+            cancellable = Communicator.shared.transfer(blob) { result in
                 switch result {
                 case .success:
                     completion(nil)

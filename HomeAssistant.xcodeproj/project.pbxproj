@@ -582,6 +582,7 @@
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		427692E32B98B82500F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E22B98B82500F24321 /* SharedPush */; };
 		427692E52B98B83200F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E42B98B83200F24321 /* SharedPush */; };
+		427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427756CA2C3ED5F700E11D0B /* VolumeView.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
@@ -1763,6 +1764,7 @@
 		426490742C0F20FF002155CC /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
 		426490762C0F2403002155CC /* WatchAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAudioRecorder.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
+		427756CA2C3ED5F700E11D0B /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFB12B45C6680087C9D7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Core.strings"; sourceTree = "<group>"; };
 		4278DFB22B45C6680087C9D7 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Core.strings; sourceTree = "<group>"; };
@@ -3396,6 +3398,7 @@
 			isa = PBXGroup;
 			children = (
 				423F44EF2C17238200766A99 /* ChatBubbleView.swift */,
+				427756CA2C3ED5F700E11D0B /* VolumeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -6686,6 +6689,7 @@
 				42C373B52BC53B1400898990 /* WatchHomeViewModel.swift in Sources */,
 				42C373B32BC538A300898990 /* WatchHomeView.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
+				427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
 				4264906E2C0F1B8B002155CC /* WatchAssistViewModel.swift in Sources */,
 			);

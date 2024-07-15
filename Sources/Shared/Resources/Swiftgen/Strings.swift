@@ -300,6 +300,10 @@ public enum L10n {
         /// Assist requires iPhone connectivity. Your iPhone is currently unreachable.
         public static var title: String { return L10n.tr("Localizable", "assist.watch.not_reachable.title") }
       }
+      public enum Volume {
+        /// Volume control
+        public static var title: String { return L10n.tr("Localizable", "assist.watch.volume.title") }
+      }
     }
   }
 

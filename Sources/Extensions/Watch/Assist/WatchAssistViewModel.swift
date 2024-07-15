@@ -19,6 +19,7 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
     @Published var showChatLoader = false
+    @Published var showSettings = false
 
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let audioPlayer: any AudioPlayerProtocol
@@ -44,6 +45,7 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func initialRoutine() {
+        appendChatItem(.init(content: "BETA", itemType: .info))
         state = .loading
         guard !assistService.selectedServer.isEmpty else {
             fatalError("Server can't be nil")
@@ -72,6 +74,11 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func assist() {
+        guard !showSettings else {
+            state = .idle
+            stopRecording()
+            return
+        }
         if assistService.deviceReachable {
             // Extra message just to wake up iPhone from the background
             Communicator.shared.send(ImmediateMessage(identifier: "wakeup"))
@@ -160,6 +167,7 @@ extension WatchAssistViewModel: WatchAudioRecorderDelegate {
 
     func didFailRecording(error: any Error) {
         Current.Log.error("Failed to record Assist audio in watch App: \(error.localizedDescription)")
+        appendChatItem(.init(content: error.localizedDescription, itemType: .error))
         runInMainThread { [weak self] in
             self?.state = .idle
         }
@@ -178,5 +186,6 @@ extension WatchAssistViewModel: ImmediateCommunicatorServiceDelegate {
     func didReceiveError(code: String, message: String) {
         Current.Log.error("Watch Assist error: \(code)")
         appendChatItem(.init(content: message, itemType: .error))
+        stopRecording()
     }
 }
