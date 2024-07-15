@@ -122,6 +122,8 @@ final class WebViewExternalMessageHandler {
                 )
             case .assistShow:
                 showAssist(server: webViewController.server, pipeline: "")
+            case .scanForImprov:
+                scanImprov()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -256,5 +258,9 @@ final class WebViewExternalMessageHandler {
         ))
 
         webViewController?.presentOverlayController(controller: assistView)
+    }
+
+    func scanImprov() {
+        // Scan in background and display visuals if any Improv is visible
     }
 }
