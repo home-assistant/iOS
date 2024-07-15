@@ -63,6 +63,7 @@
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
+"assist.watch.volume.title" = "Volume control";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tryck för att fortsätta på din iPhone";
 "carPlay.action.intro.item.title" = "Skapa din första åtgärd";

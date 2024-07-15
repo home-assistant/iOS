@@ -62,7 +62,8 @@
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.pipelines_picker.title" = "Abilise kanalid";
 "assist.watch.mic_button.title" = "Puuduta, et";
-"assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
+"assist.watch.not_reachable.title" = "Assist nõuab iPhone'i ühenduvust.  iPhone pole praegu kättesaadav.";
+"assist.watch.volume.title" = "Helitugevuse reguleerimine";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";

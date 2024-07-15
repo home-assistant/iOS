@@ -62,7 +62,8 @@
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Toque para";
-"assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
+"assist.watch.not_reachable.title" = "O Assist requer conectividade com o iPhone. Seu iPhone está inacessível no momento.";
+"assist.watch.volume.title" = "Controle de volume";
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Toque para continuar em seu iPhone";
 "carPlay.action.intro.item.title" = "Crie sua primeira ação";

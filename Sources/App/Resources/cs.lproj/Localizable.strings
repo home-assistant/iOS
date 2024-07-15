@@ -62,7 +62,8 @@
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.pipelines_picker.title" = "Potrubí Assist";
 "assist.watch.mic_button.title" = "Klepněte pro:";
-"assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
+"assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
+"assist.watch.volume.title" = "Ovládání hlasitosti";
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";
 "carPlay.action.intro.item.title" = "Vytvořte svou první akci";
