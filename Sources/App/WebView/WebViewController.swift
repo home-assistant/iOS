@@ -1050,7 +1050,7 @@ extension WebViewController: WebViewControllerProtocol {
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
         webView.evaluateJavaScript(script, completionHandler: completion)
     }
-    
+
     func presentController(_ controller: UIViewController, animated: Bool) {
         let mainController = overlayAppController ?? self
         mainController.present(controller, animated: animated)
@@ -1063,6 +1063,7 @@ extension WebViewController: WebViewControllerProtocol {
             completion?()
         }
     }
+
     func dismissControllerAboveOverlayController() {
         overlayAppController?.dismissAllViewControllersAbove()
     }

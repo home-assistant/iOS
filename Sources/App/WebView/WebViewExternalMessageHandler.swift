@@ -6,7 +6,6 @@ import SwiftUI
 final class WebViewExternalMessageHandler {
     weak var webViewController: WebViewControllerProtocol?
 
-    // swiftlint: disable cyclomatic_complexity
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")

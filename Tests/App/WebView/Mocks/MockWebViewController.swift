@@ -1,18 +1,10 @@
-//
-//  MockWebViewController.swift
-//  Tests-App
-//
-//  Created by Bruno Pantaleão on 15/07/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import Foundation
-import UIKit
-import Shared
 @testable import HomeAssistant
+import Shared
+import UIKit
 
 final class MockWebViewController: WebViewControllerProtocol {
-    var settingsButton: UIButton = UIButton()
+    var settingsButton: UIButton = .init()
     var server: Server = ServerFixture.standard
     var overlayAppController: UIViewController?
 
@@ -56,5 +48,4 @@ final class MockWebViewController: WebViewControllerProtocol {
     func dismissControllerAboveOverlayController() {
         dismissControllerAboveOverlayControllerCalled = true
     }
-
 }

@@ -1,14 +1,6 @@
-//
-//  WebViewExternalMessageHandlerTests.swift
-//  Tests-App
-//
-//  Created by Bruno Pantaleão on 15/07/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import XCTest
-import SwiftUI
 @testable import HomeAssistant
+import SwiftUI
+import XCTest
 
 final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
@@ -25,12 +17,15 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 1,
             "message": "",
             "command": "",
-            "type": "config_screen/show"
+            "type": "config_screen/show",
         ]
         sut.handleExternalMessage(dictionary)
 
         XCTAssertTrue(mockWebViewController.overlayAppController is UINavigationController)
-        XCTAssertTrue((mockWebViewController.overlayAppController as? UINavigationController)?.viewControllers.first is SettingsViewController)
+        XCTAssertTrue(
+            (mockWebViewController.overlayAppController as? UINavigationController)?.viewControllers
+                .first is SettingsViewController
+        )
     }
 
     func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
@@ -38,7 +33,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 1,
             "message": "",
             "command": "",
-            "type": "theme-update"
+            "type": "theme-update",
         ]
         sut.handleExternalMessage(dictionary)
 
@@ -53,8 +48,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "type": "bar_code/scan",
             "payload": [
                 "title": "abc",
-                "description": "abc2"
-            ]
+                "description": "abc2",
+            ],
         ]
         sut.handleExternalMessage(dictionary)
 
@@ -69,8 +64,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "type": "bar_code/scan",
             "payload": [
                 "title": "abc",
-                "description": "abc2"
-            ]
+                "description": "abc2",
+            ],
         ]
         // Open scanner
         sut.handleExternalMessage(dictionary)
@@ -79,7 +74,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 2,
             "message": "",
             "command": "",
-            "type": "bar_code/close"
+            "type": "bar_code/close",
         ]
         // Close scanner
         sut.handleExternalMessage(dictionary2)
@@ -95,8 +90,8 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "command": "",
             "type": "bar_code/notify",
             "payload": [
-                "message": "abc"
-            ]
+                "message": "abc",
+            ],
         ]
 
         sut.handleExternalMessage(dictionary)
@@ -112,13 +107,18 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "type": "thread/store_in_platform_keychain",
             "payload": [
                 "mac_extended_address": "abc",
-                "active_operational_dataset": "abc2"
-            ]
+                "active_operational_dataset": "abc2",
+            ],
         ]
 
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.lastPresentedController is UIHostingController<ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>>)
+        XCTAssertTrue(
+            mockWebViewController
+                .lastPresentedController is UIHostingController<
+                    ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
+                >
+        )
         XCTAssertEqual(mockWebViewController.lastPresentedControllerAnimated, true)
         XCTAssertEqual(mockWebViewController.lastPresentedController?.modalTransitionStyle, .crossDissolve)
         XCTAssertEqual(mockWebViewController.lastPresentedController?.modalPresentationStyle, .overFullScreen)
@@ -130,12 +130,17 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 1,
             "message": "",
             "command": "",
-            "type": "thread/import_credentials"
+            "type": "thread/import_credentials",
         ]
 
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.lastPresentedController is UIHostingController<ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>>)
+        XCTAssertTrue(
+            mockWebViewController
+                .lastPresentedController is UIHostingController<
+                    ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
+                >
+        )
         XCTAssertEqual(mockWebViewController.lastPresentedControllerAnimated, true)
         XCTAssertEqual(mockWebViewController.lastPresentedController?.modalTransitionStyle, .crossDissolve)
         XCTAssertEqual(mockWebViewController.lastPresentedController?.modalPresentationStyle, .overFullScreen)
@@ -147,7 +152,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 1,
             "message": "",
             "command": "",
-            "type": "assist/show"
+            "type": "assist/show",
         ]
 
         sut.handleExternalMessage(dictionary)
