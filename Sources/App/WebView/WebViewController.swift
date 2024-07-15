@@ -13,7 +13,6 @@ import UIKit
 import WebKit
 
 protocol WebViewControllerProtocol: AnyObject {
-    var settingsButton: UIButton { get }
     var server: Server { get }
     var overlayAppController: UIViewController? { get set }
 
@@ -22,6 +21,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
+    func updateSettingsButton(state: String)
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -1066,5 +1066,12 @@ extension WebViewController: WebViewControllerProtocol {
 
     func dismissControllerAboveOverlayController() {
         overlayAppController?.dismissAllViewControllersAbove()
+    }
+
+    func updateSettingsButton(state: String) {
+        // Possible values: connected, disconnected, auth-invalid
+        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
+            self.settingsButton.alpha = state == "connected" ? 0.0 : 1.0
+        }, completion: nil)
     }
 }

@@ -4,7 +4,6 @@ import Shared
 import UIKit
 
 final class MockWebViewController: WebViewControllerProtocol {
-    var settingsButton: UIButton = .init()
     var server: Server = ServerFixture.standard
     var overlayAppController: UIViewController?
 
@@ -21,6 +20,9 @@ final class MockWebViewController: WebViewControllerProtocol {
     var dismissOverlayControllerCalled = false
     var dismissOverlayControllerLastAnimated = false
     var dismissOverlayControllerLastCompletion: (() -> Void)?
+
+    var updateSettingsButtonCalled = false
+    var lastSettingButtonState: String?
 
     func presentOverlayController(controller: UIViewController) {
         presentOverlayControllerCalled = true
@@ -47,5 +49,10 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func dismissControllerAboveOverlayController() {
         dismissControllerAboveOverlayControllerCalled = true
+    }
+
+    func updateSettingsButton(state: String) {
+        updateSettingsButtonCalled = true
+        lastSettingButtonState = state
     }
 }

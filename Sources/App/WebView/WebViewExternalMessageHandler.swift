@@ -53,10 +53,7 @@ final class WebViewExternalMessageHandler {
                     Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
                     return
                 }
-                // Possible values: connected, disconnected, auth-invalid
-                UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-                    self.webViewController?.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
-                }, completion: nil)
+                webViewController.updateSettingsButton(state: connEvt)
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
