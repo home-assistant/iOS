@@ -62,7 +62,8 @@
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
 "assist.pipelines_picker.title" = "语音助手管道";
 "assist.watch.mic_button.title" = "点按";
-"assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
+"assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
+"assist.watch.volume.title" = "音量控制";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在您的 iPhone 上点击并继续";
 "carPlay.action.intro.item.title" = "创建您的第一个动作";
@@ -404,14 +405,14 @@
 "settings.status_section.version_row.title" = "版本";
 "settings.template_edit.title" = "编辑模板";
 "settings.whats_new.title" = "最新内容";
-"settings.widgets.title" = "小部件";
+"settings.widgets.title" = "小组件";
 "settings_details.actions.actions_synced.empty" = "没有已同步的动作";
 "settings_details.actions.actions_synced.footer" = "设备上不可编辑在 .yaml 中定义的动作。";
 "settings_details.actions.actions_synced.footer_no_actions" = "还可以在 .yaml 配置中定义动作。";
 "settings_details.actions.actions_synced.header" = "已同步动作";
 "settings_details.actions.carPlay.available.title" = "在 CarPlay 中显示";
 "settings_details.actions.footer" = "动作可在 Apple 手表应用、应用图标动作、“今日”小组件和 CarPlay 中使用。";
-"settings_details.actions.footer_mac" = "在应用程序菜单和小部件中使用的动作。";
+"settings_details.actions.footer_mac" = "在应用程序菜单和小组件中使用的动作。";
 "settings_details.actions.learn.button.title" = "iOS 动作简介";
 "settings_details.actions.scenes.customize_action" = "自定义";
 "settings_details.actions.scenes.empty" = "没有场景";
@@ -579,7 +580,7 @@
 "settings_details.updates.check_for_updates.title" = "自动检查更新";
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "这将重新加载所有小部件时间线，如果您的小部件卡在空白状态或由于某种原因未更新，请使用此功能。";
-"settings_details.widgets.reload_all.title" = "重新加载所有小部件";
+"settings_details.widgets.reload_all.title" = "重新加载所有小组件";
 "settings_sensors.detail.attributes" = "属性";
 "settings_sensors.detail.device_class" = "设备类型";
 "settings_sensors.detail.enabled" = "已启用";
@@ -853,7 +854,7 @@
 "widgets.assist.description" = "打开应用中的语音助手";
 "widgets.assist.title" = "语音助手";
 "widgets.assist.unknown_configuration" = "配置";
-"widgets.button.reload_timeline" = "重新加载所有小部件";
+"widgets.button.reload_timeline" = "重新加载所有小组件";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
 "widgets.details.parameters.action" = "动作";
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";

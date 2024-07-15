@@ -62,7 +62,8 @@
 "assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.pipelines_picker.title" = "Assist folyamatok";
 "assist.watch.mic_button.title" = "Koppintson ide";
-"assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
+"assist.watch.not_reachable.title" = "Az Assist használatához iPhone csatlakozás szükséges. Az Ön iPhone-ja jelenleg nem elérhető.";
+"assist.watch.volume.title" = "Hangerőszabályzó";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";
