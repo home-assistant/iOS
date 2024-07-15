@@ -17,6 +17,8 @@ struct HAThreadNetworkConfig {
 final class ThreadCredentialsManagementViewModel: ObservableObject {
     @Published var configs: [HAThreadNetworkConfig] = []
     @Published var isLoading = false
+    @Published var showAlert = false
+    @Published var alertMessage = ""
 
     private let threadClientService = Current.matter.threadClientService
 
@@ -49,6 +51,20 @@ final class ThreadCredentialsManagementViewModel: ObservableObject {
         case .HomeAssistant:
             shareCredentialWithHomeAssistant(credential: credential.activeOperationalDataSet) { success in
                 completion(success)
+            }
+        }
+    }
+
+    func deleteCredential(_ credential: ThreadCredential) {
+        Current.matter.threadClientService.deleteCredential(credential) { error in
+            DispatchQueue.main.async { [weak self] in
+
+                if let error {
+                    self?.alertMessage = "Error: \(error)"
+                } else {
+                    self?.alertMessage = "Deleted"
+                }
+                self?.showAlert = true
             }
         }
     }

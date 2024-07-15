@@ -22,8 +22,29 @@ struct ThreadCredentialDetailsView: View {
             infoRow(header: L10n.Thread.NetworkKey.title, value: credential.networkKey)
             infoRow(header: L10n.Thread.ExtendedPanId.title, value: credential.extendedPANID)
             infoRow(header: L10n.Thread.ActiveOperationalDataSet.title, value: credential.activeOperationalDataSet)
-            transferButton
+            HStack {
+                transferButton
+                deleteButton
+            }
         }
+        .alert(isPresented: $viewModel.showAlert, content: {
+            Alert(title: Text(viewModel.alertMessage), dismissButton: .default(Text("Ok")))
+        })
+    }
+
+    private var deleteButton: some View {
+        Button {
+            viewModel.deleteCredential(credential)
+        } label: {
+            Image(systemName: "trash")
+        }
+        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .frame(height: 50)
+        .background(.red)
+        .foregroundColor(.white)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.top)
     }
 
     private var transferButton: some View {

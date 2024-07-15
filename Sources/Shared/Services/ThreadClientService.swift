@@ -3,6 +3,10 @@ import Foundation
 #if canImport(ThreadNetwork)
 import ThreadNetwork
 
+public enum ThreadError: Error {
+    case macExtendedAddressHexMissing
+}
+
 @available(iOS 15, *)
 public final class ThreadClientService: ThreadClientProtocol {
     public init() {}
@@ -35,6 +39,17 @@ public final class ThreadClientService: ThreadClientProtocol {
                 creationDate: credential.creationDate,
                 lastModificationDate: credential.lastModificationDate
             )
+        }
+    }
+
+    public func deleteCredential(_ credential: ThreadCredential, completion: @escaping (Error?) -> Void) {
+        let client = THClient()
+        if let macExtendedAddress = credential.macExtendedAddress.hexadecimal {
+            client.deleteCredentials(forBorderAgent: macExtendedAddress) { error in
+                completion(error)
+            }
+        } else {
+            completion(ThreadError.macExtendedAddressHexMissing)
         }
     }
 

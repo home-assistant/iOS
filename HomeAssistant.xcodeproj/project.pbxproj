@@ -4780,8 +4780,6 @@
 				11B6B5812948F8E100B8B552 /* PBXTargetDependency */,
 			);
 			name = App;
-			packageProductDependencies = (
-			);
 			productName = HomeAssistant;
 			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
 			productType = "com.apple.product-type.application";
@@ -5225,7 +5223,7 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
-				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */,
+				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "SharedPush" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -8631,7 +8629,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */ = {
+		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/PushServer/SharedPush;
 		};
